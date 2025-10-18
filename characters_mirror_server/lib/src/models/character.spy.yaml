@@ -1,0 +1,6 @@
+class: Character
+table: character
+fields:
+  id: int?
+  userId: int
+  name: String
