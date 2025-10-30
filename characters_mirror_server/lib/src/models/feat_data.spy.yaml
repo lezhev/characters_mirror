@@ -1,0 +1,18 @@
+class: FeatData
+table: feat_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  abilityBonuses: Map<String, int>?
+
+  traits: List<String>?           
+  specialAbilities: List<String>?
+  proficiencies: List<String>?
+
+  prerequisites: Map<String, int>?
+  

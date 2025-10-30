@@ -1,0 +1,18 @@
+class: MagicItemData
+table: magic_item_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  rarity: String?              # Common / Uncommon / Rare / Very Rare / Legendary / Artifact
+  type: String?                # Weapon / Armor / Wand / Ring / Wondrous Item / etc.
+  requiresAttunement: bool?
+  attunementCondition: String? # например "by a wizard", если ограничено
+  bonus: Map<String,int>?      # например {"attack": 1, "damage": 1, "ac": 1}
+  charges: int?                # если имеет ограниченные заряды
+  rechargeCondition: String?   # "regains 1d6+1 charges at dawn"
+  effects: List<String>?       # описания эффектов

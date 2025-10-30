@@ -1,0 +1,14 @@
+class: ItemData
+table: item_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  category: String?            # Tool / Gear / Mount / Vehicle / Consumable / etc.
+  weight: double?
+  cost: int?
+  effects: List<String>?       # например "advantage on tool checks"

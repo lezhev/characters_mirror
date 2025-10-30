@@ -1,0 +1,23 @@
+class: ClassData
+table: class_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  hitDie: String?               # enum Dice
+  savingThrows: List<String>?
+
+  proficienciesArmor: List<String>?       
+  proficienciesWeapons: List<String>?     
+  proficienciesTools: List<String>?       
+  skills: List<String>?                   
+  skillCount: int?
+
+  spellcasting: bool?
+  spellcastingAbility: String?
+
+  startingEquipment: List<String>?

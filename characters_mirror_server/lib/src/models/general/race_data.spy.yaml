@@ -1,0 +1,30 @@
+class: RaceData
+table: race_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  speed: int?
+  size: String?
+  abilityBonuses: Map<String, int>?
+  traits: List<String>?
+  languages: List<String>?
+
+  visionType: String?
+  swimSpeed: int?
+  climbSpeed: int?
+  flySpeed: int?
+  resistances: List<String>?
+  skillProficiencies: List<String>?
+  armorProficiencies: List<String>?
+  weaponProficiencies: List<String>?
+  toolProficiencies: List<String>?
+  powerfulBuild: bool?
+  specialAbilities: List<String>?
+  ageDescription: String?
+  alignmentDescription: String?
+  physicalDescription: String?

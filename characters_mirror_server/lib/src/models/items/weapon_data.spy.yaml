@@ -1,0 +1,19 @@
+class: WeaponData
+table: weapon_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  category: String?            # Simple / Martial
+  type: String?                # Melee / Ranged
+  damage: String?              # "1d8 slashing"
+  damageType: String?          # "slashing", "piercing", "bludgeoning"
+  properties: List<String>?    # "finesse", "light", "two-handed", "versatile", ...
+  weight: double?
+  cost: String?                # "10 gp"
+  rangeNormal: int?            # 20, 30, 80 и т.д.
+  rangeMax: int?               # 60, 120 и т.д.

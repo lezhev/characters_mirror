@@ -34,7 +34,8 @@ database:
   name: characters_mirror
   user: postgres
   password: ""
-
+  schema: public
+  
   #requireSsl: true # defaults to false
   #isUnixSocket: true # defaults to false
 
