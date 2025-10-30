@@ -1,80 +1,42 @@
+import 'package:characters_mirror_flutter/auth/sign_in_page.dart';
+import 'package:characters_mirror_flutter/src/serverpod_client.dart';
 import 'package:flutter/material.dart';
-import 'package:serverpod_flutter/serverpod_flutter.dart';
-import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final client = Client('http://localhost:8083/')
-    ..connectivityMonitor = FlutterConnectivityMonitor();
-
-  runApp(MyApp(client));
+  await initializeServerpodClient();
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
-  final Client client;
-  const MyApp(this.client, {super.key});
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      home: CharacterListPage(client: client),
+      title: 'Characters Mirror',
+      home: HomePage(title: 'Characters Mirror'),
     );
   }
 }
 
-class CharacterListPage extends StatefulWidget {
-  final Client client;
-  const CharacterListPage({super.key, required this.client});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
+
+  final String title;
 
   @override
-  State<CharacterListPage> createState() => _CharacterListPageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _CharacterListPageState extends State<CharacterListPage> {
-  late Future<List<Character>> _characters;
-
-  @override
-  void initState() {
-    super.initState();
-    _characters = widget.client.character.getAll();
-  }
-
+class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Characters')),
-      body: FutureBuilder<List<Character>>(
-        future: _characters,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: SelectableText('Ошибка: ${snapshot.error}'));
-          }
-          final characters = snapshot.data ?? [];
-          return ListView.builder(
-            itemCount: characters.length,
-            itemBuilder: (context, i) {
-              final c = characters[i];
-              return ListTile(
-                title: Text(c.name),
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final testChar = Character(name: 'Test Hero', userId: 1);
-          await widget.client.character.add(testChar);
-          setState(() {
-            _characters = widget.client.character.getAll();
-          });
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: const SignInPage());
   }
 }

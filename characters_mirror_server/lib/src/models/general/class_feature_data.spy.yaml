@@ -1,0 +1,25 @@
+class: ClassFeatureData
+table: class_feature_data
+fields:
+  parentClass: ClassData?, relation
+  level: int
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  # Механические эффекты
+  abilityBonuses: Map<String,int>?
+  proficiencies: List<String>?
+  specialAbilities: List<String>?
+
+  # Вариативные возможности (например выбор заклинаний, Fighting Style)
+  variantOptions: List<String>?
+
+  # Ресурсы класса
+  resourceName: String?          # имя ресурса (например Rage, Wild Shape, Ki Points)
+  resourceAmount: int?           # количество единиц ресурса на этом уровне
+  resourceRegain: String?        # как восстанавливается ресурс, например "Short Rest", "Long Rest"
+
+  # Для классов со спеллчекованием
+  spellSlots: Map<int,int>?      # уровень заклинания -> количество ячеек, например {1:4, 2:2}

@@ -1,0 +1,18 @@
+class: ArmorData
+table: armor_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  category: String?            #TODO crate enum ArmorCategory { light, medium, heavy, shield }
+  baseAC: int?
+  dexBonus: bool?              # Учитывает ли бонус Ловкости
+  dexBonusMax: int?            # Максимальный бонус Ловкости (для Medium)
+  strengthRequirement: int?    # Для тяжёлой брони
+  stealthDisadvantage: bool?
+  weight: double?
+  cost: String?

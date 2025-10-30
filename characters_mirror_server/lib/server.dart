@@ -1,7 +1,6 @@
 import 'package:serverpod/serverpod.dart';
-
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
 import 'package:characters_mirror_server/src/web/routes/root.dart';
-
 import 'src/generated/protocol.dart';
 import 'src/generated/endpoints.dart';
 
@@ -15,6 +14,7 @@ void run(List<String> args) async {
     args,
     Protocol(),
     Endpoints(),
+    authenticationHandler: auth.authenticationHandler,
   );
 
   // Setup a default page at the web root.
@@ -25,7 +25,18 @@ void run(List<String> args) async {
     RouteStaticDirectory(serverDirectory: 'static', basePath: '/'),
     '/*',
   );
-
+  auth.AuthConfig.set(auth.AuthConfig(
+    sendValidationEmail: (session, email, validationCode) async {
+      // TODO: integrate with mail server
+      session.log('Validation code: $validationCode');
+      return true;
+    },
+    sendPasswordResetEmail: (session, userInfo, validationCode) async {
+      // TODO: integrate with mail server
+      session.log('Validation code: $validationCode');
+      return true;
+    },
+  ));
   // Start the server.
   await pod.start();
 
@@ -36,12 +47,10 @@ void run(List<String> args) async {
   // background. Their schedule is persisted to the database, so you will not
   // lose them if the server is restarted.
 
-
   // You can schedule future calls for a later time during startup. But you can also
   // schedule them in any endpoint or webroute through the session object.
   // there is also [futureCallAtTime] if you want to schedule a future call at a
   // specific time.
-  
 }
 
 /// Names of all future calls in the server.

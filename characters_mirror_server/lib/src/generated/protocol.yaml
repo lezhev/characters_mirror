@@ -1,4 +1,32 @@
-character:
+backgroundData:
+  - getAll:
+  - add:
+  - delete:
+characterData:
+  - getAll:
+  - add:
+  - delete:
+classData:
+  - getAll:
+  - add:
+  - delete:
+itemData:
+  - getAll:
+  - add:
+  - delete:
+raceData:
+  - getAll:
+  - add:
+  - delete:
+spellData:
+  - getAll:
+  - add:
+  - delete:
+subclassData:
+  - getAll:
+  - add:
+  - delete:
+subraceData:
   - getAll:
   - add:
   - delete:

@@ -1,0 +1,1070 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "generic_item_data"
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "characters"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "characters",
+        "dartName": "CharacterData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('characters_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "experience",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "attributes",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,int>?"
+          },
+          {
+            "name": "raceId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "subraceId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "backgroundId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "alignment",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "armorClass",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "speed",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "coins",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "skillProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "skillExpertises",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "maxHp",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "temporaryHp",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "currentHp",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "preparedSpellsId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "writtenSpellsId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "itemsId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "magicItemsId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "armorId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "weaponsId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "characters_fk_0",
+            "columns": [
+              "raceId"
+            ],
+            "referenceTable": "race_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_1",
+            "columns": [
+              "subraceId"
+            ],
+            "referenceTable": "subrace_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_2",
+            "columns": [
+              "backgroundId"
+            ],
+            "referenceTable": "background_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_3",
+            "columns": [
+              "preparedSpellsId"
+            ],
+            "referenceTable": "spell_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_4",
+            "columns": [
+              "writtenSpellsId"
+            ],
+            "referenceTable": "spell_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_5",
+            "columns": [
+              "itemsId"
+            ],
+            "referenceTable": "item_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_6",
+            "columns": [
+              "magicItemsId"
+            ],
+            "referenceTable": "magic_item_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_7",
+            "columns": [
+              "armorId"
+            ],
+            "referenceTable": "armor_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_8",
+            "columns": [
+              "weaponsId"
+            ],
+            "referenceTable": "weapon_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "characters_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_charactersClassesCharactersId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "class_data_fk_0",
+            "columns": [
+              "_charactersClassesCharactersId"
+            ],
+            "referenceTable": "characters",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"generic_item_data\" will be dropped.",
+            "table": "generic_item_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"characterClassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "characterClassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subclassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "subclassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"writtenSpellIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"itemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "itemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"magicItemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "magicItemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"armorIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "armorIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "One or more columns are added to table \"characters\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"type\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"rarity\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "rarity"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"effect\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "effect"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_feature_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_charactersClassfeaturesCharactersId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "class_feature_data_fk_1",
+            "columns": [
+              "_charactersClassfeaturesCharactersId"
+            ],
+            "referenceTable": "characters",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"generic_item_data\" will be dropped.",
+            "table": "generic_item_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"characterClassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "characterClassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subclassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "subclassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"writtenSpellIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"itemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "itemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"magicItemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "magicItemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"armorIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "armorIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "One or more columns are added to table \"characters\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"type\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"rarity\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "rarity"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"effect\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "effect"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "item_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "category",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "effects",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [
+          "type",
+          "rarity",
+          "effect"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"generic_item_data\" will be dropped.",
+            "table": "generic_item_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"characterClassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "characterClassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subclassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "subclassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"writtenSpellIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"itemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "itemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"magicItemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "magicItemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"armorIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "armorIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "One or more columns are added to table \"characters\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"type\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"rarity\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "rarity"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"effect\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "effect"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_charactersSubclassesCharactersId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "subclass_data_fk_0",
+            "columns": [
+              "_charactersSubclassesCharactersId"
+            ],
+            "referenceTable": "characters",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"generic_item_data\" will be dropped.",
+            "table": "generic_item_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"characterClassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "characterClassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subclassId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "subclassId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"writtenSpellIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"itemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "itemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"magicItemIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "magicItemIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"armorIdsId\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "armorIdsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "One or more columns are added to table \"characters\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "writtenSpellsId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"type\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"rarity\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "rarity"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"effect\" of table \"item_data\" will be dropped.",
+            "table": "item_data",
+            "columns": [
+              "effect"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "weapon_data",
+        "dartName": "WeaponData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('weapon_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "category",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "type",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "damage",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "damageType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "properties",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "weight",
+            "columnType": 3,
+            "isNullable": true,
+            "dartType": "double?"
+          },
+          {
+            "name": "cost",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "rangeNormal",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "rangeMax",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "weapon_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"generic_item_data\" will be dropped.",
+      "table": "generic_item_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"characterClassId\" of table \"characters\" will be dropped.",
+      "table": "characters",
+      "columns": [
+        "characterClassId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"subclassId\" of table \"characters\" will be dropped.",
+      "table": "characters",
+      "columns": [
+        "subclassId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"writtenSpellIdsId\" of table \"characters\" will be dropped.",
+      "table": "characters",
+      "columns": [
+        "writtenSpellIdsId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"itemIdsId\" of table \"characters\" will be dropped.",
+      "table": "characters",
+      "columns": [
+        "itemIdsId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"magicItemIdsId\" of table \"characters\" will be dropped.",
+      "table": "characters",
+      "columns": [
+        "magicItemIdsId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"armorIdsId\" of table \"characters\" will be dropped.",
+      "table": "characters",
+      "columns": [
+        "armorIdsId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"characters\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "characters",
+      "columns": [
+        "writtenSpellsId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"type\" of table \"item_data\" will be dropped.",
+      "table": "item_data",
+      "columns": [
+        "type"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"rarity\" of table \"item_data\" will be dropped.",
+      "table": "item_data",
+      "columns": [
+        "rarity"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"effect\" of table \"item_data\" will be dropped.",
+      "table": "item_data",
+      "columns": [
+        "effect"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

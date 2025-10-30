@@ -8,7 +8,8 @@
             "name": "server",
             "cwd": "characters_mirror_server",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "args": ["--apply-migrations"]
         },
         {
             "name": "flutter",

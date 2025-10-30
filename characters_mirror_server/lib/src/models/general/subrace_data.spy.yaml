@@ -1,0 +1,27 @@
+class: SubraceData
+table: subrace_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  abilityBonuses: Map<String, int>?
+  traits: List<String>?
+  specialAbilities: List<String>?
+  skillProficiencies: List<String>?
+
+  speedBonus: int?
+  swimSpeed: int?
+  climbSpeed: int?
+  flySpeed: int?
+  visionType: String?
+
+  resistances: List<String>?
+  variantOptions: List<String>?
+
+  ageDescription: String?
+  alignmentDescription: String?
+  physicalDescription: String?

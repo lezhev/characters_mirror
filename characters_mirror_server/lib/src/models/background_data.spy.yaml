@@ -1,0 +1,17 @@
+class: BackgroundData
+table: background_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  skillProficiencies: List<String>?
+  toolProficiencies: List<String>?
+  feature: String?
+  suggestedPersonality: String?
+  suggestedIdeal: String?
+  suggestedBond: String?
+  suggestedFlaw: String?
