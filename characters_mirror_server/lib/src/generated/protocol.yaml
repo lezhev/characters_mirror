@@ -1,3 +1,10 @@
+admin:
+  - getAllUsers:
+  - setAdminRole:
+devAdmin:
+  - giveAdmin:
+referenceData:
+  - insertJson:
 backgroundData:
   - getAll:
   - add:
@@ -10,15 +17,7 @@ classData:
   - getAll:
   - add:
   - delete:
-itemData:
-  - getAll:
-  - add:
-  - delete:
 raceData:
-  - getAll:
-  - add:
-  - delete:
-spellData:
   - getAll:
   - add:
   - delete:
@@ -27,6 +26,18 @@ subclassData:
   - add:
   - delete:
 subraceData:
+  - getAll:
+  - add:
+  - delete:
+itemData:
+  - getAll:
+  - add:
+  - delete:
+magicItemData:
+  - getAll:
+  - add:
+  - delete:
+spellData:
   - getAll:
   - add:
   - delete:

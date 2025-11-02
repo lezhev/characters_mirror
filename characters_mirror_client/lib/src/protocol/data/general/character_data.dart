@@ -10,17 +10,17 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../general/race_data.dart' as _i2;
-import '../general/subrace_data.dart' as _i3;
-import '../general/class_data.dart' as _i4;
-import '../general/subclass_data.dart' as _i5;
-import '../general/class_feature_data.dart' as _i6;
-import '../background_data.dart' as _i7;
-import '../spell_data.dart' as _i8;
-import '../items/item_data.dart' as _i9;
-import '../items/magic_item_data.dart' as _i10;
-import '../items/armor_data.dart' as _i11;
-import '../items/weapon_data.dart' as _i12;
+import '../../data/general/race_data.dart' as _i2;
+import '../../data/general/subrace_data.dart' as _i3;
+import '../../data/general/class_data.dart' as _i4;
+import '../../data/general/subclass_data.dart' as _i5;
+import '../../data/general/class_feature_data.dart' as _i6;
+import '../../data/background_data.dart' as _i7;
+import '../../data/spell_data.dart' as _i8;
+import '../../data/items/item_data.dart' as _i9;
+import '../../data/items/magic_item_data.dart' as _i10;
+import '../../data/items/armor_data.dart' as _i11;
+import '../../data/items/weapon_data.dart' as _i12;
 
 abstract class CharacterData implements _i1.SerializableModel {
   CharacterData._({

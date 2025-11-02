@@ -12,47 +12,50 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
-import 'background_data.dart' as _i4;
-import 'feat_data.dart' as _i5;
-import 'general/character_data.dart' as _i6;
-import 'general/class_data.dart' as _i7;
-import 'general/class_feature_data.dart' as _i8;
-import 'general/race_data.dart' as _i9;
-import 'general/subclass_data.dart' as _i10;
-import 'general/subrace_data.dart' as _i11;
-import 'items/armor_data.dart' as _i12;
-import 'items/item_data.dart' as _i13;
-import 'items/magic_item_data.dart' as _i14;
-import 'items/weapon_data.dart' as _i15;
-import 'spell_data.dart' as _i16;
-import 'package:characters_mirror_server/src/generated/background_data.dart'
+import 'data/background_data.dart' as _i4;
+import 'data/feat_data.dart' as _i5;
+import 'data/general/character_data.dart' as _i6;
+import 'data/general/class_data.dart' as _i7;
+import 'data/general/class_feature_data.dart' as _i8;
+import 'data/general/race_data.dart' as _i9;
+import 'data/general/subclass_data.dart' as _i10;
+import 'data/general/subrace_data.dart' as _i11;
+import 'data/items/armor_data.dart' as _i12;
+import 'data/items/item_data.dart' as _i13;
+import 'data/items/magic_item_data.dart' as _i14;
+import 'data/items/weapon_data.dart' as _i15;
+import 'data/spell_data.dart' as _i16;
+import 'package:characters_mirror_server/src/generated/data/background_data.dart'
     as _i17;
-import 'package:characters_mirror_server/src/generated/general/character_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/character_data.dart'
     as _i18;
-import 'package:characters_mirror_server/src/generated/general/class_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class_data.dart'
     as _i19;
-import 'package:characters_mirror_server/src/generated/items/item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race_data.dart'
     as _i20;
-import 'package:characters_mirror_server/src/generated/general/race_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/subclass_data.dart'
     as _i21;
-import 'package:characters_mirror_server/src/generated/spell_data.dart' as _i22;
-import 'package:characters_mirror_server/src/generated/general/subclass_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/subrace_data.dart'
+    as _i22;
+import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
     as _i23;
-import 'package:characters_mirror_server/src/generated/general/subrace_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
     as _i24;
-export 'background_data.dart';
-export 'feat_data.dart';
-export 'general/character_data.dart';
-export 'general/class_data.dart';
-export 'general/class_feature_data.dart';
-export 'general/race_data.dart';
-export 'general/subclass_data.dart';
-export 'general/subrace_data.dart';
-export 'items/armor_data.dart';
-export 'items/item_data.dart';
-export 'items/magic_item_data.dart';
-export 'items/weapon_data.dart';
-export 'spell_data.dart';
+import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+    as _i25;
+export 'data/background_data.dart';
+export 'data/feat_data.dart';
+export 'data/general/character_data.dart';
+export 'data/general/class_data.dart';
+export 'data/general/class_feature_data.dart';
+export 'data/general/race_data.dart';
+export 'data/general/subclass_data.dart';
+export 'data/general/subrace_data.dart';
+export 'data/items/armor_data.dart';
+export 'data/items/item_data.dart';
+export 'data/items/magic_item_data.dart';
+export 'data/items/weapon_data.dart';
+export 'data/spell_data.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -2172,6 +2175,10 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as T;
     }
+    if (t == List<_i3.UserInfo>) {
+      return (data as List).map((e) => deserialize<_i3.UserInfo>(e)).toList()
+          as T;
+    }
     if (t == List<_i17.BackgroundData>) {
       return (data as List)
           .map((e) => deserialize<_i17.BackgroundData>(e))
@@ -2186,27 +2193,32 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i19.ClassData>(e)).toList()
           as T;
     }
-    if (t == List<_i20.ItemData>) {
-      return (data as List).map((e) => deserialize<_i20.ItemData>(e)).toList()
+    if (t == List<_i20.RaceData>) {
+      return (data as List).map((e) => deserialize<_i20.RaceData>(e)).toList()
           as T;
     }
-    if (t == List<_i21.RaceData>) {
-      return (data as List).map((e) => deserialize<_i21.RaceData>(e)).toList()
-          as T;
-    }
-    if (t == List<_i22.SpellData>) {
-      return (data as List).map((e) => deserialize<_i22.SpellData>(e)).toList()
-          as T;
-    }
-    if (t == List<_i23.SubclassData>) {
+    if (t == List<_i21.SubclassData>) {
       return (data as List)
-          .map((e) => deserialize<_i23.SubclassData>(e))
+          .map((e) => deserialize<_i21.SubclassData>(e))
           .toList() as T;
     }
-    if (t == List<_i24.SubraceData>) {
+    if (t == List<_i22.SubraceData>) {
       return (data as List)
-          .map((e) => deserialize<_i24.SubraceData>(e))
+          .map((e) => deserialize<_i22.SubraceData>(e))
           .toList() as T;
+    }
+    if (t == List<_i23.ItemData>) {
+      return (data as List).map((e) => deserialize<_i23.ItemData>(e)).toList()
+          as T;
+    }
+    if (t == List<_i24.MagicItemData>) {
+      return (data as List)
+          .map((e) => deserialize<_i24.MagicItemData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i25.SpellData>) {
+      return (data as List).map((e) => deserialize<_i25.SpellData>(e)).toList()
+          as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);

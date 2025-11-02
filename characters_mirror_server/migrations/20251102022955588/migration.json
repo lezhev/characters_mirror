@@ -1,0 +1,18 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "user_info"
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"user_info\" will be dropped.",
+      "table": "user_info",
+      "columns": [],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

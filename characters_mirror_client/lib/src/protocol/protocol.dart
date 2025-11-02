@@ -10,48 +10,51 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'background_data.dart' as _i2;
-import 'feat_data.dart' as _i3;
-import 'general/character_data.dart' as _i4;
-import 'general/class_data.dart' as _i5;
-import 'general/class_feature_data.dart' as _i6;
-import 'general/race_data.dart' as _i7;
-import 'general/subclass_data.dart' as _i8;
-import 'general/subrace_data.dart' as _i9;
-import 'items/armor_data.dart' as _i10;
-import 'items/item_data.dart' as _i11;
-import 'items/magic_item_data.dart' as _i12;
-import 'items/weapon_data.dart' as _i13;
-import 'spell_data.dart' as _i14;
-import 'package:characters_mirror_client/src/protocol/background_data.dart'
-    as _i15;
-import 'package:characters_mirror_client/src/protocol/general/character_data.dart'
+import 'data/background_data.dart' as _i2;
+import 'data/feat_data.dart' as _i3;
+import 'data/general/character_data.dart' as _i4;
+import 'data/general/class_data.dart' as _i5;
+import 'data/general/class_feature_data.dart' as _i6;
+import 'data/general/race_data.dart' as _i7;
+import 'data/general/subclass_data.dart' as _i8;
+import 'data/general/subrace_data.dart' as _i9;
+import 'data/items/armor_data.dart' as _i10;
+import 'data/items/item_data.dart' as _i11;
+import 'data/items/magic_item_data.dart' as _i12;
+import 'data/items/weapon_data.dart' as _i13;
+import 'data/spell_data.dart' as _i14;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i15;
+import 'package:characters_mirror_client/src/protocol/data/background_data.dart'
     as _i16;
-import 'package:characters_mirror_client/src/protocol/general/class_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/character_data.dart'
     as _i17;
-import 'package:characters_mirror_client/src/protocol/items/item_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class_data.dart'
     as _i18;
-import 'package:characters_mirror_client/src/protocol/general/race_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/race_data.dart'
     as _i19;
-import 'package:characters_mirror_client/src/protocol/spell_data.dart' as _i20;
-import 'package:characters_mirror_client/src/protocol/general/subclass_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/subclass_data.dart'
+    as _i20;
+import 'package:characters_mirror_client/src/protocol/data/general/subrace_data.dart'
     as _i21;
-import 'package:characters_mirror_client/src/protocol/general/subrace_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
     as _i22;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i23;
-export 'background_data.dart';
-export 'feat_data.dart';
-export 'general/character_data.dart';
-export 'general/class_data.dart';
-export 'general/class_feature_data.dart';
-export 'general/race_data.dart';
-export 'general/subclass_data.dart';
-export 'general/subrace_data.dart';
-export 'items/armor_data.dart';
-export 'items/item_data.dart';
-export 'items/magic_item_data.dart';
-export 'items/weapon_data.dart';
-export 'spell_data.dart';
+import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
+    as _i23;
+import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
+    as _i24;
+export 'data/background_data.dart';
+export 'data/feat_data.dart';
+export 'data/general/character_data.dart';
+export 'data/general/class_data.dart';
+export 'data/general/class_feature_data.dart';
+export 'data/general/race_data.dart';
+export 'data/general/subclass_data.dart';
+export 'data/general/subrace_data.dart';
+export 'data/items/armor_data.dart';
+export 'data/items/item_data.dart';
+export 'data/items/magic_item_data.dart';
+export 'data/items/weapon_data.dart';
+export 'data/spell_data.dart';
 export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
@@ -385,44 +388,53 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i15.BackgroundData>) {
-      return (data as List)
-          .map((e) => deserialize<_i15.BackgroundData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i16.CharacterData>) {
-      return (data as List)
-          .map((e) => deserialize<_i16.CharacterData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i17.ClassData>) {
-      return (data as List).map((e) => deserialize<_i17.ClassData>(e)).toList()
+    if (t == List<_i15.UserInfo>) {
+      return (data as List).map((e) => deserialize<_i15.UserInfo>(e)).toList()
           as T;
     }
-    if (t == List<_i18.ItemData>) {
-      return (data as List).map((e) => deserialize<_i18.ItemData>(e)).toList()
+    if (t == List<_i16.BackgroundData>) {
+      return (data as List)
+          .map((e) => deserialize<_i16.BackgroundData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i17.CharacterData>) {
+      return (data as List)
+          .map((e) => deserialize<_i17.CharacterData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i18.ClassData>) {
+      return (data as List).map((e) => deserialize<_i18.ClassData>(e)).toList()
           as T;
     }
     if (t == List<_i19.RaceData>) {
       return (data as List).map((e) => deserialize<_i19.RaceData>(e)).toList()
           as T;
     }
-    if (t == List<_i20.SpellData>) {
-      return (data as List).map((e) => deserialize<_i20.SpellData>(e)).toList()
+    if (t == List<_i20.SubclassData>) {
+      return (data as List)
+          .map((e) => deserialize<_i20.SubclassData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i21.SubraceData>) {
+      return (data as List)
+          .map((e) => deserialize<_i21.SubraceData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i22.ItemData>) {
+      return (data as List).map((e) => deserialize<_i22.ItemData>(e)).toList()
           as T;
     }
-    if (t == List<_i21.SubclassData>) {
+    if (t == List<_i23.MagicItemData>) {
       return (data as List)
-          .map((e) => deserialize<_i21.SubclassData>(e))
+          .map((e) => deserialize<_i23.MagicItemData>(e))
           .toList() as T;
     }
-    if (t == List<_i22.SubraceData>) {
-      return (data as List)
-          .map((e) => deserialize<_i22.SubraceData>(e))
-          .toList() as T;
+    if (t == List<_i24.SpellData>) {
+      return (data as List).map((e) => deserialize<_i24.SpellData>(e)).toList()
+          as T;
     }
     try {
-      return _i23.Protocol().deserialize<T>(data, t);
+      return _i15.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -470,7 +482,7 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i14.SpellData) {
       return 'SpellData';
     }
-    className = _i23.Protocol().getClassNameForObject(data);
+    className = _i15.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -524,7 +536,7 @@ class Protocol extends _i1.SerializationManager {
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i23.Protocol().deserializeByClassName(data);
+      return _i15.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
