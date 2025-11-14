@@ -1,0 +1,43 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "source"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"source\" of table \"characters\" will be dropped.",
+            "table": "characters",
+            "columns": [
+              "source"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"source\" of table \"characters\" will be dropped.",
+      "table": "characters",
+      "columns": [
+        "source"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

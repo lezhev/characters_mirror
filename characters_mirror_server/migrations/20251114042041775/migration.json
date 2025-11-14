@@ -1,0 +1,64 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "subclassFeaturesId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [
+          "subclassFeatures"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "subclass_data_fk_1",
+            "columns": [
+              "subclassFeaturesId"
+            ],
+            "referenceTable": "subclass_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"subclassFeatures\" of table \"subclass_data\" will be dropped.",
+            "table": "subclass_data",
+            "columns": [
+              "subclassFeatures"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"subclassFeatures\" of table \"subclass_data\" will be dropped.",
+      "table": "subclass_data",
+      "columns": [
+        "subclassFeatures"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

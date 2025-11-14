@@ -10,6 +10,22 @@ class MagicItemDataEndpoint extends Endpoint {
     return await MagicItemData.db.insertRow(session, item);
   }
 
+  Future<MagicItemData> upsert(Session session, MagicItemData magicItem) async {
+    final existing = await MagicItemData.db.find(
+      session,
+      where: (t) => t.name.equals(magicItem.name),
+      limit: 1,
+    );
+
+    if (existing.isNotEmpty) {
+      magicItem.id = existing.first.id;
+      await MagicItemData.db.updateRow(session, magicItem);
+      return magicItem;
+    } else {
+      return await MagicItemData.db.insertRow(session, magicItem);
+    }
+  }
+
   Future<void> delete(Session session, int id) async {
     await MagicItemData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }

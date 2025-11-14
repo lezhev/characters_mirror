@@ -31,7 +31,8 @@ abstract class SpellData
     this.ritual,
     this.higherLevel,
     this.availableForClasses,
-  });
+  })  : _charactersPreparedspellsCharactersId = null,
+        _charactersWrittenspellsCharactersId = null;
 
   factory SpellData({
     int? id,
@@ -54,7 +55,7 @@ abstract class SpellData
   }) = _SpellDataImpl;
 
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
-    return SpellData(
+    return SpellDataImplicit._(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -80,6 +81,10 @@ abstract class SpellData
       availableForClasses: (jsonSerialization['availableForClasses'] as List?)
           ?.map((e) => e as int)
           .toList(),
+      $_charactersPreparedspellsCharactersId:
+          jsonSerialization['_charactersPreparedspellsCharactersId'] as int?,
+      $_charactersWrittenspellsCharactersId:
+          jsonSerialization['_charactersWrittenspellsCharactersId'] as int?,
     );
   }
 
@@ -121,6 +126,10 @@ abstract class SpellData
   String? higherLevel;
 
   List<int>? availableForClasses;
+
+  final int? _charactersPreparedspellsCharactersId;
+
+  final int? _charactersWrittenspellsCharactersId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -168,6 +177,12 @@ abstract class SpellData
       if (higherLevel != null) 'higherLevel': higherLevel,
       if (availableForClasses != null)
         'availableForClasses': availableForClasses?.toJson(),
+      if (_charactersPreparedspellsCharactersId != null)
+        '_charactersPreparedspellsCharactersId':
+            _charactersPreparedspellsCharactersId,
+      if (_charactersWrittenspellsCharactersId != null)
+        '_charactersWrittenspellsCharactersId':
+            _charactersWrittenspellsCharactersId,
     };
   }
 
@@ -289,7 +304,7 @@ class _SpellDataImpl extends SpellData {
     Object? higherLevel = _Undefined,
     Object? availableForClasses = _Undefined,
   }) {
-    return SpellData(
+    return SpellDataImplicit._(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -312,8 +327,94 @@ class _SpellDataImpl extends SpellData {
       availableForClasses: availableForClasses is List<int>?
           ? availableForClasses
           : this.availableForClasses?.map((e0) => e0).toList(),
+      $_charactersPreparedspellsCharactersId:
+          this._charactersPreparedspellsCharactersId,
+      $_charactersWrittenspellsCharactersId:
+          this._charactersWrittenspellsCharactersId,
     );
   }
+}
+
+class SpellDataImplicit extends _SpellDataImpl {
+  SpellDataImplicit._({
+    int? id,
+    String? name,
+    String? description,
+    String? source,
+    int? version,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? level,
+    String? school,
+    String? castingTime,
+    String? range,
+    String? duration,
+    List<String>? components,
+    bool? concentration,
+    bool? ritual,
+    String? higherLevel,
+    List<int>? availableForClasses,
+    int? $_charactersPreparedspellsCharactersId,
+    int? $_charactersWrittenspellsCharactersId,
+  })  : _charactersPreparedspellsCharactersId =
+            $_charactersPreparedspellsCharactersId,
+        _charactersWrittenspellsCharactersId =
+            $_charactersWrittenspellsCharactersId,
+        super(
+          id: id,
+          name: name,
+          description: description,
+          source: source,
+          version: version,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          level: level,
+          school: school,
+          castingTime: castingTime,
+          range: range,
+          duration: duration,
+          components: components,
+          concentration: concentration,
+          ritual: ritual,
+          higherLevel: higherLevel,
+          availableForClasses: availableForClasses,
+        );
+
+  factory SpellDataImplicit(
+    SpellData spellData, {
+    int? $_charactersPreparedspellsCharactersId,
+    int? $_charactersWrittenspellsCharactersId,
+  }) {
+    return SpellDataImplicit._(
+      id: spellData.id,
+      name: spellData.name,
+      description: spellData.description,
+      source: spellData.source,
+      version: spellData.version,
+      createdAt: spellData.createdAt,
+      updatedAt: spellData.updatedAt,
+      level: spellData.level,
+      school: spellData.school,
+      castingTime: spellData.castingTime,
+      range: spellData.range,
+      duration: spellData.duration,
+      components: spellData.components,
+      concentration: spellData.concentration,
+      ritual: spellData.ritual,
+      higherLevel: spellData.higherLevel,
+      availableForClasses: spellData.availableForClasses,
+      $_charactersPreparedspellsCharactersId:
+          $_charactersPreparedspellsCharactersId,
+      $_charactersWrittenspellsCharactersId:
+          $_charactersWrittenspellsCharactersId,
+    );
+  }
+
+  @override
+  final int? _charactersPreparedspellsCharactersId;
+
+  @override
+  final int? _charactersWrittenspellsCharactersId;
 }
 
 class SpellDataTable extends _i1.Table<int?> {
@@ -382,6 +483,14 @@ class SpellDataTable extends _i1.Table<int?> {
       'availableForClasses',
       this,
     );
+    $_charactersPreparedspellsCharactersId = _i1.ColumnInt(
+      '_charactersPreparedspellsCharactersId',
+      this,
+    );
+    $_charactersWrittenspellsCharactersId = _i1.ColumnInt(
+      '_charactersWrittenspellsCharactersId',
+      this,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -416,8 +525,35 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable availableForClasses;
 
+  late final _i1.ColumnInt $_charactersPreparedspellsCharactersId;
+
+  late final _i1.ColumnInt $_charactersWrittenspellsCharactersId;
+
   @override
   List<_i1.Column> get columns => [
+        id,
+        name,
+        description,
+        source,
+        version,
+        createdAt,
+        updatedAt,
+        level,
+        school,
+        castingTime,
+        range,
+        duration,
+        components,
+        concentration,
+        ritual,
+        higherLevel,
+        availableForClasses,
+        $_charactersPreparedspellsCharactersId,
+        $_charactersWrittenspellsCharactersId,
+      ];
+
+  @override
+  List<_i1.Column> get managedColumns => [
         id,
         name,
         description,

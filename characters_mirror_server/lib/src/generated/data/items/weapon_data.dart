@@ -21,8 +21,8 @@ abstract class WeaponData
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.category,
-    this.type,
+    this.isSimple,
+    this.isMelee,
     this.damage,
     this.damageType,
     this.properties,
@@ -30,7 +30,8 @@ abstract class WeaponData
     this.cost,
     this.rangeNormal,
     this.rangeMax,
-  });
+  })  : _charactersWeaponsCharactersId = null,
+        _classDataProficienciesweaponsClassDataId = null;
 
   factory WeaponData({
     int? id,
@@ -40,19 +41,19 @@ abstract class WeaponData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
-    String? type,
+    bool? isSimple,
+    bool? isMelee,
     String? damage,
     String? damageType,
     List<String>? properties,
     double? weight,
-    String? cost,
+    double? cost,
     int? rangeNormal,
     int? rangeMax,
   }) = _WeaponDataImpl;
 
   factory WeaponData.fromJson(Map<String, dynamic> jsonSerialization) {
-    return WeaponData(
+    return WeaponDataImplicit._(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -64,17 +65,22 @@ abstract class WeaponData
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      category: jsonSerialization['category'] as String?,
-      type: jsonSerialization['type'] as String?,
+      isSimple: jsonSerialization['isSimple'] as bool?,
+      isMelee: jsonSerialization['isMelee'] as bool?,
       damage: jsonSerialization['damage'] as String?,
       damageType: jsonSerialization['damageType'] as String?,
       properties: (jsonSerialization['properties'] as List?)
           ?.map((e) => e as String)
           .toList(),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
-      cost: jsonSerialization['cost'] as String?,
+      cost: (jsonSerialization['cost'] as num?)?.toDouble(),
       rangeNormal: jsonSerialization['rangeNormal'] as int?,
       rangeMax: jsonSerialization['rangeMax'] as int?,
+      $_charactersWeaponsCharactersId:
+          jsonSerialization['_charactersWeaponsCharactersId'] as int?,
+      $_classDataProficienciesweaponsClassDataId:
+          jsonSerialization['_classDataProficienciesweaponsClassDataId']
+              as int?,
     );
   }
 
@@ -97,9 +103,9 @@ abstract class WeaponData
 
   DateTime? updatedAt;
 
-  String? category;
+  bool? isSimple;
 
-  String? type;
+  bool? isMelee;
 
   String? damage;
 
@@ -109,11 +115,15 @@ abstract class WeaponData
 
   double? weight;
 
-  String? cost;
+  double? cost;
 
   int? rangeNormal;
 
   int? rangeMax;
+
+  final int? _charactersWeaponsCharactersId;
+
+  final int? _classDataProficienciesweaponsClassDataId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -129,13 +139,13 @@ abstract class WeaponData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
-    String? type,
+    bool? isSimple,
+    bool? isMelee,
     String? damage,
     String? damageType,
     List<String>? properties,
     double? weight,
-    String? cost,
+    double? cost,
     int? rangeNormal,
     int? rangeMax,
   });
@@ -149,8 +159,8 @@ abstract class WeaponData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (category != null) 'category': category,
-      if (type != null) 'type': type,
+      if (isSimple != null) 'isSimple': isSimple,
+      if (isMelee != null) 'isMelee': isMelee,
       if (damage != null) 'damage': damage,
       if (damageType != null) 'damageType': damageType,
       if (properties != null) 'properties': properties?.toJson(),
@@ -158,6 +168,11 @@ abstract class WeaponData
       if (cost != null) 'cost': cost,
       if (rangeNormal != null) 'rangeNormal': rangeNormal,
       if (rangeMax != null) 'rangeMax': rangeMax,
+      if (_charactersWeaponsCharactersId != null)
+        '_charactersWeaponsCharactersId': _charactersWeaponsCharactersId,
+      if (_classDataProficienciesweaponsClassDataId != null)
+        '_classDataProficienciesweaponsClassDataId':
+            _classDataProficienciesweaponsClassDataId,
     };
   }
 
@@ -171,8 +186,8 @@ abstract class WeaponData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (category != null) 'category': category,
-      if (type != null) 'type': type,
+      if (isSimple != null) 'isSimple': isSimple,
+      if (isMelee != null) 'isMelee': isMelee,
       if (damage != null) 'damage': damage,
       if (damageType != null) 'damageType': damageType,
       if (properties != null) 'properties': properties?.toJson(),
@@ -224,13 +239,13 @@ class _WeaponDataImpl extends WeaponData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
-    String? type,
+    bool? isSimple,
+    bool? isMelee,
     String? damage,
     String? damageType,
     List<String>? properties,
     double? weight,
-    String? cost,
+    double? cost,
     int? rangeNormal,
     int? rangeMax,
   }) : super._(
@@ -241,8 +256,8 @@ class _WeaponDataImpl extends WeaponData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          category: category,
-          type: type,
+          isSimple: isSimple,
+          isMelee: isMelee,
           damage: damage,
           damageType: damageType,
           properties: properties,
@@ -264,8 +279,8 @@ class _WeaponDataImpl extends WeaponData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? category = _Undefined,
-    Object? type = _Undefined,
+    Object? isSimple = _Undefined,
+    Object? isMelee = _Undefined,
     Object? damage = _Undefined,
     Object? damageType = _Undefined,
     Object? properties = _Undefined,
@@ -274,7 +289,7 @@ class _WeaponDataImpl extends WeaponData {
     Object? rangeNormal = _Undefined,
     Object? rangeMax = _Undefined,
   }) {
-    return WeaponData(
+    return WeaponDataImplicit._(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -282,19 +297,99 @@ class _WeaponDataImpl extends WeaponData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      category: category is String? ? category : this.category,
-      type: type is String? ? type : this.type,
+      isSimple: isSimple is bool? ? isSimple : this.isSimple,
+      isMelee: isMelee is bool? ? isMelee : this.isMelee,
       damage: damage is String? ? damage : this.damage,
       damageType: damageType is String? ? damageType : this.damageType,
       properties: properties is List<String>?
           ? properties
           : this.properties?.map((e0) => e0).toList(),
       weight: weight is double? ? weight : this.weight,
-      cost: cost is String? ? cost : this.cost,
+      cost: cost is double? ? cost : this.cost,
       rangeNormal: rangeNormal is int? ? rangeNormal : this.rangeNormal,
       rangeMax: rangeMax is int? ? rangeMax : this.rangeMax,
+      $_charactersWeaponsCharactersId: this._charactersWeaponsCharactersId,
+      $_classDataProficienciesweaponsClassDataId:
+          this._classDataProficienciesweaponsClassDataId,
     );
   }
+}
+
+class WeaponDataImplicit extends _WeaponDataImpl {
+  WeaponDataImplicit._({
+    int? id,
+    String? name,
+    String? description,
+    String? source,
+    int? version,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isSimple,
+    bool? isMelee,
+    String? damage,
+    String? damageType,
+    List<String>? properties,
+    double? weight,
+    double? cost,
+    int? rangeNormal,
+    int? rangeMax,
+    int? $_charactersWeaponsCharactersId,
+    int? $_classDataProficienciesweaponsClassDataId,
+  })  : _charactersWeaponsCharactersId = $_charactersWeaponsCharactersId,
+        _classDataProficienciesweaponsClassDataId =
+            $_classDataProficienciesweaponsClassDataId,
+        super(
+          id: id,
+          name: name,
+          description: description,
+          source: source,
+          version: version,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          isSimple: isSimple,
+          isMelee: isMelee,
+          damage: damage,
+          damageType: damageType,
+          properties: properties,
+          weight: weight,
+          cost: cost,
+          rangeNormal: rangeNormal,
+          rangeMax: rangeMax,
+        );
+
+  factory WeaponDataImplicit(
+    WeaponData weaponData, {
+    int? $_charactersWeaponsCharactersId,
+    int? $_classDataProficienciesweaponsClassDataId,
+  }) {
+    return WeaponDataImplicit._(
+      id: weaponData.id,
+      name: weaponData.name,
+      description: weaponData.description,
+      source: weaponData.source,
+      version: weaponData.version,
+      createdAt: weaponData.createdAt,
+      updatedAt: weaponData.updatedAt,
+      isSimple: weaponData.isSimple,
+      isMelee: weaponData.isMelee,
+      damage: weaponData.damage,
+      damageType: weaponData.damageType,
+      properties: weaponData.properties,
+      weight: weaponData.weight,
+      cost: weaponData.cost,
+      rangeNormal: weaponData.rangeNormal,
+      rangeMax: weaponData.rangeMax,
+      $_charactersWeaponsCharactersId: $_charactersWeaponsCharactersId,
+      $_classDataProficienciesweaponsClassDataId:
+          $_classDataProficienciesweaponsClassDataId,
+    );
+  }
+
+  @override
+  final int? _charactersWeaponsCharactersId;
+
+  @override
+  final int? _classDataProficienciesweaponsClassDataId;
 }
 
 class WeaponDataTable extends _i1.Table<int?> {
@@ -323,12 +418,12 @@ class WeaponDataTable extends _i1.Table<int?> {
       'updatedAt',
       this,
     );
-    category = _i1.ColumnString(
-      'category',
+    isSimple = _i1.ColumnBool(
+      'isSimple',
       this,
     );
-    type = _i1.ColumnString(
-      'type',
+    isMelee = _i1.ColumnBool(
+      'isMelee',
       this,
     );
     damage = _i1.ColumnString(
@@ -347,7 +442,7 @@ class WeaponDataTable extends _i1.Table<int?> {
       'weight',
       this,
     );
-    cost = _i1.ColumnString(
+    cost = _i1.ColumnDouble(
       'cost',
       this,
     );
@@ -357,6 +452,14 @@ class WeaponDataTable extends _i1.Table<int?> {
     );
     rangeMax = _i1.ColumnInt(
       'rangeMax',
+      this,
+    );
+    $_charactersWeaponsCharactersId = _i1.ColumnInt(
+      '_charactersWeaponsCharactersId',
+      this,
+    );
+    $_classDataProficienciesweaponsClassDataId = _i1.ColumnInt(
+      '_classDataProficienciesweaponsClassDataId',
       this,
     );
   }
@@ -373,9 +476,9 @@ class WeaponDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnString category;
+  late final _i1.ColumnBool isSimple;
 
-  late final _i1.ColumnString type;
+  late final _i1.ColumnBool isMelee;
 
   late final _i1.ColumnString damage;
 
@@ -385,11 +488,15 @@ class WeaponDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDouble weight;
 
-  late final _i1.ColumnString cost;
+  late final _i1.ColumnDouble cost;
 
   late final _i1.ColumnInt rangeNormal;
 
   late final _i1.ColumnInt rangeMax;
+
+  late final _i1.ColumnInt $_charactersWeaponsCharactersId;
+
+  late final _i1.ColumnInt $_classDataProficienciesweaponsClassDataId;
 
   @override
   List<_i1.Column> get columns => [
@@ -400,8 +507,30 @@ class WeaponDataTable extends _i1.Table<int?> {
         version,
         createdAt,
         updatedAt,
-        category,
-        type,
+        isSimple,
+        isMelee,
+        damage,
+        damageType,
+        properties,
+        weight,
+        cost,
+        rangeNormal,
+        rangeMax,
+        $_charactersWeaponsCharactersId,
+        $_classDataProficienciesweaponsClassDataId,
+      ];
+
+  @override
+  List<_i1.Column> get managedColumns => [
+        id,
+        name,
+        description,
+        source,
+        version,
+        createdAt,
+        updatedAt,
+        isSimple,
+        isMelee,
         damage,
         damageType,
         properties,

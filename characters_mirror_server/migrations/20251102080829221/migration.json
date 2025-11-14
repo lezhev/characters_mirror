@@ -1,0 +1,179 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "background_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "suggestedSkillProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "skillProficiencieCount",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "suggestedToolProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "toolProficiencieCount",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "languages",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "suggestedLanguages",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "languageCount",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "items",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "coins",
+            "columnType": 3,
+            "isNullable": true,
+            "dartType": "double?"
+          },
+          {
+            "name": "suggestedPersonality",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "suggestedIdeal",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "suggestedBond",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "suggestedFlaw",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [
+          "suggestedPersonality",
+          "suggestedIdeal",
+          "suggestedBond",
+          "suggestedFlaw"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column suggestedPersonality of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "suggestedPersonality"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column suggestedIdeal of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "suggestedIdeal"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column suggestedBond of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "suggestedBond"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column suggestedFlaw of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "suggestedFlaw"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column suggestedPersonality of table background_data is modified in a way that it must be deleted and recreated.",
+      "table": "background_data",
+      "columns": [
+        "suggestedPersonality"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column suggestedIdeal of table background_data is modified in a way that it must be deleted and recreated.",
+      "table": "background_data",
+      "columns": [
+        "suggestedIdeal"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column suggestedBond of table background_data is modified in a way that it must be deleted and recreated.",
+      "table": "background_data",
+      "columns": [
+        "suggestedBond"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column suggestedFlaw of table background_data is modified in a way that it must be deleted and recreated.",
+      "table": "background_data",
+      "columns": [
+        "suggestedFlaw"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

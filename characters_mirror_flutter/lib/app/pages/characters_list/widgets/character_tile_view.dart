@@ -9,20 +9,17 @@ class CharacterTileView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          maxCrossAxisExtent: 470,
-          mainAxisExtent: 96,
-        ),
-        itemCount: 12,
-        itemBuilder: (context, index) {
-          return CharacterTile();
-        },
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        maxCrossAxisExtent: 470,
+        mainAxisExtent: 96,
       ),
+      itemCount: 12,
+      itemBuilder: (context, index) {
+        return CharacterTile();
+      },
     );
   }
 }
@@ -44,7 +41,8 @@ class CharacterTile extends HookConsumerWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {},
-          splashColor: colorScheme.surfaceContainerHighest.withOpacity(0.92),
+          splashColor:
+              colorScheme.surfaceContainerHighest.withValues(alpha: 0.92),
           highlightColor: Colors.transparent,
           child: Ink(
             decoration: BoxDecoration(
@@ -53,7 +51,7 @@ class CharacterTile extends HookConsumerWidget {
               boxShadow: [
                 BoxShadow(
                   color: colorScheme.inversePrimary
-                      .withOpacity(isHovered.value ? 0.2 : 0),
+                      .withValues(alpha: isHovered.value ? 0.2 : 0),
                   blurRadius: isHovered.value ? 4 : 0,
                   offset: const Offset(0, 2),
                 ),
@@ -78,7 +76,7 @@ class CharacterTile extends HookConsumerWidget {
                         width: 1,
                       ),
                       image: DecorationImage(
-                        image: AssetImage('assets/images/melifaro.jpg'),
+                        image: AssetImage('images/melifaro.jpg'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -94,7 +92,7 @@ class CharacterTile extends HookConsumerWidget {
                         padding:
                             EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                         decoration: BoxDecoration(
-                          color: colorScheme.primary.withOpacity(0.1),
+                          color: colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text('Level 42',

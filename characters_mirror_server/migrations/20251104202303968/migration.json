@@ -1,0 +1,149 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "character_class_relation",
+        "dartName": "CharacterClassRelation",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('character_class_relation_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "characterId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "classDataId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "subclassId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "level",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "spellcastingProgression",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "character_class_relation_fk_0",
+            "columns": [
+              "characterId"
+            ],
+            "referenceTable": "characters",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "character_class_relation_fk_1",
+            "columns": [
+              "classDataId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "character_class_relation_fk_2",
+            "columns": [
+              "subclassId"
+            ],
+            "referenceTable": "subclass_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "character_class_relation_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "_charactersSubclassesCharactersId"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [
+          "subclass_data_fk_1"
+        ],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"_charactersSubclassesCharactersId\" of table \"subclass_data\" will be dropped.",
+            "table": "subclass_data",
+            "columns": [
+              "_charactersSubclassesCharactersId"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"_charactersSubclassesCharactersId\" of table \"subclass_data\" will be dropped.",
+      "table": "subclass_data",
+      "columns": [
+        "_charactersSubclassesCharactersId"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

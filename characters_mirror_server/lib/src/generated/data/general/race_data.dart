@@ -40,6 +40,7 @@ abstract class RaceData
     this.ageDescription,
     this.alignmentDescription,
     this.physicalDescription,
+    this.imageURL,
   });
 
   factory RaceData({
@@ -69,6 +70,7 @@ abstract class RaceData
     String? ageDescription,
     String? alignmentDescription,
     String? physicalDescription,
+    String? imageURL,
   }) = _RaceDataImpl;
 
   factory RaceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -124,6 +126,7 @@ abstract class RaceData
       alignmentDescription:
           jsonSerialization['alignmentDescription'] as String?,
       physicalDescription: jsonSerialization['physicalDescription'] as String?,
+      imageURL: jsonSerialization['imageURL'] as String?,
     );
   }
 
@@ -184,6 +187,8 @@ abstract class RaceData
 
   String? physicalDescription;
 
+  String? imageURL;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -217,6 +222,7 @@ abstract class RaceData
     String? ageDescription,
     String? alignmentDescription,
     String? physicalDescription,
+    String? imageURL,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -254,6 +260,7 @@ abstract class RaceData
         'alignmentDescription': alignmentDescription,
       if (physicalDescription != null)
         'physicalDescription': physicalDescription,
+      if (imageURL != null) 'imageURL': imageURL,
     };
   }
 
@@ -293,6 +300,7 @@ abstract class RaceData
         'alignmentDescription': alignmentDescription,
       if (physicalDescription != null)
         'physicalDescription': physicalDescription,
+      if (imageURL != null) 'imageURL': imageURL,
     };
   }
 
@@ -356,6 +364,7 @@ class _RaceDataImpl extends RaceData {
     String? ageDescription,
     String? alignmentDescription,
     String? physicalDescription,
+    String? imageURL,
   }) : super._(
           id: id,
           name: name,
@@ -383,6 +392,7 @@ class _RaceDataImpl extends RaceData {
           ageDescription: ageDescription,
           alignmentDescription: alignmentDescription,
           physicalDescription: physicalDescription,
+          imageURL: imageURL,
         );
 
   /// Returns a shallow copy of this [RaceData]
@@ -416,6 +426,7 @@ class _RaceDataImpl extends RaceData {
     Object? ageDescription = _Undefined,
     Object? alignmentDescription = _Undefined,
     Object? physicalDescription = _Undefined,
+    Object? imageURL = _Undefined,
   }) {
     return RaceData(
       id: id is int? ? id : this.id,
@@ -475,6 +486,7 @@ class _RaceDataImpl extends RaceData {
       physicalDescription: physicalDescription is String?
           ? physicalDescription
           : this.physicalDescription,
+      imageURL: imageURL is String? ? imageURL : this.imageURL,
     );
   }
 }
@@ -581,6 +593,10 @@ class RaceDataTable extends _i1.Table<int?> {
       'physicalDescription',
       this,
     );
+    imageURL = _i1.ColumnString(
+      'imageURL',
+      this,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -633,6 +649,8 @@ class RaceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString physicalDescription;
 
+  late final _i1.ColumnString imageURL;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -661,6 +679,7 @@ class RaceDataTable extends _i1.Table<int?> {
         ageDescription,
         alignmentDescription,
         physicalDescription,
+        imageURL,
       ];
 }
 

@@ -39,6 +39,7 @@ abstract class RaceData implements _i1.SerializableModel {
     this.ageDescription,
     this.alignmentDescription,
     this.physicalDescription,
+    this.imageURL,
   });
 
   factory RaceData({
@@ -68,6 +69,7 @@ abstract class RaceData implements _i1.SerializableModel {
     String? ageDescription,
     String? alignmentDescription,
     String? physicalDescription,
+    String? imageURL,
   }) = _RaceDataImpl;
 
   factory RaceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -123,6 +125,7 @@ abstract class RaceData implements _i1.SerializableModel {
       alignmentDescription:
           jsonSerialization['alignmentDescription'] as String?,
       physicalDescription: jsonSerialization['physicalDescription'] as String?,
+      imageURL: jsonSerialization['imageURL'] as String?,
     );
   }
 
@@ -181,6 +184,8 @@ abstract class RaceData implements _i1.SerializableModel {
 
   String? physicalDescription;
 
+  String? imageURL;
+
   /// Returns a shallow copy of this [RaceData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -211,6 +216,7 @@ abstract class RaceData implements _i1.SerializableModel {
     String? ageDescription,
     String? alignmentDescription,
     String? physicalDescription,
+    String? imageURL,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -248,6 +254,7 @@ abstract class RaceData implements _i1.SerializableModel {
         'alignmentDescription': alignmentDescription,
       if (physicalDescription != null)
         'physicalDescription': physicalDescription,
+      if (imageURL != null) 'imageURL': imageURL,
     };
   }
 
@@ -287,6 +294,7 @@ class _RaceDataImpl extends RaceData {
     String? ageDescription,
     String? alignmentDescription,
     String? physicalDescription,
+    String? imageURL,
   }) : super._(
           id: id,
           name: name,
@@ -314,6 +322,7 @@ class _RaceDataImpl extends RaceData {
           ageDescription: ageDescription,
           alignmentDescription: alignmentDescription,
           physicalDescription: physicalDescription,
+          imageURL: imageURL,
         );
 
   /// Returns a shallow copy of this [RaceData]
@@ -347,6 +356,7 @@ class _RaceDataImpl extends RaceData {
     Object? ageDescription = _Undefined,
     Object? alignmentDescription = _Undefined,
     Object? physicalDescription = _Undefined,
+    Object? imageURL = _Undefined,
   }) {
     return RaceData(
       id: id is int? ? id : this.id,
@@ -406,6 +416,7 @@ class _RaceDataImpl extends RaceData {
       physicalDescription: physicalDescription is String?
           ? physicalDescription
           : this.physicalDescription,
+      imageURL: imageURL is String? ? imageURL : this.imageURL,
     );
   }
 }

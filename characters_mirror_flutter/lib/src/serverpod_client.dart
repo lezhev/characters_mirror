@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:flutter/foundation.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
 
@@ -18,7 +19,7 @@ Future<void> initializeServerpodClient() async {
   // the default port. You will need to modify this to connect to staging or
   // production servers.
   client = Client(
-    'http://$ipAddress:8083/',
+    kIsWeb ? 'http://$ipAddress:8083/' : "http://10.0.2.2:8083/",
     authenticationKeyManager: FlutterAuthenticationKeyManager(),
   )..connectivityMonitor = FlutterConnectivityMonitor();
 

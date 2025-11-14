@@ -1,0 +1,14 @@
+class: ClassOptionData
+table: class_option_data
+fields:
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  parentClassId: List<int>?
+  levelRequired: int?
+  type: String? # enum ClassOption
+  isOptional: bool?

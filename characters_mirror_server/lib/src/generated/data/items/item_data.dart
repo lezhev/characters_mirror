@@ -25,7 +25,9 @@ abstract class ItemData
     this.weight,
     this.cost,
     this.effects,
-  });
+  })  : _charactersItemsCharactersId = null,
+        _classDataProficienciestoolsClassDataId = null,
+        _classDataStartingequipmentClassDataId = null;
 
   factory ItemData({
     int? id,
@@ -42,7 +44,7 @@ abstract class ItemData
   }) = _ItemDataImpl;
 
   factory ItemData.fromJson(Map<String, dynamic> jsonSerialization) {
-    return ItemData(
+    return ItemDataImplicit._(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -60,6 +62,12 @@ abstract class ItemData
       effects: (jsonSerialization['effects'] as List?)
           ?.map((e) => e as String)
           .toList(),
+      $_charactersItemsCharactersId:
+          jsonSerialization['_charactersItemsCharactersId'] as int?,
+      $_classDataProficienciestoolsClassDataId:
+          jsonSerialization['_classDataProficienciestoolsClassDataId'] as int?,
+      $_classDataStartingequipmentClassDataId:
+          jsonSerialization['_classDataStartingequipmentClassDataId'] as int?,
     );
   }
 
@@ -89,6 +97,12 @@ abstract class ItemData
   int? cost;
 
   List<String>? effects;
+
+  final int? _charactersItemsCharactersId;
+
+  final int? _classDataProficienciestoolsClassDataId;
+
+  final int? _classDataStartingequipmentClassDataId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -123,6 +137,14 @@ abstract class ItemData
       if (weight != null) 'weight': weight,
       if (cost != null) 'cost': cost,
       if (effects != null) 'effects': effects?.toJson(),
+      if (_charactersItemsCharactersId != null)
+        '_charactersItemsCharactersId': _charactersItemsCharactersId,
+      if (_classDataProficienciestoolsClassDataId != null)
+        '_classDataProficienciestoolsClassDataId':
+            _classDataProficienciestoolsClassDataId,
+      if (_classDataStartingequipmentClassDataId != null)
+        '_classDataStartingequipmentClassDataId':
+            _classDataStartingequipmentClassDataId,
     };
   }
 
@@ -219,7 +241,7 @@ class _ItemDataImpl extends ItemData {
     Object? cost = _Undefined,
     Object? effects = _Undefined,
   }) {
-    return ItemData(
+    return ItemDataImplicit._(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -233,8 +255,84 @@ class _ItemDataImpl extends ItemData {
       effects: effects is List<String>?
           ? effects
           : this.effects?.map((e0) => e0).toList(),
+      $_charactersItemsCharactersId: this._charactersItemsCharactersId,
+      $_classDataProficienciestoolsClassDataId:
+          this._classDataProficienciestoolsClassDataId,
+      $_classDataStartingequipmentClassDataId:
+          this._classDataStartingequipmentClassDataId,
     );
   }
+}
+
+class ItemDataImplicit extends _ItemDataImpl {
+  ItemDataImplicit._({
+    int? id,
+    String? name,
+    String? description,
+    String? source,
+    int? version,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? category,
+    double? weight,
+    int? cost,
+    List<String>? effects,
+    int? $_charactersItemsCharactersId,
+    int? $_classDataProficienciestoolsClassDataId,
+    int? $_classDataStartingequipmentClassDataId,
+  })  : _charactersItemsCharactersId = $_charactersItemsCharactersId,
+        _classDataProficienciestoolsClassDataId =
+            $_classDataProficienciestoolsClassDataId,
+        _classDataStartingequipmentClassDataId =
+            $_classDataStartingequipmentClassDataId,
+        super(
+          id: id,
+          name: name,
+          description: description,
+          source: source,
+          version: version,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          category: category,
+          weight: weight,
+          cost: cost,
+          effects: effects,
+        );
+
+  factory ItemDataImplicit(
+    ItemData itemData, {
+    int? $_charactersItemsCharactersId,
+    int? $_classDataProficienciestoolsClassDataId,
+    int? $_classDataStartingequipmentClassDataId,
+  }) {
+    return ItemDataImplicit._(
+      id: itemData.id,
+      name: itemData.name,
+      description: itemData.description,
+      source: itemData.source,
+      version: itemData.version,
+      createdAt: itemData.createdAt,
+      updatedAt: itemData.updatedAt,
+      category: itemData.category,
+      weight: itemData.weight,
+      cost: itemData.cost,
+      effects: itemData.effects,
+      $_charactersItemsCharactersId: $_charactersItemsCharactersId,
+      $_classDataProficienciestoolsClassDataId:
+          $_classDataProficienciestoolsClassDataId,
+      $_classDataStartingequipmentClassDataId:
+          $_classDataStartingequipmentClassDataId,
+    );
+  }
+
+  @override
+  final int? _charactersItemsCharactersId;
+
+  @override
+  final int? _classDataProficienciestoolsClassDataId;
+
+  @override
+  final int? _classDataStartingequipmentClassDataId;
 }
 
 class ItemDataTable extends _i1.Table<int?> {
@@ -279,6 +377,18 @@ class ItemDataTable extends _i1.Table<int?> {
       'effects',
       this,
     );
+    $_charactersItemsCharactersId = _i1.ColumnInt(
+      '_charactersItemsCharactersId',
+      this,
+    );
+    $_classDataProficienciestoolsClassDataId = _i1.ColumnInt(
+      '_classDataProficienciestoolsClassDataId',
+      this,
+    );
+    $_classDataStartingequipmentClassDataId = _i1.ColumnInt(
+      '_classDataStartingequipmentClassDataId',
+      this,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -301,8 +411,32 @@ class ItemDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable effects;
 
+  late final _i1.ColumnInt $_charactersItemsCharactersId;
+
+  late final _i1.ColumnInt $_classDataProficienciestoolsClassDataId;
+
+  late final _i1.ColumnInt $_classDataStartingequipmentClassDataId;
+
   @override
   List<_i1.Column> get columns => [
+        id,
+        name,
+        description,
+        source,
+        version,
+        createdAt,
+        updatedAt,
+        category,
+        weight,
+        cost,
+        effects,
+        $_charactersItemsCharactersId,
+        $_classDataProficienciestoolsClassDataId,
+        $_classDataStartingequipmentClassDataId,
+      ];
+
+  @override
+  List<_i1.Column> get managedColumns => [
         id,
         name,
         description,

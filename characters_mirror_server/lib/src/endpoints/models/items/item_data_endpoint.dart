@@ -10,6 +10,22 @@ class ItemDataEndpoint extends Endpoint {
     return await ItemData.db.insertRow(session, item);
   }
 
+  Future<ItemData> upsert(Session session, ItemData item) async {
+    final existing = await ItemData.db.find(
+      session,
+      where: (t) => t.name.equals(item.name),
+      limit: 1,
+    );
+
+    if (existing.isNotEmpty) {
+      item.id = existing.first.id;
+      await ItemData.db.updateRow(session, item);
+      return item;
+    } else {
+      return await ItemData.db.insertRow(session, item);
+    }
+  }
+
   Future<void> delete(Session session, int id) async {
     await ItemData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }

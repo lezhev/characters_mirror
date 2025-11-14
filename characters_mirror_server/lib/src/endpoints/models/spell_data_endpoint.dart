@@ -10,6 +10,22 @@ class SpellDataEndpoint extends Endpoint {
     return await SpellData.db.insertRow(session, spell);
   }
 
+  Future<SpellData> upsert(Session session, SpellData spell) async {
+    final existing = await SpellData.db.find(
+      session,
+      where: (t) => t.id.equals(spell.id),
+      limit: 1,
+    );
+
+    if (existing.isNotEmpty) {
+      spell.id = existing.first.id;
+      await SpellData.db.updateRow(session, spell);
+      return spell;
+    } else {
+      return await SpellData.db.insertRow(session, spell);
+    }
+  }
+
   Future<void> delete(Session session, int id) async {
     await SpellData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }

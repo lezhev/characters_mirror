@@ -1,0 +1,74 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "class_option_relation"
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_option_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "parentClassId",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<int>?"
+          },
+          {
+            "name": "isOptional",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          }
+        ],
+        "deleteColumns": [
+          "prerequisites"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"class_option_relation\" will be dropped.",
+            "table": "class_option_relation",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"prerequisites\" of table \"class_option_data\" will be dropped.",
+            "table": "class_option_data",
+            "columns": [
+              "prerequisites"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"class_option_relation\" will be dropped.",
+      "table": "class_option_relation",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"prerequisites\" of table \"class_option_data\" will be dropped.",
+      "table": "class_option_data",
+      "columns": [
+        "prerequisites"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

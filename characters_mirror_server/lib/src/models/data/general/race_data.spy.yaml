@@ -28,3 +28,6 @@ fields:
   ageDescription: String?
   alignmentDescription: String?
   physicalDescription: String?
+
+  imageURL: String?
+  

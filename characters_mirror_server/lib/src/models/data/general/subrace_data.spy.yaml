@@ -2,6 +2,7 @@ class: SubraceData
 table: subrace_data
 fields:
   name: String?
+  parentRace: RaceData?, relation
   description: String?
   source: String?
   version: int?
