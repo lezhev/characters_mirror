@@ -29,7 +29,7 @@ abstract class ArmorData
     this.stealthDisadvantage,
     this.weight,
     this.cost,
-  });
+  }) : _charactersArmorCharactersId = null;
 
   factory ArmorData({
     int? id,
@@ -50,7 +50,7 @@ abstract class ArmorData
   }) = _ArmorDataImpl;
 
   factory ArmorData.fromJson(Map<String, dynamic> jsonSerialization) {
-    return ArmorData(
+    return ArmorDataImplicit._(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -70,6 +70,8 @@ abstract class ArmorData
       stealthDisadvantage: jsonSerialization['stealthDisadvantage'] as bool?,
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: jsonSerialization['cost'] as String?,
+      $_charactersArmorCharactersId:
+          jsonSerialization['_charactersArmorCharactersId'] as int?,
     );
   }
 
@@ -107,6 +109,8 @@ abstract class ArmorData
   double? weight;
 
   String? cost;
+
+  final int? _charactersArmorCharactersId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -151,6 +155,8 @@ abstract class ArmorData
         'stealthDisadvantage': stealthDisadvantage,
       if (weight != null) 'weight': weight,
       if (cost != null) 'cost': cost,
+      if (_charactersArmorCharactersId != null)
+        '_charactersArmorCharactersId': _charactersArmorCharactersId,
     };
   }
 
@@ -265,7 +271,7 @@ class _ArmorDataImpl extends ArmorData {
     Object? weight = _Undefined,
     Object? cost = _Undefined,
   }) {
-    return ArmorData(
+    return ArmorDataImplicit._(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -285,8 +291,74 @@ class _ArmorDataImpl extends ArmorData {
           : this.stealthDisadvantage,
       weight: weight is double? ? weight : this.weight,
       cost: cost is String? ? cost : this.cost,
+      $_charactersArmorCharactersId: this._charactersArmorCharactersId,
     );
   }
+}
+
+class ArmorDataImplicit extends _ArmorDataImpl {
+  ArmorDataImplicit._({
+    int? id,
+    String? name,
+    String? description,
+    String? source,
+    int? version,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? category,
+    int? baseAC,
+    bool? dexBonus,
+    int? dexBonusMax,
+    int? strengthRequirement,
+    bool? stealthDisadvantage,
+    double? weight,
+    String? cost,
+    int? $_charactersArmorCharactersId,
+  })  : _charactersArmorCharactersId = $_charactersArmorCharactersId,
+        super(
+          id: id,
+          name: name,
+          description: description,
+          source: source,
+          version: version,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          category: category,
+          baseAC: baseAC,
+          dexBonus: dexBonus,
+          dexBonusMax: dexBonusMax,
+          strengthRequirement: strengthRequirement,
+          stealthDisadvantage: stealthDisadvantage,
+          weight: weight,
+          cost: cost,
+        );
+
+  factory ArmorDataImplicit(
+    ArmorData armorData, {
+    int? $_charactersArmorCharactersId,
+  }) {
+    return ArmorDataImplicit._(
+      id: armorData.id,
+      name: armorData.name,
+      description: armorData.description,
+      source: armorData.source,
+      version: armorData.version,
+      createdAt: armorData.createdAt,
+      updatedAt: armorData.updatedAt,
+      category: armorData.category,
+      baseAC: armorData.baseAC,
+      dexBonus: armorData.dexBonus,
+      dexBonusMax: armorData.dexBonusMax,
+      strengthRequirement: armorData.strengthRequirement,
+      stealthDisadvantage: armorData.stealthDisadvantage,
+      weight: armorData.weight,
+      cost: armorData.cost,
+      $_charactersArmorCharactersId: $_charactersArmorCharactersId,
+    );
+  }
+
+  @override
+  final int? _charactersArmorCharactersId;
 }
 
 class ArmorDataTable extends _i1.Table<int?> {
@@ -347,6 +419,10 @@ class ArmorDataTable extends _i1.Table<int?> {
       'cost',
       this,
     );
+    $_charactersArmorCharactersId = _i1.ColumnInt(
+      '_charactersArmorCharactersId',
+      this,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -377,8 +453,30 @@ class ArmorDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString cost;
 
+  late final _i1.ColumnInt $_charactersArmorCharactersId;
+
   @override
   List<_i1.Column> get columns => [
+        id,
+        name,
+        description,
+        source,
+        version,
+        createdAt,
+        updatedAt,
+        category,
+        baseAC,
+        dexBonus,
+        dexBonusMax,
+        strengthRequirement,
+        stealthDisadvantage,
+        weight,
+        cost,
+        $_charactersArmorCharactersId,
+      ];
+
+  @override
+  List<_i1.Column> get managedColumns => [
         id,
         name,
         description,

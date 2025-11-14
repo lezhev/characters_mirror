@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeServerpodClient(); // твоя инициализация Serverpod Client
-  runApp(const ProviderScope(child: MyApp()));
+  await initializeServerpodClient();
+  runApp(const ProviderScope(child: CharactersMirror()));
 }
 
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+class CharactersMirror extends ConsumerWidget {
+  const CharactersMirror({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

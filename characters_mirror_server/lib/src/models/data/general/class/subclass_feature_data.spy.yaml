@@ -1,0 +1,27 @@
+class: SubclassFeatureData
+table: subclass_feature_data
+fields:
+  parentSubclass: SubclassData?, relation
+  name: String?
+  description: String?
+  level: int
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  # Механические эффекты
+  abilityBonuses: Map<String,int>? # enum Attribute -> бонус
+  proficiencies: List<String>?     # enum Proficiency
+  specialAbilities: List<String>? 
+
+  # Вариативные возможности 
+  variantOptions: String? # enum ClassOption
+
+  resourceName: String?          # имя ресурса (например Rage, Wild Shape, Ki Points)
+  resourceAmount: int?           # количество единиц ресурса на этом уровне
+  resourceRegain: String?        # как восстанавливается ресурс, например "Rest.short", "Rest.long"
+
+  spellSlots: Map<int,int>?      # уровень заклинания -> количество ячеек, например {1:4, 2:2}
+  knownSpells: int
+  knownCantips: int

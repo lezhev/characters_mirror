@@ -1,13 +1,17 @@
 admin:
   - getAllUsers:
   - setAdminRole:
-devAdmin:
-  - giveAdmin:
 referenceData:
   - insertJson:
 backgroundData:
   - getAll:
   - add:
+  - upsert:
+  - delete:
+featData:
+  - getAll:
+  - add:
+  - upsert:
   - delete:
 characterData:
   - getAll:
@@ -16,28 +20,60 @@ characterData:
 classData:
   - getAll:
   - add:
+  - upsert:
   - delete:
-raceData:
+classFeatureData:
   - getAll:
   - add:
+  - upsert:
   - delete:
 subclassData:
   - getAll:
   - add:
+  - upsert:
+  - delete:
+classOptionData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+subclassFeatureData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+raceData:
+  - getAll:
+  - add:
+  - upsert:
   - delete:
 subraceData:
   - getAll:
   - add:
+  - upsert:
+  - delete:
+armorData:
+  - getAll:
+  - add:
+  - upsert:
   - delete:
 itemData:
   - getAll:
   - add:
+  - upsert:
   - delete:
 magicItemData:
   - getAll:
   - add:
+  - upsert:
+  - delete:
+weaponData:
+  - getAll:
+  - add:
+  - upsert:
   - delete:
 spellData:
   - getAll:
   - add:
+  - upsert:
   - delete:

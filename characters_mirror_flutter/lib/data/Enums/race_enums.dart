@@ -7,7 +7,11 @@ enum Attribute {
   charisma
 }
 
-enum Size { small, medium, large }
+enum Size {
+  small,
+  medium,
+  large,
+}
 
 enum Skill {
   acrobatics,
@@ -30,7 +34,7 @@ enum Skill {
   survival
 }
 
-enum Resistance {
+enum DamageType {
   acid,
   cold,
   fire,

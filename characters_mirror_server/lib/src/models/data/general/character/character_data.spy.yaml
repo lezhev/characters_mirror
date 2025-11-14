@@ -1,0 +1,39 @@
+class: CharacterData
+table: characters
+fields:
+  name: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  experience: int?
+  attributes: Map<String, int>? #Attribute enum
+
+  race: RaceData?, relation(optional)
+  subrace: SubraceData?, relation(optional)
+
+  classes: List<ClassData>?, relation(optional)
+  subclass: SubclassData?, relation(optional)
+  classFeatures: List<ClassFeatureData>?, relation(optional)
+  variantOptions: List<ClassOptionData>?, relation(optional)
+
+  background: BackgroundData?, relation(optional)
+
+  alignment: String? #Alignment enum
+  armorClass: int?
+  speed: int? 
+  coins: int?
+
+  skillProficiencies: List<String>? #Skill enum
+  skillExpertises: List<String>? #Skill enum
+
+  maxHp: int?
+  temporaryHp: int?
+  currentHp: int?
+
+  preparedSpells: List<SpellData>?, relation(optional)
+  writtenSpells: List<SpellData>?, relation(optional)
+  items: List<ItemData>?, relation(optional)
+  magicItems: List<MagicItemData>?, relation(optional)
+  armor: List<ArmorData>?, relation(optional)
+  weapons: List<WeaponData>?, relation(optional) 

@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "background_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "items",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [
+          "items"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column items of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "items"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column items of table background_data is modified in a way that it must be deleted and recreated.",
+      "table": "background_data",
+      "columns": [
+        "items"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

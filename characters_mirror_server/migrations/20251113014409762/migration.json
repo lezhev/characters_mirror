@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "subclassFeatures",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,String>?"
+          }
+        ],
+        "deleteColumns": [
+          "subclassFeatures"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column subclassFeatures of table subclass_data is modified in a way that it must be deleted and recreated.",
+            "table": "subclass_data",
+            "columns": [
+              "subclassFeatures"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column subclassFeatures of table subclass_data is modified in a way that it must be deleted and recreated.",
+      "table": "subclass_data",
+      "columns": [
+        "subclassFeatures"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

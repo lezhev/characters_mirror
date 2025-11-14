@@ -14,23 +14,35 @@ import 'dart:async' as _i2;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i3;
 import 'package:characters_mirror_client/src/protocol/data/background_data.dart'
     as _i4;
-import 'package:characters_mirror_client/src/protocol/data/general/character_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/feat_data.dart'
     as _i5;
-import 'package:characters_mirror_client/src/protocol/data/general/class_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/character/character_data.dart'
     as _i6;
-import 'package:characters_mirror_client/src/protocol/data/general/race_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/class_data.dart'
     as _i7;
-import 'package:characters_mirror_client/src/protocol/data/general/subclass_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/class_feature_data.dart'
     as _i8;
-import 'package:characters_mirror_client/src/protocol/data/general/subrace_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/subclass_data.dart'
     as _i9;
-import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/class_option_data.dart'
     as _i10;
-import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/subclass_feature_data.dart'
     as _i11;
-import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/race_data.dart'
     as _i12;
-import 'protocol.dart' as _i13;
+import 'package:characters_mirror_client/src/protocol/data/general/subrace_data.dart'
+    as _i13;
+import 'package:characters_mirror_client/src/protocol/data/items/armor_data.dart'
+    as _i14;
+import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
+    as _i15;
+import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
+    as _i16;
+import 'package:characters_mirror_client/src/protocol/data/items/weapon_data.dart'
+    as _i17;
+import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
+    as _i18;
+import 'protocol.dart' as _i19;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -57,20 +69,6 @@ class EndpointAdmin extends _i1.EndpointRef {
           'userId': userId,
           'isAdmin': isAdmin,
         },
-      );
-}
-
-/// {@category Endpoint}
-class EndpointDevAdmin extends _i1.EndpointRef {
-  EndpointDevAdmin(_i1.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'devAdmin';
-
-  _i2.Future<void> giveAdmin(int userId) => caller.callServerEndpoint<void>(
-        'devAdmin',
-        'giveAdmin',
-        {'userId': userId},
       );
 }
 
@@ -116,8 +114,50 @@ class EndpointBackgroundData extends _i1.EndpointRef {
         {'background': background},
       );
 
+  _i2.Future<_i4.BackgroundData> upsert(_i4.BackgroundData background) =>
+      caller.callServerEndpoint<_i4.BackgroundData>(
+        'backgroundData',
+        'upsert',
+        {'background': background},
+      );
+
   _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
         'backgroundData',
+        'delete',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointFeatData extends _i1.EndpointRef {
+  EndpointFeatData(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'featData';
+
+  _i2.Future<List<_i5.FeatData>> getAll() =>
+      caller.callServerEndpoint<List<_i5.FeatData>>(
+        'featData',
+        'getAll',
+        {},
+      );
+
+  _i2.Future<_i5.FeatData> add(_i5.FeatData feat) =>
+      caller.callServerEndpoint<_i5.FeatData>(
+        'featData',
+        'add',
+        {'feat': feat},
+      );
+
+  _i2.Future<_i5.FeatData> upsert(_i5.FeatData feat) =>
+      caller.callServerEndpoint<_i5.FeatData>(
+        'featData',
+        'upsert',
+        {'feat': feat},
+      );
+
+  _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
+        'featData',
         'delete',
         {'id': id},
       );
@@ -130,15 +170,15 @@ class EndpointCharacterData extends _i1.EndpointRef {
   @override
   String get name => 'characterData';
 
-  _i2.Future<List<_i5.CharacterData>> getAll() =>
-      caller.callServerEndpoint<List<_i5.CharacterData>>(
+  _i2.Future<List<_i6.CharacterData>> getAll() =>
+      caller.callServerEndpoint<List<_i6.CharacterData>>(
         'characterData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i5.CharacterData> add(_i5.CharacterData character) =>
-      caller.callServerEndpoint<_i5.CharacterData>(
+  _i2.Future<_i6.CharacterData> add(_i6.CharacterData character) =>
+      caller.callServerEndpoint<_i6.CharacterData>(
         'characterData',
         'add',
         {'character': character},
@@ -158,17 +198,24 @@ class EndpointClassData extends _i1.EndpointRef {
   @override
   String get name => 'classData';
 
-  _i2.Future<List<_i6.ClassData>> getAll() =>
-      caller.callServerEndpoint<List<_i6.ClassData>>(
+  _i2.Future<List<_i7.ClassData>> getAll() =>
+      caller.callServerEndpoint<List<_i7.ClassData>>(
         'classData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i6.ClassData> add(_i6.ClassData classData) =>
-      caller.callServerEndpoint<_i6.ClassData>(
+  _i2.Future<_i7.ClassData> add(_i7.ClassData classData) =>
+      caller.callServerEndpoint<_i7.ClassData>(
         'classData',
         'add',
+        {'classData': classData},
+      );
+
+  _i2.Future<_i7.ClassData> upsert(_i7.ClassData classData) =>
+      caller.callServerEndpoint<_i7.ClassData>(
+        'classData',
+        'upsert',
         {'classData': classData},
       );
 
@@ -180,28 +227,35 @@ class EndpointClassData extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointRaceData extends _i1.EndpointRef {
-  EndpointRaceData(_i1.EndpointCaller caller) : super(caller);
+class EndpointClassFeatureData extends _i1.EndpointRef {
+  EndpointClassFeatureData(_i1.EndpointCaller caller) : super(caller);
 
   @override
-  String get name => 'raceData';
+  String get name => 'classFeatureData';
 
-  _i2.Future<List<_i7.RaceData>> getAll() =>
-      caller.callServerEndpoint<List<_i7.RaceData>>(
-        'raceData',
+  _i2.Future<List<_i8.ClassFeatureData>> getAll() =>
+      caller.callServerEndpoint<List<_i8.ClassFeatureData>>(
+        'classFeatureData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i7.RaceData> add(_i7.RaceData race) =>
-      caller.callServerEndpoint<_i7.RaceData>(
-        'raceData',
+  _i2.Future<_i8.ClassFeatureData> add(_i8.ClassFeatureData item) =>
+      caller.callServerEndpoint<_i8.ClassFeatureData>(
+        'classFeatureData',
         'add',
-        {'race': race},
+        {'item': item},
+      );
+
+  _i2.Future<_i8.ClassFeatureData> upsert(_i8.ClassFeatureData feature) =>
+      caller.callServerEndpoint<_i8.ClassFeatureData>(
+        'classFeatureData',
+        'upsert',
+        {'feature': feature},
       );
 
   _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
-        'raceData',
+        'classFeatureData',
         'delete',
         {'id': id},
       );
@@ -214,22 +268,135 @@ class EndpointSubclassData extends _i1.EndpointRef {
   @override
   String get name => 'subclassData';
 
-  _i2.Future<List<_i8.SubclassData>> getAll() =>
-      caller.callServerEndpoint<List<_i8.SubclassData>>(
+  _i2.Future<List<_i9.SubclassData>> getAll() =>
+      caller.callServerEndpoint<List<_i9.SubclassData>>(
         'subclassData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i8.SubclassData> add(_i8.SubclassData item) =>
-      caller.callServerEndpoint<_i8.SubclassData>(
+  _i2.Future<_i9.SubclassData> add(_i9.SubclassData item) =>
+      caller.callServerEndpoint<_i9.SubclassData>(
         'subclassData',
         'add',
         {'item': item},
       );
 
+  _i2.Future<_i9.SubclassData> upsert(_i9.SubclassData subclass) =>
+      caller.callServerEndpoint<_i9.SubclassData>(
+        'subclassData',
+        'upsert',
+        {'subclass': subclass},
+      );
+
   _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
         'subclassData',
+        'delete',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointClassOptionData extends _i1.EndpointRef {
+  EndpointClassOptionData(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'classOptionData';
+
+  _i2.Future<List<_i10.ClassOptionData>> getAll() =>
+      caller.callServerEndpoint<List<_i10.ClassOptionData>>(
+        'classOptionData',
+        'getAll',
+        {},
+      );
+
+  _i2.Future<_i10.ClassOptionData> add(_i10.ClassOptionData item) =>
+      caller.callServerEndpoint<_i10.ClassOptionData>(
+        'classOptionData',
+        'add',
+        {'item': item},
+      );
+
+  _i2.Future<_i10.ClassOptionData> upsert(_i10.ClassOptionData classOption) =>
+      caller.callServerEndpoint<_i10.ClassOptionData>(
+        'classOptionData',
+        'upsert',
+        {'classOption': classOption},
+      );
+
+  _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
+        'classOptionData',
+        'delete',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointSubclassFeatureData extends _i1.EndpointRef {
+  EndpointSubclassFeatureData(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'subclassFeatureData';
+
+  _i2.Future<List<_i11.SubclassFeatureData>> getAll() =>
+      caller.callServerEndpoint<List<_i11.SubclassFeatureData>>(
+        'subclassFeatureData',
+        'getAll',
+        {},
+      );
+
+  _i2.Future<_i11.SubclassFeatureData> add(_i11.SubclassFeatureData item) =>
+      caller.callServerEndpoint<_i11.SubclassFeatureData>(
+        'subclassFeatureData',
+        'add',
+        {'item': item},
+      );
+
+  _i2.Future<_i11.SubclassFeatureData> upsert(
+          _i11.SubclassFeatureData subclassFeature) =>
+      caller.callServerEndpoint<_i11.SubclassFeatureData>(
+        'subclassFeatureData',
+        'upsert',
+        {'subclassFeature': subclassFeature},
+      );
+
+  _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
+        'subclassFeatureData',
+        'delete',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointRaceData extends _i1.EndpointRef {
+  EndpointRaceData(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'raceData';
+
+  _i2.Future<List<_i12.RaceData>> getAll() =>
+      caller.callServerEndpoint<List<_i12.RaceData>>(
+        'raceData',
+        'getAll',
+        {},
+      );
+
+  _i2.Future<_i12.RaceData> add(_i12.RaceData race) =>
+      caller.callServerEndpoint<_i12.RaceData>(
+        'raceData',
+        'add',
+        {'race': race},
+      );
+
+  _i2.Future<_i12.RaceData> upsert(_i12.RaceData race) =>
+      caller.callServerEndpoint<_i12.RaceData>(
+        'raceData',
+        'upsert',
+        {'race': race},
+      );
+
+  _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
+        'raceData',
         'delete',
         {'id': id},
       );
@@ -242,22 +409,64 @@ class EndpointSubraceData extends _i1.EndpointRef {
   @override
   String get name => 'subraceData';
 
-  _i2.Future<List<_i9.SubraceData>> getAll() =>
-      caller.callServerEndpoint<List<_i9.SubraceData>>(
+  _i2.Future<List<_i13.SubraceData>> getAll() =>
+      caller.callServerEndpoint<List<_i13.SubraceData>>(
         'subraceData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i9.SubraceData> add(_i9.SubraceData subrace) =>
-      caller.callServerEndpoint<_i9.SubraceData>(
+  _i2.Future<_i13.SubraceData> add(_i13.SubraceData subrace) =>
+      caller.callServerEndpoint<_i13.SubraceData>(
         'subraceData',
         'add',
         {'subrace': subrace},
       );
 
+  _i2.Future<_i13.SubraceData> upsert(_i13.SubraceData subrace) =>
+      caller.callServerEndpoint<_i13.SubraceData>(
+        'subraceData',
+        'upsert',
+        {'subrace': subrace},
+      );
+
   _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
         'subraceData',
+        'delete',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointArmorData extends _i1.EndpointRef {
+  EndpointArmorData(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'armorData';
+
+  _i2.Future<List<_i14.ArmorData>> getAll() =>
+      caller.callServerEndpoint<List<_i14.ArmorData>>(
+        'armorData',
+        'getAll',
+        {},
+      );
+
+  _i2.Future<_i14.ArmorData> add(_i14.ArmorData armor) =>
+      caller.callServerEndpoint<_i14.ArmorData>(
+        'armorData',
+        'add',
+        {'armor': armor},
+      );
+
+  _i2.Future<_i14.ArmorData> upsert(_i14.ArmorData armor) =>
+      caller.callServerEndpoint<_i14.ArmorData>(
+        'armorData',
+        'upsert',
+        {'armor': armor},
+      );
+
+  _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
+        'armorData',
         'delete',
         {'id': id},
       );
@@ -270,17 +479,24 @@ class EndpointItemData extends _i1.EndpointRef {
   @override
   String get name => 'itemData';
 
-  _i2.Future<List<_i10.ItemData>> getAll() =>
-      caller.callServerEndpoint<List<_i10.ItemData>>(
+  _i2.Future<List<_i15.ItemData>> getAll() =>
+      caller.callServerEndpoint<List<_i15.ItemData>>(
         'itemData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i10.ItemData> add(_i10.ItemData item) =>
-      caller.callServerEndpoint<_i10.ItemData>(
+  _i2.Future<_i15.ItemData> add(_i15.ItemData item) =>
+      caller.callServerEndpoint<_i15.ItemData>(
         'itemData',
         'add',
+        {'item': item},
+      );
+
+  _i2.Future<_i15.ItemData> upsert(_i15.ItemData item) =>
+      caller.callServerEndpoint<_i15.ItemData>(
+        'itemData',
+        'upsert',
         {'item': item},
       );
 
@@ -298,22 +514,64 @@ class EndpointMagicItemData extends _i1.EndpointRef {
   @override
   String get name => 'magicItemData';
 
-  _i2.Future<List<_i11.MagicItemData>> getAll() =>
-      caller.callServerEndpoint<List<_i11.MagicItemData>>(
+  _i2.Future<List<_i16.MagicItemData>> getAll() =>
+      caller.callServerEndpoint<List<_i16.MagicItemData>>(
         'magicItemData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i11.MagicItemData> add(_i11.MagicItemData item) =>
-      caller.callServerEndpoint<_i11.MagicItemData>(
+  _i2.Future<_i16.MagicItemData> add(_i16.MagicItemData item) =>
+      caller.callServerEndpoint<_i16.MagicItemData>(
         'magicItemData',
         'add',
         {'item': item},
       );
 
+  _i2.Future<_i16.MagicItemData> upsert(_i16.MagicItemData magicItem) =>
+      caller.callServerEndpoint<_i16.MagicItemData>(
+        'magicItemData',
+        'upsert',
+        {'magicItem': magicItem},
+      );
+
   _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
         'magicItemData',
+        'delete',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointWeaponData extends _i1.EndpointRef {
+  EndpointWeaponData(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'weaponData';
+
+  _i2.Future<List<_i17.WeaponData>> getAll() =>
+      caller.callServerEndpoint<List<_i17.WeaponData>>(
+        'weaponData',
+        'getAll',
+        {},
+      );
+
+  _i2.Future<_i17.WeaponData> add(_i17.WeaponData weapon) =>
+      caller.callServerEndpoint<_i17.WeaponData>(
+        'weaponData',
+        'add',
+        {'weapon': weapon},
+      );
+
+  _i2.Future<_i17.WeaponData> upsert(_i17.WeaponData weapon) =>
+      caller.callServerEndpoint<_i17.WeaponData>(
+        'weaponData',
+        'upsert',
+        {'weapon': weapon},
+      );
+
+  _i2.Future<void> delete(int id) => caller.callServerEndpoint<void>(
+        'weaponData',
         'delete',
         {'id': id},
       );
@@ -326,17 +584,24 @@ class EndpointSpellData extends _i1.EndpointRef {
   @override
   String get name => 'spellData';
 
-  _i2.Future<List<_i12.SpellData>> getAll() =>
-      caller.callServerEndpoint<List<_i12.SpellData>>(
+  _i2.Future<List<_i18.SpellData>> getAll() =>
+      caller.callServerEndpoint<List<_i18.SpellData>>(
         'spellData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i12.SpellData> add(_i12.SpellData spell) =>
-      caller.callServerEndpoint<_i12.SpellData>(
+  _i2.Future<_i18.SpellData> add(_i18.SpellData spell) =>
+      caller.callServerEndpoint<_i18.SpellData>(
         'spellData',
         'add',
+        {'spell': spell},
+      );
+
+  _i2.Future<_i18.SpellData> upsert(_i18.SpellData spell) =>
+      caller.callServerEndpoint<_i18.SpellData>(
+        'spellData',
+        'upsert',
         {'spell': spell},
       );
 
@@ -371,7 +636,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i13.Protocol(),
+          _i19.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -382,41 +647,56 @@ class Client extends _i1.ServerpodClientShared {
               disconnectStreamsOnLostInternetConnection,
         ) {
     admin = EndpointAdmin(this);
-    devAdmin = EndpointDevAdmin(this);
     referenceData = EndpointReferenceData(this);
     backgroundData = EndpointBackgroundData(this);
+    featData = EndpointFeatData(this);
     characterData = EndpointCharacterData(this);
     classData = EndpointClassData(this);
-    raceData = EndpointRaceData(this);
+    classFeatureData = EndpointClassFeatureData(this);
     subclassData = EndpointSubclassData(this);
+    classOptionData = EndpointClassOptionData(this);
+    subclassFeatureData = EndpointSubclassFeatureData(this);
+    raceData = EndpointRaceData(this);
     subraceData = EndpointSubraceData(this);
+    armorData = EndpointArmorData(this);
     itemData = EndpointItemData(this);
     magicItemData = EndpointMagicItemData(this);
+    weaponData = EndpointWeaponData(this);
     spellData = EndpointSpellData(this);
     modules = Modules(this);
   }
 
   late final EndpointAdmin admin;
 
-  late final EndpointDevAdmin devAdmin;
-
   late final EndpointReferenceData referenceData;
 
   late final EndpointBackgroundData backgroundData;
+
+  late final EndpointFeatData featData;
 
   late final EndpointCharacterData characterData;
 
   late final EndpointClassData classData;
 
-  late final EndpointRaceData raceData;
+  late final EndpointClassFeatureData classFeatureData;
 
   late final EndpointSubclassData subclassData;
 
+  late final EndpointClassOptionData classOptionData;
+
+  late final EndpointSubclassFeatureData subclassFeatureData;
+
+  late final EndpointRaceData raceData;
+
   late final EndpointSubraceData subraceData;
+
+  late final EndpointArmorData armorData;
 
   late final EndpointItemData itemData;
 
   late final EndpointMagicItemData magicItemData;
+
+  late final EndpointWeaponData weaponData;
 
   late final EndpointSpellData spellData;
 
@@ -425,16 +705,21 @@ class Client extends _i1.ServerpodClientShared {
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'admin': admin,
-        'devAdmin': devAdmin,
         'referenceData': referenceData,
         'backgroundData': backgroundData,
+        'featData': featData,
         'characterData': characterData,
         'classData': classData,
-        'raceData': raceData,
+        'classFeatureData': classFeatureData,
         'subclassData': subclassData,
+        'classOptionData': classOptionData,
+        'subclassFeatureData': subclassFeatureData,
+        'raceData': raceData,
         'subraceData': subraceData,
+        'armorData': armorData,
         'itemData': itemData,
         'magicItemData': magicItemData,
+        'weaponData': weaponData,
         'spellData': spellData,
       };
 

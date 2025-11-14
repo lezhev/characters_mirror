@@ -1,0 +1,100 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "weapon_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "isSimple",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "isMelee",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "cost",
+            "columnType": 3,
+            "isNullable": true,
+            "dartType": "double?"
+          }
+        ],
+        "deleteColumns": [
+          "category",
+          "type",
+          "cost"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"category\" of table \"weapon_data\" will be dropped.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"type\" of table \"weapon_data\" will be dropped.",
+            "table": "weapon_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column cost of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "cost"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"category\" of table \"weapon_data\" will be dropped.",
+      "table": "weapon_data",
+      "columns": [
+        "category"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"type\" of table \"weapon_data\" will be dropped.",
+      "table": "weapon_data",
+      "columns": [
+        "type"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column cost of table weapon_data is modified in a way that it must be deleted and recreated.",
+      "table": "weapon_data",
+      "columns": [
+        "cost"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

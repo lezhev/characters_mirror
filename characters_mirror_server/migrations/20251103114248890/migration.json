@@ -1,0 +1,453 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "armor_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_classDataProficienciesarmorClassDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "armor_data_fk_0",
+            "columns": [
+              "_classDataProficienciesarmorClassDataId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesArmor\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesArmor"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesWeapons\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesWeapons"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesTools\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesTools"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipment\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipment"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"features\" of table \"subclass_data\" will be dropped.",
+            "table": "subclass_data",
+            "columns": [
+              "features"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "proficienciesArmor",
+          "proficienciesWeapons",
+          "proficienciesTools",
+          "startingEquipment"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesArmor\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesArmor"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesWeapons\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesWeapons"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesTools\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesTools"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipment\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipment"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"features\" of table \"subclass_data\" will be dropped.",
+            "table": "subclass_data",
+            "columns": [
+              "features"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "item_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_classDataProficienciestoolsClassDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "_classDataStartingequipmentClassDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "item_data_fk_0",
+            "columns": [
+              "_classDataProficienciestoolsClassDataId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "item_data_fk_1",
+            "columns": [
+              "_classDataStartingequipmentClassDataId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesArmor\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesArmor"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesWeapons\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesWeapons"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesTools\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesTools"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipment\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipment"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"features\" of table \"subclass_data\" will be dropped.",
+            "table": "subclass_data",
+            "columns": [
+              "features"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "subclassFeatures",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [
+          "features"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesArmor\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesArmor"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesWeapons\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesWeapons"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesTools\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesTools"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipment\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipment"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"features\" of table \"subclass_data\" will be dropped.",
+            "table": "subclass_data",
+            "columns": [
+              "features"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "weapon_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_classDataProficienciesweaponsClassDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "weapon_data_fk_0",
+            "columns": [
+              "_classDataProficienciesweaponsClassDataId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesArmor\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesArmor"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesWeapons\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesWeapons"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"proficienciesTools\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "proficienciesTools"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipment\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipment"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"features\" of table \"subclass_data\" will be dropped.",
+            "table": "subclass_data",
+            "columns": [
+              "features"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"proficienciesArmor\" of table \"class_data\" will be dropped.",
+      "table": "class_data",
+      "columns": [
+        "proficienciesArmor"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"proficienciesWeapons\" of table \"class_data\" will be dropped.",
+      "table": "class_data",
+      "columns": [
+        "proficienciesWeapons"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"proficienciesTools\" of table \"class_data\" will be dropped.",
+      "table": "class_data",
+      "columns": [
+        "proficienciesTools"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"startingEquipment\" of table \"class_data\" will be dropped.",
+      "table": "class_data",
+      "columns": [
+        "startingEquipment"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"features\" of table \"subclass_data\" will be dropped.",
+      "table": "subclass_data",
+      "columns": [
+        "features"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

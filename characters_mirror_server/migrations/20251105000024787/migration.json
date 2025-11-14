@@ -1,0 +1,148 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "characters_fk_9",
+            "columns": [
+              "weaponsId"
+            ],
+            "referenceTable": "weapon_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_1",
+            "columns": [
+              "raceId"
+            ],
+            "referenceTable": "race_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_2",
+            "columns": [
+              "subraceId"
+            ],
+            "referenceTable": "subrace_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_3",
+            "columns": [
+              "backgroundId"
+            ],
+            "referenceTable": "background_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_4",
+            "columns": [
+              "preparedSpellsId"
+            ],
+            "referenceTable": "spell_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_5",
+            "columns": [
+              "writtenSpellsId"
+            ],
+            "referenceTable": "spell_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_6",
+            "columns": [
+              "itemsId"
+            ],
+            "referenceTable": "item_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_7",
+            "columns": [
+              "magicItemsId"
+            ],
+            "referenceTable": "magic_item_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "characters_fk_8",
+            "columns": [
+              "armorId"
+            ],
+            "referenceTable": "armor_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "characters_fk_1",
+          "characters_fk_2",
+          "characters_fk_3",
+          "characters_fk_4",
+          "characters_fk_5",
+          "characters_fk_6",
+          "characters_fk_7",
+          "characters_fk_8"
+        ],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

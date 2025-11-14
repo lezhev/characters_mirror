@@ -8,14 +8,19 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../../data/general/race_data.dart' as _i2;
 
 abstract class SubraceData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SubraceData._({
     this.id,
     this.name,
+    required this.parentRaceId,
+    this.parentRace,
     this.description,
     this.source,
     this.version,
@@ -40,6 +45,8 @@ abstract class SubraceData
   factory SubraceData({
     int? id,
     String? name,
+    required int parentRaceId,
+    _i2.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -65,6 +72,11 @@ abstract class SubraceData
     return SubraceData(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
+      parentRaceId: jsonSerialization['parentRaceId'] as int,
+      parentRace: jsonSerialization['parentRace'] == null
+          ? null
+          : _i2.RaceData.fromJson(
+              (jsonSerialization['parentRace'] as Map<String, dynamic>)),
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
@@ -115,6 +127,10 @@ abstract class SubraceData
 
   String? name;
 
+  int parentRaceId;
+
+  _i2.RaceData? parentRace;
+
   String? description;
 
   String? source;
@@ -162,6 +178,8 @@ abstract class SubraceData
   SubraceData copyWith({
     int? id,
     String? name,
+    int? parentRaceId,
+    _i2.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -187,6 +205,8 @@ abstract class SubraceData
     return {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      'parentRaceId': parentRaceId,
+      if (parentRace != null) 'parentRace': parentRace?.toJson(),
       if (description != null) 'description': description,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -218,6 +238,8 @@ abstract class SubraceData
     return {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      'parentRaceId': parentRaceId,
+      if (parentRace != null) 'parentRace': parentRace?.toJsonForProtocol(),
       if (description != null) 'description': description,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -244,8 +266,8 @@ abstract class SubraceData
     };
   }
 
-  static SubraceDataInclude include() {
-    return SubraceDataInclude._();
+  static SubraceDataInclude include({_i2.RaceDataInclude? parentRace}) {
+    return SubraceDataInclude._(parentRace: parentRace);
   }
 
   static SubraceDataIncludeList includeList({
@@ -280,6 +302,8 @@ class _SubraceDataImpl extends SubraceData {
   _SubraceDataImpl({
     int? id,
     String? name,
+    required int parentRaceId,
+    _i2.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -302,6 +326,8 @@ class _SubraceDataImpl extends SubraceData {
   }) : super._(
           id: id,
           name: name,
+          parentRaceId: parentRaceId,
+          parentRace: parentRace,
           description: description,
           source: source,
           version: version,
@@ -330,6 +356,8 @@ class _SubraceDataImpl extends SubraceData {
   SubraceData copyWith({
     Object? id = _Undefined,
     Object? name = _Undefined,
+    int? parentRaceId,
+    Object? parentRace = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
@@ -353,6 +381,10 @@ class _SubraceDataImpl extends SubraceData {
     return SubraceData(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
+      parentRaceId: parentRaceId ?? this.parentRaceId,
+      parentRace: parentRace is _i2.RaceData?
+          ? parentRace
+          : this.parentRace?.copyWith(),
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
@@ -404,6 +436,10 @@ class SubraceDataTable extends _i1.Table<int?> {
   SubraceDataTable({super.tableRelation}) : super(tableName: 'subrace_data') {
     name = _i1.ColumnString(
       'name',
+      this,
+    );
+    parentRaceId = _i1.ColumnInt(
+      'parentRaceId',
       this,
     );
     description = _i1.ColumnString(
@@ -486,6 +522,10 @@ class SubraceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString name;
 
+  late final _i1.ColumnInt parentRaceId;
+
+  _i2.RaceDataTable? _parentRace;
+
   late final _i1.ColumnString description;
 
   late final _i1.ColumnString source;
@@ -524,10 +564,24 @@ class SubraceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString physicalDescription;
 
+  _i2.RaceDataTable get parentRace {
+    if (_parentRace != null) return _parentRace!;
+    _parentRace = _i1.createRelationTable(
+      relationFieldName: 'parentRace',
+      field: SubraceData.t.parentRaceId,
+      foreignField: _i2.RaceData.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.RaceDataTable(tableRelation: foreignTableRelation),
+    );
+    return _parentRace!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         name,
+        parentRaceId,
         description,
         source,
         version,
@@ -548,13 +602,25 @@ class SubraceDataTable extends _i1.Table<int?> {
         alignmentDescription,
         physicalDescription,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'parentRace') {
+      return parentRace;
+    }
+    return null;
+  }
 }
 
 class SubraceDataInclude extends _i1.IncludeObject {
-  SubraceDataInclude._();
+  SubraceDataInclude._({_i2.RaceDataInclude? parentRace}) {
+    _parentRace = parentRace;
+  }
+
+  _i2.RaceDataInclude? _parentRace;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'parentRace': _parentRace};
 
   @override
   _i1.Table<int?> get table => SubraceData.t;
@@ -582,6 +648,8 @@ class SubraceDataIncludeList extends _i1.IncludeList {
 
 class SubraceDataRepository {
   const SubraceDataRepository._();
+
+  final attachRow = const SubraceDataAttachRowRepository._();
 
   /// Returns a list of [SubraceData]s matching the given query parameters.
   ///
@@ -614,6 +682,7 @@ class SubraceDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SubraceDataTable>? orderByList,
     _i1.Transaction? transaction,
+    SubraceDataInclude? include,
   }) async {
     return session.db.find<SubraceData>(
       where: where?.call(SubraceData.t),
@@ -623,6 +692,7 @@ class SubraceDataRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -651,6 +721,7 @@ class SubraceDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SubraceDataTable>? orderByList,
     _i1.Transaction? transaction,
+    SubraceDataInclude? include,
   }) async {
     return session.db.findFirstRow<SubraceData>(
       where: where?.call(SubraceData.t),
@@ -659,6 +730,7 @@ class SubraceDataRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -667,10 +739,12 @@ class SubraceDataRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    SubraceDataInclude? include,
   }) async {
     return session.db.findById<SubraceData>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -788,6 +862,33 @@ class SubraceDataRepository {
     return session.db.count<SubraceData>(
       where: where?.call(SubraceData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class SubraceDataAttachRowRepository {
+  const SubraceDataAttachRowRepository._();
+
+  /// Creates a relation between the given [SubraceData] and [RaceData]
+  /// by setting the [SubraceData]'s foreign key `parentRaceId` to refer to the [RaceData].
+  Future<void> parentRace(
+    _i1.Session session,
+    SubraceData subraceData,
+    _i2.RaceData parentRace, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (subraceData.id == null) {
+      throw ArgumentError.notNull('subraceData.id');
+    }
+    if (parentRace.id == null) {
+      throw ArgumentError.notNull('parentRace.id');
+    }
+
+    var $subraceData = subraceData.copyWith(parentRaceId: parentRace.id);
+    await session.db.updateRow<SubraceData>(
+      $subraceData,
+      columns: [SubraceData.t.parentRaceId],
       transaction: transaction,
     );
   }

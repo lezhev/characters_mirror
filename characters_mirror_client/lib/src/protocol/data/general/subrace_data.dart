@@ -10,11 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../../data/general/race_data.dart' as _i2;
 
 abstract class SubraceData implements _i1.SerializableModel {
   SubraceData._({
     this.id,
     this.name,
+    required this.parentRaceId,
+    this.parentRace,
     this.description,
     this.source,
     this.version,
@@ -39,6 +42,8 @@ abstract class SubraceData implements _i1.SerializableModel {
   factory SubraceData({
     int? id,
     String? name,
+    required int parentRaceId,
+    _i2.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -64,6 +69,11 @@ abstract class SubraceData implements _i1.SerializableModel {
     return SubraceData(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
+      parentRaceId: jsonSerialization['parentRaceId'] as int,
+      parentRace: jsonSerialization['parentRace'] == null
+          ? null
+          : _i2.RaceData.fromJson(
+              (jsonSerialization['parentRace'] as Map<String, dynamic>)),
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
@@ -112,6 +122,10 @@ abstract class SubraceData implements _i1.SerializableModel {
 
   String? name;
 
+  int parentRaceId;
+
+  _i2.RaceData? parentRace;
+
   String? description;
 
   String? source;
@@ -156,6 +170,8 @@ abstract class SubraceData implements _i1.SerializableModel {
   SubraceData copyWith({
     int? id,
     String? name,
+    int? parentRaceId,
+    _i2.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -181,6 +197,8 @@ abstract class SubraceData implements _i1.SerializableModel {
     return {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      'parentRaceId': parentRaceId,
+      if (parentRace != null) 'parentRace': parentRace?.toJson(),
       if (description != null) 'description': description,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -219,6 +237,8 @@ class _SubraceDataImpl extends SubraceData {
   _SubraceDataImpl({
     int? id,
     String? name,
+    required int parentRaceId,
+    _i2.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -241,6 +261,8 @@ class _SubraceDataImpl extends SubraceData {
   }) : super._(
           id: id,
           name: name,
+          parentRaceId: parentRaceId,
+          parentRace: parentRace,
           description: description,
           source: source,
           version: version,
@@ -269,6 +291,8 @@ class _SubraceDataImpl extends SubraceData {
   SubraceData copyWith({
     Object? id = _Undefined,
     Object? name = _Undefined,
+    int? parentRaceId,
+    Object? parentRace = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
@@ -292,6 +316,10 @@ class _SubraceDataImpl extends SubraceData {
     return SubraceData(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
+      parentRaceId: parentRaceId ?? this.parentRaceId,
+      parentRace: parentRace is _i2.RaceData?
+          ? parentRace
+          : this.parentRace?.copyWith(),
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,

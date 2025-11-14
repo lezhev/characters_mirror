@@ -20,8 +20,8 @@ abstract class WeaponData implements _i1.SerializableModel {
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.category,
-    this.type,
+    this.isSimple,
+    this.isMelee,
     this.damage,
     this.damageType,
     this.properties,
@@ -39,13 +39,13 @@ abstract class WeaponData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
-    String? type,
+    bool? isSimple,
+    bool? isMelee,
     String? damage,
     String? damageType,
     List<String>? properties,
     double? weight,
-    String? cost,
+    double? cost,
     int? rangeNormal,
     int? rangeMax,
   }) = _WeaponDataImpl;
@@ -63,15 +63,15 @@ abstract class WeaponData implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      category: jsonSerialization['category'] as String?,
-      type: jsonSerialization['type'] as String?,
+      isSimple: jsonSerialization['isSimple'] as bool?,
+      isMelee: jsonSerialization['isMelee'] as bool?,
       damage: jsonSerialization['damage'] as String?,
       damageType: jsonSerialization['damageType'] as String?,
       properties: (jsonSerialization['properties'] as List?)
           ?.map((e) => e as String)
           .toList(),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
-      cost: jsonSerialization['cost'] as String?,
+      cost: (jsonSerialization['cost'] as num?)?.toDouble(),
       rangeNormal: jsonSerialization['rangeNormal'] as int?,
       rangeMax: jsonSerialization['rangeMax'] as int?,
     );
@@ -94,9 +94,9 @@ abstract class WeaponData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  String? category;
+  bool? isSimple;
 
-  String? type;
+  bool? isMelee;
 
   String? damage;
 
@@ -106,7 +106,7 @@ abstract class WeaponData implements _i1.SerializableModel {
 
   double? weight;
 
-  String? cost;
+  double? cost;
 
   int? rangeNormal;
 
@@ -123,13 +123,13 @@ abstract class WeaponData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
-    String? type,
+    bool? isSimple,
+    bool? isMelee,
     String? damage,
     String? damageType,
     List<String>? properties,
     double? weight,
-    String? cost,
+    double? cost,
     int? rangeNormal,
     int? rangeMax,
   });
@@ -143,8 +143,8 @@ abstract class WeaponData implements _i1.SerializableModel {
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (category != null) 'category': category,
-      if (type != null) 'type': type,
+      if (isSimple != null) 'isSimple': isSimple,
+      if (isMelee != null) 'isMelee': isMelee,
       if (damage != null) 'damage': damage,
       if (damageType != null) 'damageType': damageType,
       if (properties != null) 'properties': properties?.toJson(),
@@ -172,13 +172,13 @@ class _WeaponDataImpl extends WeaponData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
-    String? type,
+    bool? isSimple,
+    bool? isMelee,
     String? damage,
     String? damageType,
     List<String>? properties,
     double? weight,
-    String? cost,
+    double? cost,
     int? rangeNormal,
     int? rangeMax,
   }) : super._(
@@ -189,8 +189,8 @@ class _WeaponDataImpl extends WeaponData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          category: category,
-          type: type,
+          isSimple: isSimple,
+          isMelee: isMelee,
           damage: damage,
           damageType: damageType,
           properties: properties,
@@ -212,8 +212,8 @@ class _WeaponDataImpl extends WeaponData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? category = _Undefined,
-    Object? type = _Undefined,
+    Object? isSimple = _Undefined,
+    Object? isMelee = _Undefined,
     Object? damage = _Undefined,
     Object? damageType = _Undefined,
     Object? properties = _Undefined,
@@ -230,15 +230,15 @@ class _WeaponDataImpl extends WeaponData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      category: category is String? ? category : this.category,
-      type: type is String? ? type : this.type,
+      isSimple: isSimple is bool? ? isSimple : this.isSimple,
+      isMelee: isMelee is bool? ? isMelee : this.isMelee,
       damage: damage is String? ? damage : this.damage,
       damageType: damageType is String? ? damageType : this.damageType,
       properties: properties is List<String>?
           ? properties
           : this.properties?.map((e0) => e0).toList(),
       weight: weight is double? ? weight : this.weight,
-      cost: cost is String? ? cost : this.cost,
+      cost: cost is double? ? cost : this.cost,
       rangeNormal: rangeNormal is int? ? rangeNormal : this.rangeNormal,
       rangeMax: rangeMax is int? ? rangeMax : this.rangeMax,
     );

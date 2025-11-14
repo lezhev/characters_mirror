@@ -1,0 +1,13 @@
+class: SubclassData
+table: subclass_data
+fields:
+
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+  parentClass: ClassData?, relation
+  levelRequired: int?
