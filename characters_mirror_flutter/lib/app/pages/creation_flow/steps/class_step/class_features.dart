@@ -3,6 +3,7 @@ import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_st
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/expand_section.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/smooth_switcher.dart';
 import 'package:characters_mirror_flutter/app/theme/theme.dart';
+import 'package:characters_mirror_flutter/app/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -98,24 +99,25 @@ class ClassFeatures extends HookConsumerWidget {
                     width: double.infinity,
                     color: colorScheme.outlineVariant,
                   ),
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    child: isFutureFeaturesExpanded.value
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: buildFeatureSection(data.futureFeatures),
-                          )
-                        : const SizedBox.shrink(),
+                  ExpandableSection(
+                    extraOffset: 64,
+                    expand: isFutureFeaturesExpanded.value,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: buildFeatureSection(data.futureFeatures),
+                    ),
                   ),
                 ],
               ],
             );
           },
-          error: (e, s) => Text('$e, $s'),
-          loading: () => Text(
-            'LOADING',
-            style: textTheme.displayLarge,
+          error: (e, s) => errorWidget(
+              e: e,
+              s: s,
+              refresh: () => ref.refresh(classStateProvider),
+              context: context),
+          loading: () => Center(
+            child: CircularProgressIndicator(),
           ),
         );
   }
@@ -172,13 +174,14 @@ class ClassFeatureCard extends HookConsumerWidget {
                         ],
                       ),
                       ExpandableSection(
+                        extraOffset: 64,
                         expand: isExpanded.value,
                         child: Column(
                           children: [
                             Gap(2),
                             Text(
                               feature.description ?? '',
-                              style: textTheme.bodySmall,
+                              style: textTheme.bodyMedium,
                               textAlign: TextAlign.justify,
                             ),
                             if (feature.variantOptions != null)
@@ -198,10 +201,13 @@ class ClassFeatureCard extends HookConsumerWidget {
               ),
             );
           },
-          error: (e, s) => Text('$e, $s'),
-          loading: () => Text(
-            'LOADING',
-            style: textTheme.displayLarge,
+          error: (e, s) => errorWidget(
+              e: e,
+              s: s,
+              refresh: () => ref.refresh(classStateProvider),
+              context: context),
+          loading: () => Center(
+            child: CircularProgressIndicator(),
           ),
         );
   }
@@ -214,77 +220,84 @@ class SubclassChoice extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     return ref.watch(classStateProvider).when(
-        data: (data) {
-          final subclasses = data.subclasses;
-          final selected = data.selectedSubclass;
-          return Column(
-            children: [
-              Container(
-                constraints: BoxConstraints(maxHeight: 32),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: subclasses.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Material(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () {
-                            data.selectedSubclass == data.subclasses[index]
-                                ? ref
-                                    .read(classStateProvider.notifier)
-                                    .unselectSubclass()
-                                : ref
-                                    .read(classStateProvider.notifier)
-                                    .selectSubclass(data.subclasses[index]);
-                          },
-                          splashColor: colorScheme.surfaceContainerLowest
-                              .withValues(alpha: 0.7),
-                          highlightColor: Colors.transparent,
-                          child: Ink(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color:
-                                    data.selectedSubclass == subclasses[index]
-                                        ? colorScheme.outlineVariant
-                                        : colorScheme.outline,
+          data: (data) {
+            final subclasses = data.subclasses;
+            final selected = data.selectedSubclass;
+            return Column(
+              children: [
+                Container(
+                  constraints: BoxConstraints(maxHeight: 32),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: subclasses.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Material(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () {
+                              data.selectedSubclass == data.subclasses[index]
+                                  ? ref
+                                      .read(classStateProvider.notifier)
+                                      .unselectSubclass()
+                                  : ref
+                                      .read(classStateProvider.notifier)
+                                      .selectSubclass(data.subclasses[index]);
+                            },
+                            splashColor: colorScheme.surfaceContainerLowest
+                                .withValues(alpha: 0.7),
+                            highlightColor: Colors.transparent,
+                            child: Ink(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color:
+                                      data.selectedSubclass == subclasses[index]
+                                          ? colorScheme.outlineVariant
+                                          : colorScheme.outline,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Center(
-                                child: Text(
-                                  data.subclasses[index].name!,
-                                  style: textTheme.bodyMedium,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Center(
+                                  child: Text(
+                                    data.subclasses[index].name!,
+                                    style: textTheme.bodyMedium,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              Gap(12),
-              SmoothSwitcher(
-                child: selected != null
-                    ? Text(
-                        selected.description ?? '',
-                        key: ValueKey(selected.id ?? 'empty'),
-                      )
-                    : const SizedBox.shrink(key: ValueKey('empty')),
-              ),
-            ],
-          );
-        },
-        //TODO
-        error: (e, s) => Text('data'),
-        loading: () => CircularProgressIndicator());
+                Gap(12),
+                SmoothSwitcher(
+                  extraOffset: 64,
+                  child: selected != null
+                      ? Text(
+                          selected.description ?? '',
+                          key: ValueKey(selected.id ?? 'empty'),
+                        )
+                      : const SizedBox.shrink(key: ValueKey('empty')),
+                ),
+              ],
+            );
+          },
+          error: (e, s) => errorWidget(
+              e: e,
+              s: s,
+              refresh: () => ref.refresh(classStateProvider),
+              context: context),
+          loading: () => Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
   }
 }
 
@@ -363,6 +376,7 @@ class ClassOptionChoice extends ConsumerWidget {
                 ),
                 const Gap(12),
                 SmoothSwitcher(
+                  extraOffset: 64,
                   child: selected != null
                       ? Text(
                           selected.description ?? '',
@@ -373,8 +387,14 @@ class ClassOptionChoice extends ConsumerWidget {
               ],
             );
           },
-          error: (e, s) => const Text('Error loading data'),
-          loading: () => const CircularProgressIndicator(),
+          error: (e, s) => errorWidget(
+              e: e,
+              s: s,
+              refresh: () => ref.refresh(classStateProvider),
+              context: context),
+          loading: () => Center(
+            child: CircularProgressIndicator(),
+          ),
         );
   }
 }

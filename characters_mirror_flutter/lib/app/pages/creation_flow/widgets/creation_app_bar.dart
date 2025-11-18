@@ -11,7 +11,7 @@ class CreationAppBar extends StatelessWidget implements PreferredSizeWidget {
       {super.key, required this.title, this.onBack, this.onNext});
 
   @override
-  Size get preferredSize => const Size.fromHeight(220);
+  Size get preferredSize => const Size.fromHeight(120);
 
   @override
   Widget build(BuildContext context) {

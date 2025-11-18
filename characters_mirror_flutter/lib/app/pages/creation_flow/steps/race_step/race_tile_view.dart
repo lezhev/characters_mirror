@@ -1,20 +1,19 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/state/class_state.dart';
+import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/race_step/state/race_state.dart';
 import 'package:characters_mirror_flutter/app/theme/theme.dart';
 import 'package:characters_mirror_flutter/app/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ClassTileView extends ConsumerWidget {
-  const ClassTileView({super.key});
-
+class RaceTileView extends HookConsumerWidget {
+  const RaceTileView({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appWidth = MediaQuery.of(context).size.width;
 
-    return ref.watch(classStateProvider).when(
+    return ref.watch(raceStateProvider).when(
           data: (data) {
             return GridView.builder(
               shrinkWrap: true,
@@ -29,9 +28,9 @@ class ClassTileView extends ConsumerWidget {
                         : 2,
                 childAspectRatio: 1,
               ),
-              itemCount: data.allClasses.length,
+              itemCount: data.allRaces.length,
               itemBuilder: (context, index) {
-                return ClassTile(tileClass: data.allClasses[index]);
+                return RaceTile(race: data.allRaces[index]);
               },
             );
           },
@@ -44,16 +43,17 @@ class ClassTileView extends ConsumerWidget {
   }
 }
 
-class ClassTile extends HookConsumerWidget {
-  final ClassData tileClass;
+class RaceTile extends HookConsumerWidget {
+  final RaceData race;
 
-  const ClassTile({super.key, required this.tileClass});
+  const RaceTile({super.key, required this.race});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final isHovered = useState(false);
 
-    return ref.watch(classStateProvider).when(
+    return ref.watch(raceStateProvider).when(
           data: (data) {
             return Material(
               borderRadius: BorderRadius.circular(8),
@@ -64,11 +64,9 @@ class ClassTile extends HookConsumerWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
-                    data.selectedClass == tileClass
-                        ? ref.read(classStateProvider.notifier).unselectClass()
-                        : ref
-                            .read(classStateProvider.notifier)
-                            .selectClass(tileClass);
+                    data.selectedRace == race
+                        ? ref.read(raceStateProvider.notifier).unselectRace()
+                        : ref.read(raceStateProvider.notifier).selectRace(race);
                   },
                   splashColor:
                       colorScheme.surfaceContainerLowest.withValues(alpha: 0.7),
@@ -86,11 +84,10 @@ class ClassTile extends HookConsumerWidget {
                           ),
                       ],
                       border: Border.all(
-                        color:
-                            isHovered.value || data.selectedClass == tileClass
-                                ? colorScheme.outline
-                                : Colors.transparent,
-                        width: data.selectedClass == tileClass ? 2 : 1,
+                        color: isHovered.value || data.selectedRace == race
+                            ? colorScheme.outline
+                            : Colors.transparent,
+                        width: data.selectedRace == race ? 2 : 1,
                       ),
                     ),
                     child: SizedBox(
@@ -103,7 +100,7 @@ class ClassTile extends HookConsumerWidget {
                             Container(
                               decoration: BoxDecoration(
                                 color: colorScheme.primary,
-                                borderRadius: BorderRadius.circular(64),
+                                borderRadius: BorderRadius.circular(128),
                                 boxShadow: [
                                   BoxShadow(
                                     color: colorScheme.inversePrimary
@@ -114,7 +111,7 @@ class ClassTile extends HookConsumerWidget {
                                 ],
                               ),
                               child: SvgPicture.asset(
-                                'svg/classes/${tileClass.imageURL}.svg',
+                                'svg/races/${race.imageURL}.svg',
                                 width: 96,
                                 height: 96,
                                 colorFilter: ColorFilter.mode(
@@ -124,7 +121,7 @@ class ClassTile extends HookConsumerWidget {
                               ),
                             ),
                             Text(
-                              tileClass.name ?? '',
+                              race.name ?? '',
                               style: Theme.of(context).textTheme.titleMedium,
                             )
                           ],
@@ -139,7 +136,7 @@ class ClassTile extends HookConsumerWidget {
           error: (e, s) => errorWidget(
               e: e,
               s: s,
-              refresh: () => ref.refresh(classStateProvider),
+              refresh: () => ref.refresh(raceStateProvider),
               context: context),
           loading: () => Center(
             child: CircularProgressIndicator(),

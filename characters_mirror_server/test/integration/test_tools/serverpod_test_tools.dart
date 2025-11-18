@@ -31,7 +31,7 @@ import 'package:characters_mirror_server/src/generated/data/general/class/class_
     as _i11;
 import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
     as _i12;
-import 'package:characters_mirror_server/src/generated/data/general/race_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
     as _i13;
 import 'package:characters_mirror_server/src/generated/data/general/subrace_data.dart'
     as _i14;

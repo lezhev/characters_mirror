@@ -19,44 +19,45 @@ import 'data/general/class/class_feature_data.dart' as _i7;
 import 'data/general/class/class_option_data.dart' as _i8;
 import 'data/general/class/subclass_data.dart' as _i9;
 import 'data/general/class/subclass_feature_data.dart' as _i10;
-import 'data/general/race_data.dart' as _i11;
-import 'data/general/subrace_data.dart' as _i12;
-import 'data/items/armor_data.dart' as _i13;
-import 'data/items/item_data.dart' as _i14;
-import 'data/items/magic_item_data.dart' as _i15;
-import 'data/items/weapon_data.dart' as _i16;
-import 'data/spell_data.dart' as _i17;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i18;
+import 'data/general/race/race_data.dart' as _i11;
+import 'data/general/race/race_feature_data.dart' as _i12;
+import 'data/general/subrace_data.dart' as _i13;
+import 'data/items/armor_data.dart' as _i14;
+import 'data/items/item_data.dart' as _i15;
+import 'data/items/magic_item_data.dart' as _i16;
+import 'data/items/weapon_data.dart' as _i17;
+import 'data/spell_data.dart' as _i18;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i19;
 import 'package:characters_mirror_client/src/protocol/data/background_data.dart'
-    as _i19;
-import 'package:characters_mirror_client/src/protocol/data/feat_data.dart'
     as _i20;
-import 'package:characters_mirror_client/src/protocol/data/general/character/character_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/feat_data.dart'
     as _i21;
-import 'package:characters_mirror_client/src/protocol/data/general/class/class_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/character/character_data.dart'
     as _i22;
-import 'package:characters_mirror_client/src/protocol/data/general/class/class_feature_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/class_data.dart'
     as _i23;
-import 'package:characters_mirror_client/src/protocol/data/general/class/subclass_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/class_feature_data.dart'
     as _i24;
-import 'package:characters_mirror_client/src/protocol/data/general/class/class_option_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/subclass_data.dart'
     as _i25;
-import 'package:characters_mirror_client/src/protocol/data/general/class/subclass_feature_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/class_option_data.dart'
     as _i26;
-import 'package:characters_mirror_client/src/protocol/data/general/race_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/class/subclass_feature_data.dart'
     as _i27;
-import 'package:characters_mirror_client/src/protocol/data/general/subrace_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/race/race_data.dart'
     as _i28;
-import 'package:characters_mirror_client/src/protocol/data/items/armor_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/subrace_data.dart'
     as _i29;
-import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/armor_data.dart'
     as _i30;
-import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
     as _i31;
-import 'package:characters_mirror_client/src/protocol/data/items/weapon_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
     as _i32;
-import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/weapon_data.dart'
     as _i33;
+import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
+    as _i34;
 export 'data/background_data.dart';
 export 'data/feat_data.dart';
 export 'data/general/character/character_class_relation.dart';
@@ -66,7 +67,8 @@ export 'data/general/class/class_feature_data.dart';
 export 'data/general/class/class_option_data.dart';
 export 'data/general/class/subclass_data.dart';
 export 'data/general/class/subclass_feature_data.dart';
-export 'data/general/race_data.dart';
+export 'data/general/race/race_data.dart';
+export 'data/general/race/race_feature_data.dart';
 export 'data/general/subrace_data.dart';
 export 'data/items/armor_data.dart';
 export 'data/items/item_data.dart';
@@ -118,23 +120,26 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i11.RaceData) {
       return _i11.RaceData.fromJson(data) as T;
     }
-    if (t == _i12.SubraceData) {
-      return _i12.SubraceData.fromJson(data) as T;
+    if (t == _i12.RaceFeatureData) {
+      return _i12.RaceFeatureData.fromJson(data) as T;
     }
-    if (t == _i13.ArmorData) {
-      return _i13.ArmorData.fromJson(data) as T;
+    if (t == _i13.SubraceData) {
+      return _i13.SubraceData.fromJson(data) as T;
     }
-    if (t == _i14.ItemData) {
-      return _i14.ItemData.fromJson(data) as T;
+    if (t == _i14.ArmorData) {
+      return _i14.ArmorData.fromJson(data) as T;
     }
-    if (t == _i15.MagicItemData) {
-      return _i15.MagicItemData.fromJson(data) as T;
+    if (t == _i15.ItemData) {
+      return _i15.ItemData.fromJson(data) as T;
     }
-    if (t == _i16.WeaponData) {
-      return _i16.WeaponData.fromJson(data) as T;
+    if (t == _i16.MagicItemData) {
+      return _i16.MagicItemData.fromJson(data) as T;
     }
-    if (t == _i17.SpellData) {
-      return _i17.SpellData.fromJson(data) as T;
+    if (t == _i17.WeaponData) {
+      return _i17.WeaponData.fromJson(data) as T;
+    }
+    if (t == _i18.SpellData) {
+      return _i18.SpellData.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.BackgroundData?>()) {
       return (data != null ? _i2.BackgroundData.fromJson(data) : null) as T;
@@ -168,23 +173,26 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i11.RaceData?>()) {
       return (data != null ? _i11.RaceData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.SubraceData?>()) {
-      return (data != null ? _i12.SubraceData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i12.RaceFeatureData?>()) {
+      return (data != null ? _i12.RaceFeatureData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i13.ArmorData?>()) {
-      return (data != null ? _i13.ArmorData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i13.SubraceData?>()) {
+      return (data != null ? _i13.SubraceData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i14.ItemData?>()) {
-      return (data != null ? _i14.ItemData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i14.ArmorData?>()) {
+      return (data != null ? _i14.ArmorData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i15.MagicItemData?>()) {
-      return (data != null ? _i15.MagicItemData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.ItemData?>()) {
+      return (data != null ? _i15.ItemData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.WeaponData?>()) {
-      return (data != null ? _i16.WeaponData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.MagicItemData?>()) {
+      return (data != null ? _i16.MagicItemData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.SpellData?>()) {
-      return (data != null ? _i17.SpellData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.WeaponData?>()) {
+      return (data != null ? _i17.WeaponData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i18.SpellData?>()) {
+      return (data != null ? _i18.SpellData.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
@@ -303,36 +311,36 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i17.SpellData>?>()) {
+    if (t == _i1.getType<List<_i18.SpellData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i17.SpellData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i18.SpellData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i17.SpellData>?>()) {
+    if (t == _i1.getType<List<_i18.SpellData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i17.SpellData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i18.SpellData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i14.ItemData>?>()) {
+    if (t == _i1.getType<List<_i15.ItemData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i14.ItemData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i15.ItemData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i15.MagicItemData>?>()) {
+    if (t == _i1.getType<List<_i16.MagicItemData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i15.MagicItemData>(e))
+              .map((e) => deserialize<_i16.MagicItemData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i13.ArmorData>?>()) {
+    if (t == _i1.getType<List<_i14.ArmorData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i13.ArmorData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i14.ArmorData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i16.WeaponData>?>()) {
+    if (t == _i1.getType<List<_i17.WeaponData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i16.WeaponData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i17.WeaponData>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -345,14 +353,14 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i16.WeaponData>?>()) {
+    if (t == _i1.getType<List<_i17.WeaponData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i16.WeaponData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i17.WeaponData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i14.ItemData>?>()) {
+    if (t == _i1.getType<List<_i15.ItemData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i14.ItemData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i15.ItemData>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -360,9 +368,9 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i14.ItemData>?>()) {
+    if (t == _i1.getType<List<_i15.ItemData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i14.ItemData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i15.ItemData>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -466,6 +474,12 @@ class Protocol extends _i1.SerializationManager {
               (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<String>(e)).toList()
@@ -522,80 +536,80 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as T;
     }
-    if (t == List<_i18.UserInfo>) {
-      return (data as List).map((e) => deserialize<_i18.UserInfo>(e)).toList()
+    if (t == List<_i19.UserInfo>) {
+      return (data as List).map((e) => deserialize<_i19.UserInfo>(e)).toList()
           as T;
     }
-    if (t == List<_i19.BackgroundData>) {
+    if (t == List<_i20.BackgroundData>) {
       return (data as List)
-          .map((e) => deserialize<_i19.BackgroundData>(e))
+          .map((e) => deserialize<_i20.BackgroundData>(e))
           .toList() as T;
     }
-    if (t == List<_i20.FeatData>) {
-      return (data as List).map((e) => deserialize<_i20.FeatData>(e)).toList()
+    if (t == List<_i21.FeatData>) {
+      return (data as List).map((e) => deserialize<_i21.FeatData>(e)).toList()
           as T;
     }
-    if (t == List<_i21.CharacterData>) {
+    if (t == List<_i22.CharacterData>) {
       return (data as List)
-          .map((e) => deserialize<_i21.CharacterData>(e))
+          .map((e) => deserialize<_i22.CharacterData>(e))
           .toList() as T;
     }
-    if (t == List<_i22.ClassData>) {
-      return (data as List).map((e) => deserialize<_i22.ClassData>(e)).toList()
+    if (t == List<_i23.ClassData>) {
+      return (data as List).map((e) => deserialize<_i23.ClassData>(e)).toList()
           as T;
     }
-    if (t == List<_i23.ClassFeatureData>) {
+    if (t == List<_i24.ClassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i23.ClassFeatureData>(e))
+          .map((e) => deserialize<_i24.ClassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i24.SubclassData>) {
+    if (t == List<_i25.SubclassData>) {
       return (data as List)
-          .map((e) => deserialize<_i24.SubclassData>(e))
+          .map((e) => deserialize<_i25.SubclassData>(e))
           .toList() as T;
     }
-    if (t == List<_i25.ClassOptionData>) {
+    if (t == List<_i26.ClassOptionData>) {
       return (data as List)
-          .map((e) => deserialize<_i25.ClassOptionData>(e))
+          .map((e) => deserialize<_i26.ClassOptionData>(e))
           .toList() as T;
     }
-    if (t == List<_i26.SubclassFeatureData>) {
+    if (t == List<_i27.SubclassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i26.SubclassFeatureData>(e))
+          .map((e) => deserialize<_i27.SubclassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i27.RaceData>) {
-      return (data as List).map((e) => deserialize<_i27.RaceData>(e)).toList()
+    if (t == List<_i28.RaceData>) {
+      return (data as List).map((e) => deserialize<_i28.RaceData>(e)).toList()
           as T;
     }
-    if (t == List<_i28.SubraceData>) {
+    if (t == List<_i29.SubraceData>) {
       return (data as List)
-          .map((e) => deserialize<_i28.SubraceData>(e))
+          .map((e) => deserialize<_i29.SubraceData>(e))
           .toList() as T;
     }
-    if (t == List<_i29.ArmorData>) {
-      return (data as List).map((e) => deserialize<_i29.ArmorData>(e)).toList()
+    if (t == List<_i30.ArmorData>) {
+      return (data as List).map((e) => deserialize<_i30.ArmorData>(e)).toList()
           as T;
     }
-    if (t == List<_i30.ItemData>) {
-      return (data as List).map((e) => deserialize<_i30.ItemData>(e)).toList()
+    if (t == List<_i31.ItemData>) {
+      return (data as List).map((e) => deserialize<_i31.ItemData>(e)).toList()
           as T;
     }
-    if (t == List<_i31.MagicItemData>) {
+    if (t == List<_i32.MagicItemData>) {
       return (data as List)
-          .map((e) => deserialize<_i31.MagicItemData>(e))
+          .map((e) => deserialize<_i32.MagicItemData>(e))
           .toList() as T;
     }
-    if (t == List<_i32.WeaponData>) {
-      return (data as List).map((e) => deserialize<_i32.WeaponData>(e)).toList()
+    if (t == List<_i33.WeaponData>) {
+      return (data as List).map((e) => deserialize<_i33.WeaponData>(e)).toList()
           as T;
     }
-    if (t == List<_i33.SpellData>) {
-      return (data as List).map((e) => deserialize<_i33.SpellData>(e)).toList()
+    if (t == List<_i34.SpellData>) {
+      return (data as List).map((e) => deserialize<_i34.SpellData>(e)).toList()
           as T;
     }
     try {
-      return _i18.Protocol().deserialize<T>(data, t);
+      return _i19.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -634,25 +648,28 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i11.RaceData) {
       return 'RaceData';
     }
-    if (data is _i12.SubraceData) {
+    if (data is _i12.RaceFeatureData) {
+      return 'RaceFeatureData';
+    }
+    if (data is _i13.SubraceData) {
       return 'SubraceData';
     }
-    if (data is _i13.ArmorData) {
+    if (data is _i14.ArmorData) {
       return 'ArmorData';
     }
-    if (data is _i14.ItemData) {
+    if (data is _i15.ItemData) {
       return 'ItemData';
     }
-    if (data is _i15.MagicItemData) {
+    if (data is _i16.MagicItemData) {
       return 'MagicItemData';
     }
-    if (data is _i16.WeaponData) {
+    if (data is _i17.WeaponData) {
       return 'WeaponData';
     }
-    if (data is _i17.SpellData) {
+    if (data is _i18.SpellData) {
       return 'SpellData';
     }
-    className = _i18.Protocol().getClassNameForObject(data);
+    className = _i19.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -695,27 +712,30 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'RaceData') {
       return deserialize<_i11.RaceData>(data['data']);
     }
+    if (dataClassName == 'RaceFeatureData') {
+      return deserialize<_i12.RaceFeatureData>(data['data']);
+    }
     if (dataClassName == 'SubraceData') {
-      return deserialize<_i12.SubraceData>(data['data']);
+      return deserialize<_i13.SubraceData>(data['data']);
     }
     if (dataClassName == 'ArmorData') {
-      return deserialize<_i13.ArmorData>(data['data']);
+      return deserialize<_i14.ArmorData>(data['data']);
     }
     if (dataClassName == 'ItemData') {
-      return deserialize<_i14.ItemData>(data['data']);
+      return deserialize<_i15.ItemData>(data['data']);
     }
     if (dataClassName == 'MagicItemData') {
-      return deserialize<_i15.MagicItemData>(data['data']);
+      return deserialize<_i16.MagicItemData>(data['data']);
     }
     if (dataClassName == 'WeaponData') {
-      return deserialize<_i16.WeaponData>(data['data']);
+      return deserialize<_i17.WeaponData>(data['data']);
     }
     if (dataClassName == 'SpellData') {
-      return deserialize<_i17.SpellData>(data['data']);
+      return deserialize<_i18.SpellData>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i18.Protocol().deserializeByClassName(data);
+      return _i19.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

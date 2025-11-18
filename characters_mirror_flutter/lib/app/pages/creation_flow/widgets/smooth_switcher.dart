@@ -4,7 +4,10 @@ class SmoothSwitcher extends StatefulWidget {
   final Widget? child;
   final Duration duration;
 
+  final double extraOffset;
+
   const SmoothSwitcher({
+    this.extraOffset = 0,
     super.key,
     required this.child,
     this.duration = const Duration(milliseconds: 220),
@@ -21,6 +24,7 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
   late Animation<double> _size;
 
   Widget? _currentChild;
+  final _key = GlobalKey();
 
   @override
   void initState() {
@@ -30,7 +34,7 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
     _size = CurvedAnimation(parent: _c, curve: Curves.easeInOut);
 
     _currentChild = widget.child;
-    _c.value = 1; // стартуем в "показанном" состоянии
+    _c.value = 1;
   }
 
   @override
@@ -38,25 +42,67 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
     super.didUpdateWidget(oldWidget);
 
     if (widget.child?.key != oldWidget.child?.key) {
-      // Сначала скрываем старый
       _c.reverse().then((_) {
-        // Меняем child
         setState(() => _currentChild = widget.child);
-        // И показываем новый
-        _c.forward();
+
+        _c.forward().whenComplete(_scrollToBottom);
       });
+    }
+  }
+
+  void _scrollToBottom() {
+    final ctx = _key.currentContext;
+    if (ctx == null) return;
+
+    final scrollable = Scrollable.of(ctx);
+
+    final position = scrollable.position;
+    final renderBox = ctx.findRenderObject() as RenderBox;
+
+    final bottomOffset = renderBox
+        .localToGlobal(
+          Offset(0, renderBox.size.height),
+          ancestor: scrollable.context.findRenderObject(),
+        )
+        .dy;
+
+    final viewportHeight = scrollable.context.size!.height;
+
+    if (bottomOffset > viewportHeight) {
+      final diff = bottomOffset - viewportHeight;
+
+      position.animateTo(
+        (position.pixels + diff + widget.extraOffset)
+            .clamp(position.minScrollExtent, position.maxScrollExtent),
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: FadeTransition(
-        opacity: _fade,
-        child: SizeTransition(
-          sizeFactor: _size,
-          axisAlignment: -1,
-          child: _currentChild,
+    return KeyedSubtree(
+      key: _key,
+      child: ClipRect(
+        child: FadeTransition(
+          opacity: _fade,
+          child: AnimatedBuilder(
+            animation: _size,
+            builder: (context, child) {
+              final t = _size.value;
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: (1 - t) * 8),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  heightFactor: t.clamp(0.0, 1.0),
+                  child: child,
+                ),
+              );
+            },
+            child: _currentChild,
+          ),
         ),
       ),
     );

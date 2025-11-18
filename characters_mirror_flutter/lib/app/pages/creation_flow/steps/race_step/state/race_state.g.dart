@@ -1,25 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'class_state.dart';
+part of 'race_state.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$classStateHash() => r'3dff80f6f7c15890ff9ee2e910a99044848a557f';
+String _$raceStateHash() => r'dd4a0160c51d220246cd02b52cbb72716b7f83b4';
 
-/// See also [ClassState].
-@ProviderFor(ClassState)
-final classStateProvider =
-    AutoDisposeAsyncNotifierProvider<ClassState, ClassStateModel>.internal(
-  ClassState.new,
-  name: r'classStateProvider',
+/// See also [RaceState].
+@ProviderFor(RaceState)
+final raceStateProvider =
+    AutoDisposeAsyncNotifierProvider<RaceState, RaceStateModel>.internal(
+  RaceState.new,
+  name: r'raceStateProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$classStateHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$raceStateHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ClassState = AutoDisposeAsyncNotifier<ClassStateModel>;
+typedef _$RaceState = AutoDisposeAsyncNotifier<RaceStateModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

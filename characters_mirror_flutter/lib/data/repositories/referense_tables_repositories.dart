@@ -68,6 +68,11 @@ class SubraceRepository implements Repository<SubraceData> {
     }
   }
 
+  Future<List<SubraceData>> getAllByRaceId(int raceId) async {
+    final all = await getAll();
+    return all.where((s) => s.parentRaceId == raceId).toList();
+  }
+
   @override
   Future<SubraceData> upsert(SubraceData entity) =>
       client.subraceData.upsert(entity);

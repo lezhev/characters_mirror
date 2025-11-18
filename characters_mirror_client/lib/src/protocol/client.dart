@@ -28,7 +28,7 @@ import 'package:characters_mirror_client/src/protocol/data/general/class/class_o
     as _i10;
 import 'package:characters_mirror_client/src/protocol/data/general/class/subclass_feature_data.dart'
     as _i11;
-import 'package:characters_mirror_client/src/protocol/data/general/race_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/race/race_data.dart'
     as _i12;
 import 'package:characters_mirror_client/src/protocol/data/general/subrace_data.dart'
     as _i13;

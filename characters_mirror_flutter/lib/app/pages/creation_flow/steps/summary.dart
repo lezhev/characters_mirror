@@ -1,14 +1,16 @@
+import 'package:characters_mirror_flutter/app/pages/creation_flow/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SummaryStep extends StatelessWidget {
+class SummaryStep extends ConsumerWidget {
   const SummaryStep({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(120),
@@ -27,6 +29,9 @@ class SummaryStep extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: CreationNavBar(
+            onPressedNext: () {
+              ref.read(characterCreationProvider.notifier).nextStep(context);
+            },
             route: 'character',
           ),
         ),

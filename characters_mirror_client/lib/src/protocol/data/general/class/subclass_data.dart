@@ -11,7 +11,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
-import '../../../data/general/class/subclass_feature_data.dart' as _i3;
 
 abstract class SubclassData implements _i1.SerializableModel {
   SubclassData._({
@@ -24,8 +23,6 @@ abstract class SubclassData implements _i1.SerializableModel {
     this.updatedAt,
     required this.parentClassId,
     this.parentClass,
-    this.subclassFeaturesId,
-    this.subclassFeatures,
     this.levelRequired,
   });
 
@@ -39,8 +36,6 @@ abstract class SubclassData implements _i1.SerializableModel {
     DateTime? updatedAt,
     required int parentClassId,
     _i2.ClassData? parentClass,
-    int? subclassFeaturesId,
-    _i3.SubclassFeatureData? subclassFeatures,
     int? levelRequired,
   }) = _SubclassDataImpl;
 
@@ -62,11 +57,6 @@ abstract class SubclassData implements _i1.SerializableModel {
           ? null
           : _i2.ClassData.fromJson(
               (jsonSerialization['parentClass'] as Map<String, dynamic>)),
-      subclassFeaturesId: jsonSerialization['subclassFeaturesId'] as int?,
-      subclassFeatures: jsonSerialization['subclassFeatures'] == null
-          ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['subclassFeatures'] as Map<String, dynamic>)),
       levelRequired: jsonSerialization['levelRequired'] as int?,
     );
   }
@@ -92,10 +82,6 @@ abstract class SubclassData implements _i1.SerializableModel {
 
   _i2.ClassData? parentClass;
 
-  int? subclassFeaturesId;
-
-  _i3.SubclassFeatureData? subclassFeatures;
-
   int? levelRequired;
 
   /// Returns a shallow copy of this [SubclassData]
@@ -111,8 +97,6 @@ abstract class SubclassData implements _i1.SerializableModel {
     DateTime? updatedAt,
     int? parentClassId,
     _i2.ClassData? parentClass,
-    int? subclassFeaturesId,
-    _i3.SubclassFeatureData? subclassFeatures,
     int? levelRequired,
   });
   @override
@@ -127,9 +111,6 @@ abstract class SubclassData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
-      if (subclassFeaturesId != null) 'subclassFeaturesId': subclassFeaturesId,
-      if (subclassFeatures != null)
-        'subclassFeatures': subclassFeatures?.toJson(),
       if (levelRequired != null) 'levelRequired': levelRequired,
     };
   }
@@ -153,8 +134,6 @@ class _SubclassDataImpl extends SubclassData {
     DateTime? updatedAt,
     required int parentClassId,
     _i2.ClassData? parentClass,
-    int? subclassFeaturesId,
-    _i3.SubclassFeatureData? subclassFeatures,
     int? levelRequired,
   }) : super._(
           id: id,
@@ -166,8 +145,6 @@ class _SubclassDataImpl extends SubclassData {
           updatedAt: updatedAt,
           parentClassId: parentClassId,
           parentClass: parentClass,
-          subclassFeaturesId: subclassFeaturesId,
-          subclassFeatures: subclassFeatures,
           levelRequired: levelRequired,
         );
 
@@ -185,8 +162,6 @@ class _SubclassDataImpl extends SubclassData {
     Object? updatedAt = _Undefined,
     int? parentClassId,
     Object? parentClass = _Undefined,
-    Object? subclassFeaturesId = _Undefined,
-    Object? subclassFeatures = _Undefined,
     Object? levelRequired = _Undefined,
   }) {
     return SubclassData(
@@ -201,12 +176,6 @@ class _SubclassDataImpl extends SubclassData {
       parentClass: parentClass is _i2.ClassData?
           ? parentClass
           : this.parentClass?.copyWith(),
-      subclassFeaturesId: subclassFeaturesId is int?
-          ? subclassFeaturesId
-          : this.subclassFeaturesId,
-      subclassFeatures: subclassFeatures is _i3.SubclassFeatureData?
-          ? subclassFeatures
-          : this.subclassFeatures?.copyWith(),
       levelRequired: levelRequired is int? ? levelRequired : this.levelRequired,
     );
   }
