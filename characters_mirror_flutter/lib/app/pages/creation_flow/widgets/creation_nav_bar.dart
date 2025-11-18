@@ -5,8 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreationNavBar extends ConsumerWidget {
   final String route;
-
-  const CreationNavBar({super.key, required this.route});
+  final VoidCallback onPressedNext;
+  const CreationNavBar(
+      {super.key, required this.route, required this.onPressedNext});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +35,7 @@ class CreationNavBar extends ConsumerWidget {
                 onPressed: () {},
               )
             : Button.filled(
-                onPressed: () => notifier.nextStep(context),
+                onPressed: onPressedNext,
                 title: 'Далее',
                 trailing: Icon(Icons.arrow_forward,
                     color: Theme.of(context).colorScheme.onPrimary),

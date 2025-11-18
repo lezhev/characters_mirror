@@ -13,7 +13,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
-import '../../../data/general/class/subclass_feature_data.dart' as _i3;
 
 abstract class SubclassData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -27,8 +26,6 @@ abstract class SubclassData
     this.updatedAt,
     required this.parentClassId,
     this.parentClass,
-    this.subclassFeaturesId,
-    this.subclassFeatures,
     this.levelRequired,
   });
 
@@ -42,8 +39,6 @@ abstract class SubclassData
     DateTime? updatedAt,
     required int parentClassId,
     _i2.ClassData? parentClass,
-    int? subclassFeaturesId,
-    _i3.SubclassFeatureData? subclassFeatures,
     int? levelRequired,
   }) = _SubclassDataImpl;
 
@@ -65,11 +60,6 @@ abstract class SubclassData
           ? null
           : _i2.ClassData.fromJson(
               (jsonSerialization['parentClass'] as Map<String, dynamic>)),
-      subclassFeaturesId: jsonSerialization['subclassFeaturesId'] as int?,
-      subclassFeatures: jsonSerialization['subclassFeatures'] == null
-          ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['subclassFeatures'] as Map<String, dynamic>)),
       levelRequired: jsonSerialization['levelRequired'] as int?,
     );
   }
@@ -97,10 +87,6 @@ abstract class SubclassData
 
   _i2.ClassData? parentClass;
 
-  int? subclassFeaturesId;
-
-  _i3.SubclassFeatureData? subclassFeatures;
-
   int? levelRequired;
 
   @override
@@ -119,8 +105,6 @@ abstract class SubclassData
     DateTime? updatedAt,
     int? parentClassId,
     _i2.ClassData? parentClass,
-    int? subclassFeaturesId,
-    _i3.SubclassFeatureData? subclassFeatures,
     int? levelRequired,
   });
   @override
@@ -135,9 +119,6 @@ abstract class SubclassData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
-      if (subclassFeaturesId != null) 'subclassFeaturesId': subclassFeaturesId,
-      if (subclassFeatures != null)
-        'subclassFeatures': subclassFeatures?.toJson(),
       if (levelRequired != null) 'levelRequired': levelRequired,
     };
   }
@@ -154,21 +135,12 @@ abstract class SubclassData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJsonForProtocol(),
-      if (subclassFeaturesId != null) 'subclassFeaturesId': subclassFeaturesId,
-      if (subclassFeatures != null)
-        'subclassFeatures': subclassFeatures?.toJsonForProtocol(),
       if (levelRequired != null) 'levelRequired': levelRequired,
     };
   }
 
-  static SubclassDataInclude include({
-    _i2.ClassDataInclude? parentClass,
-    _i3.SubclassFeatureDataInclude? subclassFeatures,
-  }) {
-    return SubclassDataInclude._(
-      parentClass: parentClass,
-      subclassFeatures: subclassFeatures,
-    );
+  static SubclassDataInclude include({_i2.ClassDataInclude? parentClass}) {
+    return SubclassDataInclude._(parentClass: parentClass);
   }
 
   static SubclassDataIncludeList includeList({
@@ -210,8 +182,6 @@ class _SubclassDataImpl extends SubclassData {
     DateTime? updatedAt,
     required int parentClassId,
     _i2.ClassData? parentClass,
-    int? subclassFeaturesId,
-    _i3.SubclassFeatureData? subclassFeatures,
     int? levelRequired,
   }) : super._(
           id: id,
@@ -223,8 +193,6 @@ class _SubclassDataImpl extends SubclassData {
           updatedAt: updatedAt,
           parentClassId: parentClassId,
           parentClass: parentClass,
-          subclassFeaturesId: subclassFeaturesId,
-          subclassFeatures: subclassFeatures,
           levelRequired: levelRequired,
         );
 
@@ -242,8 +210,6 @@ class _SubclassDataImpl extends SubclassData {
     Object? updatedAt = _Undefined,
     int? parentClassId,
     Object? parentClass = _Undefined,
-    Object? subclassFeaturesId = _Undefined,
-    Object? subclassFeatures = _Undefined,
     Object? levelRequired = _Undefined,
   }) {
     return SubclassData(
@@ -258,12 +224,6 @@ class _SubclassDataImpl extends SubclassData {
       parentClass: parentClass is _i2.ClassData?
           ? parentClass
           : this.parentClass?.copyWith(),
-      subclassFeaturesId: subclassFeaturesId is int?
-          ? subclassFeaturesId
-          : this.subclassFeaturesId,
-      subclassFeatures: subclassFeatures is _i3.SubclassFeatureData?
-          ? subclassFeatures
-          : this.subclassFeatures?.copyWith(),
       levelRequired: levelRequired is int? ? levelRequired : this.levelRequired,
     );
   }
@@ -299,10 +259,6 @@ class SubclassDataTable extends _i1.Table<int?> {
       'parentClassId',
       this,
     );
-    subclassFeaturesId = _i1.ColumnInt(
-      'subclassFeaturesId',
-      this,
-    );
     levelRequired = _i1.ColumnInt(
       'levelRequired',
       this,
@@ -325,10 +281,6 @@ class SubclassDataTable extends _i1.Table<int?> {
 
   _i2.ClassDataTable? _parentClass;
 
-  late final _i1.ColumnInt subclassFeaturesId;
-
-  _i3.SubclassFeatureDataTable? _subclassFeatures;
-
   late final _i1.ColumnInt levelRequired;
 
   _i2.ClassDataTable get parentClass {
@@ -344,19 +296,6 @@ class SubclassDataTable extends _i1.Table<int?> {
     return _parentClass!;
   }
 
-  _i3.SubclassFeatureDataTable get subclassFeatures {
-    if (_subclassFeatures != null) return _subclassFeatures!;
-    _subclassFeatures = _i1.createRelationTable(
-      relationFieldName: 'subclassFeatures',
-      field: SubclassData.t.subclassFeaturesId,
-      foreignField: _i3.SubclassFeatureData.t.id,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.SubclassFeatureDataTable(tableRelation: foreignTableRelation),
-    );
-    return _subclassFeatures!;
-  }
-
   @override
   List<_i1.Column> get columns => [
         id,
@@ -367,7 +306,6 @@ class SubclassDataTable extends _i1.Table<int?> {
         createdAt,
         updatedAt,
         parentClassId,
-        subclassFeaturesId,
         levelRequired,
       ];
 
@@ -376,31 +314,19 @@ class SubclassDataTable extends _i1.Table<int?> {
     if (relationField == 'parentClass') {
       return parentClass;
     }
-    if (relationField == 'subclassFeatures') {
-      return subclassFeatures;
-    }
     return null;
   }
 }
 
 class SubclassDataInclude extends _i1.IncludeObject {
-  SubclassDataInclude._({
-    _i2.ClassDataInclude? parentClass,
-    _i3.SubclassFeatureDataInclude? subclassFeatures,
-  }) {
+  SubclassDataInclude._({_i2.ClassDataInclude? parentClass}) {
     _parentClass = parentClass;
-    _subclassFeatures = subclassFeatures;
   }
 
   _i2.ClassDataInclude? _parentClass;
 
-  _i3.SubclassFeatureDataInclude? _subclassFeatures;
-
   @override
-  Map<String, _i1.Include?> get includes => {
-        'parentClass': _parentClass,
-        'subclassFeatures': _subclassFeatures,
-      };
+  Map<String, _i1.Include?> get includes => {'parentClass': _parentClass};
 
   @override
   _i1.Table<int?> get table => SubclassData.t;
@@ -430,8 +356,6 @@ class SubclassDataRepository {
   const SubclassDataRepository._();
 
   final attachRow = const SubclassDataAttachRowRepository._();
-
-  final detachRow = const SubclassDataDetachRowRepository._();
 
   /// Returns a list of [SubclassData]s matching the given query parameters.
   ///
@@ -671,56 +595,6 @@ class SubclassDataAttachRowRepository {
     await session.db.updateRow<SubclassData>(
       $subclassData,
       columns: [SubclassData.t.parentClassId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between the given [SubclassData] and [SubclassFeatureData]
-  /// by setting the [SubclassData]'s foreign key `subclassFeaturesId` to refer to the [SubclassFeatureData].
-  Future<void> subclassFeatures(
-    _i1.Session session,
-    SubclassData subclassData,
-    _i3.SubclassFeatureData subclassFeatures, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (subclassData.id == null) {
-      throw ArgumentError.notNull('subclassData.id');
-    }
-    if (subclassFeatures.id == null) {
-      throw ArgumentError.notNull('subclassFeatures.id');
-    }
-
-    var $subclassData =
-        subclassData.copyWith(subclassFeaturesId: subclassFeatures.id);
-    await session.db.updateRow<SubclassData>(
-      $subclassData,
-      columns: [SubclassData.t.subclassFeaturesId],
-      transaction: transaction,
-    );
-  }
-}
-
-class SubclassDataDetachRowRepository {
-  const SubclassDataDetachRowRepository._();
-
-  /// Detaches the relation between this [SubclassData] and the [SubclassFeatureData] set in `subclassFeatures`
-  /// by setting the [SubclassData]'s foreign key `subclassFeaturesId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> subclassFeatures(
-    _i1.Session session,
-    SubclassData subclassdata, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (subclassdata.id == null) {
-      throw ArgumentError.notNull('subclassdata.id');
-    }
-
-    var $subclassdata = subclassdata.copyWith(subclassFeaturesId: null);
-    await session.db.updateRow<SubclassData>(
-      $subclassdata,
-      columns: [SubclassData.t.subclassFeaturesId],
       transaction: transaction,
     );
   }

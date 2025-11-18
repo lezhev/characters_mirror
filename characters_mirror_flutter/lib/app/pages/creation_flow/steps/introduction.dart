@@ -1,3 +1,4 @@
+import 'package:characters_mirror_flutter/app/pages/creation_flow/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
@@ -23,6 +24,9 @@ class IntroductionStep extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: CreationNavBar(
+            onPressedNext: () {
+              ref.read(characterCreationProvider.notifier).nextStep(context);
+            },
             route: 'race',
           ),
         ),

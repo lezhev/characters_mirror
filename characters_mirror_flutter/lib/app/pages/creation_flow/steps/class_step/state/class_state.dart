@@ -26,6 +26,7 @@ sealed class ClassStateModel with _$ClassStateModel {
 class ClassState extends _$ClassState {
   @override
   FutureOr<ClassStateModel> build() async {
+    await Future.delayed(Duration(milliseconds: 100));
     final classes = await ClassRepository().getAll();
     classes.sort((a, b) => a.id!.compareTo(b.id!));
 
@@ -33,12 +34,6 @@ class ClassState extends _$ClassState {
   }
 
   Future<void> selectClass(ClassData newClass) async {
-    state = AsyncValue.data(
-      state.value!.copyWith(
-        selectedClass: newClass,
-      ),
-    );
-
     final xp = ref
         .watch(characterCreationProvider.select((c) => c.character.experience));
     final level = getLevelByXp(xp ?? 0);
@@ -63,6 +58,7 @@ class ClassState extends _$ClassState {
 
     state = AsyncValue.data(
       state.value!.copyWith(
+        selectedClass: newClass,
         subclasses: subclasses,
         features: features,
         futureFeatures: futureFeatures,

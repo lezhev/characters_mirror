@@ -1,8 +1,11 @@
+import 'package:characters_mirror_flutter/app/pages/creation_flow/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/class_features.dart';
+import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/class_step_shimmer.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/class_tile_view.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_nav_bar.dart';
+import 'package:characters_mirror_flutter/app/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -43,6 +46,11 @@ class ClassStep extends ConsumerWidget {
               padding:
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: CreationNavBar(
+                onPressedNext: () {
+                  ref
+                      .read(characterCreationProvider.notifier)
+                      .nextStep(context);
+                },
                 route: 'background',
               ),
             ),
@@ -50,11 +58,14 @@ class ClassStep extends ConsumerWidget {
         );
       },
       error: (e, s) {
-        //TODO
-        return Text('data');
+        return errorWidget(
+            e: e,
+            s: s,
+            refresh: () => ref.refresh(classStateProvider),
+            context: context);
       },
       loading: () {
-        return CircularProgressIndicator();
+        return ClassStepShimmer();
       },
     );
   }

@@ -7,7 +7,7 @@ import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/backgrou
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/class_step.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/introduction.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/personal.dart';
-import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/race/race_choice.dart';
+import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/race_step/race_step.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/summary.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

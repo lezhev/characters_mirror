@@ -1,6 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/app/theme/theme.dart';
+import 'package:characters_mirror_flutter/app/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -135,10 +136,13 @@ class ClassTile extends HookConsumerWidget {
               ),
             );
           },
-          error: (e, s) => Text('$e, $s'),
-          loading: () => Text(
-            'LOADING',
-            style: textTheme.displayLarge,
+          error: (e, s) => errorWidget(
+              e: e,
+              s: s,
+              refresh: () => ref.refresh(classStateProvider),
+              context: context),
+          loading: () => Center(
+            child: CircularProgressIndicator(),
           ),
         );
   }
