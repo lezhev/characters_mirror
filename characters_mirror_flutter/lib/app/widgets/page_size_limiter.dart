@@ -13,7 +13,6 @@ class PageSizeLimiter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!kIsWeb) return child;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return SizedBox(
