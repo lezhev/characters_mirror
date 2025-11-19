@@ -1,13 +1,4 @@
-enum Attribute {
-  strength,
-  dexterity,
-  constitution,
-  intelligence,
-  wisdom,
-  charisma
-}
-
-enum Size {
+enum CharacterSize {
   small,
   medium,
   large,

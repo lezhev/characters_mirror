@@ -13,11 +13,12 @@ class CharactersList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authProvider);
     return Scaffold(
-      body: PageSizeLimiter(
-        child: Column(
-          children: [
-            Gap(16),
-            Row(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(96),
+        child: PageSizeLimiter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
               children: [
                 Gap(16),
                 Text('Characters List',
@@ -26,7 +27,7 @@ class CharactersList extends ConsumerWidget {
                 if (user!.scopeNames.contains('admin'))
                   IconButton(
                     icon: const Icon(Icons.admin_panel_settings_outlined),
-                    tooltip: 'Админка',
+                    tooltip: 'Админ',
                     onPressed: () async {
                       context.go('/admin');
                     },
@@ -42,20 +43,16 @@ class CharactersList extends ConsumerWidget {
                 Gap(16),
               ],
             ),
-            SingleChildScrollView(
-              child: SizedBox(
-                height: 800,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SafeArea(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CharacterTileView(),
-                  )),
-                ),
-              ),
-            ),
-          ],
+          ),
+        ),
+      ),
+      body: PageSizeLimiter(
+        child: SingleChildScrollView(
+          child: SafeArea(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CharacterTileView(),
+          )),
         ),
       ),
     );
