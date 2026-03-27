@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../../../data/spell_data.dart' as _i2;
 
 abstract class RaceData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -27,19 +28,12 @@ abstract class RaceData
     this.traits,
     this.languages,
     this.visionType,
-    this.swimSpeed,
-    this.climbSpeed,
-    this.flySpeed,
     this.resistances,
     this.skillProficiencies,
     this.armorProficiencies,
     this.weaponProficiencies,
     this.toolProficiencies,
-    this.powerfulBuild,
-    this.specialAbilities,
-    this.ageDescription,
-    this.alignmentDescription,
-    this.physicalDescription,
+    this.spellcasting,
     this.imageURL,
   });
 
@@ -57,19 +51,12 @@ abstract class RaceData
     List<String>? traits,
     List<String>? languages,
     String? visionType,
-    int? swimSpeed,
-    int? climbSpeed,
-    int? flySpeed,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    bool? powerfulBuild,
-    List<String>? specialAbilities,
-    String? ageDescription,
-    String? alignmentDescription,
-    String? physicalDescription,
+    Map<String, _i2.SpellData>? spellcasting,
     String? imageURL,
   }) = _RaceDataImpl;
 
@@ -100,9 +87,6 @@ abstract class RaceData
           ?.map((e) => e as String)
           .toList(),
       visionType: jsonSerialization['visionType'] as String?,
-      swimSpeed: jsonSerialization['swimSpeed'] as int?,
-      climbSpeed: jsonSerialization['climbSpeed'] as int?,
-      flySpeed: jsonSerialization['flySpeed'] as int?,
       resistances: (jsonSerialization['resistances'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -118,14 +102,11 @@ abstract class RaceData
       toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      powerfulBuild: jsonSerialization['powerfulBuild'] as bool?,
-      specialAbilities: (jsonSerialization['specialAbilities'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      ageDescription: jsonSerialization['ageDescription'] as String?,
-      alignmentDescription:
-          jsonSerialization['alignmentDescription'] as String?,
-      physicalDescription: jsonSerialization['physicalDescription'] as String?,
+      spellcasting:
+          (jsonSerialization['spellcasting'] as Map?)?.map((k, v) => MapEntry(
+                k as String,
+                _i2.SpellData.fromJson((v as Map<String, dynamic>)),
+              )),
       imageURL: jsonSerialization['imageURL'] as String?,
     );
   }
@@ -161,12 +142,6 @@ abstract class RaceData
 
   String? visionType;
 
-  int? swimSpeed;
-
-  int? climbSpeed;
-
-  int? flySpeed;
-
   List<String>? resistances;
 
   List<String>? skillProficiencies;
@@ -177,15 +152,7 @@ abstract class RaceData
 
   List<String>? toolProficiencies;
 
-  bool? powerfulBuild;
-
-  List<String>? specialAbilities;
-
-  String? ageDescription;
-
-  String? alignmentDescription;
-
-  String? physicalDescription;
+  Map<String, _i2.SpellData>? spellcasting;
 
   String? imageURL;
 
@@ -209,19 +176,12 @@ abstract class RaceData
     List<String>? traits,
     List<String>? languages,
     String? visionType,
-    int? swimSpeed,
-    int? climbSpeed,
-    int? flySpeed,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    bool? powerfulBuild,
-    List<String>? specialAbilities,
-    String? ageDescription,
-    String? alignmentDescription,
-    String? physicalDescription,
+    Map<String, _i2.SpellData>? spellcasting,
     String? imageURL,
   });
   @override
@@ -240,9 +200,6 @@ abstract class RaceData
       if (traits != null) 'traits': traits?.toJson(),
       if (languages != null) 'languages': languages?.toJson(),
       if (visionType != null) 'visionType': visionType,
-      if (swimSpeed != null) 'swimSpeed': swimSpeed,
-      if (climbSpeed != null) 'climbSpeed': climbSpeed,
-      if (flySpeed != null) 'flySpeed': flySpeed,
       if (resistances != null) 'resistances': resistances?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
@@ -252,14 +209,8 @@ abstract class RaceData
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (powerfulBuild != null) 'powerfulBuild': powerfulBuild,
-      if (specialAbilities != null)
-        'specialAbilities': specialAbilities?.toJson(),
-      if (ageDescription != null) 'ageDescription': ageDescription,
-      if (alignmentDescription != null)
-        'alignmentDescription': alignmentDescription,
-      if (physicalDescription != null)
-        'physicalDescription': physicalDescription,
+      if (spellcasting != null)
+        'spellcasting': spellcasting?.toJson(valueToJson: (v) => v.toJson()),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
@@ -280,9 +231,6 @@ abstract class RaceData
       if (traits != null) 'traits': traits?.toJson(),
       if (languages != null) 'languages': languages?.toJson(),
       if (visionType != null) 'visionType': visionType,
-      if (swimSpeed != null) 'swimSpeed': swimSpeed,
-      if (climbSpeed != null) 'climbSpeed': climbSpeed,
-      if (flySpeed != null) 'flySpeed': flySpeed,
       if (resistances != null) 'resistances': resistances?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
@@ -292,14 +240,9 @@ abstract class RaceData
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (powerfulBuild != null) 'powerfulBuild': powerfulBuild,
-      if (specialAbilities != null)
-        'specialAbilities': specialAbilities?.toJson(),
-      if (ageDescription != null) 'ageDescription': ageDescription,
-      if (alignmentDescription != null)
-        'alignmentDescription': alignmentDescription,
-      if (physicalDescription != null)
-        'physicalDescription': physicalDescription,
+      if (spellcasting != null)
+        'spellcasting':
+            spellcasting?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
@@ -351,19 +294,12 @@ class _RaceDataImpl extends RaceData {
     List<String>? traits,
     List<String>? languages,
     String? visionType,
-    int? swimSpeed,
-    int? climbSpeed,
-    int? flySpeed,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    bool? powerfulBuild,
-    List<String>? specialAbilities,
-    String? ageDescription,
-    String? alignmentDescription,
-    String? physicalDescription,
+    Map<String, _i2.SpellData>? spellcasting,
     String? imageURL,
   }) : super._(
           id: id,
@@ -379,19 +315,12 @@ class _RaceDataImpl extends RaceData {
           traits: traits,
           languages: languages,
           visionType: visionType,
-          swimSpeed: swimSpeed,
-          climbSpeed: climbSpeed,
-          flySpeed: flySpeed,
           resistances: resistances,
           skillProficiencies: skillProficiencies,
           armorProficiencies: armorProficiencies,
           weaponProficiencies: weaponProficiencies,
           toolProficiencies: toolProficiencies,
-          powerfulBuild: powerfulBuild,
-          specialAbilities: specialAbilities,
-          ageDescription: ageDescription,
-          alignmentDescription: alignmentDescription,
-          physicalDescription: physicalDescription,
+          spellcasting: spellcasting,
           imageURL: imageURL,
         );
 
@@ -413,19 +342,12 @@ class _RaceDataImpl extends RaceData {
     Object? traits = _Undefined,
     Object? languages = _Undefined,
     Object? visionType = _Undefined,
-    Object? swimSpeed = _Undefined,
-    Object? climbSpeed = _Undefined,
-    Object? flySpeed = _Undefined,
     Object? resistances = _Undefined,
     Object? skillProficiencies = _Undefined,
     Object? armorProficiencies = _Undefined,
     Object? weaponProficiencies = _Undefined,
     Object? toolProficiencies = _Undefined,
-    Object? powerfulBuild = _Undefined,
-    Object? specialAbilities = _Undefined,
-    Object? ageDescription = _Undefined,
-    Object? alignmentDescription = _Undefined,
-    Object? physicalDescription = _Undefined,
+    Object? spellcasting = _Undefined,
     Object? imageURL = _Undefined,
   }) {
     return RaceData(
@@ -455,9 +377,6 @@ class _RaceDataImpl extends RaceData {
           ? languages
           : this.languages?.map((e0) => e0).toList(),
       visionType: visionType is String? ? visionType : this.visionType,
-      swimSpeed: swimSpeed is int? ? swimSpeed : this.swimSpeed,
-      climbSpeed: climbSpeed is int? ? climbSpeed : this.climbSpeed,
-      flySpeed: flySpeed is int? ? flySpeed : this.flySpeed,
       resistances: resistances is List<String>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
@@ -473,19 +392,16 @@ class _RaceDataImpl extends RaceData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
-      powerfulBuild:
-          powerfulBuild is bool? ? powerfulBuild : this.powerfulBuild,
-      specialAbilities: specialAbilities is List<String>?
-          ? specialAbilities
-          : this.specialAbilities?.map((e0) => e0).toList(),
-      ageDescription:
-          ageDescription is String? ? ageDescription : this.ageDescription,
-      alignmentDescription: alignmentDescription is String?
-          ? alignmentDescription
-          : this.alignmentDescription,
-      physicalDescription: physicalDescription is String?
-          ? physicalDescription
-          : this.physicalDescription,
+      spellcasting: spellcasting is Map<String, _i2.SpellData>?
+          ? spellcasting
+          : this.spellcasting?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0.copyWith(),
+                  )),
       imageURL: imageURL is String? ? imageURL : this.imageURL,
     );
   }
@@ -541,18 +457,6 @@ class RaceDataTable extends _i1.Table<int?> {
       'visionType',
       this,
     );
-    swimSpeed = _i1.ColumnInt(
-      'swimSpeed',
-      this,
-    );
-    climbSpeed = _i1.ColumnInt(
-      'climbSpeed',
-      this,
-    );
-    flySpeed = _i1.ColumnInt(
-      'flySpeed',
-      this,
-    );
     resistances = _i1.ColumnSerializable(
       'resistances',
       this,
@@ -573,24 +477,8 @@ class RaceDataTable extends _i1.Table<int?> {
       'toolProficiencies',
       this,
     );
-    powerfulBuild = _i1.ColumnBool(
-      'powerfulBuild',
-      this,
-    );
-    specialAbilities = _i1.ColumnSerializable(
-      'specialAbilities',
-      this,
-    );
-    ageDescription = _i1.ColumnString(
-      'ageDescription',
-      this,
-    );
-    alignmentDescription = _i1.ColumnString(
-      'alignmentDescription',
-      this,
-    );
-    physicalDescription = _i1.ColumnString(
-      'physicalDescription',
+    spellcasting = _i1.ColumnSerializable(
+      'spellcasting',
       this,
     );
     imageURL = _i1.ColumnString(
@@ -623,12 +511,6 @@ class RaceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString visionType;
 
-  late final _i1.ColumnInt swimSpeed;
-
-  late final _i1.ColumnInt climbSpeed;
-
-  late final _i1.ColumnInt flySpeed;
-
   late final _i1.ColumnSerializable resistances;
 
   late final _i1.ColumnSerializable skillProficiencies;
@@ -639,15 +521,7 @@ class RaceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable toolProficiencies;
 
-  late final _i1.ColumnBool powerfulBuild;
-
-  late final _i1.ColumnSerializable specialAbilities;
-
-  late final _i1.ColumnString ageDescription;
-
-  late final _i1.ColumnString alignmentDescription;
-
-  late final _i1.ColumnString physicalDescription;
+  late final _i1.ColumnSerializable spellcasting;
 
   late final _i1.ColumnString imageURL;
 
@@ -666,19 +540,12 @@ class RaceDataTable extends _i1.Table<int?> {
         traits,
         languages,
         visionType,
-        swimSpeed,
-        climbSpeed,
-        flySpeed,
         resistances,
         skillProficiencies,
         armorProficiencies,
         weaponProficiencies,
         toolProficiencies,
-        powerfulBuild,
-        specialAbilities,
-        ageDescription,
-        alignmentDescription,
-        physicalDescription,
+        spellcasting,
         imageURL,
       ];
 }

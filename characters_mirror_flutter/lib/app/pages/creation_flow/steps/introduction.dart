@@ -18,7 +18,7 @@ class IntroductionStep extends ConsumerWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        child: PageSizeLimiter(child: Text('Introduction')),
+        child: PageSizeLimiter(child: Center(child: Text('Introduction'))),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(

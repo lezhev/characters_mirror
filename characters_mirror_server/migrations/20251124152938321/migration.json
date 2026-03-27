@@ -1,0 +1,199 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "powerfulBuild",
+          "raceOptions",
+          "ancestry"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"powerfulBuild\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "powerfulBuild"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"raceOptions\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "raceOptions"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"ancestry\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "ancestry"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "One or more columns are added to table \"race_option_data\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+            "table": "race_option_data",
+            "columns": [
+              "raceId"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "race_option_data"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "race_option_data",
+        "dartName": "RaceOptionData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('race_option_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "raceId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "type",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "uses",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "options",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "race_option_data_fk_0",
+            "columns": [
+              "raceId"
+            ],
+            "referenceTable": "race_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "race_option_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"powerfulBuild\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "powerfulBuild"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"raceOptions\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "raceOptions"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"ancestry\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "ancestry"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "One or more columns are added to table \"race_option_data\" which cannot be added in a table migration. The complete table will be deleted and recreated.",
+      "table": "race_option_data",
+      "columns": [
+        "raceId"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

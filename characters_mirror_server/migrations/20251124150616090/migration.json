@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "ancestry",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:DragonbornAncestryData>?"
+          }
+        ],
+        "deleteColumns": [
+          "ancestry"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column ancestry of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "ancestry"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column ancestry of table race_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_data",
+      "columns": [
+        "ancestry"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

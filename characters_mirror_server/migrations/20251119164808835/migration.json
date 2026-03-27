@@ -1,0 +1,56 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "mechanicalType"
+        ],
+        "modifyColumns": [
+          {
+            "columnName": "raceId",
+            "addNullable": true,
+            "removeNullable": false,
+            "changeDefault": false
+          },
+          {
+            "columnName": "subraceId",
+            "addNullable": true,
+            "removeNullable": false,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"mechanicalType\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "mechanicalType"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"mechanicalType\" of table \"race_feature_data\" will be dropped.",
+      "table": "race_feature_data",
+      "columns": [
+        "mechanicalType"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

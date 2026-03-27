@@ -7,19 +7,19 @@ fields:
   version: int?
   createdAt: DateTime?
   updatedAt: DateTime?
-
+  
   hitDie: String?               # enum Dice
   savingThrows: List<String>?   # enum Attribute
-
+  
   proficienciesArmor: List<int>?
   proficienciesWeapons: List<WeaponData>?, relation
   proficienciesTools: List<ItemData>?, relation       
   skills: List<String>?         # enum Skill             
   skillCount: int?
-
+  
   spellcasting: bool?
   spellcastingAbility: String?  # enum Attribute
-
+  
   startingEquipment: List<ItemData>?, relation
-
+  
   imageURL: String?

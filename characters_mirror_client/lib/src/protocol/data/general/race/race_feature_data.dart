@@ -11,14 +11,14 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../data/general/subrace_data.dart' as _i3;
+import '../../../data/general/race/subrace_data.dart' as _i3;
 
 abstract class RaceFeatureData implements _i1.SerializableModel {
   RaceFeatureData._({
     this.id,
-    required this.raceId,
+    this.raceId,
     this.race,
-    required this.subraceId,
+    this.subraceId,
     this.subrace,
     this.name,
     this.description,
@@ -27,7 +27,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     this.createdAt,
     this.updatedAt,
     this.level,
-    this.mechanicalType,
     this.spells,
     this.usesPerRest,
     this.usesFormula,
@@ -35,9 +34,9 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
 
   factory RaceFeatureData({
     int? id,
-    required int raceId,
+    int? raceId,
     _i2.RaceData? race,
-    required int subraceId,
+    int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
     String? description,
@@ -46,7 +45,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    String? mechanicalType,
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
@@ -55,12 +53,12 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
     return RaceFeatureData(
       id: jsonSerialization['id'] as int?,
-      raceId: jsonSerialization['raceId'] as int,
+      raceId: jsonSerialization['raceId'] as int?,
       race: jsonSerialization['race'] == null
           ? null
           : _i2.RaceData.fromJson(
               (jsonSerialization['race'] as Map<String, dynamic>)),
-      subraceId: jsonSerialization['subraceId'] as int,
+      subraceId: jsonSerialization['subraceId'] as int?,
       subrace: jsonSerialization['subrace'] == null
           ? null
           : _i3.SubraceData.fromJson(
@@ -76,7 +74,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       level: jsonSerialization['level'] as int?,
-      mechanicalType: jsonSerialization['mechanicalType'] as String?,
       spells: (jsonSerialization['spells'] as Map?)?.map((k, v) => MapEntry(
             k as String,
             v as int,
@@ -91,11 +88,11 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int raceId;
+  int? raceId;
 
   _i2.RaceData? race;
 
-  int subraceId;
+  int? subraceId;
 
   _i3.SubraceData? subrace;
 
@@ -112,8 +109,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
   DateTime? updatedAt;
 
   int? level;
-
-  String? mechanicalType;
 
   Map<String, int>? spells;
 
@@ -137,7 +132,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    String? mechanicalType,
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
@@ -146,9 +140,9 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'raceId': raceId,
+      if (raceId != null) 'raceId': raceId,
       if (race != null) 'race': race?.toJson(),
-      'subraceId': subraceId,
+      if (subraceId != null) 'subraceId': subraceId,
       if (subrace != null) 'subrace': subrace?.toJson(),
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -157,7 +151,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (level != null) 'level': level,
-      if (mechanicalType != null) 'mechanicalType': mechanicalType,
       if (spells != null) 'spells': spells?.toJson(),
       if (usesPerRest != null) 'usesPerRest': usesPerRest,
       if (usesFormula != null) 'usesFormula': usesFormula,
@@ -175,9 +168,9 @@ class _Undefined {}
 class _RaceFeatureDataImpl extends RaceFeatureData {
   _RaceFeatureDataImpl({
     int? id,
-    required int raceId,
+    int? raceId,
     _i2.RaceData? race,
-    required int subraceId,
+    int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
     String? description,
@@ -186,7 +179,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    String? mechanicalType,
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
@@ -203,7 +195,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           createdAt: createdAt,
           updatedAt: updatedAt,
           level: level,
-          mechanicalType: mechanicalType,
           spells: spells,
           usesPerRest: usesPerRest,
           usesFormula: usesFormula,
@@ -215,9 +206,9 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
   @override
   RaceFeatureData copyWith({
     Object? id = _Undefined,
-    int? raceId,
+    Object? raceId = _Undefined,
     Object? race = _Undefined,
-    int? subraceId,
+    Object? subraceId = _Undefined,
     Object? subrace = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
@@ -226,16 +217,15 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
     Object? level = _Undefined,
-    Object? mechanicalType = _Undefined,
     Object? spells = _Undefined,
     Object? usesPerRest = _Undefined,
     Object? usesFormula = _Undefined,
   }) {
     return RaceFeatureData(
       id: id is int? ? id : this.id,
-      raceId: raceId ?? this.raceId,
+      raceId: raceId is int? ? raceId : this.raceId,
       race: race is _i2.RaceData? ? race : this.race?.copyWith(),
-      subraceId: subraceId ?? this.subraceId,
+      subraceId: subraceId is int? ? subraceId : this.subraceId,
       subrace: subrace is _i3.SubraceData? ? subrace : this.subrace?.copyWith(),
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -244,8 +234,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       level: level is int? ? level : this.level,
-      mechanicalType:
-          mechanicalType is String? ? mechanicalType : this.mechanicalType,
       spells: spells is Map<String, int>?
           ? spells
           : this.spells?.map((
