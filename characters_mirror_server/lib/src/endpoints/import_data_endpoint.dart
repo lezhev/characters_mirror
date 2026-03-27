@@ -86,7 +86,7 @@ class ReferenceDataEndpoint extends Endpoint {
           throw Exception('Unknown entity type: $entityType');
       }
     } catch (e, st) {
-      session.log('❌ Failed to insert entity: $e');
+      session.log('Failed to insert entity: $e');
       session.log(st.toString());
       throw Exception('Invalid JSON or entity type: $entityType');
     }

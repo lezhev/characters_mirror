@@ -18,6 +18,9 @@ mixin _$RaceStateModel {
   RaceData? get selectedRace;
   List<SubraceData> get subraces;
   SubraceData? get selectedSubrace;
+  List<RaceFeatureData> get features;
+  List<RaceFeatureData> get futureFeatures;
+  Map<int, List<RaceFeatureData>> get subclassFeatures;
 
   /// Create a copy of RaceStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -37,7 +40,12 @@ mixin _$RaceStateModel {
                 other.selectedRace == selectedRace) &&
             const DeepCollectionEquality().equals(other.subraces, subraces) &&
             (identical(other.selectedSubrace, selectedSubrace) ||
-                other.selectedSubrace == selectedSubrace));
+                other.selectedSubrace == selectedSubrace) &&
+            const DeepCollectionEquality().equals(other.features, features) &&
+            const DeepCollectionEquality()
+                .equals(other.futureFeatures, futureFeatures) &&
+            const DeepCollectionEquality()
+                .equals(other.subclassFeatures, subclassFeatures));
   }
 
   @override
@@ -46,11 +54,14 @@ mixin _$RaceStateModel {
       const DeepCollectionEquality().hash(allRaces),
       selectedRace,
       const DeepCollectionEquality().hash(subraces),
-      selectedSubrace);
+      selectedSubrace,
+      const DeepCollectionEquality().hash(features),
+      const DeepCollectionEquality().hash(futureFeatures),
+      const DeepCollectionEquality().hash(subclassFeatures));
 
   @override
   String toString() {
-    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace)';
+    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace, features: $features, futureFeatures: $futureFeatures, subclassFeatures: $subclassFeatures)';
   }
 }
 
@@ -64,7 +75,10 @@ abstract mixin class $RaceStateModelCopyWith<$Res> {
       {List<RaceData> allRaces,
       RaceData? selectedRace,
       List<SubraceData> subraces,
-      SubraceData? selectedSubrace});
+      SubraceData? selectedSubrace,
+      List<RaceFeatureData> features,
+      List<RaceFeatureData> futureFeatures,
+      Map<int, List<RaceFeatureData>> subclassFeatures});
 }
 
 /// @nodoc
@@ -84,6 +98,9 @@ class _$RaceStateModelCopyWithImpl<$Res>
     Object? selectedRace = freezed,
     Object? subraces = null,
     Object? selectedSubrace = freezed,
+    Object? features = null,
+    Object? futureFeatures = null,
+    Object? subclassFeatures = null,
   }) {
     return _then(_self.copyWith(
       allRaces: null == allRaces
@@ -102,6 +119,18 @@ class _$RaceStateModelCopyWithImpl<$Res>
           ? _self.selectedSubrace
           : selectedSubrace // ignore: cast_nullable_to_non_nullable
               as SubraceData?,
+      features: null == features
+          ? _self.features
+          : features // ignore: cast_nullable_to_non_nullable
+              as List<RaceFeatureData>,
+      futureFeatures: null == futureFeatures
+          ? _self.futureFeatures
+          : futureFeatures // ignore: cast_nullable_to_non_nullable
+              as List<RaceFeatureData>,
+      subclassFeatures: null == subclassFeatures
+          ? _self.subclassFeatures
+          : subclassFeatures // ignore: cast_nullable_to_non_nullable
+              as Map<int, List<RaceFeatureData>>,
     ));
   }
 }
@@ -199,16 +228,28 @@ extension RaceStateModelPatterns on RaceStateModel {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(List<RaceData> allRaces, RaceData? selectedRace,
-            List<SubraceData> subraces, SubraceData? selectedSubrace)?
+    TResult Function(
+            List<RaceData> allRaces,
+            RaceData? selectedRace,
+            List<SubraceData> subraces,
+            SubraceData? selectedSubrace,
+            List<RaceFeatureData> features,
+            List<RaceFeatureData> futureFeatures,
+            Map<int, List<RaceFeatureData>> subclassFeatures)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _RaceStateModel() when $default != null:
-        return $default(_that.allRaces, _that.selectedRace, _that.subraces,
-            _that.selectedSubrace);
+        return $default(
+            _that.allRaces,
+            _that.selectedRace,
+            _that.subraces,
+            _that.selectedSubrace,
+            _that.features,
+            _that.futureFeatures,
+            _that.subclassFeatures);
       case _:
         return orElse();
     }
@@ -229,15 +270,27 @@ extension RaceStateModelPatterns on RaceStateModel {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(List<RaceData> allRaces, RaceData? selectedRace,
-            List<SubraceData> subraces, SubraceData? selectedSubrace)
+    TResult Function(
+            List<RaceData> allRaces,
+            RaceData? selectedRace,
+            List<SubraceData> subraces,
+            SubraceData? selectedSubrace,
+            List<RaceFeatureData> features,
+            List<RaceFeatureData> futureFeatures,
+            Map<int, List<RaceFeatureData>> subclassFeatures)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _RaceStateModel():
-        return $default(_that.allRaces, _that.selectedRace, _that.subraces,
-            _that.selectedSubrace);
+        return $default(
+            _that.allRaces,
+            _that.selectedRace,
+            _that.subraces,
+            _that.selectedSubrace,
+            _that.features,
+            _that.futureFeatures,
+            _that.subclassFeatures);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -257,15 +310,27 @@ extension RaceStateModelPatterns on RaceStateModel {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(List<RaceData> allRaces, RaceData? selectedRace,
-            List<SubraceData> subraces, SubraceData? selectedSubrace)?
+    TResult? Function(
+            List<RaceData> allRaces,
+            RaceData? selectedRace,
+            List<SubraceData> subraces,
+            SubraceData? selectedSubrace,
+            List<RaceFeatureData> features,
+            List<RaceFeatureData> futureFeatures,
+            Map<int, List<RaceFeatureData>> subclassFeatures)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _RaceStateModel() when $default != null:
-        return $default(_that.allRaces, _that.selectedRace, _that.subraces,
-            _that.selectedSubrace);
+        return $default(
+            _that.allRaces,
+            _that.selectedRace,
+            _that.subraces,
+            _that.selectedSubrace,
+            _that.features,
+            _that.futureFeatures,
+            _that.subclassFeatures);
       case _:
         return null;
     }
@@ -279,9 +344,15 @@ class _RaceStateModel implements RaceStateModel {
       {final List<RaceData> allRaces = const [],
       this.selectedRace,
       final List<SubraceData> subraces = const [],
-      this.selectedSubrace})
+      this.selectedSubrace,
+      final List<RaceFeatureData> features = const [],
+      final List<RaceFeatureData> futureFeatures = const [],
+      final Map<int, List<RaceFeatureData>> subclassFeatures = const {}})
       : _allRaces = allRaces,
-        _subraces = subraces;
+        _subraces = subraces,
+        _features = features,
+        _futureFeatures = futureFeatures,
+        _subclassFeatures = subclassFeatures;
 
   final List<RaceData> _allRaces;
   @override
@@ -305,6 +376,32 @@ class _RaceStateModel implements RaceStateModel {
 
   @override
   final SubraceData? selectedSubrace;
+  final List<RaceFeatureData> _features;
+  @override
+  @JsonKey()
+  List<RaceFeatureData> get features {
+    if (_features is EqualUnmodifiableListView) return _features;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_features);
+  }
+
+  final List<RaceFeatureData> _futureFeatures;
+  @override
+  @JsonKey()
+  List<RaceFeatureData> get futureFeatures {
+    if (_futureFeatures is EqualUnmodifiableListView) return _futureFeatures;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_futureFeatures);
+  }
+
+  final Map<int, List<RaceFeatureData>> _subclassFeatures;
+  @override
+  @JsonKey()
+  Map<int, List<RaceFeatureData>> get subclassFeatures {
+    if (_subclassFeatures is EqualUnmodifiableMapView) return _subclassFeatures;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_subclassFeatures);
+  }
 
   /// Create a copy of RaceStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -324,7 +421,12 @@ class _RaceStateModel implements RaceStateModel {
                 other.selectedRace == selectedRace) &&
             const DeepCollectionEquality().equals(other._subraces, _subraces) &&
             (identical(other.selectedSubrace, selectedSubrace) ||
-                other.selectedSubrace == selectedSubrace));
+                other.selectedSubrace == selectedSubrace) &&
+            const DeepCollectionEquality().equals(other._features, _features) &&
+            const DeepCollectionEquality()
+                .equals(other._futureFeatures, _futureFeatures) &&
+            const DeepCollectionEquality()
+                .equals(other._subclassFeatures, _subclassFeatures));
   }
 
   @override
@@ -333,11 +435,14 @@ class _RaceStateModel implements RaceStateModel {
       const DeepCollectionEquality().hash(_allRaces),
       selectedRace,
       const DeepCollectionEquality().hash(_subraces),
-      selectedSubrace);
+      selectedSubrace,
+      const DeepCollectionEquality().hash(_features),
+      const DeepCollectionEquality().hash(_futureFeatures),
+      const DeepCollectionEquality().hash(_subclassFeatures));
 
   @override
   String toString() {
-    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace)';
+    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace, features: $features, futureFeatures: $futureFeatures, subclassFeatures: $subclassFeatures)';
   }
 }
 
@@ -353,7 +458,10 @@ abstract mixin class _$RaceStateModelCopyWith<$Res>
       {List<RaceData> allRaces,
       RaceData? selectedRace,
       List<SubraceData> subraces,
-      SubraceData? selectedSubrace});
+      SubraceData? selectedSubrace,
+      List<RaceFeatureData> features,
+      List<RaceFeatureData> futureFeatures,
+      Map<int, List<RaceFeatureData>> subclassFeatures});
 }
 
 /// @nodoc
@@ -373,6 +481,9 @@ class __$RaceStateModelCopyWithImpl<$Res>
     Object? selectedRace = freezed,
     Object? subraces = null,
     Object? selectedSubrace = freezed,
+    Object? features = null,
+    Object? futureFeatures = null,
+    Object? subclassFeatures = null,
   }) {
     return _then(_RaceStateModel(
       allRaces: null == allRaces
@@ -391,6 +502,18 @@ class __$RaceStateModelCopyWithImpl<$Res>
           ? _self.selectedSubrace
           : selectedSubrace // ignore: cast_nullable_to_non_nullable
               as SubraceData?,
+      features: null == features
+          ? _self._features
+          : features // ignore: cast_nullable_to_non_nullable
+              as List<RaceFeatureData>,
+      futureFeatures: null == futureFeatures
+          ? _self._futureFeatures
+          : futureFeatures // ignore: cast_nullable_to_non_nullable
+              as List<RaceFeatureData>,
+      subclassFeatures: null == subclassFeatures
+          ? _self._subclassFeatures
+          : subclassFeatures // ignore: cast_nullable_to_non_nullable
+              as Map<int, List<RaceFeatureData>>,
     ));
   }
 }

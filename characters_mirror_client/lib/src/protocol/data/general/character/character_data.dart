@@ -11,7 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../data/general/subrace_data.dart' as _i3;
+import '../../../data/general/race/subrace_data.dart' as _i3;
 import '../../../data/general/class/class_data.dart' as _i4;
 import '../../../data/general/class/subclass_data.dart' as _i5;
 import '../../../data/general/class/class_feature_data.dart' as _i6;

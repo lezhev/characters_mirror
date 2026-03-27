@@ -47,7 +47,22 @@ raceData:
   - add:
   - upsert:
   - delete:
+raceFeature:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
 subraceData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+raceOptionData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+dragonbornAncestryData:
   - getAll:
   - add:
   - upsert:

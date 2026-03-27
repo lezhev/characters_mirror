@@ -95,33 +95,37 @@ class RaceTile extends HookConsumerWidget {
                       height: 128,
                       child: Center(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
+                              width: 96,
+                              height: 96,
                               decoration: BoxDecoration(
                                 color: colorScheme.primary,
-                                borderRadius: BorderRadius.circular(128),
+                                shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: colorScheme.inversePrimary
+                                    color: colorScheme.shadow
                                         .withValues(alpha: 0.1),
-                                    blurRadius: 0,
+                                    blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
-                              child: SvgPicture.asset(
-                                'svg/races/${race.imageURL}.svg',
-                                width: 96,
-                                height: 96,
-                                colorFilter: ColorFilter.mode(
-                                  colorScheme.surfaceContainerLowest,
-                                  BlendMode.srcIn,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: SvgPicture.asset(
+                                  'svg/races/${race.imageURL}.svg',
+                                  colorFilter: ColorFilter.mode(
+                                    colorScheme.surfaceContainerLowest,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
                             ),
                             Text(
                               race.name ?? '',
+                              overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.titleMedium,
                             )
                           ],

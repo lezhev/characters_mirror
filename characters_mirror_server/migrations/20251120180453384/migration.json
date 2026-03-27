@@ -1,0 +1,679 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "dragonborn_ancestry_data",
+        "dartName": "DragonbornAncestryData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('dragonborn_ancestry_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "damageType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "breathShape",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "area",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "damageByLevel",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<int,String>?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "dragonborn_ancestry_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "raceOptions",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:RaceOptionData>?"
+          },
+          {
+            "name": "ancestry",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:DragonbornAncestryData?"
+          },
+          {
+            "name": "spellcasting",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,protocol:SpellData>?"
+          }
+        ],
+        "deleteColumns": [
+          "swimSpeed",
+          "climbSpeed",
+          "flySpeed",
+          "specialAbilities",
+          "ageDescription",
+          "alignmentDescription",
+          "physicalDescription"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"swimSpeed\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "swimSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"climbSpeed\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "climbSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"flySpeed\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "flySpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"specialAbilities\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "specialAbilities"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"ageDescription\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "ageDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"alignmentDescription\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "alignmentDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"physicalDescription\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "physicalDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"speedBonus\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "speedBonus"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"swimSpeed\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "swimSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"climbSpeed\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "climbSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"flySpeed\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "flySpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"visionType\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "visionType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"ageDescription\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "ageDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"alignmentDescription\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "alignmentDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"physicalDescription\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "physicalDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column variantOptions of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "variantOptions"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "race_option_data",
+        "dartName": "RaceOptionData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('race_option_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "type",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "uses",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "options",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "race_option_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subrace_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "variantOptions",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:RaceOptionData>?"
+          }
+        ],
+        "deleteColumns": [
+          "speedBonus",
+          "swimSpeed",
+          "climbSpeed",
+          "flySpeed",
+          "visionType",
+          "ageDescription",
+          "alignmentDescription",
+          "physicalDescription",
+          "variantOptions"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"swimSpeed\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "swimSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"climbSpeed\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "climbSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"flySpeed\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "flySpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"specialAbilities\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "specialAbilities"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"ageDescription\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "ageDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"alignmentDescription\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "alignmentDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"physicalDescription\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "physicalDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"speedBonus\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "speedBonus"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"swimSpeed\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "swimSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"climbSpeed\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "climbSpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"flySpeed\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "flySpeed"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"visionType\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "visionType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"ageDescription\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "ageDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"alignmentDescription\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "alignmentDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"physicalDescription\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "physicalDescription"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column variantOptions of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "variantOptions"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"swimSpeed\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "swimSpeed"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"climbSpeed\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "climbSpeed"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"flySpeed\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "flySpeed"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"specialAbilities\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "specialAbilities"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"ageDescription\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "ageDescription"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"alignmentDescription\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "alignmentDescription"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"physicalDescription\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "physicalDescription"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"speedBonus\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "speedBonus"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"swimSpeed\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "swimSpeed"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"climbSpeed\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "climbSpeed"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"flySpeed\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "flySpeed"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"visionType\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "visionType"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"ageDescription\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "ageDescription"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"alignmentDescription\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "alignmentDescription"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"physicalDescription\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "physicalDescription"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column variantOptions of table subrace_data is modified in a way that it must be deleted and recreated.",
+      "table": "subrace_data",
+      "columns": [
+        "variantOptions"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

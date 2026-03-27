@@ -1,0 +1,14 @@
+class: RaceOptionData
+table: race_option_data
+fields: 
+  id: int?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+
+
+  race: RaceData?, relation
+  type: String? # skill, language, weapon, tool, ability, spell
+  uses: int? # how many choices allowed
+  options: List<String>?

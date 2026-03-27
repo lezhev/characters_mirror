@@ -21,44 +21,52 @@ import 'data/general/class/class_feature_data.dart' as _i9;
 import 'data/general/class/class_option_data.dart' as _i10;
 import 'data/general/class/subclass_data.dart' as _i11;
 import 'data/general/class/subclass_feature_data.dart' as _i12;
-import 'data/general/race/race_data.dart' as _i13;
-import 'data/general/race/race_feature_data.dart' as _i14;
-import 'data/general/subrace_data.dart' as _i15;
-import 'data/items/armor_data.dart' as _i16;
-import 'data/items/item_data.dart' as _i17;
-import 'data/items/magic_item_data.dart' as _i18;
-import 'data/items/weapon_data.dart' as _i19;
-import 'data/spell_data.dart' as _i20;
+import 'data/general/race/dragonborn_ancestry_data.dart' as _i13;
+import 'data/general/race/race_data.dart' as _i14;
+import 'data/general/race/race_feature_data.dart' as _i15;
+import 'data/general/race/race_option_data.dart' as _i16;
+import 'data/general/race/subrace_data.dart' as _i17;
+import 'data/items/armor_data.dart' as _i18;
+import 'data/items/item_data.dart' as _i19;
+import 'data/items/magic_item_data.dart' as _i20;
+import 'data/items/weapon_data.dart' as _i21;
+import 'data/spell_data.dart' as _i22;
 import 'package:characters_mirror_server/src/generated/data/background_data.dart'
-    as _i21;
-import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
-    as _i22;
-import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
     as _i23;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
+import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
     as _i24;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
     as _i25;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
     as _i26;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_option_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
     as _i27;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
     as _i28;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_option_data.dart'
     as _i29;
-import 'package:characters_mirror_server/src/generated/data/general/subrace_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
     as _i30;
-import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
     as _i31;
-import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
     as _i32;
-import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
     as _i33;
-import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_option_data.dart'
     as _i34;
-import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/dragonborn_ancestry_data.dart'
     as _i35;
+import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
+    as _i36;
+import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
+    as _i37;
+import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
+    as _i38;
+import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
+    as _i39;
+import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+    as _i40;
 export 'data/background_data.dart';
 export 'data/feat_data.dart';
 export 'data/general/character/character_class_relation.dart';
@@ -68,9 +76,11 @@ export 'data/general/class/class_feature_data.dart';
 export 'data/general/class/class_option_data.dart';
 export 'data/general/class/subclass_data.dart';
 export 'data/general/class/subclass_feature_data.dart';
+export 'data/general/race/dragonborn_ancestry_data.dart';
 export 'data/general/race/race_data.dart';
 export 'data/general/race/race_feature_data.dart';
-export 'data/general/subrace_data.dart';
+export 'data/general/race/race_option_data.dart';
+export 'data/general/race/subrace_data.dart';
 export 'data/items/armor_data.dart';
 export 'data/items/item_data.dart';
 export 'data/items/magic_item_data.dart';
@@ -1061,6 +1071,93 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
+      name: 'dragonborn_ancestry_data',
+      dartName: 'DragonbornAncestryData',
+      schema: 'public',
+      module: 'characters_mirror',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault:
+              'nextval(\'dragonborn_ancestry_data_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'source',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'version',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'damageType',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'breathShape',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'area',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'damageByLevel',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'Map<String,String>?',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'dragonborn_ancestry_data_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
       name: 'feat_data',
       dartName: 'FeatData',
       schema: 'public',
@@ -1518,24 +1615,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'swimSpeed',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'climbSpeed',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'flySpeed',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
           name: 'resistances',
           columnType: _i2.ColumnType.json,
           isNullable: true,
@@ -1566,34 +1645,10 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'List<String>?',
         ),
         _i2.ColumnDefinition(
-          name: 'powerfulBuild',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: true,
-          dartType: 'bool?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'specialAbilities',
+          name: 'spellcasting',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'ageDescription',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'alignmentDescription',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'physicalDescription',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
+          dartType: 'Map<String,protocol:SpellData>?',
         ),
         _i2.ColumnDefinition(
           name: 'imageURL',
@@ -1636,14 +1691,14 @@ class Protocol extends _i1.SerializationManagerServer {
         _i2.ColumnDefinition(
           name: 'raceId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'subraceId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -1686,12 +1741,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'mechanicalType',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'spells',
@@ -1737,6 +1786,97 @@ class Protocol extends _i1.SerializationManagerServer {
       indexes: [
         _i2.IndexDefinition(
           indexName: 'race_feature_data_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'race_option_data',
+      dartName: 'RaceOptionData',
+      schema: 'public',
+      module: 'characters_mirror',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'race_option_data_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'source',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'version',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'raceId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'type',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'uses',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'options',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'race_option_data_fk_0',
+          columns: ['raceId'],
+          referenceTable: 'race_data',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'race_option_data_pkey',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
@@ -2234,36 +2374,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'List<String>?',
         ),
         _i2.ColumnDefinition(
-          name: 'speedBonus',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'swimSpeed',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'climbSpeed',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'flySpeed',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'visionType',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
           name: 'resistances',
           columnType: _i2.ColumnType.json,
           isNullable: true,
@@ -2273,25 +2383,7 @@ class Protocol extends _i1.SerializationManagerServer {
           name: 'variantOptions',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'ageDescription',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'alignmentDescription',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'physicalDescription',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
+          dartType: 'List<protocol:RaceOptionData>?',
         ),
       ],
       foreignKeys: [
@@ -2515,29 +2607,35 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i12.SubclassFeatureData) {
       return _i12.SubclassFeatureData.fromJson(data) as T;
     }
-    if (t == _i13.RaceData) {
-      return _i13.RaceData.fromJson(data) as T;
+    if (t == _i13.DragonbornAncestryData) {
+      return _i13.DragonbornAncestryData.fromJson(data) as T;
     }
-    if (t == _i14.RaceFeatureData) {
-      return _i14.RaceFeatureData.fromJson(data) as T;
+    if (t == _i14.RaceData) {
+      return _i14.RaceData.fromJson(data) as T;
     }
-    if (t == _i15.SubraceData) {
-      return _i15.SubraceData.fromJson(data) as T;
+    if (t == _i15.RaceFeatureData) {
+      return _i15.RaceFeatureData.fromJson(data) as T;
     }
-    if (t == _i16.ArmorData) {
-      return _i16.ArmorData.fromJson(data) as T;
+    if (t == _i16.RaceOptionData) {
+      return _i16.RaceOptionData.fromJson(data) as T;
     }
-    if (t == _i17.ItemData) {
-      return _i17.ItemData.fromJson(data) as T;
+    if (t == _i17.SubraceData) {
+      return _i17.SubraceData.fromJson(data) as T;
     }
-    if (t == _i18.MagicItemData) {
-      return _i18.MagicItemData.fromJson(data) as T;
+    if (t == _i18.ArmorData) {
+      return _i18.ArmorData.fromJson(data) as T;
     }
-    if (t == _i19.WeaponData) {
-      return _i19.WeaponData.fromJson(data) as T;
+    if (t == _i19.ItemData) {
+      return _i19.ItemData.fromJson(data) as T;
     }
-    if (t == _i20.SpellData) {
-      return _i20.SpellData.fromJson(data) as T;
+    if (t == _i20.MagicItemData) {
+      return _i20.MagicItemData.fromJson(data) as T;
+    }
+    if (t == _i21.WeaponData) {
+      return _i21.WeaponData.fromJson(data) as T;
+    }
+    if (t == _i22.SpellData) {
+      return _i22.SpellData.fromJson(data) as T;
     }
     if (t == _i1.getType<_i4.BackgroundData?>()) {
       return (data != null ? _i4.BackgroundData.fromJson(data) : null) as T;
@@ -2568,29 +2666,36 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data != null ? _i12.SubclassFeatureData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i13.RaceData?>()) {
-      return (data != null ? _i13.RaceData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i13.DragonbornAncestryData?>()) {
+      return (data != null ? _i13.DragonbornAncestryData.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<_i14.RaceFeatureData?>()) {
-      return (data != null ? _i14.RaceFeatureData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i14.RaceData?>()) {
+      return (data != null ? _i14.RaceData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i15.SubraceData?>()) {
-      return (data != null ? _i15.SubraceData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.RaceFeatureData?>()) {
+      return (data != null ? _i15.RaceFeatureData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.ArmorData?>()) {
-      return (data != null ? _i16.ArmorData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.RaceOptionData?>()) {
+      return (data != null ? _i16.RaceOptionData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.ItemData?>()) {
-      return (data != null ? _i17.ItemData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.SubraceData?>()) {
+      return (data != null ? _i17.SubraceData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i18.MagicItemData?>()) {
-      return (data != null ? _i18.MagicItemData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.ArmorData?>()) {
+      return (data != null ? _i18.ArmorData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.WeaponData?>()) {
-      return (data != null ? _i19.WeaponData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i19.ItemData?>()) {
+      return (data != null ? _i19.ItemData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.SpellData?>()) {
-      return (data != null ? _i20.SpellData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i20.MagicItemData?>()) {
+      return (data != null ? _i20.MagicItemData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i21.WeaponData?>()) {
+      return (data != null ? _i21.WeaponData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i22.SpellData?>()) {
+      return (data != null ? _i22.SpellData.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
@@ -2709,36 +2814,36 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i20.SpellData>?>()) {
+    if (t == _i1.getType<List<_i22.SpellData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i20.SpellData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i22.SpellData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i20.SpellData>?>()) {
+    if (t == _i1.getType<List<_i22.SpellData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i20.SpellData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i22.SpellData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i17.ItemData>?>()) {
+    if (t == _i1.getType<List<_i19.ItemData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i17.ItemData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i19.ItemData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i18.MagicItemData>?>()) {
+    if (t == _i1.getType<List<_i20.MagicItemData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i18.MagicItemData>(e))
+              .map((e) => deserialize<_i20.MagicItemData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i16.ArmorData>?>()) {
+    if (t == _i1.getType<List<_i18.ArmorData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i16.ArmorData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i18.ArmorData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i19.WeaponData>?>()) {
+    if (t == _i1.getType<List<_i21.WeaponData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i19.WeaponData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i21.WeaponData>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -2751,14 +2856,14 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i19.WeaponData>?>()) {
+    if (t == _i1.getType<List<_i21.WeaponData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i19.WeaponData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i21.WeaponData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i17.ItemData>?>()) {
+    if (t == _i1.getType<List<_i19.ItemData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i17.ItemData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i19.ItemData>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -2766,9 +2871,9 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i17.ItemData>?>()) {
+    if (t == _i1.getType<List<_i19.ItemData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i17.ItemData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i19.ItemData>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -2820,56 +2925,10 @@ class Protocol extends _i1.SerializationManagerServer {
               MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
-    if (t == _i1.getType<Map<String, int>?>()) {
+    if (t == _i1.getType<Map<String, String>?>()) {
       return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          ? (data as Map).map((k, v) =>
+              MapEntry(deserialize<String>(k), deserialize<String>(v)))
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -2901,6 +2960,66 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, _i22.SpellData>?>()) {
+      return (data != null
+          ? (data as Map).map((k, v) =>
+              MapEntry(deserialize<String>(k), deserialize<_i22.SpellData>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i16.RaceOptionData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i16.RaceOptionData>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -2938,72 +3057,87 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i3.UserInfo>(e)).toList()
           as T;
     }
-    if (t == List<_i21.BackgroundData>) {
+    if (t == List<_i23.BackgroundData>) {
       return (data as List)
-          .map((e) => deserialize<_i21.BackgroundData>(e))
+          .map((e) => deserialize<_i23.BackgroundData>(e))
           .toList() as T;
     }
-    if (t == List<_i22.FeatData>) {
-      return (data as List).map((e) => deserialize<_i22.FeatData>(e)).toList()
+    if (t == List<_i24.FeatData>) {
+      return (data as List).map((e) => deserialize<_i24.FeatData>(e)).toList()
           as T;
     }
-    if (t == List<_i23.CharacterData>) {
+    if (t == List<_i25.CharacterData>) {
       return (data as List)
-          .map((e) => deserialize<_i23.CharacterData>(e))
+          .map((e) => deserialize<_i25.CharacterData>(e))
           .toList() as T;
     }
-    if (t == List<_i24.ClassData>) {
-      return (data as List).map((e) => deserialize<_i24.ClassData>(e)).toList()
+    if (t == List<_i26.ClassData>) {
+      return (data as List).map((e) => deserialize<_i26.ClassData>(e)).toList()
           as T;
     }
-    if (t == List<_i25.ClassFeatureData>) {
+    if (t == List<_i27.ClassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i25.ClassFeatureData>(e))
+          .map((e) => deserialize<_i27.ClassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i26.SubclassData>) {
+    if (t == List<_i28.SubclassData>) {
       return (data as List)
-          .map((e) => deserialize<_i26.SubclassData>(e))
+          .map((e) => deserialize<_i28.SubclassData>(e))
           .toList() as T;
     }
-    if (t == List<_i27.ClassOptionData>) {
+    if (t == List<_i29.ClassOptionData>) {
       return (data as List)
-          .map((e) => deserialize<_i27.ClassOptionData>(e))
+          .map((e) => deserialize<_i29.ClassOptionData>(e))
           .toList() as T;
     }
-    if (t == List<_i28.SubclassFeatureData>) {
+    if (t == List<_i30.SubclassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i28.SubclassFeatureData>(e))
+          .map((e) => deserialize<_i30.SubclassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i29.RaceData>) {
-      return (data as List).map((e) => deserialize<_i29.RaceData>(e)).toList()
+    if (t == List<_i31.RaceData>) {
+      return (data as List).map((e) => deserialize<_i31.RaceData>(e)).toList()
           as T;
     }
-    if (t == List<_i30.SubraceData>) {
+    if (t == List<_i32.RaceFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i30.SubraceData>(e))
+          .map((e) => deserialize<_i32.RaceFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i31.ArmorData>) {
-      return (data as List).map((e) => deserialize<_i31.ArmorData>(e)).toList()
-          as T;
-    }
-    if (t == List<_i32.ItemData>) {
-      return (data as List).map((e) => deserialize<_i32.ItemData>(e)).toList()
-          as T;
-    }
-    if (t == List<_i33.MagicItemData>) {
+    if (t == List<_i33.SubraceData>) {
       return (data as List)
-          .map((e) => deserialize<_i33.MagicItemData>(e))
+          .map((e) => deserialize<_i33.SubraceData>(e))
           .toList() as T;
     }
-    if (t == List<_i34.WeaponData>) {
-      return (data as List).map((e) => deserialize<_i34.WeaponData>(e)).toList()
+    if (t == List<_i34.RaceOptionData>) {
+      return (data as List)
+          .map((e) => deserialize<_i34.RaceOptionData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i35.DragonbornAncestryData>) {
+      return (data as List)
+          .map((e) => deserialize<_i35.DragonbornAncestryData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i36.ArmorData>) {
+      return (data as List).map((e) => deserialize<_i36.ArmorData>(e)).toList()
           as T;
     }
-    if (t == List<_i35.SpellData>) {
-      return (data as List).map((e) => deserialize<_i35.SpellData>(e)).toList()
+    if (t == List<_i37.ItemData>) {
+      return (data as List).map((e) => deserialize<_i37.ItemData>(e)).toList()
+          as T;
+    }
+    if (t == List<_i38.MagicItemData>) {
+      return (data as List)
+          .map((e) => deserialize<_i38.MagicItemData>(e))
+          .toList() as T;
+    }
+    if (t == List<_i39.WeaponData>) {
+      return (data as List).map((e) => deserialize<_i39.WeaponData>(e)).toList()
+          as T;
+    }
+    if (t == List<_i40.SpellData>) {
+      return (data as List).map((e) => deserialize<_i40.SpellData>(e)).toList()
           as T;
     }
     try {
@@ -3046,28 +3180,34 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i12.SubclassFeatureData) {
       return 'SubclassFeatureData';
     }
-    if (data is _i13.RaceData) {
+    if (data is _i13.DragonbornAncestryData) {
+      return 'DragonbornAncestryData';
+    }
+    if (data is _i14.RaceData) {
       return 'RaceData';
     }
-    if (data is _i14.RaceFeatureData) {
+    if (data is _i15.RaceFeatureData) {
       return 'RaceFeatureData';
     }
-    if (data is _i15.SubraceData) {
+    if (data is _i16.RaceOptionData) {
+      return 'RaceOptionData';
+    }
+    if (data is _i17.SubraceData) {
       return 'SubraceData';
     }
-    if (data is _i16.ArmorData) {
+    if (data is _i18.ArmorData) {
       return 'ArmorData';
     }
-    if (data is _i17.ItemData) {
+    if (data is _i19.ItemData) {
       return 'ItemData';
     }
-    if (data is _i18.MagicItemData) {
+    if (data is _i20.MagicItemData) {
       return 'MagicItemData';
     }
-    if (data is _i19.WeaponData) {
+    if (data is _i21.WeaponData) {
       return 'WeaponData';
     }
-    if (data is _i20.SpellData) {
+    if (data is _i22.SpellData) {
       return 'SpellData';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -3114,29 +3254,35 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'SubclassFeatureData') {
       return deserialize<_i12.SubclassFeatureData>(data['data']);
     }
+    if (dataClassName == 'DragonbornAncestryData') {
+      return deserialize<_i13.DragonbornAncestryData>(data['data']);
+    }
     if (dataClassName == 'RaceData') {
-      return deserialize<_i13.RaceData>(data['data']);
+      return deserialize<_i14.RaceData>(data['data']);
     }
     if (dataClassName == 'RaceFeatureData') {
-      return deserialize<_i14.RaceFeatureData>(data['data']);
+      return deserialize<_i15.RaceFeatureData>(data['data']);
+    }
+    if (dataClassName == 'RaceOptionData') {
+      return deserialize<_i16.RaceOptionData>(data['data']);
     }
     if (dataClassName == 'SubraceData') {
-      return deserialize<_i15.SubraceData>(data['data']);
+      return deserialize<_i17.SubraceData>(data['data']);
     }
     if (dataClassName == 'ArmorData') {
-      return deserialize<_i16.ArmorData>(data['data']);
+      return deserialize<_i18.ArmorData>(data['data']);
     }
     if (dataClassName == 'ItemData') {
-      return deserialize<_i17.ItemData>(data['data']);
+      return deserialize<_i19.ItemData>(data['data']);
     }
     if (dataClassName == 'MagicItemData') {
-      return deserialize<_i18.MagicItemData>(data['data']);
+      return deserialize<_i20.MagicItemData>(data['data']);
     }
     if (dataClassName == 'WeaponData') {
-      return deserialize<_i19.WeaponData>(data['data']);
+      return deserialize<_i21.WeaponData>(data['data']);
     }
     if (dataClassName == 'SpellData') {
-      return deserialize<_i20.SpellData>(data['data']);
+      return deserialize<_i22.SpellData>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -3182,22 +3328,26 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i11.SubclassData.t;
       case _i12.SubclassFeatureData:
         return _i12.SubclassFeatureData.t;
-      case _i13.RaceData:
-        return _i13.RaceData.t;
-      case _i14.RaceFeatureData:
-        return _i14.RaceFeatureData.t;
-      case _i15.SubraceData:
-        return _i15.SubraceData.t;
-      case _i16.ArmorData:
-        return _i16.ArmorData.t;
-      case _i17.ItemData:
-        return _i17.ItemData.t;
-      case _i18.MagicItemData:
-        return _i18.MagicItemData.t;
-      case _i19.WeaponData:
-        return _i19.WeaponData.t;
-      case _i20.SpellData:
-        return _i20.SpellData.t;
+      case _i13.DragonbornAncestryData:
+        return _i13.DragonbornAncestryData.t;
+      case _i14.RaceData:
+        return _i14.RaceData.t;
+      case _i15.RaceFeatureData:
+        return _i15.RaceFeatureData.t;
+      case _i16.RaceOptionData:
+        return _i16.RaceOptionData.t;
+      case _i17.SubraceData:
+        return _i17.SubraceData.t;
+      case _i18.ArmorData:
+        return _i18.ArmorData.t;
+      case _i19.ItemData:
+        return _i19.ItemData.t;
+      case _i20.MagicItemData:
+        return _i20.MagicItemData.t;
+      case _i21.WeaponData:
+        return _i21.WeaponData.t;
+      case _i22.SpellData:
+        return _i22.SpellData.t;
     }
     return null;
   }

@@ -8,26 +8,24 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
+
   speed: int?
   size: String?
-  abilityBonuses: Map<String, int>?
+  abilityBonuses: Map<String, int>? 
   traits: List<String>?
   languages: List<String>?
 
+
   visionType: String?
-  swimSpeed: int?
-  climbSpeed: int?
-  flySpeed: int?
   resistances: List<String>?
   skillProficiencies: List<String>?
   armorProficiencies: List<String>?
   weaponProficiencies: List<String>?
   toolProficiencies: List<String>?
-  powerfulBuild: bool?
-  specialAbilities: List<String>?
-  ageDescription: String?
-  alignmentDescription: String?
-  physicalDescription: String?
+
+
+  spellcasting: Map<String, SpellData>? 
+
+
 
   imageURL: String?
-  

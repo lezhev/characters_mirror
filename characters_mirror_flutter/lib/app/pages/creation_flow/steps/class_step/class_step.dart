@@ -1,9 +1,9 @@
 import 'package:characters_mirror_flutter/app/pages/creation_flow/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/class_features.dart';
-import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/class_step_shimmer.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/class_tile_view.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
+import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_shimmer.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/app/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
@@ -50,6 +50,9 @@ class ClassStep extends ConsumerWidget {
                   ref
                       .read(characterCreationProvider.notifier)
                       .nextStep(context);
+                  ref
+                      .read(characterCreationProvider.notifier)
+                      .addClass(data.selectedClass!);
                 },
                 route: 'background',
               ),
@@ -65,7 +68,7 @@ class ClassStep extends ConsumerWidget {
             context: context);
       },
       loading: () {
-        return ClassStepShimmer();
+        return CreationShimmer();
       },
     );
   }

@@ -1,8 +1,8 @@
 class: RaceFeatureData
 table: race_feature_data
 fields:
-  race: RaceData?, relation
-  subrace: SubraceData?, relation
+  race: RaceData?, relation (optional)
+  subrace: SubraceData?, relation (optional)
   name: String?
   description: String?
   source: String?
@@ -10,12 +10,7 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
-  # Механика
   level: int?                       
-  mechanicalType: String?           # enum RaceFeatureType
-
-
-
-  spells: Map<String, int>?         # spellName -> lvlGranted
+  spells: Map<String, int>?    # spellName -> lvlGranted
   usesPerRest: String?
   usesFormula: String?

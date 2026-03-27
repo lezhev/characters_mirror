@@ -13,6 +13,9 @@ abstract class RaceStateModel with _$RaceStateModel {
     RaceData? selectedRace,
     @Default([]) List<SubraceData> subraces,
     SubraceData? selectedSubrace,
+    @Default([]) List<RaceFeatureData> features,
+    @Default([]) List<RaceFeatureData> futureFeatures,
+    @Default({}) Map<int, List<RaceFeatureData>> subclassFeatures,
   }) = _RaceStateModel;
 }
 
@@ -20,7 +23,7 @@ abstract class RaceStateModel with _$RaceStateModel {
 class RaceState extends _$RaceState {
   @override
   FutureOr<RaceStateModel> build() async {
-    await Future.delayed(Duration(milliseconds: 100));
+    //await Future.delayed(Duration(milliseconds: 100));
     final races = await RaceRepository().getAll();
     races.sort((a, b) => a.id!.compareTo(b.id!));
 
@@ -38,6 +41,22 @@ class RaceState extends _$RaceState {
   void unselectRace() {
     state = AsyncValue.data(
       state.value!.copyWith(selectedRace: null, subraces: []),
+    );
+  }
+
+  void selectSubrace(SubraceData newSubrace) {
+    state = AsyncValue.data(
+      state.value!.copyWith(
+        selectedSubrace: newSubrace,
+      ),
+    );
+  }
+
+  void unselectSubrace() {
+    state = AsyncValue.data(
+      state.value!.copyWith(
+        selectedSubrace: null,
+      ),
     );
   }
 }

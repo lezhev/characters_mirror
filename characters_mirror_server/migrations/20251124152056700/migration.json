@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "dragonborn_ancestry_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "damageByLevel",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,String>?"
+          }
+        ],
+        "deleteColumns": [
+          "damageByLevel"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column damageByLevel of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "damageByLevel"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column damageByLevel of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+      "table": "dragonborn_ancestry_data",
+      "columns": [
+        "damageByLevel"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}
