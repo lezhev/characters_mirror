@@ -19,6 +19,7 @@ fields:
   version: int?
   createdAt: DateTime?
   updatedAt: DateTime?
+  userId: int?
   experience: int?
   alignmentValue: CharacterAlignment?
   race: RaceData?, relation(optional)

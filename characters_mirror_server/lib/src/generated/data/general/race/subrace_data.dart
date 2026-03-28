@@ -13,6 +13,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
+import '../../../data/general/race/race_choice_set_data.dart' as _i3;
 
 abstract class SubraceData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -28,8 +29,14 @@ abstract class SubraceData
     this.updatedAt,
     this.abilityBonuses,
     this.traits,
+    this.speedOverride,
+    this.visionRangeOverride,
     this.skillProficiencies,
     this.resistances,
+    this.armorProficiencies,
+    this.weaponProficiencies,
+    this.toolProficiencies,
+    this.choiceSets,
   });
 
   factory SubraceData({
@@ -44,8 +51,14 @@ abstract class SubraceData
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
+    int? speedOverride,
+    int? visionRangeOverride,
     List<String>? skillProficiencies,
     List<String>? resistances,
+    List<String>? armorProficiencies,
+    List<String>? weaponProficiencies,
+    List<String>? toolProficiencies,
+    List<_i3.RaceChoiceSetData>? choiceSets,
   }) = _SubraceDataImpl;
 
   factory SubraceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -74,11 +87,26 @@ abstract class SubraceData
       traits: (jsonSerialization['traits'] as List?)
           ?.map((e) => e as String)
           .toList(),
+      speedOverride: jsonSerialization['speedOverride'] as int?,
+      visionRangeOverride: jsonSerialization['visionRangeOverride'] as int?,
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
           ?.map((e) => e as String)
+          .toList(),
+      armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
+      weaponProficiencies: (jsonSerialization['weaponProficiencies'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
+      toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
+      choiceSets: (jsonSerialization['choiceSets'] as List?)
+          ?.map((e) =>
+              _i3.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -110,9 +138,21 @@ abstract class SubraceData
 
   List<String>? traits;
 
+  int? speedOverride;
+
+  int? visionRangeOverride;
+
   List<String>? skillProficiencies;
 
   List<String>? resistances;
+
+  List<String>? armorProficiencies;
+
+  List<String>? weaponProficiencies;
+
+  List<String>? toolProficiencies;
+
+  List<_i3.RaceChoiceSetData>? choiceSets;
 
   @override
   _i1.Table<int?> get table => t;
@@ -132,8 +172,14 @@ abstract class SubraceData
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
+    int? speedOverride,
+    int? visionRangeOverride,
     List<String>? skillProficiencies,
     List<String>? resistances,
+    List<String>? armorProficiencies,
+    List<String>? weaponProficiencies,
+    List<String>? toolProficiencies,
+    List<_i3.RaceChoiceSetData>? choiceSets,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -149,9 +195,20 @@ abstract class SubraceData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
       if (traits != null) 'traits': traits?.toJson(),
+      if (speedOverride != null) 'speedOverride': speedOverride,
+      if (visionRangeOverride != null)
+        'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
       if (resistances != null) 'resistances': resistances?.toJson(),
+      if (armorProficiencies != null)
+        'armorProficiencies': armorProficiencies?.toJson(),
+      if (weaponProficiencies != null)
+        'weaponProficiencies': weaponProficiencies?.toJson(),
+      if (toolProficiencies != null)
+        'toolProficiencies': toolProficiencies?.toJson(),
+      if (choiceSets != null)
+        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -169,14 +226,32 @@ abstract class SubraceData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
       if (traits != null) 'traits': traits?.toJson(),
+      if (speedOverride != null) 'speedOverride': speedOverride,
+      if (visionRangeOverride != null)
+        'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
       if (resistances != null) 'resistances': resistances?.toJson(),
+      if (armorProficiencies != null)
+        'armorProficiencies': armorProficiencies?.toJson(),
+      if (weaponProficiencies != null)
+        'weaponProficiencies': weaponProficiencies?.toJson(),
+      if (toolProficiencies != null)
+        'toolProficiencies': toolProficiencies?.toJson(),
+      if (choiceSets != null)
+        'choiceSets':
+            choiceSets?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static SubraceDataInclude include({_i2.RaceDataInclude? parentRace}) {
-    return SubraceDataInclude._(parentRace: parentRace);
+  static SubraceDataInclude include({
+    _i2.RaceDataInclude? parentRace,
+    _i3.RaceChoiceSetDataIncludeList? choiceSets,
+  }) {
+    return SubraceDataInclude._(
+      parentRace: parentRace,
+      choiceSets: choiceSets,
+    );
   }
 
   static SubraceDataIncludeList includeList({
@@ -220,8 +295,14 @@ class _SubraceDataImpl extends SubraceData {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
+    int? speedOverride,
+    int? visionRangeOverride,
     List<String>? skillProficiencies,
     List<String>? resistances,
+    List<String>? armorProficiencies,
+    List<String>? weaponProficiencies,
+    List<String>? toolProficiencies,
+    List<_i3.RaceChoiceSetData>? choiceSets,
   }) : super._(
           id: id,
           name: name,
@@ -234,8 +315,14 @@ class _SubraceDataImpl extends SubraceData {
           updatedAt: updatedAt,
           abilityBonuses: abilityBonuses,
           traits: traits,
+          speedOverride: speedOverride,
+          visionRangeOverride: visionRangeOverride,
           skillProficiencies: skillProficiencies,
           resistances: resistances,
+          armorProficiencies: armorProficiencies,
+          weaponProficiencies: weaponProficiencies,
+          toolProficiencies: toolProficiencies,
+          choiceSets: choiceSets,
         );
 
   /// Returns a shallow copy of this [SubraceData]
@@ -254,8 +341,14 @@ class _SubraceDataImpl extends SubraceData {
     Object? updatedAt = _Undefined,
     Object? abilityBonuses = _Undefined,
     Object? traits = _Undefined,
+    Object? speedOverride = _Undefined,
+    Object? visionRangeOverride = _Undefined,
     Object? skillProficiencies = _Undefined,
     Object? resistances = _Undefined,
+    Object? armorProficiencies = _Undefined,
+    Object? weaponProficiencies = _Undefined,
+    Object? toolProficiencies = _Undefined,
+    Object? choiceSets = _Undefined,
   }) {
     return SubraceData(
       id: id is int? ? id : this.id,
@@ -282,12 +375,28 @@ class _SubraceDataImpl extends SubraceData {
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
+      speedOverride: speedOverride is int? ? speedOverride : this.speedOverride,
+      visionRangeOverride: visionRangeOverride is int?
+          ? visionRangeOverride
+          : this.visionRangeOverride,
       skillProficiencies: skillProficiencies is List<String>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
       resistances: resistances is List<String>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
+      armorProficiencies: armorProficiencies is List<String>?
+          ? armorProficiencies
+          : this.armorProficiencies?.map((e0) => e0).toList(),
+      weaponProficiencies: weaponProficiencies is List<String>?
+          ? weaponProficiencies
+          : this.weaponProficiencies?.map((e0) => e0).toList(),
+      toolProficiencies: toolProficiencies is List<String>?
+          ? toolProficiencies
+          : this.toolProficiencies?.map((e0) => e0).toList(),
+      choiceSets: choiceSets is List<_i3.RaceChoiceSetData>?
+          ? choiceSets
+          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -330,12 +439,32 @@ class SubraceDataTable extends _i1.Table<int?> {
       'traits',
       this,
     );
+    speedOverride = _i1.ColumnInt(
+      'speedOverride',
+      this,
+    );
+    visionRangeOverride = _i1.ColumnInt(
+      'visionRangeOverride',
+      this,
+    );
     skillProficiencies = _i1.ColumnSerializable(
       'skillProficiencies',
       this,
     );
     resistances = _i1.ColumnSerializable(
       'resistances',
+      this,
+    );
+    armorProficiencies = _i1.ColumnSerializable(
+      'armorProficiencies',
+      this,
+    );
+    weaponProficiencies = _i1.ColumnSerializable(
+      'weaponProficiencies',
+      this,
+    );
+    toolProficiencies = _i1.ColumnSerializable(
+      'toolProficiencies',
       this,
     );
   }
@@ -360,9 +489,23 @@ class SubraceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable traits;
 
+  late final _i1.ColumnInt speedOverride;
+
+  late final _i1.ColumnInt visionRangeOverride;
+
   late final _i1.ColumnSerializable skillProficiencies;
 
   late final _i1.ColumnSerializable resistances;
+
+  late final _i1.ColumnSerializable armorProficiencies;
+
+  late final _i1.ColumnSerializable weaponProficiencies;
+
+  late final _i1.ColumnSerializable toolProficiencies;
+
+  _i3.RaceChoiceSetDataTable? ___choiceSets;
+
+  _i1.ManyRelation<_i3.RaceChoiceSetDataTable>? _choiceSets;
 
   _i2.RaceDataTable get parentRace {
     if (_parentRace != null) return _parentRace!;
@@ -377,6 +520,39 @@ class SubraceDataTable extends _i1.Table<int?> {
     return _parentRace!;
   }
 
+  _i3.RaceChoiceSetDataTable get __choiceSets {
+    if (___choiceSets != null) return ___choiceSets!;
+    ___choiceSets = _i1.createRelationTable(
+      relationFieldName: '__choiceSets',
+      field: SubraceData.t.id,
+      foreignField:
+          _i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+    );
+    return ___choiceSets!;
+  }
+
+  _i1.ManyRelation<_i3.RaceChoiceSetDataTable> get choiceSets {
+    if (_choiceSets != null) return _choiceSets!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'choiceSets',
+      field: SubraceData.t.id,
+      foreignField:
+          _i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+    );
+    _choiceSets = _i1.ManyRelation<_i3.RaceChoiceSetDataTable>(
+      tableWithRelations: relationTable,
+      table: _i3.RaceChoiceSetDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _choiceSets!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -389,8 +565,13 @@ class SubraceDataTable extends _i1.Table<int?> {
         updatedAt,
         abilityBonuses,
         traits,
+        speedOverride,
+        visionRangeOverride,
         skillProficiencies,
         resistances,
+        armorProficiencies,
+        weaponProficiencies,
+        toolProficiencies,
       ];
 
   @override
@@ -398,19 +579,31 @@ class SubraceDataTable extends _i1.Table<int?> {
     if (relationField == 'parentRace') {
       return parentRace;
     }
+    if (relationField == 'choiceSets') {
+      return __choiceSets;
+    }
     return null;
   }
 }
 
 class SubraceDataInclude extends _i1.IncludeObject {
-  SubraceDataInclude._({_i2.RaceDataInclude? parentRace}) {
+  SubraceDataInclude._({
+    _i2.RaceDataInclude? parentRace,
+    _i3.RaceChoiceSetDataIncludeList? choiceSets,
+  }) {
     _parentRace = parentRace;
+    _choiceSets = choiceSets;
   }
 
   _i2.RaceDataInclude? _parentRace;
 
+  _i3.RaceChoiceSetDataIncludeList? _choiceSets;
+
   @override
-  Map<String, _i1.Include?> get includes => {'parentRace': _parentRace};
+  Map<String, _i1.Include?> get includes => {
+        'parentRace': _parentRace,
+        'choiceSets': _choiceSets,
+      };
 
   @override
   _i1.Table<int?> get table => SubraceData.t;
@@ -439,7 +632,13 @@ class SubraceDataIncludeList extends _i1.IncludeList {
 class SubraceDataRepository {
   const SubraceDataRepository._();
 
+  final attach = const SubraceDataAttachRepository._();
+
   final attachRow = const SubraceDataAttachRowRepository._();
+
+  final detach = const SubraceDataDetachRepository._();
+
+  final detachRow = const SubraceDataDetachRowRepository._();
 
   /// Returns a list of [SubraceData]s matching the given query parameters.
   ///
@@ -657,6 +856,38 @@ class SubraceDataRepository {
   }
 }
 
+class SubraceDataAttachRepository {
+  const SubraceDataAttachRepository._();
+
+  /// Creates a relation between this [SubraceData] and the given [RaceChoiceSetData]s
+  /// by setting each [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to refer to this [SubraceData].
+  Future<void> choiceSets(
+    _i1.Session session,
+    SubraceData subraceData,
+    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+    if (subraceData.id == null) {
+      throw ArgumentError.notNull('subraceData.id');
+    }
+
+    var $raceChoiceSetData = raceChoiceSetData
+        .map((e) => _i3.RaceChoiceSetDataImplicit(
+              e,
+              $_subraceDataChoicesetsSubraceDataId: subraceData.id,
+            ))
+        .toList();
+    await session.db.update<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
+      transaction: transaction,
+    );
+  }
+}
+
 class SubraceDataAttachRowRepository {
   const SubraceDataAttachRowRepository._();
 
@@ -679,6 +910,92 @@ class SubraceDataAttachRowRepository {
     await session.db.updateRow<SubraceData>(
       $subraceData,
       columns: [SubraceData.t.parentRaceId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [SubraceData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to refer to this [SubraceData].
+  Future<void> choiceSets(
+    _i1.Session session,
+    SubraceData subraceData,
+    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.id == null) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+    if (subraceData.id == null) {
+      throw ArgumentError.notNull('subraceData.id');
+    }
+
+    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
+      raceChoiceSetData,
+      $_subraceDataChoicesetsSubraceDataId: subraceData.id,
+    );
+    await session.db.updateRow<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
+      transaction: transaction,
+    );
+  }
+}
+
+class SubraceDataDetachRepository {
+  const SubraceDataDetachRepository._();
+
+  /// Detaches the relation between this [SubraceData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceSets(
+    _i1.Session session,
+    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+
+    var $raceChoiceSetData = raceChoiceSetData
+        .map((e) => _i3.RaceChoiceSetDataImplicit(
+              e,
+              $_subraceDataChoicesetsSubraceDataId: null,
+            ))
+        .toList();
+    await session.db.update<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
+      transaction: transaction,
+    );
+  }
+}
+
+class SubraceDataDetachRowRepository {
+  const SubraceDataDetachRowRepository._();
+
+  /// Detaches the relation between this [SubraceData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceSets(
+    _i1.Session session,
+    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.id == null) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+
+    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
+      raceChoiceSetData,
+      $_subraceDataChoicesetsSubraceDataId: null,
+    );
+    await session.db.updateRow<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
       transaction: transaction,
     );
   }

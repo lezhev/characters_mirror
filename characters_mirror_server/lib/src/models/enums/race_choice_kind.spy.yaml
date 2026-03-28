@@ -1,0 +1,7 @@
+enum: RaceChoiceKind
+values:
+  - abilityBonusChoice
+  - skillProficiencyChoice
+  - languageChoice
+  - toolProficiencyChoice
+  - cantripChoice

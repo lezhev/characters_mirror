@@ -15,6 +15,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
 import '../../../data/general/race/subrace_data.dart' as _i3;
 import '../../../enums/feature_tag.dart' as _i4;
+import '../../../data/general/race/race_feature_spell_grant_data.dart' as _i5;
+import '../../../data/general/race/race_choice_set_data.dart' as _i6;
 
 abstract class RaceFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -35,6 +37,8 @@ abstract class RaceFeatureData
     this.usesPerRest,
     this.usesFormula,
     this.tags,
+    this.spellGrants,
+    this.choiceSets,
   });
 
   factory RaceFeatureData({
@@ -54,6 +58,8 @@ abstract class RaceFeatureData
     String? usesPerRest,
     String? usesFormula,
     List<_i4.FeatureTag>? tags,
+    List<_i5.RaceFeatureSpellGrantData>? spellGrants,
+    List<_i6.RaceChoiceSetData>? choiceSets,
   }) = _RaceFeatureDataImpl;
 
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -88,6 +94,14 @@ abstract class RaceFeatureData
       usesFormula: jsonSerialization['usesFormula'] as String?,
       tags: (jsonSerialization['tags'] as List?)
           ?.map((e) => _i4.FeatureTag.fromJson((e as int)))
+          .toList(),
+      spellGrants: (jsonSerialization['spellGrants'] as List?)
+          ?.map((e) => _i5.RaceFeatureSpellGrantData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
+      choiceSets: (jsonSerialization['choiceSets'] as List?)
+          ?.map((e) =>
+              _i6.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -129,6 +143,10 @@ abstract class RaceFeatureData
 
   List<_i4.FeatureTag>? tags;
 
+  List<_i5.RaceFeatureSpellGrantData>? spellGrants;
+
+  List<_i6.RaceChoiceSetData>? choiceSets;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -152,6 +170,8 @@ abstract class RaceFeatureData
     String? usesPerRest,
     String? usesFormula,
     List<_i4.FeatureTag>? tags,
+    List<_i5.RaceFeatureSpellGrantData>? spellGrants,
+    List<_i6.RaceChoiceSetData>? choiceSets,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -172,6 +192,10 @@ abstract class RaceFeatureData
       if (usesPerRest != null) 'usesPerRest': usesPerRest,
       if (usesFormula != null) 'usesFormula': usesFormula,
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
+      if (spellGrants != null)
+        'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
+      if (choiceSets != null)
+        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -194,16 +218,26 @@ abstract class RaceFeatureData
       if (usesPerRest != null) 'usesPerRest': usesPerRest,
       if (usesFormula != null) 'usesFormula': usesFormula,
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
+      if (spellGrants != null)
+        'spellGrants':
+            spellGrants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (choiceSets != null)
+        'choiceSets':
+            choiceSets?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
   static RaceFeatureDataInclude include({
     _i2.RaceDataInclude? race,
     _i3.SubraceDataInclude? subrace,
+    _i5.RaceFeatureSpellGrantDataIncludeList? spellGrants,
+    _i6.RaceChoiceSetDataIncludeList? choiceSets,
   }) {
     return RaceFeatureDataInclude._(
       race: race,
       subrace: subrace,
+      spellGrants: spellGrants,
+      choiceSets: choiceSets,
     );
   }
 
@@ -253,6 +287,8 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     String? usesPerRest,
     String? usesFormula,
     List<_i4.FeatureTag>? tags,
+    List<_i5.RaceFeatureSpellGrantData>? spellGrants,
+    List<_i6.RaceChoiceSetData>? choiceSets,
   }) : super._(
           id: id,
           raceId: raceId,
@@ -270,6 +306,8 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           usesPerRest: usesPerRest,
           usesFormula: usesFormula,
           tags: tags,
+          spellGrants: spellGrants,
+          choiceSets: choiceSets,
         );
 
   /// Returns a shallow copy of this [RaceFeatureData]
@@ -293,6 +331,8 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? usesPerRest = _Undefined,
     Object? usesFormula = _Undefined,
     Object? tags = _Undefined,
+    Object? spellGrants = _Undefined,
+    Object? choiceSets = _Undefined,
   }) {
     return RaceFeatureData(
       id: id is int? ? id : this.id,
@@ -322,6 +362,12 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       tags: tags is List<_i4.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
+      spellGrants: spellGrants is List<_i5.RaceFeatureSpellGrantData>?
+          ? spellGrants
+          : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
+      choiceSets: choiceSets is List<_i6.RaceChoiceSetData>?
+          ? choiceSets
+          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -413,6 +459,14 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable tags;
 
+  _i5.RaceFeatureSpellGrantDataTable? ___spellGrants;
+
+  _i1.ManyRelation<_i5.RaceFeatureSpellGrantDataTable>? _spellGrants;
+
+  _i6.RaceChoiceSetDataTable? ___choiceSets;
+
+  _i1.ManyRelation<_i6.RaceChoiceSetDataTable>? _choiceSets;
+
   _i2.RaceDataTable get race {
     if (_race != null) return _race!;
     _race = _i1.createRelationTable(
@@ -437,6 +491,72 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
           _i3.SubraceDataTable(tableRelation: foreignTableRelation),
     );
     return _subrace!;
+  }
+
+  _i5.RaceFeatureSpellGrantDataTable get __spellGrants {
+    if (___spellGrants != null) return ___spellGrants!;
+    ___spellGrants = _i1.createRelationTable(
+      relationFieldName: '__spellGrants',
+      field: RaceFeatureData.t.id,
+      foreignField: _i5.RaceFeatureSpellGrantData.t
+          .$_raceFeatureDataSpellgrantsRaceFeatureDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _i5.RaceFeatureSpellGrantDataTable(
+          tableRelation: foreignTableRelation),
+    );
+    return ___spellGrants!;
+  }
+
+  _i6.RaceChoiceSetDataTable get __choiceSets {
+    if (___choiceSets != null) return ___choiceSets!;
+    ___choiceSets = _i1.createRelationTable(
+      relationFieldName: '__choiceSets',
+      field: RaceFeatureData.t.id,
+      foreignField:
+          _i6.RaceChoiceSetData.t.$_raceFeatureDataChoicesetsRaceFeatureDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i6.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+    );
+    return ___choiceSets!;
+  }
+
+  _i1.ManyRelation<_i5.RaceFeatureSpellGrantDataTable> get spellGrants {
+    if (_spellGrants != null) return _spellGrants!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'spellGrants',
+      field: RaceFeatureData.t.id,
+      foreignField: _i5.RaceFeatureSpellGrantData.t
+          .$_raceFeatureDataSpellgrantsRaceFeatureDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _i5.RaceFeatureSpellGrantDataTable(
+          tableRelation: foreignTableRelation),
+    );
+    _spellGrants = _i1.ManyRelation<_i5.RaceFeatureSpellGrantDataTable>(
+      tableWithRelations: relationTable,
+      table: _i5.RaceFeatureSpellGrantDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _spellGrants!;
+  }
+
+  _i1.ManyRelation<_i6.RaceChoiceSetDataTable> get choiceSets {
+    if (_choiceSets != null) return _choiceSets!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'choiceSets',
+      field: RaceFeatureData.t.id,
+      foreignField:
+          _i6.RaceChoiceSetData.t.$_raceFeatureDataChoicesetsRaceFeatureDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i6.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+    );
+    _choiceSets = _i1.ManyRelation<_i6.RaceChoiceSetDataTable>(
+      tableWithRelations: relationTable,
+      table: _i6.RaceChoiceSetDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _choiceSets!;
   }
 
   @override
@@ -465,6 +585,12 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
     if (relationField == 'subrace') {
       return subrace;
     }
+    if (relationField == 'spellGrants') {
+      return __spellGrants;
+    }
+    if (relationField == 'choiceSets') {
+      return __choiceSets;
+    }
     return null;
   }
 }
@@ -473,19 +599,29 @@ class RaceFeatureDataInclude extends _i1.IncludeObject {
   RaceFeatureDataInclude._({
     _i2.RaceDataInclude? race,
     _i3.SubraceDataInclude? subrace,
+    _i5.RaceFeatureSpellGrantDataIncludeList? spellGrants,
+    _i6.RaceChoiceSetDataIncludeList? choiceSets,
   }) {
     _race = race;
     _subrace = subrace;
+    _spellGrants = spellGrants;
+    _choiceSets = choiceSets;
   }
 
   _i2.RaceDataInclude? _race;
 
   _i3.SubraceDataInclude? _subrace;
 
+  _i5.RaceFeatureSpellGrantDataIncludeList? _spellGrants;
+
+  _i6.RaceChoiceSetDataIncludeList? _choiceSets;
+
   @override
   Map<String, _i1.Include?> get includes => {
         'race': _race,
         'subrace': _subrace,
+        'spellGrants': _spellGrants,
+        'choiceSets': _choiceSets,
       };
 
   @override
@@ -515,7 +651,11 @@ class RaceFeatureDataIncludeList extends _i1.IncludeList {
 class RaceFeatureDataRepository {
   const RaceFeatureDataRepository._();
 
+  final attach = const RaceFeatureDataAttachRepository._();
+
   final attachRow = const RaceFeatureDataAttachRowRepository._();
+
+  final detach = const RaceFeatureDataDetachRepository._();
 
   final detachRow = const RaceFeatureDataDetachRowRepository._();
 
@@ -735,6 +875,71 @@ class RaceFeatureDataRepository {
   }
 }
 
+class RaceFeatureDataAttachRepository {
+  const RaceFeatureDataAttachRepository._();
+
+  /// Creates a relation between this [RaceFeatureData] and the given [RaceFeatureSpellGrantData]s
+  /// by setting each [RaceFeatureSpellGrantData]'s foreign key `_raceFeatureDataSpellgrantsRaceFeatureDataId` to refer to this [RaceFeatureData].
+  Future<void> spellGrants(
+    _i1.Session session,
+    RaceFeatureData raceFeatureData,
+    List<_i5.RaceFeatureSpellGrantData> raceFeatureSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceFeatureSpellGrantData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceFeatureSpellGrantData.id');
+    }
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
+    }
+
+    var $raceFeatureSpellGrantData = raceFeatureSpellGrantData
+        .map((e) => _i5.RaceFeatureSpellGrantDataImplicit(
+              e,
+              $_raceFeatureDataSpellgrantsRaceFeatureDataId: raceFeatureData.id,
+            ))
+        .toList();
+    await session.db.update<_i5.RaceFeatureSpellGrantData>(
+      $raceFeatureSpellGrantData,
+      columns: [
+        _i5.RaceFeatureSpellGrantData.t
+            .$_raceFeatureDataSpellgrantsRaceFeatureDataId
+      ],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [RaceFeatureData] and the given [RaceChoiceSetData]s
+  /// by setting each [RaceChoiceSetData]'s foreign key `_raceFeatureDataChoicesetsRaceFeatureDataId` to refer to this [RaceFeatureData].
+  Future<void> choiceSets(
+    _i1.Session session,
+    RaceFeatureData raceFeatureData,
+    List<_i6.RaceChoiceSetData> raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
+    }
+
+    var $raceChoiceSetData = raceChoiceSetData
+        .map((e) => _i6.RaceChoiceSetDataImplicit(
+              e,
+              $_raceFeatureDataChoicesetsRaceFeatureDataId: raceFeatureData.id,
+            ))
+        .toList();
+    await session.db.update<_i6.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [
+        _i6.RaceChoiceSetData.t.$_raceFeatureDataChoicesetsRaceFeatureDataId
+      ],
+      transaction: transaction,
+    );
+  }
+}
+
 class RaceFeatureDataAttachRowRepository {
   const RaceFeatureDataAttachRowRepository._();
 
@@ -783,6 +988,126 @@ class RaceFeatureDataAttachRowRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [RaceFeatureData] and the given [RaceFeatureSpellGrantData]
+  /// by setting the [RaceFeatureSpellGrantData]'s foreign key `_raceFeatureDataSpellgrantsRaceFeatureDataId` to refer to this [RaceFeatureData].
+  Future<void> spellGrants(
+    _i1.Session session,
+    RaceFeatureData raceFeatureData,
+    _i5.RaceFeatureSpellGrantData raceFeatureSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceFeatureSpellGrantData.id == null) {
+      throw ArgumentError.notNull('raceFeatureSpellGrantData.id');
+    }
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
+    }
+
+    var $raceFeatureSpellGrantData = _i5.RaceFeatureSpellGrantDataImplicit(
+      raceFeatureSpellGrantData,
+      $_raceFeatureDataSpellgrantsRaceFeatureDataId: raceFeatureData.id,
+    );
+    await session.db.updateRow<_i5.RaceFeatureSpellGrantData>(
+      $raceFeatureSpellGrantData,
+      columns: [
+        _i5.RaceFeatureSpellGrantData.t
+            .$_raceFeatureDataSpellgrantsRaceFeatureDataId
+      ],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [RaceFeatureData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_raceFeatureDataChoicesetsRaceFeatureDataId` to refer to this [RaceFeatureData].
+  Future<void> choiceSets(
+    _i1.Session session,
+    RaceFeatureData raceFeatureData,
+    _i6.RaceChoiceSetData raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.id == null) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
+    }
+
+    var $raceChoiceSetData = _i6.RaceChoiceSetDataImplicit(
+      raceChoiceSetData,
+      $_raceFeatureDataChoicesetsRaceFeatureDataId: raceFeatureData.id,
+    );
+    await session.db.updateRow<_i6.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [
+        _i6.RaceChoiceSetData.t.$_raceFeatureDataChoicesetsRaceFeatureDataId
+      ],
+      transaction: transaction,
+    );
+  }
+}
+
+class RaceFeatureDataDetachRepository {
+  const RaceFeatureDataDetachRepository._();
+
+  /// Detaches the relation between this [RaceFeatureData] and the given [RaceFeatureSpellGrantData]
+  /// by setting the [RaceFeatureSpellGrantData]'s foreign key `_raceFeatureDataSpellgrantsRaceFeatureDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> spellGrants(
+    _i1.Session session,
+    List<_i5.RaceFeatureSpellGrantData> raceFeatureSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceFeatureSpellGrantData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceFeatureSpellGrantData.id');
+    }
+
+    var $raceFeatureSpellGrantData = raceFeatureSpellGrantData
+        .map((e) => _i5.RaceFeatureSpellGrantDataImplicit(
+              e,
+              $_raceFeatureDataSpellgrantsRaceFeatureDataId: null,
+            ))
+        .toList();
+    await session.db.update<_i5.RaceFeatureSpellGrantData>(
+      $raceFeatureSpellGrantData,
+      columns: [
+        _i5.RaceFeatureSpellGrantData.t
+            .$_raceFeatureDataSpellgrantsRaceFeatureDataId
+      ],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [RaceFeatureData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_raceFeatureDataChoicesetsRaceFeatureDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceSets(
+    _i1.Session session,
+    List<_i6.RaceChoiceSetData> raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+
+    var $raceChoiceSetData = raceChoiceSetData
+        .map((e) => _i6.RaceChoiceSetDataImplicit(
+              e,
+              $_raceFeatureDataChoicesetsRaceFeatureDataId: null,
+            ))
+        .toList();
+    await session.db.update<_i6.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [
+        _i6.RaceChoiceSetData.t.$_raceFeatureDataChoicesetsRaceFeatureDataId
+      ],
+      transaction: transaction,
+    );
+  }
 }
 
 class RaceFeatureDataDetachRowRepository {
@@ -828,6 +1153,61 @@ class RaceFeatureDataDetachRowRepository {
     await session.db.updateRow<RaceFeatureData>(
       $racefeaturedata,
       columns: [RaceFeatureData.t.subraceId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [RaceFeatureData] and the given [RaceFeatureSpellGrantData]
+  /// by setting the [RaceFeatureSpellGrantData]'s foreign key `_raceFeatureDataSpellgrantsRaceFeatureDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> spellGrants(
+    _i1.Session session,
+    _i5.RaceFeatureSpellGrantData raceFeatureSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceFeatureSpellGrantData.id == null) {
+      throw ArgumentError.notNull('raceFeatureSpellGrantData.id');
+    }
+
+    var $raceFeatureSpellGrantData = _i5.RaceFeatureSpellGrantDataImplicit(
+      raceFeatureSpellGrantData,
+      $_raceFeatureDataSpellgrantsRaceFeatureDataId: null,
+    );
+    await session.db.updateRow<_i5.RaceFeatureSpellGrantData>(
+      $raceFeatureSpellGrantData,
+      columns: [
+        _i5.RaceFeatureSpellGrantData.t
+            .$_raceFeatureDataSpellgrantsRaceFeatureDataId
+      ],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [RaceFeatureData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_raceFeatureDataChoicesetsRaceFeatureDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceSets(
+    _i1.Session session,
+    _i6.RaceChoiceSetData raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.id == null) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+
+    var $raceChoiceSetData = _i6.RaceChoiceSetDataImplicit(
+      raceChoiceSetData,
+      $_raceFeatureDataChoicesetsRaceFeatureDataId: null,
+    );
+    await session.db.updateRow<_i6.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [
+        _i6.RaceChoiceSetData.t.$_raceFeatureDataChoicesetsRaceFeatureDataId
+      ],
       transaction: transaction,
     );
   }

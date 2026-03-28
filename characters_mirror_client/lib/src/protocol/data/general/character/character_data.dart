@@ -36,6 +36,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     this.version,
     this.createdAt,
     this.updatedAt,
+    this.userId,
     this.experience,
     this.alignmentValue,
     this.raceId,
@@ -71,6 +72,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
+    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
     int? raceId,
@@ -111,6 +113,7 @@ abstract class CharacterData implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      userId: jsonSerialization['userId'] as int?,
       experience: jsonSerialization['experience'] as int?,
       alignmentValue: jsonSerialization['alignmentValue'] == null
           ? null
@@ -184,6 +187,8 @@ abstract class CharacterData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
+  int? userId;
+
   int? experience;
 
   _i2.CharacterAlignment? alignmentValue;
@@ -233,6 +238,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
+    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
     int? raceId,
@@ -270,6 +276,7 @@ abstract class CharacterData implements _i1.SerializableModel {
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (userId != null) 'userId': userId,
       if (experience != null) 'experience': experience,
       if (alignmentValue != null) 'alignmentValue': alignmentValue?.toJson(),
       if (raceId != null) 'raceId': raceId,
@@ -316,6 +323,7 @@ class _CharacterDataImpl extends CharacterData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
+    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
     int? raceId,
@@ -349,6 +357,7 @@ class _CharacterDataImpl extends CharacterData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
+          userId: userId,
           experience: experience,
           alignmentValue: alignmentValue,
           raceId: raceId,
@@ -388,6 +397,7 @@ class _CharacterDataImpl extends CharacterData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
+    Object? userId = _Undefined,
     Object? experience = _Undefined,
     Object? alignmentValue = _Undefined,
     Object? raceId = _Undefined,
@@ -426,6 +436,7 @@ class _CharacterDataImpl extends CharacterData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
+      userId: userId is int? ? userId : this.userId,
       experience: experience is int? ? experience : this.experience,
       alignmentValue: alignmentValue is _i2.CharacterAlignment?
           ? alignmentValue

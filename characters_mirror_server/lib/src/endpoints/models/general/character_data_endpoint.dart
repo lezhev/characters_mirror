@@ -4,20 +4,28 @@ import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
 class CharacterDataEndpoint extends Endpoint {
+  @override
+  bool get requireLogin => true;
+
   Future<List<CharacterData>> getAll(Session session) async {
-    return CharacterData.db.find(session);
+    final userId = await _requireCurrentUserId(session);
+    return CharacterData.db.find(
+      session,
+      where: (t) => t.userId.equals(userId),
+    );
   }
 
   Future<CharacterBuildData> upsertBuild(
     Session session,
     CharacterBuildData build,
   ) async {
+    final userId = await _requireCurrentUserId(session);
     final character = build.character;
     if (character == null) {
       throw Exception('Character payload is required.');
     }
 
-    final savedCharacter = await _upsertCharacter(session, character);
+    final savedCharacter = await _upsertCharacter(session, character, userId);
 
     await CharacterClassEntryData.db.deleteWhere(
       session,
@@ -25,11 +33,13 @@ class CharacterDataEndpoint extends Endpoint {
     );
 
     final insertedEntries = <CharacterClassEntryData>[];
-    for (final entry in build.classEntries ?? const <CharacterClassEntryData>[]) {
+    for (final entry
+        in build.classEntries ?? const <CharacterClassEntryData>[]) {
       final mutable = entry.copyWith();
       mutable.id = null;
       mutable.character = savedCharacter;
-      insertedEntries.add(await CharacterClassEntryData.db.insertRow(session, mutable));
+      insertedEntries
+          .add(await CharacterClassEntryData.db.insertRow(session, mutable));
     }
 
     await CharacterChoiceData.db.deleteWhere(
@@ -42,8 +52,10 @@ class CharacterDataEndpoint extends Endpoint {
       final mutable = choice.copyWith();
       mutable.id = null;
       mutable.character = savedCharacter;
-      mutable.classEntry = _matchSavedEntry(mutable.classEntry, insertedEntries);
-      insertedChoices.add(await CharacterChoiceData.db.insertRow(session, mutable));
+      mutable.classEntry =
+          _matchSavedEntry(mutable.classEntry, insertedEntries);
+      insertedChoices
+          .add(await CharacterChoiceData.db.insertRow(session, mutable));
     }
 
     final snapshot = await _rebuildSnapshot(
@@ -62,7 +74,7 @@ class CharacterDataEndpoint extends Endpoint {
   }
 
   Future<CharacterBuildData> getBuild(Session session, int characterId) async {
-    final character = await _requireCharacter(session, characterId);
+    final character = await _requireOwnedCharacter(session, characterId);
     final entries = await CharacterClassEntryData.db.find(
       session,
       where: (t) => t.characterId.equals(characterId),
@@ -100,6 +112,7 @@ class CharacterDataEndpoint extends Endpoint {
   }
 
   Future<void> delete(Session session, int id) async {
+    await _requireOwnedCharacter(session, id);
     await CharacterChoiceData.db.deleteWhere(
       session,
       where: (t) => t.characterId.equals(id),
@@ -119,40 +132,82 @@ class CharacterDataEndpoint extends Endpoint {
 Future<CharacterData> _upsertCharacter(
   Session session,
   CharacterData character,
+  int userId,
 ) async {
   final now = DateTime.now();
+  character.userId = userId;
+
   if (character.id == null) {
+    character.id = null;
     character.version ??= 1;
     character.createdAt ??= now;
     character.updatedAt ??= now;
     return CharacterData.db.insertRow(session, character);
   }
 
-  final existing = await CharacterData.db.find(
+  final ownedCharacter = await _findOwnedCharacter(
+    session,
+    character.id!,
+    userId,
+  );
+  if (ownedCharacter != null) {
+    character.id = ownedCharacter.id;
+    character.userId = ownedCharacter.userId ?? userId;
+    character.version = (ownedCharacter.version ?? 0) + 1;
+    character.createdAt = ownedCharacter.createdAt ?? now;
+    character.updatedAt = now;
+    await CharacterData.db.updateRow(session, character);
+    return character;
+  }
+
+  final existingById = await CharacterData.db.find(
     session,
     where: (t) => t.id.equals(character.id),
     limit: 1,
   );
-  if (existing.isEmpty) {
-    character.version ??= 1;
-    character.createdAt ??= now;
-    character.updatedAt ??= now;
-    return CharacterData.db.insertRow(session, character);
+  if (existingById.isNotEmpty) {
+    throw Exception('Access denied to character id=${character.id}.');
   }
 
-  final old = existing.first;
-  character.id = old.id;
-  character.version = (old.version ?? 0) + 1;
-  character.createdAt = old.createdAt ?? now;
-  character.updatedAt = now;
-  await CharacterData.db.updateRow(session, character);
-  return character;
+  character.id = null;
+  character.version ??= 1;
+  character.createdAt ??= now;
+  character.updatedAt ??= now;
+  return CharacterData.db.insertRow(session, character);
 }
 
-Future<CharacterData> _requireCharacter(Session session, int characterId) async {
+Future<int> _requireCurrentUserId(Session session) async {
+  final userId = (await session.authenticated)?.userId;
+  if (userId == null) {
+    throw Exception('Authentication required.');
+  }
+  return userId;
+}
+
+Future<CharacterData?> _findOwnedCharacter(
+  Session session,
+  int characterId,
+  int userId,
+) async {
   final rows = await CharacterData.db.find(
     session,
-    where: (t) => t.id.equals(characterId),
+    where: (t) => t.id.equals(characterId) & t.userId.equals(userId),
+    limit: 1,
+  );
+  if (rows.isEmpty) {
+    return null;
+  }
+  return rows.first;
+}
+
+Future<CharacterData> _requireOwnedCharacter(
+  Session session,
+  int characterId,
+) async {
+  final userId = await _requireCurrentUserId(session);
+  final rows = await CharacterData.db.find(
+    session,
+    where: (t) => t.id.equals(characterId) & t.userId.equals(userId),
     limit: 1,
     include: CharacterData.include(
       race: RaceData.include(),
@@ -161,6 +216,15 @@ Future<CharacterData> _requireCharacter(Session session, int characterId) async 
     ),
   );
   if (rows.isEmpty) {
+    final existing = await CharacterData.db.find(
+      session,
+      where: (t) => t.id.equals(characterId),
+      limit: 1,
+    );
+    if (existing.isNotEmpty) {
+      throw Exception('Access denied to character id=$characterId.');
+    }
+
     throw Exception('CharacterData with id=$characterId was not found.');
   }
   return rows.first;
@@ -207,7 +271,8 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
 
   final startingEntry = _resolveStartingEntry(entries);
   final savingThrowAbilities = {
-    for (final ability in startingEntry?.classData?.savingThrowProficiencies ?? const <Ability>[])
+    for (final ability in startingEntry?.classData?.savingThrowProficiencies ??
+        const <Ability>[])
       ability.name,
   };
 
@@ -223,7 +288,8 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
   for (final ability in Ability.values) {
     final base = _abilityModifier(scores[ability.name] ?? 10);
     final proficient = savingThrowAbilities.contains(ability.name);
-    savingThrowBonuses[ability.name] = base + (proficient ? proficiencyBonus : 0);
+    savingThrowBonuses[ability.name] =
+        base + (proficient ? proficiencyBonus : 0);
   }
 
   final maxHp = _calculateMaxHp(entries, conMod);
@@ -244,7 +310,8 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
   }
 
   final senses = <String>[
-    if (character.race?.visionType?.isNotEmpty == true) character.race!.visionType!,
+    if (character.race?.visionType?.isNotEmpty == true)
+      character.race!.visionType!,
   ];
   final resistances = _collectDamageTypes(character);
 
@@ -393,10 +460,11 @@ Future<_SpellSlotData> _resolveSpellSlots(
     }
     if (match == null) continue;
 
-    if (classData.spellcastingProgression == SpellcastingProgression.pactMagic) {
+    if (classData.spellcastingProgression ==
+        SpellcastingProgression.pactMagic) {
       pactSlots = match.spellSlots;
-    } else if (spellSlots == null) {
-      spellSlots = match.spellSlots;
+    } else {
+      spellSlots ??= match.spellSlots;
     }
   }
 

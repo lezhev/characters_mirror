@@ -11,5 +11,11 @@ fields:
 
   abilityBonuses: Map<String, int>?
   traits: List<String>?
+  speedOverride: int?
+  visionRangeOverride: int?
   skillProficiencies: List<String>?
   resistances: List<String>?
+  armorProficiencies: List<String>?
+  weaponProficiencies: List<String>?
+  toolProficiencies: List<String>?
+  choiceSets: List<RaceChoiceSetData>?, relation

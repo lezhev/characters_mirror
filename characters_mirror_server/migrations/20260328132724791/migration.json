@@ -1,0 +1,447 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_choice_set_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_raceDataChoicesetsRaceDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "_raceFeatureDataChoicesetsRaceFeatureDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "_subraceDataChoicesetsSubraceDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "race_choice_set_data_fk_3",
+            "columns": [
+              "_raceDataChoicesetsRaceDataId"
+            ],
+            "referenceTable": "race_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "race_choice_set_data_fk_4",
+            "columns": [
+              "_raceFeatureDataChoicesetsRaceFeatureDataId"
+            ],
+            "referenceTable": "race_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "race_choice_set_data_fk_5",
+            "columns": [
+              "_subraceDataChoicesetsSubraceDataId"
+            ],
+            "referenceTable": "subrace_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"components\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "components"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"availableForClassIds\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "availableForClassIds"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_spell_grant_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "_raceFeatureDataSpellgrantsRaceFeatureDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "race_feature_spell_grant_data_fk_2",
+            "columns": [
+              "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+            ],
+            "referenceTable": "race_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"components\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "components"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"availableForClassIds\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "availableForClassIds"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "spell_class_availability_data",
+        "dartName": "SpellClassAvailabilityData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('spell_class_availability_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "spellId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "classDataId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "_spellDataClassavailabilitySpellDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "spell_class_availability_data_fk_0",
+            "columns": [
+              "spellId"
+            ],
+            "referenceTable": "spell_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "spell_class_availability_data_fk_1",
+            "columns": [
+              "classDataId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "spell_class_availability_data_fk_2",
+            "columns": [
+              "_spellDataClassavailabilitySpellDataId"
+            ],
+            "referenceTable": "spell_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "spell_class_availability_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "savingThrowAbility",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          },
+          {
+            "name": "requiresSavingThrow",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "attackType",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:SpellAttackType?"
+          },
+          {
+            "name": "requiresAttackRoll",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "damageType",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:DamageType?"
+          },
+          {
+            "name": "damageDice",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "damageScaling",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellScalingData?"
+          },
+          {
+            "name": "conditions",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:ConditionType>?"
+          },
+          {
+            "name": "targetType",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:SpellTargetType?"
+          },
+          {
+            "name": "areaOfEffect",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellAreaOfEffectData?"
+          },
+          {
+            "name": "materialDescription",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "materialCost",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "materialConsumed",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "durationType",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:SpellDurationType?"
+          },
+          {
+            "name": "isHealing",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "healingDice",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "requiresLineOfSight",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "requiresVerbal",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "requiresSomatic",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "requiresMaterial",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          }
+        ],
+        "deleteColumns": [
+          "components",
+          "availableForClassIds"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"components\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "components"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"availableForClassIds\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "availableForClassIds"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"components\" of table \"spell_data\" will be dropped.",
+      "table": "spell_data",
+      "columns": [
+        "components"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"availableForClassIds\" of table \"spell_data\" will be dropped.",
+      "table": "spell_data",
+      "columns": [
+        "availableForClassIds"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

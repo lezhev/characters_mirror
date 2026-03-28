@@ -1,0 +1,16 @@
+class: RaceFeatureSpellGrantData
+table: race_feature_spell_grant_data
+fields:
+  feature: RaceFeatureData?, relation
+  spell: SpellData?, relation
+  grantedAtLevel: int?
+  castingAbility: Ability?
+  freeCastsPerRest: RestType?
+  freeCastsFormula: String?
+  castAtSpellLevel: int?
+  canAlsoCastWithSpellSlots: bool?
+  notes: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

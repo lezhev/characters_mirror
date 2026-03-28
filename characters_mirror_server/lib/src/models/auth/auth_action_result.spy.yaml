@@ -1,0 +1,5 @@
+class: AuthActionResult
+fields:
+  success: bool
+  code: String
+  message: String

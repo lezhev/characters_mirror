@@ -8,9 +8,12 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+// ignore_for_file: unnecessary_null_comparison
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/spell_data.dart' as _i2;
+import '../../../data/general/race/race_choice_set_data.dart' as _i3;
 
 abstract class RaceData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -28,12 +31,14 @@ abstract class RaceData
     this.traits,
     this.languages,
     this.visionType,
+    this.visionRange,
     this.resistances,
     this.skillProficiencies,
     this.armorProficiencies,
     this.weaponProficiencies,
     this.toolProficiencies,
     this.spellcasting,
+    this.choiceSets,
     this.imageURL,
   });
 
@@ -51,12 +56,14 @@ abstract class RaceData
     List<String>? traits,
     List<String>? languages,
     String? visionType,
+    int? visionRange,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
     Map<String, _i2.SpellData>? spellcasting,
+    List<_i3.RaceChoiceSetData>? choiceSets,
     String? imageURL,
   }) = _RaceDataImpl;
 
@@ -87,6 +94,7 @@ abstract class RaceData
           ?.map((e) => e as String)
           .toList(),
       visionType: jsonSerialization['visionType'] as String?,
+      visionRange: jsonSerialization['visionRange'] as int?,
       resistances: (jsonSerialization['resistances'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -107,6 +115,10 @@ abstract class RaceData
                 k as String,
                 _i2.SpellData.fromJson((v as Map<String, dynamic>)),
               )),
+      choiceSets: (jsonSerialization['choiceSets'] as List?)
+          ?.map((e) =>
+              _i3.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       imageURL: jsonSerialization['imageURL'] as String?,
     );
   }
@@ -142,6 +154,8 @@ abstract class RaceData
 
   String? visionType;
 
+  int? visionRange;
+
   List<String>? resistances;
 
   List<String>? skillProficiencies;
@@ -153,6 +167,8 @@ abstract class RaceData
   List<String>? toolProficiencies;
 
   Map<String, _i2.SpellData>? spellcasting;
+
+  List<_i3.RaceChoiceSetData>? choiceSets;
 
   String? imageURL;
 
@@ -176,12 +192,14 @@ abstract class RaceData
     List<String>? traits,
     List<String>? languages,
     String? visionType,
+    int? visionRange,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
     Map<String, _i2.SpellData>? spellcasting,
+    List<_i3.RaceChoiceSetData>? choiceSets,
     String? imageURL,
   });
   @override
@@ -200,6 +218,7 @@ abstract class RaceData
       if (traits != null) 'traits': traits?.toJson(),
       if (languages != null) 'languages': languages?.toJson(),
       if (visionType != null) 'visionType': visionType,
+      if (visionRange != null) 'visionRange': visionRange,
       if (resistances != null) 'resistances': resistances?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
@@ -211,6 +230,8 @@ abstract class RaceData
         'toolProficiencies': toolProficiencies?.toJson(),
       if (spellcasting != null)
         'spellcasting': spellcasting?.toJson(valueToJson: (v) => v.toJson()),
+      if (choiceSets != null)
+        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
@@ -231,6 +252,7 @@ abstract class RaceData
       if (traits != null) 'traits': traits?.toJson(),
       if (languages != null) 'languages': languages?.toJson(),
       if (visionType != null) 'visionType': visionType,
+      if (visionRange != null) 'visionRange': visionRange,
       if (resistances != null) 'resistances': resistances?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
@@ -243,12 +265,16 @@ abstract class RaceData
       if (spellcasting != null)
         'spellcasting':
             spellcasting?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (choiceSets != null)
+        'choiceSets':
+            choiceSets?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
 
-  static RaceDataInclude include() {
-    return RaceDataInclude._();
+  static RaceDataInclude include(
+      {_i3.RaceChoiceSetDataIncludeList? choiceSets}) {
+    return RaceDataInclude._(choiceSets: choiceSets);
   }
 
   static RaceDataIncludeList includeList({
@@ -294,12 +320,14 @@ class _RaceDataImpl extends RaceData {
     List<String>? traits,
     List<String>? languages,
     String? visionType,
+    int? visionRange,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
     Map<String, _i2.SpellData>? spellcasting,
+    List<_i3.RaceChoiceSetData>? choiceSets,
     String? imageURL,
   }) : super._(
           id: id,
@@ -315,12 +343,14 @@ class _RaceDataImpl extends RaceData {
           traits: traits,
           languages: languages,
           visionType: visionType,
+          visionRange: visionRange,
           resistances: resistances,
           skillProficiencies: skillProficiencies,
           armorProficiencies: armorProficiencies,
           weaponProficiencies: weaponProficiencies,
           toolProficiencies: toolProficiencies,
           spellcasting: spellcasting,
+          choiceSets: choiceSets,
           imageURL: imageURL,
         );
 
@@ -342,12 +372,14 @@ class _RaceDataImpl extends RaceData {
     Object? traits = _Undefined,
     Object? languages = _Undefined,
     Object? visionType = _Undefined,
+    Object? visionRange = _Undefined,
     Object? resistances = _Undefined,
     Object? skillProficiencies = _Undefined,
     Object? armorProficiencies = _Undefined,
     Object? weaponProficiencies = _Undefined,
     Object? toolProficiencies = _Undefined,
     Object? spellcasting = _Undefined,
+    Object? choiceSets = _Undefined,
     Object? imageURL = _Undefined,
   }) {
     return RaceData(
@@ -377,6 +409,7 @@ class _RaceDataImpl extends RaceData {
           ? languages
           : this.languages?.map((e0) => e0).toList(),
       visionType: visionType is String? ? visionType : this.visionType,
+      visionRange: visionRange is int? ? visionRange : this.visionRange,
       resistances: resistances is List<String>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
@@ -402,6 +435,9 @@ class _RaceDataImpl extends RaceData {
                     key0,
                     value0.copyWith(),
                   )),
+      choiceSets: choiceSets is List<_i3.RaceChoiceSetData>?
+          ? choiceSets
+          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,
     );
   }
@@ -455,6 +491,10 @@ class RaceDataTable extends _i1.Table<int?> {
     );
     visionType = _i1.ColumnString(
       'visionType',
+      this,
+    );
+    visionRange = _i1.ColumnInt(
+      'visionRange',
       this,
     );
     resistances = _i1.ColumnSerializable(
@@ -511,6 +551,8 @@ class RaceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString visionType;
 
+  late final _i1.ColumnInt visionRange;
+
   late final _i1.ColumnSerializable resistances;
 
   late final _i1.ColumnSerializable skillProficiencies;
@@ -523,7 +565,42 @@ class RaceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable spellcasting;
 
+  _i3.RaceChoiceSetDataTable? ___choiceSets;
+
+  _i1.ManyRelation<_i3.RaceChoiceSetDataTable>? _choiceSets;
+
   late final _i1.ColumnString imageURL;
+
+  _i3.RaceChoiceSetDataTable get __choiceSets {
+    if (___choiceSets != null) return ___choiceSets!;
+    ___choiceSets = _i1.createRelationTable(
+      relationFieldName: '__choiceSets',
+      field: RaceData.t.id,
+      foreignField: _i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+    );
+    return ___choiceSets!;
+  }
+
+  _i1.ManyRelation<_i3.RaceChoiceSetDataTable> get choiceSets {
+    if (_choiceSets != null) return _choiceSets!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'choiceSets',
+      field: RaceData.t.id,
+      foreignField: _i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+    );
+    _choiceSets = _i1.ManyRelation<_i3.RaceChoiceSetDataTable>(
+      tableWithRelations: relationTable,
+      table: _i3.RaceChoiceSetDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _choiceSets!;
+  }
 
   @override
   List<_i1.Column> get columns => [
@@ -540,6 +617,7 @@ class RaceDataTable extends _i1.Table<int?> {
         traits,
         languages,
         visionType,
+        visionRange,
         resistances,
         skillProficiencies,
         armorProficiencies,
@@ -548,13 +626,25 @@ class RaceDataTable extends _i1.Table<int?> {
         spellcasting,
         imageURL,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'choiceSets') {
+      return __choiceSets;
+    }
+    return null;
+  }
 }
 
 class RaceDataInclude extends _i1.IncludeObject {
-  RaceDataInclude._();
+  RaceDataInclude._({_i3.RaceChoiceSetDataIncludeList? choiceSets}) {
+    _choiceSets = choiceSets;
+  }
+
+  _i3.RaceChoiceSetDataIncludeList? _choiceSets;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'choiceSets': _choiceSets};
 
   @override
   _i1.Table<int?> get table => RaceData.t;
@@ -582,6 +672,14 @@ class RaceDataIncludeList extends _i1.IncludeList {
 
 class RaceDataRepository {
   const RaceDataRepository._();
+
+  final attach = const RaceDataAttachRepository._();
+
+  final attachRow = const RaceDataAttachRowRepository._();
+
+  final detach = const RaceDataDetachRepository._();
+
+  final detachRow = const RaceDataDetachRowRepository._();
 
   /// Returns a list of [RaceData]s matching the given query parameters.
   ///
@@ -614,6 +712,7 @@ class RaceDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<RaceDataTable>? orderByList,
     _i1.Transaction? transaction,
+    RaceDataInclude? include,
   }) async {
     return session.db.find<RaceData>(
       where: where?.call(RaceData.t),
@@ -623,6 +722,7 @@ class RaceDataRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -651,6 +751,7 @@ class RaceDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<RaceDataTable>? orderByList,
     _i1.Transaction? transaction,
+    RaceDataInclude? include,
   }) async {
     return session.db.findFirstRow<RaceData>(
       where: where?.call(RaceData.t),
@@ -659,6 +760,7 @@ class RaceDataRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -667,10 +769,12 @@ class RaceDataRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    RaceDataInclude? include,
   }) async {
     return session.db.findById<RaceData>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -788,6 +892,128 @@ class RaceDataRepository {
     return session.db.count<RaceData>(
       where: where?.call(RaceData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class RaceDataAttachRepository {
+  const RaceDataAttachRepository._();
+
+  /// Creates a relation between this [RaceData] and the given [RaceChoiceSetData]s
+  /// by setting each [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to refer to this [RaceData].
+  Future<void> choiceSets(
+    _i1.Session session,
+    RaceData raceData,
+    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+    if (raceData.id == null) {
+      throw ArgumentError.notNull('raceData.id');
+    }
+
+    var $raceChoiceSetData = raceChoiceSetData
+        .map((e) => _i3.RaceChoiceSetDataImplicit(
+              e,
+              $_raceDataChoicesetsRaceDataId: raceData.id,
+            ))
+        .toList();
+    await session.db.update<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
+      transaction: transaction,
+    );
+  }
+}
+
+class RaceDataAttachRowRepository {
+  const RaceDataAttachRowRepository._();
+
+  /// Creates a relation between this [RaceData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to refer to this [RaceData].
+  Future<void> choiceSets(
+    _i1.Session session,
+    RaceData raceData,
+    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.id == null) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+    if (raceData.id == null) {
+      throw ArgumentError.notNull('raceData.id');
+    }
+
+    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
+      raceChoiceSetData,
+      $_raceDataChoicesetsRaceDataId: raceData.id,
+    );
+    await session.db.updateRow<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
+      transaction: transaction,
+    );
+  }
+}
+
+class RaceDataDetachRepository {
+  const RaceDataDetachRepository._();
+
+  /// Detaches the relation between this [RaceData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceSets(
+    _i1.Session session,
+    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+
+    var $raceChoiceSetData = raceChoiceSetData
+        .map((e) => _i3.RaceChoiceSetDataImplicit(
+              e,
+              $_raceDataChoicesetsRaceDataId: null,
+            ))
+        .toList();
+    await session.db.update<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
+      transaction: transaction,
+    );
+  }
+}
+
+class RaceDataDetachRowRepository {
+  const RaceDataDetachRowRepository._();
+
+  /// Detaches the relation between this [RaceData] and the given [RaceChoiceSetData]
+  /// by setting the [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceSets(
+    _i1.Session session,
+    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (raceChoiceSetData.id == null) {
+      throw ArgumentError.notNull('raceChoiceSetData.id');
+    }
+
+    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
+      raceChoiceSetData,
+      $_raceDataChoicesetsRaceDataId: null,
+    );
+    await session.db.updateRow<_i3.RaceChoiceSetData>(
+      $raceChoiceSetData,
+      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
       transaction: transaction,
     );
   }

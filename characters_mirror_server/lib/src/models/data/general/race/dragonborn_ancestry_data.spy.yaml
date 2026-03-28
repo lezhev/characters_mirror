@@ -11,4 +11,5 @@ fields:
   damageType: String?
   breathShape: String? # line, cone
   area: String? # e.g. "15ft cone"
+  saveAbility: Ability?
   damageByLevel: Map<String, String>? # level -> dice
