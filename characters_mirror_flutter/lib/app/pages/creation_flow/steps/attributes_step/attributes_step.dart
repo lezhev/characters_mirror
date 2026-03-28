@@ -5,7 +5,7 @@ import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/attribut
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +21,11 @@ class AttributesStep extends ConsumerWidget {
         child: CreationAppBar(
           title: "Создание персонажа",
           onBack: () => context.go('/characters'),
+          onStepTap: (target) => _syncAndGo(
+            context: context,
+            ref: ref,
+            target: target,
+          ),
         ),
       ),
       body: PageSizeLimiter(
@@ -54,8 +59,9 @@ class AttributesStep extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: CreationNavBar(
             onPressedNext: () {
-              ref.read(characterCreationProvider.notifier).nextStep(context);
-              ref.read(attributeStateProvider).assignedAttributes;
+              final notifier = ref.read(characterCreationProvider.notifier);
+              notifier.syncAttributesDraft(_mergedAttributes(ref));
+              notifier.nextStep(context);
             },
             route: 'personal',
           ),
@@ -63,4 +69,21 @@ class AttributesStep extends ConsumerWidget {
       ),
     );
   }
+}
+
+Map<String, int> _mergedAttributes(WidgetRef ref) {
+  return ref
+      .read(attributeStateProvider.notifier)
+      .mergeStatsAndBonuses()
+      .map((key, value) => MapEntry(key.name, value));
+}
+
+void _syncAndGo({
+  required BuildContext context,
+  required WidgetRef ref,
+  required Step target,
+}) {
+  final notifier = ref.read(characterCreationProvider.notifier);
+  notifier.syncAttributesDraft(_mergedAttributes(ref));
+  notifier.goToStep(context, target);
 }

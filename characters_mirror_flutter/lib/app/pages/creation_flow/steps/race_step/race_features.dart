@@ -2,7 +2,6 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/race_step/state/race_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/expand_section.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/smooth_switcher.dart';
-import 'package:characters_mirror_flutter/app/theme/theme.dart';
 import 'package:characters_mirror_flutter/app/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -51,22 +50,58 @@ class RaceFeatures extends HookConsumerWidget {
 
     return ref.watch(raceStateProvider).when(
           data: (data) {
-            if (data.features.isEmpty && data.futureFeatures.isEmpty) {
+            final hasFeatures =
+                data.features.isNotEmpty || data.futureFeatures.isNotEmpty;
+            final hasSubraces = data.subraces.isNotEmpty;
+
+            if (!hasFeatures && !hasSubraces) {
               return Center(
                 child: Text('COMING SOON', style: textTheme.displayLarge),
               );
             }
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Gap(4),
-                Text('Классовые умения', style: textTheme.headlineSmall),
-                const Gap(4),
-                Container(
+                if ((selectedRace.description ?? '').trim().isNotEmpty) ...[
+                  const Gap(4),
+                  Text('Описание', style: textTheme.headlineSmall),
+                  const Gap(4),
+                  Container(
                     width: double.infinity,
                     height: 2,
-                    color: colorScheme.primary),
-                const Gap(2),
+                    color: colorScheme.primary,
+                  ),
+                  const Gap(8),
+                  Text(
+                    selectedRace.description!,
+                    style: textTheme.bodyMedium,
+                    textAlign: TextAlign.justify,
+                  ),
+                ],
+                if (hasSubraces) ...[
+                  const Gap(16),
+                  Text('Подрасы', style: textTheme.headlineSmall),
+                  const Gap(4),
+                  Container(
+                    width: double.infinity,
+                    height: 2,
+                    color: colorScheme.primary,
+                  ),
+                  const Gap(8),
+                  const SubraceChoice(),
+                ],
+                if (hasFeatures) ...[
+                  const Gap(16),
+                  Text('Особенности расы', style: textTheme.headlineSmall),
+                  const Gap(4),
+                  Container(
+                    width: double.infinity,
+                    height: 2,
+                    color: colorScheme.primary,
+                  ),
+                  const Gap(2),
+                ],
                 if (data.features.isNotEmpty)
                   ...buildFeatureSection(data.features),
                 if (data.futureFeatures.isNotEmpty) ...[
@@ -175,22 +210,13 @@ class RaceFeatureCard extends HookConsumerWidget {
                       ExpandableSection(
                         extraOffset: 64,
                         expand: isExpanded.value,
-                        child: Column(
-                          children: [
-                            Gap(2),
-                            Text(
-                              feature.description ?? '',
-                              style: textTheme.bodyMedium,
-                              textAlign: TextAlign.justify,
-                            ),
-                            // if (feature.variantOptions != null)
-                            //   RaceOptionChoice(feature: feature),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SubraceChoice(),
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: Text(
+                            feature.description ?? '',
+                            style: textTheme.bodyMedium,
+                            textAlign: TextAlign.justify,
+                          ),
                         ),
                       )
                     ],
@@ -217,14 +243,16 @@ class SubraceChoice extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return ref.watch(raceStateProvider).when(
           data: (data) {
             final subclasses = data.subraces;
             final selected = data.selectedSubrace;
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  constraints: BoxConstraints(maxHeight: 32),
+                  constraints: const BoxConstraints(maxHeight: 32),
                   child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
@@ -274,13 +302,21 @@ class SubraceChoice extends ConsumerWidget {
                     },
                   ),
                 ),
-                Gap(12),
+                const Gap(12),
                 SmoothSwitcher(
                   extraOffset: 64,
                   child: selected != null
-                      ? Text(
-                          selected.description ?? '',
+                      ? Column(
                           key: ValueKey(selected.id ?? 'empty'),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if ((selected.description ?? '').trim().isNotEmpty)
+                              Text(
+                                selected.description ?? '',
+                                style: textTheme.bodyMedium,
+                                textAlign: TextAlign.justify,
+                              ),
+                          ],
                         )
                       : const SizedBox.shrink(key: ValueKey('empty')),
                 ),

@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
 import '../../../data/general/race/subrace_data.dart' as _i3;
+import '../../../enums/feature_tag.dart' as _i4;
 
 abstract class RaceFeatureData implements _i1.SerializableModel {
   RaceFeatureData._({
@@ -30,6 +31,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     this.spells,
     this.usesPerRest,
     this.usesFormula,
+    this.tags,
   });
 
   factory RaceFeatureData({
@@ -48,6 +50,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
+    List<_i4.FeatureTag>? tags,
   }) = _RaceFeatureDataImpl;
 
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -80,6 +83,9 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
           )),
       usesPerRest: jsonSerialization['usesPerRest'] as String?,
       usesFormula: jsonSerialization['usesFormula'] as String?,
+      tags: (jsonSerialization['tags'] as List?)
+          ?.map((e) => _i4.FeatureTag.fromJson((e as int)))
+          .toList(),
     );
   }
 
@@ -116,6 +122,8 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
 
   String? usesFormula;
 
+  List<_i4.FeatureTag>? tags;
+
   /// Returns a shallow copy of this [RaceFeatureData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -135,6 +143,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
+    List<_i4.FeatureTag>? tags,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -154,6 +163,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       if (spells != null) 'spells': spells?.toJson(),
       if (usesPerRest != null) 'usesPerRest': usesPerRest,
       if (usesFormula != null) 'usesFormula': usesFormula,
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -182,6 +192,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
+    List<_i4.FeatureTag>? tags,
   }) : super._(
           id: id,
           raceId: raceId,
@@ -198,6 +209,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           spells: spells,
           usesPerRest: usesPerRest,
           usesFormula: usesFormula,
+          tags: tags,
         );
 
   /// Returns a shallow copy of this [RaceFeatureData]
@@ -220,6 +232,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? spells = _Undefined,
     Object? usesPerRest = _Undefined,
     Object? usesFormula = _Undefined,
+    Object? tags = _Undefined,
   }) {
     return RaceFeatureData(
       id: id is int? ? id : this.id,
@@ -246,6 +259,9 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
                   )),
       usesPerRest: usesPerRest is String? ? usesPerRest : this.usesPerRest,
       usesFormula: usesFormula is String? ? usesFormula : this.usesFormula,
+      tags: tags is List<_i4.FeatureTag>?
+          ? tags
+          : this.tags?.map((e0) => e0).toList(),
     );
   }
 }

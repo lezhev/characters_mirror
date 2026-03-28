@@ -1,0 +1,4 @@
+class: ClassStepSubclassChoiceView
+fields:
+  requiredLevel: int?
+  subclasses: List<SubclassData>?

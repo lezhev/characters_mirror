@@ -15,14 +15,22 @@ featData:
   - delete:
 characterData:
   - getAll:
-  - add:
+  - upsertBuild:
+  - getBuild:
+  - getCharacterSheet:
   - delete:
 classData:
   - getAll:
   - add:
   - upsert:
+  - getStepView:
   - delete:
 classFeatureData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+classLevelData:
   - getAll:
   - add:
   - upsert:
@@ -32,7 +40,12 @@ subclassData:
   - add:
   - upsert:
   - delete:
-classOptionData:
+classChoiceGroupData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+classChoiceOptionData:
   - getAll:
   - add:
   - upsert:
@@ -53,11 +66,6 @@ raceFeature:
   - upsert:
   - delete:
 subraceData:
-  - getAll:
-  - add:
-  - upsert:
-  - delete:
-raceOptionData:
   - getAll:
   - add:
   - upsert:

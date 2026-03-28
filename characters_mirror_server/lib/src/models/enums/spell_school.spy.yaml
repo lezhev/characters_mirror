@@ -1,0 +1,10 @@
+enum: SpellSchool
+values:
+  - abjuration
+  - conjuration
+  - divination
+  - enchantment
+  - evocation
+  - illusion
+  - necromancy
+  - transmutation

@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../../enums/armor_category.dart' as _i2;
 
 abstract class ArmorData implements _i1.SerializableModel {
   ArmorData._({
@@ -20,7 +21,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.category,
+    this.categoryValue,
     this.baseAC,
     this.dexBonus,
     this.dexBonusMax,
@@ -38,7 +39,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
+    _i2.ArmorCategory? categoryValue,
     int? baseAC,
     bool? dexBonus,
     int? dexBonusMax,
@@ -61,7 +62,10 @@ abstract class ArmorData implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      category: jsonSerialization['category'] as String?,
+      categoryValue: jsonSerialization['categoryValue'] == null
+          ? null
+          : _i2.ArmorCategory.fromJson(
+              (jsonSerialization['categoryValue'] as int)),
       baseAC: jsonSerialization['baseAC'] as int?,
       dexBonus: jsonSerialization['dexBonus'] as bool?,
       dexBonusMax: jsonSerialization['dexBonusMax'] as int?,
@@ -89,7 +93,7 @@ abstract class ArmorData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  String? category;
+  _i2.ArmorCategory? categoryValue;
 
   int? baseAC;
 
@@ -116,7 +120,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
+    _i2.ArmorCategory? categoryValue,
     int? baseAC,
     bool? dexBonus,
     int? dexBonusMax,
@@ -135,7 +139,7 @@ abstract class ArmorData implements _i1.SerializableModel {
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (category != null) 'category': category,
+      if (categoryValue != null) 'categoryValue': categoryValue?.toJson(),
       if (baseAC != null) 'baseAC': baseAC,
       if (dexBonus != null) 'dexBonus': dexBonus,
       if (dexBonusMax != null) 'dexBonusMax': dexBonusMax,
@@ -165,7 +169,7 @@ class _ArmorDataImpl extends ArmorData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
+    _i2.ArmorCategory? categoryValue,
     int? baseAC,
     bool? dexBonus,
     int? dexBonusMax,
@@ -181,7 +185,7 @@ class _ArmorDataImpl extends ArmorData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          category: category,
+          categoryValue: categoryValue,
           baseAC: baseAC,
           dexBonus: dexBonus,
           dexBonusMax: dexBonusMax,
@@ -203,7 +207,7 @@ class _ArmorDataImpl extends ArmorData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? category = _Undefined,
+    Object? categoryValue = _Undefined,
     Object? baseAC = _Undefined,
     Object? dexBonus = _Undefined,
     Object? dexBonusMax = _Undefined,
@@ -220,7 +224,9 @@ class _ArmorDataImpl extends ArmorData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      category: category is String? ? category : this.category,
+      categoryValue: categoryValue is _i2.ArmorCategory?
+          ? categoryValue
+          : this.categoryValue,
       baseAC: baseAC is int? ? baseAC : this.baseAC,
       dexBonus: dexBonus is bool? ? dexBonus : this.dexBonus,
       dexBonusMax: dexBonusMax is int? ? dexBonusMax : this.dexBonusMax,

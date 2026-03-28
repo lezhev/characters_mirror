@@ -1,0 +1,13 @@
+class: CharacterChoiceData
+table: character_choice_data
+fields:
+  character: CharacterData?, relation
+  classEntry: CharacterClassEntryData?, relation(optional)
+  sourceType: ChoiceSourceType?
+  sourceId: int?
+  groupKey: String?
+  optionKey: String?
+  selectedSpellKey: String?
+  selectedItemKey: String?
+  selectedText: String?
+  selectedCount: int?

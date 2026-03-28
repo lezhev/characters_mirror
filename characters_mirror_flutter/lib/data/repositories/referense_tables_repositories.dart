@@ -1,6 +1,5 @@
-import 'package:characters_mirror_flutter/src/serverpod_client.dart';
-
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/src/serverpod_client.dart';
 
 abstract class Repository<T> {
   Future<List<T>> getAll();
@@ -9,7 +8,6 @@ abstract class Repository<T> {
   Future<void> delete(int id);
 }
 
-// ====================== Class ======================
 class ClassRepository implements Repository<ClassData> {
   @override
   Future<List<ClassData>> getAll() => client.classData.getAll();
@@ -19,9 +17,21 @@ class ClassRepository implements Repository<ClassData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
+  }
+
+  Future<ClassStepView> getStepView(
+    int classId, {
+    int selectedLevel = 1,
+    bool isStartingClass = true,
+  }) {
+    return client.classData.getStepView(
+      classId,
+      selectedLevel: selectedLevel,
+      isStartingClass: isStartingClass,
+    );
   }
 
   @override
@@ -31,7 +41,6 @@ class ClassRepository implements Repository<ClassData> {
   Future<void> delete(int id) => client.classData.delete(id);
 }
 
-// ====================== Race ======================
 class RaceRepository implements Repository<RaceData> {
   @override
   Future<List<RaceData>> getAll() => client.raceData.getAll();
@@ -41,7 +50,7 @@ class RaceRepository implements Repository<RaceData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -53,7 +62,6 @@ class RaceRepository implements Repository<RaceData> {
   Future<void> delete(int id) => client.raceData.delete(id);
 }
 
-// ====================== Subrace ======================
 class SubraceRepository implements Repository<SubraceData> {
   @override
   Future<List<SubraceData>> getAll() => client.subraceData.getAll();
@@ -63,7 +71,7 @@ class SubraceRepository implements Repository<SubraceData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -90,7 +98,7 @@ class RaceFeatureRepository implements Repository<RaceFeatureData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -98,6 +106,21 @@ class RaceFeatureRepository implements Repository<RaceFeatureData> {
   Future<List<RaceFeatureData>> getAllByRaceId(int raceId) async {
     final all = await getAll();
     return all.where((s) => s.raceId == raceId).toList();
+  }
+
+  Future<List<RaceFeatureData>> getAllByRaceContext(
+    int raceId, {
+    List<int> subraceIds = const [],
+  }) async {
+    final all = await getAll();
+    final subraceIdSet = subraceIds.toSet();
+
+    return all.where((feature) {
+      final belongsToRace = feature.raceId == raceId;
+      final belongsToSubrace = feature.subraceId != null &&
+          subraceIdSet.contains(feature.subraceId);
+      return belongsToRace || belongsToSubrace;
+    }).toList();
   }
 
   @override
@@ -108,7 +131,6 @@ class RaceFeatureRepository implements Repository<RaceFeatureData> {
   Future<void> delete(int id) => client.raceFeature.delete(id);
 }
 
-// ====================== Item ======================
 class ItemRepository implements Repository<ItemData> {
   @override
   Future<List<ItemData>> getAll() => client.itemData.getAll();
@@ -118,7 +140,7 @@ class ItemRepository implements Repository<ItemData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -130,7 +152,6 @@ class ItemRepository implements Repository<ItemData> {
   Future<void> delete(int id) => client.itemData.delete(id);
 }
 
-// ====================== Weapon ======================
 class WeaponRepository implements Repository<WeaponData> {
   @override
   Future<List<WeaponData>> getAll() => client.weaponData.getAll();
@@ -140,7 +161,7 @@ class WeaponRepository implements Repository<WeaponData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -153,7 +174,6 @@ class WeaponRepository implements Repository<WeaponData> {
   Future<void> delete(int id) => client.weaponData.delete(id);
 }
 
-// ====================== Armor ======================
 class ArmorRepository implements Repository<ArmorData> {
   @override
   Future<List<ArmorData>> getAll() => client.armorData.getAll();
@@ -163,7 +183,7 @@ class ArmorRepository implements Repository<ArmorData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -175,7 +195,6 @@ class ArmorRepository implements Repository<ArmorData> {
   Future<void> delete(int id) => client.armorData.delete(id);
 }
 
-// ====================== MagicItem ======================
 class MagicItemRepository implements Repository<MagicItemData> {
   @override
   Future<List<MagicItemData>> getAll() => client.magicItemData.getAll();
@@ -185,7 +204,7 @@ class MagicItemRepository implements Repository<MagicItemData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -198,7 +217,6 @@ class MagicItemRepository implements Repository<MagicItemData> {
   Future<void> delete(int id) => client.magicItemData.delete(id);
 }
 
-// ====================== Background ======================
 class BackgroundRepository implements Repository<BackgroundData> {
   @override
   Future<List<BackgroundData>> getAll() => client.backgroundData.getAll();
@@ -208,7 +226,7 @@ class BackgroundRepository implements Repository<BackgroundData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -221,7 +239,6 @@ class BackgroundRepository implements Repository<BackgroundData> {
   Future<void> delete(int id) => client.backgroundData.delete(id);
 }
 
-// ====================== Feat ======================
 class FeatRepository implements Repository<FeatData> {
   @override
   Future<List<FeatData>> getAll() => client.featData.getAll();
@@ -231,7 +248,7 @@ class FeatRepository implements Repository<FeatData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -243,7 +260,6 @@ class FeatRepository implements Repository<FeatData> {
   Future<void> delete(int id) => client.featData.delete(id);
 }
 
-// ====================== Spell ======================
 class SpellRepository implements Repository<SpellData> {
   @override
   Future<List<SpellData>> getAll() => client.spellData.getAll();
@@ -253,7 +269,7 @@ class SpellRepository implements Repository<SpellData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -265,7 +281,6 @@ class SpellRepository implements Repository<SpellData> {
   Future<void> delete(int id) => client.spellData.delete(id);
 }
 
-// ====================== ClassFeature ======================
 class ClassFeatureRepository implements Repository<ClassFeatureData> {
   @override
   Future<List<ClassFeatureData>> getAll() => client.classFeatureData.getAll();
@@ -275,7 +290,7 @@ class ClassFeatureRepository implements Repository<ClassFeatureData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -293,7 +308,33 @@ class ClassFeatureRepository implements Repository<ClassFeatureData> {
   Future<void> delete(int id) => client.classFeatureData.delete(id);
 }
 
-// ====================== Subclass ======================
+class ClassLevelRepository implements Repository<ClassLevelData> {
+  @override
+  Future<List<ClassLevelData>> getAll() => client.classLevelData.getAll();
+
+  @override
+  Future<ClassLevelData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<ClassLevelData>> getAllByClassId(int classId) async {
+    final all = await getAll();
+    return all.where((e) => e.classDataId == classId).toList();
+  }
+
+  @override
+  Future<ClassLevelData> upsert(ClassLevelData entity) =>
+      client.classLevelData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.classLevelData.delete(id);
+}
+
 class SubclassRepository implements Repository<SubclassData> {
   @override
   Future<List<SubclassData>> getAll() => client.subclassData.getAll();
@@ -303,7 +344,7 @@ class SubclassRepository implements Repository<SubclassData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -321,32 +362,55 @@ class SubclassRepository implements Repository<SubclassData> {
   Future<void> delete(int id) => client.subclassData.delete(id);
 }
 
-// ====================== ClassOption ======================
-class ClassOptionRepository implements Repository<ClassOptionData> {
+class ClassChoiceGroupRepository implements Repository<ClassChoiceGroupData> {
   @override
-  Future<List<ClassOptionData>> getAll() => client.classOptionData.getAll();
+  Future<List<ClassChoiceGroupData>> getAll() =>
+      client.classChoiceGroupData.getAll();
 
   @override
-  Future<ClassOptionData?> getById(int id) async {
+  Future<ClassChoiceGroupData?> getById(int id) async {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
 
-  Future<List<ClassOptionData>> getAllByClassId(int classId) async {
+  @override
+  Future<ClassChoiceGroupData> upsert(ClassChoiceGroupData entity) =>
+      client.classChoiceGroupData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.classChoiceGroupData.delete(id);
+}
+
+class ClassChoiceOptionRepository implements Repository<ClassChoiceOptionData> {
+  @override
+  Future<List<ClassChoiceOptionData>> getAll() =>
+      client.classChoiceOptionData.getAll();
+
+  @override
+  Future<ClassChoiceOptionData?> getById(int id) async {
     final all = await getAll();
-    return all.where((o) => o.parentClassId!.contains(classId)).toList();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<ClassChoiceOptionData>> getAllByGroupId(int groupId) async {
+    final all = await getAll();
+    return all.where((e) => e.choiceGroupId == groupId).toList();
   }
 
   @override
-  Future<ClassOptionData> upsert(ClassOptionData entity) =>
-      client.classOptionData.upsert(entity);
+  Future<ClassChoiceOptionData> upsert(ClassChoiceOptionData entity) =>
+      client.classChoiceOptionData.upsert(entity);
 
   @override
-  Future<void> delete(int id) => client.classOptionData.delete(id);
+  Future<void> delete(int id) => client.classChoiceOptionData.delete(id);
 }
 
 class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
@@ -359,14 +423,14 @@ class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
 
-  Future<List<SubclassFeatureData>> getAllByClassId(int classId) async {
+  Future<List<SubclassFeatureData>> getAllBySubclassId(int subclassId) async {
     final all = await getAll();
-    return all.where((s) => s.parentSubclassId == classId).toList();
+    return all.where((s) => s.parentSubclassId == subclassId).toList();
   }
 
   @override
@@ -375,28 +439,6 @@ class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
 
   @override
   Future<void> delete(int id) => client.subclassFeatureData.delete(id);
-}
-
-class RaceOptionRepository implements Repository<RaceOptionData> {
-  @override
-  Future<List<RaceOptionData>> getAll() => client.raceOptionData.getAll();
-
-  @override
-  Future<RaceOptionData?> getById(int id) async {
-    final all = await getAll();
-    try {
-      return all.firstWhere((e) => e.id == id);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  @override
-  Future<RaceOptionData> upsert(RaceOptionData entity) =>
-      client.raceOptionData.upsert(entity);
-
-  @override
-  Future<void> delete(int id) => client.raceOptionData.delete(id);
 }
 
 class DragonbornAncestryRepository
@@ -410,7 +452,7 @@ class DragonbornAncestryRepository
     final all = await getAll();
     try {
       return all.firstWhere((e) => e.id == id);
-    } catch (e) {
+    } catch (_) {
       return null;
     }
   }
@@ -420,11 +462,22 @@ class DragonbornAncestryRepository
       client.dragonbornAncestryData.upsert(entity);
 
   Future<void> upsertAll(List<DragonbornAncestryData> entities) async {
-    for (final e in entities) {
-      await upsert(e);
+    for (final entity in entities) {
+      await upsert(entity);
     }
   }
 
   @override
   Future<void> delete(int id) => client.dragonbornAncestryData.delete(id);
+}
+
+class CharacterBuildRepository {
+  Future<CharacterBuildData> upsertBuild(CharacterBuildData build) =>
+      client.characterData.upsertBuild(build);
+
+  Future<CharacterBuildData> getBuild(int characterId) =>
+      client.characterData.getBuild(characterId);
+
+  Future<CharacterSheetView> getCharacterSheet(int characterId) =>
+      client.characterData.getCharacterSheet(characterId);
 }

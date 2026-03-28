@@ -3,28 +3,29 @@ import 'package:serverpod/serverpod.dart';
 
 class RaceDataEndpoint extends Endpoint {
   Future<List<RaceData>> getAll(Session session) async {
-    return await RaceData.db.find(session);
+    return RaceData.db.find(session);
   }
 
   Future<RaceData> add(Session session, RaceData race) async {
-    return await RaceData.db.insertRow(session, race);
+    _stampForInsert(race);
+    return RaceData.db.insertRow(session, race);
   }
 
   Future<RaceData> upsert(Session session, RaceData race) async {
-    final existingList = await RaceData.db.find(
+    return _upsertRaceLike(
       session,
-      where: (t) => t.id.equals(race.id),
-      limit: 1,
+      race,
+      findExisting: () => RaceData.db.find(
+        session,
+        where: (t) => t.id.equals(race.id),
+        limit: 1,
+      ),
+      insert: () => RaceData.db.insertRow(session, race),
+      update: () async {
+        await RaceData.db.updateRow(session, race);
+        return race;
+      },
     );
-
-    if (existingList.isNotEmpty) {
-      final existing = existingList.first;
-      race.id = existing.id;
-      await RaceData.db.updateRow(session, race);
-      return race;
-    } else {
-      return await RaceData.db.insertRow(session, race);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
@@ -34,60 +35,64 @@ class RaceDataEndpoint extends Endpoint {
 
 class RaceFeatureEndpoint extends Endpoint {
   Future<List<RaceFeatureData>> getAll(Session session) async {
-    return await RaceFeatureData.db.find(session);
+    return RaceFeatureData.db.find(session);
   }
 
-  Future<RaceFeatureData> add(
-      Session session, RaceFeatureData raceFeature) async {
-    return await RaceFeatureData.db.insertRow(session, raceFeature);
+  Future<RaceFeatureData> add(Session session, RaceFeatureData raceFeature) async {
+    _stampForInsert(raceFeature);
+    return RaceFeatureData.db.insertRow(session, raceFeature);
   }
 
   Future<RaceFeatureData> upsert(
-      Session session, RaceFeatureData raceFeature) async {
-    final existingList = await RaceFeatureData.db.find(
+    Session session,
+    RaceFeatureData raceFeature,
+  ) async {
+    return _upsertRaceLike(
       session,
-      where: (t) => t.id.equals(raceFeature.id),
-      limit: 1,
+      raceFeature,
+      findExisting: () => RaceFeatureData.db.find(
+        session,
+        where: (t) => t.id.equals(raceFeature.id),
+        limit: 1,
+      ),
+      insert: () => RaceFeatureData.db.insertRow(session, raceFeature),
+      update: () async {
+        await RaceFeatureData.db.updateRow(session, raceFeature);
+        return raceFeature;
+      },
     );
-
-    if (existingList.isNotEmpty) {
-      raceFeature.id = existingList.first.id;
-      await RaceFeatureData.db.updateRow(session, raceFeature);
-      return raceFeature;
-    } else {
-      return await RaceFeatureData.db.insertRow(session, raceFeature);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
-    await RaceFeatureData.db
-        .deleteWhere(session, where: (t) => t.id.equals(id));
+    await RaceFeatureData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
 }
 
 class SubraceDataEndpoint extends Endpoint {
   Future<List<SubraceData>> getAll(Session session) async {
-    return await SubraceData.db.find(session);
+    return SubraceData.db.find(session);
   }
 
   Future<SubraceData> add(Session session, SubraceData subrace) async {
-    return await SubraceData.db.insertRow(session, subrace);
+    _stampForInsert(subrace);
+    return SubraceData.db.insertRow(session, subrace);
   }
 
   Future<SubraceData> upsert(Session session, SubraceData subrace) async {
-    final existingList = await SubraceData.db.find(
+    return _upsertRaceLike(
       session,
-      where: (t) => t.id.equals(subrace.id),
-      limit: 1,
+      subrace,
+      findExisting: () => SubraceData.db.find(
+        session,
+        where: (t) => t.id.equals(subrace.id),
+        limit: 1,
+      ),
+      insert: () => SubraceData.db.insertRow(session, subrace),
+      update: () async {
+        await SubraceData.db.updateRow(session, subrace);
+        return subrace;
+      },
     );
-
-    if (existingList.isNotEmpty) {
-      subrace.id = existingList.first.id;
-      await SubraceData.db.updateRow(session, subrace);
-      return subrace;
-    } else {
-      return await SubraceData.db.insertRow(session, subrace);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
@@ -95,85 +100,80 @@ class SubraceDataEndpoint extends Endpoint {
   }
 }
 
-class RaceOptionDataEndpoint extends Endpoint {
-  Future<List<RaceOptionData>> getAll(Session session) async {
-    return await RaceOptionData.db.find(session);
-  }
-
-  Future<RaceOptionData> add(Session session, RaceOptionData item) async {
-    return await RaceOptionData.db.insertRow(session, item);
-  }
-
-  Future<RaceOptionData> upsert(
-      Session session, RaceOptionData raceOption) async {
-    final existing = await RaceOptionData.db.find(
-      session,
-      where: (t) => t.id.equals(raceOption.id),
-      limit: 1,
-    );
-    final now = DateTime.now();
-    if (existing.isNotEmpty) {
-      final old = existing.first;
-      raceOption.id = old.id;
-      raceOption.version = (old.version ?? 0) + 1;
-      raceOption.createdAt = old.createdAt ?? now;
-      raceOption.updatedAt = now;
-
-      await RaceOptionData.db.updateRow(session, raceOption);
-      return raceOption;
-    } else {
-      raceOption.version = raceOption.version ?? 1;
-      raceOption.createdAt = now;
-      raceOption.updatedAt = now;
-
-      return await RaceOptionData.db.insertRow(session, raceOption);
-    }
-  }
-
-  Future<void> delete(Session session, int id) async {
-    await RaceOptionData.db.deleteWhere(session, where: (t) => t.id.equals(id));
-  }
-}
-
 class DragonbornAncestryDataEndpoint extends Endpoint {
   Future<List<DragonbornAncestryData>> getAll(Session session) async {
-    return await DragonbornAncestryData.db.find(session);
+    return DragonbornAncestryData.db.find(session);
   }
 
   Future<DragonbornAncestryData> add(
-      Session session, DragonbornAncestryData item) async {
-    return await DragonbornAncestryData.db.insertRow(session, item);
+    Session session,
+    DragonbornAncestryData item,
+  ) async {
+    _stampForInsert(item);
+    return DragonbornAncestryData.db.insertRow(session, item);
   }
 
   Future<DragonbornAncestryData> upsert(
-      Session session, DragonbornAncestryData dragonbornAncestry) async {
-    final existing = await DragonbornAncestryData.db.find(
+    Session session,
+    DragonbornAncestryData dragonbornAncestry,
+  ) async {
+    return _upsertRaceLike(
       session,
-      where: (t) => t.id.equals(dragonbornAncestry.id),
-      limit: 1,
+      dragonbornAncestry,
+      findExisting: () => DragonbornAncestryData.db.find(
+        session,
+        where: (t) => t.id.equals(dragonbornAncestry.id),
+        limit: 1,
+      ),
+      insert: () => DragonbornAncestryData.db.insertRow(
+        session,
+        dragonbornAncestry,
+      ),
+      update: () async {
+        await DragonbornAncestryData.db.updateRow(session, dragonbornAncestry);
+        return dragonbornAncestry;
+      },
     );
-    final now = DateTime.now();
-    if (existing.isNotEmpty) {
-      final old = existing.first;
-      dragonbornAncestry.id = old.id;
-      dragonbornAncestry.version = (old.version ?? 0) + 1;
-      dragonbornAncestry.createdAt = old.createdAt ?? now;
-      dragonbornAncestry.updatedAt = now;
-
-      await DragonbornAncestryData.db.updateRow(session, dragonbornAncestry);
-      return dragonbornAncestry;
-    } else {
-      dragonbornAncestry.version = dragonbornAncestry.version ?? 1;
-      dragonbornAncestry.createdAt = now;
-      dragonbornAncestry.updatedAt = now;
-
-      return await DragonbornAncestryData.db
-          .insertRow(session, dragonbornAncestry);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
-    await DragonbornAncestryData.db
-        .deleteWhere(session, where: (t) => t.id.equals(id));
+    await DragonbornAncestryData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
   }
+}
+
+void _stampForInsert(dynamic row) {
+  final now = DateTime.now();
+  if (row.version != null || row.createdAt != null || row.updatedAt != null) {
+    row.version ??= 1;
+    row.createdAt ??= now;
+    row.updatedAt ??= now;
+  }
+}
+
+Future<T> _upsertRaceLike<T>(
+  Session session,
+  dynamic row, {
+  required Future<List<dynamic>> Function() findExisting,
+  required Future<T> Function() insert,
+  required Future<T> Function() update,
+}) async {
+  final existingList = await findExisting();
+  if (existingList.isEmpty) {
+    _stampForInsert(row);
+    return insert();
+  }
+
+  final existing = existingList.first;
+  row.id = existing.id;
+  if (row.version != null || existing.version != null) {
+    row.version = (existing.version ?? 0) + 1;
+  }
+  if (row.createdAt != null || existing.createdAt != null) {
+    row.createdAt = existing.createdAt ?? DateTime.now();
+    row.updatedAt = DateTime.now();
+  }
+  return update();
 }

@@ -11,8 +11,5 @@ fields:
 
   abilityBonuses: Map<String, int>?
   traits: List<String>?
-  specialAbilities: List<String>?
   skillProficiencies: List<String>?
-
   resistances: List<String>?
-  variantOptions: List<RaceOptionData>?

@@ -15,6 +15,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CharacterCreationState {
   CharacterData get character;
+  List<CharacterClassEntryData> get classEntries;
+  List<CharacterChoiceData> get choices;
+  CharacterSheetSnapshotData? get snapshot;
   Step get step;
 
   /// Create a copy of CharacterCreationState
@@ -32,15 +35,26 @@ mixin _$CharacterCreationState {
             other is CharacterCreationState &&
             (identical(other.character, character) ||
                 other.character == character) &&
+            const DeepCollectionEquality()
+                .equals(other.classEntries, classEntries) &&
+            const DeepCollectionEquality().equals(other.choices, choices) &&
+            (identical(other.snapshot, snapshot) ||
+                other.snapshot == snapshot) &&
             (identical(other.step, step) || other.step == step));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, character, step);
+  int get hashCode => Object.hash(
+      runtimeType,
+      character,
+      const DeepCollectionEquality().hash(classEntries),
+      const DeepCollectionEquality().hash(choices),
+      snapshot,
+      step);
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step)';
+    return 'CharacterCreationState(character: $character, classEntries: $classEntries, choices: $choices, snapshot: $snapshot, step: $step)';
   }
 }
 
@@ -50,7 +64,12 @@ abstract mixin class $CharacterCreationStateCopyWith<$Res> {
           $Res Function(CharacterCreationState) _then) =
       _$CharacterCreationStateCopyWithImpl;
   @useResult
-  $Res call({CharacterData character, Step step});
+  $Res call(
+      {CharacterData character,
+      List<CharacterClassEntryData> classEntries,
+      List<CharacterChoiceData> choices,
+      CharacterSheetSnapshotData? snapshot,
+      Step step});
 }
 
 /// @nodoc
@@ -67,6 +86,9 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? character = null,
+    Object? classEntries = null,
+    Object? choices = null,
+    Object? snapshot = freezed,
     Object? step = null,
   }) {
     return _then(_self.copyWith(
@@ -74,6 +96,18 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.character
           : character // ignore: cast_nullable_to_non_nullable
               as CharacterData,
+      classEntries: null == classEntries
+          ? _self.classEntries
+          : classEntries // ignore: cast_nullable_to_non_nullable
+              as List<CharacterClassEntryData>,
+      choices: null == choices
+          ? _self.choices
+          : choices // ignore: cast_nullable_to_non_nullable
+              as List<CharacterChoiceData>,
+      snapshot: freezed == snapshot
+          ? _self.snapshot
+          : snapshot // ignore: cast_nullable_to_non_nullable
+              as CharacterSheetSnapshotData?,
       step: null == step
           ? _self.step
           : step // ignore: cast_nullable_to_non_nullable
@@ -173,13 +207,20 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step)? $default, {
+    TResult Function(
+            CharacterData character,
+            List<CharacterClassEntryData> classEntries,
+            List<CharacterChoiceData> choices,
+            CharacterSheetSnapshotData? snapshot,
+            Step step)?
+        $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step);
+        return $default(_that.character, _that.classEntries, _that.choices,
+            _that.snapshot, _that.step);
       case _:
         return orElse();
     }
@@ -200,12 +241,19 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step) $default,
+    TResult Function(
+            CharacterData character,
+            List<CharacterClassEntryData> classEntries,
+            List<CharacterChoiceData> choices,
+            CharacterSheetSnapshotData? snapshot,
+            Step step)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState():
-        return $default(_that.character, _that.step);
+        return $default(_that.character, _that.classEntries, _that.choices,
+            _that.snapshot, _that.step);
     }
   }
 
@@ -223,12 +271,19 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(CharacterData character, Step step)? $default,
+    TResult? Function(
+            CharacterData character,
+            List<CharacterClassEntryData> classEntries,
+            List<CharacterChoiceData> choices,
+            CharacterSheetSnapshotData? snapshot,
+            Step step)?
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step);
+        return $default(_that.character, _that.classEntries, _that.choices,
+            _that.snapshot, _that.step);
       case _:
         return null;
     }
@@ -238,10 +293,37 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 /// @nodoc
 
 class _CharacterCreationState implements CharacterCreationState {
-  const _CharacterCreationState({required this.character, required this.step});
+  const _CharacterCreationState(
+      {required this.character,
+      final List<CharacterClassEntryData> classEntries = const [],
+      final List<CharacterChoiceData> choices = const [],
+      this.snapshot,
+      required this.step})
+      : _classEntries = classEntries,
+        _choices = choices;
 
   @override
   final CharacterData character;
+  final List<CharacterClassEntryData> _classEntries;
+  @override
+  @JsonKey()
+  List<CharacterClassEntryData> get classEntries {
+    if (_classEntries is EqualUnmodifiableListView) return _classEntries;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_classEntries);
+  }
+
+  final List<CharacterChoiceData> _choices;
+  @override
+  @JsonKey()
+  List<CharacterChoiceData> get choices {
+    if (_choices is EqualUnmodifiableListView) return _choices;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_choices);
+  }
+
+  @override
+  final CharacterSheetSnapshotData? snapshot;
   @override
   final Step step;
 
@@ -261,15 +343,26 @@ class _CharacterCreationState implements CharacterCreationState {
             other is _CharacterCreationState &&
             (identical(other.character, character) ||
                 other.character == character) &&
+            const DeepCollectionEquality()
+                .equals(other._classEntries, _classEntries) &&
+            const DeepCollectionEquality().equals(other._choices, _choices) &&
+            (identical(other.snapshot, snapshot) ||
+                other.snapshot == snapshot) &&
             (identical(other.step, step) || other.step == step));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, character, step);
+  int get hashCode => Object.hash(
+      runtimeType,
+      character,
+      const DeepCollectionEquality().hash(_classEntries),
+      const DeepCollectionEquality().hash(_choices),
+      snapshot,
+      step);
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step)';
+    return 'CharacterCreationState(character: $character, classEntries: $classEntries, choices: $choices, snapshot: $snapshot, step: $step)';
   }
 }
 
@@ -281,7 +374,12 @@ abstract mixin class _$CharacterCreationStateCopyWith<$Res>
       __$CharacterCreationStateCopyWithImpl;
   @override
   @useResult
-  $Res call({CharacterData character, Step step});
+  $Res call(
+      {CharacterData character,
+      List<CharacterClassEntryData> classEntries,
+      List<CharacterChoiceData> choices,
+      CharacterSheetSnapshotData? snapshot,
+      Step step});
 }
 
 /// @nodoc
@@ -298,6 +396,9 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? character = null,
+    Object? classEntries = null,
+    Object? choices = null,
+    Object? snapshot = freezed,
     Object? step = null,
   }) {
     return _then(_CharacterCreationState(
@@ -305,6 +406,18 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.character
           : character // ignore: cast_nullable_to_non_nullable
               as CharacterData,
+      classEntries: null == classEntries
+          ? _self._classEntries
+          : classEntries // ignore: cast_nullable_to_non_nullable
+              as List<CharacterClassEntryData>,
+      choices: null == choices
+          ? _self._choices
+          : choices // ignore: cast_nullable_to_non_nullable
+              as List<CharacterChoiceData>,
+      snapshot: freezed == snapshot
+          ? _self.snapshot
+          : snapshot // ignore: cast_nullable_to_non_nullable
+              as CharacterSheetSnapshotData?,
       step: null == step
           ? _self.step
           : step // ignore: cast_nullable_to_non_nullable

@@ -1,0 +1,14 @@
+enum: FeatureTag
+values:
+  - action
+  - bonusAction
+  - reaction
+  - passive
+  - resource
+  - spellcasting
+  - defense
+  - mobility
+  - utility
+  - social
+  - exploration
+  - combat

@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../enums/spell_school.dart' as _i2;
 
 abstract class SpellData implements _i1.SerializableModel {
   SpellData._({
@@ -21,7 +22,7 @@ abstract class SpellData implements _i1.SerializableModel {
     this.createdAt,
     this.updatedAt,
     this.level,
-    this.school,
+    this.schoolValue,
     this.castingTime,
     this.range,
     this.duration,
@@ -29,7 +30,7 @@ abstract class SpellData implements _i1.SerializableModel {
     this.concentration,
     this.ritual,
     this.higherLevel,
-    this.availableForClasses,
+    this.availableForClassIds,
   });
 
   factory SpellData({
@@ -41,7 +42,7 @@ abstract class SpellData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    String? school,
+    _i2.SpellSchool? schoolValue,
     String? castingTime,
     String? range,
     String? duration,
@@ -49,7 +50,7 @@ abstract class SpellData implements _i1.SerializableModel {
     bool? concentration,
     bool? ritual,
     String? higherLevel,
-    List<int>? availableForClasses,
+    List<int>? availableForClassIds,
   }) = _SpellDataImpl;
 
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -66,7 +67,9 @@ abstract class SpellData implements _i1.SerializableModel {
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       level: jsonSerialization['level'] as int?,
-      school: jsonSerialization['school'] as String?,
+      schoolValue: jsonSerialization['schoolValue'] == null
+          ? null
+          : _i2.SpellSchool.fromJson((jsonSerialization['schoolValue'] as int)),
       castingTime: jsonSerialization['castingTime'] as String?,
       range: jsonSerialization['range'] as String?,
       duration: jsonSerialization['duration'] as String?,
@@ -76,7 +79,7 @@ abstract class SpellData implements _i1.SerializableModel {
       concentration: jsonSerialization['concentration'] as bool?,
       ritual: jsonSerialization['ritual'] as bool?,
       higherLevel: jsonSerialization['higherLevel'] as String?,
-      availableForClasses: (jsonSerialization['availableForClasses'] as List?)
+      availableForClassIds: (jsonSerialization['availableForClassIds'] as List?)
           ?.map((e) => e as int)
           .toList(),
     );
@@ -101,7 +104,7 @@ abstract class SpellData implements _i1.SerializableModel {
 
   int? level;
 
-  String? school;
+  _i2.SpellSchool? schoolValue;
 
   String? castingTime;
 
@@ -117,7 +120,7 @@ abstract class SpellData implements _i1.SerializableModel {
 
   String? higherLevel;
 
-  List<int>? availableForClasses;
+  List<int>? availableForClassIds;
 
   /// Returns a shallow copy of this [SpellData]
   /// with some or all fields replaced by the given arguments.
@@ -131,7 +134,7 @@ abstract class SpellData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    String? school,
+    _i2.SpellSchool? schoolValue,
     String? castingTime,
     String? range,
     String? duration,
@@ -139,7 +142,7 @@ abstract class SpellData implements _i1.SerializableModel {
     bool? concentration,
     bool? ritual,
     String? higherLevel,
-    List<int>? availableForClasses,
+    List<int>? availableForClassIds,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -152,7 +155,7 @@ abstract class SpellData implements _i1.SerializableModel {
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (level != null) 'level': level,
-      if (school != null) 'school': school,
+      if (schoolValue != null) 'schoolValue': schoolValue?.toJson(),
       if (castingTime != null) 'castingTime': castingTime,
       if (range != null) 'range': range,
       if (duration != null) 'duration': duration,
@@ -160,8 +163,8 @@ abstract class SpellData implements _i1.SerializableModel {
       if (concentration != null) 'concentration': concentration,
       if (ritual != null) 'ritual': ritual,
       if (higherLevel != null) 'higherLevel': higherLevel,
-      if (availableForClasses != null)
-        'availableForClasses': availableForClasses?.toJson(),
+      if (availableForClassIds != null)
+        'availableForClassIds': availableForClassIds?.toJson(),
     };
   }
 
@@ -183,7 +186,7 @@ class _SpellDataImpl extends SpellData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    String? school,
+    _i2.SpellSchool? schoolValue,
     String? castingTime,
     String? range,
     String? duration,
@@ -191,7 +194,7 @@ class _SpellDataImpl extends SpellData {
     bool? concentration,
     bool? ritual,
     String? higherLevel,
-    List<int>? availableForClasses,
+    List<int>? availableForClassIds,
   }) : super._(
           id: id,
           name: name,
@@ -201,7 +204,7 @@ class _SpellDataImpl extends SpellData {
           createdAt: createdAt,
           updatedAt: updatedAt,
           level: level,
-          school: school,
+          schoolValue: schoolValue,
           castingTime: castingTime,
           range: range,
           duration: duration,
@@ -209,7 +212,7 @@ class _SpellDataImpl extends SpellData {
           concentration: concentration,
           ritual: ritual,
           higherLevel: higherLevel,
-          availableForClasses: availableForClasses,
+          availableForClassIds: availableForClassIds,
         );
 
   /// Returns a shallow copy of this [SpellData]
@@ -225,7 +228,7 @@ class _SpellDataImpl extends SpellData {
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
     Object? level = _Undefined,
-    Object? school = _Undefined,
+    Object? schoolValue = _Undefined,
     Object? castingTime = _Undefined,
     Object? range = _Undefined,
     Object? duration = _Undefined,
@@ -233,7 +236,7 @@ class _SpellDataImpl extends SpellData {
     Object? concentration = _Undefined,
     Object? ritual = _Undefined,
     Object? higherLevel = _Undefined,
-    Object? availableForClasses = _Undefined,
+    Object? availableForClassIds = _Undefined,
   }) {
     return SpellData(
       id: id is int? ? id : this.id,
@@ -244,7 +247,8 @@ class _SpellDataImpl extends SpellData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       level: level is int? ? level : this.level,
-      school: school is String? ? school : this.school,
+      schoolValue:
+          schoolValue is _i2.SpellSchool? ? schoolValue : this.schoolValue,
       castingTime: castingTime is String? ? castingTime : this.castingTime,
       range: range is String? ? range : this.range,
       duration: duration is String? ? duration : this.duration,
@@ -255,9 +259,9 @@ class _SpellDataImpl extends SpellData {
           concentration is bool? ? concentration : this.concentration,
       ritual: ritual is bool? ? ritual : this.ritual,
       higherLevel: higherLevel is String? ? higherLevel : this.higherLevel,
-      availableForClasses: availableForClasses is List<int>?
-          ? availableForClasses
-          : this.availableForClasses?.map((e0) => e0).toList(),
+      availableForClassIds: availableForClassIds is List<int>?
+          ? availableForClassIds
+          : this.availableForClassIds?.map((e0) => e0).toList(),
     );
   }
 }

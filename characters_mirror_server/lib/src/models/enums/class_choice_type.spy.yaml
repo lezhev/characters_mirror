@@ -1,0 +1,16 @@
+enum: ClassChoiceType
+values:
+  - skill
+  - tool
+  - language
+  - fightingStyle
+  - expertise
+  - spell
+  - cantrip
+  - equipment
+  - subclassFeature
+  - featureOption
+  - invocation
+  - abilityIncrease
+  - feat
+  - custom

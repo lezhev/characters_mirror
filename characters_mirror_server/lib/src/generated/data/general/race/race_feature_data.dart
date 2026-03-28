@@ -14,6 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
 import '../../../data/general/race/subrace_data.dart' as _i3;
+import '../../../enums/feature_tag.dart' as _i4;
 
 abstract class RaceFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -33,6 +34,7 @@ abstract class RaceFeatureData
     this.spells,
     this.usesPerRest,
     this.usesFormula,
+    this.tags,
   });
 
   factory RaceFeatureData({
@@ -51,6 +53,7 @@ abstract class RaceFeatureData
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
+    List<_i4.FeatureTag>? tags,
   }) = _RaceFeatureDataImpl;
 
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -83,6 +86,9 @@ abstract class RaceFeatureData
           )),
       usesPerRest: jsonSerialization['usesPerRest'] as String?,
       usesFormula: jsonSerialization['usesFormula'] as String?,
+      tags: (jsonSerialization['tags'] as List?)
+          ?.map((e) => _i4.FeatureTag.fromJson((e as int)))
+          .toList(),
     );
   }
 
@@ -121,6 +127,8 @@ abstract class RaceFeatureData
 
   String? usesFormula;
 
+  List<_i4.FeatureTag>? tags;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -143,6 +151,7 @@ abstract class RaceFeatureData
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
+    List<_i4.FeatureTag>? tags,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -162,6 +171,7 @@ abstract class RaceFeatureData
       if (spells != null) 'spells': spells?.toJson(),
       if (usesPerRest != null) 'usesPerRest': usesPerRest,
       if (usesFormula != null) 'usesFormula': usesFormula,
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -183,6 +193,7 @@ abstract class RaceFeatureData
       if (spells != null) 'spells': spells?.toJson(),
       if (usesPerRest != null) 'usesPerRest': usesPerRest,
       if (usesFormula != null) 'usesFormula': usesFormula,
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -241,6 +252,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Map<String, int>? spells,
     String? usesPerRest,
     String? usesFormula,
+    List<_i4.FeatureTag>? tags,
   }) : super._(
           id: id,
           raceId: raceId,
@@ -257,6 +269,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           spells: spells,
           usesPerRest: usesPerRest,
           usesFormula: usesFormula,
+          tags: tags,
         );
 
   /// Returns a shallow copy of this [RaceFeatureData]
@@ -279,6 +292,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? spells = _Undefined,
     Object? usesPerRest = _Undefined,
     Object? usesFormula = _Undefined,
+    Object? tags = _Undefined,
   }) {
     return RaceFeatureData(
       id: id is int? ? id : this.id,
@@ -305,6 +319,9 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
                   )),
       usesPerRest: usesPerRest is String? ? usesPerRest : this.usesPerRest,
       usesFormula: usesFormula is String? ? usesFormula : this.usesFormula,
+      tags: tags is List<_i4.FeatureTag>?
+          ? tags
+          : this.tags?.map((e0) => e0).toList(),
     );
   }
 }
@@ -360,6 +377,10 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
       'usesFormula',
       this,
     );
+    tags = _i1.ColumnSerializable(
+      'tags',
+      this,
+    );
   }
 
   late final _i1.ColumnInt raceId;
@@ -389,6 +410,8 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
   late final _i1.ColumnString usesPerRest;
 
   late final _i1.ColumnString usesFormula;
+
+  late final _i1.ColumnSerializable tags;
 
   _i2.RaceDataTable get race {
     if (_race != null) return _race!;
@@ -431,6 +454,7 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
         spells,
         usesPerRest,
         usesFormula,
+        tags,
       ];
 
   @override

@@ -8,12 +8,11 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
-  isSimple: bool?              # Simple / Martial
-  isMelee: bool?               # Melee / Ranged
-  damage: String?              # Dice enum
-  damageType: String?          # DamageType enum
-  properties: List<String>?    # WeaponProperty enum
+  category: WeaponCategory?
+  damage: String?
+  damageTypeValue: DamageType?
+  properties: List<String>?
   weight: double?
-  cost: double?                # "10"
-  rangeNormal: int?            # 20, 30, 80 и т.д.
-  rangeMax: int?               # 60, 120 и т.д.
+  cost: double?
+  rangeNormal: int?
+  rangeMax: int?

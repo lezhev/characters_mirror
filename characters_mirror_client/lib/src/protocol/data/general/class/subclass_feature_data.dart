@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/class/subclass_data.dart' as _i2;
+import '../../../enums/feature_tag.dart' as _i3;
 
 abstract class SubclassFeatureData implements _i1.SerializableModel {
   SubclassFeatureData._({
@@ -24,16 +25,8 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.abilityBonuses,
-    this.proficiencies,
-    this.specialAbilities,
-    this.variantOptions,
-    this.resourceName,
-    this.resourceAmount,
-    this.resourceRegain,
-    this.spellSlots,
-    required this.knownSpells,
-    required this.knownCantips,
+    this.tags,
+    this.choiceGroupKey,
   });
 
   factory SubclassFeatureData({
@@ -47,16 +40,8 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Map<String, int>? abilityBonuses,
-    List<String>? proficiencies,
-    List<String>? specialAbilities,
-    String? variantOptions,
-    String? resourceName,
-    int? resourceAmount,
-    String? resourceRegain,
-    Map<int, int>? spellSlots,
-    required int knownSpells,
-    required int knownCantips,
+    List<_i3.FeatureTag>? tags,
+    String? choiceGroupKey,
   }) = _SubclassFeatureDataImpl;
 
   factory SubclassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -78,26 +63,10 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      abilityBonuses:
-          (jsonSerialization['abilityBonuses'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      proficiencies: (jsonSerialization['proficiencies'] as List?)
-          ?.map((e) => e as String)
+      tags: (jsonSerialization['tags'] as List?)
+          ?.map((e) => _i3.FeatureTag.fromJson((e as int)))
           .toList(),
-      specialAbilities: (jsonSerialization['specialAbilities'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      variantOptions: jsonSerialization['variantOptions'] as String?,
-      resourceName: jsonSerialization['resourceName'] as String?,
-      resourceAmount: jsonSerialization['resourceAmount'] as int?,
-      resourceRegain: jsonSerialization['resourceRegain'] as String?,
-      spellSlots: (jsonSerialization['spellSlots'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
-      knownSpells: jsonSerialization['knownSpells'] as int,
-      knownCantips: jsonSerialization['knownCantips'] as int,
+      choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
     );
   }
 
@@ -124,25 +93,9 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  Map<String, int>? abilityBonuses;
+  List<_i3.FeatureTag>? tags;
 
-  List<String>? proficiencies;
-
-  List<String>? specialAbilities;
-
-  String? variantOptions;
-
-  String? resourceName;
-
-  int? resourceAmount;
-
-  String? resourceRegain;
-
-  Map<int, int>? spellSlots;
-
-  int knownSpells;
-
-  int knownCantips;
+  String? choiceGroupKey;
 
   /// Returns a shallow copy of this [SubclassFeatureData]
   /// with some or all fields replaced by the given arguments.
@@ -158,16 +111,8 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Map<String, int>? abilityBonuses,
-    List<String>? proficiencies,
-    List<String>? specialAbilities,
-    String? variantOptions,
-    String? resourceName,
-    int? resourceAmount,
-    String? resourceRegain,
-    Map<int, int>? spellSlots,
-    int? knownSpells,
-    int? knownCantips,
+    List<_i3.FeatureTag>? tags,
+    String? choiceGroupKey,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -182,17 +127,8 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
-      if (proficiencies != null) 'proficiencies': proficiencies?.toJson(),
-      if (specialAbilities != null)
-        'specialAbilities': specialAbilities?.toJson(),
-      if (variantOptions != null) 'variantOptions': variantOptions,
-      if (resourceName != null) 'resourceName': resourceName,
-      if (resourceAmount != null) 'resourceAmount': resourceAmount,
-      if (resourceRegain != null) 'resourceRegain': resourceRegain,
-      if (spellSlots != null) 'spellSlots': spellSlots?.toJson(),
-      'knownSpells': knownSpells,
-      'knownCantips': knownCantips,
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
+      if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
     };
   }
 
@@ -216,16 +152,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Map<String, int>? abilityBonuses,
-    List<String>? proficiencies,
-    List<String>? specialAbilities,
-    String? variantOptions,
-    String? resourceName,
-    int? resourceAmount,
-    String? resourceRegain,
-    Map<int, int>? spellSlots,
-    required int knownSpells,
-    required int knownCantips,
+    List<_i3.FeatureTag>? tags,
+    String? choiceGroupKey,
   }) : super._(
           id: id,
           parentSubclassId: parentSubclassId,
@@ -237,16 +165,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          abilityBonuses: abilityBonuses,
-          proficiencies: proficiencies,
-          specialAbilities: specialAbilities,
-          variantOptions: variantOptions,
-          resourceName: resourceName,
-          resourceAmount: resourceAmount,
-          resourceRegain: resourceRegain,
-          spellSlots: spellSlots,
-          knownSpells: knownSpells,
-          knownCantips: knownCantips,
+          tags: tags,
+          choiceGroupKey: choiceGroupKey,
         );
 
   /// Returns a shallow copy of this [SubclassFeatureData]
@@ -264,16 +184,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? abilityBonuses = _Undefined,
-    Object? proficiencies = _Undefined,
-    Object? specialAbilities = _Undefined,
-    Object? variantOptions = _Undefined,
-    Object? resourceName = _Undefined,
-    Object? resourceAmount = _Undefined,
-    Object? resourceRegain = _Undefined,
-    Object? spellSlots = _Undefined,
-    int? knownSpells,
-    int? knownCantips,
+    Object? tags = _Undefined,
+    Object? choiceGroupKey = _Undefined,
   }) {
     return SubclassFeatureData(
       id: id is int? ? id : this.id,
@@ -288,41 +200,11 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      abilityBonuses: abilityBonuses is Map<String, int>?
-          ? abilityBonuses
-          : this.abilityBonuses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      proficiencies: proficiencies is List<String>?
-          ? proficiencies
-          : this.proficiencies?.map((e0) => e0).toList(),
-      specialAbilities: specialAbilities is List<String>?
-          ? specialAbilities
-          : this.specialAbilities?.map((e0) => e0).toList(),
-      variantOptions:
-          variantOptions is String? ? variantOptions : this.variantOptions,
-      resourceName: resourceName is String? ? resourceName : this.resourceName,
-      resourceAmount:
-          resourceAmount is int? ? resourceAmount : this.resourceAmount,
-      resourceRegain:
-          resourceRegain is String? ? resourceRegain : this.resourceRegain,
-      spellSlots: spellSlots is Map<int, int>?
-          ? spellSlots
-          : this.spellSlots?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      knownSpells: knownSpells ?? this.knownSpells,
-      knownCantips: knownCantips ?? this.knownCantips,
+      tags: tags is List<_i3.FeatureTag>?
+          ? tags
+          : this.tags?.map((e0) => e0).toList(),
+      choiceGroupKey:
+          choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
     );
   }
 }

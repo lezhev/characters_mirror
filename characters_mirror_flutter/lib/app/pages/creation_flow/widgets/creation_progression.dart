@@ -1,28 +1,32 @@
+import 'dart:async';
+
 import 'package:characters_mirror_flutter/app/pages/creation_flow/state/character_creation_state.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreationProgression extends StatelessWidget {
-  const CreationProgression({super.key});
+  final FutureOr<void> Function(Step target)? onStepTap;
+
+  const CreationProgression({super.key, this.onStepTap});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        StepIndicator(step: Step.introduction),
+      children: [
+        StepIndicator(step: Step.introduction, onTap: onStepTap),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.race),
+        StepIndicator(step: Step.race, onTap: onStepTap),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.classStep),
+        StepIndicator(step: Step.classStep, onTap: onStepTap),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.background),
+        StepIndicator(step: Step.background, onTap: onStepTap),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.attributes),
+        StepIndicator(step: Step.attributes, onTap: onStepTap),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.personal),
+        StepIndicator(step: Step.personal, onTap: onStepTap),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.summary),
+        StepIndicator(step: Step.summary, onTap: onStepTap),
       ],
     );
   }
@@ -30,18 +34,23 @@ class CreationProgression extends StatelessWidget {
 
 class StepIndicator extends ConsumerWidget {
   final Step step;
+  final FutureOr<void> Function(Step target)? onTap;
 
-  const StepIndicator({super.key, required this.step});
+  const StepIndicator({super.key, required this.step, this.onTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.read(characterCreationProvider);
-    return CircleAvatar(
-      radius: MediaQuery.of(context).size.width > 500 ? 24 : 16,
-      backgroundColor: step == state.step
-          ? colorScheme.primary
-          : colorScheme.surfaceContainerLowest,
+    final state = ref.watch(characterCreationProvider);
+    return InkResponse(
+      onTap: onTap == null ? null : () => onTap!(step),
+      radius: MediaQuery.of(context).size.width > 500 ? 28 : 20,
+      child: CircleAvatar(
+        radius: MediaQuery.of(context).size.width > 500 ? 24 : 16,
+        backgroundColor: step == state.step
+            ? colorScheme.primary
+            : colorScheme.surfaceContainerLowest,
+      ),
     );
     //  return Container(
     //   width: diameter,

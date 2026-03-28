@@ -8,12 +8,13 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
-// ignore_for_file: unnecessary_null_comparison
-
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/items/weapon_data.dart' as _i2;
-import '../../../data/items/item_data.dart' as _i3;
+import '../../../enums/ability.dart' as _i2;
+import '../../../enums/armor_category.dart' as _i3;
+import '../../../enums/weapon_category.dart' as _i4;
+import '../../../enums/skill.dart' as _i5;
+import '../../../enums/spellcasting_progression.dart' as _i6;
 
 abstract class ClassData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -25,18 +26,23 @@ abstract class ClassData
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.hitDie,
-    this.savingThrows,
-    this.proficienciesArmor,
-    this.proficienciesWeapons,
-    this.proficienciesTools,
-    this.skills,
+    this.hitDieValue,
+    this.primaryAbilities,
+    this.savingThrowProficiencies,
+    this.armorTraining,
+    this.weaponTraining,
+    this.toolTraining,
+    this.availableSkills,
     this.skillCount,
-    this.spellcasting,
-    this.spellcastingAbility,
-    this.startingEquipment,
+    this.subclassChoiceLevel,
+    this.spellcastingProgression,
+    this.spellcastingAbilityValue,
+    this.multiclassPrerequisites,
+    this.multiclassArmorTraining,
+    this.multiclassWeaponTraining,
+    this.multiclassToolTraining,
     this.imageURL,
-  }) : _charactersClassesCharactersId = null;
+  });
 
   factory ClassData({
     int? id,
@@ -46,21 +52,26 @@ abstract class ClassData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? hitDie,
-    List<String>? savingThrows,
-    List<int>? proficienciesArmor,
-    List<_i2.WeaponData>? proficienciesWeapons,
-    List<_i3.ItemData>? proficienciesTools,
-    List<String>? skills,
+    int? hitDieValue,
+    List<_i2.Ability>? primaryAbilities,
+    List<_i2.Ability>? savingThrowProficiencies,
+    List<_i3.ArmorCategory>? armorTraining,
+    List<_i4.WeaponCategory>? weaponTraining,
+    List<String>? toolTraining,
+    List<_i5.Skill>? availableSkills,
     int? skillCount,
-    bool? spellcasting,
-    String? spellcastingAbility,
-    List<_i3.ItemData>? startingEquipment,
+    int? subclassChoiceLevel,
+    _i6.SpellcastingProgression? spellcastingProgression,
+    _i2.Ability? spellcastingAbilityValue,
+    Map<String, int>? multiclassPrerequisites,
+    List<_i3.ArmorCategory>? multiclassArmorTraining,
+    List<_i4.WeaponCategory>? multiclassWeaponTraining,
+    List<String>? multiclassToolTraining,
     String? imageURL,
   }) = _ClassDataImpl;
 
   factory ClassData.fromJson(Map<String, dynamic> jsonSerialization) {
-    return ClassDataImplicit._(
+    return ClassData(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -72,31 +83,57 @@ abstract class ClassData
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      hitDie: jsonSerialization['hitDie'] as String?,
-      savingThrows: (jsonSerialization['savingThrows'] as List?)
+      hitDieValue: jsonSerialization['hitDieValue'] as int?,
+      primaryAbilities: (jsonSerialization['primaryAbilities'] as List?)
+          ?.map((e) => _i2.Ability.fromJson((e as int)))
+          .toList(),
+      savingThrowProficiencies:
+          (jsonSerialization['savingThrowProficiencies'] as List?)
+              ?.map((e) => _i2.Ability.fromJson((e as int)))
+              .toList(),
+      armorTraining: (jsonSerialization['armorTraining'] as List?)
+          ?.map((e) => _i3.ArmorCategory.fromJson((e as int)))
+          .toList(),
+      weaponTraining: (jsonSerialization['weaponTraining'] as List?)
+          ?.map((e) => _i4.WeaponCategory.fromJson((e as int)))
+          .toList(),
+      toolTraining: (jsonSerialization['toolTraining'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      proficienciesArmor: (jsonSerialization['proficienciesArmor'] as List?)
-          ?.map((e) => e as int)
-          .toList(),
-      proficienciesWeapons: (jsonSerialization['proficienciesWeapons'] as List?)
-          ?.map((e) => _i2.WeaponData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      proficienciesTools: (jsonSerialization['proficienciesTools'] as List?)
-          ?.map((e) => _i3.ItemData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      skills: (jsonSerialization['skills'] as List?)
-          ?.map((e) => e as String)
+      availableSkills: (jsonSerialization['availableSkills'] as List?)
+          ?.map((e) => _i5.Skill.fromJson((e as int)))
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
-      spellcasting: jsonSerialization['spellcasting'] as bool?,
-      spellcastingAbility: jsonSerialization['spellcastingAbility'] as String?,
-      startingEquipment: (jsonSerialization['startingEquipment'] as List?)
-          ?.map((e) => _i3.ItemData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      subclassChoiceLevel: jsonSerialization['subclassChoiceLevel'] as int?,
+      spellcastingProgression:
+          jsonSerialization['spellcastingProgression'] == null
+              ? null
+              : _i6.SpellcastingProgression.fromJson(
+                  (jsonSerialization['spellcastingProgression'] as int)),
+      spellcastingAbilityValue:
+          jsonSerialization['spellcastingAbilityValue'] == null
+              ? null
+              : _i2.Ability.fromJson(
+                  (jsonSerialization['spellcastingAbilityValue'] as int)),
+      multiclassPrerequisites:
+          (jsonSerialization['multiclassPrerequisites'] as Map?)
+              ?.map((k, v) => MapEntry(
+                    k as String,
+                    v as int,
+                  )),
+      multiclassArmorTraining:
+          (jsonSerialization['multiclassArmorTraining'] as List?)
+              ?.map((e) => _i3.ArmorCategory.fromJson((e as int)))
+              .toList(),
+      multiclassWeaponTraining:
+          (jsonSerialization['multiclassWeaponTraining'] as List?)
+              ?.map((e) => _i4.WeaponCategory.fromJson((e as int)))
+              .toList(),
+      multiclassToolTraining:
+          (jsonSerialization['multiclassToolTraining'] as List?)
+              ?.map((e) => e as String)
+              .toList(),
       imageURL: jsonSerialization['imageURL'] as String?,
-      $_charactersClassesCharactersId:
-          jsonSerialization['_charactersClassesCharactersId'] as int?,
     );
   }
 
@@ -119,29 +156,37 @@ abstract class ClassData
 
   DateTime? updatedAt;
 
-  String? hitDie;
+  int? hitDieValue;
 
-  List<String>? savingThrows;
+  List<_i2.Ability>? primaryAbilities;
 
-  List<int>? proficienciesArmor;
+  List<_i2.Ability>? savingThrowProficiencies;
 
-  List<_i2.WeaponData>? proficienciesWeapons;
+  List<_i3.ArmorCategory>? armorTraining;
 
-  List<_i3.ItemData>? proficienciesTools;
+  List<_i4.WeaponCategory>? weaponTraining;
 
-  List<String>? skills;
+  List<String>? toolTraining;
+
+  List<_i5.Skill>? availableSkills;
 
   int? skillCount;
 
-  bool? spellcasting;
+  int? subclassChoiceLevel;
 
-  String? spellcastingAbility;
+  _i6.SpellcastingProgression? spellcastingProgression;
 
-  List<_i3.ItemData>? startingEquipment;
+  _i2.Ability? spellcastingAbilityValue;
+
+  Map<String, int>? multiclassPrerequisites;
+
+  List<_i3.ArmorCategory>? multiclassArmorTraining;
+
+  List<_i4.WeaponCategory>? multiclassWeaponTraining;
+
+  List<String>? multiclassToolTraining;
 
   String? imageURL;
-
-  final int? _charactersClassesCharactersId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -157,16 +202,21 @@ abstract class ClassData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? hitDie,
-    List<String>? savingThrows,
-    List<int>? proficienciesArmor,
-    List<_i2.WeaponData>? proficienciesWeapons,
-    List<_i3.ItemData>? proficienciesTools,
-    List<String>? skills,
+    int? hitDieValue,
+    List<_i2.Ability>? primaryAbilities,
+    List<_i2.Ability>? savingThrowProficiencies,
+    List<_i3.ArmorCategory>? armorTraining,
+    List<_i4.WeaponCategory>? weaponTraining,
+    List<String>? toolTraining,
+    List<_i5.Skill>? availableSkills,
     int? skillCount,
-    bool? spellcasting,
-    String? spellcastingAbility,
-    List<_i3.ItemData>? startingEquipment,
+    int? subclassChoiceLevel,
+    _i6.SpellcastingProgression? spellcastingProgression,
+    _i2.Ability? spellcastingAbilityValue,
+    Map<String, int>? multiclassPrerequisites,
+    List<_i3.ArmorCategory>? multiclassArmorTraining,
+    List<_i4.WeaponCategory>? multiclassWeaponTraining,
+    List<String>? multiclassToolTraining,
     String? imageURL,
   });
   @override
@@ -179,27 +229,40 @@ abstract class ClassData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (hitDie != null) 'hitDie': hitDie,
-      if (savingThrows != null) 'savingThrows': savingThrows?.toJson(),
-      if (proficienciesArmor != null)
-        'proficienciesArmor': proficienciesArmor?.toJson(),
-      if (proficienciesWeapons != null)
-        'proficienciesWeapons':
-            proficienciesWeapons?.toJson(valueToJson: (v) => v.toJson()),
-      if (proficienciesTools != null)
-        'proficienciesTools':
-            proficienciesTools?.toJson(valueToJson: (v) => v.toJson()),
-      if (skills != null) 'skills': skills?.toJson(),
+      if (hitDieValue != null) 'hitDieValue': hitDieValue,
+      if (primaryAbilities != null)
+        'primaryAbilities':
+            primaryAbilities?.toJson(valueToJson: (v) => v.toJson()),
+      if (savingThrowProficiencies != null)
+        'savingThrowProficiencies':
+            savingThrowProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+      if (armorTraining != null)
+        'armorTraining': armorTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (weaponTraining != null)
+        'weaponTraining':
+            weaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (toolTraining != null) 'toolTraining': toolTraining?.toJson(),
+      if (availableSkills != null)
+        'availableSkills':
+            availableSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (skillCount != null) 'skillCount': skillCount,
-      if (spellcasting != null) 'spellcasting': spellcasting,
-      if (spellcastingAbility != null)
-        'spellcastingAbility': spellcastingAbility,
-      if (startingEquipment != null)
-        'startingEquipment':
-            startingEquipment?.toJson(valueToJson: (v) => v.toJson()),
+      if (subclassChoiceLevel != null)
+        'subclassChoiceLevel': subclassChoiceLevel,
+      if (spellcastingProgression != null)
+        'spellcastingProgression': spellcastingProgression?.toJson(),
+      if (spellcastingAbilityValue != null)
+        'spellcastingAbilityValue': spellcastingAbilityValue?.toJson(),
+      if (multiclassPrerequisites != null)
+        'multiclassPrerequisites': multiclassPrerequisites?.toJson(),
+      if (multiclassArmorTraining != null)
+        'multiclassArmorTraining':
+            multiclassArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (multiclassWeaponTraining != null)
+        'multiclassWeaponTraining':
+            multiclassWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (multiclassToolTraining != null)
+        'multiclassToolTraining': multiclassToolTraining?.toJson(),
       if (imageURL != null) 'imageURL': imageURL,
-      if (_charactersClassesCharactersId != null)
-        '_charactersClassesCharactersId': _charactersClassesCharactersId,
     };
   }
 
@@ -213,38 +276,45 @@ abstract class ClassData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (hitDie != null) 'hitDie': hitDie,
-      if (savingThrows != null) 'savingThrows': savingThrows?.toJson(),
-      if (proficienciesArmor != null)
-        'proficienciesArmor': proficienciesArmor?.toJson(),
-      if (proficienciesWeapons != null)
-        'proficienciesWeapons': proficienciesWeapons?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
-      if (proficienciesTools != null)
-        'proficienciesTools': proficienciesTools?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
-      if (skills != null) 'skills': skills?.toJson(),
+      if (hitDieValue != null) 'hitDieValue': hitDieValue,
+      if (primaryAbilities != null)
+        'primaryAbilities':
+            primaryAbilities?.toJson(valueToJson: (v) => v.toJson()),
+      if (savingThrowProficiencies != null)
+        'savingThrowProficiencies':
+            savingThrowProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+      if (armorTraining != null)
+        'armorTraining': armorTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (weaponTraining != null)
+        'weaponTraining':
+            weaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (toolTraining != null) 'toolTraining': toolTraining?.toJson(),
+      if (availableSkills != null)
+        'availableSkills':
+            availableSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (skillCount != null) 'skillCount': skillCount,
-      if (spellcasting != null) 'spellcasting': spellcasting,
-      if (spellcastingAbility != null)
-        'spellcastingAbility': spellcastingAbility,
-      if (startingEquipment != null)
-        'startingEquipment': startingEquipment?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+      if (subclassChoiceLevel != null)
+        'subclassChoiceLevel': subclassChoiceLevel,
+      if (spellcastingProgression != null)
+        'spellcastingProgression': spellcastingProgression?.toJson(),
+      if (spellcastingAbilityValue != null)
+        'spellcastingAbilityValue': spellcastingAbilityValue?.toJson(),
+      if (multiclassPrerequisites != null)
+        'multiclassPrerequisites': multiclassPrerequisites?.toJson(),
+      if (multiclassArmorTraining != null)
+        'multiclassArmorTraining':
+            multiclassArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (multiclassWeaponTraining != null)
+        'multiclassWeaponTraining':
+            multiclassWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (multiclassToolTraining != null)
+        'multiclassToolTraining': multiclassToolTraining?.toJson(),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
 
-  static ClassDataInclude include({
-    _i2.WeaponDataIncludeList? proficienciesWeapons,
-    _i3.ItemDataIncludeList? proficienciesTools,
-    _i3.ItemDataIncludeList? startingEquipment,
-  }) {
-    return ClassDataInclude._(
-      proficienciesWeapons: proficienciesWeapons,
-      proficienciesTools: proficienciesTools,
-      startingEquipment: startingEquipment,
-    );
+  static ClassDataInclude include() {
+    return ClassDataInclude._();
   }
 
   static ClassDataIncludeList includeList({
@@ -284,16 +354,21 @@ class _ClassDataImpl extends ClassData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? hitDie,
-    List<String>? savingThrows,
-    List<int>? proficienciesArmor,
-    List<_i2.WeaponData>? proficienciesWeapons,
-    List<_i3.ItemData>? proficienciesTools,
-    List<String>? skills,
+    int? hitDieValue,
+    List<_i2.Ability>? primaryAbilities,
+    List<_i2.Ability>? savingThrowProficiencies,
+    List<_i3.ArmorCategory>? armorTraining,
+    List<_i4.WeaponCategory>? weaponTraining,
+    List<String>? toolTraining,
+    List<_i5.Skill>? availableSkills,
     int? skillCount,
-    bool? spellcasting,
-    String? spellcastingAbility,
-    List<_i3.ItemData>? startingEquipment,
+    int? subclassChoiceLevel,
+    _i6.SpellcastingProgression? spellcastingProgression,
+    _i2.Ability? spellcastingAbilityValue,
+    Map<String, int>? multiclassPrerequisites,
+    List<_i3.ArmorCategory>? multiclassArmorTraining,
+    List<_i4.WeaponCategory>? multiclassWeaponTraining,
+    List<String>? multiclassToolTraining,
     String? imageURL,
   }) : super._(
           id: id,
@@ -303,16 +378,21 @@ class _ClassDataImpl extends ClassData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          hitDie: hitDie,
-          savingThrows: savingThrows,
-          proficienciesArmor: proficienciesArmor,
-          proficienciesWeapons: proficienciesWeapons,
-          proficienciesTools: proficienciesTools,
-          skills: skills,
+          hitDieValue: hitDieValue,
+          primaryAbilities: primaryAbilities,
+          savingThrowProficiencies: savingThrowProficiencies,
+          armorTraining: armorTraining,
+          weaponTraining: weaponTraining,
+          toolTraining: toolTraining,
+          availableSkills: availableSkills,
           skillCount: skillCount,
-          spellcasting: spellcasting,
-          spellcastingAbility: spellcastingAbility,
-          startingEquipment: startingEquipment,
+          subclassChoiceLevel: subclassChoiceLevel,
+          spellcastingProgression: spellcastingProgression,
+          spellcastingAbilityValue: spellcastingAbilityValue,
+          multiclassPrerequisites: multiclassPrerequisites,
+          multiclassArmorTraining: multiclassArmorTraining,
+          multiclassWeaponTraining: multiclassWeaponTraining,
+          multiclassToolTraining: multiclassToolTraining,
           imageURL: imageURL,
         );
 
@@ -328,19 +408,24 @@ class _ClassDataImpl extends ClassData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? hitDie = _Undefined,
-    Object? savingThrows = _Undefined,
-    Object? proficienciesArmor = _Undefined,
-    Object? proficienciesWeapons = _Undefined,
-    Object? proficienciesTools = _Undefined,
-    Object? skills = _Undefined,
+    Object? hitDieValue = _Undefined,
+    Object? primaryAbilities = _Undefined,
+    Object? savingThrowProficiencies = _Undefined,
+    Object? armorTraining = _Undefined,
+    Object? weaponTraining = _Undefined,
+    Object? toolTraining = _Undefined,
+    Object? availableSkills = _Undefined,
     Object? skillCount = _Undefined,
-    Object? spellcasting = _Undefined,
-    Object? spellcastingAbility = _Undefined,
-    Object? startingEquipment = _Undefined,
+    Object? subclassChoiceLevel = _Undefined,
+    Object? spellcastingProgression = _Undefined,
+    Object? spellcastingAbilityValue = _Undefined,
+    Object? multiclassPrerequisites = _Undefined,
+    Object? multiclassArmorTraining = _Undefined,
+    Object? multiclassWeaponTraining = _Undefined,
+    Object? multiclassToolTraining = _Undefined,
     Object? imageURL = _Undefined,
   }) {
-    return ClassDataImplicit._(
+    return ClassData(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -348,108 +433,60 @@ class _ClassDataImpl extends ClassData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      hitDie: hitDie is String? ? hitDie : this.hitDie,
-      savingThrows: savingThrows is List<String>?
-          ? savingThrows
-          : this.savingThrows?.map((e0) => e0).toList(),
-      proficienciesArmor: proficienciesArmor is List<int>?
-          ? proficienciesArmor
-          : this.proficienciesArmor?.map((e0) => e0).toList(),
-      proficienciesWeapons: proficienciesWeapons is List<_i2.WeaponData>?
-          ? proficienciesWeapons
-          : this.proficienciesWeapons?.map((e0) => e0.copyWith()).toList(),
-      proficienciesTools: proficienciesTools is List<_i3.ItemData>?
-          ? proficienciesTools
-          : this.proficienciesTools?.map((e0) => e0.copyWith()).toList(),
-      skills: skills is List<String>?
-          ? skills
-          : this.skills?.map((e0) => e0).toList(),
+      hitDieValue: hitDieValue is int? ? hitDieValue : this.hitDieValue,
+      primaryAbilities: primaryAbilities is List<_i2.Ability>?
+          ? primaryAbilities
+          : this.primaryAbilities?.map((e0) => e0).toList(),
+      savingThrowProficiencies: savingThrowProficiencies is List<_i2.Ability>?
+          ? savingThrowProficiencies
+          : this.savingThrowProficiencies?.map((e0) => e0).toList(),
+      armorTraining: armorTraining is List<_i3.ArmorCategory>?
+          ? armorTraining
+          : this.armorTraining?.map((e0) => e0).toList(),
+      weaponTraining: weaponTraining is List<_i4.WeaponCategory>?
+          ? weaponTraining
+          : this.weaponTraining?.map((e0) => e0).toList(),
+      toolTraining: toolTraining is List<String>?
+          ? toolTraining
+          : this.toolTraining?.map((e0) => e0).toList(),
+      availableSkills: availableSkills is List<_i5.Skill>?
+          ? availableSkills
+          : this.availableSkills?.map((e0) => e0).toList(),
       skillCount: skillCount is int? ? skillCount : this.skillCount,
-      spellcasting: spellcasting is bool? ? spellcasting : this.spellcasting,
-      spellcastingAbility: spellcastingAbility is String?
-          ? spellcastingAbility
-          : this.spellcastingAbility,
-      startingEquipment: startingEquipment is List<_i3.ItemData>?
-          ? startingEquipment
-          : this.startingEquipment?.map((e0) => e0.copyWith()).toList(),
+      subclassChoiceLevel: subclassChoiceLevel is int?
+          ? subclassChoiceLevel
+          : this.subclassChoiceLevel,
+      spellcastingProgression:
+          spellcastingProgression is _i6.SpellcastingProgression?
+              ? spellcastingProgression
+              : this.spellcastingProgression,
+      spellcastingAbilityValue: spellcastingAbilityValue is _i2.Ability?
+          ? spellcastingAbilityValue
+          : this.spellcastingAbilityValue,
+      multiclassPrerequisites: multiclassPrerequisites is Map<String, int>?
+          ? multiclassPrerequisites
+          : this.multiclassPrerequisites?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
+      multiclassArmorTraining:
+          multiclassArmorTraining is List<_i3.ArmorCategory>?
+              ? multiclassArmorTraining
+              : this.multiclassArmorTraining?.map((e0) => e0).toList(),
+      multiclassWeaponTraining:
+          multiclassWeaponTraining is List<_i4.WeaponCategory>?
+              ? multiclassWeaponTraining
+              : this.multiclassWeaponTraining?.map((e0) => e0).toList(),
+      multiclassToolTraining: multiclassToolTraining is List<String>?
+          ? multiclassToolTraining
+          : this.multiclassToolTraining?.map((e0) => e0).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,
-      $_charactersClassesCharactersId: this._charactersClassesCharactersId,
     );
   }
-}
-
-class ClassDataImplicit extends _ClassDataImpl {
-  ClassDataImplicit._({
-    int? id,
-    String? name,
-    String? description,
-    String? source,
-    int? version,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? hitDie,
-    List<String>? savingThrows,
-    List<int>? proficienciesArmor,
-    List<_i2.WeaponData>? proficienciesWeapons,
-    List<_i3.ItemData>? proficienciesTools,
-    List<String>? skills,
-    int? skillCount,
-    bool? spellcasting,
-    String? spellcastingAbility,
-    List<_i3.ItemData>? startingEquipment,
-    String? imageURL,
-    int? $_charactersClassesCharactersId,
-  })  : _charactersClassesCharactersId = $_charactersClassesCharactersId,
-        super(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          hitDie: hitDie,
-          savingThrows: savingThrows,
-          proficienciesArmor: proficienciesArmor,
-          proficienciesWeapons: proficienciesWeapons,
-          proficienciesTools: proficienciesTools,
-          skills: skills,
-          skillCount: skillCount,
-          spellcasting: spellcasting,
-          spellcastingAbility: spellcastingAbility,
-          startingEquipment: startingEquipment,
-          imageURL: imageURL,
-        );
-
-  factory ClassDataImplicit(
-    ClassData classData, {
-    int? $_charactersClassesCharactersId,
-  }) {
-    return ClassDataImplicit._(
-      id: classData.id,
-      name: classData.name,
-      description: classData.description,
-      source: classData.source,
-      version: classData.version,
-      createdAt: classData.createdAt,
-      updatedAt: classData.updatedAt,
-      hitDie: classData.hitDie,
-      savingThrows: classData.savingThrows,
-      proficienciesArmor: classData.proficienciesArmor,
-      proficienciesWeapons: classData.proficienciesWeapons,
-      proficienciesTools: classData.proficienciesTools,
-      skills: classData.skills,
-      skillCount: classData.skillCount,
-      spellcasting: classData.spellcasting,
-      spellcastingAbility: classData.spellcastingAbility,
-      startingEquipment: classData.startingEquipment,
-      imageURL: classData.imageURL,
-      $_charactersClassesCharactersId: $_charactersClassesCharactersId,
-    );
-  }
-
-  @override
-  final int? _charactersClassesCharactersId;
 }
 
 class ClassDataTable extends _i1.Table<int?> {
@@ -478,40 +515,70 @@ class ClassDataTable extends _i1.Table<int?> {
       'updatedAt',
       this,
     );
-    hitDie = _i1.ColumnString(
-      'hitDie',
+    hitDieValue = _i1.ColumnInt(
+      'hitDieValue',
       this,
     );
-    savingThrows = _i1.ColumnSerializable(
-      'savingThrows',
+    primaryAbilities = _i1.ColumnSerializable(
+      'primaryAbilities',
       this,
     );
-    proficienciesArmor = _i1.ColumnSerializable(
-      'proficienciesArmor',
+    savingThrowProficiencies = _i1.ColumnSerializable(
+      'savingThrowProficiencies',
       this,
     );
-    skills = _i1.ColumnSerializable(
-      'skills',
+    armorTraining = _i1.ColumnSerializable(
+      'armorTraining',
+      this,
+    );
+    weaponTraining = _i1.ColumnSerializable(
+      'weaponTraining',
+      this,
+    );
+    toolTraining = _i1.ColumnSerializable(
+      'toolTraining',
+      this,
+    );
+    availableSkills = _i1.ColumnSerializable(
+      'availableSkills',
       this,
     );
     skillCount = _i1.ColumnInt(
       'skillCount',
       this,
     );
-    spellcasting = _i1.ColumnBool(
-      'spellcasting',
+    subclassChoiceLevel = _i1.ColumnInt(
+      'subclassChoiceLevel',
       this,
     );
-    spellcastingAbility = _i1.ColumnString(
-      'spellcastingAbility',
+    spellcastingProgression = _i1.ColumnEnum(
+      'spellcastingProgression',
+      this,
+      _i1.EnumSerialization.byIndex,
+    );
+    spellcastingAbilityValue = _i1.ColumnEnum(
+      'spellcastingAbilityValue',
+      this,
+      _i1.EnumSerialization.byIndex,
+    );
+    multiclassPrerequisites = _i1.ColumnSerializable(
+      'multiclassPrerequisites',
+      this,
+    );
+    multiclassArmorTraining = _i1.ColumnSerializable(
+      'multiclassArmorTraining',
+      this,
+    );
+    multiclassWeaponTraining = _i1.ColumnSerializable(
+      'multiclassWeaponTraining',
+      this,
+    );
+    multiclassToolTraining = _i1.ColumnSerializable(
+      'multiclassToolTraining',
       this,
     );
     imageURL = _i1.ColumnString(
       'imageURL',
-      this,
-    );
-    $_charactersClassesCharactersId = _i1.ColumnInt(
-      '_charactersClassesCharactersId',
       this,
     );
   }
@@ -528,128 +595,38 @@ class ClassDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnString hitDie;
+  late final _i1.ColumnInt hitDieValue;
 
-  late final _i1.ColumnSerializable savingThrows;
+  late final _i1.ColumnSerializable primaryAbilities;
 
-  late final _i1.ColumnSerializable proficienciesArmor;
+  late final _i1.ColumnSerializable savingThrowProficiencies;
 
-  _i2.WeaponDataTable? ___proficienciesWeapons;
+  late final _i1.ColumnSerializable armorTraining;
 
-  _i1.ManyRelation<_i2.WeaponDataTable>? _proficienciesWeapons;
+  late final _i1.ColumnSerializable weaponTraining;
 
-  _i3.ItemDataTable? ___proficienciesTools;
+  late final _i1.ColumnSerializable toolTraining;
 
-  _i1.ManyRelation<_i3.ItemDataTable>? _proficienciesTools;
-
-  late final _i1.ColumnSerializable skills;
+  late final _i1.ColumnSerializable availableSkills;
 
   late final _i1.ColumnInt skillCount;
 
-  late final _i1.ColumnBool spellcasting;
+  late final _i1.ColumnInt subclassChoiceLevel;
 
-  late final _i1.ColumnString spellcastingAbility;
+  late final _i1.ColumnEnum<_i6.SpellcastingProgression>
+      spellcastingProgression;
 
-  _i3.ItemDataTable? ___startingEquipment;
+  late final _i1.ColumnEnum<_i2.Ability> spellcastingAbilityValue;
 
-  _i1.ManyRelation<_i3.ItemDataTable>? _startingEquipment;
+  late final _i1.ColumnSerializable multiclassPrerequisites;
+
+  late final _i1.ColumnSerializable multiclassArmorTraining;
+
+  late final _i1.ColumnSerializable multiclassWeaponTraining;
+
+  late final _i1.ColumnSerializable multiclassToolTraining;
 
   late final _i1.ColumnString imageURL;
-
-  late final _i1.ColumnInt $_charactersClassesCharactersId;
-
-  _i2.WeaponDataTable get __proficienciesWeapons {
-    if (___proficienciesWeapons != null) return ___proficienciesWeapons!;
-    ___proficienciesWeapons = _i1.createRelationTable(
-      relationFieldName: '__proficienciesWeapons',
-      field: ClassData.t.id,
-      foreignField: _i2.WeaponData.t.$_classDataProficienciesweaponsClassDataId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i2.WeaponDataTable(tableRelation: foreignTableRelation),
-    );
-    return ___proficienciesWeapons!;
-  }
-
-  _i3.ItemDataTable get __proficienciesTools {
-    if (___proficienciesTools != null) return ___proficienciesTools!;
-    ___proficienciesTools = _i1.createRelationTable(
-      relationFieldName: '__proficienciesTools',
-      field: ClassData.t.id,
-      foreignField: _i3.ItemData.t.$_classDataProficienciestoolsClassDataId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.ItemDataTable(tableRelation: foreignTableRelation),
-    );
-    return ___proficienciesTools!;
-  }
-
-  _i3.ItemDataTable get __startingEquipment {
-    if (___startingEquipment != null) return ___startingEquipment!;
-    ___startingEquipment = _i1.createRelationTable(
-      relationFieldName: '__startingEquipment',
-      field: ClassData.t.id,
-      foreignField: _i3.ItemData.t.$_classDataStartingequipmentClassDataId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.ItemDataTable(tableRelation: foreignTableRelation),
-    );
-    return ___startingEquipment!;
-  }
-
-  _i1.ManyRelation<_i2.WeaponDataTable> get proficienciesWeapons {
-    if (_proficienciesWeapons != null) return _proficienciesWeapons!;
-    var relationTable = _i1.createRelationTable(
-      relationFieldName: 'proficienciesWeapons',
-      field: ClassData.t.id,
-      foreignField: _i2.WeaponData.t.$_classDataProficienciesweaponsClassDataId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i2.WeaponDataTable(tableRelation: foreignTableRelation),
-    );
-    _proficienciesWeapons = _i1.ManyRelation<_i2.WeaponDataTable>(
-      tableWithRelations: relationTable,
-      table: _i2.WeaponDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
-    return _proficienciesWeapons!;
-  }
-
-  _i1.ManyRelation<_i3.ItemDataTable> get proficienciesTools {
-    if (_proficienciesTools != null) return _proficienciesTools!;
-    var relationTable = _i1.createRelationTable(
-      relationFieldName: 'proficienciesTools',
-      field: ClassData.t.id,
-      foreignField: _i3.ItemData.t.$_classDataProficienciestoolsClassDataId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.ItemDataTable(tableRelation: foreignTableRelation),
-    );
-    _proficienciesTools = _i1.ManyRelation<_i3.ItemDataTable>(
-      tableWithRelations: relationTable,
-      table: _i3.ItemDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
-    return _proficienciesTools!;
-  }
-
-  _i1.ManyRelation<_i3.ItemDataTable> get startingEquipment {
-    if (_startingEquipment != null) return _startingEquipment!;
-    var relationTable = _i1.createRelationTable(
-      relationFieldName: 'startingEquipment',
-      field: ClassData.t.id,
-      foreignField: _i3.ItemData.t.$_classDataStartingequipmentClassDataId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.ItemDataTable(tableRelation: foreignTableRelation),
-    );
-    _startingEquipment = _i1.ManyRelation<_i3.ItemDataTable>(
-      tableWithRelations: relationTable,
-      table: _i3.ItemDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
-    return _startingEquipment!;
-  }
 
   @override
   List<_i1.Column> get columns => [
@@ -660,74 +637,30 @@ class ClassDataTable extends _i1.Table<int?> {
         version,
         createdAt,
         updatedAt,
-        hitDie,
-        savingThrows,
-        proficienciesArmor,
-        skills,
+        hitDieValue,
+        primaryAbilities,
+        savingThrowProficiencies,
+        armorTraining,
+        weaponTraining,
+        toolTraining,
+        availableSkills,
         skillCount,
-        spellcasting,
-        spellcastingAbility,
-        imageURL,
-        $_charactersClassesCharactersId,
-      ];
-
-  @override
-  List<_i1.Column> get managedColumns => [
-        id,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        hitDie,
-        savingThrows,
-        proficienciesArmor,
-        skills,
-        skillCount,
-        spellcasting,
-        spellcastingAbility,
+        subclassChoiceLevel,
+        spellcastingProgression,
+        spellcastingAbilityValue,
+        multiclassPrerequisites,
+        multiclassArmorTraining,
+        multiclassWeaponTraining,
+        multiclassToolTraining,
         imageURL,
       ];
-
-  @override
-  _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'proficienciesWeapons') {
-      return __proficienciesWeapons;
-    }
-    if (relationField == 'proficienciesTools') {
-      return __proficienciesTools;
-    }
-    if (relationField == 'startingEquipment') {
-      return __startingEquipment;
-    }
-    return null;
-  }
 }
 
 class ClassDataInclude extends _i1.IncludeObject {
-  ClassDataInclude._({
-    _i2.WeaponDataIncludeList? proficienciesWeapons,
-    _i3.ItemDataIncludeList? proficienciesTools,
-    _i3.ItemDataIncludeList? startingEquipment,
-  }) {
-    _proficienciesWeapons = proficienciesWeapons;
-    _proficienciesTools = proficienciesTools;
-    _startingEquipment = startingEquipment;
-  }
-
-  _i2.WeaponDataIncludeList? _proficienciesWeapons;
-
-  _i3.ItemDataIncludeList? _proficienciesTools;
-
-  _i3.ItemDataIncludeList? _startingEquipment;
+  ClassDataInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {
-        'proficienciesWeapons': _proficienciesWeapons,
-        'proficienciesTools': _proficienciesTools,
-        'startingEquipment': _startingEquipment,
-      };
+  Map<String, _i1.Include?> get includes => {};
 
   @override
   _i1.Table<int?> get table => ClassData.t;
@@ -755,14 +688,6 @@ class ClassDataIncludeList extends _i1.IncludeList {
 
 class ClassDataRepository {
   const ClassDataRepository._();
-
-  final attach = const ClassDataAttachRepository._();
-
-  final attachRow = const ClassDataAttachRowRepository._();
-
-  final detach = const ClassDataDetachRepository._();
-
-  final detachRow = const ClassDataDetachRowRepository._();
 
   /// Returns a list of [ClassData]s matching the given query parameters.
   ///
@@ -795,7 +720,6 @@ class ClassDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<ClassDataTable>? orderByList,
     _i1.Transaction? transaction,
-    ClassDataInclude? include,
   }) async {
     return session.db.find<ClassData>(
       where: where?.call(ClassData.t),
@@ -805,7 +729,6 @@ class ClassDataRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -834,7 +757,6 @@ class ClassDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<ClassDataTable>? orderByList,
     _i1.Transaction? transaction,
-    ClassDataInclude? include,
   }) async {
     return session.db.findFirstRow<ClassData>(
       where: where?.call(ClassData.t),
@@ -843,7 +765,6 @@ class ClassDataRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -852,12 +773,10 @@ class ClassDataRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
-    ClassDataInclude? include,
   }) async {
     return session.db.findById<ClassData>(
       id,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -975,340 +894,6 @@ class ClassDataRepository {
     return session.db.count<ClassData>(
       where: where?.call(ClassData.t),
       limit: limit,
-      transaction: transaction,
-    );
-  }
-}
-
-class ClassDataAttachRepository {
-  const ClassDataAttachRepository._();
-
-  /// Creates a relation between this [ClassData] and the given [WeaponData]s
-  /// by setting each [WeaponData]'s foreign key `_classDataProficienciesweaponsClassDataId` to refer to this [ClassData].
-  Future<void> proficienciesWeapons(
-    _i1.Session session,
-    ClassData classData,
-    List<_i2.WeaponData> weaponData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (weaponData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('weaponData.id');
-    }
-    if (classData.id == null) {
-      throw ArgumentError.notNull('classData.id');
-    }
-
-    var $weaponData = weaponData
-        .map((e) => _i2.WeaponDataImplicit(
-              e,
-              $_classDataProficienciesweaponsClassDataId: classData.id,
-            ))
-        .toList();
-    await session.db.update<_i2.WeaponData>(
-      $weaponData,
-      columns: [_i2.WeaponData.t.$_classDataProficienciesweaponsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between this [ClassData] and the given [ItemData]s
-  /// by setting each [ItemData]'s foreign key `_classDataProficienciestoolsClassDataId` to refer to this [ClassData].
-  Future<void> proficienciesTools(
-    _i1.Session session,
-    ClassData classData,
-    List<_i3.ItemData> itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-    if (classData.id == null) {
-      throw ArgumentError.notNull('classData.id');
-    }
-
-    var $itemData = itemData
-        .map((e) => _i3.ItemDataImplicit(
-              e,
-              $_classDataProficienciestoolsClassDataId: classData.id,
-            ))
-        .toList();
-    await session.db.update<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataProficienciestoolsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between this [ClassData] and the given [ItemData]s
-  /// by setting each [ItemData]'s foreign key `_classDataStartingequipmentClassDataId` to refer to this [ClassData].
-  Future<void> startingEquipment(
-    _i1.Session session,
-    ClassData classData,
-    List<_i3.ItemData> itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-    if (classData.id == null) {
-      throw ArgumentError.notNull('classData.id');
-    }
-
-    var $itemData = itemData
-        .map((e) => _i3.ItemDataImplicit(
-              e,
-              $_classDataStartingequipmentClassDataId: classData.id,
-            ))
-        .toList();
-    await session.db.update<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataStartingequipmentClassDataId],
-      transaction: transaction,
-    );
-  }
-}
-
-class ClassDataAttachRowRepository {
-  const ClassDataAttachRowRepository._();
-
-  /// Creates a relation between this [ClassData] and the given [WeaponData]
-  /// by setting the [WeaponData]'s foreign key `_classDataProficienciesweaponsClassDataId` to refer to this [ClassData].
-  Future<void> proficienciesWeapons(
-    _i1.Session session,
-    ClassData classData,
-    _i2.WeaponData weaponData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (weaponData.id == null) {
-      throw ArgumentError.notNull('weaponData.id');
-    }
-    if (classData.id == null) {
-      throw ArgumentError.notNull('classData.id');
-    }
-
-    var $weaponData = _i2.WeaponDataImplicit(
-      weaponData,
-      $_classDataProficienciesweaponsClassDataId: classData.id,
-    );
-    await session.db.updateRow<_i2.WeaponData>(
-      $weaponData,
-      columns: [_i2.WeaponData.t.$_classDataProficienciesweaponsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between this [ClassData] and the given [ItemData]
-  /// by setting the [ItemData]'s foreign key `_classDataProficienciestoolsClassDataId` to refer to this [ClassData].
-  Future<void> proficienciesTools(
-    _i1.Session session,
-    ClassData classData,
-    _i3.ItemData itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.id == null) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-    if (classData.id == null) {
-      throw ArgumentError.notNull('classData.id');
-    }
-
-    var $itemData = _i3.ItemDataImplicit(
-      itemData,
-      $_classDataProficienciestoolsClassDataId: classData.id,
-    );
-    await session.db.updateRow<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataProficienciestoolsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between this [ClassData] and the given [ItemData]
-  /// by setting the [ItemData]'s foreign key `_classDataStartingequipmentClassDataId` to refer to this [ClassData].
-  Future<void> startingEquipment(
-    _i1.Session session,
-    ClassData classData,
-    _i3.ItemData itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.id == null) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-    if (classData.id == null) {
-      throw ArgumentError.notNull('classData.id');
-    }
-
-    var $itemData = _i3.ItemDataImplicit(
-      itemData,
-      $_classDataStartingequipmentClassDataId: classData.id,
-    );
-    await session.db.updateRow<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataStartingequipmentClassDataId],
-      transaction: transaction,
-    );
-  }
-}
-
-class ClassDataDetachRepository {
-  const ClassDataDetachRepository._();
-
-  /// Detaches the relation between this [ClassData] and the given [WeaponData]
-  /// by setting the [WeaponData]'s foreign key `_classDataProficienciesweaponsClassDataId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> proficienciesWeapons(
-    _i1.Session session,
-    List<_i2.WeaponData> weaponData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (weaponData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('weaponData.id');
-    }
-
-    var $weaponData = weaponData
-        .map((e) => _i2.WeaponDataImplicit(
-              e,
-              $_classDataProficienciesweaponsClassDataId: null,
-            ))
-        .toList();
-    await session.db.update<_i2.WeaponData>(
-      $weaponData,
-      columns: [_i2.WeaponData.t.$_classDataProficienciesweaponsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [ClassData] and the given [ItemData]
-  /// by setting the [ItemData]'s foreign key `_classDataProficienciestoolsClassDataId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> proficienciesTools(
-    _i1.Session session,
-    List<_i3.ItemData> itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-
-    var $itemData = itemData
-        .map((e) => _i3.ItemDataImplicit(
-              e,
-              $_classDataProficienciestoolsClassDataId: null,
-            ))
-        .toList();
-    await session.db.update<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataProficienciestoolsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [ClassData] and the given [ItemData]
-  /// by setting the [ItemData]'s foreign key `_classDataStartingequipmentClassDataId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> startingEquipment(
-    _i1.Session session,
-    List<_i3.ItemData> itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-
-    var $itemData = itemData
-        .map((e) => _i3.ItemDataImplicit(
-              e,
-              $_classDataStartingequipmentClassDataId: null,
-            ))
-        .toList();
-    await session.db.update<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataStartingequipmentClassDataId],
-      transaction: transaction,
-    );
-  }
-}
-
-class ClassDataDetachRowRepository {
-  const ClassDataDetachRowRepository._();
-
-  /// Detaches the relation between this [ClassData] and the given [WeaponData]
-  /// by setting the [WeaponData]'s foreign key `_classDataProficienciesweaponsClassDataId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> proficienciesWeapons(
-    _i1.Session session,
-    _i2.WeaponData weaponData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (weaponData.id == null) {
-      throw ArgumentError.notNull('weaponData.id');
-    }
-
-    var $weaponData = _i2.WeaponDataImplicit(
-      weaponData,
-      $_classDataProficienciesweaponsClassDataId: null,
-    );
-    await session.db.updateRow<_i2.WeaponData>(
-      $weaponData,
-      columns: [_i2.WeaponData.t.$_classDataProficienciesweaponsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [ClassData] and the given [ItemData]
-  /// by setting the [ItemData]'s foreign key `_classDataProficienciestoolsClassDataId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> proficienciesTools(
-    _i1.Session session,
-    _i3.ItemData itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.id == null) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-
-    var $itemData = _i3.ItemDataImplicit(
-      itemData,
-      $_classDataProficienciestoolsClassDataId: null,
-    );
-    await session.db.updateRow<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataProficienciestoolsClassDataId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [ClassData] and the given [ItemData]
-  /// by setting the [ItemData]'s foreign key `_classDataStartingequipmentClassDataId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> startingEquipment(
-    _i1.Session session,
-    _i3.ItemData itemData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (itemData.id == null) {
-      throw ArgumentError.notNull('itemData.id');
-    }
-
-    var $itemData = _i3.ItemDataImplicit(
-      itemData,
-      $_classDataStartingequipmentClassDataId: null,
-    );
-    await session.db.updateRow<_i3.ItemData>(
-      $itemData,
-      columns: [_i3.ItemData.t.$_classDataStartingequipmentClassDataId],
       transaction: transaction,
     );
   }

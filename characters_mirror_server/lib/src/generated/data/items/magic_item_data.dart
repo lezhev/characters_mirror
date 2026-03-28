@@ -29,7 +29,7 @@ abstract class MagicItemData
     this.charges,
     this.rechargeCondition,
     this.effects,
-  }) : _charactersMagicitemsCharactersId = null;
+  });
 
   factory MagicItemData({
     int? id,
@@ -50,7 +50,7 @@ abstract class MagicItemData
   }) = _MagicItemDataImpl;
 
   factory MagicItemData.fromJson(Map<String, dynamic> jsonSerialization) {
-    return MagicItemDataImplicit._(
+    return MagicItemData(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -75,8 +75,6 @@ abstract class MagicItemData
       effects: (jsonSerialization['effects'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      $_charactersMagicitemsCharactersId:
-          jsonSerialization['_charactersMagicitemsCharactersId'] as int?,
     );
   }
 
@@ -114,8 +112,6 @@ abstract class MagicItemData
   String? rechargeCondition;
 
   List<String>? effects;
-
-  final int? _charactersMagicitemsCharactersId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -159,8 +155,6 @@ abstract class MagicItemData
       if (charges != null) 'charges': charges,
       if (rechargeCondition != null) 'rechargeCondition': rechargeCondition,
       if (effects != null) 'effects': effects?.toJson(),
-      if (_charactersMagicitemsCharactersId != null)
-        '_charactersMagicitemsCharactersId': _charactersMagicitemsCharactersId,
     };
   }
 
@@ -274,7 +268,7 @@ class _MagicItemDataImpl extends MagicItemData {
     Object? rechargeCondition = _Undefined,
     Object? effects = _Undefined,
   }) {
-    return MagicItemDataImplicit._(
+    return MagicItemData(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -307,75 +301,8 @@ class _MagicItemDataImpl extends MagicItemData {
       effects: effects is List<String>?
           ? effects
           : this.effects?.map((e0) => e0).toList(),
-      $_charactersMagicitemsCharactersId:
-          this._charactersMagicitemsCharactersId,
     );
   }
-}
-
-class MagicItemDataImplicit extends _MagicItemDataImpl {
-  MagicItemDataImplicit._({
-    int? id,
-    String? name,
-    String? description,
-    String? source,
-    int? version,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? rarity,
-    String? type,
-    bool? requiresAttunement,
-    String? attunementCondition,
-    Map<String, int>? bonus,
-    int? charges,
-    String? rechargeCondition,
-    List<String>? effects,
-    int? $_charactersMagicitemsCharactersId,
-  })  : _charactersMagicitemsCharactersId = $_charactersMagicitemsCharactersId,
-        super(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          rarity: rarity,
-          type: type,
-          requiresAttunement: requiresAttunement,
-          attunementCondition: attunementCondition,
-          bonus: bonus,
-          charges: charges,
-          rechargeCondition: rechargeCondition,
-          effects: effects,
-        );
-
-  factory MagicItemDataImplicit(
-    MagicItemData magicItemData, {
-    int? $_charactersMagicitemsCharactersId,
-  }) {
-    return MagicItemDataImplicit._(
-      id: magicItemData.id,
-      name: magicItemData.name,
-      description: magicItemData.description,
-      source: magicItemData.source,
-      version: magicItemData.version,
-      createdAt: magicItemData.createdAt,
-      updatedAt: magicItemData.updatedAt,
-      rarity: magicItemData.rarity,
-      type: magicItemData.type,
-      requiresAttunement: magicItemData.requiresAttunement,
-      attunementCondition: magicItemData.attunementCondition,
-      bonus: magicItemData.bonus,
-      charges: magicItemData.charges,
-      rechargeCondition: magicItemData.rechargeCondition,
-      effects: magicItemData.effects,
-      $_charactersMagicitemsCharactersId: $_charactersMagicitemsCharactersId,
-    );
-  }
-
-  @override
-  final int? _charactersMagicitemsCharactersId;
 }
 
 class MagicItemDataTable extends _i1.Table<int?> {
@@ -437,10 +364,6 @@ class MagicItemDataTable extends _i1.Table<int?> {
       'effects',
       this,
     );
-    $_charactersMagicitemsCharactersId = _i1.ColumnInt(
-      '_charactersMagicitemsCharactersId',
-      this,
-    );
   }
 
   late final _i1.ColumnString name;
@@ -471,30 +394,8 @@ class MagicItemDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable effects;
 
-  late final _i1.ColumnInt $_charactersMagicitemsCharactersId;
-
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        rarity,
-        type,
-        requiresAttunement,
-        attunementCondition,
-        bonus,
-        charges,
-        rechargeCondition,
-        effects,
-        $_charactersMagicitemsCharactersId,
-      ];
-
-  @override
-  List<_i1.Column> get managedColumns => [
         id,
         name,
         description,

@@ -9,10 +9,8 @@ fields:
   updatedAt: DateTime?
 
   abilityBonuses: Map<String, int>?
-
-  traits: List<String>?           
+  traits: List<String>?
+  tags: List<FeatureTag>?
   specialAbilities: List<String>?
   proficiencies: List<String>?
-
   prerequisites: Map<String, int>?
-  

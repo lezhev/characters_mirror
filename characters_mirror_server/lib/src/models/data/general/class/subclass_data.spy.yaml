@@ -1,7 +1,6 @@
 class: SubclassData
 table: subclass_data
 fields:
-
   name: String?
   description: String?
   source: String?

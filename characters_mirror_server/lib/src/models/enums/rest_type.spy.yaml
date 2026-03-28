@@ -1,0 +1,6 @@
+enum: RestType
+values:
+  - shortRest
+  - longRest
+  - dawn
+  - special
