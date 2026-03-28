@@ -16,12 +16,10 @@ T _$identity<T>(T value) => value;
 mixin _$ClassStateModel {
   List<ClassData> get allClasses;
   ClassData? get selectedClass;
-  List<SubclassData> get subclasses;
+  ClassStepView? get stepView;
   SubclassData? get selectedSubclass;
-  List<ClassFeatureData> get features;
-  List<ClassFeatureData> get futureFeatures;
-  List<ClassOptionData> get classOptions;
-  Map<int, ClassOptionData>? get selectedOption;
+  Map<String, ClassChoiceOptionData> get selectedOptions;
+  int get selectedLevel;
 
   /// Create a copy of ClassStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -40,17 +38,14 @@ mixin _$ClassStateModel {
                 .equals(other.allClasses, allClasses) &&
             (identical(other.selectedClass, selectedClass) ||
                 other.selectedClass == selectedClass) &&
-            const DeepCollectionEquality()
-                .equals(other.subclasses, subclasses) &&
+            (identical(other.stepView, stepView) ||
+                other.stepView == stepView) &&
             (identical(other.selectedSubclass, selectedSubclass) ||
                 other.selectedSubclass == selectedSubclass) &&
-            const DeepCollectionEquality().equals(other.features, features) &&
             const DeepCollectionEquality()
-                .equals(other.futureFeatures, futureFeatures) &&
-            const DeepCollectionEquality()
-                .equals(other.classOptions, classOptions) &&
-            const DeepCollectionEquality()
-                .equals(other.selectedOption, selectedOption));
+                .equals(other.selectedOptions, selectedOptions) &&
+            (identical(other.selectedLevel, selectedLevel) ||
+                other.selectedLevel == selectedLevel));
   }
 
   @override
@@ -58,16 +53,14 @@ mixin _$ClassStateModel {
       runtimeType,
       const DeepCollectionEquality().hash(allClasses),
       selectedClass,
-      const DeepCollectionEquality().hash(subclasses),
+      stepView,
       selectedSubclass,
-      const DeepCollectionEquality().hash(features),
-      const DeepCollectionEquality().hash(futureFeatures),
-      const DeepCollectionEquality().hash(classOptions),
-      const DeepCollectionEquality().hash(selectedOption));
+      const DeepCollectionEquality().hash(selectedOptions),
+      selectedLevel);
 
   @override
   String toString() {
-    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, subclasses: $subclasses, selectedSubclass: $selectedSubclass, features: $features, futureFeatures: $futureFeatures, classOptions: $classOptions, selectedOption: $selectedOption)';
+    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, stepView: $stepView, selectedSubclass: $selectedSubclass, selectedOptions: $selectedOptions, selectedLevel: $selectedLevel)';
   }
 }
 
@@ -80,12 +73,10 @@ abstract mixin class $ClassStateModelCopyWith<$Res> {
   $Res call(
       {List<ClassData> allClasses,
       ClassData? selectedClass,
-      List<SubclassData> subclasses,
+      ClassStepView? stepView,
       SubclassData? selectedSubclass,
-      List<ClassFeatureData> features,
-      List<ClassFeatureData> futureFeatures,
-      List<ClassOptionData> classOptions,
-      Map<int, ClassOptionData>? selectedOption});
+      Map<String, ClassChoiceOptionData> selectedOptions,
+      int selectedLevel});
 }
 
 /// @nodoc
@@ -103,12 +94,10 @@ class _$ClassStateModelCopyWithImpl<$Res>
   $Res call({
     Object? allClasses = null,
     Object? selectedClass = freezed,
-    Object? subclasses = null,
+    Object? stepView = freezed,
     Object? selectedSubclass = freezed,
-    Object? features = null,
-    Object? futureFeatures = null,
-    Object? classOptions = null,
-    Object? selectedOption = freezed,
+    Object? selectedOptions = null,
+    Object? selectedLevel = null,
   }) {
     return _then(_self.copyWith(
       allClasses: null == allClasses
@@ -119,30 +108,22 @@ class _$ClassStateModelCopyWithImpl<$Res>
           ? _self.selectedClass
           : selectedClass // ignore: cast_nullable_to_non_nullable
               as ClassData?,
-      subclasses: null == subclasses
-          ? _self.subclasses
-          : subclasses // ignore: cast_nullable_to_non_nullable
-              as List<SubclassData>,
+      stepView: freezed == stepView
+          ? _self.stepView
+          : stepView // ignore: cast_nullable_to_non_nullable
+              as ClassStepView?,
       selectedSubclass: freezed == selectedSubclass
           ? _self.selectedSubclass
           : selectedSubclass // ignore: cast_nullable_to_non_nullable
               as SubclassData?,
-      features: null == features
-          ? _self.features
-          : features // ignore: cast_nullable_to_non_nullable
-              as List<ClassFeatureData>,
-      futureFeatures: null == futureFeatures
-          ? _self.futureFeatures
-          : futureFeatures // ignore: cast_nullable_to_non_nullable
-              as List<ClassFeatureData>,
-      classOptions: null == classOptions
-          ? _self.classOptions
-          : classOptions // ignore: cast_nullable_to_non_nullable
-              as List<ClassOptionData>,
-      selectedOption: freezed == selectedOption
-          ? _self.selectedOption
-          : selectedOption // ignore: cast_nullable_to_non_nullable
-              as Map<int, ClassOptionData>?,
+      selectedOptions: null == selectedOptions
+          ? _self.selectedOptions
+          : selectedOptions // ignore: cast_nullable_to_non_nullable
+              as Map<String, ClassChoiceOptionData>,
+      selectedLevel: null == selectedLevel
+          ? _self.selectedLevel
+          : selectedLevel // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -241,27 +222,18 @@ extension ClassStateModelPatterns on ClassStateModel {
     TResult Function(
             List<ClassData> allClasses,
             ClassData? selectedClass,
-            List<SubclassData> subclasses,
+            ClassStepView? stepView,
             SubclassData? selectedSubclass,
-            List<ClassFeatureData> features,
-            List<ClassFeatureData> futureFeatures,
-            List<ClassOptionData> classOptions,
-            Map<int, ClassOptionData>? selectedOption)?
+            Map<String, ClassChoiceOptionData> selectedOptions,
+            int selectedLevel)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _ClassStateModel() when $default != null:
-        return $default(
-            _that.allClasses,
-            _that.selectedClass,
-            _that.subclasses,
-            _that.selectedSubclass,
-            _that.features,
-            _that.futureFeatures,
-            _that.classOptions,
-            _that.selectedOption);
+        return $default(_that.allClasses, _that.selectedClass, _that.stepView,
+            _that.selectedSubclass, _that.selectedOptions, _that.selectedLevel);
       case _:
         return orElse();
     }
@@ -285,26 +257,17 @@ extension ClassStateModelPatterns on ClassStateModel {
     TResult Function(
             List<ClassData> allClasses,
             ClassData? selectedClass,
-            List<SubclassData> subclasses,
+            ClassStepView? stepView,
             SubclassData? selectedSubclass,
-            List<ClassFeatureData> features,
-            List<ClassFeatureData> futureFeatures,
-            List<ClassOptionData> classOptions,
-            Map<int, ClassOptionData>? selectedOption)
+            Map<String, ClassChoiceOptionData> selectedOptions,
+            int selectedLevel)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ClassStateModel():
-        return $default(
-            _that.allClasses,
-            _that.selectedClass,
-            _that.subclasses,
-            _that.selectedSubclass,
-            _that.features,
-            _that.futureFeatures,
-            _that.classOptions,
-            _that.selectedOption);
+        return $default(_that.allClasses, _that.selectedClass, _that.stepView,
+            _that.selectedSubclass, _that.selectedOptions, _that.selectedLevel);
     }
   }
 
@@ -325,26 +288,17 @@ extension ClassStateModelPatterns on ClassStateModel {
     TResult? Function(
             List<ClassData> allClasses,
             ClassData? selectedClass,
-            List<SubclassData> subclasses,
+            ClassStepView? stepView,
             SubclassData? selectedSubclass,
-            List<ClassFeatureData> features,
-            List<ClassFeatureData> futureFeatures,
-            List<ClassOptionData> classOptions,
-            Map<int, ClassOptionData>? selectedOption)?
+            Map<String, ClassChoiceOptionData> selectedOptions,
+            int selectedLevel)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ClassStateModel() when $default != null:
-        return $default(
-            _that.allClasses,
-            _that.selectedClass,
-            _that.subclasses,
-            _that.selectedSubclass,
-            _that.features,
-            _that.futureFeatures,
-            _that.classOptions,
-            _that.selectedOption);
+        return $default(_that.allClasses, _that.selectedClass, _that.stepView,
+            _that.selectedSubclass, _that.selectedOptions, _that.selectedLevel);
       case _:
         return null;
     }
@@ -357,18 +311,12 @@ class _ClassStateModel implements ClassStateModel {
   const _ClassStateModel(
       {final List<ClassData> allClasses = const [],
       this.selectedClass,
-      final List<SubclassData> subclasses = const [],
+      this.stepView,
       this.selectedSubclass,
-      final List<ClassFeatureData> features = const [],
-      final List<ClassFeatureData> futureFeatures = const [],
-      final List<ClassOptionData> classOptions = const [],
-      final Map<int, ClassOptionData>? selectedOption})
+      final Map<String, ClassChoiceOptionData> selectedOptions = const {},
+      this.selectedLevel = 1})
       : _allClasses = allClasses,
-        _subclasses = subclasses,
-        _features = features,
-        _futureFeatures = futureFeatures,
-        _classOptions = classOptions,
-        _selectedOption = selectedOption;
+        _selectedOptions = selectedOptions;
 
   final List<ClassData> _allClasses;
   @override
@@ -381,53 +329,22 @@ class _ClassStateModel implements ClassStateModel {
 
   @override
   final ClassData? selectedClass;
-  final List<SubclassData> _subclasses;
   @override
-  @JsonKey()
-  List<SubclassData> get subclasses {
-    if (_subclasses is EqualUnmodifiableListView) return _subclasses;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_subclasses);
-  }
-
+  final ClassStepView? stepView;
   @override
   final SubclassData? selectedSubclass;
-  final List<ClassFeatureData> _features;
+  final Map<String, ClassChoiceOptionData> _selectedOptions;
   @override
   @JsonKey()
-  List<ClassFeatureData> get features {
-    if (_features is EqualUnmodifiableListView) return _features;
+  Map<String, ClassChoiceOptionData> get selectedOptions {
+    if (_selectedOptions is EqualUnmodifiableMapView) return _selectedOptions;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_features);
+    return EqualUnmodifiableMapView(_selectedOptions);
   }
 
-  final List<ClassFeatureData> _futureFeatures;
   @override
   @JsonKey()
-  List<ClassFeatureData> get futureFeatures {
-    if (_futureFeatures is EqualUnmodifiableListView) return _futureFeatures;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_futureFeatures);
-  }
-
-  final List<ClassOptionData> _classOptions;
-  @override
-  @JsonKey()
-  List<ClassOptionData> get classOptions {
-    if (_classOptions is EqualUnmodifiableListView) return _classOptions;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_classOptions);
-  }
-
-  final Map<int, ClassOptionData>? _selectedOption;
-  @override
-  Map<int, ClassOptionData>? get selectedOption {
-    final value = _selectedOption;
-    if (value == null) return null;
-    if (_selectedOption is EqualUnmodifiableMapView) return _selectedOption;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
+  final int selectedLevel;
 
   /// Create a copy of ClassStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -446,17 +363,14 @@ class _ClassStateModel implements ClassStateModel {
                 .equals(other._allClasses, _allClasses) &&
             (identical(other.selectedClass, selectedClass) ||
                 other.selectedClass == selectedClass) &&
-            const DeepCollectionEquality()
-                .equals(other._subclasses, _subclasses) &&
+            (identical(other.stepView, stepView) ||
+                other.stepView == stepView) &&
             (identical(other.selectedSubclass, selectedSubclass) ||
                 other.selectedSubclass == selectedSubclass) &&
-            const DeepCollectionEquality().equals(other._features, _features) &&
             const DeepCollectionEquality()
-                .equals(other._futureFeatures, _futureFeatures) &&
-            const DeepCollectionEquality()
-                .equals(other._classOptions, _classOptions) &&
-            const DeepCollectionEquality()
-                .equals(other._selectedOption, _selectedOption));
+                .equals(other._selectedOptions, _selectedOptions) &&
+            (identical(other.selectedLevel, selectedLevel) ||
+                other.selectedLevel == selectedLevel));
   }
 
   @override
@@ -464,16 +378,14 @@ class _ClassStateModel implements ClassStateModel {
       runtimeType,
       const DeepCollectionEquality().hash(_allClasses),
       selectedClass,
-      const DeepCollectionEquality().hash(_subclasses),
+      stepView,
       selectedSubclass,
-      const DeepCollectionEquality().hash(_features),
-      const DeepCollectionEquality().hash(_futureFeatures),
-      const DeepCollectionEquality().hash(_classOptions),
-      const DeepCollectionEquality().hash(_selectedOption));
+      const DeepCollectionEquality().hash(_selectedOptions),
+      selectedLevel);
 
   @override
   String toString() {
-    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, subclasses: $subclasses, selectedSubclass: $selectedSubclass, features: $features, futureFeatures: $futureFeatures, classOptions: $classOptions, selectedOption: $selectedOption)';
+    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, stepView: $stepView, selectedSubclass: $selectedSubclass, selectedOptions: $selectedOptions, selectedLevel: $selectedLevel)';
   }
 }
 
@@ -488,12 +400,10 @@ abstract mixin class _$ClassStateModelCopyWith<$Res>
   $Res call(
       {List<ClassData> allClasses,
       ClassData? selectedClass,
-      List<SubclassData> subclasses,
+      ClassStepView? stepView,
       SubclassData? selectedSubclass,
-      List<ClassFeatureData> features,
-      List<ClassFeatureData> futureFeatures,
-      List<ClassOptionData> classOptions,
-      Map<int, ClassOptionData>? selectedOption});
+      Map<String, ClassChoiceOptionData> selectedOptions,
+      int selectedLevel});
 }
 
 /// @nodoc
@@ -511,12 +421,10 @@ class __$ClassStateModelCopyWithImpl<$Res>
   $Res call({
     Object? allClasses = null,
     Object? selectedClass = freezed,
-    Object? subclasses = null,
+    Object? stepView = freezed,
     Object? selectedSubclass = freezed,
-    Object? features = null,
-    Object? futureFeatures = null,
-    Object? classOptions = null,
-    Object? selectedOption = freezed,
+    Object? selectedOptions = null,
+    Object? selectedLevel = null,
   }) {
     return _then(_ClassStateModel(
       allClasses: null == allClasses
@@ -527,30 +435,22 @@ class __$ClassStateModelCopyWithImpl<$Res>
           ? _self.selectedClass
           : selectedClass // ignore: cast_nullable_to_non_nullable
               as ClassData?,
-      subclasses: null == subclasses
-          ? _self._subclasses
-          : subclasses // ignore: cast_nullable_to_non_nullable
-              as List<SubclassData>,
+      stepView: freezed == stepView
+          ? _self.stepView
+          : stepView // ignore: cast_nullable_to_non_nullable
+              as ClassStepView?,
       selectedSubclass: freezed == selectedSubclass
           ? _self.selectedSubclass
           : selectedSubclass // ignore: cast_nullable_to_non_nullable
               as SubclassData?,
-      features: null == features
-          ? _self._features
-          : features // ignore: cast_nullable_to_non_nullable
-              as List<ClassFeatureData>,
-      futureFeatures: null == futureFeatures
-          ? _self._futureFeatures
-          : futureFeatures // ignore: cast_nullable_to_non_nullable
-              as List<ClassFeatureData>,
-      classOptions: null == classOptions
-          ? _self._classOptions
-          : classOptions // ignore: cast_nullable_to_non_nullable
-              as List<ClassOptionData>,
-      selectedOption: freezed == selectedOption
-          ? _self._selectedOption
-          : selectedOption // ignore: cast_nullable_to_non_nullable
-              as Map<int, ClassOptionData>?,
+      selectedOptions: null == selectedOptions
+          ? _self._selectedOptions
+          : selectedOptions // ignore: cast_nullable_to_non_nullable
+              as Map<String, ClassChoiceOptionData>,
+      selectedLevel: null == selectedLevel
+          ? _self.selectedLevel
+          : selectedLevel // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }

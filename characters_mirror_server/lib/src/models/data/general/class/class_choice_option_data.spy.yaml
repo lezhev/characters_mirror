@@ -1,0 +1,20 @@
+class: ClassChoiceOptionData
+table: class_choice_option_data
+fields:
+  choiceGroup: ClassChoiceGroupData?, relation
+  optionKey: String?
+  name: String?
+  description: String?
+  grantedAbilityBonuses: Map<String, int>?
+  grantedSkills: List<Skill>?
+  grantedLanguages: List<Language>?
+  grantedArmorTraining: List<ArmorCategory>?
+  grantedWeaponTraining: List<WeaponCategory>?
+  grantedToolKeys: List<String>?
+  grantedItemKeys: List<String>?
+  grantedSpellKeys: List<String>?
+  grantedFeatureTags: List<FeatureTag>?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

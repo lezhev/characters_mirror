@@ -9,7 +9,7 @@ fields:
   updatedAt: DateTime?
 
   level: int?
-  school: String?
+  schoolValue: SpellSchool?
   castingTime: String?
   range: String?
   duration: String?
@@ -17,4 +17,4 @@ fields:
   concentration: bool?
   ritual: bool?
   higherLevel: String?
-  availableForClasses: List<int>?
+  availableForClassIds: List<int>?

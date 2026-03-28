@@ -1,0 +1,17 @@
+class: ClassLevelData
+table: class_level_data
+fields:
+  classData: ClassData?, relation
+  level: int
+  featureIds: List<int>?
+  subclassFeatureIds: List<int>?
+  knownCantrips: int?
+  knownSpells: int?
+  preparedSpellFormula: String?
+  resourceSummary: String?
+  spellSlots: Map<int, int>?
+  notes: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

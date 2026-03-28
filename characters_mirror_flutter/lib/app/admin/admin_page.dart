@@ -23,6 +23,9 @@ class _AdminPageState extends State<AdminPage> {
   final Map<String, Repository<dynamic>> _repositories = {
     'class': ClassRepository(),
     'classfeature': ClassFeatureRepository(),
+    'classlevel': ClassLevelRepository(),
+    'classchoicegroup': ClassChoiceGroupRepository(),
+    'classchoiceoption': ClassChoiceOptionRepository(),
     'race': RaceRepository(),
     'subrace': SubraceRepository(),
     'subclass': SubclassRepository(),
@@ -33,17 +36,17 @@ class _AdminPageState extends State<AdminPage> {
     'background': BackgroundRepository(),
     'feat': FeatRepository(),
     'spell': SpellRepository(),
-    'classoption': ClassOptionRepository(),
     'subclassfeature': SubclassFeatureRepository(),
     'racefeature': RaceFeatureRepository(),
-    'raceoption': RaceOptionRepository(),
     'dragonbornancestry': DragonbornAncestryRepository(),
   };
 
   final List<String> _entities = [
     'class',
     'classfeature',
-    'classoption',
+    'classlevel',
+    'classchoicegroup',
+    'classchoiceoption',
     'subclass',
     'subclassfeature',
     'race',
@@ -56,7 +59,6 @@ class _AdminPageState extends State<AdminPage> {
     'feat',
     'spell',
     'racefeature',
-    'raceoption',
     'dragonbornancestry'
   ];
 
@@ -122,6 +124,15 @@ class _AdminPageState extends State<AdminPage> {
             case 'classfeature':
               entity = ClassFeatureData.fromJson(dataMap);
               break;
+            case 'classlevel':
+              entity = ClassLevelData.fromJson(dataMap);
+              break;
+            case 'classchoicegroup':
+              entity = ClassChoiceGroupData.fromJson(dataMap);
+              break;
+            case 'classchoiceoption':
+              entity = ClassChoiceOptionData.fromJson(dataMap);
+              break;
             case 'race':
               entity = RaceData.fromJson(dataMap);
               break;
@@ -152,14 +163,11 @@ class _AdminPageState extends State<AdminPage> {
             case 'spell':
               entity = SpellData.fromJson(dataMap);
               break;
-            case 'classoption':
-              entity = ClassOptionData.fromJson(dataMap);
+            case 'subclassfeature':
+              entity = SubclassFeatureData.fromJson(dataMap);
               break;
             case 'racefeature':
               entity = RaceFeatureData.fromJson(dataMap);
-              break;
-            case 'raceoption':
-              entity = RaceOptionData.fromJson(dataMap);
               break;
             default:
               throw Exception('Неизвестная сущность: $_selectedEntity');

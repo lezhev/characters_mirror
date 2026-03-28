@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/feature_tag.dart' as _i2;
 
 abstract class FeatData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -23,6 +24,7 @@ abstract class FeatData
     this.updatedAt,
     this.abilityBonuses,
     this.traits,
+    this.tags,
     this.specialAbilities,
     this.proficiencies,
     this.prerequisites,
@@ -38,6 +40,7 @@ abstract class FeatData
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
+    List<_i2.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
@@ -63,6 +66,9 @@ abstract class FeatData
               )),
       traits: (jsonSerialization['traits'] as List?)
           ?.map((e) => e as String)
+          .toList(),
+      tags: (jsonSerialization['tags'] as List?)
+          ?.map((e) => _i2.FeatureTag.fromJson((e as int)))
           .toList(),
       specialAbilities: (jsonSerialization['specialAbilities'] as List?)
           ?.map((e) => e as String)
@@ -101,6 +107,8 @@ abstract class FeatData
 
   List<String>? traits;
 
+  List<_i2.FeatureTag>? tags;
+
   List<String>? specialAbilities;
 
   List<String>? proficiencies;
@@ -123,6 +131,7 @@ abstract class FeatData
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
+    List<_i2.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
@@ -139,6 +148,7 @@ abstract class FeatData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
       if (traits != null) 'traits': traits?.toJson(),
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (specialAbilities != null)
         'specialAbilities': specialAbilities?.toJson(),
       if (proficiencies != null) 'proficiencies': proficiencies?.toJson(),
@@ -158,6 +168,7 @@ abstract class FeatData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
       if (traits != null) 'traits': traits?.toJson(),
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (specialAbilities != null)
         'specialAbilities': specialAbilities?.toJson(),
       if (proficiencies != null) 'proficiencies': proficiencies?.toJson(),
@@ -208,6 +219,7 @@ class _FeatDataImpl extends FeatData {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
+    List<_i2.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
@@ -221,6 +233,7 @@ class _FeatDataImpl extends FeatData {
           updatedAt: updatedAt,
           abilityBonuses: abilityBonuses,
           traits: traits,
+          tags: tags,
           specialAbilities: specialAbilities,
           proficiencies: proficiencies,
           prerequisites: prerequisites,
@@ -240,6 +253,7 @@ class _FeatDataImpl extends FeatData {
     Object? updatedAt = _Undefined,
     Object? abilityBonuses = _Undefined,
     Object? traits = _Undefined,
+    Object? tags = _Undefined,
     Object? specialAbilities = _Undefined,
     Object? proficiencies = _Undefined,
     Object? prerequisites = _Undefined,
@@ -265,6 +279,9 @@ class _FeatDataImpl extends FeatData {
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
+      tags: tags is List<_i2.FeatureTag>?
+          ? tags
+          : this.tags?.map((e0) => e0).toList(),
       specialAbilities: specialAbilities is List<String>?
           ? specialAbilities
           : this.specialAbilities?.map((e0) => e0).toList(),
@@ -319,6 +336,10 @@ class FeatDataTable extends _i1.Table<int?> {
       'traits',
       this,
     );
+    tags = _i1.ColumnSerializable(
+      'tags',
+      this,
+    );
     specialAbilities = _i1.ColumnSerializable(
       'specialAbilities',
       this,
@@ -349,6 +370,8 @@ class FeatDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable traits;
 
+  late final _i1.ColumnSerializable tags;
+
   late final _i1.ColumnSerializable specialAbilities;
 
   late final _i1.ColumnSerializable proficiencies;
@@ -366,6 +389,7 @@ class FeatDataTable extends _i1.Table<int?> {
         updatedAt,
         abilityBonuses,
         traits,
+        tags,
         specialAbilities,
         proficiencies,
         prerequisites,

@@ -1,14 +1,22 @@
+import 'dart:async';
+
+import 'package:characters_mirror_flutter/app/pages/creation_flow/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_progression.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Step;
 
 class CreationAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBack;
   final VoidCallback? onNext;
+  final FutureOr<void> Function(Step target)? onStepTap;
 
   const CreationAppBar(
-      {super.key, required this.title, this.onBack, this.onNext});
+      {super.key,
+      required this.title,
+      this.onBack,
+      this.onNext,
+      this.onStepTap});
 
   @override
   Size get preferredSize => const Size.fromHeight(120);
@@ -56,7 +64,7 @@ class CreationAppBar extends StatelessWidget implements PreferredSizeWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
-                      child: CreationProgression(),
+                      child: CreationProgression(onStepTap: onStepTap),
                     ),
                   ),
                 ],

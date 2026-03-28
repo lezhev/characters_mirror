@@ -1,0 +1,7 @@
+enum: SpellcastingProgression
+values:
+  - none
+  - full
+  - half
+  - third
+  - pactMagic

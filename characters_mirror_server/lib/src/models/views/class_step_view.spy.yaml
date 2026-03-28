@@ -1,0 +1,11 @@
+class: ClassStepView
+fields:
+  classData: ClassData?
+  selectedLevel: int?
+  currentLevelFeatures: List<ClassFeatureData>?
+  futureLevelFeatures: List<ClassFeatureData>?
+  subclassChoice: ClassStepSubclassChoiceView?
+  choiceGroups: List<ClassChoiceGroupView>?
+  startingProficiencies: ProficiencyBundleView?
+  multiclassWarnings: List<String>?
+  progression: List<ClassLevelData>?

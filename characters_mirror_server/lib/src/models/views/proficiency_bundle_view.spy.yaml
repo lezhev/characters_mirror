@@ -1,0 +1,8 @@
+class: ProficiencyBundleView
+fields:
+  savingThrows: List<Ability>?
+  skills: List<Skill>?
+  armorTraining: List<ArmorCategory>?
+  weaponTraining: List<WeaponCategory>?
+  toolKeys: List<String>?
+  languageChoices: List<Language>?

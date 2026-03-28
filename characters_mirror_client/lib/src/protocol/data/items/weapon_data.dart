@@ -10,6 +10,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '../../enums/weapon_category.dart' as _i2;
+import '../../enums/damage_type.dart' as _i3;
 
 abstract class WeaponData implements _i1.SerializableModel {
   WeaponData._({
@@ -20,10 +22,9 @@ abstract class WeaponData implements _i1.SerializableModel {
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.isSimple,
-    this.isMelee,
+    this.category,
     this.damage,
-    this.damageType,
+    this.damageTypeValue,
     this.properties,
     this.weight,
     this.cost,
@@ -39,10 +40,9 @@ abstract class WeaponData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    bool? isSimple,
-    bool? isMelee,
+    _i2.WeaponCategory? category,
     String? damage,
-    String? damageType,
+    _i3.DamageType? damageTypeValue,
     List<String>? properties,
     double? weight,
     double? cost,
@@ -63,10 +63,14 @@ abstract class WeaponData implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      isSimple: jsonSerialization['isSimple'] as bool?,
-      isMelee: jsonSerialization['isMelee'] as bool?,
+      category: jsonSerialization['category'] == null
+          ? null
+          : _i2.WeaponCategory.fromJson((jsonSerialization['category'] as int)),
       damage: jsonSerialization['damage'] as String?,
-      damageType: jsonSerialization['damageType'] as String?,
+      damageTypeValue: jsonSerialization['damageTypeValue'] == null
+          ? null
+          : _i3.DamageType.fromJson(
+              (jsonSerialization['damageTypeValue'] as int)),
       properties: (jsonSerialization['properties'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -94,13 +98,11 @@ abstract class WeaponData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  bool? isSimple;
-
-  bool? isMelee;
+  _i2.WeaponCategory? category;
 
   String? damage;
 
-  String? damageType;
+  _i3.DamageType? damageTypeValue;
 
   List<String>? properties;
 
@@ -123,10 +125,9 @@ abstract class WeaponData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    bool? isSimple,
-    bool? isMelee,
+    _i2.WeaponCategory? category,
     String? damage,
-    String? damageType,
+    _i3.DamageType? damageTypeValue,
     List<String>? properties,
     double? weight,
     double? cost,
@@ -143,10 +144,9 @@ abstract class WeaponData implements _i1.SerializableModel {
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (isSimple != null) 'isSimple': isSimple,
-      if (isMelee != null) 'isMelee': isMelee,
+      if (category != null) 'category': category?.toJson(),
       if (damage != null) 'damage': damage,
-      if (damageType != null) 'damageType': damageType,
+      if (damageTypeValue != null) 'damageTypeValue': damageTypeValue?.toJson(),
       if (properties != null) 'properties': properties?.toJson(),
       if (weight != null) 'weight': weight,
       if (cost != null) 'cost': cost,
@@ -172,10 +172,9 @@ class _WeaponDataImpl extends WeaponData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    bool? isSimple,
-    bool? isMelee,
+    _i2.WeaponCategory? category,
     String? damage,
-    String? damageType,
+    _i3.DamageType? damageTypeValue,
     List<String>? properties,
     double? weight,
     double? cost,
@@ -189,10 +188,9 @@ class _WeaponDataImpl extends WeaponData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          isSimple: isSimple,
-          isMelee: isMelee,
+          category: category,
           damage: damage,
-          damageType: damageType,
+          damageTypeValue: damageTypeValue,
           properties: properties,
           weight: weight,
           cost: cost,
@@ -212,10 +210,9 @@ class _WeaponDataImpl extends WeaponData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? isSimple = _Undefined,
-    Object? isMelee = _Undefined,
+    Object? category = _Undefined,
     Object? damage = _Undefined,
-    Object? damageType = _Undefined,
+    Object? damageTypeValue = _Undefined,
     Object? properties = _Undefined,
     Object? weight = _Undefined,
     Object? cost = _Undefined,
@@ -230,10 +227,11 @@ class _WeaponDataImpl extends WeaponData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      isSimple: isSimple is bool? ? isSimple : this.isSimple,
-      isMelee: isMelee is bool? ? isMelee : this.isMelee,
+      category: category is _i2.WeaponCategory? ? category : this.category,
       damage: damage is String? ? damage : this.damage,
-      damageType: damageType is String? ? damageType : this.damageType,
+      damageTypeValue: damageTypeValue is _i3.DamageType?
+          ? damageTypeValue
+          : this.damageTypeValue,
       properties: properties is List<String>?
           ? properties
           : this.properties?.map((e0) => e0).toList(),

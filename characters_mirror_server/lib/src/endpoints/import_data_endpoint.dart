@@ -27,6 +27,23 @@ class ReferenceDataEndpoint extends Endpoint {
               .insertRow(session, ClassFeatureData.fromJson(data));
           break;
 
+        case 'classlevel':
+        case 'class_level':
+          await ClassLevelData.db.insertRow(session, ClassLevelData.fromJson(data));
+          break;
+
+        case 'classchoicegroup':
+        case 'class_choice_group':
+          await ClassChoiceGroupData.db
+              .insertRow(session, ClassChoiceGroupData.fromJson(data));
+          break;
+
+        case 'classchoiceoption':
+        case 'class_choice_option':
+          await ClassChoiceOptionData.db
+              .insertRow(session, ClassChoiceOptionData.fromJson(data));
+          break;
+
         case 'race':
         case 'racedata':
           await RaceData.db.insertRow(session, RaceData.fromJson(data));
@@ -40,6 +57,12 @@ class ReferenceDataEndpoint extends Endpoint {
         case 'subclass':
         case 'subclassdata':
           await SubclassData.db.insertRow(session, SubclassData.fromJson(data));
+          break;
+
+        case 'subclassfeature':
+        case 'subclass_feature':
+          await SubclassFeatureData.db
+              .insertRow(session, SubclassFeatureData.fromJson(data));
           break;
 
         // --- Items ---

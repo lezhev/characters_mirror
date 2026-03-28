@@ -1,7 +1,7 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/app/pages/creation_flow/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/data/repositories/referense_tables_repositories.dart';
-import 'package:characters_mirror_flutter/utils/get_level_by_xp.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,101 +13,81 @@ sealed class ClassStateModel with _$ClassStateModel {
   const factory ClassStateModel({
     @Default([]) List<ClassData> allClasses,
     ClassData? selectedClass,
-    @Default([]) List<SubclassData> subclasses,
+    ClassStepView? stepView,
     SubclassData? selectedSubclass,
-    @Default([]) List<ClassFeatureData> features,
-    @Default([]) List<ClassFeatureData> futureFeatures,
-    @Default([]) List<ClassOptionData> classOptions,
-    Map<int, ClassOptionData>? selectedOption,
+    @Default({}) Map<String, ClassChoiceOptionData> selectedOptions,
+    @Default(1) int selectedLevel,
   }) = _ClassStateModel;
 }
 
 @riverpod
 class ClassState extends _$ClassState {
+  static const _requestTimeout = Duration(seconds: 10);
+
   @override
   FutureOr<ClassStateModel> build() async {
-    await Future.delayed(Duration(milliseconds: 100));
-    final classes = await ClassRepository().getAll();
-    classes.sort((a, b) => a.id!.compareTo(b.id!));
-
-    return ClassStateModel(allClasses: classes);
+    final classes = await ClassRepository().getAll().timeout(_requestTimeout);
+    classes.sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
+    return ClassStateModel(
+      allClasses: classes,
+      selectedLevel: 1,
+    );
   }
 
   Future<void> selectClass(ClassData newClass) async {
-    final xp = ref
-        .watch(characterCreationProvider.select((c) => c.character.experience));
-    final level = getLevelByXp(xp ?? 0);
+    final current = state.value;
+    if (current == null) return;
 
-    final subclasses =
-        (await SubclassRepository().getAllByClassId(newClass.id!));
+    state = await AsyncValue.guard(() async {
+      final stepView = await ClassRepository()
+          .getStepView(
+            newClass.id!,
+            selectedLevel: 1,
+            isStartingClass: true,
+          )
+          .timeout(_requestTimeout);
 
-    final features =
-        (await ClassFeatureRepository().getAllByClassId(newClass.id!))
-            .where((f) => f.level <= level)
-            .toList();
-    features.sort((a, b) => a.id!.compareTo(b.id!));
-
-    final futureFeatures =
-        (await ClassFeatureRepository().getAllByClassId(newClass.id!))
-            .where((f) => f.level > level)
-            .toList();
-    futureFeatures.sort((a, b) => a.id!.compareTo(b.id!));
-
-    final options =
-        (await ClassOptionRepository().getAllByClassId(newClass.id!));
-
-    state = AsyncValue.data(
-      state.value!.copyWith(
+      return current.copyWith(
         selectedClass: newClass,
-        subclasses: subclasses,
-        features: features,
-        futureFeatures: futureFeatures,
-        classOptions: options,
-      ),
-    );
+        stepView: stepView,
+        selectedSubclass: null,
+        selectedOptions: {},
+        selectedLevel: 1,
+      );
+    });
   }
 
   void selectSubclass(SubclassData newSubclass) {
     state = AsyncValue.data(
-      state.value!.copyWith(
-        selectedSubclass: newSubclass,
-      ),
-    );
-  }
-
-  void selectOption(ClassOptionData option, int featureLevel) {
-    final current = state.value!.selectedOption ?? {};
-
-    final updated = Map<int, ClassOptionData>.from(current);
-
-    updated[featureLevel] = option;
-
-    state = AsyncValue.data(
-      state.value!.copyWith(
-        selectedOption: updated,
-      ),
-    );
-  }
-
-  void unselectClassOption(int level) {
-    final current = state.value!.selectedOption ?? {};
-
-    final updated = Map<int, ClassOptionData>.from(current);
-
-    updated.remove(level);
-
-    state = AsyncValue.data(
-      state.value!.copyWith(
-        selectedOption: updated,
-      ),
+      state.value!.copyWith(selectedSubclass: newSubclass),
     );
   }
 
   void unselectSubclass() {
     state = AsyncValue.data(
-      state.value!.copyWith(
-        selectedSubclass: null,
-      ),
+      state.value!.copyWith(selectedSubclass: null),
+    );
+  }
+
+  void selectOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
+    final current = Map<String, ClassChoiceOptionData>.from(
+      state.value!.selectedOptions,
+    );
+    current[_groupKey(group)] = option;
+
+    state = AsyncValue.data(
+      state.value!.copyWith(selectedOptions: current),
+    );
+  }
+
+  void unselectOption(ClassChoiceGroupData group) {
+    final current = Map<String, ClassChoiceOptionData>.from(
+      state.value!.selectedOptions,
+    );
+    current.remove(_groupKey(group));
+
+    state = AsyncValue.data(
+      state.value!.copyWith(selectedOptions: current),
     );
   }
 
@@ -115,12 +95,24 @@ class ClassState extends _$ClassState {
     state = AsyncValue.data(
       state.value!.copyWith(
         selectedClass: null,
-        subclasses: [],
-        features: [],
-        futureFeatures: [],
-        classOptions: [],
+        stepView: null,
+        selectedSubclass: null,
+        selectedOptions: {},
+        selectedLevel: 1,
       ),
     );
-    unselectSubclass();
+  }
+
+  String _groupKey(ClassChoiceGroupData group) =>
+      group.exclusiveKey?.trim().isNotEmpty == true
+          ? group.exclusiveKey!
+          : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
+
+  String? _safeEnumToken(Object? value) {
+    if (value == null) return null;
+    final raw = value.toString();
+    if (raw.trim().isEmpty) return null;
+    final parts = raw.split('.');
+    return parts.isEmpty ? raw : parts.last;
   }
 }

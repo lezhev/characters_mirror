@@ -8,15 +8,9 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
-  skillProficiencies: List<String>? # заданный набор навыков
-  suggestedSkillProficiencies: List<String>? # выбор из предложенных навыков
-  skillProficiencieCount: int? # количество выбираемых навыков из списка предложенных
+  skillProficiencies: List<String>?
   toolProficiencies: List<String>?
-  suggestedToolProficiencies: List<String>?
-  toolProficiencieCount: int?
   languages: List<String>?
-  suggestedLanguages: List<String>?
-  languageCount: int?
   items: List<String>?
   coins: double?
   feature: String?

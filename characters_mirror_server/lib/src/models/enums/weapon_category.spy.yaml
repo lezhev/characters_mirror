@@ -1,0 +1,6 @@
+enum: WeaponCategory
+values:
+  - simpleMelee
+  - simpleRanged
+  - martialMelee
+  - martialRanged

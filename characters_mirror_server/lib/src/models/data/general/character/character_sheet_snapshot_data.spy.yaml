@@ -1,0 +1,26 @@
+class: CharacterSheetSnapshotData
+table: character_sheet_snapshot_data
+fields:
+  character: CharacterData?, relation
+  totalLevel: int?
+  proficiencyBonus: int?
+  armorClass: int?
+  initiative: int?
+  speed: int?
+  maxHp: int?
+  passivePerception: int?
+  passiveInvestigation: int?
+  passiveInsight: int?
+  savingThrowBonuses: Map<String, int>?
+  skillBonuses: Map<String, int>?
+  spellSlots: Map<int, int>?
+  pactSlots: Map<int, int>?
+  hitDiceSummary: Map<String, int>?
+  senses: List<String>?
+  resistances: List<DamageType>?
+  sheetVersion: int?
+  rebuiltAt: DateTime?
+indexes:
+  character_sheet_snapshot_character_idx:
+    fields: characterId
+    unique: true

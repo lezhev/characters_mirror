@@ -3,39 +3,130 @@ import 'package:serverpod/serverpod.dart';
 
 class ClassDataEndpoint extends Endpoint {
   Future<List<ClassData>> getAll(Session session) async {
-    return await ClassData.db.find(session);
+    return ClassData.db.find(session);
   }
 
   Future<ClassData> add(Session session, ClassData classData) async {
-    classData.createdAt ??= DateTime.now();
-    classData.updatedAt ??= DateTime.now();
-    classData.version ??= 1;
-    return await ClassData.db.insertRow(session, classData);
+    _stampForInsert(classData);
+    return ClassData.db.insertRow(session, classData);
   }
 
   Future<ClassData> upsert(Session session, ClassData classData) async {
-    final existing = await ClassData.db.find(
+    return _upsertById(
       session,
-      where: (t) => t.id.equals(classData.id),
-      limit: 1,
+      classData,
+      findExisting: () => ClassData.db.find(
+        session,
+        where: (t) => t.id.equals(classData.id),
+        limit: 1,
+      ),
+      insert: () => ClassData.db.insertRow(session, classData),
+      update: () async {
+        await ClassData.db.updateRow(session, classData);
+        return classData;
+      },
     );
-    final now = DateTime.now();
-    if (existing.isNotEmpty) {
-      final old = existing.first;
-      classData.id = old.id;
-      classData.version = (old.version ?? 0) + 1;
-      classData.createdAt = old.createdAt ?? now;
-      classData.updatedAt = now;
+  }
 
-      await ClassData.db.updateRow(session, classData);
-      return classData;
-    } else {
-      classData.version = classData.version ?? 1;
-      classData.createdAt = now;
-      classData.updatedAt = now;
+  Future<ClassStepView> getStepView(
+    Session session,
+    int classId, {
+    int selectedLevel = 1,
+    bool isStartingClass = true,
+  }) async {
+    final classData = await _requireById<ClassData>(
+      await ClassData.db.find(
+        session,
+        where: (t) => t.id.equals(classId),
+        limit: 1,
+      ),
+      'ClassData',
+      classId,
+    );
 
-      return await ClassData.db.insertRow(session, classData);
+    final features = await ClassFeatureData.db.find(
+      session,
+      where: (t) => t.parentClassId.equals(classId),
+      orderBy: (t) => t.level,
+    );
+    final subclasses = await SubclassData.db.find(
+      session,
+      where: (t) => t.parentClassId.equals(classId),
+      orderBy: (t) => t.levelRequired,
+    );
+    final progression = await ClassLevelData.db.find(
+      session,
+      where: (t) => t.classDataId.equals(classId),
+      orderBy: (t) => t.level,
+    );
+    final groups = await ClassChoiceGroupData.db.find(session);
+    final currentFeatureIds = features
+        .where((feature) => feature.level <= selectedLevel)
+        .map((feature) => feature.id)
+        .whereType<int>()
+        .toSet();
+
+    final currentGroups = <ClassChoiceGroupView>[];
+    for (final group in groups.where((group) {
+      final byClass = group.sourceClassId == classId;
+      final byFeature = group.sourceFeatureId != null &&
+          currentFeatureIds.contains(group.sourceFeatureId);
+      final unlocked = (group.level ?? 1) <= selectedLevel;
+      return unlocked && (byClass || byFeature);
+    })) {
+      final options = await ClassChoiceOptionData.db.find(
+        session,
+        where: (t) => t.choiceGroupId.equals(group.id),
+      );
+      currentGroups.add(
+        ClassChoiceGroupView(
+          group: group,
+          options: options,
+        ),
+      );
     }
+
+    final warnings = <String>[];
+    if (!isStartingClass) {
+      warnings.add(
+        'Saving throw proficiencies come only from the starting class.',
+      );
+      if (classData.multiclassPrerequisites?.isNotEmpty == true) {
+        final requirements = classData.multiclassPrerequisites!.entries
+            .map((entry) => '${entry.key} ${entry.value}+')
+            .join(', ');
+        warnings.add('Multiclass prerequisite: $requirements.');
+      }
+    }
+
+    return ClassStepView(
+      classData: classData,
+      selectedLevel: selectedLevel,
+      currentLevelFeatures:
+          features.where((feature) => feature.level <= selectedLevel).toList(),
+      futureLevelFeatures:
+          features.where((feature) => feature.level > selectedLevel).toList(),
+      subclassChoice: ClassStepSubclassChoiceView(
+        requiredLevel: classData.subclassChoiceLevel,
+        subclasses: subclasses,
+      ),
+      choiceGroups: currentGroups,
+      startingProficiencies: ProficiencyBundleView(
+        savingThrows: classData.savingThrowProficiencies,
+        skills: classData.availableSkills,
+        armorTraining: isStartingClass
+            ? classData.armorTraining
+            : classData.multiclassArmorTraining,
+        weaponTraining: isStartingClass
+            ? classData.weaponTraining
+            : classData.multiclassWeaponTraining,
+        toolKeys: isStartingClass
+            ? classData.toolTraining
+            : classData.multiclassToolTraining,
+      ),
+      multiclassWarnings: warnings,
+      progression: progression,
+    );
   }
 
   Future<void> delete(Session session, int id) async {
@@ -45,77 +136,96 @@ class ClassDataEndpoint extends Endpoint {
 
 class ClassFeatureDataEndpoint extends Endpoint {
   Future<List<ClassFeatureData>> getAll(Session session) async {
-    return await ClassFeatureData.db.find(session);
+    return ClassFeatureData.db.find(session);
   }
 
   Future<ClassFeatureData> add(Session session, ClassFeatureData item) async {
-    return await ClassFeatureData.db.insertRow(session, item);
+    _stampForInsert(item);
+    return ClassFeatureData.db.insertRow(session, item);
   }
 
   Future<ClassFeatureData> upsert(
-      Session session, ClassFeatureData feature) async {
-    final existing = await ClassFeatureData.db.find(
+    Session session,
+    ClassFeatureData feature,
+  ) async {
+    return _upsertById(
       session,
-      where: (t) => t.id.equals(feature.id),
-      limit: 1,
+      feature,
+      findExisting: () => ClassFeatureData.db.find(
+        session,
+        where: (t) => t.id.equals(feature.id),
+        limit: 1,
+      ),
+      insert: () => ClassFeatureData.db.insertRow(session, feature),
+      update: () async {
+        await ClassFeatureData.db.updateRow(session, feature);
+        return feature;
+      },
     );
-    final now = DateTime.now();
-    if (existing.isNotEmpty) {
-      final old = existing.first;
-      feature.id = old.id;
-      feature.version = (old.version ?? 0) + 1;
-      feature.createdAt = old.createdAt ?? now;
-      feature.updatedAt = now;
-
-      await ClassFeatureData.db.updateRow(session, feature);
-      return feature;
-    } else {
-      feature.version = feature.version ?? 1;
-      feature.createdAt = now;
-      feature.updatedAt = now;
-
-      return await ClassFeatureData.db.insertRow(session, feature);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
-    await ClassFeatureData.db
-        .deleteWhere(session, where: (t) => t.id.equals(id));
+    await ClassFeatureData.db.deleteWhere(session, where: (t) => t.id.equals(id));
+  }
+}
+
+class ClassLevelDataEndpoint extends Endpoint {
+  Future<List<ClassLevelData>> getAll(Session session) async {
+    return ClassLevelData.db.find(session);
+  }
+
+  Future<ClassLevelData> add(Session session, ClassLevelData item) async {
+    _stampForInsert(item);
+    return ClassLevelData.db.insertRow(session, item);
+  }
+
+  Future<ClassLevelData> upsert(Session session, ClassLevelData item) async {
+    return _upsertById(
+      session,
+      item,
+      findExisting: () => ClassLevelData.db.find(
+        session,
+        where: (t) => t.id.equals(item.id),
+        limit: 1,
+      ),
+      insert: () => ClassLevelData.db.insertRow(session, item),
+      update: () async {
+        await ClassLevelData.db.updateRow(session, item);
+        return item;
+      },
+    );
+  }
+
+  Future<void> delete(Session session, int id) async {
+    await ClassLevelData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
 }
 
 class SubclassDataEndpoint extends Endpoint {
   Future<List<SubclassData>> getAll(Session session) async {
-    return await SubclassData.db.find(session);
+    return SubclassData.db.find(session);
   }
 
   Future<SubclassData> add(Session session, SubclassData item) async {
-    return await SubclassData.db.insertRow(session, item);
+    _stampForInsert(item);
+    return SubclassData.db.insertRow(session, item);
   }
 
   Future<SubclassData> upsert(Session session, SubclassData subclass) async {
-    final existing = await SubclassData.db.find(
+    return _upsertById(
       session,
-      where: (t) => t.id.equals(subclass.id),
-      limit: 1,
+      subclass,
+      findExisting: () => SubclassData.db.find(
+        session,
+        where: (t) => t.id.equals(subclass.id),
+        limit: 1,
+      ),
+      insert: () => SubclassData.db.insertRow(session, subclass),
+      update: () async {
+        await SubclassData.db.updateRow(session, subclass);
+        return subclass;
+      },
     );
-    final now = DateTime.now();
-    if (existing.isNotEmpty) {
-      final old = existing.first;
-      subclass.id = old.id;
-      subclass.version = (old.version ?? 0) + 1;
-      subclass.createdAt = old.createdAt ?? now;
-      subclass.updatedAt = now;
-
-      await SubclassData.db.updateRow(session, subclass);
-      return subclass;
-    } else {
-      subclass.version = subclass.version ?? 1;
-      subclass.createdAt = now;
-      subclass.updatedAt = now;
-
-      return await SubclassData.db.insertRow(session, subclass);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
@@ -123,85 +233,169 @@ class SubclassDataEndpoint extends Endpoint {
   }
 }
 
-class ClassOptionDataEndpoint extends Endpoint {
-  Future<List<ClassOptionData>> getAll(Session session) async {
-    return await ClassOptionData.db.find(session);
+class ClassChoiceGroupDataEndpoint extends Endpoint {
+  Future<List<ClassChoiceGroupData>> getAll(Session session) async {
+    return ClassChoiceGroupData.db.find(session);
   }
 
-  Future<ClassOptionData> add(Session session, ClassOptionData item) async {
-    return await ClassOptionData.db.insertRow(session, item);
+  Future<ClassChoiceGroupData> add(
+    Session session,
+    ClassChoiceGroupData item,
+  ) async {
+    _stampForInsert(item);
+    return ClassChoiceGroupData.db.insertRow(session, item);
   }
 
-  Future<ClassOptionData> upsert(
-      Session session, ClassOptionData classOption) async {
-    final existing = await ClassOptionData.db.find(
+  Future<ClassChoiceGroupData> upsert(
+    Session session,
+    ClassChoiceGroupData item,
+  ) async {
+    return _upsertById(
       session,
-      where: (t) => t.id.equals(classOption.id),
-      limit: 1,
+      item,
+      findExisting: () => ClassChoiceGroupData.db.find(
+        session,
+        where: (t) => t.id.equals(item.id),
+        limit: 1,
+      ),
+      insert: () => ClassChoiceGroupData.db.insertRow(session, item),
+      update: () async {
+        await ClassChoiceGroupData.db.updateRow(session, item);
+        return item;
+      },
     );
-    final now = DateTime.now();
-    if (existing.isNotEmpty) {
-      final old = existing.first;
-      classOption.id = old.id;
-      classOption.version = (old.version ?? 0) + 1;
-      classOption.createdAt = old.createdAt ?? now;
-      classOption.updatedAt = now;
-
-      await ClassOptionData.db.updateRow(session, classOption);
-      return classOption;
-    } else {
-      classOption.version = classOption.version ?? 1;
-      classOption.createdAt = now;
-      classOption.updatedAt = now;
-
-      return await ClassOptionData.db.insertRow(session, classOption);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
-    await ClassOptionData.db
-        .deleteWhere(session, where: (t) => t.id.equals(id));
+    await ClassChoiceGroupData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
+  }
+}
+
+class ClassChoiceOptionDataEndpoint extends Endpoint {
+  Future<List<ClassChoiceOptionData>> getAll(Session session) async {
+    return ClassChoiceOptionData.db.find(session);
+  }
+
+  Future<ClassChoiceOptionData> add(
+    Session session,
+    ClassChoiceOptionData item,
+  ) async {
+    _stampForInsert(item);
+    return ClassChoiceOptionData.db.insertRow(session, item);
+  }
+
+  Future<ClassChoiceOptionData> upsert(
+    Session session,
+    ClassChoiceOptionData item,
+  ) async {
+    return _upsertById(
+      session,
+      item,
+      findExisting: () => ClassChoiceOptionData.db.find(
+        session,
+        where: (t) => t.id.equals(item.id),
+        limit: 1,
+      ),
+      insert: () => ClassChoiceOptionData.db.insertRow(session, item),
+      update: () async {
+        await ClassChoiceOptionData.db.updateRow(session, item);
+        return item;
+      },
+    );
+  }
+
+  Future<void> delete(Session session, int id) async {
+    await ClassChoiceOptionData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
   }
 }
 
 class SubclassFeatureDataEndpoint extends Endpoint {
   Future<List<SubclassFeatureData>> getAll(Session session) async {
-    return await SubclassFeatureData.db.find(session);
+    return SubclassFeatureData.db.find(session);
   }
 
   Future<SubclassFeatureData> add(
-      Session session, SubclassFeatureData item) async {
-    return await SubclassFeatureData.db.insertRow(session, item);
+    Session session,
+    SubclassFeatureData item,
+  ) async {
+    _stampForInsert(item);
+    return SubclassFeatureData.db.insertRow(session, item);
   }
 
   Future<SubclassFeatureData> upsert(
-      Session session, SubclassFeatureData subclassFeature) async {
-    final existing = await SubclassFeatureData.db.find(
+    Session session,
+    SubclassFeatureData subclassFeature,
+  ) async {
+    return _upsertById(
       session,
-      where: (t) => t.id.equals(subclassFeature.id),
-      limit: 1,
+      subclassFeature,
+      findExisting: () => SubclassFeatureData.db.find(
+        session,
+        where: (t) => t.id.equals(subclassFeature.id),
+        limit: 1,
+      ),
+      insert: () => SubclassFeatureData.db.insertRow(session, subclassFeature),
+      update: () async {
+        await SubclassFeatureData.db.updateRow(session, subclassFeature);
+        return subclassFeature;
+      },
     );
-    final now = DateTime.now();
-    if (existing.isNotEmpty) {
-      final old = existing.first;
-      subclassFeature.id = old.id;
-      subclassFeature.version = (old.version ?? 0) + 1;
-      subclassFeature.createdAt = old.createdAt ?? now;
-      subclassFeature.updatedAt = now;
-
-      await SubclassFeatureData.db.updateRow(session, subclassFeature);
-      return subclassFeature;
-    } else {
-      subclassFeature.version = subclassFeature.version ?? 1;
-      subclassFeature.createdAt = now;
-      subclassFeature.updatedAt = now;
-
-      return await SubclassFeatureData.db.insertRow(session, subclassFeature);
-    }
   }
 
   Future<void> delete(Session session, int id) async {
-    await SubclassFeatureData.db
-        .deleteWhere(session, where: (t) => t.id.equals(id));
+    await SubclassFeatureData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
   }
+}
+
+void _stampForInsert(dynamic row) {
+  final now = DateTime.now();
+  row.version ??= 1;
+  row.createdAt ??= now;
+  row.updatedAt ??= now;
+}
+
+Future<T> _upsertById<T>(
+  Session session,
+  dynamic row, {
+  required Future<List<dynamic>> Function() findExisting,
+  required Future<T> Function() insert,
+  required Future<T> Function() update,
+}) async {
+  final existing = await findExisting();
+  final now = DateTime.now();
+  if (existing.isNotEmpty) {
+    final old = existing.first;
+    row.id = old.id;
+    if (row.version != null || old.version != null) {
+      row.version = (old.version ?? 0) + 1;
+    }
+    if (row.createdAt != null || old.createdAt != null) {
+      row.createdAt = old.createdAt ?? now;
+      row.updatedAt = now;
+    }
+    return update();
+  }
+
+  _stampForInsert(row);
+  return insert();
+}
+
+Future<T> _requireById<T>(
+  List<T> rows,
+  String entityName,
+  int id,
+) async {
+  if (rows.isEmpty) {
+    throw Exception('$entityName with id=$id was not found.');
+  }
+  return rows.first;
 }

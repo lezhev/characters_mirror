@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "alignmentValue",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:CharacterAlignment?"
+          }
+        ],
+        "deleteColumns": [
+          "alignmentValue"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+      "table": "characters",
+      "columns": [
+        "alignmentValue"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

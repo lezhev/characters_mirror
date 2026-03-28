@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../../enums/armor_category.dart' as _i2;
 
 abstract class ArmorData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -21,7 +22,7 @@ abstract class ArmorData
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.category,
+    this.categoryValue,
     this.baseAC,
     this.dexBonus,
     this.dexBonusMax,
@@ -29,7 +30,7 @@ abstract class ArmorData
     this.stealthDisadvantage,
     this.weight,
     this.cost,
-  }) : _charactersArmorCharactersId = null;
+  });
 
   factory ArmorData({
     int? id,
@@ -39,7 +40,7 @@ abstract class ArmorData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
+    _i2.ArmorCategory? categoryValue,
     int? baseAC,
     bool? dexBonus,
     int? dexBonusMax,
@@ -50,7 +51,7 @@ abstract class ArmorData
   }) = _ArmorDataImpl;
 
   factory ArmorData.fromJson(Map<String, dynamic> jsonSerialization) {
-    return ArmorDataImplicit._(
+    return ArmorData(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -62,7 +63,10 @@ abstract class ArmorData
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      category: jsonSerialization['category'] as String?,
+      categoryValue: jsonSerialization['categoryValue'] == null
+          ? null
+          : _i2.ArmorCategory.fromJson(
+              (jsonSerialization['categoryValue'] as int)),
       baseAC: jsonSerialization['baseAC'] as int?,
       dexBonus: jsonSerialization['dexBonus'] as bool?,
       dexBonusMax: jsonSerialization['dexBonusMax'] as int?,
@@ -70,8 +74,6 @@ abstract class ArmorData
       stealthDisadvantage: jsonSerialization['stealthDisadvantage'] as bool?,
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: jsonSerialization['cost'] as String?,
-      $_charactersArmorCharactersId:
-          jsonSerialization['_charactersArmorCharactersId'] as int?,
     );
   }
 
@@ -94,7 +96,7 @@ abstract class ArmorData
 
   DateTime? updatedAt;
 
-  String? category;
+  _i2.ArmorCategory? categoryValue;
 
   int? baseAC;
 
@@ -110,8 +112,6 @@ abstract class ArmorData
 
   String? cost;
 
-  final int? _charactersArmorCharactersId;
-
   @override
   _i1.Table<int?> get table => t;
 
@@ -126,7 +126,7 @@ abstract class ArmorData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
+    _i2.ArmorCategory? categoryValue,
     int? baseAC,
     bool? dexBonus,
     int? dexBonusMax,
@@ -145,7 +145,7 @@ abstract class ArmorData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (category != null) 'category': category,
+      if (categoryValue != null) 'categoryValue': categoryValue?.toJson(),
       if (baseAC != null) 'baseAC': baseAC,
       if (dexBonus != null) 'dexBonus': dexBonus,
       if (dexBonusMax != null) 'dexBonusMax': dexBonusMax,
@@ -155,8 +155,6 @@ abstract class ArmorData
         'stealthDisadvantage': stealthDisadvantage,
       if (weight != null) 'weight': weight,
       if (cost != null) 'cost': cost,
-      if (_charactersArmorCharactersId != null)
-        '_charactersArmorCharactersId': _charactersArmorCharactersId,
     };
   }
 
@@ -170,7 +168,7 @@ abstract class ArmorData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (category != null) 'category': category,
+      if (categoryValue != null) 'categoryValue': categoryValue?.toJson(),
       if (baseAC != null) 'baseAC': baseAC,
       if (dexBonus != null) 'dexBonus': dexBonus,
       if (dexBonusMax != null) 'dexBonusMax': dexBonusMax,
@@ -224,7 +222,7 @@ class _ArmorDataImpl extends ArmorData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    String? category,
+    _i2.ArmorCategory? categoryValue,
     int? baseAC,
     bool? dexBonus,
     int? dexBonusMax,
@@ -240,7 +238,7 @@ class _ArmorDataImpl extends ArmorData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          category: category,
+          categoryValue: categoryValue,
           baseAC: baseAC,
           dexBonus: dexBonus,
           dexBonusMax: dexBonusMax,
@@ -262,7 +260,7 @@ class _ArmorDataImpl extends ArmorData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? category = _Undefined,
+    Object? categoryValue = _Undefined,
     Object? baseAC = _Undefined,
     Object? dexBonus = _Undefined,
     Object? dexBonusMax = _Undefined,
@@ -271,7 +269,7 @@ class _ArmorDataImpl extends ArmorData {
     Object? weight = _Undefined,
     Object? cost = _Undefined,
   }) {
-    return ArmorDataImplicit._(
+    return ArmorData(
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -279,7 +277,9 @@ class _ArmorDataImpl extends ArmorData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      category: category is String? ? category : this.category,
+      categoryValue: categoryValue is _i2.ArmorCategory?
+          ? categoryValue
+          : this.categoryValue,
       baseAC: baseAC is int? ? baseAC : this.baseAC,
       dexBonus: dexBonus is bool? ? dexBonus : this.dexBonus,
       dexBonusMax: dexBonusMax is int? ? dexBonusMax : this.dexBonusMax,
@@ -291,74 +291,8 @@ class _ArmorDataImpl extends ArmorData {
           : this.stealthDisadvantage,
       weight: weight is double? ? weight : this.weight,
       cost: cost is String? ? cost : this.cost,
-      $_charactersArmorCharactersId: this._charactersArmorCharactersId,
     );
   }
-}
-
-class ArmorDataImplicit extends _ArmorDataImpl {
-  ArmorDataImplicit._({
-    int? id,
-    String? name,
-    String? description,
-    String? source,
-    int? version,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    String? category,
-    int? baseAC,
-    bool? dexBonus,
-    int? dexBonusMax,
-    int? strengthRequirement,
-    bool? stealthDisadvantage,
-    double? weight,
-    String? cost,
-    int? $_charactersArmorCharactersId,
-  })  : _charactersArmorCharactersId = $_charactersArmorCharactersId,
-        super(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          category: category,
-          baseAC: baseAC,
-          dexBonus: dexBonus,
-          dexBonusMax: dexBonusMax,
-          strengthRequirement: strengthRequirement,
-          stealthDisadvantage: stealthDisadvantage,
-          weight: weight,
-          cost: cost,
-        );
-
-  factory ArmorDataImplicit(
-    ArmorData armorData, {
-    int? $_charactersArmorCharactersId,
-  }) {
-    return ArmorDataImplicit._(
-      id: armorData.id,
-      name: armorData.name,
-      description: armorData.description,
-      source: armorData.source,
-      version: armorData.version,
-      createdAt: armorData.createdAt,
-      updatedAt: armorData.updatedAt,
-      category: armorData.category,
-      baseAC: armorData.baseAC,
-      dexBonus: armorData.dexBonus,
-      dexBonusMax: armorData.dexBonusMax,
-      strengthRequirement: armorData.strengthRequirement,
-      stealthDisadvantage: armorData.stealthDisadvantage,
-      weight: armorData.weight,
-      cost: armorData.cost,
-      $_charactersArmorCharactersId: $_charactersArmorCharactersId,
-    );
-  }
-
-  @override
-  final int? _charactersArmorCharactersId;
 }
 
 class ArmorDataTable extends _i1.Table<int?> {
@@ -387,9 +321,10 @@ class ArmorDataTable extends _i1.Table<int?> {
       'updatedAt',
       this,
     );
-    category = _i1.ColumnString(
-      'category',
+    categoryValue = _i1.ColumnEnum(
+      'categoryValue',
       this,
+      _i1.EnumSerialization.byIndex,
     );
     baseAC = _i1.ColumnInt(
       'baseAC',
@@ -419,10 +354,6 @@ class ArmorDataTable extends _i1.Table<int?> {
       'cost',
       this,
     );
-    $_charactersArmorCharactersId = _i1.ColumnInt(
-      '_charactersArmorCharactersId',
-      this,
-    );
   }
 
   late final _i1.ColumnString name;
@@ -437,7 +368,7 @@ class ArmorDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnString category;
+  late final _i1.ColumnEnum<_i2.ArmorCategory> categoryValue;
 
   late final _i1.ColumnInt baseAC;
 
@@ -453,8 +384,6 @@ class ArmorDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString cost;
 
-  late final _i1.ColumnInt $_charactersArmorCharactersId;
-
   @override
   List<_i1.Column> get columns => [
         id,
@@ -464,27 +393,7 @@ class ArmorDataTable extends _i1.Table<int?> {
         version,
         createdAt,
         updatedAt,
-        category,
-        baseAC,
-        dexBonus,
-        dexBonusMax,
-        strengthRequirement,
-        stealthDisadvantage,
-        weight,
-        cost,
-        $_charactersArmorCharactersId,
-      ];
-
-  @override
-  List<_i1.Column> get managedColumns => [
-        id,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        category,
+        categoryValue,
         baseAC,
         dexBonus,
         dexBonusMax,

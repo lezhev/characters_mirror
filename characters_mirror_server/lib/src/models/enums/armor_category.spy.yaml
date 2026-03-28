@@ -1,0 +1,6 @@
+enum: ArmorCategory
+values:
+  - light
+  - medium
+  - heavy
+  - shield

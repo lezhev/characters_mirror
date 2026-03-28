@@ -10,7 +10,8 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
-  level: int?                       
-  spells: Map<String, int>?    # spellName -> lvlGranted
+  level: int?
+  spells: Map<String, int>?
   usesPerRest: String?
   usesFormula: String?
+  tags: List<FeatureTag>?

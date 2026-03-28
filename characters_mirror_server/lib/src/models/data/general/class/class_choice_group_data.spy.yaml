@@ -1,0 +1,21 @@
+class: ClassChoiceGroupData
+table: class_choice_group_data
+fields:
+  name: String?
+  description: String?
+  sourceClass: ClassData?, relation(optional)
+  sourceSubclass: SubclassData?, relation(optional)
+  sourceFeature: ClassFeatureData?, relation(optional)
+  sourceRace: RaceData?, relation(optional)
+  sourceSubrace: SubraceData?, relation(optional)
+  sourceBackground: BackgroundData?, relation(optional)
+  level: int?
+  type: ClassChoiceType?
+  selectionCount: int?
+  appliesAtCharacterLevel: bool?
+  exclusiveKey: String?
+  allowDuplicates: bool?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

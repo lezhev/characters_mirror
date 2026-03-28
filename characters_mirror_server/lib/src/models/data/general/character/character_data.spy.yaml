@@ -2,38 +2,30 @@ class: CharacterData
 table: characters
 fields:
   name: String?
+  age: String?
+  height: String?
+  weight: String?
+  eyes: String?
+  skin: String?
+  hair: String?
+  appearance: String?
+  backstory: String?
+  goals: String?
+  alliesOrganizations: String?
+  personalityTraits: String?
+  ideals: String?
+  bonds: String?
+  flaws: String?
   version: int?
   createdAt: DateTime?
   updatedAt: DateTime?
-
   experience: int?
-  attributes: Map<String, int>? #Attribute enum
-
+  alignmentValue: CharacterAlignment?
   race: RaceData?, relation(optional)
   subrace: SubraceData?, relation(optional)
-
-  classes: List<ClassData>?, relation(optional)
-  subclass: SubclassData?, relation(optional)
-  classFeatures: List<ClassFeatureData>?, relation(optional)
-  variantOptions: List<ClassOptionData>?, relation(optional)
-
   background: BackgroundData?, relation(optional)
-
-  alignment: String? #Alignment enum
-  armorClass: int?
-  speed: int? 
-  coins: int?
-
-  skillProficiencies: List<String>? #Skill enum
-  skillExpertises: List<String>? #Skill enum
-
-  maxHp: int?
+  baseAbilityScores: Map<String, int>?
   temporaryHp: int?
   currentHp: int?
-
-  preparedSpells: List<SpellData>?, relation(optional)
-  writtenSpells: List<SpellData>?, relation(optional)
-  items: List<ItemData>?, relation(optional)
-  magicItems: List<MagicItemData>?, relation(optional)
-  armor: List<ArmorData>?, relation(optional)
-  weapons: List<WeaponData>?, relation(optional) 
+  inspiration: bool?
+  notes: String?

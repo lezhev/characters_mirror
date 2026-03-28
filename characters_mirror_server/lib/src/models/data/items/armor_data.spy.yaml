@@ -8,11 +8,11 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
-  category: String?            #TODO crate enum ArmorCategory { light, medium, heavy, shield }
+  categoryValue: ArmorCategory?
   baseAC: int?
-  dexBonus: bool?              # Учитывает ли бонус Ловкости
-  dexBonusMax: int?            # Максимальный бонус Ловкости (для Medium)
-  strengthRequirement: int?    # Для тяжёлой брони
+  dexBonus: bool?
+  dexBonusMax: int?
+  strengthRequirement: int?
   stealthDisadvantage: bool?
   weight: double?
   cost: String?

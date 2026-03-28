@@ -15,6 +15,8 @@ class IntroductionStep extends ConsumerWidget {
       appBar: CreationAppBar(
         title: "Создание персонажа",
         onBack: () => context.go('/characters'),
+        onStepTap: (target) =>
+            ref.read(characterCreationProvider.notifier).goToStep(context, target),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),

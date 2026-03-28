@@ -11,7 +11,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../data/general/race/race_option_data.dart' as _i3;
 
 abstract class SubraceData implements _i1.SerializableModel {
   SubraceData._({
@@ -26,10 +25,8 @@ abstract class SubraceData implements _i1.SerializableModel {
     this.updatedAt,
     this.abilityBonuses,
     this.traits,
-    this.specialAbilities,
     this.skillProficiencies,
     this.resistances,
-    this.variantOptions,
   });
 
   factory SubraceData({
@@ -44,10 +41,8 @@ abstract class SubraceData implements _i1.SerializableModel {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<String>? specialAbilities,
     List<String>? skillProficiencies,
     List<String>? resistances,
-    List<_i3.RaceOptionData>? variantOptions,
   }) = _SubraceDataImpl;
 
   factory SubraceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -76,17 +71,11 @@ abstract class SubraceData implements _i1.SerializableModel {
       traits: (jsonSerialization['traits'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      specialAbilities: (jsonSerialization['specialAbilities'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
           ?.map((e) => e as String)
-          .toList(),
-      variantOptions: (jsonSerialization['variantOptions'] as List?)
-          ?.map((e) => _i3.RaceOptionData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -116,13 +105,9 @@ abstract class SubraceData implements _i1.SerializableModel {
 
   List<String>? traits;
 
-  List<String>? specialAbilities;
-
   List<String>? skillProficiencies;
 
   List<String>? resistances;
-
-  List<_i3.RaceOptionData>? variantOptions;
 
   /// Returns a shallow copy of this [SubraceData]
   /// with some or all fields replaced by the given arguments.
@@ -139,10 +124,8 @@ abstract class SubraceData implements _i1.SerializableModel {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<String>? specialAbilities,
     List<String>? skillProficiencies,
     List<String>? resistances,
-    List<_i3.RaceOptionData>? variantOptions,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -158,14 +141,9 @@ abstract class SubraceData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
       if (traits != null) 'traits': traits?.toJson(),
-      if (specialAbilities != null)
-        'specialAbilities': specialAbilities?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
       if (resistances != null) 'resistances': resistances?.toJson(),
-      if (variantOptions != null)
-        'variantOptions':
-            variantOptions?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -190,10 +168,8 @@ class _SubraceDataImpl extends SubraceData {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<String>? specialAbilities,
     List<String>? skillProficiencies,
     List<String>? resistances,
-    List<_i3.RaceOptionData>? variantOptions,
   }) : super._(
           id: id,
           name: name,
@@ -206,10 +182,8 @@ class _SubraceDataImpl extends SubraceData {
           updatedAt: updatedAt,
           abilityBonuses: abilityBonuses,
           traits: traits,
-          specialAbilities: specialAbilities,
           skillProficiencies: skillProficiencies,
           resistances: resistances,
-          variantOptions: variantOptions,
         );
 
   /// Returns a shallow copy of this [SubraceData]
@@ -228,10 +202,8 @@ class _SubraceDataImpl extends SubraceData {
     Object? updatedAt = _Undefined,
     Object? abilityBonuses = _Undefined,
     Object? traits = _Undefined,
-    Object? specialAbilities = _Undefined,
     Object? skillProficiencies = _Undefined,
     Object? resistances = _Undefined,
-    Object? variantOptions = _Undefined,
   }) {
     return SubraceData(
       id: id is int? ? id : this.id,
@@ -258,18 +230,12 @@ class _SubraceDataImpl extends SubraceData {
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
-      specialAbilities: specialAbilities is List<String>?
-          ? specialAbilities
-          : this.specialAbilities?.map((e0) => e0).toList(),
       skillProficiencies: skillProficiencies is List<String>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
       resistances: resistances is List<String>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      variantOptions: variantOptions is List<_i3.RaceOptionData>?
-          ? variantOptions
-          : this.variantOptions?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

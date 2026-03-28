@@ -3,40 +3,82 @@ import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/race_ste
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/race_step/race_tile_view.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/steps/race_step/state/race_state.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
+import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/jump_to_details_button.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_shimmer.dart';
 import 'package:characters_mirror_flutter/app/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart' hide Step;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class RaceStep extends ConsumerWidget {
+class RaceStep extends HookConsumerWidget {
   const RaceStep({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final detailsKey = useMemoized(GlobalKey.new);
+    final dismissedSelectionKey = useState<String?>(null);
+
     return ref.watch(raceStateProvider).when(
       data: (data) {
+        final selectedRaceKey =
+            data.selectedRace == null
+                ? null
+                : '${data.selectedRace!.id ?? data.selectedRace!.name}';
+        final showJumpButton =
+            selectedRaceKey != null &&
+            dismissedSelectionKey.value != selectedRaceKey;
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(120),
             child: CreationAppBar(
               title: "Создание персонажа",
               onBack: () => context.go('/characters'),
+              onStepTap: (target) => _syncAndGo(
+                context: context,
+                ref: ref,
+                data: data,
+                target: target,
+              ),
             ),
           ),
           body: PageSizeLimiter(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: Column(
-                children: [
-                  RaceTileView(),
-                  if (data.selectedRace != null)
-                    RaceFeatures(selectedRace: data.selectedRace!),
-                ],
-              ),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 16.0,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        RaceTileView(),
+                        if (data.selectedRace != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 88.0),
+                            child: KeyedSubtree(
+                              key: detailsKey,
+                              child: RaceFeatures(
+                                selectedRace: data.selectedRace!,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (showJumpButton)
+                  JumpToDetailsButton(
+                    onPressed: () {
+                      dismissedSelectionKey.value = selectedRaceKey;
+                      _scrollToDetails(detailsKey);
+                    },
+                  ),
+              ],
             ),
           ),
           bottomNavigationBar: SafeArea(
@@ -45,12 +87,13 @@ class RaceStep extends ConsumerWidget {
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: CreationNavBar(
                 onPressedNext: () {
-                  ref
-                      .read(characterCreationProvider.notifier)
-                      .nextStep(context);
-                  ref
-                      .read(characterCreationProvider.notifier)
-                      .setRace(data.selectedRace!);
+                  final notifier =
+                      ref.read(characterCreationProvider.notifier);
+                  notifier.syncRaceDraft(
+                    selectedRace: data.selectedRace,
+                    selectedSubrace: data.selectedSubrace,
+                  );
+                  notifier.goToStep(context, Step.classStep);
                 },
                 route: 'class',
               ),
@@ -71,4 +114,30 @@ class RaceStep extends ConsumerWidget {
       },
     );
   }
+}
+
+void _syncAndGo({
+  required BuildContext context,
+  required WidgetRef ref,
+  required RaceStateModel data,
+  required Step target,
+}) {
+  final notifier = ref.read(characterCreationProvider.notifier);
+  notifier.syncRaceDraft(
+    selectedRace: data.selectedRace,
+    selectedSubrace: data.selectedSubrace,
+  );
+  notifier.goToStep(context, target);
+}
+
+Future<void> _scrollToDetails(GlobalKey key) async {
+  final context = key.currentContext;
+  if (context == null) return;
+
+  await Scrollable.ensureVisible(
+    context,
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.easeOutCubic,
+    alignment: 0.0,
+  );
 }

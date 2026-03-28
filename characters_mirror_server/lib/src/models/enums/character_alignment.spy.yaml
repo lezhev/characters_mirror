@@ -1,0 +1,12 @@
+enum: CharacterAlignment
+values:
+  - lawfulGood
+  - neutralGood
+  - chaoticGood
+  - lawfulNeutral
+  - trueNeutral
+  - chaoticNeutral
+  - lawfulEvil
+  - neutralEvil
+  - chaoticEvil
+  - unaligned

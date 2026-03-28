@@ -1,0 +1,9 @@
+enum: ChoiceSourceType
+values:
+  - race
+  - subrace
+  - background
+  - classData
+  - subclass
+  - classFeature
+  - subclassFeature

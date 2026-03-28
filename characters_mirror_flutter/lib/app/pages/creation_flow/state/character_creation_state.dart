@@ -17,241 +17,295 @@ enum Step {
   summary
 }
 
+extension CreationStepX on Step {
+  String get routePath =>
+      this == Step.introduction ? '/create' : '/create/$name';
+
+  Step? get next {
+    final nextIndex = index + 1;
+    return nextIndex < Step.values.length ? Step.values[nextIndex] : null;
+  }
+
+  Step? get previous {
+    final previousIndex = index - 1;
+    return previousIndex >= 0 ? Step.values[previousIndex] : null;
+  }
+}
+
 @freezed
 sealed class CharacterCreationState with _$CharacterCreationState {
   const factory CharacterCreationState({
     required CharacterData character,
+    @Default([]) List<CharacterClassEntryData> classEntries,
+    @Default([]) List<CharacterChoiceData> choices,
+    CharacterSheetSnapshotData? snapshot,
     required Step step,
   }) = _CharacterCreationState;
 
   factory CharacterCreationState.initial() => CharacterCreationState(
-      character: CharacterData(), step: Step.introduction);
+        character: CharacterData(),
+        step: Step.introduction,
+      );
 }
 
 @Riverpod(keepAlive: true)
 class CharacterCreation extends _$CharacterCreation {
   @override
   CharacterCreationState build() => CharacterCreationState.initial();
-  //TODO: add dispose
-  String _nextStep() {
-    switch (state.step) {
-      case Step.introduction:
-        return 'race';
-      case Step.race:
-        return 'classStep';
-      case Step.classStep:
-        return 'background';
-      case Step.background:
-        return 'attributes';
-      case Step.attributes:
-        return 'personal';
-      case Step.personal:
-        return 'summary';
-      case Step.summary:
-        return 'summary';
-    }
-  }
-
-  String _previousStep() {
-    switch (state.step) {
-      case Step.introduction:
-        return '';
-      case Step.race:
-        return 'introduction';
-      case Step.classStep:
-        return 'race';
-      case Step.background:
-        return 'classStep';
-      case Step.attributes:
-        return 'background';
-      case Step.personal:
-        return 'attributes';
-      case Step.summary:
-        return 'personal';
-    }
-  }
 
   void nextStep(BuildContext context) {
-    final next = _nextStep();
-    context.push('/create/$next');
-    state = state.copyWith(
-      step: Step.values.firstWhere((e) => e.name == next),
-    );
+    goToStep(context, state.step.next ?? Step.summary);
   }
 
   void prevStep(BuildContext context) {
-    context.pop();
-    state = state.copyWith(
-      step: Step.values.firstWhere((e) => e.name == _previousStep()),
-    );
+    final previous = state.step.previous;
+    if (previous == null) return;
+    goToStep(context, previous);
   }
 
   void goToStep(BuildContext context, Step step) {
-    context.push('/create/${step.name}');
+    context.go(step.routePath);
     state = state.copyWith(step: step);
   }
 
-  // === Обновление данных персонажа ===
-  void setName(String name) =>
-      _updateCharacter(state.character.copyWith(name: name));
+  void syncRaceDraft({
+    RaceData? selectedRace,
+    SubraceData? selectedSubrace,
+  }) {
+    if (selectedRace == null) return;
+    _updateCharacter(
+      state.character.copyWith(
+        race: selectedRace,
+        subrace: selectedSubrace,
+      ),
+    );
+  }
+
+  void syncBackgroundDraft(BackgroundData? selectedBackground) {
+    if (selectedBackground == null) return;
+    _updateCharacter(
+      state.character.copyWith(background: selectedBackground),
+    );
+  }
+
+  void syncAttributesDraft(Map<String, int> attributes) {
+    _updateCharacter(
+      state.character.copyWith(baseAbilityScores: attributes),
+    );
+  }
+
+  void syncPrimaryClassDraft({
+    required ClassData? classData,
+    SubclassData? subclass,
+    List<ClassChoiceGroupView> choiceGroups = const [],
+    Map<String, ClassChoiceOptionData> selectedOptions = const {},
+    int level = 1,
+  }) {
+    if (classData == null) return;
+
+    applyPrimaryClassSelection(
+      classData: classData,
+      subclass: subclass,
+      level: level,
+      choices: buildClassChoices(
+        selectedOptions: selectedOptions,
+        groups: choiceGroups,
+      ),
+    );
+  }
+
+  void setName(String? name) =>
+      _updateCharacter(state.character.copyWith(name: _normalizeText(name)));
+
+  void setAge(String? value) =>
+      _updateCharacter(state.character.copyWith(age: _normalizeText(value)));
+
+  void setHeight(String? value) =>
+      _updateCharacter(state.character.copyWith(height: _normalizeText(value)));
+
+  void setWeight(String? value) =>
+      _updateCharacter(state.character.copyWith(weight: _normalizeText(value)));
+
+  void setEyes(String? value) =>
+      _updateCharacter(state.character.copyWith(eyes: _normalizeText(value)));
+
+  void setSkin(String? value) =>
+      _updateCharacter(state.character.copyWith(skin: _normalizeText(value)));
+
+  void setHair(String? value) =>
+      _updateCharacter(state.character.copyWith(hair: _normalizeText(value)));
+
+  void setAppearance(String? value) => _updateCharacter(
+        state.character.copyWith(appearance: _normalizeText(value)),
+      );
+
+  void setBackstory(String? value) => _updateCharacter(
+        state.character.copyWith(backstory: _normalizeText(value)),
+      );
+
+  void setGoals(String? value) =>
+      _updateCharacter(state.character.copyWith(goals: _normalizeText(value)));
+
+  void setAlliesOrganizations(String? value) => _updateCharacter(
+        state.character.copyWith(
+          alliesOrganizations: _normalizeText(value),
+        ),
+      );
+
+  void setPersonalityTraits(String? value) => _updateCharacter(
+        state.character.copyWith(personalityTraits: _normalizeText(value)),
+      );
+
+  void setIdeals(String? value) =>
+      _updateCharacter(state.character.copyWith(ideals: _normalizeText(value)));
+
+  void setBonds(String? value) =>
+      _updateCharacter(state.character.copyWith(bonds: _normalizeText(value)));
+
+  void setFlaws(String? value) =>
+      _updateCharacter(state.character.copyWith(flaws: _normalizeText(value)));
 
   void setExperience(int? experience) =>
       _updateCharacter(state.character.copyWith(experience: experience));
 
-  void setAlignment(String? alignment) =>
-      _updateCharacter(state.character.copyWith(alignment: alignment));
+  void setAlignment(CharacterAlignment? alignment) =>
+      _updateCharacter(
+        state.character.copyWith(
+          alignmentValue: alignment,
+        ),
+      );
 
-  void setCoins(int? coins) =>
-      _updateCharacter(state.character.copyWith(coins: coins));
-
-// === Атрибуты ===
-  void setAttribute(String key, int value) {
-    final updated = Map<String, int>.from(state.character.attributes ?? {});
-    updated[key] = value;
-    _updateCharacter(state.character.copyWith(attributes: updated));
-  }
-
-  void setAttributes(Map<String, int> newAttributes) =>
-      _updateCharacter(state.character.copyWith(attributes: newAttributes));
-
-// === Раса / Подраса ===
   void setRace(RaceData? race) =>
       _updateCharacter(state.character.copyWith(race: race));
 
   void setSubrace(SubraceData? subrace) =>
       _updateCharacter(state.character.copyWith(subrace: subrace));
 
-// === Классы / Черты класса ===
-  void setClasses(List<ClassData>? classes) =>
-      _updateCharacter(state.character.copyWith(classes: classes));
-
-  void addClass(ClassData classData) {
-    final updated = <ClassData>[...?state.character.classes, classData];
-    _updateCharacter(state.character.copyWith(classes: updated));
-  }
-
-  void removeClass(ClassData classData) {
-    final updated = <ClassData>[...?state.character.classes]..remove(classData);
-    _updateCharacter(state.character.copyWith(classes: updated));
-  }
-
-  void setClassFeatures(List<ClassFeatureData>? features) =>
-      _updateCharacter(state.character.copyWith(classFeatures: features));
-
-// === Предыстория ===
   void setBackground(BackgroundData? background) =>
       _updateCharacter(state.character.copyWith(background: background));
 
-// === Параметры боя ===
-  void setArmorClass(int? value) =>
-      _updateCharacter(state.character.copyWith(armorClass: value));
-
-  void setSpeed(int? value) =>
-      _updateCharacter(state.character.copyWith(speed: value));
-
-  void setMaxHp(int? value) =>
-      _updateCharacter(state.character.copyWith(maxHp: value));
-
-  void setTemporaryHp(int? value) =>
-      _updateCharacter(state.character.copyWith(temporaryHp: value));
+  void setAttributes(Map<String, int> newAttributes) =>
+      _updateCharacter(state.character.copyWith(baseAbilityScores: newAttributes));
 
   void setCurrentHp(int? value) =>
       _updateCharacter(state.character.copyWith(currentHp: value));
 
-// === Навыки ===
-  void setSkillProficiencies(List<String>? skills) =>
-      _updateCharacter(state.character.copyWith(skillProficiencies: skills));
+  void setTemporaryHp(int? value) =>
+      _updateCharacter(state.character.copyWith(temporaryHp: value));
 
-  void addSkillProficiency(String skill) {
-    final updated = <String>[...?state.character.skillProficiencies, skill];
-    _updateCharacter(state.character.copyWith(skillProficiencies: updated));
+  void setInspiration(bool? value) =>
+      _updateCharacter(state.character.copyWith(inspiration: value));
+
+  void setNotes(String? notes) =>
+      _updateCharacter(
+        state.character.copyWith(notes: _normalizeText(notes)),
+      );
+
+  void setClassEntries(List<CharacterClassEntryData> entries) {
+    state = state.copyWith(classEntries: entries);
   }
 
-  void removeSkillProficiency(String skill) {
-    final updated = <String>[...?state.character.skillProficiencies]
-      ..remove(skill);
-    _updateCharacter(state.character.copyWith(skillProficiencies: updated));
+  void setChoices(List<CharacterChoiceData> choices) {
+    state = state.copyWith(choices: choices);
   }
 
-  void setSkillExpertises(List<String>? skills) =>
-      _updateCharacter(state.character.copyWith(skillExpertises: skills));
-
-  void addSkillExpertise(String skill) {
-    final updated = <String>[...?state.character.skillExpertises, skill];
-    _updateCharacter(state.character.copyWith(skillExpertises: updated));
+  void setSnapshot(CharacterSheetSnapshotData? snapshot) {
+    state = state.copyWith(snapshot: snapshot);
   }
 
-  void removeSkillExpertise(String skill) {
-    final updated = <String>[...?state.character.skillExpertises]
-      ..remove(skill);
-    _updateCharacter(state.character.copyWith(skillExpertises: updated));
+  void applyPrimaryClassSelection({
+    required ClassData classData,
+    SubclassData? subclass,
+    int level = 1,
+    List<CharacterChoiceData> choices = const [],
+  }) {
+    final entry = CharacterClassEntryData(
+      characterId: state.character.id ?? 0,
+      character: state.character.id == null ? null : state.character,
+      classDataId: classData.id ?? 0,
+      classData: classData,
+      subclassId: subclass?.id,
+      subclass: subclass,
+      level: level,
+      isStartingClass: true,
+      classOrder: 0,
+      hpMode: HitPointMode.fixed,
+    );
+
+    state = state.copyWith(
+      classEntries: [entry],
+      choices: choices,
+    );
   }
 
-// === Снаряжение и предметы ===
-  void setItems(List<ItemData>? items) =>
-      _updateCharacter(state.character.copyWith(items: items));
+  List<CharacterChoiceData> buildClassChoices({
+    required Map<String, ClassChoiceOptionData> selectedOptions,
+    required List<ClassChoiceGroupView> groups,
+  }) {
+    final choices = <CharacterChoiceData>[];
+    final characterId = state.character.id ?? 0;
 
-  void addItem(ItemData item) {
-    final updated = <ItemData>[...?state.character.items, item];
-    _updateCharacter(state.character.copyWith(items: updated));
+    for (final groupView in groups) {
+      final group = groupView.group;
+      if (group == null) continue;
+
+      final groupKey = group.exclusiveKey?.trim().isNotEmpty == true
+          ? group.exclusiveKey!
+          : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
+      final selected = selectedOptions[groupKey];
+      if (selected == null) continue;
+
+      choices.add(
+        CharacterChoiceData(
+          characterId: characterId,
+          sourceType: _resolveChoiceSourceType(group),
+          sourceId: group.id,
+          groupKey: groupKey,
+          optionKey: selected.optionKey,
+          selectedText: selected.name,
+        ),
+      );
+    }
+
+    return choices;
   }
 
-  void setMagicItems(List<MagicItemData>? items) =>
-      _updateCharacter(state.character.copyWith(magicItems: items));
-
-  void addMagicItem(MagicItemData item) {
-    final updated = <MagicItemData>[...?state.character.magicItems, item];
-    _updateCharacter(state.character.copyWith(magicItems: updated));
+  CharacterBuildData toBuild() {
+    return CharacterBuildData(
+      character: state.character,
+      classEntries: state.classEntries,
+      choices: state.choices,
+      snapshot: state.snapshot,
+    );
   }
 
-  void setWeapons(List<WeaponData>? weapons) =>
-      _updateCharacter(state.character.copyWith(weapons: weapons));
-
-  void addWeapon(WeaponData weapon) {
-    final updated = <WeaponData>[...?state.character.weapons, weapon];
-    _updateCharacter(state.character.copyWith(weapons: updated));
-  }
-
-  void setArmor(List<ArmorData>? armor) =>
-      _updateCharacter(state.character.copyWith(armor: armor));
-
-  void addArmor(ArmorData armor) {
-    final updated = <ArmorData>[...?state.character.armor, armor];
-    _updateCharacter(state.character.copyWith(armor: updated));
-  }
-
-  void setPreparedSpells(List<SpellData>? spells) =>
-      _updateCharacter(state.character.copyWith(preparedSpells: spells));
-
-  void addPreparedSpell(SpellData spell) {
-    final updated = <SpellData>[...?state.character.preparedSpells, spell];
-    _updateCharacter(state.character.copyWith(preparedSpells: updated));
-  }
-
-  void setWrittenSpells(List<SpellData>? spells) =>
-      _updateCharacter(state.character.copyWith(writtenSpells: spells));
-
-  void addWrittenSpell(SpellData spell) {
-    final updated = <SpellData>[...?state.character.writtenSpells, spell];
-    _updateCharacter(state.character.copyWith(writtenSpells: updated));
-  }
-
-// === Метаданные ===
-  void setVersion(int? version) =>
-      _updateCharacter(state.character.copyWith(version: version));
-
-  void setCreatedAt(DateTime? date) =>
-      _updateCharacter(state.character.copyWith(createdAt: date));
-
-  void setUpdatedAt(DateTime? date) =>
-      _updateCharacter(state.character.copyWith(updatedAt: date));
-
-// === Вспомогательный метод ===
   void _updateCharacter(CharacterData updated) {
     state = state.copyWith(character: updated);
   }
 
+  ChoiceSourceType _resolveChoiceSourceType(ClassChoiceGroupData group) {
+    if (group.sourceFeatureId != null) return ChoiceSourceType.classFeature;
+    if (group.sourceSubclassId != null) return ChoiceSourceType.subclass;
+    if (group.sourceBackgroundId != null) return ChoiceSourceType.background;
+    if (group.sourceSubraceId != null) return ChoiceSourceType.subrace;
+    if (group.sourceRaceId != null) return ChoiceSourceType.race;
+    return ChoiceSourceType.classData;
+  }
+
   void reset() {
     state = CharacterCreationState.initial();
+  }
+
+  String? _normalizeText(String? value) {
+    final trimmed = value?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
+  }
+
+  String? _safeEnumToken(Object? value) {
+    if (value == null) return null;
+    final raw = value.toString();
+    if (raw.trim().isEmpty) return null;
+    final parts = raw.split('.');
+    return parts.isEmpty ? raw : parts.last;
   }
 }

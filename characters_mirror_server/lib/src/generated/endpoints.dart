@@ -26,39 +26,41 @@ import 'package:characters_mirror_server/src/generated/data/background_data.dart
     as _i14;
 import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
     as _i15;
-import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
+import 'package:characters_mirror_server/src/generated/views/character_build_data.dart'
     as _i16;
 import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
     as _i17;
 import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
     as _i18;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_level_data.dart'
     as _i19;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_option_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
     as _i20;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_choice_group_data.dart'
     as _i21;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_choice_option_data.dart'
     as _i22;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
     as _i23;
-import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
     as _i24;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_option_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
     as _i25;
-import 'package:characters_mirror_server/src/generated/data/general/race/dragonborn_ancestry_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
     as _i26;
-import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/dragonborn_ancestry_data.dart'
     as _i27;
-import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
     as _i28;
-import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
     as _i29;
-import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
     as _i30;
-import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
     as _i31;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i32;
+import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+    as _i32;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i33;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -106,16 +108,28 @@ class Endpoints extends _i1.EndpointDispatch {
           'classFeatureData',
           null,
         ),
+      'classLevelData': _i7.ClassLevelDataEndpoint()
+        ..initialize(
+          server,
+          'classLevelData',
+          null,
+        ),
       'subclassData': _i7.SubclassDataEndpoint()
         ..initialize(
           server,
           'subclassData',
           null,
         ),
-      'classOptionData': _i7.ClassOptionDataEndpoint()
+      'classChoiceGroupData': _i7.ClassChoiceGroupDataEndpoint()
         ..initialize(
           server,
-          'classOptionData',
+          'classChoiceGroupData',
+          null,
+        ),
+      'classChoiceOptionData': _i7.ClassChoiceOptionDataEndpoint()
+        ..initialize(
+          server,
+          'classChoiceOptionData',
           null,
         ),
       'subclassFeatureData': _i7.SubclassFeatureDataEndpoint()
@@ -140,12 +154,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'subraceData',
-          null,
-        ),
-      'raceOptionData': _i8.RaceOptionDataEndpoint()
-        ..initialize(
-          server,
-          'raceOptionData',
           null,
         ),
       'dragonbornAncestryData': _i8.DragonbornAncestryDataEndpoint()
@@ -410,12 +418,12 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['characterData'] as _i6.CharacterDataEndpoint)
                   .getAll(session),
         ),
-        'add': _i1.MethodConnector(
-          name: 'add',
+        'upsertBuild': _i1.MethodConnector(
+          name: 'upsertBuild',
           params: {
-            'character': _i1.ParameterDescription(
-              name: 'character',
-              type: _i1.getType<_i16.CharacterData>(),
+            'build': _i1.ParameterDescription(
+              name: 'build',
+              type: _i1.getType<_i16.CharacterBuildData>(),
               nullable: false,
             )
           },
@@ -423,9 +431,48 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i6.CharacterDataEndpoint).add(
+              (endpoints['characterData'] as _i6.CharacterDataEndpoint)
+                  .upsertBuild(
             session,
-            params['character'],
+            params['build'],
+          ),
+        ),
+        'getBuild': _i1.MethodConnector(
+          name: 'getBuild',
+          params: {
+            'characterId': _i1.ParameterDescription(
+              name: 'characterId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['characterData'] as _i6.CharacterDataEndpoint)
+                  .getBuild(
+            session,
+            params['characterId'],
+          ),
+        ),
+        'getCharacterSheet': _i1.MethodConnector(
+          name: 'getCharacterSheet',
+          params: {
+            'characterId': _i1.ParameterDescription(
+              name: 'characterId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['characterData'] as _i6.CharacterDataEndpoint)
+                  .getCharacterSheet(
+            session,
+            params['characterId'],
           ),
         ),
         'delete': _i1.MethodConnector(
@@ -495,6 +542,36 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['classData'] as _i7.ClassDataEndpoint).upsert(
             session,
             params['classData'],
+          ),
+        ),
+        'getStepView': _i1.MethodConnector(
+          name: 'getStepView',
+          params: {
+            'classId': _i1.ParameterDescription(
+              name: 'classId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'selectedLevel': _i1.ParameterDescription(
+              name: 'selectedLevel',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'isStartingClass': _i1.ParameterDescription(
+              name: 'isStartingClass',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classData'] as _i7.ClassDataEndpoint).getStepView(
+            session,
+            params['classId'],
+            selectedLevel: params['selectedLevel'],
+            isStartingClass: params['isStartingClass'],
           ),
         ),
         'delete': _i1.MethodConnector(
@@ -590,6 +667,78 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['classLevelData'] = _i1.EndpointConnector(
+      name: 'classLevelData',
+      endpoint: endpoints['classLevelData']!,
+      methodConnectors: {
+        'getAll': _i1.MethodConnector(
+          name: 'getAll',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classLevelData'] as _i7.ClassLevelDataEndpoint)
+                  .getAll(session),
+        ),
+        'add': _i1.MethodConnector(
+          name: 'add',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i19.ClassLevelData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classLevelData'] as _i7.ClassLevelDataEndpoint).add(
+            session,
+            params['item'],
+          ),
+        ),
+        'upsert': _i1.MethodConnector(
+          name: 'upsert',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i19.ClassLevelData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classLevelData'] as _i7.ClassLevelDataEndpoint)
+                  .upsert(
+            session,
+            params['item'],
+          ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classLevelData'] as _i7.ClassLevelDataEndpoint)
+                  .delete(
+            session,
+            params['id'],
+          ),
+        ),
+      },
+    );
     connectors['subclassData'] = _i1.EndpointConnector(
       name: 'subclassData',
       endpoint: endpoints['subclassData']!,
@@ -609,7 +758,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i19.SubclassData>(),
+              type: _i1.getType<_i20.SubclassData>(),
               nullable: false,
             )
           },
@@ -627,7 +776,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subclass': _i1.ParameterDescription(
               name: 'subclass',
-              type: _i1.getType<_i19.SubclassData>(),
+              type: _i1.getType<_i20.SubclassData>(),
               nullable: false,
             )
           },
@@ -660,9 +809,9 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    connectors['classOptionData'] = _i1.EndpointConnector(
-      name: 'classOptionData',
-      endpoint: endpoints['classOptionData']!,
+    connectors['classChoiceGroupData'] = _i1.EndpointConnector(
+      name: 'classChoiceGroupData',
+      endpoint: endpoints['classChoiceGroupData']!,
       methodConnectors: {
         'getAll': _i1.MethodConnector(
           name: 'getAll',
@@ -671,7 +820,8 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classOptionData'] as _i7.ClassOptionDataEndpoint)
+              (endpoints['classChoiceGroupData']
+                      as _i7.ClassChoiceGroupDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -679,7 +829,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i20.ClassOptionData>(),
+              type: _i1.getType<_i21.ClassChoiceGroupData>(),
               nullable: false,
             )
           },
@@ -687,7 +837,9 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classOptionData'] as _i7.ClassOptionDataEndpoint).add(
+              (endpoints['classChoiceGroupData']
+                      as _i7.ClassChoiceGroupDataEndpoint)
+                  .add(
             session,
             params['item'],
           ),
@@ -695,9 +847,9 @@ class Endpoints extends _i1.EndpointDispatch {
         'upsert': _i1.MethodConnector(
           name: 'upsert',
           params: {
-            'classOption': _i1.ParameterDescription(
-              name: 'classOption',
-              type: _i1.getType<_i20.ClassOptionData>(),
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i21.ClassChoiceGroupData>(),
               nullable: false,
             )
           },
@@ -705,10 +857,11 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classOptionData'] as _i7.ClassOptionDataEndpoint)
+              (endpoints['classChoiceGroupData']
+                      as _i7.ClassChoiceGroupDataEndpoint)
                   .upsert(
             session,
-            params['classOption'],
+            params['item'],
           ),
         ),
         'delete': _i1.MethodConnector(
@@ -724,7 +877,85 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classOptionData'] as _i7.ClassOptionDataEndpoint)
+              (endpoints['classChoiceGroupData']
+                      as _i7.ClassChoiceGroupDataEndpoint)
+                  .delete(
+            session,
+            params['id'],
+          ),
+        ),
+      },
+    );
+    connectors['classChoiceOptionData'] = _i1.EndpointConnector(
+      name: 'classChoiceOptionData',
+      endpoint: endpoints['classChoiceOptionData']!,
+      methodConnectors: {
+        'getAll': _i1.MethodConnector(
+          name: 'getAll',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classChoiceOptionData']
+                      as _i7.ClassChoiceOptionDataEndpoint)
+                  .getAll(session),
+        ),
+        'add': _i1.MethodConnector(
+          name: 'add',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i22.ClassChoiceOptionData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classChoiceOptionData']
+                      as _i7.ClassChoiceOptionDataEndpoint)
+                  .add(
+            session,
+            params['item'],
+          ),
+        ),
+        'upsert': _i1.MethodConnector(
+          name: 'upsert',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i22.ClassChoiceOptionData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classChoiceOptionData']
+                      as _i7.ClassChoiceOptionDataEndpoint)
+                  .upsert(
+            session,
+            params['item'],
+          ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classChoiceOptionData']
+                      as _i7.ClassChoiceOptionDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -752,7 +983,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i21.SubclassFeatureData>(),
+              type: _i1.getType<_i23.SubclassFeatureData>(),
               nullable: false,
             )
           },
@@ -772,7 +1003,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subclassFeature': _i1.ParameterDescription(
               name: 'subclassFeature',
-              type: _i1.getType<_i21.SubclassFeatureData>(),
+              type: _i1.getType<_i23.SubclassFeatureData>(),
               nullable: false,
             )
           },
@@ -827,7 +1058,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'race': _i1.ParameterDescription(
               name: 'race',
-              type: _i1.getType<_i22.RaceData>(),
+              type: _i1.getType<_i24.RaceData>(),
               nullable: false,
             )
           },
@@ -845,7 +1076,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'race': _i1.ParameterDescription(
               name: 'race',
-              type: _i1.getType<_i22.RaceData>(),
+              type: _i1.getType<_i24.RaceData>(),
               nullable: false,
             )
           },
@@ -897,7 +1128,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'raceFeature': _i1.ParameterDescription(
               name: 'raceFeature',
-              type: _i1.getType<_i23.RaceFeatureData>(),
+              type: _i1.getType<_i25.RaceFeatureData>(),
               nullable: false,
             )
           },
@@ -915,7 +1146,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'raceFeature': _i1.ParameterDescription(
               name: 'raceFeature',
-              type: _i1.getType<_i23.RaceFeatureData>(),
+              type: _i1.getType<_i25.RaceFeatureData>(),
               nullable: false,
             )
           },
@@ -967,7 +1198,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subrace': _i1.ParameterDescription(
               name: 'subrace',
-              type: _i1.getType<_i24.SubraceData>(),
+              type: _i1.getType<_i26.SubraceData>(),
               nullable: false,
             )
           },
@@ -985,7 +1216,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subrace': _i1.ParameterDescription(
               name: 'subrace',
-              type: _i1.getType<_i24.SubraceData>(),
+              type: _i1.getType<_i26.SubraceData>(),
               nullable: false,
             )
           },
@@ -1018,78 +1249,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    connectors['raceOptionData'] = _i1.EndpointConnector(
-      name: 'raceOptionData',
-      endpoint: endpoints['raceOptionData']!,
-      methodConnectors: {
-        'getAll': _i1.MethodConnector(
-          name: 'getAll',
-          params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['raceOptionData'] as _i8.RaceOptionDataEndpoint)
-                  .getAll(session),
-        ),
-        'add': _i1.MethodConnector(
-          name: 'add',
-          params: {
-            'item': _i1.ParameterDescription(
-              name: 'item',
-              type: _i1.getType<_i25.RaceOptionData>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['raceOptionData'] as _i8.RaceOptionDataEndpoint).add(
-            session,
-            params['item'],
-          ),
-        ),
-        'upsert': _i1.MethodConnector(
-          name: 'upsert',
-          params: {
-            'raceOption': _i1.ParameterDescription(
-              name: 'raceOption',
-              type: _i1.getType<_i25.RaceOptionData>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['raceOptionData'] as _i8.RaceOptionDataEndpoint)
-                  .upsert(
-            session,
-            params['raceOption'],
-          ),
-        ),
-        'delete': _i1.MethodConnector(
-          name: 'delete',
-          params: {
-            'id': _i1.ParameterDescription(
-              name: 'id',
-              type: _i1.getType<int>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['raceOptionData'] as _i8.RaceOptionDataEndpoint)
-                  .delete(
-            session,
-            params['id'],
-          ),
-        ),
-      },
-    );
     connectors['dragonbornAncestryData'] = _i1.EndpointConnector(
       name: 'dragonbornAncestryData',
       endpoint: endpoints['dragonbornAncestryData']!,
@@ -1110,7 +1269,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i26.DragonbornAncestryData>(),
+              type: _i1.getType<_i27.DragonbornAncestryData>(),
               nullable: false,
             )
           },
@@ -1130,7 +1289,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'dragonbornAncestry': _i1.ParameterDescription(
               name: 'dragonbornAncestry',
-              type: _i1.getType<_i26.DragonbornAncestryData>(),
+              type: _i1.getType<_i27.DragonbornAncestryData>(),
               nullable: false,
             )
           },
@@ -1185,7 +1344,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'armor': _i1.ParameterDescription(
               name: 'armor',
-              type: _i1.getType<_i27.ArmorData>(),
+              type: _i1.getType<_i28.ArmorData>(),
               nullable: false,
             )
           },
@@ -1203,7 +1362,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'armor': _i1.ParameterDescription(
               name: 'armor',
-              type: _i1.getType<_i27.ArmorData>(),
+              type: _i1.getType<_i28.ArmorData>(),
               nullable: false,
             )
           },
@@ -1254,7 +1413,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i28.ItemData>(),
+              type: _i1.getType<_i29.ItemData>(),
               nullable: false,
             )
           },
@@ -1272,7 +1431,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i28.ItemData>(),
+              type: _i1.getType<_i29.ItemData>(),
               nullable: false,
             )
           },
@@ -1324,7 +1483,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i29.MagicItemData>(),
+              type: _i1.getType<_i30.MagicItemData>(),
               nullable: false,
             )
           },
@@ -1342,7 +1501,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'magicItem': _i1.ParameterDescription(
               name: 'magicItem',
-              type: _i1.getType<_i29.MagicItemData>(),
+              type: _i1.getType<_i30.MagicItemData>(),
               nullable: false,
             )
           },
@@ -1394,7 +1553,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'weapon': _i1.ParameterDescription(
               name: 'weapon',
-              type: _i1.getType<_i30.WeaponData>(),
+              type: _i1.getType<_i31.WeaponData>(),
               nullable: false,
             )
           },
@@ -1412,7 +1571,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'weapon': _i1.ParameterDescription(
               name: 'weapon',
-              type: _i1.getType<_i30.WeaponData>(),
+              type: _i1.getType<_i31.WeaponData>(),
               nullable: false,
             )
           },
@@ -1464,7 +1623,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'spell': _i1.ParameterDescription(
               name: 'spell',
-              type: _i1.getType<_i31.SpellData>(),
+              type: _i1.getType<_i32.SpellData>(),
               nullable: false,
             )
           },
@@ -1482,7 +1641,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'spell': _i1.ParameterDescription(
               name: 'spell',
-              type: _i1.getType<_i31.SpellData>(),
+              type: _i1.getType<_i32.SpellData>(),
               nullable: false,
             )
           },
@@ -1515,6 +1674,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    modules['serverpod_auth'] = _i32.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i33.Endpoints()..initializeEndpoints(server);
   }
 }

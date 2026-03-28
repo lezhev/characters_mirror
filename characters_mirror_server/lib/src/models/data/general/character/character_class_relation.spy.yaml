@@ -1,8 +1,0 @@
-class: CharacterClassRelation
-table: character_class_relation
-fields:
-  character: CharacterData?, relation
-  classData: ClassData?, relation
-  subclass: SubclassData?, relation
-  level: int
-  spellcastingProgression: String? # full, half, third (для подсчёта слотов)

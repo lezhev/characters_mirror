@@ -157,10 +157,27 @@ class AttributeState extends _$AttributeState {
   Map<Attribute, int> getRaceAttributeBonuses() {
     final race =
         ref.read(characterCreationProvider.select((c) => c.character.race));
+    final subrace =
+        ref.read(characterCreationProvider.select((c) => c.character.subrace));
 
-    return race?.abilityBonuses
-            ?.map((k, v) => MapEntry(Attribute.values.byName(k), v)) ??
-        emptyAttributeMap;
+    final bonuses = {
+      ...(race?.abilityBonuses ?? {}),
+      ...(subrace?.abilityBonuses ?? {}),
+    };
+    final parsed = <Attribute, int>{};
+
+    for (final entry in bonuses.entries) {
+      final attribute = _attributeFromKey(entry.key);
+      if (attribute == null) {
+        debugPrint(
+          'Skipping unsupported racial ability bonus key: ${entry.key}',
+        );
+        continue;
+      }
+      parsed[attribute] = entry.value;
+    }
+
+    return parsed;
   }
 
   void rollValueAt(int index) async {
@@ -448,6 +465,25 @@ class AttributeState extends _$AttributeState {
           attribute,
         ],
       );
+    }
+  }
+
+  Attribute? _attributeFromKey(String raw) {
+    switch (raw.trim()) {
+      case 'strength':
+        return Attribute.strength;
+      case 'dexterity':
+        return Attribute.dexterity;
+      case 'constitution':
+        return Attribute.constitution;
+      case 'intelligence':
+        return Attribute.intelligence;
+      case 'wisdom':
+        return Attribute.wisdom;
+      case 'charisma':
+        return Attribute.charisma;
+      default:
+        return null;
     }
   }
 }
