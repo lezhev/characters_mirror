@@ -15,11 +15,13 @@ fields:
   languages: List<String>?
 
   visionType: String?
+  visionRange: int?
   resistances: List<String>?
   skillProficiencies: List<String>?
   armorProficiencies: List<String>?
   weaponProficiencies: List<String>?
   toolProficiencies: List<String>?
   spellcasting: Map<String, SpellData>?
+  choiceSets: List<RaceChoiceSetData>?, relation
 
   imageURL: String?

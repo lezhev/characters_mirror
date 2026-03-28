@@ -13,8 +13,27 @@ fields:
   castingTime: String?
   range: String?
   duration: String?
-  components: List<String>?
   concentration: bool?
   ritual: bool?
   higherLevel: String?
-  availableForClassIds: List<int>?
+  savingThrowAbility: Ability?
+  requiresSavingThrow: bool?
+  attackType: SpellAttackType?
+  requiresAttackRoll: bool?
+  damageType: DamageType?
+  damageDice: String?
+  damageScaling: SpellScalingData?
+  conditions: List<ConditionType>?
+  targetType: SpellTargetType?
+  areaOfEffect: SpellAreaOfEffectData?
+  materialDescription: String?
+  materialCost: int?
+  materialConsumed: bool?
+  durationType: SpellDurationType?
+  isHealing: bool?
+  healingDice: String?
+  requiresLineOfSight: bool?
+  requiresVerbal: bool?
+  requiresSomatic: bool?
+  requiresMaterial: bool?
+  classAvailability: List<SpellClassAvailabilityData>?, relation(name=spell_class_availability)

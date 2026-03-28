@@ -1,0 +1,4 @@
+class: SpellAreaOfEffectData
+fields:
+  type: AreaOfEffectType?
+  size: int?

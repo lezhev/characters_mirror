@@ -144,6 +144,89 @@ class DragonbornAncestryDataEndpoint extends Endpoint {
   }
 }
 
+class RaceChoiceSetDataEndpoint extends Endpoint {
+  Future<List<RaceChoiceSetData>> getAll(Session session) async {
+    return RaceChoiceSetData.db.find(session);
+  }
+
+  Future<RaceChoiceSetData> add(Session session, RaceChoiceSetData item) async {
+    _validateRaceChoiceSet(item);
+    _stampForInsert(item);
+    return RaceChoiceSetData.db.insertRow(session, item);
+  }
+
+  Future<RaceChoiceSetData> upsert(
+    Session session,
+    RaceChoiceSetData item,
+  ) async {
+    _validateRaceChoiceSet(item);
+    return _upsertRaceLike(
+      session,
+      item,
+      findExisting: () => RaceChoiceSetData.db.find(
+        session,
+        where: (t) => t.id.equals(item.id),
+        limit: 1,
+      ),
+      insert: () => RaceChoiceSetData.db.insertRow(session, item),
+      update: () async {
+        await RaceChoiceSetData.db.updateRow(session, item);
+        return item;
+      },
+    );
+  }
+
+  Future<void> delete(Session session, int id) async {
+    await RaceChoiceSetData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
+  }
+}
+
+class RaceFeatureSpellGrantDataEndpoint extends Endpoint {
+  Future<List<RaceFeatureSpellGrantData>> getAll(Session session) async {
+    return RaceFeatureSpellGrantData.db.find(session);
+  }
+
+  Future<RaceFeatureSpellGrantData> add(
+    Session session,
+    RaceFeatureSpellGrantData item,
+  ) async {
+    _validateRaceFeatureSpellGrant(item);
+    _stampForInsert(item);
+    return RaceFeatureSpellGrantData.db.insertRow(session, item);
+  }
+
+  Future<RaceFeatureSpellGrantData> upsert(
+    Session session,
+    RaceFeatureSpellGrantData item,
+  ) async {
+    _validateRaceFeatureSpellGrant(item);
+    return _upsertRaceLike(
+      session,
+      item,
+      findExisting: () => RaceFeatureSpellGrantData.db.find(
+        session,
+        where: (t) => t.id.equals(item.id),
+        limit: 1,
+      ),
+      insert: () => RaceFeatureSpellGrantData.db.insertRow(session, item),
+      update: () async {
+        await RaceFeatureSpellGrantData.db.updateRow(session, item);
+        return item;
+      },
+    );
+  }
+
+  Future<void> delete(Session session, int id) async {
+    await RaceFeatureSpellGrantData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
+  }
+}
+
 void _stampForInsert(dynamic row) {
   final now = DateTime.now();
   if (row.version != null || row.createdAt != null || row.updatedAt != null) {
@@ -176,4 +259,32 @@ Future<T> _upsertRaceLike<T>(
     row.updatedAt = DateTime.now();
   }
   return update();
+}
+
+void _validateRaceChoiceSet(RaceChoiceSetData item) {
+  final owners = [
+    item.raceId,
+    item.subraceId,
+    item.featureId,
+  ].whereType<int>().length;
+
+  if (owners != 1) {
+    throw ArgumentError(
+      'RaceChoiceSetData must belong to exactly one owner: race, subrace, or feature.',
+    );
+  }
+}
+
+void _validateRaceFeatureSpellGrant(RaceFeatureSpellGrantData item) {
+  if (item.featureId <= 0) {
+    throw ArgumentError(
+      'RaceFeatureSpellGrantData.featureId must reference a RaceFeatureData row.',
+    );
+  }
+
+  if (item.spellId <= 0) {
+    throw ArgumentError(
+      'RaceFeatureSpellGrantData.spellId must reference a SpellData row.',
+    );
+  }
 }

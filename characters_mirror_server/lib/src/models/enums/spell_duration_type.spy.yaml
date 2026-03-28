@@ -1,0 +1,6 @@
+enum: SpellDurationType
+values:
+  - instant
+  - timed
+  - permanent
+  - special

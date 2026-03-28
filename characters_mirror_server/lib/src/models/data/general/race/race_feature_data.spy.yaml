@@ -11,7 +11,9 @@ fields:
   updatedAt: DateTime?
 
   level: int?
-  spells: Map<String, int>?
+  spells: Map<String, int>? # deprecated; use spellGrants
   usesPerRest: String?
   usesFormula: String?
   tags: List<FeatureTag>?
+  spellGrants: List<RaceFeatureSpellGrantData>?, relation
+  choiceSets: List<RaceChoiceSetData>?, relation

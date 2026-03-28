@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/spell_data.dart' as _i2;
+import '../../../data/general/race/race_choice_set_data.dart' as _i3;
 
 abstract class RaceData implements _i1.SerializableModel {
   RaceData._({
@@ -27,12 +28,14 @@ abstract class RaceData implements _i1.SerializableModel {
     this.traits,
     this.languages,
     this.visionType,
+    this.visionRange,
     this.resistances,
     this.skillProficiencies,
     this.armorProficiencies,
     this.weaponProficiencies,
     this.toolProficiencies,
     this.spellcasting,
+    this.choiceSets,
     this.imageURL,
   });
 
@@ -50,12 +53,14 @@ abstract class RaceData implements _i1.SerializableModel {
     List<String>? traits,
     List<String>? languages,
     String? visionType,
+    int? visionRange,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
     Map<String, _i2.SpellData>? spellcasting,
+    List<_i3.RaceChoiceSetData>? choiceSets,
     String? imageURL,
   }) = _RaceDataImpl;
 
@@ -86,6 +91,7 @@ abstract class RaceData implements _i1.SerializableModel {
           ?.map((e) => e as String)
           .toList(),
       visionType: jsonSerialization['visionType'] as String?,
+      visionRange: jsonSerialization['visionRange'] as int?,
       resistances: (jsonSerialization['resistances'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -106,6 +112,10 @@ abstract class RaceData implements _i1.SerializableModel {
                 k as String,
                 _i2.SpellData.fromJson((v as Map<String, dynamic>)),
               )),
+      choiceSets: (jsonSerialization['choiceSets'] as List?)
+          ?.map((e) =>
+              _i3.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       imageURL: jsonSerialization['imageURL'] as String?,
     );
   }
@@ -139,6 +149,8 @@ abstract class RaceData implements _i1.SerializableModel {
 
   String? visionType;
 
+  int? visionRange;
+
   List<String>? resistances;
 
   List<String>? skillProficiencies;
@@ -150,6 +162,8 @@ abstract class RaceData implements _i1.SerializableModel {
   List<String>? toolProficiencies;
 
   Map<String, _i2.SpellData>? spellcasting;
+
+  List<_i3.RaceChoiceSetData>? choiceSets;
 
   String? imageURL;
 
@@ -170,12 +184,14 @@ abstract class RaceData implements _i1.SerializableModel {
     List<String>? traits,
     List<String>? languages,
     String? visionType,
+    int? visionRange,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
     Map<String, _i2.SpellData>? spellcasting,
+    List<_i3.RaceChoiceSetData>? choiceSets,
     String? imageURL,
   });
   @override
@@ -194,6 +210,7 @@ abstract class RaceData implements _i1.SerializableModel {
       if (traits != null) 'traits': traits?.toJson(),
       if (languages != null) 'languages': languages?.toJson(),
       if (visionType != null) 'visionType': visionType,
+      if (visionRange != null) 'visionRange': visionRange,
       if (resistances != null) 'resistances': resistances?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
@@ -205,6 +222,8 @@ abstract class RaceData implements _i1.SerializableModel {
         'toolProficiencies': toolProficiencies?.toJson(),
       if (spellcasting != null)
         'spellcasting': spellcasting?.toJson(valueToJson: (v) => v.toJson()),
+      if (choiceSets != null)
+        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
@@ -232,12 +251,14 @@ class _RaceDataImpl extends RaceData {
     List<String>? traits,
     List<String>? languages,
     String? visionType,
+    int? visionRange,
     List<String>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
     Map<String, _i2.SpellData>? spellcasting,
+    List<_i3.RaceChoiceSetData>? choiceSets,
     String? imageURL,
   }) : super._(
           id: id,
@@ -253,12 +274,14 @@ class _RaceDataImpl extends RaceData {
           traits: traits,
           languages: languages,
           visionType: visionType,
+          visionRange: visionRange,
           resistances: resistances,
           skillProficiencies: skillProficiencies,
           armorProficiencies: armorProficiencies,
           weaponProficiencies: weaponProficiencies,
           toolProficiencies: toolProficiencies,
           spellcasting: spellcasting,
+          choiceSets: choiceSets,
           imageURL: imageURL,
         );
 
@@ -280,12 +303,14 @@ class _RaceDataImpl extends RaceData {
     Object? traits = _Undefined,
     Object? languages = _Undefined,
     Object? visionType = _Undefined,
+    Object? visionRange = _Undefined,
     Object? resistances = _Undefined,
     Object? skillProficiencies = _Undefined,
     Object? armorProficiencies = _Undefined,
     Object? weaponProficiencies = _Undefined,
     Object? toolProficiencies = _Undefined,
     Object? spellcasting = _Undefined,
+    Object? choiceSets = _Undefined,
     Object? imageURL = _Undefined,
   }) {
     return RaceData(
@@ -315,6 +340,7 @@ class _RaceDataImpl extends RaceData {
           ? languages
           : this.languages?.map((e0) => e0).toList(),
       visionType: visionType is String? ? visionType : this.visionType,
+      visionRange: visionRange is int? ? visionRange : this.visionRange,
       resistances: resistances is List<String>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
@@ -340,6 +366,9 @@ class _RaceDataImpl extends RaceData {
                     key0,
                     value0.copyWith(),
                   )),
+      choiceSets: choiceSets is List<_i3.RaceChoiceSetData>?
+          ? choiceSets
+          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,
     );
   }

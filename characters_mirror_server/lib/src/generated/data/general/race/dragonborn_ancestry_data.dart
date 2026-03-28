@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../../../enums/ability.dart' as _i2;
 
 abstract class DragonbornAncestryData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -23,6 +24,7 @@ abstract class DragonbornAncestryData
     this.damageType,
     this.breathShape,
     this.area,
+    this.saveAbility,
     this.damageByLevel,
   });
 
@@ -36,6 +38,7 @@ abstract class DragonbornAncestryData
     String? damageType,
     String? breathShape,
     String? area,
+    _i2.Ability? saveAbility,
     Map<String, String>? damageByLevel,
   }) = _DragonbornAncestryDataImpl;
 
@@ -55,6 +58,9 @@ abstract class DragonbornAncestryData
       damageType: jsonSerialization['damageType'] as String?,
       breathShape: jsonSerialization['breathShape'] as String?,
       area: jsonSerialization['area'] as String?,
+      saveAbility: jsonSerialization['saveAbility'] == null
+          ? null
+          : _i2.Ability.fromJson((jsonSerialization['saveAbility'] as int)),
       damageByLevel:
           (jsonSerialization['damageByLevel'] as Map?)?.map((k, v) => MapEntry(
                 k as String,
@@ -86,6 +92,8 @@ abstract class DragonbornAncestryData
 
   String? area;
 
+  _i2.Ability? saveAbility;
+
   Map<String, String>? damageByLevel;
 
   @override
@@ -104,6 +112,7 @@ abstract class DragonbornAncestryData
     String? damageType,
     String? breathShape,
     String? area,
+    _i2.Ability? saveAbility,
     Map<String, String>? damageByLevel,
   });
   @override
@@ -118,6 +127,7 @@ abstract class DragonbornAncestryData
       if (damageType != null) 'damageType': damageType,
       if (breathShape != null) 'breathShape': breathShape,
       if (area != null) 'area': area,
+      if (saveAbility != null) 'saveAbility': saveAbility?.toJson(),
       if (damageByLevel != null) 'damageByLevel': damageByLevel?.toJson(),
     };
   }
@@ -134,6 +144,7 @@ abstract class DragonbornAncestryData
       if (damageType != null) 'damageType': damageType,
       if (breathShape != null) 'breathShape': breathShape,
       if (area != null) 'area': area,
+      if (saveAbility != null) 'saveAbility': saveAbility?.toJson(),
       if (damageByLevel != null) 'damageByLevel': damageByLevel?.toJson(),
     };
   }
@@ -181,6 +192,7 @@ class _DragonbornAncestryDataImpl extends DragonbornAncestryData {
     String? damageType,
     String? breathShape,
     String? area,
+    _i2.Ability? saveAbility,
     Map<String, String>? damageByLevel,
   }) : super._(
           id: id,
@@ -192,6 +204,7 @@ class _DragonbornAncestryDataImpl extends DragonbornAncestryData {
           damageType: damageType,
           breathShape: breathShape,
           area: area,
+          saveAbility: saveAbility,
           damageByLevel: damageByLevel,
         );
 
@@ -209,6 +222,7 @@ class _DragonbornAncestryDataImpl extends DragonbornAncestryData {
     Object? damageType = _Undefined,
     Object? breathShape = _Undefined,
     Object? area = _Undefined,
+    Object? saveAbility = _Undefined,
     Object? damageByLevel = _Undefined,
   }) {
     return DragonbornAncestryData(
@@ -221,6 +235,7 @@ class _DragonbornAncestryDataImpl extends DragonbornAncestryData {
       damageType: damageType is String? ? damageType : this.damageType,
       breathShape: breathShape is String? ? breathShape : this.breathShape,
       area: area is String? ? area : this.area,
+      saveAbility: saveAbility is _i2.Ability? ? saveAbility : this.saveAbility,
       damageByLevel: damageByLevel is Map<String, String>?
           ? damageByLevel
           : this.damageByLevel?.map((
@@ -270,6 +285,11 @@ class DragonbornAncestryDataTable extends _i1.Table<int?> {
       'area',
       this,
     );
+    saveAbility = _i1.ColumnEnum(
+      'saveAbility',
+      this,
+      _i1.EnumSerialization.byIndex,
+    );
     damageByLevel = _i1.ColumnSerializable(
       'damageByLevel',
       this,
@@ -292,6 +312,8 @@ class DragonbornAncestryDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString area;
 
+  late final _i1.ColumnEnum<_i2.Ability> saveAbility;
+
   late final _i1.ColumnSerializable damageByLevel;
 
   @override
@@ -305,6 +327,7 @@ class DragonbornAncestryDataTable extends _i1.Table<int?> {
         damageType,
         breathShape,
         area,
+        saveAbility,
         damageByLevel,
       ];
 }

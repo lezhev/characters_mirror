@@ -1,0 +1,6 @@
+class: SpellScalingData
+fields:
+  mode: SpellScalingMode?
+  scalingBySlotLevel: Map<int, String>?
+  scalingByCasterLevel: Map<int, String>?
+  notes: String?

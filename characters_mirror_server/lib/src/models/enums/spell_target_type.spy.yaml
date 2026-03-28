@@ -1,0 +1,10 @@
+enum: SpellTargetType
+values:
+  - self
+  - singleCreature
+  - multipleCreatures
+  - object
+  - point
+  - area
+  - touch
+  - special

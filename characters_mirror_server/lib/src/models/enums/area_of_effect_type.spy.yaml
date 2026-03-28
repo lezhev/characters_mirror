@@ -1,0 +1,7 @@
+enum: AreaOfEffectType
+values:
+  - cone
+  - cube
+  - cylinder
+  - line
+  - sphere

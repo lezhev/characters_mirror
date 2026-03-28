@@ -1,11 +1,7 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:characters_mirror_flutter/app/auth/src/auth_provider.dart';
-import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/app/auth/widgets/auth_scaffold.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -17,156 +13,164 @@ class SignInPage extends ConsumerStatefulWidget {
 }
 
 class _SignInPageState extends ConsumerState<SignInPage> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  bool isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  Future<void> _signIn() async {
-    final email = emailController.text.trim();
-    final password = passwordController.text;
+  bool _isLoading = false;
+  bool _showValidation = false;
+  String? _feedbackMessage;
+  bool _isError = false;
 
-    if (!_validateFields(email, password)) return;
-
-    setState(() => isLoading = true);
-
-    try {
-      final success =
-          await ref.read(authProvider.notifier).signIn(email, password);
-
-      if (!mounted) return;
-      _handleSignInResult(success);
-    } catch (error, stackTrace) {
-      debugPrint('Sign in error: $error');
-      debugPrint('Stack trace: $stackTrace');
-
-      if (!mounted) return;
-      _handleSignInError(error);
-    } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
-    }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
-  bool _validateFields(String email, String password) {
-    if (email.isEmpty || password.isEmpty) {
-      _showSnackBar('Заполните все поля');
-      return false;
+  Future<void> _submit() async {
+    FocusScope.of(context).unfocus();
+    setState(() => _showValidation = true);
+
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
 
-    if (!EmailValidator.validate(email)) {
-      _showSnackBar('Введите корректный email');
-      return false;
+    setState(() {
+      _isLoading = true;
+      _feedbackMessage = null;
+    });
+
+    final result = await ref.read(authProvider.notifier).signIn(
+          _emailController.text.trim(),
+          _passwordController.text,
+        );
+
+    if (!mounted) {
+      return;
     }
 
-    return true;
-  }
+    setState(() {
+      _isLoading = false;
+      _feedbackMessage = result.message;
+      _isError = !result.success;
+    });
 
-  void _handleSignInResult(bool success) {
-    if (success) {
+    if (result.success) {
       context.go('/characters');
-    } else {
-      _showSnackBar('Неверные email или пароль');
     }
-  }
-
-  void _handleSignInError(dynamic error) {
-    final errorMessage = _getServerpodErrorMessage(error);
-    _showSnackBar(errorMessage);
-  }
-
-  String _getServerpodErrorMessage(dynamic error) {
-    // Serverpod обычно выбрасывает стандартные исключения
-    // или возвращает специфичные коды ошибок
-
-    if (error is SocketException || error is TimeoutException) {
-      return 'Проверьте подключение к интернету';
-    } else if (error is FormatException) {
-      return 'Ошибка формата данных';
-    } else if (error is PlatformException) {
-      return 'Ошибка платформы: ${error.message}';
-    } else if (error is HttpException) {
-      return 'Ошибка сети: ${error.message}';
-    }
-
-    // Общая обработка ошибок Serverpod
-    final errorString = error.toString().toLowerCase();
-
-    if (errorString.contains('network') || errorString.contains('connection')) {
-      return 'Ошибка подключения к серверу';
-    } else if (errorString.contains('timeout')) {
-      return 'Превышено время ожидания ответа от сервера';
-    } else if (errorString.contains('invalid credentials') ||
-        errorString.contains('wrong password') ||
-        errorString.contains('user not found')) {
-      return 'Неверные email или пароль';
-    } else if (errorString.contains('email not verified')) {
-      return 'Email не подтвержден. Проверьте вашу почту';
-    } else if (errorString.contains('too many attempts')) {
-      return 'Слишком много попыток. Попробуйте позже';
-    } else if (errorString.contains('account locked') ||
-        errorString.contains('suspended')) {
-      return 'Аккаунт временно заблокирован';
-    }
-
-    return 'Произошла ошибка при входе';
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: _getSnackBarColor(message),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 4),
-        action: SnackBarAction(
-          label: 'OK',
-          textColor: Colors.white,
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-      ),
-    );
-  }
-
-  Color _getSnackBarColor(String message) {
-    final lowerMessage = message.toLowerCase();
-    if (lowerMessage.contains('ошибка') ||
-        lowerMessage.contains('неверный') ||
-        lowerMessage.contains('заблокирован')) {
-      return Colors.red;
-    } else if (lowerMessage.contains('проверьте') ||
-        lowerMessage.contains('подключение')) {
-      return Colors.orange;
-    }
-    return Colors.blue;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageSizeLimiter(
+    final authState = ref.watch(authProvider);
+
+    if (authState.isChecking) {
+      return const _AuthLoadingView();
+    }
+
+    return AuthScaffold(
+      title: 'Вход в коллекцию героев',
+      subtitle:
+          'Продолжайте работу над персонажами, сборками и админскими справочниками без лишнего шума.',
+      child: AuthCard(
+        title: 'Вход',
+        description:
+            'Используйте email и пароль от вашего аккаунта Characters Mirror.',
+        footer: Align(
+          alignment: Alignment.center,
+          child: TextButton(
+            onPressed: _isLoading ? null : () => context.go('/sign-up'),
+            child: const Text('Нет аккаунта? Создать'),
+          ),
+        ),
+        child: Form(
+          key: _formKey,
+          autovalidateMode: _showValidation
+              ? AutovalidateMode.onUserInteraction
+              : AutovalidateMode.disabled,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_feedbackMessage != null) ...[
+                AuthInlineMessage(
+                  message: _feedbackMessage!,
+                  isError: _isError,
+                ),
+                const SizedBox(height: 16),
+              ],
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'wizard@toril.dev',
+                ),
+                validator: (value) {
+                  final email = value?.trim() ?? '';
+                  if (email.isEmpty) {
+                    return 'Введите email.';
+                  }
+                  if (!EmailValidator.validate(email)) {
+                    return 'Введите корректный email.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _submit(),
+                decoration: const InputDecoration(
+                  labelText: 'Пароль',
+                  hintText: 'Введите пароль',
+                ),
+                validator: (value) {
+                  if ((value ?? '').isEmpty) {
+                    return 'Введите пароль.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+              FilledButton(
+                onPressed: _isLoading ? null : _submit,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Войти'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AuthLoadingView extends StatelessWidget {
+  const _AuthLoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AuthScaffold(
+      title: 'Подключаемся к таверне',
+      subtitle:
+          'Проверяем активную сессию и подготавливаем рабочее пространство.',
+      child: AuthCard(
+        title: 'Почти готово',
+        description: 'Секунду, сверяем состояние аккаунта.',
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                    controller: emailController,
-                    decoration: const InputDecoration(labelText: 'Email')),
-                TextField(
-                    controller: passwordController,
-                    decoration: const InputDecoration(labelText: 'Пароль'),
-                    obscureText: true),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: isLoading ? null : _signIn,
-                  child: const Text('Войти'),
-                ),
-              ],
-            ),
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: CircularProgressIndicator(),
           ),
         ),
       ),

@@ -17,6 +17,19 @@ extension SelectTypeTitle on SelectType {
         return 'Закупка';
     }
   }
+
+  IconData get icon {
+    switch (this) {
+      case SelectType.random:
+        return Icons.casino_outlined;
+      case SelectType.defaultType:
+        return Icons.view_list_outlined;
+      case SelectType.manual:
+        return Icons.keyboard_outlined;
+      case SelectType.purchace:
+        return Icons.paid_outlined;
+    }
+  }
 }
 
 class SelectionType extends ConsumerWidget {
@@ -24,14 +37,28 @@ class SelectionType extends ConsumerWidget {
   final SelectType type;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isSelected = ref.watch(
+      attributeStateProvider.select((state) => state.selectionType == type),
+    );
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: IconButton(
-          tooltip: type.title,
-          onPressed: () {
-            ref.read(attributeStateProvider.notifier).changeType(type);
-          },
-          icon: Icon(Icons.access_time)),
+        tooltip: type.title,
+        style: IconButton.styleFrom(
+          backgroundColor: isSelected
+              ? colorScheme.primaryContainer
+              : colorScheme.surfaceContainerHighest,
+          foregroundColor: isSelected
+              ? colorScheme.onPrimaryContainer
+              : colorScheme.onSurfaceVariant,
+        ),
+        onPressed: () {
+          ref.read(attributeStateProvider.notifier).changeType(type);
+        },
+        icon: Icon(type.icon),
+      ),
     );
   }
 }

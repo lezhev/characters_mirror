@@ -1,0 +1,45 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_class_availability_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "_spellDataClassavailabilitySpellDataId"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [
+          "spell_class_availability_data_fk_2"
+        ],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"_spellDataClassavailabilitySpellDataId\" of table \"spell_class_availability_data\" will be dropped.",
+            "table": "spell_class_availability_data",
+            "columns": [
+              "_spellDataClassavailabilitySpellDataId"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"_spellDataClassavailabilitySpellDataId\" of table \"spell_class_availability_data\" will be dropped.",
+      "table": "spell_class_availability_data",
+      "columns": [
+        "_spellDataClassavailabilitySpellDataId"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

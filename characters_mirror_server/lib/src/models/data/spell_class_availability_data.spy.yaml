@@ -1,0 +1,11 @@
+class: SpellClassAvailabilityData
+table: spell_class_availability_data
+fields:
+  spellId: int
+  spell: SpellData?, relation(name=spell_class_availability, field=spellId)
+  classDataId: int
+  classData: ClassData?, relation(field=classDataId)
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

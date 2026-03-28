@@ -1,0 +1,5 @@
+enum: SpellScalingMode
+values:
+  - slotLevel
+  - casterLevel
+  - special
