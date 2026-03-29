@@ -75,7 +75,7 @@ abstract class CharacterClassEntryData
       classOrder: jsonSerialization['classOrder'] as int?,
       hpMode: jsonSerialization['hpMode'] == null
           ? null
-          : _i5.HitPointMode.fromJson((jsonSerialization['hpMode'] as int)),
+          : _i5.HitPointMode.fromJson((jsonSerialization['hpMode'] as String)),
       hpRolledValues: (jsonSerialization['hpRolledValues'] as List?)
           ?.map((e) => e as int)
           .toList(),
@@ -318,7 +318,7 @@ class CharacterClassEntryDataTable extends _i1.Table<int?> {
     hpMode = _i1.ColumnEnum(
       'hpMode',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     hpRolledValues = _i1.ColumnSerializable(
       'hpRolledValues',

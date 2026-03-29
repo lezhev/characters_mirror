@@ -74,11 +74,12 @@ abstract class RaceFeatureSpellGrantData
       grantedAtLevel: jsonSerialization['grantedAtLevel'] as int?,
       castingAbility: jsonSerialization['castingAbility'] == null
           ? null
-          : _i4.Ability.fromJson((jsonSerialization['castingAbility'] as int)),
+          : _i4.Ability.fromJson(
+              (jsonSerialization['castingAbility'] as String)),
       freeCastsPerRest: jsonSerialization['freeCastsPerRest'] == null
           ? null
           : _i5.RestType.fromJson(
-              (jsonSerialization['freeCastsPerRest'] as int)),
+              (jsonSerialization['freeCastsPerRest'] as String)),
       freeCastsFormula: jsonSerialization['freeCastsFormula'] as String?,
       castAtSpellLevel: jsonSerialization['castAtSpellLevel'] as int?,
       canAlsoCastWithSpellSlots:
@@ -431,12 +432,12 @@ class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
     castingAbility = _i1.ColumnEnum(
       'castingAbility',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     freeCastsPerRest = _i1.ColumnEnum(
       'freeCastsPerRest',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     freeCastsFormula = _i1.ColumnString(
       'freeCastsFormula',

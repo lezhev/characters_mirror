@@ -1,10 +1,9 @@
-import 'package:characters_mirror_flutter/app/auth/pages/sign_up_page.dart';
-import 'package:characters_mirror_flutter/app/auth/src/auth_provider.dart';
-import 'package:characters_mirror_flutter/app/pages/characters_list/characters_list.dart';
-import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
-import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_progression.dart';
-import 'package:characters_mirror_flutter/app/router/router_provider.dart';
-import 'package:characters_mirror_flutter/app/theme/theme.dart';
+import 'package:characters_mirror_flutter/features/auth/auth.dart';
+import 'package:characters_mirror_flutter/features/characters/characters.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_progression.dart';
+import 'package:characters_mirror_flutter/core/router/app_router.dart';
+import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,6 +24,7 @@ void main() {
     testWidgets('sign up validates username and password confirmation',
         (tester) async {
       final service = FakeAuthService();
+      _setLargeSurface(tester);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -48,7 +48,8 @@ void main() {
         find.byType(TextFormField).at(3),
         'different',
       );
-      await tester.tap(find.text('Создать аккаунт'));
+      await tester.ensureVisible(find.text('Создать аккаунт'));
+      await tester.tap(find.text('Создать аккаунт'), warnIfMissed: false);
       await tester.pumpAndSettle();
 
       expect(find.text('Введите имя пользователя.'), findsOneWidget);
@@ -62,7 +63,10 @@ void main() {
       await tester.pumpWidget(_TestRouterApp(service: service));
       await tester.pumpAndSettle();
 
-      expect(find.text('Characters List'), findsOneWidget);
+      expect(find.text('Список персонажей'), findsOneWidget);
+
+      await tester.tap(_accountMenuButtonFinder());
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Выйти'));
       await tester.pumpAndSettle();
@@ -90,6 +94,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      await tester.tap(_accountMenuButtonFinder());
+      await tester.pumpAndSettle();
+
       expect(find.text('Админ'), findsOneWidget);
       expect(find.text('admin@test.dev'), findsOneWidget);
     });
@@ -98,6 +105,8 @@ void main() {
   group('Creation flow app bar', () {
     testWidgets('shows current step title and highlights active circle',
         (tester) async {
+      _setLargeSurface(tester);
+
       await tester.pumpWidget(
         ProviderScope(
           child: MaterialApp(
@@ -139,6 +148,20 @@ class _TestRouterApp extends StatelessWidget {
       child: const _RouterHost(),
     );
   }
+}
+
+void _setLargeSurface(WidgetTester tester) {
+  tester.view.physicalSize = const Size(1440, 1600);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+}
+
+Finder _accountMenuButtonFinder() {
+  return find.byWidgetPredicate(
+    (widget) => widget.runtimeType.toString().startsWith('PopupMenuButton'),
+    description: 'account popup menu button',
+  );
 }
 
 class _RouterHost extends ConsumerWidget {

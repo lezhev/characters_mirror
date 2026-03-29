@@ -59,7 +59,7 @@ abstract class DragonbornAncestryData implements _i1.SerializableModel {
       area: jsonSerialization['area'] as String?,
       saveAbility: jsonSerialization['saveAbility'] == null
           ? null
-          : _i2.Ability.fromJson((jsonSerialization['saveAbility'] as int)),
+          : _i2.Ability.fromJson((jsonSerialization['saveAbility'] as String)),
       damageByLevel:
           (jsonSerialization['damageByLevel'] as Map?)?.map((k, v) => MapEntry(
                 k as String,

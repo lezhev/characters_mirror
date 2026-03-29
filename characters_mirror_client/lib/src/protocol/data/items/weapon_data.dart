@@ -65,12 +65,13 @@ abstract class WeaponData implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       category: jsonSerialization['category'] == null
           ? null
-          : _i2.WeaponCategory.fromJson((jsonSerialization['category'] as int)),
+          : _i2.WeaponCategory.fromJson(
+              (jsonSerialization['category'] as String)),
       damage: jsonSerialization['damage'] as String?,
       damageTypeValue: jsonSerialization['damageTypeValue'] == null
           ? null
           : _i3.DamageType.fromJson(
-              (jsonSerialization['damageTypeValue'] as int)),
+              (jsonSerialization['damageTypeValue'] as String)),
       properties: (jsonSerialization['properties'] as List?)
           ?.map((e) => e as String)
           .toList(),

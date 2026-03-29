@@ -1,4 +1,5 @@
 enum: WeaponCategory
+serialized: byName
 values:
   - simpleMelee
   - simpleRanged

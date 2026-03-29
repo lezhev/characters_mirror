@@ -1,4 +1,5 @@
 enum: DamageType
+serialized: byName
 values:
   - acid
   - bludgeoning

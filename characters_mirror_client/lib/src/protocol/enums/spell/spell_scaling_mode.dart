@@ -16,22 +16,22 @@ enum SpellScalingMode implements _i1.SerializableModel {
   casterLevel,
   special;
 
-  static SpellScalingMode fromJson(int index) {
-    switch (index) {
-      case 0:
+  static SpellScalingMode fromJson(String name) {
+    switch (name) {
+      case 'slotLevel':
         return SpellScalingMode.slotLevel;
-      case 1:
+      case 'casterLevel':
         return SpellScalingMode.casterLevel;
-      case 2:
+      case 'special':
         return SpellScalingMode.special;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "SpellScalingMode"');
+            'Value "$name" cannot be converted to "SpellScalingMode"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

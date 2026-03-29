@@ -25,40 +25,40 @@ enum FeatureTag implements _i1.SerializableModel {
   exploration,
   combat;
 
-  static FeatureTag fromJson(int index) {
-    switch (index) {
-      case 0:
+  static FeatureTag fromJson(String name) {
+    switch (name) {
+      case 'action':
         return FeatureTag.action;
-      case 1:
+      case 'bonusAction':
         return FeatureTag.bonusAction;
-      case 2:
+      case 'reaction':
         return FeatureTag.reaction;
-      case 3:
+      case 'passive':
         return FeatureTag.passive;
-      case 4:
+      case 'resource':
         return FeatureTag.resource;
-      case 5:
+      case 'spellcasting':
         return FeatureTag.spellcasting;
-      case 6:
+      case 'defense':
         return FeatureTag.defense;
-      case 7:
+      case 'mobility':
         return FeatureTag.mobility;
-      case 8:
+      case 'utility':
         return FeatureTag.utility;
-      case 9:
+      case 'social':
         return FeatureTag.social;
-      case 10:
+      case 'exploration':
         return FeatureTag.exploration;
-      case 11:
+      case 'combat':
         return FeatureTag.combat;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "FeatureTag"');
+            'Value "$name" cannot be converted to "FeatureTag"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

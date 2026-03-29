@@ -1,26 +1,16 @@
-import 'package:characters_mirror_flutter/app/router/router_provider.dart';
-import 'package:characters_mirror_flutter/app/theme/theme.dart';
-import 'package:characters_mirror_flutter/src/serverpod_client.dart';
-import 'package:flutter/material.dart';
+import 'package:characters_mirror_flutter/core/app/characters_mirror_app.dart';
+import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marionette_flutter/marionette_flutter.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initializeServerpodClient();
-  runApp(const ProviderScope(child: CharactersMirror()));
-}
-
-class CharactersMirror extends ConsumerWidget {
-  const CharactersMirror({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
-
-    return MaterialApp.router(
-      title: 'Characters Mirror',
-      routerConfig: router,
-      theme: darkTheme,
-    );
+  if (kDebugMode) {
+    MarionetteBinding.ensureInitialized();
+  } else {
+    WidgetsFlutterBinding.ensureInitialized();
   }
+  await initializeServerpodClient();
+  runApp(const ProviderScope(child: CharactersMirrorApp()));
 }

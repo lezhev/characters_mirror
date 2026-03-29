@@ -1,4 +1,5 @@
 enum: ClassChoiceType
+serialized: byName
 values:
   - skill
   - tool

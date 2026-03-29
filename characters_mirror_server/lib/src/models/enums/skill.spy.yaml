@@ -1,4 +1,5 @@
 enum: Skill
+serialized: byName
 values:
   - acrobatics
   - animalHandling

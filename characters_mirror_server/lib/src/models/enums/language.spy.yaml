@@ -1,4 +1,5 @@
 enum: Language
+serialized: byName
 values:
   - common
   - dwarvish

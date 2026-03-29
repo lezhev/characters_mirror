@@ -1,4 +1,5 @@
 enum: ArmorCategory
+serialized: byName
 values:
   - light
   - medium

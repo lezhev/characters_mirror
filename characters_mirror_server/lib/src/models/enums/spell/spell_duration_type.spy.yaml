@@ -1,4 +1,5 @@
 enum: SpellDurationType
+serialized: byName
 values:
   - instant
   - timed

@@ -1,4 +1,5 @@
 enum: SpellScalingMode
+serialized: byName
 values:
   - slotLevel
   - casterLevel

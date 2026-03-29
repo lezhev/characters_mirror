@@ -1,0 +1,200 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "schoolValue",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:SpellSchool?"
+          },
+          {
+            "name": "savingThrowAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "attackType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:SpellAttackType?"
+          },
+          {
+            "name": "damageType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "targetType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:SpellTargetType?"
+          },
+          {
+            "name": "areaOfEffectType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:AreaOfEffectType?"
+          },
+          {
+            "name": "durationType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:SpellDurationType?"
+          }
+        ],
+        "deleteColumns": [
+          "schoolValue",
+          "savingThrowAbility",
+          "attackType",
+          "damageType",
+          "targetType",
+          "areaOfEffectType",
+          "durationType"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column schoolValue of table spell_data is modified in a way that it must be deleted and recreated.",
+            "table": "spell_data",
+            "columns": [
+              "schoolValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column savingThrowAbility of table spell_data is modified in a way that it must be deleted and recreated.",
+            "table": "spell_data",
+            "columns": [
+              "savingThrowAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column attackType of table spell_data is modified in a way that it must be deleted and recreated.",
+            "table": "spell_data",
+            "columns": [
+              "attackType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageType of table spell_data is modified in a way that it must be deleted and recreated.",
+            "table": "spell_data",
+            "columns": [
+              "damageType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column targetType of table spell_data is modified in a way that it must be deleted and recreated.",
+            "table": "spell_data",
+            "columns": [
+              "targetType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column areaOfEffectType of table spell_data is modified in a way that it must be deleted and recreated.",
+            "table": "spell_data",
+            "columns": [
+              "areaOfEffectType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column durationType of table spell_data is modified in a way that it must be deleted and recreated.",
+            "table": "spell_data",
+            "columns": [
+              "durationType"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column schoolValue of table spell_data is modified in a way that it must be deleted and recreated.",
+      "table": "spell_data",
+      "columns": [
+        "schoolValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column savingThrowAbility of table spell_data is modified in a way that it must be deleted and recreated.",
+      "table": "spell_data",
+      "columns": [
+        "savingThrowAbility"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column attackType of table spell_data is modified in a way that it must be deleted and recreated.",
+      "table": "spell_data",
+      "columns": [
+        "attackType"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column damageType of table spell_data is modified in a way that it must be deleted and recreated.",
+      "table": "spell_data",
+      "columns": [
+        "damageType"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column targetType of table spell_data is modified in a way that it must be deleted and recreated.",
+      "table": "spell_data",
+      "columns": [
+        "targetType"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column areaOfEffectType of table spell_data is modified in a way that it must be deleted and recreated.",
+      "table": "spell_data",
+      "columns": [
+        "areaOfEffectType"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column durationType of table spell_data is modified in a way that it must be deleted and recreated.",
+      "table": "spell_data",
+      "columns": [
+        "durationType"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

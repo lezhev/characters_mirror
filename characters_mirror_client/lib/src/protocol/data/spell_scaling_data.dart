@@ -31,7 +31,8 @@ abstract class SpellScalingData implements _i1.SerializableModel {
     return SpellScalingData(
       mode: jsonSerialization['mode'] == null
           ? null
-          : _i2.SpellScalingMode.fromJson((jsonSerialization['mode'] as int)),
+          : _i2.SpellScalingMode.fromJson(
+              (jsonSerialization['mode'] as String)),
       scalingBySlotLevel: (jsonSerialization['scalingBySlotLevel'] as List?)
           ?.fold<Map<int, String>>(
               {}, (t, e) => {...t, e['k'] as int: e['v'] as String}),

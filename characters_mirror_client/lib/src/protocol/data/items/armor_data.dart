@@ -65,7 +65,7 @@ abstract class ArmorData implements _i1.SerializableModel {
       categoryValue: jsonSerialization['categoryValue'] == null
           ? null
           : _i2.ArmorCategory.fromJson(
-              (jsonSerialization['categoryValue'] as int)),
+              (jsonSerialization['categoryValue'] as String)),
       baseAC: jsonSerialization['baseAC'] as int?,
       dexBonus: jsonSerialization['dexBonus'] as bool?,
       dexBonusMax: jsonSerialization['dexBonusMax'] as int?,

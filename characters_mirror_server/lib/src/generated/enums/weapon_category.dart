@@ -17,24 +17,24 @@ enum WeaponCategory implements _i1.SerializableModel {
   martialMelee,
   martialRanged;
 
-  static WeaponCategory fromJson(int index) {
-    switch (index) {
-      case 0:
+  static WeaponCategory fromJson(String name) {
+    switch (name) {
+      case 'simpleMelee':
         return WeaponCategory.simpleMelee;
-      case 1:
+      case 'simpleRanged':
         return WeaponCategory.simpleRanged;
-      case 2:
+      case 'martialMelee':
         return WeaponCategory.martialMelee;
-      case 3:
+      case 'martialRanged':
         return WeaponCategory.martialRanged;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "WeaponCategory"');
+            'Value "$name" cannot be converted to "WeaponCategory"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

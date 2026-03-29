@@ -23,36 +23,36 @@ enum CharacterAlignment implements _i1.SerializableModel {
   chaoticEvil,
   unaligned;
 
-  static CharacterAlignment fromJson(int index) {
-    switch (index) {
-      case 0:
+  static CharacterAlignment fromJson(String name) {
+    switch (name) {
+      case 'lawfulGood':
         return CharacterAlignment.lawfulGood;
-      case 1:
+      case 'neutralGood':
         return CharacterAlignment.neutralGood;
-      case 2:
+      case 'chaoticGood':
         return CharacterAlignment.chaoticGood;
-      case 3:
+      case 'lawfulNeutral':
         return CharacterAlignment.lawfulNeutral;
-      case 4:
+      case 'trueNeutral':
         return CharacterAlignment.trueNeutral;
-      case 5:
+      case 'chaoticNeutral':
         return CharacterAlignment.chaoticNeutral;
-      case 6:
+      case 'lawfulEvil':
         return CharacterAlignment.lawfulEvil;
-      case 7:
+      case 'neutralEvil':
         return CharacterAlignment.neutralEvil;
-      case 8:
+      case 'chaoticEvil':
         return CharacterAlignment.chaoticEvil;
-      case 9:
+      case 'unaligned':
         return CharacterAlignment.unaligned;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "CharacterAlignment"');
+            'Value "$name" cannot be converted to "CharacterAlignment"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

@@ -1,4 +1,5 @@
 enum: RestType
+serialized: byName
 values:
   - shortRest
   - longRest

@@ -1,4 +1,5 @@
 enum: Ability
+serialized: byName
 values:
   - strength
   - dexterity

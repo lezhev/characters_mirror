@@ -1,4 +1,5 @@
 enum: SpellSchool
+serialized: byName
 values:
   - abjuration
   - conjuration

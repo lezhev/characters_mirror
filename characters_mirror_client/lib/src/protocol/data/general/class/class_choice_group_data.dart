@@ -114,7 +114,7 @@ abstract class ClassChoiceGroupData implements _i1.SerializableModel {
       level: jsonSerialization['level'] as int?,
       type: jsonSerialization['type'] == null
           ? null
-          : _i8.ClassChoiceType.fromJson((jsonSerialization['type'] as int)),
+          : _i8.ClassChoiceType.fromJson((jsonSerialization['type'] as String)),
       selectionCount: jsonSerialization['selectionCount'] as int?,
       appliesAtCharacterLevel:
           jsonSerialization['appliesAtCharacterLevel'] as bool?,

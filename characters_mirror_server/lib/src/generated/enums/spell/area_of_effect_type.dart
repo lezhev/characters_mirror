@@ -18,26 +18,26 @@ enum AreaOfEffectType implements _i1.SerializableModel {
   line,
   sphere;
 
-  static AreaOfEffectType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static AreaOfEffectType fromJson(String name) {
+    switch (name) {
+      case 'cone':
         return AreaOfEffectType.cone;
-      case 1:
+      case 'cube':
         return AreaOfEffectType.cube;
-      case 2:
+      case 'cylinder':
         return AreaOfEffectType.cylinder;
-      case 3:
+      case 'line':
         return AreaOfEffectType.line;
-      case 4:
+      case 'sphere':
         return AreaOfEffectType.sphere;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "AreaOfEffectType"');
+            'Value "$name" cannot be converted to "AreaOfEffectType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

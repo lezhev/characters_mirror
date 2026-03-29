@@ -29,47 +29,47 @@ enum Language implements _i1.SerializableModel {
   sylvan,
   undercommon;
 
-  static Language fromJson(int index) {
-    switch (index) {
-      case 0:
+  static Language fromJson(String name) {
+    switch (name) {
+      case 'common':
         return Language.common;
-      case 1:
+      case 'dwarvish':
         return Language.dwarvish;
-      case 2:
+      case 'elvish':
         return Language.elvish;
-      case 3:
+      case 'giant':
         return Language.giant;
-      case 4:
+      case 'gnomish':
         return Language.gnomish;
-      case 5:
+      case 'goblin':
         return Language.goblin;
-      case 6:
+      case 'halfling':
         return Language.halfling;
-      case 7:
+      case 'orc':
         return Language.orc;
-      case 8:
+      case 'abyssal':
         return Language.abyssal;
-      case 9:
+      case 'celestial':
         return Language.celestial;
-      case 10:
+      case 'draconic':
         return Language.draconic;
-      case 11:
+      case 'deepSpeech':
         return Language.deepSpeech;
-      case 12:
+      case 'infernal':
         return Language.infernal;
-      case 13:
+      case 'primordial':
         return Language.primordial;
-      case 14:
+      case 'sylvan':
         return Language.sylvan;
-      case 15:
+      case 'undercommon':
         return Language.undercommon;
       default:
-        throw ArgumentError('Value "$index" cannot be converted to "Language"');
+        throw ArgumentError('Value "$name" cannot be converted to "Language"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

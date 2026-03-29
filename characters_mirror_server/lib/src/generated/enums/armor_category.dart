@@ -17,24 +17,24 @@ enum ArmorCategory implements _i1.SerializableModel {
   heavy,
   shield;
 
-  static ArmorCategory fromJson(int index) {
-    switch (index) {
-      case 0:
+  static ArmorCategory fromJson(String name) {
+    switch (name) {
+      case 'light':
         return ArmorCategory.light;
-      case 1:
+      case 'medium':
         return ArmorCategory.medium;
-      case 2:
+      case 'heavy':
         return ArmorCategory.heavy;
-      case 3:
+      case 'shield':
         return ArmorCategory.shield;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "ArmorCategory"');
+            'Value "$name" cannot be converted to "ArmorCategory"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

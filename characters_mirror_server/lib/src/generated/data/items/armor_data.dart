@@ -66,7 +66,7 @@ abstract class ArmorData
       categoryValue: jsonSerialization['categoryValue'] == null
           ? null
           : _i2.ArmorCategory.fromJson(
-              (jsonSerialization['categoryValue'] as int)),
+              (jsonSerialization['categoryValue'] as String)),
       baseAC: jsonSerialization['baseAC'] as int?,
       dexBonus: jsonSerialization['dexBonus'] as bool?,
       dexBonusMax: jsonSerialization['dexBonusMax'] as int?,
@@ -324,7 +324,7 @@ class ArmorDataTable extends _i1.Table<int?> {
     categoryValue = _i1.ColumnEnum(
       'categoryValue',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     baseAC = _i1.ColumnInt(
       'baseAC',

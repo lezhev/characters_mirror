@@ -90,7 +90,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       usesPerRest: jsonSerialization['usesPerRest'] as String?,
       usesFormula: jsonSerialization['usesFormula'] as String?,
       tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i4.FeatureTag.fromJson((e as int)))
+          ?.map((e) => _i4.FeatureTag.fromJson((e as String)))
           .toList(),
       spellGrants: (jsonSerialization['spellGrants'] as List?)
           ?.map((e) => _i5.RaceFeatureSpellGrantData.fromJson(

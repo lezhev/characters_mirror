@@ -72,7 +72,7 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
       classOrder: jsonSerialization['classOrder'] as int?,
       hpMode: jsonSerialization['hpMode'] == null
           ? null
-          : _i5.HitPointMode.fromJson((jsonSerialization['hpMode'] as int)),
+          : _i5.HitPointMode.fromJson((jsonSerialization['hpMode'] as String)),
       hpRolledValues: (jsonSerialization['hpRolledValues'] as List?)
           ?.map((e) => e as int)
           .toList(),

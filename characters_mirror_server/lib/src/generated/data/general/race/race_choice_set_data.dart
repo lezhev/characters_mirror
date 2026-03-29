@@ -81,7 +81,7 @@ abstract class RaceChoiceSetData
               (jsonSerialization['feature'] as Map<String, dynamic>)),
       kind: jsonSerialization['kind'] == null
           ? null
-          : _i5.RaceChoiceKind.fromJson((jsonSerialization['kind'] as int)),
+          : _i5.RaceChoiceKind.fromJson((jsonSerialization['kind'] as String)),
       pickCount: jsonSerialization['pickCount'] as int?,
       options: (jsonSerialization['options'] as List?)
           ?.map((e) => e as String)
@@ -471,7 +471,7 @@ class RaceChoiceSetDataTable extends _i1.Table<int?> {
     kind = _i1.ColumnEnum(
       'kind',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     pickCount = _i1.ColumnInt(
       'pickCount',

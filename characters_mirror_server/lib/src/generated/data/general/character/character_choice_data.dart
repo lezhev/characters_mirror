@@ -66,7 +66,7 @@ abstract class CharacterChoiceData
       sourceType: jsonSerialization['sourceType'] == null
           ? null
           : _i4.ChoiceSourceType.fromJson(
-              (jsonSerialization['sourceType'] as int)),
+              (jsonSerialization['sourceType'] as String)),
       sourceId: jsonSerialization['sourceId'] as int?,
       groupKey: jsonSerialization['groupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
@@ -295,7 +295,7 @@ class CharacterChoiceDataTable extends _i1.Table<int?> {
     sourceType = _i1.ColumnEnum(
       'sourceType',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     sourceId = _i1.ColumnInt(
       'sourceId',

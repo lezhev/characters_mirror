@@ -19,11 +19,11 @@ fields:
   concentration: bool?
   ritual: bool?
   higherLevel: String? # Текст из секции "At Higher Levels"
-  savingThrowAbility: Ability? # Какая характеристика используется для saving throw
+  savingThrowAbility: String? # Какая характеристика используется для saving throw; хранится как Ability.name
   requiresSavingThrow: bool? # Есть ли вообще saving throw у этого заклинания
   attackType: SpellAttackType?
   requiresAttackRoll: bool? # Есть ли spell attack roll
-  damageType: DamageType? # Основной тип урона, если он есть
+  damageType: String? # Основной тип урона, если он есть; хранится как DamageType.name
   damageDice: String? # Базовая формула урона, например "8d6"
   damageScaling: SpellScalingData? # Скейлинг урона при апкасте или росте уровня
   conditions: List<ConditionType>? # Состояния, которые может накладывать заклинание

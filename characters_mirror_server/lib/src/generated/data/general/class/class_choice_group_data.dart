@@ -117,7 +117,7 @@ abstract class ClassChoiceGroupData
       level: jsonSerialization['level'] as int?,
       type: jsonSerialization['type'] == null
           ? null
-          : _i8.ClassChoiceType.fromJson((jsonSerialization['type'] as int)),
+          : _i8.ClassChoiceType.fromJson((jsonSerialization['type'] as String)),
       selectionCount: jsonSerialization['selectionCount'] as int?,
       appliesAtCharacterLevel:
           jsonSerialization['appliesAtCharacterLevel'] as bool?,
@@ -516,7 +516,7 @@ class ClassChoiceGroupDataTable extends _i1.Table<int?> {
     type = _i1.ColumnEnum(
       'type',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     selectionCount = _i1.ColumnInt(
       'selectionCount',

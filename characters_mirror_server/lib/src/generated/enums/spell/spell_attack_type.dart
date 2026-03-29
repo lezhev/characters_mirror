@@ -16,22 +16,22 @@ enum SpellAttackType implements _i1.SerializableModel {
   meleeSpell,
   rangedSpell;
 
-  static SpellAttackType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static SpellAttackType fromJson(String name) {
+    switch (name) {
+      case 'none':
         return SpellAttackType.none;
-      case 1:
+      case 'meleeSpell':
         return SpellAttackType.meleeSpell;
-      case 2:
+      case 'rangedSpell':
         return SpellAttackType.rangedSpell;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "SpellAttackType"');
+            'Value "$name" cannot be converted to "SpellAttackType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

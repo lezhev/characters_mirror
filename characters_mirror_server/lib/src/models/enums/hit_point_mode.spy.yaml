@@ -1,4 +1,5 @@
 enum: HitPointMode
+serialized: byName
 values:
   - fixed
   - rolled

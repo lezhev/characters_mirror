@@ -60,7 +60,7 @@ abstract class DragonbornAncestryData
       area: jsonSerialization['area'] as String?,
       saveAbility: jsonSerialization['saveAbility'] == null
           ? null
-          : _i2.Ability.fromJson((jsonSerialization['saveAbility'] as int)),
+          : _i2.Ability.fromJson((jsonSerialization['saveAbility'] as String)),
       damageByLevel:
           (jsonSerialization['damageByLevel'] as Map?)?.map((k, v) => MapEntry(
                 k as String,
@@ -288,7 +288,7 @@ class DragonbornAncestryDataTable extends _i1.Table<int?> {
     saveAbility = _i1.ColumnEnum(
       'saveAbility',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     damageByLevel = _i1.ColumnSerializable(
       'damageByLevel',
