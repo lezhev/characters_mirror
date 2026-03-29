@@ -10,7 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../enums/spell_scaling_mode.dart' as _i2;
+import '../enums/spell/spell_scaling_mode.dart' as _i2;
 
 abstract class SpellScalingData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {

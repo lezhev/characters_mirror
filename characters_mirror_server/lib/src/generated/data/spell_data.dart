@@ -12,15 +12,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../enums/spell_school.dart' as _i2;
+import '../enums/spell/spell_school.dart' as _i2;
 import '../enums/ability.dart' as _i3;
-import '../enums/spell_attack_type.dart' as _i4;
+import '../enums/spell/spell_attack_type.dart' as _i4;
 import '../enums/damage_type.dart' as _i5;
 import '../data/spell_scaling_data.dart' as _i6;
-import '../enums/condition_type.dart' as _i7;
-import '../enums/spell_target_type.dart' as _i8;
-import '../data/spell_area_of_effect_data.dart' as _i9;
-import '../enums/spell_duration_type.dart' as _i10;
+import '../enums/spell/condition_type.dart' as _i7;
+import '../enums/spell/spell_target_type.dart' as _i8;
+import '../enums/spell/area_of_effect_type.dart' as _i9;
+import '../enums/spell/spell_duration_type.dart' as _i10;
 import '../data/spell_class_availability_data.dart' as _i11;
 
 abstract class SpellData
@@ -50,7 +50,10 @@ abstract class SpellData
     this.damageScaling,
     this.conditions,
     this.targetType,
-    this.areaOfEffect,
+    this.areaOfEffectType,
+    this.areaOfEffectSize,
+    this.areaOfEffectSecondarySize,
+    this.areaOfEffectHeight,
     this.materialDescription,
     this.materialCost,
     this.materialConsumed,
@@ -89,7 +92,10 @@ abstract class SpellData
     _i6.SpellScalingData? damageScaling,
     List<_i7.ConditionType>? conditions,
     _i8.SpellTargetType? targetType,
-    _i9.SpellAreaOfEffectData? areaOfEffect,
+    _i9.AreaOfEffectType? areaOfEffectType,
+    int? areaOfEffectSize,
+    int? areaOfEffectSecondarySize,
+    int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
@@ -151,10 +157,14 @@ abstract class SpellData
           ? null
           : _i8.SpellTargetType.fromJson(
               (jsonSerialization['targetType'] as int)),
-      areaOfEffect: jsonSerialization['areaOfEffect'] == null
+      areaOfEffectType: jsonSerialization['areaOfEffectType'] == null
           ? null
-          : _i9.SpellAreaOfEffectData.fromJson(
-              (jsonSerialization['areaOfEffect'] as Map<String, dynamic>)),
+          : _i9.AreaOfEffectType.fromJson(
+              (jsonSerialization['areaOfEffectType'] as int)),
+      areaOfEffectSize: jsonSerialization['areaOfEffectSize'] as int?,
+      areaOfEffectSecondarySize:
+          jsonSerialization['areaOfEffectSecondarySize'] as int?,
+      areaOfEffectHeight: jsonSerialization['areaOfEffectHeight'] as int?,
       materialDescription: jsonSerialization['materialDescription'] as String?,
       materialCost: jsonSerialization['materialCost'] as int?,
       materialConsumed: jsonSerialization['materialConsumed'] as bool?,
@@ -228,7 +238,13 @@ abstract class SpellData
 
   _i8.SpellTargetType? targetType;
 
-  _i9.SpellAreaOfEffectData? areaOfEffect;
+  _i9.AreaOfEffectType? areaOfEffectType;
+
+  int? areaOfEffectSize;
+
+  int? areaOfEffectSecondarySize;
+
+  int? areaOfEffectHeight;
 
   String? materialDescription;
 
@@ -283,7 +299,10 @@ abstract class SpellData
     _i6.SpellScalingData? damageScaling,
     List<_i7.ConditionType>? conditions,
     _i8.SpellTargetType? targetType,
-    _i9.SpellAreaOfEffectData? areaOfEffect,
+    _i9.AreaOfEffectType? areaOfEffectType,
+    int? areaOfEffectSize,
+    int? areaOfEffectSecondarySize,
+    int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
@@ -326,7 +345,12 @@ abstract class SpellData
       if (conditions != null)
         'conditions': conditions?.toJson(valueToJson: (v) => v.toJson()),
       if (targetType != null) 'targetType': targetType?.toJson(),
-      if (areaOfEffect != null) 'areaOfEffect': areaOfEffect?.toJson(),
+      if (areaOfEffectType != null)
+        'areaOfEffectType': areaOfEffectType?.toJson(),
+      if (areaOfEffectSize != null) 'areaOfEffectSize': areaOfEffectSize,
+      if (areaOfEffectSecondarySize != null)
+        'areaOfEffectSecondarySize': areaOfEffectSecondarySize,
+      if (areaOfEffectHeight != null) 'areaOfEffectHeight': areaOfEffectHeight,
       if (materialDescription != null)
         'materialDescription': materialDescription,
       if (materialCost != null) 'materialCost': materialCost,
@@ -376,8 +400,12 @@ abstract class SpellData
       if (conditions != null)
         'conditions': conditions?.toJson(valueToJson: (v) => v.toJson()),
       if (targetType != null) 'targetType': targetType?.toJson(),
-      if (areaOfEffect != null)
-        'areaOfEffect': areaOfEffect?.toJsonForProtocol(),
+      if (areaOfEffectType != null)
+        'areaOfEffectType': areaOfEffectType?.toJson(),
+      if (areaOfEffectSize != null) 'areaOfEffectSize': areaOfEffectSize,
+      if (areaOfEffectSecondarySize != null)
+        'areaOfEffectSecondarySize': areaOfEffectSecondarySize,
+      if (areaOfEffectHeight != null) 'areaOfEffectHeight': areaOfEffectHeight,
       if (materialDescription != null)
         'materialDescription': materialDescription,
       if (materialCost != null) 'materialCost': materialCost,
@@ -455,7 +483,10 @@ class _SpellDataImpl extends SpellData {
     _i6.SpellScalingData? damageScaling,
     List<_i7.ConditionType>? conditions,
     _i8.SpellTargetType? targetType,
-    _i9.SpellAreaOfEffectData? areaOfEffect,
+    _i9.AreaOfEffectType? areaOfEffectType,
+    int? areaOfEffectSize,
+    int? areaOfEffectSecondarySize,
+    int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
@@ -492,7 +523,10 @@ class _SpellDataImpl extends SpellData {
           damageScaling: damageScaling,
           conditions: conditions,
           targetType: targetType,
-          areaOfEffect: areaOfEffect,
+          areaOfEffectType: areaOfEffectType,
+          areaOfEffectSize: areaOfEffectSize,
+          areaOfEffectSecondarySize: areaOfEffectSecondarySize,
+          areaOfEffectHeight: areaOfEffectHeight,
           materialDescription: materialDescription,
           materialCost: materialCost,
           materialConsumed: materialConsumed,
@@ -535,7 +569,10 @@ class _SpellDataImpl extends SpellData {
     Object? damageScaling = _Undefined,
     Object? conditions = _Undefined,
     Object? targetType = _Undefined,
-    Object? areaOfEffect = _Undefined,
+    Object? areaOfEffectType = _Undefined,
+    Object? areaOfEffectSize = _Undefined,
+    Object? areaOfEffectSecondarySize = _Undefined,
+    Object? areaOfEffectHeight = _Undefined,
     Object? materialDescription = _Undefined,
     Object? materialCost = _Undefined,
     Object? materialConsumed = _Undefined,
@@ -587,9 +624,17 @@ class _SpellDataImpl extends SpellData {
           : this.conditions?.map((e0) => e0).toList(),
       targetType:
           targetType is _i8.SpellTargetType? ? targetType : this.targetType,
-      areaOfEffect: areaOfEffect is _i9.SpellAreaOfEffectData?
-          ? areaOfEffect
-          : this.areaOfEffect?.copyWith(),
+      areaOfEffectType: areaOfEffectType is _i9.AreaOfEffectType?
+          ? areaOfEffectType
+          : this.areaOfEffectType,
+      areaOfEffectSize:
+          areaOfEffectSize is int? ? areaOfEffectSize : this.areaOfEffectSize,
+      areaOfEffectSecondarySize: areaOfEffectSecondarySize is int?
+          ? areaOfEffectSecondarySize
+          : this.areaOfEffectSecondarySize,
+      areaOfEffectHeight: areaOfEffectHeight is int?
+          ? areaOfEffectHeight
+          : this.areaOfEffectHeight,
       materialDescription: materialDescription is String?
           ? materialDescription
           : this.materialDescription,
@@ -717,8 +762,21 @@ class SpellDataTable extends _i1.Table<int?> {
       this,
       _i1.EnumSerialization.byIndex,
     );
-    areaOfEffect = _i1.ColumnSerializable(
-      'areaOfEffect',
+    areaOfEffectType = _i1.ColumnEnum(
+      'areaOfEffectType',
+      this,
+      _i1.EnumSerialization.byIndex,
+    );
+    areaOfEffectSize = _i1.ColumnInt(
+      'areaOfEffectSize',
+      this,
+    );
+    areaOfEffectSecondarySize = _i1.ColumnInt(
+      'areaOfEffectSecondarySize',
+      this,
+    );
+    areaOfEffectHeight = _i1.ColumnInt(
+      'areaOfEffectHeight',
       this,
     );
     materialDescription = _i1.ColumnString(
@@ -810,7 +868,13 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnEnum<_i8.SpellTargetType> targetType;
 
-  late final _i1.ColumnSerializable areaOfEffect;
+  late final _i1.ColumnEnum<_i9.AreaOfEffectType> areaOfEffectType;
+
+  late final _i1.ColumnInt areaOfEffectSize;
+
+  late final _i1.ColumnInt areaOfEffectSecondarySize;
+
+  late final _i1.ColumnInt areaOfEffectHeight;
 
   late final _i1.ColumnString materialDescription;
 
@@ -895,7 +959,10 @@ class SpellDataTable extends _i1.Table<int?> {
         damageScaling,
         conditions,
         targetType,
-        areaOfEffect,
+        areaOfEffectType,
+        areaOfEffectSize,
+        areaOfEffectSecondarySize,
+        areaOfEffectHeight,
         materialDescription,
         materialCost,
         materialConsumed,

@@ -1,6 +1,8 @@
 import 'package:characters_mirror_flutter/app/auth/pages/sign_up_page.dart';
 import 'package:characters_mirror_flutter/app/auth/src/auth_provider.dart';
 import 'package:characters_mirror_flutter/app/pages/characters_list/characters_list.dart';
+import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_app_bar.dart';
+import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_progression.dart';
 import 'package:characters_mirror_flutter/app/router/router_provider.dart';
 import 'package:characters_mirror_flutter/app/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +92,37 @@ void main() {
 
       expect(find.text('Админ'), findsOneWidget);
       expect(find.text('admin@test.dev'), findsOneWidget);
+    });
+  });
+
+  group('Creation flow app bar', () {
+    testWidgets('shows current step title and highlights active circle',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: darkTheme,
+            home: const Scaffold(
+              appBar: CreationAppBar(
+                title: 'Создание персонажа',
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Создание персонажа'), findsOneWidget);
+      expect(find.text('Вступление'), findsOneWidget);
+      expect(find.byType(CreationProgression), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
+
+      final activeCircle = tester.getSize(find.byType(CircleAvatar).at(0));
+      final inactiveCircle = tester.getSize(find.byType(CircleAvatar).at(1));
+
+      expect(activeCircle.width, greaterThan(inactiveCircle.width));
+      expect(activeCircle.height, greaterThan(inactiveCircle.height));
     });
   });
 }

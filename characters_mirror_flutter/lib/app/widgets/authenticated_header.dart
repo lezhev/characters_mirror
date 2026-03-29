@@ -42,39 +42,32 @@ class AuthenticatedHeader extends StatelessWidget {
               builder: (context, constraints) {
                 final compact = constraints.maxWidth < 760;
 
-                return Column(
+                return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      alignment: WrapAlignment.spaceBetween,
-                      children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: compact ? constraints.maxWidth : 420,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(title, style: textTheme.headlineMedium),
-                              if (subtitle != null) ...[
-                                const SizedBox(height: 6),
-                                Text(
-                                  subtitle!,
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    color: colorScheme.onSurface
-                                        .withValues(alpha: 0.74),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                        if (trailing != null) trailing!,
-                      ],
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: compact ? constraints.maxWidth : 420,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(title, style: textTheme.headlineMedium),
+                          if (subtitle != null) ...[
+                            const SizedBox(height: 6),
+                            Text(
+                              subtitle!,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.74),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
+                    if (trailing != null) trailing!,
                   ],
                 );
               },

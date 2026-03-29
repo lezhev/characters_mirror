@@ -18,7 +18,10 @@ class IntroductionStep extends ConsumerWidget {
     return Scaffold(
       appBar: CreationAppBar(
         title: "Создание персонажа",
-        onBack: () => context.go('/characters'),
+        onBack: () {
+          ref.read(characterCreationProvider.notifier).reset();
+          context.go('/characters');
+        },
         onStepTap: (target) => ref
             .read(characterCreationProvider.notifier)
             .goToStep(context, target),

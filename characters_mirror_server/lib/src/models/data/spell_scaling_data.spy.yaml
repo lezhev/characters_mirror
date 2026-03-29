@@ -1,6 +1,8 @@
+# Вспомогательная value-модель для описания скейлинга урона заклинания.
+# Используется для апкаста по слотам и для роста урона по уровню персонажа.
 class: SpellScalingData
 fields:
-  mode: SpellScalingMode?
-  scalingBySlotLevel: Map<int, String>?
-  scalingByCasterLevel: Map<int, String>?
-  notes: String?
+  mode: SpellScalingMode? # Как именно растёт эффект: по уровню слота, уровню кастера или special-case
+  scalingBySlotLevel: Map<int, String>? # spell slot level -> формула урона
+  scalingByCasterLevel: Map<int, String>? # caster level threshold -> формула урона
+  notes: String? # Свободный текст для нестандартных случаев скейлинга

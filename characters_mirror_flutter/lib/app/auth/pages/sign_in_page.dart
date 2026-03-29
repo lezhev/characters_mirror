@@ -71,9 +71,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
     }
 
     return AuthScaffold(
-      title: 'Вход в коллекцию героев',
-      subtitle:
-          'Продолжайте работу над персонажами, сборками и админскими справочниками без лишнего шума.',
+      title: 'Вход в Character`s Mirror',
+      subtitle: 'Продолжайте играть без лишних вычислений.',
       child: AuthCard(
         title: 'Вход',
         description:

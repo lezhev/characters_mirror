@@ -1,3 +1,6 @@
+# Справочная модель заклинания D&D 5e (PHB 2014).
+# Хранит как базовые метаданные, так и боевые механики:
+# сейвы, атаки, урон, цели, компоненты, длительность и доступность по классам.
 class: SpellData
 table: spell_data
 fields:
@@ -10,30 +13,33 @@ fields:
 
   level: int?
   schoolValue: SpellSchool?
-  castingTime: String?
-  range: String?
-  duration: String?
+  castingTime: String? # Человекочитаемое время накладывания, например "1 action"
+  range: String? # Человекочитаемая дистанция, например "60 feet" или "Self"
+  duration: String? # Человекочитаемая длительность, например "Instantaneous" или "Up to 1 minute"
   concentration: bool?
   ritual: bool?
-  higherLevel: String?
-  savingThrowAbility: Ability?
-  requiresSavingThrow: bool?
+  higherLevel: String? # Текст из секции "At Higher Levels"
+  savingThrowAbility: Ability? # Какая характеристика используется для saving throw
+  requiresSavingThrow: bool? # Есть ли вообще saving throw у этого заклинания
   attackType: SpellAttackType?
-  requiresAttackRoll: bool?
-  damageType: DamageType?
-  damageDice: String?
-  damageScaling: SpellScalingData?
-  conditions: List<ConditionType>?
+  requiresAttackRoll: bool? # Есть ли spell attack roll
+  damageType: DamageType? # Основной тип урона, если он есть
+  damageDice: String? # Базовая формула урона, например "8d6"
+  damageScaling: SpellScalingData? # Скейлинг урона при апкасте или росте уровня
+  conditions: List<ConditionType>? # Состояния, которые может накладывать заклинание
   targetType: SpellTargetType?
-  areaOfEffect: SpellAreaOfEffectData?
-  materialDescription: String?
-  materialCost: int?
-  materialConsumed: bool?
+  areaOfEffectType: AreaOfEffectType? # Форма области действия: sphere, cone, line и т.д.
+  areaOfEffectSize: int? # Основной размер области в футах
+  areaOfEffectSecondarySize: int? # Второй размер для несимметричных форм, например ширина линии
+  areaOfEffectHeight: int? # Высота области в футах, если форма её использует
+  materialDescription: String? # Описание материального компонента из текста заклинания
+  materialCost: int? # Стоимость компонента в стандартной минимальной денежной единице проекта
+  materialConsumed: bool? # Расходуется ли материальный компонент при касте
   durationType: SpellDurationType?
-  isHealing: bool?
-  healingDice: String?
-  requiresLineOfSight: bool?
-  requiresVerbal: bool?
-  requiresSomatic: bool?
-  requiresMaterial: bool?
-  classAvailability: List<SpellClassAvailabilityData>?, relation(name=spell_class_availability)
+  isHealing: bool? # Является ли эффект заклинания лечением
+  healingDice: String? # Формула лечения, например "1d8"
+  requiresLineOfSight: bool? # Нужна ли прямая видимость цели/точки
+  requiresVerbal: bool? # Есть ли verbal component
+  requiresSomatic: bool? # Есть ли somatic component
+  requiresMaterial: bool? # Есть ли material component
+  classAvailability: List<SpellClassAvailabilityData>?, relation(name=spell_class_availability) # Связи со списком классов, которым заклинание доступно

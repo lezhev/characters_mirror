@@ -4,8 +4,11 @@ import 'package:characters_mirror_flutter/app/pages/creation_flow/state/characte
 import 'package:characters_mirror_flutter/app/pages/creation_flow/widgets/creation_progression.dart';
 import 'package:characters_mirror_flutter/app/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart' hide Step;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreationAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  static const double height = 140;
+
   final String title;
   final VoidCallback? onBack;
   final VoidCallback? onNext;
@@ -19,58 +22,136 @@ class CreationAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.onStepTap});
 
   @override
-  Size get preferredSize => const Size.fromHeight(120);
+  Size get preferredSize => const Size.fromHeight(height);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final currentStep = ref.watch(
+      characterCreationProvider.select((state) => state.step),
+    );
+
     return SafeArea(
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
+          color: colorScheme.surfaceContainerHigh,
           border: Border(
             bottom: BorderSide(
-              color: Theme.of(context).colorScheme.outline,
+              color: colorScheme.outline,
               width: 1.0,
             ),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.shadow.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: PageSizeLimiter(
-          child: Row(
-            children: [
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      if (onBack != null)
-                        IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: onBack,
-                        ),
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleLarge,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    if (onBack != null)
+                      _HeaderIconButton(
+                        icon: Icons.close_rounded,
+                        onPressed: onBack!,
                       ),
-                      if (onNext != null)
-                        IconButton(
-                          icon: Icon(Icons.arrow_forward),
-                          onPressed: onNext,
-                        ),
+                    if (onBack != null) const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            currentStep.labelRu,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (onNext != null) ...[
+                      const SizedBox(width: 12),
+                      _HeaderIconButton(
+                        icon: Icons.arrow_forward,
+                        onPressed: onNext!,
+                      ),
                     ],
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 12.0,
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width > 1000
-                        ? 1000
-                        : MediaQuery.of(context).size.width,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: CreationProgression(onStepTap: onStepTap),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface.withValues(alpha: 0.55),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: colorScheme.outline.withValues(alpha: 0.9),
                     ),
                   ),
-                ],
-              ),
-            ],
+                  child: CreationProgression(onStepTap: onStepTap),
+                ),
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HeaderIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _HeaderIconButton({
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Material(
+      color: colorScheme.surface.withValues(alpha: 0.7),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: colorScheme.outline),
+          ),
+          child: Icon(icon, color: colorScheme.primary, size: 20),
         ),
       ),
     );
