@@ -35,10 +35,13 @@ class BackgroundStep extends HookConsumerWidget {
 
         return Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(120),
+            preferredSize: const Size.fromHeight(CreationAppBar.height),
             child: CreationAppBar(
               title: "Создание персонажа",
-              onBack: () => context.go('/characters'),
+              onBack: () {
+                ref.read(characterCreationProvider.notifier).reset();
+                context.go('/characters');
+              },
               onStepTap: (target) => _syncAndGo(
                 context: context,
                 ref: ref,

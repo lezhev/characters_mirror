@@ -24,9 +24,7 @@ class CharactersList extends ConsumerWidget {
       body: Column(
         children: [
           AuthenticatedHeader(
-            title: 'Characters List',
-            subtitle:
-                'Ваши персонажи, быстрый вход в админку и удобный переход к созданию новых сборок.',
+            title: 'Список персонажей',
             trailing: _CharacterSheetsMenuButton(
               user: authState.user,
               showAdminAction: authState.hasScope('admin'),
@@ -66,7 +64,6 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PopupMenuButton<_CharacterSheetsMenuAction>(
-      tooltip: 'Аккаунт',
       onSelected: (action) => _handleAction(context, ref, action),
       itemBuilder: (context) => [
         PopupMenuItem<_CharacterSheetsMenuAction>(
@@ -91,7 +88,10 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
           ),
         ),
       ],
-      icon: const Icon(Icons.menu_rounded),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: _AccountMenuAvatar(user: user),
+      ),
     );
   }
 
@@ -141,22 +141,7 @@ class _AccountMenuHeader extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: colorScheme.primary.withValues(alpha: 0.16),
-                  child: Text(
-                    initialsForUser(user),
-                    style: textTheme.labelLarge?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                ),
-                CircularUserImage(userInfo: user, size: 40),
-              ],
-            ),
+            _AccountMenuAvatar(user: user),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -182,6 +167,35 @@ class _AccountMenuHeader extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AccountMenuAvatar extends StatelessWidget {
+  const _AccountMenuAvatar({required this.user});
+
+  final dynamic user;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: colorScheme.primary.withValues(alpha: 0.16),
+          child: Text(
+            initialsForUser(user),
+            style: textTheme.labelLarge?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+        CircularUserImage(userInfo: user, size: 40),
+      ],
     );
   }
 }

@@ -166,7 +166,7 @@ class _PersonalStepState extends ConsumerState<PersonalStep> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
+        preferredSize: const Size.fromHeight(CreationAppBar.height),
         child: CreationAppBar(
           title: "Создание персонажа",
           onBack: _syncAndExit,
@@ -451,6 +451,7 @@ class _PersonalStepState extends ConsumerState<PersonalStep> {
   void _syncAndExit() {
     FocusScope.of(context).unfocus();
     _flushPersonalFields();
+    _creationNotifier.reset();
     context.go('/characters');
   }
 

@@ -1,0 +1,140 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_class_availability_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "spell_class_availability_unique_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "spellId"
+              },
+              {
+                "type": 0,
+                "definition": "classDataId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"spell_class_availability_unique_idx\" is added to table \"spell_class_availability_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "spell_class_availability_data",
+            "columns": [
+              "spellId",
+              "classDataId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"areaOfEffect\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "areaOfEffect"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "areaOfEffectType",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:AreaOfEffectType?"
+          },
+          {
+            "name": "areaOfEffectSize",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "areaOfEffectSecondarySize",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "areaOfEffectHeight",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [
+          "areaOfEffect"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"spell_class_availability_unique_idx\" is added to table \"spell_class_availability_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "spell_class_availability_data",
+            "columns": [
+              "spellId",
+              "classDataId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"areaOfEffect\" of table \"spell_data\" will be dropped.",
+            "table": "spell_data",
+            "columns": [
+              "areaOfEffect"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"spell_class_availability_unique_idx\" is added to table \"spell_class_availability_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "spell_class_availability_data",
+      "columns": [
+        "spellId",
+        "classDataId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"areaOfEffect\" of table \"spell_data\" will be dropped.",
+      "table": "spell_data",
+      "columns": [
+        "areaOfEffect"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

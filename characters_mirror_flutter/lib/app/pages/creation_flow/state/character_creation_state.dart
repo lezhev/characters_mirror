@@ -21,6 +21,27 @@ extension CreationStepX on Step {
   String get routePath =>
       this == Step.introduction ? '/create' : '/create/$name';
 
+  String get labelRu {
+    switch (this) {
+      case Step.introduction:
+        return 'Вступление';
+      case Step.race:
+        return 'Раса';
+      case Step.classStep:
+        return 'Класс';
+      case Step.background:
+        return 'Предыстория';
+      case Step.attributes:
+        return 'Характеристики';
+      case Step.personal:
+        return 'Личное';
+      case Step.summary:
+        return 'Сводка';
+    }
+  }
+
+  int get number => index + 1;
+
   Step? get next {
     final nextIndex = index + 1;
     return nextIndex < Step.values.length ? Step.values[nextIndex] : null;

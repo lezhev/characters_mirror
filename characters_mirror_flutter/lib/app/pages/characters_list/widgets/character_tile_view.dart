@@ -45,21 +45,15 @@ class _CreateCharacterTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxWidth: 470,
-        minHeight: 96,
-      ),
-      child: SizedBox(
-        width: double.infinity,
-        child: CharacterTileCard(
-          onTap: onTap,
-          child: Center(
-            child: Icon(
-              Icons.add,
-              size: 30,
-              color: colorScheme.primary,
-            ),
+    return SizedBox(
+      width: double.infinity,
+      child: CharacterTileCard(
+        onTap: onTap,
+        child: Center(
+          child: Icon(
+            Icons.add,
+            size: 30,
+            color: colorScheme.primary,
           ),
         ),
       ),

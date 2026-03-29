@@ -18,10 +18,13 @@ class SummaryStep extends ConsumerWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
+        preferredSize: const Size.fromHeight(CreationAppBar.height),
         child: CreationAppBar(
           title: "Создание персонажа",
-          onBack: () => context.go('/characters'),
+          onBack: () {
+            ref.read(characterCreationProvider.notifier).reset();
+            context.go('/characters');
+          },
           onStepTap: (target) =>
               ref.read(characterCreationProvider.notifier).goToStep(context, target),
         ),

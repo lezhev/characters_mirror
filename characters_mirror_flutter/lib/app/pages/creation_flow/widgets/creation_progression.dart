@@ -42,14 +42,29 @@ class StepIndicator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final state = ref.watch(characterCreationProvider);
+    final isCurrent = step == state.step;
+    final isWide = MediaQuery.of(context).size.width > 500;
+    final radius = isCurrent
+        ? (isWide ? 28.0 : 20.0)
+        : (isWide ? 24.0 : 16.0);
+
     return InkResponse(
       onTap: onTap == null ? null : () => onTap!(step),
-      radius: MediaQuery.of(context).size.width > 500 ? 28 : 20,
+      radius: radius + 4,
       child: CircleAvatar(
-        radius: MediaQuery.of(context).size.width > 500 ? 24 : 16,
-        backgroundColor: step == state.step
+        radius: radius,
+        backgroundColor: isCurrent
             ? colorScheme.primary
             : colorScheme.surfaceContainerLowest,
+        child: isCurrent
+            ? Text(
+                '${step.number}',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: colorScheme.onPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+              )
+            : null,
       ),
     );
     //  return Container(
