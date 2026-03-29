@@ -84,17 +84,17 @@ abstract class ClassChoiceOptionData
                     v as int,
                   )),
       grantedSkills: (jsonSerialization['grantedSkills'] as List?)
-          ?.map((e) => _i3.Skill.fromJson((e as int)))
+          ?.map((e) => _i3.Skill.fromJson((e as String)))
           .toList(),
       grantedLanguages: (jsonSerialization['grantedLanguages'] as List?)
-          ?.map((e) => _i4.Language.fromJson((e as int)))
+          ?.map((e) => _i4.Language.fromJson((e as String)))
           .toList(),
       grantedArmorTraining: (jsonSerialization['grantedArmorTraining'] as List?)
-          ?.map((e) => _i5.ArmorCategory.fromJson((e as int)))
+          ?.map((e) => _i5.ArmorCategory.fromJson((e as String)))
           .toList(),
       grantedWeaponTraining:
           (jsonSerialization['grantedWeaponTraining'] as List?)
-              ?.map((e) => _i6.WeaponCategory.fromJson((e as int)))
+              ?.map((e) => _i6.WeaponCategory.fromJson((e as String)))
               .toList(),
       grantedToolKeys: (jsonSerialization['grantedToolKeys'] as List?)
           ?.map((e) => e as String)
@@ -106,7 +106,7 @@ abstract class ClassChoiceOptionData
           ?.map((e) => e as String)
           .toList(),
       grantedFeatureTags: (jsonSerialization['grantedFeatureTags'] as List?)
-          ?.map((e) => _i7.FeatureTag.fromJson((e as int)))
+          ?.map((e) => _i7.FeatureTag.fromJson((e as String)))
           .toList(),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,

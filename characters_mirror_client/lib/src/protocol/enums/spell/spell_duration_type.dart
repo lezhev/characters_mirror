@@ -17,24 +17,24 @@ enum SpellDurationType implements _i1.SerializableModel {
   permanent,
   special;
 
-  static SpellDurationType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static SpellDurationType fromJson(String name) {
+    switch (name) {
+      case 'instant':
         return SpellDurationType.instant;
-      case 1:
+      case 'timed':
         return SpellDurationType.timed;
-      case 2:
+      case 'permanent':
         return SpellDurationType.permanent;
-      case 3:
+      case 'special':
         return SpellDurationType.special;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "SpellDurationType"');
+            'Value "$name" cannot be converted to "SpellDurationType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

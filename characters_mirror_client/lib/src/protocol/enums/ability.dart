@@ -19,27 +19,27 @@ enum Ability implements _i1.SerializableModel {
   wisdom,
   charisma;
 
-  static Ability fromJson(int index) {
-    switch (index) {
-      case 0:
+  static Ability fromJson(String name) {
+    switch (name) {
+      case 'strength':
         return Ability.strength;
-      case 1:
+      case 'dexterity':
         return Ability.dexterity;
-      case 2:
+      case 'constitution':
         return Ability.constitution;
-      case 3:
+      case 'intelligence':
         return Ability.intelligence;
-      case 4:
+      case 'wisdom':
         return Ability.wisdom;
-      case 5:
+      case 'charisma':
         return Ability.charisma;
       default:
-        throw ArgumentError('Value "$index" cannot be converted to "Ability"');
+        throw ArgumentError('Value "$name" cannot be converted to "Ability"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

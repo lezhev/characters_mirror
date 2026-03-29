@@ -118,7 +118,7 @@ abstract class CharacterData implements _i1.SerializableModel {
       alignmentValue: jsonSerialization['alignmentValue'] == null
           ? null
           : _i2.CharacterAlignment.fromJson(
-              (jsonSerialization['alignmentValue'] as int)),
+              (jsonSerialization['alignmentValue'] as String)),
       raceId: jsonSerialization['raceId'] as int?,
       race: jsonSerialization['race'] == null
           ? null

@@ -39,22 +39,22 @@ abstract class ProficiencyBundleView implements _i1.SerializableModel {
       Map<String, dynamic> jsonSerialization) {
     return ProficiencyBundleView(
       savingThrows: (jsonSerialization['savingThrows'] as List?)
-          ?.map((e) => _i2.Ability.fromJson((e as int)))
+          ?.map((e) => _i2.Ability.fromJson((e as String)))
           .toList(),
       skills: (jsonSerialization['skills'] as List?)
-          ?.map((e) => _i3.Skill.fromJson((e as int)))
+          ?.map((e) => _i3.Skill.fromJson((e as String)))
           .toList(),
       armorTraining: (jsonSerialization['armorTraining'] as List?)
-          ?.map((e) => _i4.ArmorCategory.fromJson((e as int)))
+          ?.map((e) => _i4.ArmorCategory.fromJson((e as String)))
           .toList(),
       weaponTraining: (jsonSerialization['weaponTraining'] as List?)
-          ?.map((e) => _i5.WeaponCategory.fromJson((e as int)))
+          ?.map((e) => _i5.WeaponCategory.fromJson((e as String)))
           .toList(),
       toolKeys: (jsonSerialization['toolKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       languageChoices: (jsonSerialization['languageChoices'] as List?)
-          ?.map((e) => _i6.Language.fromJson((e as int)))
+          ?.map((e) => _i6.Language.fromJson((e as String)))
           .toList(),
     );
   }

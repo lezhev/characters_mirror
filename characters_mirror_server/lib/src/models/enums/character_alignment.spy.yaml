@@ -1,4 +1,5 @@
 enum: CharacterAlignment
+serialized: byName
 values:
   - lawfulGood
   - neutralGood

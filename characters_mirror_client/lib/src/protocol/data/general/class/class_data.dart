@@ -84,23 +84,23 @@ abstract class ClassData implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       hitDieValue: jsonSerialization['hitDieValue'] as int?,
       primaryAbilities: (jsonSerialization['primaryAbilities'] as List?)
-          ?.map((e) => _i2.Ability.fromJson((e as int)))
+          ?.map((e) => _i2.Ability.fromJson((e as String)))
           .toList(),
       savingThrowProficiencies:
           (jsonSerialization['savingThrowProficiencies'] as List?)
-              ?.map((e) => _i2.Ability.fromJson((e as int)))
+              ?.map((e) => _i2.Ability.fromJson((e as String)))
               .toList(),
       armorTraining: (jsonSerialization['armorTraining'] as List?)
-          ?.map((e) => _i3.ArmorCategory.fromJson((e as int)))
+          ?.map((e) => _i3.ArmorCategory.fromJson((e as String)))
           .toList(),
       weaponTraining: (jsonSerialization['weaponTraining'] as List?)
-          ?.map((e) => _i4.WeaponCategory.fromJson((e as int)))
+          ?.map((e) => _i4.WeaponCategory.fromJson((e as String)))
           .toList(),
       toolTraining: (jsonSerialization['toolTraining'] as List?)
           ?.map((e) => e as String)
           .toList(),
       availableSkills: (jsonSerialization['availableSkills'] as List?)
-          ?.map((e) => _i5.Skill.fromJson((e as int)))
+          ?.map((e) => _i5.Skill.fromJson((e as String)))
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
       subclassChoiceLevel: jsonSerialization['subclassChoiceLevel'] as int?,
@@ -108,12 +108,12 @@ abstract class ClassData implements _i1.SerializableModel {
           jsonSerialization['spellcastingProgression'] == null
               ? null
               : _i6.SpellcastingProgression.fromJson(
-                  (jsonSerialization['spellcastingProgression'] as int)),
+                  (jsonSerialization['spellcastingProgression'] as String)),
       spellcastingAbilityValue:
           jsonSerialization['spellcastingAbilityValue'] == null
               ? null
               : _i2.Ability.fromJson(
-                  (jsonSerialization['spellcastingAbilityValue'] as int)),
+                  (jsonSerialization['spellcastingAbilityValue'] as String)),
       multiclassPrerequisites:
           (jsonSerialization['multiclassPrerequisites'] as Map?)
               ?.map((k, v) => MapEntry(
@@ -122,11 +122,11 @@ abstract class ClassData implements _i1.SerializableModel {
                   )),
       multiclassArmorTraining:
           (jsonSerialization['multiclassArmorTraining'] as List?)
-              ?.map((e) => _i3.ArmorCategory.fromJson((e as int)))
+              ?.map((e) => _i3.ArmorCategory.fromJson((e as String)))
               .toList(),
       multiclassWeaponTraining:
           (jsonSerialization['multiclassWeaponTraining'] as List?)
-              ?.map((e) => _i4.WeaponCategory.fromJson((e as int)))
+              ?.map((e) => _i4.WeaponCategory.fromJson((e as String)))
               .toList(),
       multiclassToolTraining:
           (jsonSerialization['multiclassToolTraining'] as List?)

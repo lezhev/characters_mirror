@@ -17,23 +17,23 @@ enum RestType implements _i1.SerializableModel {
   dawn,
   special;
 
-  static RestType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static RestType fromJson(String name) {
+    switch (name) {
+      case 'shortRest':
         return RestType.shortRest;
-      case 1:
+      case 'longRest':
         return RestType.longRest;
-      case 2:
+      case 'dawn':
         return RestType.dawn;
-      case 3:
+      case 'special':
         return RestType.special;
       default:
-        throw ArgumentError('Value "$index" cannot be converted to "RestType"');
+        throw ArgumentError('Value "$name" cannot be converted to "RestType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

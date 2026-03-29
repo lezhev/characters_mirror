@@ -1,4 +1,5 @@
 enum: SpellcastingProgression
+serialized: byName
 values:
   - none
   - full

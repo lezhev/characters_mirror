@@ -1,4 +1,5 @@
 enum: AreaOfEffectType
+serialized: byName
 values:
   - cone
   - cube

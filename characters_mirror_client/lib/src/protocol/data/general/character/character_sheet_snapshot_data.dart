@@ -104,7 +104,7 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
           ?.map((e) => e as String)
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i3.DamageType.fromJson((e as int)))
+          ?.map((e) => _i3.DamageType.fromJson((e as String)))
           .toList(),
       sheetVersion: jsonSerialization['sheetVersion'] as int?,
       rebuiltAt: jsonSerialization['rebuiltAt'] == null

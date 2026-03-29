@@ -76,7 +76,7 @@ abstract class RaceChoiceSetData implements _i1.SerializableModel {
               (jsonSerialization['feature'] as Map<String, dynamic>)),
       kind: jsonSerialization['kind'] == null
           ? null
-          : _i5.RaceChoiceKind.fromJson((jsonSerialization['kind'] as int)),
+          : _i5.RaceChoiceKind.fromJson((jsonSerialization['kind'] as String)),
       pickCount: jsonSerialization['pickCount'] as int?,
       options: (jsonSerialization['options'] as List?)
           ?.map((e) => e as String)

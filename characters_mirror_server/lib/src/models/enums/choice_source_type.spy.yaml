@@ -1,4 +1,5 @@
 enum: ChoiceSourceType
+serialized: byName
 values:
   - race
   - subrace

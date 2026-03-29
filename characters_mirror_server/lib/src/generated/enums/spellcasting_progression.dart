@@ -18,26 +18,26 @@ enum SpellcastingProgression implements _i1.SerializableModel {
   third,
   pactMagic;
 
-  static SpellcastingProgression fromJson(int index) {
-    switch (index) {
-      case 0:
+  static SpellcastingProgression fromJson(String name) {
+    switch (name) {
+      case 'none':
         return SpellcastingProgression.none;
-      case 1:
+      case 'full':
         return SpellcastingProgression.full;
-      case 2:
+      case 'half':
         return SpellcastingProgression.half;
-      case 3:
+      case 'third':
         return SpellcastingProgression.third;
-      case 4:
+      case 'pactMagic':
         return SpellcastingProgression.pactMagic;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "SpellcastingProgression"');
+            'Value "$name" cannot be converted to "SpellcastingProgression"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

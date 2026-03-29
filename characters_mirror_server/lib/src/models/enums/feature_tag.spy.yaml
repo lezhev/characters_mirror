@@ -1,4 +1,5 @@
 enum: FeatureTag
+serialized: byName
 values:
   - action
   - bonusAction

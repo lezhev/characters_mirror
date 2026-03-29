@@ -1,4 +1,5 @@
 enum: RaceChoiceKind
+serialized: byName
 values:
   - abilityBonusChoice
   - skillProficiencyChoice

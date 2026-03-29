@@ -68,7 +68,7 @@ abstract class FeatData
           ?.map((e) => e as String)
           .toList(),
       tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i2.FeatureTag.fromJson((e as int)))
+          ?.map((e) => _i2.FeatureTag.fromJson((e as String)))
           .toList(),
       specialAbilities: (jsonSerialization['specialAbilities'] as List?)
           ?.map((e) => e as String)

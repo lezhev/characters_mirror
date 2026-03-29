@@ -1,4 +1,5 @@
 enum: ConditionType
+serialized: byName
 values:
   - blinded
   - charmed

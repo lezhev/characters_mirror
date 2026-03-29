@@ -21,32 +21,32 @@ enum SpellSchool implements _i1.SerializableModel {
   necromancy,
   transmutation;
 
-  static SpellSchool fromJson(int index) {
-    switch (index) {
-      case 0:
+  static SpellSchool fromJson(String name) {
+    switch (name) {
+      case 'abjuration':
         return SpellSchool.abjuration;
-      case 1:
+      case 'conjuration':
         return SpellSchool.conjuration;
-      case 2:
+      case 'divination':
         return SpellSchool.divination;
-      case 3:
+      case 'enchantment':
         return SpellSchool.enchantment;
-      case 4:
+      case 'evocation':
         return SpellSchool.evocation;
-      case 5:
+      case 'illusion':
         return SpellSchool.illusion;
-      case 6:
+      case 'necromancy':
         return SpellSchool.necromancy;
-      case 7:
+      case 'transmutation':
         return SpellSchool.transmutation;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "SpellSchool"');
+            'Value "$name" cannot be converted to "SpellSchool"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

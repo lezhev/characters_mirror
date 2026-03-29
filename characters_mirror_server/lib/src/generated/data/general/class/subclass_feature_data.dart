@@ -67,7 +67,7 @@ abstract class SubclassFeatureData
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i3.FeatureTag.fromJson((e as int)))
+          ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
     );

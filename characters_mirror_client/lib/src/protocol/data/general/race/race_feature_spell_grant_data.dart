@@ -71,11 +71,12 @@ abstract class RaceFeatureSpellGrantData implements _i1.SerializableModel {
       grantedAtLevel: jsonSerialization['grantedAtLevel'] as int?,
       castingAbility: jsonSerialization['castingAbility'] == null
           ? null
-          : _i4.Ability.fromJson((jsonSerialization['castingAbility'] as int)),
+          : _i4.Ability.fromJson(
+              (jsonSerialization['castingAbility'] as String)),
       freeCastsPerRest: jsonSerialization['freeCastsPerRest'] == null
           ? null
           : _i5.RestType.fromJson(
-              (jsonSerialization['freeCastsPerRest'] as int)),
+              (jsonSerialization['freeCastsPerRest'] as String)),
       freeCastsFormula: jsonSerialization['freeCastsFormula'] as String?,
       castAtSpellLevel: jsonSerialization['castAtSpellLevel'] as int?,
       canAlsoCastWithSpellSlots:

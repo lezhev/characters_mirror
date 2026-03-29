@@ -224,7 +224,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'categoryValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ArmorCategory?',
         ),
@@ -444,7 +444,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'sourceType',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ChoiceSourceType?',
         ),
@@ -582,7 +582,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'hpMode',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:HitPointMode?',
         ),
@@ -954,7 +954,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'alignmentValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:CharacterAlignment?',
         ),
@@ -1126,7 +1126,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'type',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ClassChoiceType?',
         ),
@@ -1509,13 +1509,13 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'spellcastingProgression',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellcastingProgression?',
         ),
         _i2.ColumnDefinition(
           name: 'spellcastingAbilityValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
@@ -1862,7 +1862,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'saveAbility',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
@@ -2236,7 +2236,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'kind',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RaceChoiceKind?',
         ),
@@ -2709,13 +2709,13 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'castingAbility',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
         _i2.ColumnDefinition(
           name: 'freeCastsPerRest',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RestType?',
         ),
@@ -2987,7 +2987,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'schoolValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellSchool?',
         ),
@@ -3029,9 +3029,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'savingThrowAbility',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
-          dartType: 'protocol:Ability?',
+          dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'requiresSavingThrow',
@@ -3041,7 +3041,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'attackType',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellAttackType?',
         ),
@@ -3053,9 +3053,9 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'damageType',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
-          dartType: 'protocol:DamageType?',
+          dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'damageDice',
@@ -3077,13 +3077,13 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'targetType',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellTargetType?',
         ),
         _i2.ColumnDefinition(
           name: 'areaOfEffectType',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:AreaOfEffectType?',
         ),
@@ -3125,7 +3125,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'durationType',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellDurationType?',
         ),
@@ -3568,7 +3568,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'category',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:WeaponCategory?',
         ),
@@ -3580,7 +3580,7 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'damageTypeValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:DamageType?',
         ),

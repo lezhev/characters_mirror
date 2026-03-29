@@ -28,46 +28,46 @@ enum ConditionType implements _i1.SerializableModel {
   unconscious,
   exhaustion;
 
-  static ConditionType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static ConditionType fromJson(String name) {
+    switch (name) {
+      case 'blinded':
         return ConditionType.blinded;
-      case 1:
+      case 'charmed':
         return ConditionType.charmed;
-      case 2:
+      case 'deafened':
         return ConditionType.deafened;
-      case 3:
+      case 'frightened':
         return ConditionType.frightened;
-      case 4:
+      case 'grappled':
         return ConditionType.grappled;
-      case 5:
+      case 'incapacitated':
         return ConditionType.incapacitated;
-      case 6:
+      case 'invisible':
         return ConditionType.invisible;
-      case 7:
+      case 'paralyzed':
         return ConditionType.paralyzed;
-      case 8:
+      case 'petrified':
         return ConditionType.petrified;
-      case 9:
+      case 'poisoned':
         return ConditionType.poisoned;
-      case 10:
+      case 'prone':
         return ConditionType.prone;
-      case 11:
+      case 'restrained':
         return ConditionType.restrained;
-      case 12:
+      case 'stunned':
         return ConditionType.stunned;
-      case 13:
+      case 'unconscious':
         return ConditionType.unconscious;
-      case 14:
+      case 'exhaustion':
         return ConditionType.exhaustion;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "ConditionType"');
+            'Value "$name" cannot be converted to "ConditionType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

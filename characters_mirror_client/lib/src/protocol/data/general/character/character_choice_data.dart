@@ -63,7 +63,7 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
       sourceType: jsonSerialization['sourceType'] == null
           ? null
           : _i4.ChoiceSourceType.fromJson(
-              (jsonSerialization['sourceType'] as int)),
+              (jsonSerialization['sourceType'] as String)),
       sourceId: jsonSerialization['sourceId'] as int?,
       groupKey: jsonSerialization['groupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,

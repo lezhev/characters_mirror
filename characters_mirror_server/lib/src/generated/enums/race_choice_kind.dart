@@ -18,26 +18,26 @@ enum RaceChoiceKind implements _i1.SerializableModel {
   toolProficiencyChoice,
   cantripChoice;
 
-  static RaceChoiceKind fromJson(int index) {
-    switch (index) {
-      case 0:
+  static RaceChoiceKind fromJson(String name) {
+    switch (name) {
+      case 'abilityBonusChoice':
         return RaceChoiceKind.abilityBonusChoice;
-      case 1:
+      case 'skillProficiencyChoice':
         return RaceChoiceKind.skillProficiencyChoice;
-      case 2:
+      case 'languageChoice':
         return RaceChoiceKind.languageChoice;
-      case 3:
+      case 'toolProficiencyChoice':
         return RaceChoiceKind.toolProficiencyChoice;
-      case 4:
+      case 'cantripChoice':
         return RaceChoiceKind.cantripChoice;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "RaceChoiceKind"');
+            'Value "$name" cannot be converted to "RaceChoiceKind"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

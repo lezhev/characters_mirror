@@ -1,0 +1,1565 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "armor_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "categoryValue",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:ArmorCategory?"
+          }
+        ],
+        "deleteColumns": [
+          "categoryValue"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "character_choice_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "sourceType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:ChoiceSourceType?"
+          }
+        ],
+        "deleteColumns": [
+          "sourceType"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "character_class_relation",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "hpMode",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:HitPointMode?"
+          }
+        ],
+        "deleteColumns": [
+          "hpMode"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "alignmentValue",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:CharacterAlignment?"
+          }
+        ],
+        "deleteColumns": [
+          "alignmentValue"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_choice_group_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "type",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:ClassChoiceType?"
+          }
+        ],
+        "deleteColumns": [
+          "type"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellcastingProgression",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:SpellcastingProgression?"
+          },
+          {
+            "name": "spellcastingAbilityValue",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          }
+        ],
+        "deleteColumns": [
+          "spellcastingProgression",
+          "spellcastingAbilityValue"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "dragonborn_ancestry_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "saveAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          }
+        ],
+        "deleteColumns": [
+          "saveAbility"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_choice_set_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "kind",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:RaceChoiceKind?"
+          }
+        ],
+        "deleteColumns": [
+          "kind"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_spell_grant_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "castingAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          },
+          {
+            "name": "freeCastsPerRest",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:RestType?"
+          }
+        ],
+        "deleteColumns": [
+          "castingAbility",
+          "freeCastsPerRest"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "weapon_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "category",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:WeaponCategory?"
+          },
+          {
+            "name": "damageTypeValue",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:DamageType?"
+          }
+        ],
+        "deleteColumns": [
+          "category",
+          "damageTypeValue"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+            "table": "armor_data",
+            "columns": [
+              "categoryValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+            "table": "character_choice_data",
+            "columns": [
+              "sourceType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+            "table": "character_class_relation",
+            "columns": [
+              "hpMode"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "alignmentValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_choice_group_data",
+            "columns": [
+              "type"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingProgression"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+            "table": "class_data",
+            "columns": [
+              "spellcastingAbilityValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [
+              "saveAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "kind"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "castingAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "freeCastsPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "category"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column categoryValue of table armor_data is modified in a way that it must be deleted and recreated.",
+      "table": "armor_data",
+      "columns": [
+        "categoryValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column sourceType of table character_choice_data is modified in a way that it must be deleted and recreated.",
+      "table": "character_choice_data",
+      "columns": [
+        "sourceType"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column hpMode of table character_class_relation is modified in a way that it must be deleted and recreated.",
+      "table": "character_class_relation",
+      "columns": [
+        "hpMode"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column alignmentValue of table characters is modified in a way that it must be deleted and recreated.",
+      "table": "characters",
+      "columns": [
+        "alignmentValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column type of table class_choice_group_data is modified in a way that it must be deleted and recreated.",
+      "table": "class_choice_group_data",
+      "columns": [
+        "type"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column spellcastingProgression of table class_data is modified in a way that it must be deleted and recreated.",
+      "table": "class_data",
+      "columns": [
+        "spellcastingProgression"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column spellcastingAbilityValue of table class_data is modified in a way that it must be deleted and recreated.",
+      "table": "class_data",
+      "columns": [
+        "spellcastingAbilityValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column saveAbility of table dragonborn_ancestry_data is modified in a way that it must be deleted and recreated.",
+      "table": "dragonborn_ancestry_data",
+      "columns": [
+        "saveAbility"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column kind of table race_choice_set_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "kind"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column castingAbility of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_feature_spell_grant_data",
+      "columns": [
+        "castingAbility"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column freeCastsPerRest of table race_feature_spell_grant_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_feature_spell_grant_data",
+      "columns": [
+        "freeCastsPerRest"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column category of table weapon_data is modified in a way that it must be deleted and recreated.",
+      "table": "weapon_data",
+      "columns": [
+        "category"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column damageTypeValue of table weapon_data is modified in a way that it must be deleted and recreated.",
+      "table": "weapon_data",
+      "columns": [
+        "damageTypeValue"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

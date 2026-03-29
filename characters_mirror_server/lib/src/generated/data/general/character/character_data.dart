@@ -121,7 +121,7 @@ abstract class CharacterData
       alignmentValue: jsonSerialization['alignmentValue'] == null
           ? null
           : _i2.CharacterAlignment.fromJson(
-              (jsonSerialization['alignmentValue'] as int)),
+              (jsonSerialization['alignmentValue'] as String)),
       raceId: jsonSerialization['raceId'] as int?,
       race: jsonSerialization['race'] == null
           ? null
@@ -633,7 +633,7 @@ class CharacterDataTable extends _i1.Table<int?> {
     alignmentValue = _i1.ColumnEnum(
       'alignmentValue',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     raceId = _i1.ColumnInt(
       'raceId',

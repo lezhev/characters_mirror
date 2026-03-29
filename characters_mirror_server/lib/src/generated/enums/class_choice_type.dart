@@ -27,44 +27,44 @@ enum ClassChoiceType implements _i1.SerializableModel {
   feat,
   custom;
 
-  static ClassChoiceType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static ClassChoiceType fromJson(String name) {
+    switch (name) {
+      case 'skill':
         return ClassChoiceType.skill;
-      case 1:
+      case 'tool':
         return ClassChoiceType.tool;
-      case 2:
+      case 'language':
         return ClassChoiceType.language;
-      case 3:
+      case 'fightingStyle':
         return ClassChoiceType.fightingStyle;
-      case 4:
+      case 'expertise':
         return ClassChoiceType.expertise;
-      case 5:
+      case 'spell':
         return ClassChoiceType.spell;
-      case 6:
+      case 'cantrip':
         return ClassChoiceType.cantrip;
-      case 7:
+      case 'equipment':
         return ClassChoiceType.equipment;
-      case 8:
+      case 'subclassFeature':
         return ClassChoiceType.subclassFeature;
-      case 9:
+      case 'featureOption':
         return ClassChoiceType.featureOption;
-      case 10:
+      case 'invocation':
         return ClassChoiceType.invocation;
-      case 11:
+      case 'abilityIncrease':
         return ClassChoiceType.abilityIncrease;
-      case 12:
+      case 'feat':
         return ClassChoiceType.feat;
-      case 13:
+      case 'custom':
         return ClassChoiceType.custom;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "ClassChoiceType"');
+            'Value "$name" cannot be converted to "ClassChoiceType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

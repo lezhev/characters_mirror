@@ -26,42 +26,42 @@ enum DamageType implements _i1.SerializableModel {
   slashing,
   thunder;
 
-  static DamageType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static DamageType fromJson(String name) {
+    switch (name) {
+      case 'acid':
         return DamageType.acid;
-      case 1:
+      case 'bludgeoning':
         return DamageType.bludgeoning;
-      case 2:
+      case 'cold':
         return DamageType.cold;
-      case 3:
+      case 'fire':
         return DamageType.fire;
-      case 4:
+      case 'force':
         return DamageType.force;
-      case 5:
+      case 'lightning':
         return DamageType.lightning;
-      case 6:
+      case 'necrotic':
         return DamageType.necrotic;
-      case 7:
+      case 'piercing':
         return DamageType.piercing;
-      case 8:
+      case 'poison':
         return DamageType.poison;
-      case 9:
+      case 'psychic':
         return DamageType.psychic;
-      case 10:
+      case 'radiant':
         return DamageType.radiant;
-      case 11:
+      case 'slashing':
         return DamageType.slashing;
-      case 12:
+      case 'thunder':
         return DamageType.thunder;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "DamageType"');
+            'Value "$name" cannot be converted to "DamageType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

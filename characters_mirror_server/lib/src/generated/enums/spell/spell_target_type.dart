@@ -21,32 +21,32 @@ enum SpellTargetType implements _i1.SerializableModel {
   touch,
   special;
 
-  static SpellTargetType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static SpellTargetType fromJson(String name) {
+    switch (name) {
+      case 'self':
         return SpellTargetType.self;
-      case 1:
+      case 'singleCreature':
         return SpellTargetType.singleCreature;
-      case 2:
+      case 'multipleCreatures':
         return SpellTargetType.multipleCreatures;
-      case 3:
+      case 'object':
         return SpellTargetType.object;
-      case 4:
+      case 'point':
         return SpellTargetType.point;
-      case 5:
+      case 'area':
         return SpellTargetType.area;
-      case 6:
+      case 'touch':
         return SpellTargetType.touch;
-      case 7:
+      case 'special':
         return SpellTargetType.special;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "SpellTargetType"');
+            'Value "$name" cannot be converted to "SpellTargetType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

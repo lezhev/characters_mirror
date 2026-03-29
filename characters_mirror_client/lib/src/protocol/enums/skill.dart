@@ -31,51 +31,51 @@ enum Skill implements _i1.SerializableModel {
   stealth,
   survival;
 
-  static Skill fromJson(int index) {
-    switch (index) {
-      case 0:
+  static Skill fromJson(String name) {
+    switch (name) {
+      case 'acrobatics':
         return Skill.acrobatics;
-      case 1:
+      case 'animalHandling':
         return Skill.animalHandling;
-      case 2:
+      case 'arcana':
         return Skill.arcana;
-      case 3:
+      case 'athletics':
         return Skill.athletics;
-      case 4:
+      case 'deception':
         return Skill.deception;
-      case 5:
+      case 'history':
         return Skill.history;
-      case 6:
+      case 'insight':
         return Skill.insight;
-      case 7:
+      case 'intimidation':
         return Skill.intimidation;
-      case 8:
+      case 'investigation':
         return Skill.investigation;
-      case 9:
+      case 'medicine':
         return Skill.medicine;
-      case 10:
+      case 'nature':
         return Skill.nature;
-      case 11:
+      case 'perception':
         return Skill.perception;
-      case 12:
+      case 'performance':
         return Skill.performance;
-      case 13:
+      case 'persuasion':
         return Skill.persuasion;
-      case 14:
+      case 'religion':
         return Skill.religion;
-      case 15:
+      case 'sleightOfHand':
         return Skill.sleightOfHand;
-      case 16:
+      case 'stealth':
         return Skill.stealth;
-      case 17:
+      case 'survival':
         return Skill.survival;
       default:
-        throw ArgumentError('Value "$index" cannot be converted to "Skill"');
+        throw ArgumentError('Value "$name" cannot be converted to "Skill"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

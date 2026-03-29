@@ -66,12 +66,13 @@ abstract class WeaponData
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       category: jsonSerialization['category'] == null
           ? null
-          : _i2.WeaponCategory.fromJson((jsonSerialization['category'] as int)),
+          : _i2.WeaponCategory.fromJson(
+              (jsonSerialization['category'] as String)),
       damage: jsonSerialization['damage'] as String?,
       damageTypeValue: jsonSerialization['damageTypeValue'] == null
           ? null
           : _i3.DamageType.fromJson(
-              (jsonSerialization['damageTypeValue'] as int)),
+              (jsonSerialization['damageTypeValue'] as String)),
       properties: (jsonSerialization['properties'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -323,7 +324,7 @@ class WeaponDataTable extends _i1.Table<int?> {
     category = _i1.ColumnEnum(
       'category',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     damage = _i1.ColumnString(
       'damage',
@@ -332,7 +333,7 @@ class WeaponDataTable extends _i1.Table<int?> {
     damageTypeValue = _i1.ColumnEnum(
       'damageTypeValue',
       this,
-      _i1.EnumSerialization.byIndex,
+      _i1.EnumSerialization.byName,
     );
     properties = _i1.ColumnSerializable(
       'properties',

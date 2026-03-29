@@ -20,30 +20,30 @@ enum ChoiceSourceType implements _i1.SerializableModel {
   classFeature,
   subclassFeature;
 
-  static ChoiceSourceType fromJson(int index) {
-    switch (index) {
-      case 0:
+  static ChoiceSourceType fromJson(String name) {
+    switch (name) {
+      case 'race':
         return ChoiceSourceType.race;
-      case 1:
+      case 'subrace':
         return ChoiceSourceType.subrace;
-      case 2:
+      case 'background':
         return ChoiceSourceType.background;
-      case 3:
+      case 'classData':
         return ChoiceSourceType.classData;
-      case 4:
+      case 'subclass':
         return ChoiceSourceType.subclass;
-      case 5:
+      case 'classFeature':
         return ChoiceSourceType.classFeature;
-      case 6:
+      case 'subclassFeature':
         return ChoiceSourceType.subclassFeature;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "ChoiceSourceType"');
+            'Value "$name" cannot be converted to "ChoiceSourceType"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

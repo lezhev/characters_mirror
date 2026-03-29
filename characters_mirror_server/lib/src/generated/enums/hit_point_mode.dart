@@ -16,22 +16,22 @@ enum HitPointMode implements _i1.SerializableModel {
   rolled,
   manual;
 
-  static HitPointMode fromJson(int index) {
-    switch (index) {
-      case 0:
+  static HitPointMode fromJson(String name) {
+    switch (name) {
+      case 'fixed':
         return HitPointMode.fixed;
-      case 1:
+      case 'rolled':
         return HitPointMode.rolled;
-      case 2:
+      case 'manual':
         return HitPointMode.manual;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "HitPointMode"');
+            'Value "$name" cannot be converted to "HitPointMode"');
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;
