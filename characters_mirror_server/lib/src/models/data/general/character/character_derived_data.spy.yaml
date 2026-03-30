@@ -1,7 +1,5 @@
-class: CharacterSheetSnapshotData
-table: character_sheet_snapshot_data
+class: CharacterDerivedData
 fields:
-  character: CharacterData?, relation
   totalLevel: int?
   proficiencyBonus: int?
   armorClass: int?
@@ -18,9 +16,4 @@ fields:
   hitDiceSummary: Map<String, int>?
   senses: List<String>?
   resistances: List<DamageType>?
-  sheetVersion: int?
   rebuiltAt: DateTime?
-indexes:
-  character_sheet_snapshot_character_idx:
-    fields: characterId
-    unique: true

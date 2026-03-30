@@ -1,6 +1,6 @@
 class: CharacterData
-table: characters
 fields:
+  id: int?
   name: String?
   age: String?
   height: String?
@@ -19,14 +19,16 @@ fields:
   version: int?
   createdAt: DateTime?
   updatedAt: DateTime?
-  userId: int?
   experience: int?
   alignmentValue: CharacterAlignment?
-  race: RaceData?, relation(optional)
-  subrace: SubraceData?, relation(optional)
-  background: BackgroundData?, relation(optional)
+  race: RaceData?
+  subrace: SubraceData?
+  background: BackgroundData?
   baseAbilityScores: Map<String, int>?
   temporaryHp: int?
   currentHp: int?
   inspiration: bool?
   notes: String?
+  classEntries: List<CharacterClassEntryData>?
+  choices: List<CharacterChoiceData>?
+  derived: CharacterDerivedData?

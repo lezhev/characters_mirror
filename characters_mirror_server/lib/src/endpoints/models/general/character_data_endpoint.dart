@@ -9,158 +9,116 @@ class CharacterDataEndpoint extends Endpoint {
 
   Future<List<CharacterData>> getAll(Session session) async {
     final userId = await _requireCurrentUserId(session);
-    return CharacterData.db.find(
+    final records = await CharacterRecord.db.find(
       session,
       where: (t) => t.userId.equals(userId),
+      orderBy: (t) => t.updatedAt,
+      orderDescending: true,
+      include: _characterRecordInclude(),
+    );
+
+    return Future.wait(
+      records.map((record) => _buildCharacterAggregate(session, record)),
     );
   }
 
-  Future<CharacterBuildData> upsertBuild(
+  Future<CharacterData> saveCharacter(
     Session session,
-    CharacterBuildData build,
+    CharacterData character,
   ) async {
     final userId = await _requireCurrentUserId(session);
-    final character = build.character;
-    if (character == null) {
-      throw Exception('Character payload is required.');
-    }
+    final savedRecord = await _upsertCharacterRecord(session, character, userId);
 
-    final savedCharacter = await _upsertCharacter(session, character, userId);
-
-    await CharacterClassEntryData.db.deleteWhere(
+    await CharacterChoiceRecord.db.deleteWhere(
       session,
-      where: (t) => t.characterId.equals(savedCharacter.id),
+      where: (t) => t.characterId.equals(savedRecord.id),
     );
-
-    final insertedEntries = <CharacterClassEntryData>[];
-    for (final entry
-        in build.classEntries ?? const <CharacterClassEntryData>[]) {
-      final mutable = entry.copyWith();
-      mutable.id = null;
-      mutable.character = savedCharacter;
-      insertedEntries
-          .add(await CharacterClassEntryData.db.insertRow(session, mutable));
-    }
-
-    await CharacterChoiceData.db.deleteWhere(
+    await CharacterClassEntryRecord.db.deleteWhere(
       session,
-      where: (t) => t.characterId.equals(savedCharacter.id),
+      where: (t) => t.characterId.equals(savedRecord.id),
     );
 
-    final insertedChoices = <CharacterChoiceData>[];
-    for (final choice in build.choices ?? const <CharacterChoiceData>[]) {
-      final mutable = choice.copyWith();
-      mutable.id = null;
-      mutable.character = savedCharacter;
-      mutable.classEntry =
-          _matchSavedEntry(mutable.classEntry, insertedEntries);
-      insertedChoices
-          .add(await CharacterChoiceData.db.insertRow(session, mutable));
-    }
-
-    final snapshot = await _rebuildSnapshot(
+    final savedEntries = await _insertClassEntryRecords(
       session,
-      savedCharacter,
-      insertedEntries,
-      insertedChoices,
+      savedRecord,
+      character.classEntries ?? const <CharacterClassEntryData>[],
+    );
+    await _insertChoiceRecords(
+      session,
+      savedRecord,
+      savedEntries,
+      character.choices ?? const <CharacterChoiceData>[],
     );
 
-    return CharacterBuildData(
-      character: savedCharacter,
-      classEntries: insertedEntries,
-      choices: insertedChoices,
-      snapshot: snapshot,
+    final hydratedRecord = await _requireOwnedCharacterRecord(
+      session,
+      savedRecord.id!,
+      userId: userId,
     );
+    return _buildCharacterAggregate(session, hydratedRecord);
   }
 
-  Future<CharacterBuildData> getBuild(Session session, int characterId) async {
-    final character = await _requireOwnedCharacter(session, characterId);
-    final entries = await CharacterClassEntryData.db.find(
-      session,
-      where: (t) => t.characterId.equals(characterId),
-      orderBy: (t) => t.classOrder,
-      include: CharacterClassEntryData.include(
-        classData: ClassData.include(),
-        subclass: SubclassData.include(),
-      ),
-    );
-    final choices = await CharacterChoiceData.db.find(
-      session,
-      where: (t) => t.characterId.equals(characterId),
-    );
-    final snapshot = await _findSnapshot(session, characterId);
-
-    return CharacterBuildData(
-      character: character,
-      classEntries: entries,
-      choices: choices,
-      snapshot: snapshot,
-    );
-  }
-
-  Future<CharacterSheetView> getCharacterSheet(
-    Session session,
-    int characterId,
-  ) async {
-    final build = await getBuild(session, characterId);
-    return CharacterSheetView(
-      character: build.character,
-      classEntries: build.classEntries,
-      choices: build.choices,
-      snapshot: build.snapshot,
-    );
+  Future<CharacterData> getCharacter(Session session, int id) async {
+    final record = await _requireOwnedCharacterRecord(session, id);
+    return _buildCharacterAggregate(session, record);
   }
 
   Future<void> delete(Session session, int id) async {
-    await _requireOwnedCharacter(session, id);
-    await CharacterChoiceData.db.deleteWhere(
+    await _requireOwnedCharacterRecord(session, id);
+    await CharacterChoiceRecord.db.deleteWhere(
       session,
       where: (t) => t.characterId.equals(id),
     );
-    await CharacterClassEntryData.db.deleteWhere(
+    await CharacterClassEntryRecord.db.deleteWhere(
       session,
       where: (t) => t.characterId.equals(id),
     );
-    await CharacterSheetSnapshotData.db.deleteWhere(
+    await CharacterRecord.db.deleteWhere(
       session,
-      where: (t) => t.characterId.equals(id),
+      where: (t) => t.id.equals(id),
     );
-    await CharacterData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
 }
 
-Future<CharacterData> _upsertCharacter(
+Future<CharacterRecord> _upsertCharacterRecord(
   Session session,
   CharacterData character,
   int userId,
 ) async {
   final now = DateTime.now();
-  character.userId = userId;
 
   if (character.id == null) {
-    character.id = null;
-    character.version ??= 1;
-    character.createdAt ??= now;
-    character.updatedAt ??= now;
-    return CharacterData.db.insertRow(session, character);
+    return CharacterRecord.db.insertRow(
+      session,
+      _toCharacterRecord(
+        character,
+        userId: userId,
+        version: character.version ?? 1,
+        createdAt: character.createdAt ?? now,
+        updatedAt: now,
+      ),
+    );
   }
 
-  final ownedCharacter = await _findOwnedCharacter(
+  final ownedRecord = await _findOwnedCharacterRecord(
     session,
     character.id!,
     userId,
   );
-  if (ownedCharacter != null) {
-    character.id = ownedCharacter.id;
-    character.userId = ownedCharacter.userId ?? userId;
-    character.version = (ownedCharacter.version ?? 0) + 1;
-    character.createdAt = ownedCharacter.createdAt ?? now;
-    character.updatedAt = now;
-    await CharacterData.db.updateRow(session, character);
-    return character;
+  if (ownedRecord != null) {
+    final updatedRecord = _toCharacterRecord(
+      character,
+      id: ownedRecord.id,
+      userId: ownedRecord.userId ?? userId,
+      version: (ownedRecord.version ?? 0) + 1,
+      createdAt: ownedRecord.createdAt ?? now,
+      updatedAt: now,
+    );
+    await CharacterRecord.db.updateRow(session, updatedRecord);
+    return updatedRecord;
   }
 
-  final existingById = await CharacterData.db.find(
+  final existingById = await CharacterRecord.db.find(
     session,
     where: (t) => t.id.equals(character.id),
     limit: 1,
@@ -169,11 +127,142 @@ Future<CharacterData> _upsertCharacter(
     throw Exception('Access denied to character id=${character.id}.');
   }
 
-  character.id = null;
-  character.version ??= 1;
-  character.createdAt ??= now;
-  character.updatedAt ??= now;
-  return CharacterData.db.insertRow(session, character);
+  return CharacterRecord.db.insertRow(
+    session,
+    _toCharacterRecord(
+      character,
+      userId: userId,
+      version: character.version ?? 1,
+      createdAt: character.createdAt ?? now,
+      updatedAt: now,
+    ),
+  );
+}
+
+CharacterRecord _toCharacterRecord(
+  CharacterData character, {
+  int? id,
+  required int userId,
+  required int version,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+}) {
+  return CharacterRecord(
+    id: id,
+    name: character.name,
+    age: character.age,
+    height: character.height,
+    weight: character.weight,
+    eyes: character.eyes,
+    skin: character.skin,
+    hair: character.hair,
+    appearance: character.appearance,
+    backstory: character.backstory,
+    goals: character.goals,
+    alliesOrganizations: character.alliesOrganizations,
+    personalityTraits: character.personalityTraits,
+    ideals: character.ideals,
+    bonds: character.bonds,
+    flaws: character.flaws,
+    version: version,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    userId: userId,
+    experience: character.experience,
+    alignmentValue: character.alignmentValue,
+    raceId: character.race?.id,
+    subraceId: character.subrace?.id,
+    backgroundId: character.background?.id,
+    baseAbilityScores: character.baseAbilityScores,
+    temporaryHp: character.temporaryHp,
+    currentHp: character.currentHp,
+    inspiration: character.inspiration,
+    notes: character.notes,
+  );
+}
+
+Future<List<CharacterClassEntryRecord>> _insertClassEntryRecords(
+  Session session,
+  CharacterRecord characterRecord,
+  List<CharacterClassEntryData> entries,
+) async {
+  final savedEntries = <CharacterClassEntryRecord>[];
+  for (final entry in entries) {
+    final classDataId = entry.classData?.id;
+    if (classDataId == null) {
+      throw Exception('Character class entry requires classData.id.');
+    }
+    final saved = await CharacterClassEntryRecord.db.insertRow(
+      session,
+      CharacterClassEntryRecord(
+        characterId: characterRecord.id!,
+        character: characterRecord,
+        classDataId: classDataId,
+        subclassId: entry.subclass?.id,
+        level: entry.level ?? 1,
+        isStartingClass: entry.isStartingClass,
+        classOrder: entry.classOrder,
+        hpMode: entry.hpMode,
+        hpRolledValues: entry.hpRolledValues,
+        notes: entry.notes,
+      ),
+    );
+    savedEntries.add(saved);
+  }
+  return savedEntries;
+}
+
+Future<List<CharacterChoiceRecord>> _insertChoiceRecords(
+  Session session,
+  CharacterRecord characterRecord,
+  List<CharacterClassEntryRecord> savedEntries,
+  List<CharacterChoiceData> choices,
+) async {
+  final savedChoices = <CharacterChoiceRecord>[];
+  for (final choice in choices) {
+    final matchedEntry = _matchSavedEntryRecord(choice.classEntry, savedEntries);
+    final saved = await CharacterChoiceRecord.db.insertRow(
+      session,
+      CharacterChoiceRecord(
+        characterId: characterRecord.id!,
+        character: characterRecord,
+        classEntryId: matchedEntry?.id,
+        classEntry: matchedEntry,
+        sourceType: choice.sourceType,
+        sourceId: choice.sourceId,
+        groupKey: choice.groupKey,
+        optionKey: choice.optionKey,
+        selectedSpellKey: choice.selectedSpellKey,
+        selectedItemKey: choice.selectedItemKey,
+        selectedText: choice.selectedText,
+        selectedCount: choice.selectedCount,
+      ),
+    );
+    savedChoices.add(saved);
+  }
+  return savedChoices;
+}
+
+CharacterClassEntryRecord? _matchSavedEntryRecord(
+  CharacterClassEntryData? draftEntry,
+  List<CharacterClassEntryRecord> savedEntries,
+) {
+  if (draftEntry == null) return null;
+  if (draftEntry.id != null) {
+    for (final saved in savedEntries) {
+      if (saved.id == draftEntry.id) {
+        return saved;
+      }
+    }
+  }
+  for (final saved in savedEntries) {
+    final sameClass = saved.classDataId == draftEntry.classData?.id;
+    final sameOrder = saved.classOrder == draftEntry.classOrder;
+    if (sameClass && sameOrder) {
+      return saved;
+    }
+  }
+  return null;
 }
 
 Future<int> _requireCurrentUserId(Session session) async {
@@ -184,15 +273,16 @@ Future<int> _requireCurrentUserId(Session session) async {
   return userId;
 }
 
-Future<CharacterData?> _findOwnedCharacter(
+Future<CharacterRecord?> _findOwnedCharacterRecord(
   Session session,
   int characterId,
   int userId,
 ) async {
-  final rows = await CharacterData.db.find(
+  final rows = await CharacterRecord.db.find(
     session,
     where: (t) => t.id.equals(characterId) & t.userId.equals(userId),
     limit: 1,
+    include: _characterRecordInclude(),
   );
   if (rows.isEmpty) {
     return null;
@@ -200,70 +290,144 @@ Future<CharacterData?> _findOwnedCharacter(
   return rows.first;
 }
 
-Future<CharacterData> _requireOwnedCharacter(
+Future<CharacterRecord> _requireOwnedCharacterRecord(
   Session session,
-  int characterId,
-) async {
-  final userId = await _requireCurrentUserId(session);
-  final rows = await CharacterData.db.find(
+  int characterId, {
+  int? userId,
+}) async {
+  final resolvedUserId = userId ?? await _requireCurrentUserId(session);
+  final record = await _findOwnedCharacterRecord(
     session,
-    where: (t) => t.id.equals(characterId) & t.userId.equals(userId),
+    characterId,
+    resolvedUserId,
+  );
+  if (record != null) {
+    return record;
+  }
+
+  final existing = await CharacterRecord.db.find(
+    session,
+    where: (t) => t.id.equals(characterId),
     limit: 1,
-    include: CharacterData.include(
-      race: _raceDataInclude(),
-      subrace: _subraceDataInclude(),
-      background: BackgroundData.include(),
+  );
+  if (existing.isNotEmpty) {
+    throw Exception('Access denied to character id=$characterId.');
+  }
+
+  throw Exception('CharacterData with id=$characterId was not found.');
+}
+
+Future<CharacterData> _buildCharacterAggregate(
+  Session session,
+  CharacterRecord record,
+) async {
+  final entryRecords = await CharacterClassEntryRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(record.id),
+    orderBy: (t) => t.classOrder,
+    include: CharacterClassEntryRecord.include(
+      classData: ClassData.include(),
+      subclass: SubclassData.include(),
     ),
   );
-  if (rows.isEmpty) {
-    final existing = await CharacterData.db.find(
-      session,
-      where: (t) => t.id.equals(characterId),
-      limit: 1,
-    );
-    if (existing.isNotEmpty) {
-      throw Exception('Access denied to character id=$characterId.');
-    }
-
-    throw Exception('CharacterData with id=$characterId was not found.');
-  }
-  return rows.first;
-}
-
-CharacterClassEntryData? _matchSavedEntry(
-  CharacterClassEntryData? draftEntry,
-  List<CharacterClassEntryData> savedEntries,
-) {
-  if (draftEntry == null) return null;
-  for (final saved in savedEntries) {
-    final sameClass = saved.classData?.id == draftEntry.classData?.id;
-    final sameOrder = saved.classOrder == draftEntry.classOrder;
-    if (sameClass && sameOrder) {
-      return saved;
-    }
-  }
-  return null;
-}
-
-Future<CharacterSheetSnapshotData?> _findSnapshot(
-  Session session,
-  int characterId,
-) async {
-  final rows = await CharacterSheetSnapshotData.db.find(
+  final entries = entryRecords.map(_toCharacterClassEntryData).toList();
+  final entriesById = {
+    for (final entry in entries)
+      if (entry.id != null) entry.id!: entry,
+  };
+  final choiceRecords = await CharacterChoiceRecord.db.find(
     session,
-    where: (t) => t.characterId.equals(characterId),
-    limit: 1,
+    where: (t) => t.characterId.equals(record.id),
   );
-  return rows.isEmpty ? null : rows.first;
+  final choices = choiceRecords
+      .map((record) => _toCharacterChoiceData(record, entriesById))
+      .toList();
+
+  final character = _toCharacterData(record).copyWith(
+    classEntries: entries,
+    choices: choices,
+  );
+  final derived = await _buildDerivedData(session, character);
+  return character.copyWith(derived: derived);
 }
 
-Future<CharacterSheetSnapshotData> _rebuildSnapshot(
+CharacterData _toCharacterData(CharacterRecord record) {
+  return CharacterData(
+    id: record.id,
+    name: record.name,
+    age: record.age,
+    height: record.height,
+    weight: record.weight,
+    eyes: record.eyes,
+    skin: record.skin,
+    hair: record.hair,
+    appearance: record.appearance,
+    backstory: record.backstory,
+    goals: record.goals,
+    alliesOrganizations: record.alliesOrganizations,
+    personalityTraits: record.personalityTraits,
+    ideals: record.ideals,
+    bonds: record.bonds,
+    flaws: record.flaws,
+    version: record.version,
+    createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
+    experience: record.experience,
+    alignmentValue: record.alignmentValue,
+    race: record.race,
+    subrace: record.subrace,
+    background: record.background,
+    baseAbilityScores: record.baseAbilityScores,
+    temporaryHp: record.temporaryHp,
+    currentHp: record.currentHp,
+    inspiration: record.inspiration,
+    notes: record.notes,
+  );
+}
+
+CharacterClassEntryData _toCharacterClassEntryData(
+  CharacterClassEntryRecord record,
+) {
+  return CharacterClassEntryData(
+    id: record.id,
+    classData: record.classData,
+    subclass: record.subclass,
+    level: record.level,
+    isStartingClass: record.isStartingClass,
+    classOrder: record.classOrder,
+    hpMode: record.hpMode,
+    hpRolledValues: record.hpRolledValues,
+    notes: record.notes,
+  );
+}
+
+CharacterChoiceData _toCharacterChoiceData(
+  CharacterChoiceRecord record,
+  Map<int, CharacterClassEntryData> entriesById,
+) {
+  return CharacterChoiceData(
+    id: record.id,
+    classEntry: record.classEntryId == null
+        ? null
+        : entriesById[record.classEntryId!],
+    sourceType: record.sourceType,
+    sourceId: record.sourceId,
+    groupKey: record.groupKey,
+    optionKey: record.optionKey,
+    selectedSpellKey: record.selectedSpellKey,
+    selectedItemKey: record.selectedItemKey,
+    selectedText: record.selectedText,
+    selectedCount: record.selectedCount,
+  );
+}
+
+Future<CharacterDerivedData> _buildDerivedData(
   Session session,
   CharacterData character,
-  List<CharacterClassEntryData> entries,
-  List<CharacterChoiceData> choices,
 ) async {
-  final totalLevel = entries.fold<int>(0, (sum, entry) => sum + entry.level);
+  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
+  final choices = character.choices ?? const <CharacterChoiceData>[];
+  final totalLevel = entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
   final scores = _buildAbilityScores(character, choices);
   final dexMod = _abilityModifier(scores['dexterity'] ?? 10);
@@ -293,8 +457,6 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
   }
 
   final maxHp = _calculateMaxHp(entries, conMod);
-  final initiative = dexMod;
-  final speed = character.race?.speed ?? 30;
   final passivePerception = 10 + (skillBonuses[Skill.perception.name] ?? 0);
   final passiveInvestigation =
       10 + (skillBonuses[Skill.investigation.name] ?? 0);
@@ -303,9 +465,10 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
   final hitDiceSummary = <String, int>{};
   for (final entry in entries) {
     final hitDie = _resolveHitDie(entry.classData);
-    if (hitDie != null) {
+    final level = entry.level ?? 0;
+    if (hitDie != null && level > 0) {
       final key = 'd$hitDie';
-      hitDiceSummary[key] = (hitDiceSummary[key] ?? 0) + entry.level;
+      hitDiceSummary[key] = (hitDiceSummary[key] ?? 0) + level;
     }
   }
 
@@ -314,19 +477,12 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
   ];
   final resistances = _collectDamageTypes(character, choices);
 
-  final existing = await _findSnapshot(session, character.id!);
-  final snapshot = (existing ??
-          CharacterSheetSnapshotData(
-            characterId: character.id!,
-            character: character,
-          ))
-      .copyWith(
-    character: character,
+  return CharacterDerivedData(
     totalLevel: totalLevel,
     proficiencyBonus: proficiencyBonus,
     armorClass: 10 + dexMod,
-    initiative: initiative,
-    speed: speed,
+    initiative: dexMod,
+    speed: character.race?.speed ?? 30,
     maxHp: maxHp,
     passivePerception: passivePerception,
     passiveInvestigation: passiveInvestigation,
@@ -338,17 +494,8 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
     hitDiceSummary: hitDiceSummary,
     senses: senses,
     resistances: resistances,
-    sheetVersion: (existing?.sheetVersion ?? 0) + 1,
     rebuiltAt: DateTime.now(),
   );
-
-  if (existing == null) {
-    return CharacterSheetSnapshotData.db.insertRow(session, snapshot);
-  }
-
-  snapshot.id = existing.id;
-  await CharacterSheetSnapshotData.db.updateRow(session, snapshot);
-  return snapshot;
 }
 
 Map<String, int> _buildAbilityScores(
@@ -361,7 +508,10 @@ Map<String, int> _buildAbilityScores(
   };
 
   final raceChoices = _racialChoicesForSource(
-      choices, ChoiceSourceType.race, character.race?.id);
+    choices,
+    ChoiceSourceType.race,
+    character.race?.id,
+  );
   final subraceChoices = _racialChoicesForSource(
     choices,
     ChoiceSourceType.subrace,
@@ -520,8 +670,9 @@ CharacterClassEntryData? _resolveStartingEntry(
     }
   }
   if (entries.isEmpty) return null;
-  entries.sort((a, b) => (a.classOrder ?? 0).compareTo(b.classOrder ?? 0));
-  return entries.first;
+  final sortedEntries = [...entries]
+    ..sort((a, b) => (a.classOrder ?? 0).compareTo(b.classOrder ?? 0));
+  return sortedEntries.first;
 }
 
 int _calculateMaxHp(List<CharacterClassEntryData> entries, int conModifier) {
@@ -534,8 +685,9 @@ int _calculateMaxHp(List<CharacterClassEntryData> entries, int conModifier) {
     final hitDie = _resolveHitDie(entry.classData) ?? 0;
     final fixedGain = max(1, (hitDie ~/ 2) + 1);
     final rolledValues = entry.hpRolledValues ?? const <int>[];
+    final level = entry.level ?? 0;
 
-    for (var levelIndex = 0; levelIndex < entry.level; levelIndex++) {
+    for (var levelIndex = 0; levelIndex < level; levelIndex++) {
       final isFirstCharacterLevel = !consumedFirstCharacterLevel;
       final rollValue = levelIndex < rolledValues.length
           ? rolledValues[levelIndex]
@@ -558,7 +710,11 @@ Future<_SpellSlotData> _resolveSpellSlots(
 
   for (final entry in entries) {
     final classData = entry.classData;
-    if (classData == null || classData.spellcastingProgression == null) {
+    final level = entry.level;
+    if (classData == null ||
+        classData.spellcastingProgression == null ||
+        classData.id == null ||
+        level == null) {
       continue;
     }
 
@@ -568,7 +724,7 @@ Future<_SpellSlotData> _resolveSpellSlots(
     );
     ClassLevelData? match;
     for (final row in rows) {
-      if (row.level == entry.level) {
+      if (row.level == level) {
         match = row;
         break;
       }
@@ -755,6 +911,14 @@ List<RaceChoiceOptionData> _selectedRaceChoiceOptions(
 String? _choiceSetGroupKey(int? choiceSetId) {
   if (choiceSetId == null) return null;
   return 'race_choice_$choiceSetId';
+}
+
+CharacterRecordInclude _characterRecordInclude() {
+  return CharacterRecord.include(
+    race: _raceDataInclude(),
+    subrace: _subraceDataInclude(),
+    background: BackgroundData.include(),
+  );
 }
 
 RaceDataInclude _raceDataInclude() {

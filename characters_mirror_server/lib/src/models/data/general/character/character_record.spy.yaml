@@ -1,0 +1,33 @@
+class: CharacterRecord
+serverOnly: true
+table: characters
+fields:
+  name: String?
+  age: String?
+  height: String?
+  weight: String?
+  eyes: String?
+  skin: String?
+  hair: String?
+  appearance: String?
+  backstory: String?
+  goals: String?
+  alliesOrganizations: String?
+  personalityTraits: String?
+  ideals: String?
+  bonds: String?
+  flaws: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+  userId: int?
+  experience: int?
+  alignmentValue: CharacterAlignment?
+  race: RaceData?, relation(optional)
+  subrace: SubraceData?, relation(optional)
+  background: BackgroundData?, relation(optional)
+  baseAbilityScores: Map<String, int>?
+  temporaryHp: int?
+  currentHp: int?
+  inspiration: bool?
+  notes: String?

@@ -1,7 +1,7 @@
 export 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart'
     show
         BackgroundRepository,
-        CharacterBuildRepository,
+        CharacterRepository,
         ClassChoiceGroupRepository,
         ClassChoiceOptionRepository,
         ClassFeatureRepository,

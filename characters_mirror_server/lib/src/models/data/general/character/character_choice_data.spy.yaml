@@ -1,8 +1,7 @@
 class: CharacterChoiceData
-table: character_choice_data
 fields:
-  character: CharacterData?, relation
-  classEntry: CharacterClassEntryData?, relation(optional)
+  id: int?
+  classEntry: CharacterClassEntryData?
   sourceType: ChoiceSourceType?
   sourceId: int?
   groupKey: String?

@@ -495,13 +495,22 @@ class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
   Future<void> delete(int id) => client.subclassFeatureData.delete(id);
 }
 
-class CharacterBuildRepository {
-  Future<CharacterBuildData> upsertBuild(CharacterBuildData build) =>
-      client.characterData.upsertBuild(build);
+class CharacterRepository implements Repository<CharacterData> {
+  @override
+  Future<List<CharacterData>> getAll() => client.characterData.getAll();
 
-  Future<CharacterBuildData> getBuild(int characterId) =>
-      client.characterData.getBuild(characterId);
+  @override
+  Future<CharacterData?> getById(int id) => client.characterData.getCharacter(id);
 
-  Future<CharacterSheetView> getCharacterSheet(int characterId) =>
-      client.characterData.getCharacterSheet(characterId);
+  Future<CharacterData> saveCharacter(CharacterData character) =>
+      client.characterData.saveCharacter(character);
+
+  Future<CharacterData> getCharacter(int characterId) =>
+      client.characterData.getCharacter(characterId);
+
+  @override
+  Future<CharacterData> upsert(CharacterData entity) => saveCharacter(entity);
+
+  @override
+  Future<void> delete(int id) => client.characterData.delete(id);
 }

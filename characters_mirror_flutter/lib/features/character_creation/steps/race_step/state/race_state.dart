@@ -44,7 +44,8 @@ class RaceState extends _$RaceState {
       current: baseState,
       race: selectedRace,
       selectedSubraceId: characterCreation.character.subrace?.id,
-      savedChoices: characterCreation.choices,
+      savedChoices:
+          characterCreation.character.choices ?? const <CharacterChoiceData>[],
     );
   }
 
@@ -171,8 +172,6 @@ class RaceState extends _$RaceState {
     if (current == null) return const [];
 
     final result = <CharacterChoiceData>[];
-    final characterId =
-        ref.read(characterCreationProvider.select((c) => c.character.id)) ?? 0;
 
     for (final feature
         in _activeFeatures(current.selectedRace, current.selectedSubrace)) {
@@ -194,7 +193,6 @@ class RaceState extends _$RaceState {
         for (final option in selectedOptions) {
           result.add(
             CharacterChoiceData(
-              characterId: characterId,
               sourceType: sourceType,
               sourceId: sourceId,
               groupKey: groupKey,

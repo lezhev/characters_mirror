@@ -17,9 +17,8 @@ featData:
   - delete:
 characterData:
   - getAll:
-  - upsertBuild:
-  - getBuild:
-  - getCharacterSheet:
+  - saveCharacter:
+  - getCharacter:
   - delete:
 classData:
   - getAll:

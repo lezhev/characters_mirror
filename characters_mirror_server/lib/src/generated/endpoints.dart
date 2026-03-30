@@ -27,7 +27,7 @@ import 'package:characters_mirror_server/src/generated/data/background_data.dart
     as _i15;
 import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
     as _i16;
-import 'package:characters_mirror_server/src/generated/views/character_build_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
     as _i17;
 import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
     as _i18;
@@ -477,12 +477,12 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['characterData'] as _i7.CharacterDataEndpoint)
                   .getAll(session),
         ),
-        'upsertBuild': _i1.MethodConnector(
-          name: 'upsertBuild',
+        'saveCharacter': _i1.MethodConnector(
+          name: 'saveCharacter',
           params: {
-            'build': _i1.ParameterDescription(
-              name: 'build',
-              type: _i1.getType<_i17.CharacterBuildData>(),
+            'character': _i1.ParameterDescription(
+              name: 'character',
+              type: _i1.getType<_i17.CharacterData>(),
               nullable: false,
             )
           },
@@ -491,16 +491,16 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['characterData'] as _i7.CharacterDataEndpoint)
-                  .upsertBuild(
+                  .saveCharacter(
             session,
-            params['build'],
+            params['character'],
           ),
         ),
-        'getBuild': _i1.MethodConnector(
-          name: 'getBuild',
+        'getCharacter': _i1.MethodConnector(
+          name: 'getCharacter',
           params: {
-            'characterId': _i1.ParameterDescription(
-              name: 'characterId',
+            'id': _i1.ParameterDescription(
+              name: 'id',
               type: _i1.getType<int>(),
               nullable: false,
             )
@@ -510,28 +510,9 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['characterData'] as _i7.CharacterDataEndpoint)
-                  .getBuild(
+                  .getCharacter(
             session,
-            params['characterId'],
-          ),
-        ),
-        'getCharacterSheet': _i1.MethodConnector(
-          name: 'getCharacterSheet',
-          params: {
-            'characterId': _i1.ParameterDescription(
-              name: 'characterId',
-              type: _i1.getType<int>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['characterData'] as _i7.CharacterDataEndpoint)
-                  .getCharacterSheet(
-            session,
-            params['characterId'],
+            params['id'],
           ),
         ),
         'delete': _i1.MethodConnector(

@@ -1,3 +1,4 @@
+import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_nav_bar.dart';
@@ -13,8 +14,11 @@ class SummaryStep extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(characterCreationProvider);
+    final classEntries =
+        state.character.classEntries ?? const <CharacterClassEntryData>[];
+    final choices = state.character.choices ?? const <CharacterChoiceData>[];
     final classEntry =
-        state.classEntries.isNotEmpty ? state.classEntries.first : null;
+        classEntries.isNotEmpty ? classEntries.first : null;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -65,7 +69,7 @@ class SummaryStep extends ConsumerWidget {
                 ),
                 _SummaryLine(
                   label: 'Выборы класса',
-                  value: '${state.choices.length}',
+                  value: '${choices.length}',
                 ),
                 const Gap(12),
                 Text(
