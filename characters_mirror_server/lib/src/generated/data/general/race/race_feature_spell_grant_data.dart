@@ -36,7 +36,7 @@ abstract class RaceFeatureSpellGrantData
     this.version,
     this.createdAt,
     this.updatedAt,
-  }) : _raceFeatureDataSpellgrantsRaceFeatureDataId = null;
+  });
 
   factory RaceFeatureSpellGrantData({
     int? id,
@@ -59,7 +59,7 @@ abstract class RaceFeatureSpellGrantData
 
   factory RaceFeatureSpellGrantData.fromJson(
       Map<String, dynamic> jsonSerialization) {
-    return RaceFeatureSpellGrantDataImplicit._(
+    return RaceFeatureSpellGrantData(
       id: jsonSerialization['id'] as int?,
       featureId: jsonSerialization['featureId'] as int,
       feature: jsonSerialization['feature'] == null
@@ -93,9 +93,6 @@ abstract class RaceFeatureSpellGrantData
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      $_raceFeatureDataSpellgrantsRaceFeatureDataId:
-          jsonSerialization['_raceFeatureDataSpellgrantsRaceFeatureDataId']
-              as int?,
     );
   }
 
@@ -135,8 +132,6 @@ abstract class RaceFeatureSpellGrantData
   DateTime? createdAt;
 
   DateTime? updatedAt;
-
-  final int? _raceFeatureDataSpellgrantsRaceFeatureDataId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -183,9 +178,6 @@ abstract class RaceFeatureSpellGrantData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (_raceFeatureDataSpellgrantsRaceFeatureDataId != null)
-        '_raceFeatureDataSpellgrantsRaceFeatureDataId':
-            _raceFeatureDataSpellgrantsRaceFeatureDataId,
     };
   }
 
@@ -310,7 +302,7 @@ class _RaceFeatureSpellGrantDataImpl extends RaceFeatureSpellGrantData {
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
   }) {
-    return RaceFeatureSpellGrantDataImplicit._(
+    return RaceFeatureSpellGrantData(
       id: id is int? ? id : this.id,
       featureId: featureId ?? this.featureId,
       feature:
@@ -337,81 +329,8 @@ class _RaceFeatureSpellGrantDataImpl extends RaceFeatureSpellGrantData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      $_raceFeatureDataSpellgrantsRaceFeatureDataId:
-          this._raceFeatureDataSpellgrantsRaceFeatureDataId,
     );
   }
-}
-
-class RaceFeatureSpellGrantDataImplicit extends _RaceFeatureSpellGrantDataImpl {
-  RaceFeatureSpellGrantDataImplicit._({
-    int? id,
-    required int featureId,
-    _i2.RaceFeatureData? feature,
-    required int spellId,
-    _i3.SpellData? spell,
-    int? grantedAtLevel,
-    _i4.Ability? castingAbility,
-    _i5.RestType? freeCastsPerRest,
-    String? freeCastsFormula,
-    int? castAtSpellLevel,
-    bool? canAlsoCastWithSpellSlots,
-    String? notes,
-    String? source,
-    int? version,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    int? $_raceFeatureDataSpellgrantsRaceFeatureDataId,
-  })  : _raceFeatureDataSpellgrantsRaceFeatureDataId =
-            $_raceFeatureDataSpellgrantsRaceFeatureDataId,
-        super(
-          id: id,
-          featureId: featureId,
-          feature: feature,
-          spellId: spellId,
-          spell: spell,
-          grantedAtLevel: grantedAtLevel,
-          castingAbility: castingAbility,
-          freeCastsPerRest: freeCastsPerRest,
-          freeCastsFormula: freeCastsFormula,
-          castAtSpellLevel: castAtSpellLevel,
-          canAlsoCastWithSpellSlots: canAlsoCastWithSpellSlots,
-          notes: notes,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
-
-  factory RaceFeatureSpellGrantDataImplicit(
-    RaceFeatureSpellGrantData raceFeatureSpellGrantData, {
-    int? $_raceFeatureDataSpellgrantsRaceFeatureDataId,
-  }) {
-    return RaceFeatureSpellGrantDataImplicit._(
-      id: raceFeatureSpellGrantData.id,
-      featureId: raceFeatureSpellGrantData.featureId,
-      feature: raceFeatureSpellGrantData.feature,
-      spellId: raceFeatureSpellGrantData.spellId,
-      spell: raceFeatureSpellGrantData.spell,
-      grantedAtLevel: raceFeatureSpellGrantData.grantedAtLevel,
-      castingAbility: raceFeatureSpellGrantData.castingAbility,
-      freeCastsPerRest: raceFeatureSpellGrantData.freeCastsPerRest,
-      freeCastsFormula: raceFeatureSpellGrantData.freeCastsFormula,
-      castAtSpellLevel: raceFeatureSpellGrantData.castAtSpellLevel,
-      canAlsoCastWithSpellSlots:
-          raceFeatureSpellGrantData.canAlsoCastWithSpellSlots,
-      notes: raceFeatureSpellGrantData.notes,
-      source: raceFeatureSpellGrantData.source,
-      version: raceFeatureSpellGrantData.version,
-      createdAt: raceFeatureSpellGrantData.createdAt,
-      updatedAt: raceFeatureSpellGrantData.updatedAt,
-      $_raceFeatureDataSpellgrantsRaceFeatureDataId:
-          $_raceFeatureDataSpellgrantsRaceFeatureDataId,
-    );
-  }
-
-  @override
-  final int? _raceFeatureDataSpellgrantsRaceFeatureDataId;
 }
 
 class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
@@ -471,10 +390,6 @@ class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
       'updatedAt',
       this,
     );
-    $_raceFeatureDataSpellgrantsRaceFeatureDataId = _i1.ColumnInt(
-      '_raceFeatureDataSpellgrantsRaceFeatureDataId',
-      this,
-    );
   }
 
   late final _i1.ColumnInt featureId;
@@ -507,8 +422,6 @@ class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnInt $_raceFeatureDataSpellgrantsRaceFeatureDataId;
-
   _i2.RaceFeatureDataTable get feature {
     if (_feature != null) return _feature!;
     _feature = _i1.createRelationTable(
@@ -537,25 +450,6 @@ class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        featureId,
-        spellId,
-        grantedAtLevel,
-        castingAbility,
-        freeCastsPerRest,
-        freeCastsFormula,
-        castAtSpellLevel,
-        canAlsoCastWithSpellSlots,
-        notes,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        $_raceFeatureDataSpellgrantsRaceFeatureDataId,
-      ];
-
-  @override
-  List<_i1.Column> get managedColumns => [
         id,
         featureId,
         spellId,

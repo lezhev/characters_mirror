@@ -20,7 +20,7 @@ mixin _$RaceStateModel {
   SubraceData? get selectedSubrace;
   List<RaceFeatureData> get features;
   List<RaceFeatureData> get futureFeatures;
-  Map<int, List<RaceFeatureData>> get subclassFeatures;
+  Map<String, List<RaceChoiceOptionData>> get selectedChoiceOptionsByGroup;
 
   /// Create a copy of RaceStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -44,8 +44,9 @@ mixin _$RaceStateModel {
             const DeepCollectionEquality().equals(other.features, features) &&
             const DeepCollectionEquality()
                 .equals(other.futureFeatures, futureFeatures) &&
-            const DeepCollectionEquality()
-                .equals(other.subclassFeatures, subclassFeatures));
+            const DeepCollectionEquality().equals(
+                other.selectedChoiceOptionsByGroup,
+                selectedChoiceOptionsByGroup));
   }
 
   @override
@@ -57,11 +58,11 @@ mixin _$RaceStateModel {
       selectedSubrace,
       const DeepCollectionEquality().hash(features),
       const DeepCollectionEquality().hash(futureFeatures),
-      const DeepCollectionEquality().hash(subclassFeatures));
+      const DeepCollectionEquality().hash(selectedChoiceOptionsByGroup));
 
   @override
   String toString() {
-    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace, features: $features, futureFeatures: $futureFeatures, subclassFeatures: $subclassFeatures)';
+    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace, features: $features, futureFeatures: $futureFeatures, selectedChoiceOptionsByGroup: $selectedChoiceOptionsByGroup)';
   }
 }
 
@@ -78,7 +79,7 @@ abstract mixin class $RaceStateModelCopyWith<$Res> {
       SubraceData? selectedSubrace,
       List<RaceFeatureData> features,
       List<RaceFeatureData> futureFeatures,
-      Map<int, List<RaceFeatureData>> subclassFeatures});
+      Map<String, List<RaceChoiceOptionData>> selectedChoiceOptionsByGroup});
 }
 
 /// @nodoc
@@ -100,7 +101,7 @@ class _$RaceStateModelCopyWithImpl<$Res>
     Object? selectedSubrace = freezed,
     Object? features = null,
     Object? futureFeatures = null,
-    Object? subclassFeatures = null,
+    Object? selectedChoiceOptionsByGroup = null,
   }) {
     return _then(_self.copyWith(
       allRaces: null == allRaces
@@ -127,10 +128,10 @@ class _$RaceStateModelCopyWithImpl<$Res>
           ? _self.futureFeatures
           : futureFeatures // ignore: cast_nullable_to_non_nullable
               as List<RaceFeatureData>,
-      subclassFeatures: null == subclassFeatures
-          ? _self.subclassFeatures
-          : subclassFeatures // ignore: cast_nullable_to_non_nullable
-              as Map<int, List<RaceFeatureData>>,
+      selectedChoiceOptionsByGroup: null == selectedChoiceOptionsByGroup
+          ? _self.selectedChoiceOptionsByGroup
+          : selectedChoiceOptionsByGroup // ignore: cast_nullable_to_non_nullable
+              as Map<String, List<RaceChoiceOptionData>>,
     ));
   }
 }
@@ -235,7 +236,8 @@ extension RaceStateModelPatterns on RaceStateModel {
             SubraceData? selectedSubrace,
             List<RaceFeatureData> features,
             List<RaceFeatureData> futureFeatures,
-            Map<int, List<RaceFeatureData>> subclassFeatures)?
+            Map<String, List<RaceChoiceOptionData>>
+                selectedChoiceOptionsByGroup)?
         $default, {
     required TResult orElse(),
   }) {
@@ -249,7 +251,7 @@ extension RaceStateModelPatterns on RaceStateModel {
             _that.selectedSubrace,
             _that.features,
             _that.futureFeatures,
-            _that.subclassFeatures);
+            _that.selectedChoiceOptionsByGroup);
       case _:
         return orElse();
     }
@@ -277,7 +279,8 @@ extension RaceStateModelPatterns on RaceStateModel {
             SubraceData? selectedSubrace,
             List<RaceFeatureData> features,
             List<RaceFeatureData> futureFeatures,
-            Map<int, List<RaceFeatureData>> subclassFeatures)
+            Map<String, List<RaceChoiceOptionData>>
+                selectedChoiceOptionsByGroup)
         $default,
   ) {
     final _that = this;
@@ -290,7 +293,7 @@ extension RaceStateModelPatterns on RaceStateModel {
             _that.selectedSubrace,
             _that.features,
             _that.futureFeatures,
-            _that.subclassFeatures);
+            _that.selectedChoiceOptionsByGroup);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -317,7 +320,8 @@ extension RaceStateModelPatterns on RaceStateModel {
             SubraceData? selectedSubrace,
             List<RaceFeatureData> features,
             List<RaceFeatureData> futureFeatures,
-            Map<int, List<RaceFeatureData>> subclassFeatures)?
+            Map<String, List<RaceChoiceOptionData>>
+                selectedChoiceOptionsByGroup)?
         $default,
   ) {
     final _that = this;
@@ -330,7 +334,7 @@ extension RaceStateModelPatterns on RaceStateModel {
             _that.selectedSubrace,
             _that.features,
             _that.futureFeatures,
-            _that.subclassFeatures);
+            _that.selectedChoiceOptionsByGroup);
       case _:
         return null;
     }
@@ -347,12 +351,13 @@ class _RaceStateModel implements RaceStateModel {
       this.selectedSubrace,
       final List<RaceFeatureData> features = const [],
       final List<RaceFeatureData> futureFeatures = const [],
-      final Map<int, List<RaceFeatureData>> subclassFeatures = const {}})
+      final Map<String, List<RaceChoiceOptionData>>
+          selectedChoiceOptionsByGroup = const {}})
       : _allRaces = allRaces,
         _subraces = subraces,
         _features = features,
         _futureFeatures = futureFeatures,
-        _subclassFeatures = subclassFeatures;
+        _selectedChoiceOptionsByGroup = selectedChoiceOptionsByGroup;
 
   final List<RaceData> _allRaces;
   @override
@@ -394,13 +399,14 @@ class _RaceStateModel implements RaceStateModel {
     return EqualUnmodifiableListView(_futureFeatures);
   }
 
-  final Map<int, List<RaceFeatureData>> _subclassFeatures;
+  final Map<String, List<RaceChoiceOptionData>> _selectedChoiceOptionsByGroup;
   @override
   @JsonKey()
-  Map<int, List<RaceFeatureData>> get subclassFeatures {
-    if (_subclassFeatures is EqualUnmodifiableMapView) return _subclassFeatures;
+  Map<String, List<RaceChoiceOptionData>> get selectedChoiceOptionsByGroup {
+    if (_selectedChoiceOptionsByGroup is EqualUnmodifiableMapView)
+      return _selectedChoiceOptionsByGroup;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_subclassFeatures);
+    return EqualUnmodifiableMapView(_selectedChoiceOptionsByGroup);
   }
 
   /// Create a copy of RaceStateModel
@@ -425,8 +431,9 @@ class _RaceStateModel implements RaceStateModel {
             const DeepCollectionEquality().equals(other._features, _features) &&
             const DeepCollectionEquality()
                 .equals(other._futureFeatures, _futureFeatures) &&
-            const DeepCollectionEquality()
-                .equals(other._subclassFeatures, _subclassFeatures));
+            const DeepCollectionEquality().equals(
+                other._selectedChoiceOptionsByGroup,
+                _selectedChoiceOptionsByGroup));
   }
 
   @override
@@ -438,11 +445,11 @@ class _RaceStateModel implements RaceStateModel {
       selectedSubrace,
       const DeepCollectionEquality().hash(_features),
       const DeepCollectionEquality().hash(_futureFeatures),
-      const DeepCollectionEquality().hash(_subclassFeatures));
+      const DeepCollectionEquality().hash(_selectedChoiceOptionsByGroup));
 
   @override
   String toString() {
-    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace, features: $features, futureFeatures: $futureFeatures, subclassFeatures: $subclassFeatures)';
+    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace, features: $features, futureFeatures: $futureFeatures, selectedChoiceOptionsByGroup: $selectedChoiceOptionsByGroup)';
   }
 }
 
@@ -461,7 +468,7 @@ abstract mixin class _$RaceStateModelCopyWith<$Res>
       SubraceData? selectedSubrace,
       List<RaceFeatureData> features,
       List<RaceFeatureData> futureFeatures,
-      Map<int, List<RaceFeatureData>> subclassFeatures});
+      Map<String, List<RaceChoiceOptionData>> selectedChoiceOptionsByGroup});
 }
 
 /// @nodoc
@@ -483,7 +490,7 @@ class __$RaceStateModelCopyWithImpl<$Res>
     Object? selectedSubrace = freezed,
     Object? features = null,
     Object? futureFeatures = null,
-    Object? subclassFeatures = null,
+    Object? selectedChoiceOptionsByGroup = null,
   }) {
     return _then(_RaceStateModel(
       allRaces: null == allRaces
@@ -510,10 +517,10 @@ class __$RaceStateModelCopyWithImpl<$Res>
           ? _self._futureFeatures
           : futureFeatures // ignore: cast_nullable_to_non_nullable
               as List<RaceFeatureData>,
-      subclassFeatures: null == subclassFeatures
-          ? _self._subclassFeatures
-          : subclassFeatures // ignore: cast_nullable_to_non_nullable
-              as Map<int, List<RaceFeatureData>>,
+      selectedChoiceOptionsByGroup: null == selectedChoiceOptionsByGroup
+          ? _self._selectedChoiceOptionsByGroup
+          : selectedChoiceOptionsByGroup // ignore: cast_nullable_to_non_nullable
+              as Map<String, List<RaceChoiceOptionData>>,
     ));
   }
 }

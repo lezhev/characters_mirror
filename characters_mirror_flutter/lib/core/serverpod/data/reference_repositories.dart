@@ -55,6 +55,9 @@ class RaceRepository implements Repository<RaceData> {
     }
   }
 
+  Future<RaceStepView> getStepView(int raceId) =>
+      client.raceData.getStepView(raceId);
+
   @override
   Future<RaceData> upsert(RaceData entity) => client.raceData.upsert(entity);
 
@@ -103,32 +106,83 @@ class RaceFeatureRepository implements Repository<RaceFeatureData> {
     }
   }
 
-  Future<List<RaceFeatureData>> getAllByRaceId(int raceId) async {
-    final all = await getAll();
-    return all.where((s) => s.raceId == raceId).toList();
-  }
-
-  Future<List<RaceFeatureData>> getAllByRaceContext(
-    int raceId, {
-    List<int> subraceIds = const [],
-  }) async {
-    final all = await getAll();
-    final subraceIdSet = subraceIds.toSet();
-
-    return all.where((feature) {
-      final belongsToRace = feature.raceId == raceId;
-      final belongsToSubrace = feature.subraceId != null &&
-          subraceIdSet.contains(feature.subraceId);
-      return belongsToRace || belongsToSubrace;
-    }).toList();
-  }
-
   @override
   Future<RaceFeatureData> upsert(RaceFeatureData entity) =>
       client.raceFeature.upsert(entity);
 
   @override
   Future<void> delete(int id) => client.raceFeature.delete(id);
+}
+
+class RaceChoiceSetRepository implements Repository<RaceChoiceSetData> {
+  @override
+  Future<List<RaceChoiceSetData>> getAll() => client.raceChoiceSetData.getAll();
+
+  @override
+  Future<RaceChoiceSetData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<RaceChoiceSetData> upsert(RaceChoiceSetData entity) =>
+      client.raceChoiceSetData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.raceChoiceSetData.delete(id);
+}
+
+class RaceChoiceOptionRepository implements Repository<RaceChoiceOptionData> {
+  @override
+  Future<List<RaceChoiceOptionData>> getAll() =>
+      client.raceChoiceOptionData.getAll();
+
+  @override
+  Future<RaceChoiceOptionData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<RaceChoiceOptionData> upsert(RaceChoiceOptionData entity) =>
+      client.raceChoiceOptionData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.raceChoiceOptionData.delete(id);
+}
+
+class RaceFeatureSpellGrantRepository
+    implements Repository<RaceFeatureSpellGrantData> {
+  @override
+  Future<List<RaceFeatureSpellGrantData>> getAll() =>
+      client.raceFeatureSpellGrantData.getAll();
+
+  @override
+  Future<RaceFeatureSpellGrantData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<RaceFeatureSpellGrantData> upsert(
+    RaceFeatureSpellGrantData entity,
+  ) =>
+      client.raceFeatureSpellGrantData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.raceFeatureSpellGrantData.delete(id);
 }
 
 class ItemRepository implements Repository<ItemData> {
@@ -439,36 +493,6 @@ class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
 
   @override
   Future<void> delete(int id) => client.subclassFeatureData.delete(id);
-}
-
-class DragonbornAncestryRepository
-    implements Repository<DragonbornAncestryData> {
-  @override
-  Future<List<DragonbornAncestryData>> getAll() =>
-      client.dragonbornAncestryData.getAll();
-
-  @override
-  Future<DragonbornAncestryData?> getById(int id) async {
-    final all = await getAll();
-    try {
-      return all.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  @override
-  Future<DragonbornAncestryData> upsert(DragonbornAncestryData entity) =>
-      client.dragonbornAncestryData.upsert(entity);
-
-  Future<void> upsertAll(List<DragonbornAncestryData> entities) async {
-    for (final entity in entities) {
-      await upsert(entity);
-    }
-  }
-
-  @override
-  Future<void> delete(int id) => client.dragonbornAncestryData.delete(id);
 }
 
 class CharacterBuildRepository {

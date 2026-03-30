@@ -12,8 +12,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/spell_data.dart' as _i2;
-import '../../../data/general/race/race_choice_set_data.dart' as _i3;
+import '../../../enums/creature_size.dart' as _i2;
+import '../../../enums/sense_type.dart' as _i3;
+import '../../../enums/damage_type.dart' as _i4;
+import '../../../data/general/race/race_feature_data.dart' as _i5;
 
 abstract class RaceData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -27,7 +29,12 @@ abstract class RaceData
     this.updatedAt,
     this.speed,
     this.size,
-    this.abilityBonuses,
+    this.strengthBonus,
+    this.dexterityBonus,
+    this.constitutionBonus,
+    this.intelligenceBonus,
+    this.wisdomBonus,
+    this.charismaBonus,
     this.traits,
     this.languages,
     this.visionType,
@@ -37,8 +44,7 @@ abstract class RaceData
     this.armorProficiencies,
     this.weaponProficiencies,
     this.toolProficiencies,
-    this.spellcasting,
-    this.choiceSets,
+    this.features,
     this.imageURL,
   });
 
@@ -51,19 +57,23 @@ abstract class RaceData
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    String? size,
-    Map<String, int>? abilityBonuses,
+    _i2.CreatureSize? size,
+    int? strengthBonus,
+    int? dexterityBonus,
+    int? constitutionBonus,
+    int? intelligenceBonus,
+    int? wisdomBonus,
+    int? charismaBonus,
     List<String>? traits,
     List<String>? languages,
-    String? visionType,
+    _i3.SenseType? visionType,
     int? visionRange,
-    List<String>? resistances,
+    List<_i4.DamageType>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    Map<String, _i2.SpellData>? spellcasting,
-    List<_i3.RaceChoiceSetData>? choiceSets,
+    List<_i5.RaceFeatureData>? features,
     String? imageURL,
   }) = _RaceDataImpl;
 
@@ -81,22 +91,27 @@ abstract class RaceData
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       speed: jsonSerialization['speed'] as int?,
-      size: jsonSerialization['size'] as String?,
-      abilityBonuses:
-          (jsonSerialization['abilityBonuses'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+      size: jsonSerialization['size'] == null
+          ? null
+          : _i2.CreatureSize.fromJson((jsonSerialization['size'] as int)),
+      strengthBonus: jsonSerialization['strengthBonus'] as int?,
+      dexterityBonus: jsonSerialization['dexterityBonus'] as int?,
+      constitutionBonus: jsonSerialization['constitutionBonus'] as int?,
+      intelligenceBonus: jsonSerialization['intelligenceBonus'] as int?,
+      wisdomBonus: jsonSerialization['wisdomBonus'] as int?,
+      charismaBonus: jsonSerialization['charismaBonus'] as int?,
       traits: (jsonSerialization['traits'] as List?)
           ?.map((e) => e as String)
           .toList(),
       languages: (jsonSerialization['languages'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      visionType: jsonSerialization['visionType'] as String?,
+      visionType: jsonSerialization['visionType'] == null
+          ? null
+          : _i3.SenseType.fromJson((jsonSerialization['visionType'] as String)),
       visionRange: jsonSerialization['visionRange'] as int?,
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i4.DamageType.fromJson((e as String)))
           .toList(),
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
           ?.map((e) => e as String)
@@ -110,14 +125,9 @@ abstract class RaceData
       toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      spellcasting:
-          (jsonSerialization['spellcasting'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                _i2.SpellData.fromJson((v as Map<String, dynamic>)),
-              )),
-      choiceSets: (jsonSerialization['choiceSets'] as List?)
-          ?.map((e) =>
-              _i3.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
+      features: (jsonSerialization['features'] as List?)
+          ?.map(
+              (e) => _i5.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       imageURL: jsonSerialization['imageURL'] as String?,
     );
@@ -144,19 +154,29 @@ abstract class RaceData
 
   int? speed;
 
-  String? size;
+  _i2.CreatureSize? size;
 
-  Map<String, int>? abilityBonuses;
+  int? strengthBonus;
+
+  int? dexterityBonus;
+
+  int? constitutionBonus;
+
+  int? intelligenceBonus;
+
+  int? wisdomBonus;
+
+  int? charismaBonus;
 
   List<String>? traits;
 
   List<String>? languages;
 
-  String? visionType;
+  _i3.SenseType? visionType;
 
   int? visionRange;
 
-  List<String>? resistances;
+  List<_i4.DamageType>? resistances;
 
   List<String>? skillProficiencies;
 
@@ -166,9 +186,7 @@ abstract class RaceData
 
   List<String>? toolProficiencies;
 
-  Map<String, _i2.SpellData>? spellcasting;
-
-  List<_i3.RaceChoiceSetData>? choiceSets;
+  List<_i5.RaceFeatureData>? features;
 
   String? imageURL;
 
@@ -187,19 +205,23 @@ abstract class RaceData
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    String? size,
-    Map<String, int>? abilityBonuses,
+    _i2.CreatureSize? size,
+    int? strengthBonus,
+    int? dexterityBonus,
+    int? constitutionBonus,
+    int? intelligenceBonus,
+    int? wisdomBonus,
+    int? charismaBonus,
     List<String>? traits,
     List<String>? languages,
-    String? visionType,
+    _i3.SenseType? visionType,
     int? visionRange,
-    List<String>? resistances,
+    List<_i4.DamageType>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    Map<String, _i2.SpellData>? spellcasting,
-    List<_i3.RaceChoiceSetData>? choiceSets,
+    List<_i5.RaceFeatureData>? features,
     String? imageURL,
   });
   @override
@@ -213,13 +235,19 @@ abstract class RaceData
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (speed != null) 'speed': speed,
-      if (size != null) 'size': size,
-      if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
+      if (size != null) 'size': size?.toJson(),
+      if (strengthBonus != null) 'strengthBonus': strengthBonus,
+      if (dexterityBonus != null) 'dexterityBonus': dexterityBonus,
+      if (constitutionBonus != null) 'constitutionBonus': constitutionBonus,
+      if (intelligenceBonus != null) 'intelligenceBonus': intelligenceBonus,
+      if (wisdomBonus != null) 'wisdomBonus': wisdomBonus,
+      if (charismaBonus != null) 'charismaBonus': charismaBonus,
       if (traits != null) 'traits': traits?.toJson(),
       if (languages != null) 'languages': languages?.toJson(),
-      if (visionType != null) 'visionType': visionType,
+      if (visionType != null) 'visionType': visionType?.toJson(),
       if (visionRange != null) 'visionRange': visionRange,
-      if (resistances != null) 'resistances': resistances?.toJson(),
+      if (resistances != null)
+        'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
       if (armorProficiencies != null)
@@ -228,10 +256,8 @@ abstract class RaceData
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (spellcasting != null)
-        'spellcasting': spellcasting?.toJson(valueToJson: (v) => v.toJson()),
-      if (choiceSets != null)
-        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
+      if (features != null)
+        'features': features?.toJson(valueToJson: (v) => v.toJson()),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
@@ -247,13 +273,19 @@ abstract class RaceData
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (speed != null) 'speed': speed,
-      if (size != null) 'size': size,
-      if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
+      if (size != null) 'size': size?.toJson(),
+      if (strengthBonus != null) 'strengthBonus': strengthBonus,
+      if (dexterityBonus != null) 'dexterityBonus': dexterityBonus,
+      if (constitutionBonus != null) 'constitutionBonus': constitutionBonus,
+      if (intelligenceBonus != null) 'intelligenceBonus': intelligenceBonus,
+      if (wisdomBonus != null) 'wisdomBonus': wisdomBonus,
+      if (charismaBonus != null) 'charismaBonus': charismaBonus,
       if (traits != null) 'traits': traits?.toJson(),
       if (languages != null) 'languages': languages?.toJson(),
-      if (visionType != null) 'visionType': visionType,
+      if (visionType != null) 'visionType': visionType?.toJson(),
       if (visionRange != null) 'visionRange': visionRange,
-      if (resistances != null) 'resistances': resistances?.toJson(),
+      if (resistances != null)
+        'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
       if (armorProficiencies != null)
@@ -262,19 +294,14 @@ abstract class RaceData
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (spellcasting != null)
-        'spellcasting':
-            spellcasting?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (choiceSets != null)
-        'choiceSets':
-            choiceSets?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (features != null)
+        'features': features?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
 
-  static RaceDataInclude include(
-      {_i3.RaceChoiceSetDataIncludeList? choiceSets}) {
-    return RaceDataInclude._(choiceSets: choiceSets);
+  static RaceDataInclude include({_i5.RaceFeatureDataIncludeList? features}) {
+    return RaceDataInclude._(features: features);
   }
 
   static RaceDataIncludeList includeList({
@@ -315,19 +342,23 @@ class _RaceDataImpl extends RaceData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    String? size,
-    Map<String, int>? abilityBonuses,
+    _i2.CreatureSize? size,
+    int? strengthBonus,
+    int? dexterityBonus,
+    int? constitutionBonus,
+    int? intelligenceBonus,
+    int? wisdomBonus,
+    int? charismaBonus,
     List<String>? traits,
     List<String>? languages,
-    String? visionType,
+    _i3.SenseType? visionType,
     int? visionRange,
-    List<String>? resistances,
+    List<_i4.DamageType>? resistances,
     List<String>? skillProficiencies,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    Map<String, _i2.SpellData>? spellcasting,
-    List<_i3.RaceChoiceSetData>? choiceSets,
+    List<_i5.RaceFeatureData>? features,
     String? imageURL,
   }) : super._(
           id: id,
@@ -339,7 +370,12 @@ class _RaceDataImpl extends RaceData {
           updatedAt: updatedAt,
           speed: speed,
           size: size,
-          abilityBonuses: abilityBonuses,
+          strengthBonus: strengthBonus,
+          dexterityBonus: dexterityBonus,
+          constitutionBonus: constitutionBonus,
+          intelligenceBonus: intelligenceBonus,
+          wisdomBonus: wisdomBonus,
+          charismaBonus: charismaBonus,
           traits: traits,
           languages: languages,
           visionType: visionType,
@@ -349,8 +385,7 @@ class _RaceDataImpl extends RaceData {
           armorProficiencies: armorProficiencies,
           weaponProficiencies: weaponProficiencies,
           toolProficiencies: toolProficiencies,
-          spellcasting: spellcasting,
-          choiceSets: choiceSets,
+          features: features,
           imageURL: imageURL,
         );
 
@@ -368,7 +403,12 @@ class _RaceDataImpl extends RaceData {
     Object? updatedAt = _Undefined,
     Object? speed = _Undefined,
     Object? size = _Undefined,
-    Object? abilityBonuses = _Undefined,
+    Object? strengthBonus = _Undefined,
+    Object? dexterityBonus = _Undefined,
+    Object? constitutionBonus = _Undefined,
+    Object? intelligenceBonus = _Undefined,
+    Object? wisdomBonus = _Undefined,
+    Object? charismaBonus = _Undefined,
     Object? traits = _Undefined,
     Object? languages = _Undefined,
     Object? visionType = _Undefined,
@@ -378,8 +418,7 @@ class _RaceDataImpl extends RaceData {
     Object? armorProficiencies = _Undefined,
     Object? weaponProficiencies = _Undefined,
     Object? toolProficiencies = _Undefined,
-    Object? spellcasting = _Undefined,
-    Object? choiceSets = _Undefined,
+    Object? features = _Undefined,
     Object? imageURL = _Undefined,
   }) {
     return RaceData(
@@ -391,26 +430,27 @@ class _RaceDataImpl extends RaceData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       speed: speed is int? ? speed : this.speed,
-      size: size is String? ? size : this.size,
-      abilityBonuses: abilityBonuses is Map<String, int>?
-          ? abilityBonuses
-          : this.abilityBonuses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+      size: size is _i2.CreatureSize? ? size : this.size,
+      strengthBonus: strengthBonus is int? ? strengthBonus : this.strengthBonus,
+      dexterityBonus:
+          dexterityBonus is int? ? dexterityBonus : this.dexterityBonus,
+      constitutionBonus: constitutionBonus is int?
+          ? constitutionBonus
+          : this.constitutionBonus,
+      intelligenceBonus: intelligenceBonus is int?
+          ? intelligenceBonus
+          : this.intelligenceBonus,
+      wisdomBonus: wisdomBonus is int? ? wisdomBonus : this.wisdomBonus,
+      charismaBonus: charismaBonus is int? ? charismaBonus : this.charismaBonus,
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
       languages: languages is List<String>?
           ? languages
           : this.languages?.map((e0) => e0).toList(),
-      visionType: visionType is String? ? visionType : this.visionType,
+      visionType: visionType is _i3.SenseType? ? visionType : this.visionType,
       visionRange: visionRange is int? ? visionRange : this.visionRange,
-      resistances: resistances is List<String>?
+      resistances: resistances is List<_i4.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
       skillProficiencies: skillProficiencies is List<String>?
@@ -425,19 +465,9 @@ class _RaceDataImpl extends RaceData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
-      spellcasting: spellcasting is Map<String, _i2.SpellData>?
-          ? spellcasting
-          : this.spellcasting?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0.copyWith(),
-                  )),
-      choiceSets: choiceSets is List<_i3.RaceChoiceSetData>?
-          ? choiceSets
-          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
+      features: features is List<_i5.RaceFeatureData>?
+          ? features
+          : this.features?.map((e0) => e0.copyWith()).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,
     );
   }
@@ -473,12 +503,33 @@ class RaceDataTable extends _i1.Table<int?> {
       'speed',
       this,
     );
-    size = _i1.ColumnString(
+    size = _i1.ColumnEnum(
       'size',
       this,
+      _i1.EnumSerialization.byIndex,
     );
-    abilityBonuses = _i1.ColumnSerializable(
-      'abilityBonuses',
+    strengthBonus = _i1.ColumnInt(
+      'strengthBonus',
+      this,
+    );
+    dexterityBonus = _i1.ColumnInt(
+      'dexterityBonus',
+      this,
+    );
+    constitutionBonus = _i1.ColumnInt(
+      'constitutionBonus',
+      this,
+    );
+    intelligenceBonus = _i1.ColumnInt(
+      'intelligenceBonus',
+      this,
+    );
+    wisdomBonus = _i1.ColumnInt(
+      'wisdomBonus',
+      this,
+    );
+    charismaBonus = _i1.ColumnInt(
+      'charismaBonus',
       this,
     );
     traits = _i1.ColumnSerializable(
@@ -489,9 +540,10 @@ class RaceDataTable extends _i1.Table<int?> {
       'languages',
       this,
     );
-    visionType = _i1.ColumnString(
+    visionType = _i1.ColumnEnum(
       'visionType',
       this,
+      _i1.EnumSerialization.byName,
     );
     visionRange = _i1.ColumnInt(
       'visionRange',
@@ -517,10 +569,6 @@ class RaceDataTable extends _i1.Table<int?> {
       'toolProficiencies',
       this,
     );
-    spellcasting = _i1.ColumnSerializable(
-      'spellcasting',
-      this,
-    );
     imageURL = _i1.ColumnString(
       'imageURL',
       this,
@@ -541,15 +589,25 @@ class RaceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt speed;
 
-  late final _i1.ColumnString size;
+  late final _i1.ColumnEnum<_i2.CreatureSize> size;
 
-  late final _i1.ColumnSerializable abilityBonuses;
+  late final _i1.ColumnInt strengthBonus;
+
+  late final _i1.ColumnInt dexterityBonus;
+
+  late final _i1.ColumnInt constitutionBonus;
+
+  late final _i1.ColumnInt intelligenceBonus;
+
+  late final _i1.ColumnInt wisdomBonus;
+
+  late final _i1.ColumnInt charismaBonus;
 
   late final _i1.ColumnSerializable traits;
 
   late final _i1.ColumnSerializable languages;
 
-  late final _i1.ColumnString visionType;
+  late final _i1.ColumnEnum<_i3.SenseType> visionType;
 
   late final _i1.ColumnInt visionRange;
 
@@ -563,43 +621,41 @@ class RaceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable toolProficiencies;
 
-  late final _i1.ColumnSerializable spellcasting;
+  _i5.RaceFeatureDataTable? ___features;
 
-  _i3.RaceChoiceSetDataTable? ___choiceSets;
-
-  _i1.ManyRelation<_i3.RaceChoiceSetDataTable>? _choiceSets;
+  _i1.ManyRelation<_i5.RaceFeatureDataTable>? _features;
 
   late final _i1.ColumnString imageURL;
 
-  _i3.RaceChoiceSetDataTable get __choiceSets {
-    if (___choiceSets != null) return ___choiceSets!;
-    ___choiceSets = _i1.createRelationTable(
-      relationFieldName: '__choiceSets',
+  _i5.RaceFeatureDataTable get __features {
+    if (___features != null) return ___features!;
+    ___features = _i1.createRelationTable(
+      relationFieldName: '__features',
       field: RaceData.t.id,
-      foreignField: _i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId,
+      foreignField: _i5.RaceFeatureData.t.raceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+          _i5.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
-    return ___choiceSets!;
+    return ___features!;
   }
 
-  _i1.ManyRelation<_i3.RaceChoiceSetDataTable> get choiceSets {
-    if (_choiceSets != null) return _choiceSets!;
+  _i1.ManyRelation<_i5.RaceFeatureDataTable> get features {
+    if (_features != null) return _features!;
     var relationTable = _i1.createRelationTable(
-      relationFieldName: 'choiceSets',
+      relationFieldName: 'features',
       field: RaceData.t.id,
-      foreignField: _i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId,
+      foreignField: _i5.RaceFeatureData.t.raceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+          _i5.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
-    _choiceSets = _i1.ManyRelation<_i3.RaceChoiceSetDataTable>(
+    _features = _i1.ManyRelation<_i5.RaceFeatureDataTable>(
       tableWithRelations: relationTable,
-      table: _i3.RaceChoiceSetDataTable(
+      table: _i5.RaceFeatureDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
-    return _choiceSets!;
+    return _features!;
   }
 
   @override
@@ -613,7 +669,12 @@ class RaceDataTable extends _i1.Table<int?> {
         updatedAt,
         speed,
         size,
-        abilityBonuses,
+        strengthBonus,
+        dexterityBonus,
+        constitutionBonus,
+        intelligenceBonus,
+        wisdomBonus,
+        charismaBonus,
         traits,
         languages,
         visionType,
@@ -623,28 +684,27 @@ class RaceDataTable extends _i1.Table<int?> {
         armorProficiencies,
         weaponProficiencies,
         toolProficiencies,
-        spellcasting,
         imageURL,
       ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'choiceSets') {
-      return __choiceSets;
+    if (relationField == 'features') {
+      return __features;
     }
     return null;
   }
 }
 
 class RaceDataInclude extends _i1.IncludeObject {
-  RaceDataInclude._({_i3.RaceChoiceSetDataIncludeList? choiceSets}) {
-    _choiceSets = choiceSets;
+  RaceDataInclude._({_i5.RaceFeatureDataIncludeList? features}) {
+    _features = features;
   }
 
-  _i3.RaceChoiceSetDataIncludeList? _choiceSets;
+  _i5.RaceFeatureDataIncludeList? _features;
 
   @override
-  Map<String, _i1.Include?> get includes => {'choiceSets': _choiceSets};
+  Map<String, _i1.Include?> get includes => {'features': _features};
 
   @override
   _i1.Table<int?> get table => RaceData.t;
@@ -900,30 +960,26 @@ class RaceDataRepository {
 class RaceDataAttachRepository {
   const RaceDataAttachRepository._();
 
-  /// Creates a relation between this [RaceData] and the given [RaceChoiceSetData]s
-  /// by setting each [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to refer to this [RaceData].
-  Future<void> choiceSets(
+  /// Creates a relation between this [RaceData] and the given [RaceFeatureData]s
+  /// by setting each [RaceFeatureData]'s foreign key `raceId` to refer to this [RaceData].
+  Future<void> features(
     _i1.Session session,
     RaceData raceData,
-    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    List<_i5.RaceFeatureData> raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
     if (raceData.id == null) {
       throw ArgumentError.notNull('raceData.id');
     }
 
-    var $raceChoiceSetData = raceChoiceSetData
-        .map((e) => _i3.RaceChoiceSetDataImplicit(
-              e,
-              $_raceDataChoicesetsRaceDataId: raceData.id,
-            ))
-        .toList();
-    await session.db.update<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
+    var $raceFeatureData =
+        raceFeatureData.map((e) => e.copyWith(raceId: raceData.id)).toList();
+    await session.db.update<_i5.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i5.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }
@@ -932,28 +988,25 @@ class RaceDataAttachRepository {
 class RaceDataAttachRowRepository {
   const RaceDataAttachRowRepository._();
 
-  /// Creates a relation between this [RaceData] and the given [RaceChoiceSetData]
-  /// by setting the [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to refer to this [RaceData].
-  Future<void> choiceSets(
+  /// Creates a relation between this [RaceData] and the given [RaceFeatureData]
+  /// by setting the [RaceFeatureData]'s foreign key `raceId` to refer to this [RaceData].
+  Future<void> features(
     _i1.Session session,
     RaceData raceData,
-    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i5.RaceFeatureData raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.id == null) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
     if (raceData.id == null) {
       throw ArgumentError.notNull('raceData.id');
     }
 
-    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
-      raceChoiceSetData,
-      $_raceDataChoicesetsRaceDataId: raceData.id,
-    );
-    await session.db.updateRow<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
+    var $raceFeatureData = raceFeatureData.copyWith(raceId: raceData.id);
+    await session.db.updateRow<_i5.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i5.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }
@@ -962,29 +1015,25 @@ class RaceDataAttachRowRepository {
 class RaceDataDetachRepository {
   const RaceDataDetachRepository._();
 
-  /// Detaches the relation between this [RaceData] and the given [RaceChoiceSetData]
-  /// by setting the [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to `null`.
+  /// Detaches the relation between this [RaceData] and the given [RaceFeatureData]
+  /// by setting the [RaceFeatureData]'s foreign key `raceId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
-  Future<void> choiceSets(
+  Future<void> features(
     _i1.Session session,
-    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    List<_i5.RaceFeatureData> raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
 
-    var $raceChoiceSetData = raceChoiceSetData
-        .map((e) => _i3.RaceChoiceSetDataImplicit(
-              e,
-              $_raceDataChoicesetsRaceDataId: null,
-            ))
-        .toList();
-    await session.db.update<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
+    var $raceFeatureData =
+        raceFeatureData.map((e) => e.copyWith(raceId: null)).toList();
+    await session.db.update<_i5.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i5.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }
@@ -993,27 +1042,24 @@ class RaceDataDetachRepository {
 class RaceDataDetachRowRepository {
   const RaceDataDetachRowRepository._();
 
-  /// Detaches the relation between this [RaceData] and the given [RaceChoiceSetData]
-  /// by setting the [RaceChoiceSetData]'s foreign key `_raceDataChoicesetsRaceDataId` to `null`.
+  /// Detaches the relation between this [RaceData] and the given [RaceFeatureData]
+  /// by setting the [RaceFeatureData]'s foreign key `raceId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
-  Future<void> choiceSets(
+  Future<void> features(
     _i1.Session session,
-    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i5.RaceFeatureData raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.id == null) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
 
-    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
-      raceChoiceSetData,
-      $_raceDataChoicesetsRaceDataId: null,
-    );
-    await session.db.updateRow<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_raceDataChoicesetsRaceDataId],
+    var $raceFeatureData = raceFeatureData.copyWith(raceId: null);
+    await session.db.updateRow<_i5.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i5.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }

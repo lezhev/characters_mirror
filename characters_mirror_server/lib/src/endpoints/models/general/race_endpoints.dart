@@ -28,6 +28,66 @@ class RaceDataEndpoint extends Endpoint {
     );
   }
 
+  Future<RaceStepView> getStepView(Session session, int raceId) async {
+    final race = await _requireById<RaceData>(
+      await RaceData.db.find(
+        session,
+        where: (t) => t.id.equals(raceId),
+        limit: 1,
+      ),
+      'RaceData',
+      raceId,
+    );
+    final subraces = await SubraceData.db.find(
+      session,
+      where: (t) => t.parentRaceId.equals(raceId),
+      orderBy: (t) => t.name,
+    );
+    final raceFeatures = await _findRaceFeatures(
+      session,
+      where: (t) => t.raceId.equals(raceId),
+    );
+    final subraceIds = subraces.map((subrace) => subrace.id).whereType<int>();
+    final subraceFeatures = subraceIds.isEmpty
+        ? const <RaceFeatureData>[]
+        : await _findRaceFeatures(
+            session,
+            where: (t) => t.subraceId.inSet(subraceIds.toSet()),
+          );
+    final featuresBySubraceId = <int, List<RaceFeatureData>>{};
+    for (final feature in subraceFeatures) {
+      final subraceId = feature.subraceId;
+      if (subraceId == null) continue;
+      featuresBySubraceId.putIfAbsent(subraceId, () => []).add(feature);
+    }
+    for (final entry in featuresBySubraceId.entries) {
+      entry.value.sort(_compareRaceFeatures);
+    }
+
+    final enrichedRace = race.copyWith(
+      features: [...raceFeatures]..sort(_compareRaceFeatures),
+    );
+    final enrichedSubraces = subraces
+        .map(
+          (subrace) => subrace.copyWith(
+            features: [
+              ...?featuresBySubraceId[subrace.id],
+            ]..sort(_compareRaceFeatures),
+          ),
+        )
+        .toList();
+    final allFeatures = [
+      ...raceFeatures,
+      ...subraceFeatures,
+    ]..sort(_compareRaceFeatures);
+
+    return RaceStepView(
+      race: enrichedRace,
+      subraces: enrichedSubraces,
+      features: allFeatures,
+    );
+  }
+
   Future<void> delete(Session session, int id) async {
     await RaceData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
@@ -39,6 +99,7 @@ class RaceFeatureEndpoint extends Endpoint {
   }
 
   Future<RaceFeatureData> add(Session session, RaceFeatureData raceFeature) async {
+    _validateRaceFeature(raceFeature);
     _stampForInsert(raceFeature);
     return RaceFeatureData.db.insertRow(session, raceFeature);
   }
@@ -47,6 +108,7 @@ class RaceFeatureEndpoint extends Endpoint {
     Session session,
     RaceFeatureData raceFeature,
   ) async {
+    _validateRaceFeature(raceFeature);
     return _upsertRaceLike(
       session,
       raceFeature,
@@ -100,50 +162,6 @@ class SubraceDataEndpoint extends Endpoint {
   }
 }
 
-class DragonbornAncestryDataEndpoint extends Endpoint {
-  Future<List<DragonbornAncestryData>> getAll(Session session) async {
-    return DragonbornAncestryData.db.find(session);
-  }
-
-  Future<DragonbornAncestryData> add(
-    Session session,
-    DragonbornAncestryData item,
-  ) async {
-    _stampForInsert(item);
-    return DragonbornAncestryData.db.insertRow(session, item);
-  }
-
-  Future<DragonbornAncestryData> upsert(
-    Session session,
-    DragonbornAncestryData dragonbornAncestry,
-  ) async {
-    return _upsertRaceLike(
-      session,
-      dragonbornAncestry,
-      findExisting: () => DragonbornAncestryData.db.find(
-        session,
-        where: (t) => t.id.equals(dragonbornAncestry.id),
-        limit: 1,
-      ),
-      insert: () => DragonbornAncestryData.db.insertRow(
-        session,
-        dragonbornAncestry,
-      ),
-      update: () async {
-        await DragonbornAncestryData.db.updateRow(session, dragonbornAncestry);
-        return dragonbornAncestry;
-      },
-    );
-  }
-
-  Future<void> delete(Session session, int id) async {
-    await DragonbornAncestryData.db.deleteWhere(
-      session,
-      where: (t) => t.id.equals(id),
-    );
-  }
-}
-
 class RaceChoiceSetDataEndpoint extends Endpoint {
   Future<List<RaceChoiceSetData>> getAll(Session session) async {
     return RaceChoiceSetData.db.find(session);
@@ -178,6 +196,54 @@ class RaceChoiceSetDataEndpoint extends Endpoint {
 
   Future<void> delete(Session session, int id) async {
     await RaceChoiceSetData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
+  }
+}
+
+class RaceChoiceOptionDataEndpoint extends Endpoint {
+  Future<List<RaceChoiceOptionData>> getAll(Session session) async {
+    return RaceChoiceOptionData.db.find(
+      session,
+      include: RaceChoiceOptionData.include(
+        spell: SpellData.include(),
+      ),
+    );
+  }
+
+  Future<RaceChoiceOptionData> add(
+    Session session,
+    RaceChoiceOptionData item,
+  ) async {
+    await _validateRaceChoiceOption(session, item);
+    _stampForInsert(item);
+    return RaceChoiceOptionData.db.insertRow(session, item);
+  }
+
+  Future<RaceChoiceOptionData> upsert(
+    Session session,
+    RaceChoiceOptionData item,
+  ) async {
+    await _validateRaceChoiceOption(session, item);
+    return _upsertRaceLike(
+      session,
+      item,
+      findExisting: () => RaceChoiceOptionData.db.find(
+        session,
+        where: (t) => t.id.equals(item.id),
+        limit: 1,
+      ),
+      insert: () => RaceChoiceOptionData.db.insertRow(session, item),
+      update: () async {
+        await RaceChoiceOptionData.db.updateRow(session, item);
+        return item;
+      },
+    );
+  }
+
+  Future<void> delete(Session session, int id) async {
+    await RaceChoiceOptionData.db.deleteWhere(
       session,
       where: (t) => t.id.equals(id),
     );
@@ -227,13 +293,71 @@ class RaceFeatureSpellGrantDataEndpoint extends Endpoint {
   }
 }
 
+Future<List<RaceFeatureData>> _findRaceFeatures(
+  Session session, {
+  required WhereExpressionBuilder<RaceFeatureDataTable> where,
+}) async {
+  final rows = await RaceFeatureData.db.find(
+    session,
+    where: where,
+    include: RaceFeatureData.include(
+      spellGrants: RaceFeatureSpellGrantData.includeList(
+        include: RaceFeatureSpellGrantData.include(
+          spell: SpellData.include(),
+        ),
+      ),
+      choiceSets: RaceChoiceSetData.includeList(
+        include: RaceChoiceSetData.include(
+          choiceOptions: RaceChoiceOptionData.includeList(
+            include: RaceChoiceOptionData.include(
+              spell: SpellData.include(),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  return rows.map(_normalizeRaceFeature).toList();
+}
+
+RaceFeatureData _normalizeRaceFeature(RaceFeatureData feature) {
+  final spellGrants = [
+    ...?feature.spellGrants,
+  ]..sort(_compareRaceFeatureSpellGrants);
+  final choiceSets = choiceSetsOrNormalized(feature.choiceSets)
+    ..sort(_compareRaceChoiceSets);
+
+  return feature.copyWith(
+    spellGrants: spellGrants,
+    choiceSets: choiceSets,
+  );
+}
+
+List<RaceChoiceSetData> choiceSetsOrNormalized(
+  List<RaceChoiceSetData>? choiceSets,
+) {
+  return [
+    for (final choiceSet in choiceSets ?? const <RaceChoiceSetData>[])
+      _normalizeRaceChoiceSet(choiceSet),
+  ];
+}
+
+RaceChoiceSetData _normalizeRaceChoiceSet(RaceChoiceSetData choiceSet) {
+  final choiceOptions = [
+    ...?choiceSet.choiceOptions,
+  ]..sort(_compareRaceChoiceOptions);
+
+  return choiceSet.copyWith(
+    choiceOptions: choiceOptions,
+  );
+}
+
 void _stampForInsert(dynamic row) {
   final now = DateTime.now();
-  if (row.version != null || row.createdAt != null || row.updatedAt != null) {
-    row.version ??= 1;
-    row.createdAt ??= now;
-    row.updatedAt ??= now;
-  }
+  row.version ??= 1;
+  row.createdAt ??= now;
+  row.updatedAt ??= now;
 }
 
 Future<T> _upsertRaceLike<T>(
@@ -251,27 +375,107 @@ Future<T> _upsertRaceLike<T>(
 
   final existing = existingList.first;
   row.id = existing.id;
-  if (row.version != null || existing.version != null) {
-    row.version = (existing.version ?? 0) + 1;
-  }
-  if (row.createdAt != null || existing.createdAt != null) {
-    row.createdAt = existing.createdAt ?? DateTime.now();
-    row.updatedAt = DateTime.now();
-  }
+  row.version = (existing.version ?? 0) + 1;
+  row.createdAt = existing.createdAt ?? DateTime.now();
+  row.updatedAt = DateTime.now();
   return update();
 }
 
-void _validateRaceChoiceSet(RaceChoiceSetData item) {
+void _validateRaceFeature(RaceFeatureData item) {
   final owners = [
     item.raceId,
     item.subraceId,
-    item.featureId,
   ].whereType<int>().length;
 
   if (owners != 1) {
     throw ArgumentError(
-      'RaceChoiceSetData must belong to exactly one owner: race, subrace, or feature.',
+      'RaceFeatureData must belong to exactly one owner: race or subrace.',
     );
+  }
+}
+
+void _validateRaceChoiceSet(RaceChoiceSetData item) {
+  final featureId = item.featureId;
+  if (featureId <= 0) {
+    throw ArgumentError(
+      'RaceChoiceSetData.featureId must reference a RaceFeatureData row.',
+    );
+  }
+
+  if ((item.pickCount ?? 0) <= 0) {
+    throw ArgumentError(
+      'RaceChoiceSetData.pickCount must be greater than zero.',
+    );
+  }
+}
+
+Future<void> _validateRaceChoiceOption(
+  Session session,
+  RaceChoiceOptionData item,
+) async {
+  final choiceSetId = item.choiceSetId;
+  if (choiceSetId <= 0) {
+    throw ArgumentError(
+      'RaceChoiceOptionData.choiceSetId must reference a RaceChoiceSetData row.',
+    );
+  }
+
+  final optionKey = item.optionKey?.trim();
+  if (optionKey == null || optionKey.isEmpty) {
+    throw ArgumentError(
+      'RaceChoiceOptionData.optionKey is required.',
+    );
+  }
+
+  final kind = await _resolveRaceChoiceKind(session, item);
+  switch (kind) {
+    case RaceChoiceKind.abilityBonusChoice:
+      if (item.ability == null || (item.bonusValue ?? 0) <= 0) {
+        throw ArgumentError(
+          'Ability bonus options require ability and a positive bonusValue.',
+        );
+      }
+      break;
+    case RaceChoiceKind.skillProficiencyChoice:
+      if (item.skill == null) {
+        throw ArgumentError(
+          'Skill proficiency options require skill.',
+        );
+      }
+      break;
+    case RaceChoiceKind.languageChoice:
+      if (item.language == null) {
+        throw ArgumentError(
+          'Language choice options require language.',
+        );
+      }
+      break;
+    case RaceChoiceKind.toolProficiencyChoice:
+      if (item.toolKey?.trim().isEmpty ?? true) {
+        throw ArgumentError(
+          'Tool proficiency options require toolKey.',
+        );
+      }
+      break;
+    case RaceChoiceKind.cantripChoice:
+      if (item.spellId == null || item.spellId! <= 0) {
+        throw ArgumentError(
+          'Cantrip choice options require spellId.',
+        );
+      }
+      break;
+    case RaceChoiceKind.dragonbornAncestryChoice:
+      if (item.damageType == null ||
+          item.areaOfEffectType == null ||
+          item.areaText == null ||
+          item.areaText!.trim().isEmpty ||
+          item.saveAbility == null ||
+          item.damageByLevel?.isEmpty != false) {
+        throw ArgumentError(
+          'Dragonborn ancestry options require damageType, areaOfEffectType, areaText, saveAbility, and damageByLevel.',
+        );
+      }
+      break;
   }
 }
 
@@ -287,4 +491,63 @@ void _validateRaceFeatureSpellGrant(RaceFeatureSpellGrantData item) {
       'RaceFeatureSpellGrantData.spellId must reference a SpellData row.',
     );
   }
+}
+
+Future<RaceChoiceKind> _resolveRaceChoiceKind(
+  Session session,
+  RaceChoiceOptionData item,
+) async {
+  if (item.choiceSet?.kind != null) {
+    return item.choiceSet!.kind!;
+  }
+
+  final rows = await RaceChoiceSetData.db.find(
+    session,
+    where: (t) => t.id.equals(item.choiceSetId),
+    limit: 1,
+  );
+  if (rows.isEmpty || rows.first.kind == null) {
+    throw ArgumentError(
+      'RaceChoiceOptionData.choiceSetId must reference a RaceChoiceSetData row with kind.',
+    );
+  }
+  return rows.first.kind!;
+}
+
+int _compareRaceFeatures(RaceFeatureData a, RaceFeatureData b) {
+  final levelCompare = (a.level ?? 1).compareTo(b.level ?? 1);
+  if (levelCompare != 0) return levelCompare;
+  return (a.name ?? '').compareTo(b.name ?? '');
+}
+
+int _compareRaceChoiceSets(RaceChoiceSetData a, RaceChoiceSetData b) {
+  final kindCompare = (a.kind?.name ?? '').compareTo(b.kind?.name ?? '');
+  if (kindCompare != 0) return kindCompare;
+  return (a.description ?? '').compareTo(b.description ?? '');
+}
+
+int _compareRaceChoiceOptions(RaceChoiceOptionData a, RaceChoiceOptionData b) {
+  final sortCompare = (a.sortOrder ?? 0).compareTo(b.sortOrder ?? 0);
+  if (sortCompare != 0) return sortCompare;
+  return (a.name ?? '').compareTo(b.name ?? '');
+}
+
+int _compareRaceFeatureSpellGrants(
+  RaceFeatureSpellGrantData a,
+  RaceFeatureSpellGrantData b,
+) {
+  final levelCompare = (a.grantedAtLevel ?? 1).compareTo(b.grantedAtLevel ?? 1);
+  if (levelCompare != 0) return levelCompare;
+  return (a.spell?.name ?? '').compareTo(b.spell?.name ?? '');
+}
+
+Future<T> _requireById<T>(
+  List<T> rows,
+  String entityName,
+  int id,
+) async {
+  if (rows.isEmpty) {
+    throw Exception('$entityName with id=$id was not found.');
+  }
+  return rows.first;
 }

@@ -16,7 +16,9 @@ enum AreaOfEffectType implements _i1.SerializableModel {
   cube,
   cylinder,
   line,
-  sphere;
+  sphere,
+  square,
+  circle;
 
   static AreaOfEffectType fromJson(String name) {
     switch (name) {
@@ -30,6 +32,10 @@ enum AreaOfEffectType implements _i1.SerializableModel {
         return AreaOfEffectType.line;
       case 'sphere':
         return AreaOfEffectType.sphere;
+      case 'square':
+        return AreaOfEffectType.square;
+      case 'circle':
+        return AreaOfEffectType.circle;
       default:
         throw ArgumentError(
             'Value "$name" cannot be converted to "AreaOfEffectType"');

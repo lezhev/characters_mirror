@@ -13,7 +13,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../data/general/race/race_choice_set_data.dart' as _i3;
+import '../../../enums/damage_type.dart' as _i3;
+import '../../../data/general/race/race_feature_data.dart' as _i4;
 
 abstract class SubraceData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -27,7 +28,12 @@ abstract class SubraceData
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.abilityBonuses,
+    this.strengthBonus,
+    this.dexterityBonus,
+    this.constitutionBonus,
+    this.intelligenceBonus,
+    this.wisdomBonus,
+    this.charismaBonus,
     this.traits,
     this.speedOverride,
     this.visionRangeOverride,
@@ -36,7 +42,7 @@ abstract class SubraceData
     this.armorProficiencies,
     this.weaponProficiencies,
     this.toolProficiencies,
-    this.choiceSets,
+    this.features,
   });
 
   factory SubraceData({
@@ -49,16 +55,21 @@ abstract class SubraceData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Map<String, int>? abilityBonuses,
+    int? strengthBonus,
+    int? dexterityBonus,
+    int? constitutionBonus,
+    int? intelligenceBonus,
+    int? wisdomBonus,
+    int? charismaBonus,
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
     List<String>? skillProficiencies,
-    List<String>? resistances,
+    List<_i3.DamageType>? resistances,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i3.RaceChoiceSetData>? choiceSets,
+    List<_i4.RaceFeatureData>? features,
   }) = _SubraceDataImpl;
 
   factory SubraceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -79,11 +90,12 @@ abstract class SubraceData
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      abilityBonuses:
-          (jsonSerialization['abilityBonuses'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+      strengthBonus: jsonSerialization['strengthBonus'] as int?,
+      dexterityBonus: jsonSerialization['dexterityBonus'] as int?,
+      constitutionBonus: jsonSerialization['constitutionBonus'] as int?,
+      intelligenceBonus: jsonSerialization['intelligenceBonus'] as int?,
+      wisdomBonus: jsonSerialization['wisdomBonus'] as int?,
+      charismaBonus: jsonSerialization['charismaBonus'] as int?,
       traits: (jsonSerialization['traits'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -93,7 +105,7 @@ abstract class SubraceData
           ?.map((e) => e as String)
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i3.DamageType.fromJson((e as String)))
           .toList(),
       armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
           ?.map((e) => e as String)
@@ -104,9 +116,9 @@ abstract class SubraceData
       toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      choiceSets: (jsonSerialization['choiceSets'] as List?)
-          ?.map((e) =>
-              _i3.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
+      features: (jsonSerialization['features'] as List?)
+          ?.map(
+              (e) => _i4.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -134,7 +146,17 @@ abstract class SubraceData
 
   DateTime? updatedAt;
 
-  Map<String, int>? abilityBonuses;
+  int? strengthBonus;
+
+  int? dexterityBonus;
+
+  int? constitutionBonus;
+
+  int? intelligenceBonus;
+
+  int? wisdomBonus;
+
+  int? charismaBonus;
 
   List<String>? traits;
 
@@ -144,7 +166,7 @@ abstract class SubraceData
 
   List<String>? skillProficiencies;
 
-  List<String>? resistances;
+  List<_i3.DamageType>? resistances;
 
   List<String>? armorProficiencies;
 
@@ -152,7 +174,7 @@ abstract class SubraceData
 
   List<String>? toolProficiencies;
 
-  List<_i3.RaceChoiceSetData>? choiceSets;
+  List<_i4.RaceFeatureData>? features;
 
   @override
   _i1.Table<int?> get table => t;
@@ -170,16 +192,21 @@ abstract class SubraceData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Map<String, int>? abilityBonuses,
+    int? strengthBonus,
+    int? dexterityBonus,
+    int? constitutionBonus,
+    int? intelligenceBonus,
+    int? wisdomBonus,
+    int? charismaBonus,
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
     List<String>? skillProficiencies,
-    List<String>? resistances,
+    List<_i3.DamageType>? resistances,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i3.RaceChoiceSetData>? choiceSets,
+    List<_i4.RaceFeatureData>? features,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -193,22 +220,28 @@ abstract class SubraceData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
+      if (strengthBonus != null) 'strengthBonus': strengthBonus,
+      if (dexterityBonus != null) 'dexterityBonus': dexterityBonus,
+      if (constitutionBonus != null) 'constitutionBonus': constitutionBonus,
+      if (intelligenceBonus != null) 'intelligenceBonus': intelligenceBonus,
+      if (wisdomBonus != null) 'wisdomBonus': wisdomBonus,
+      if (charismaBonus != null) 'charismaBonus': charismaBonus,
       if (traits != null) 'traits': traits?.toJson(),
       if (speedOverride != null) 'speedOverride': speedOverride,
       if (visionRangeOverride != null)
         'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
-      if (resistances != null) 'resistances': resistances?.toJson(),
+      if (resistances != null)
+        'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (armorProficiencies != null)
         'armorProficiencies': armorProficiencies?.toJson(),
       if (weaponProficiencies != null)
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (choiceSets != null)
-        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
+      if (features != null)
+        'features': features?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -224,33 +257,38 @@ abstract class SubraceData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
+      if (strengthBonus != null) 'strengthBonus': strengthBonus,
+      if (dexterityBonus != null) 'dexterityBonus': dexterityBonus,
+      if (constitutionBonus != null) 'constitutionBonus': constitutionBonus,
+      if (intelligenceBonus != null) 'intelligenceBonus': intelligenceBonus,
+      if (wisdomBonus != null) 'wisdomBonus': wisdomBonus,
+      if (charismaBonus != null) 'charismaBonus': charismaBonus,
       if (traits != null) 'traits': traits?.toJson(),
       if (speedOverride != null) 'speedOverride': speedOverride,
       if (visionRangeOverride != null)
         'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
-      if (resistances != null) 'resistances': resistances?.toJson(),
+      if (resistances != null)
+        'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (armorProficiencies != null)
         'armorProficiencies': armorProficiencies?.toJson(),
       if (weaponProficiencies != null)
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (choiceSets != null)
-        'choiceSets':
-            choiceSets?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (features != null)
+        'features': features?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
   static SubraceDataInclude include({
     _i2.RaceDataInclude? parentRace,
-    _i3.RaceChoiceSetDataIncludeList? choiceSets,
+    _i4.RaceFeatureDataIncludeList? features,
   }) {
     return SubraceDataInclude._(
       parentRace: parentRace,
-      choiceSets: choiceSets,
+      features: features,
     );
   }
 
@@ -293,16 +331,21 @@ class _SubraceDataImpl extends SubraceData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Map<String, int>? abilityBonuses,
+    int? strengthBonus,
+    int? dexterityBonus,
+    int? constitutionBonus,
+    int? intelligenceBonus,
+    int? wisdomBonus,
+    int? charismaBonus,
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
     List<String>? skillProficiencies,
-    List<String>? resistances,
+    List<_i3.DamageType>? resistances,
     List<String>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i3.RaceChoiceSetData>? choiceSets,
+    List<_i4.RaceFeatureData>? features,
   }) : super._(
           id: id,
           name: name,
@@ -313,7 +356,12 @@ class _SubraceDataImpl extends SubraceData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          abilityBonuses: abilityBonuses,
+          strengthBonus: strengthBonus,
+          dexterityBonus: dexterityBonus,
+          constitutionBonus: constitutionBonus,
+          intelligenceBonus: intelligenceBonus,
+          wisdomBonus: wisdomBonus,
+          charismaBonus: charismaBonus,
           traits: traits,
           speedOverride: speedOverride,
           visionRangeOverride: visionRangeOverride,
@@ -322,7 +370,7 @@ class _SubraceDataImpl extends SubraceData {
           armorProficiencies: armorProficiencies,
           weaponProficiencies: weaponProficiencies,
           toolProficiencies: toolProficiencies,
-          choiceSets: choiceSets,
+          features: features,
         );
 
   /// Returns a shallow copy of this [SubraceData]
@@ -339,7 +387,12 @@ class _SubraceDataImpl extends SubraceData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? abilityBonuses = _Undefined,
+    Object? strengthBonus = _Undefined,
+    Object? dexterityBonus = _Undefined,
+    Object? constitutionBonus = _Undefined,
+    Object? intelligenceBonus = _Undefined,
+    Object? wisdomBonus = _Undefined,
+    Object? charismaBonus = _Undefined,
     Object? traits = _Undefined,
     Object? speedOverride = _Undefined,
     Object? visionRangeOverride = _Undefined,
@@ -348,7 +401,7 @@ class _SubraceDataImpl extends SubraceData {
     Object? armorProficiencies = _Undefined,
     Object? weaponProficiencies = _Undefined,
     Object? toolProficiencies = _Undefined,
-    Object? choiceSets = _Undefined,
+    Object? features = _Undefined,
   }) {
     return SubraceData(
       id: id is int? ? id : this.id,
@@ -362,16 +415,17 @@ class _SubraceDataImpl extends SubraceData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      abilityBonuses: abilityBonuses is Map<String, int>?
-          ? abilityBonuses
-          : this.abilityBonuses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+      strengthBonus: strengthBonus is int? ? strengthBonus : this.strengthBonus,
+      dexterityBonus:
+          dexterityBonus is int? ? dexterityBonus : this.dexterityBonus,
+      constitutionBonus: constitutionBonus is int?
+          ? constitutionBonus
+          : this.constitutionBonus,
+      intelligenceBonus: intelligenceBonus is int?
+          ? intelligenceBonus
+          : this.intelligenceBonus,
+      wisdomBonus: wisdomBonus is int? ? wisdomBonus : this.wisdomBonus,
+      charismaBonus: charismaBonus is int? ? charismaBonus : this.charismaBonus,
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
@@ -382,7 +436,7 @@ class _SubraceDataImpl extends SubraceData {
       skillProficiencies: skillProficiencies is List<String>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      resistances: resistances is List<String>?
+      resistances: resistances is List<_i3.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
       armorProficiencies: armorProficiencies is List<String>?
@@ -394,9 +448,9 @@ class _SubraceDataImpl extends SubraceData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
-      choiceSets: choiceSets is List<_i3.RaceChoiceSetData>?
-          ? choiceSets
-          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
+      features: features is List<_i4.RaceFeatureData>?
+          ? features
+          : this.features?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -431,8 +485,28 @@ class SubraceDataTable extends _i1.Table<int?> {
       'updatedAt',
       this,
     );
-    abilityBonuses = _i1.ColumnSerializable(
-      'abilityBonuses',
+    strengthBonus = _i1.ColumnInt(
+      'strengthBonus',
+      this,
+    );
+    dexterityBonus = _i1.ColumnInt(
+      'dexterityBonus',
+      this,
+    );
+    constitutionBonus = _i1.ColumnInt(
+      'constitutionBonus',
+      this,
+    );
+    intelligenceBonus = _i1.ColumnInt(
+      'intelligenceBonus',
+      this,
+    );
+    wisdomBonus = _i1.ColumnInt(
+      'wisdomBonus',
+      this,
+    );
+    charismaBonus = _i1.ColumnInt(
+      'charismaBonus',
       this,
     );
     traits = _i1.ColumnSerializable(
@@ -485,7 +559,17 @@ class SubraceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnSerializable abilityBonuses;
+  late final _i1.ColumnInt strengthBonus;
+
+  late final _i1.ColumnInt dexterityBonus;
+
+  late final _i1.ColumnInt constitutionBonus;
+
+  late final _i1.ColumnInt intelligenceBonus;
+
+  late final _i1.ColumnInt wisdomBonus;
+
+  late final _i1.ColumnInt charismaBonus;
 
   late final _i1.ColumnSerializable traits;
 
@@ -503,9 +587,9 @@ class SubraceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable toolProficiencies;
 
-  _i3.RaceChoiceSetDataTable? ___choiceSets;
+  _i4.RaceFeatureDataTable? ___features;
 
-  _i1.ManyRelation<_i3.RaceChoiceSetDataTable>? _choiceSets;
+  _i1.ManyRelation<_i4.RaceFeatureDataTable>? _features;
 
   _i2.RaceDataTable get parentRace {
     if (_parentRace != null) return _parentRace!;
@@ -520,37 +604,35 @@ class SubraceDataTable extends _i1.Table<int?> {
     return _parentRace!;
   }
 
-  _i3.RaceChoiceSetDataTable get __choiceSets {
-    if (___choiceSets != null) return ___choiceSets!;
-    ___choiceSets = _i1.createRelationTable(
-      relationFieldName: '__choiceSets',
+  _i4.RaceFeatureDataTable get __features {
+    if (___features != null) return ___features!;
+    ___features = _i1.createRelationTable(
+      relationFieldName: '__features',
       field: SubraceData.t.id,
-      foreignField:
-          _i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId,
+      foreignField: _i4.RaceFeatureData.t.subraceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+          _i4.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
-    return ___choiceSets!;
+    return ___features!;
   }
 
-  _i1.ManyRelation<_i3.RaceChoiceSetDataTable> get choiceSets {
-    if (_choiceSets != null) return _choiceSets!;
+  _i1.ManyRelation<_i4.RaceFeatureDataTable> get features {
+    if (_features != null) return _features!;
     var relationTable = _i1.createRelationTable(
-      relationFieldName: 'choiceSets',
+      relationFieldName: 'features',
       field: SubraceData.t.id,
-      foreignField:
-          _i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId,
+      foreignField: _i4.RaceFeatureData.t.subraceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
+          _i4.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
-    _choiceSets = _i1.ManyRelation<_i3.RaceChoiceSetDataTable>(
+    _features = _i1.ManyRelation<_i4.RaceFeatureDataTable>(
       tableWithRelations: relationTable,
-      table: _i3.RaceChoiceSetDataTable(
+      table: _i4.RaceFeatureDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
-    return _choiceSets!;
+    return _features!;
   }
 
   @override
@@ -563,7 +645,12 @@ class SubraceDataTable extends _i1.Table<int?> {
         version,
         createdAt,
         updatedAt,
-        abilityBonuses,
+        strengthBonus,
+        dexterityBonus,
+        constitutionBonus,
+        intelligenceBonus,
+        wisdomBonus,
+        charismaBonus,
         traits,
         speedOverride,
         visionRangeOverride,
@@ -579,8 +666,8 @@ class SubraceDataTable extends _i1.Table<int?> {
     if (relationField == 'parentRace') {
       return parentRace;
     }
-    if (relationField == 'choiceSets') {
-      return __choiceSets;
+    if (relationField == 'features') {
+      return __features;
     }
     return null;
   }
@@ -589,20 +676,20 @@ class SubraceDataTable extends _i1.Table<int?> {
 class SubraceDataInclude extends _i1.IncludeObject {
   SubraceDataInclude._({
     _i2.RaceDataInclude? parentRace,
-    _i3.RaceChoiceSetDataIncludeList? choiceSets,
+    _i4.RaceFeatureDataIncludeList? features,
   }) {
     _parentRace = parentRace;
-    _choiceSets = choiceSets;
+    _features = features;
   }
 
   _i2.RaceDataInclude? _parentRace;
 
-  _i3.RaceChoiceSetDataIncludeList? _choiceSets;
+  _i4.RaceFeatureDataIncludeList? _features;
 
   @override
   Map<String, _i1.Include?> get includes => {
         'parentRace': _parentRace,
-        'choiceSets': _choiceSets,
+        'features': _features,
       };
 
   @override
@@ -859,30 +946,27 @@ class SubraceDataRepository {
 class SubraceDataAttachRepository {
   const SubraceDataAttachRepository._();
 
-  /// Creates a relation between this [SubraceData] and the given [RaceChoiceSetData]s
-  /// by setting each [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to refer to this [SubraceData].
-  Future<void> choiceSets(
+  /// Creates a relation between this [SubraceData] and the given [RaceFeatureData]s
+  /// by setting each [RaceFeatureData]'s foreign key `subraceId` to refer to this [SubraceData].
+  Future<void> features(
     _i1.Session session,
     SubraceData subraceData,
-    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    List<_i4.RaceFeatureData> raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
     if (subraceData.id == null) {
       throw ArgumentError.notNull('subraceData.id');
     }
 
-    var $raceChoiceSetData = raceChoiceSetData
-        .map((e) => _i3.RaceChoiceSetDataImplicit(
-              e,
-              $_subraceDataChoicesetsSubraceDataId: subraceData.id,
-            ))
+    var $raceFeatureData = raceFeatureData
+        .map((e) => e.copyWith(subraceId: subraceData.id))
         .toList();
-    await session.db.update<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
+    await session.db.update<_i4.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i4.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }
@@ -914,28 +998,25 @@ class SubraceDataAttachRowRepository {
     );
   }
 
-  /// Creates a relation between this [SubraceData] and the given [RaceChoiceSetData]
-  /// by setting the [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to refer to this [SubraceData].
-  Future<void> choiceSets(
+  /// Creates a relation between this [SubraceData] and the given [RaceFeatureData]
+  /// by setting the [RaceFeatureData]'s foreign key `subraceId` to refer to this [SubraceData].
+  Future<void> features(
     _i1.Session session,
     SubraceData subraceData,
-    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i4.RaceFeatureData raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.id == null) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
     if (subraceData.id == null) {
       throw ArgumentError.notNull('subraceData.id');
     }
 
-    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
-      raceChoiceSetData,
-      $_subraceDataChoicesetsSubraceDataId: subraceData.id,
-    );
-    await session.db.updateRow<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
+    var $raceFeatureData = raceFeatureData.copyWith(subraceId: subraceData.id);
+    await session.db.updateRow<_i4.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i4.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }
@@ -944,29 +1025,25 @@ class SubraceDataAttachRowRepository {
 class SubraceDataDetachRepository {
   const SubraceDataDetachRepository._();
 
-  /// Detaches the relation between this [SubraceData] and the given [RaceChoiceSetData]
-  /// by setting the [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to `null`.
+  /// Detaches the relation between this [SubraceData] and the given [RaceFeatureData]
+  /// by setting the [RaceFeatureData]'s foreign key `subraceId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
-  Future<void> choiceSets(
+  Future<void> features(
     _i1.Session session,
-    List<_i3.RaceChoiceSetData> raceChoiceSetData, {
+    List<_i4.RaceFeatureData> raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
 
-    var $raceChoiceSetData = raceChoiceSetData
-        .map((e) => _i3.RaceChoiceSetDataImplicit(
-              e,
-              $_subraceDataChoicesetsSubraceDataId: null,
-            ))
-        .toList();
-    await session.db.update<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
+    var $raceFeatureData =
+        raceFeatureData.map((e) => e.copyWith(subraceId: null)).toList();
+    await session.db.update<_i4.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i4.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }
@@ -975,27 +1052,24 @@ class SubraceDataDetachRepository {
 class SubraceDataDetachRowRepository {
   const SubraceDataDetachRowRepository._();
 
-  /// Detaches the relation between this [SubraceData] and the given [RaceChoiceSetData]
-  /// by setting the [RaceChoiceSetData]'s foreign key `_subraceDataChoicesetsSubraceDataId` to `null`.
+  /// Detaches the relation between this [SubraceData] and the given [RaceFeatureData]
+  /// by setting the [RaceFeatureData]'s foreign key `subraceId` to `null`.
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
-  Future<void> choiceSets(
+  Future<void> features(
     _i1.Session session,
-    _i3.RaceChoiceSetData raceChoiceSetData, {
+    _i4.RaceFeatureData raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
-    if (raceChoiceSetData.id == null) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
+    if (raceFeatureData.id == null) {
+      throw ArgumentError.notNull('raceFeatureData.id');
     }
 
-    var $raceChoiceSetData = _i3.RaceChoiceSetDataImplicit(
-      raceChoiceSetData,
-      $_subraceDataChoicesetsSubraceDataId: null,
-    );
-    await session.db.updateRow<_i3.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i3.RaceChoiceSetData.t.$_subraceDataChoicesetsSubraceDataId],
+    var $raceFeatureData = raceFeatureData.copyWith(subraceId: null);
+    await session.db.updateRow<_i4.RaceFeatureData>(
+      $raceFeatureData,
+      columns: [_i4.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }

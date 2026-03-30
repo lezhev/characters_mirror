@@ -10,26 +10,20 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../data/general/race/subrace_data.dart' as _i3;
-import '../../../data/general/race/race_feature_data.dart' as _i4;
-import '../../../enums/race_choice_kind.dart' as _i5;
+import '../../../data/general/race/race_feature_data.dart' as _i2;
+import '../../../enums/race_choice_kind.dart' as _i3;
+import '../../../data/general/race/race_choice_option_data.dart' as _i4;
 
 abstract class RaceChoiceSetData implements _i1.SerializableModel {
   RaceChoiceSetData._({
     this.id,
-    this.raceId,
-    this.race,
-    this.subraceId,
-    this.subrace,
-    this.featureId,
+    required this.featureId,
     this.feature,
     this.kind,
     this.pickCount,
-    this.options,
-    this.optionValue,
     this.mustBeDistinct,
     this.description,
+    this.choiceOptions,
     this.source,
     this.version,
     this.createdAt,
@@ -38,18 +32,13 @@ abstract class RaceChoiceSetData implements _i1.SerializableModel {
 
   factory RaceChoiceSetData({
     int? id,
-    int? raceId,
-    _i2.RaceData? race,
-    int? subraceId,
-    _i3.SubraceData? subrace,
-    int? featureId,
-    _i4.RaceFeatureData? feature,
-    _i5.RaceChoiceKind? kind,
+    required int featureId,
+    _i2.RaceFeatureData? feature,
+    _i3.RaceChoiceKind? kind,
     int? pickCount,
-    List<String>? options,
-    int? optionValue,
     bool? mustBeDistinct,
     String? description,
+    List<_i4.RaceChoiceOptionData>? choiceOptions,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -59,31 +48,21 @@ abstract class RaceChoiceSetData implements _i1.SerializableModel {
   factory RaceChoiceSetData.fromJson(Map<String, dynamic> jsonSerialization) {
     return RaceChoiceSetData(
       id: jsonSerialization['id'] as int?,
-      raceId: jsonSerialization['raceId'] as int?,
-      race: jsonSerialization['race'] == null
-          ? null
-          : _i2.RaceData.fromJson(
-              (jsonSerialization['race'] as Map<String, dynamic>)),
-      subraceId: jsonSerialization['subraceId'] as int?,
-      subrace: jsonSerialization['subrace'] == null
-          ? null
-          : _i3.SubraceData.fromJson(
-              (jsonSerialization['subrace'] as Map<String, dynamic>)),
-      featureId: jsonSerialization['featureId'] as int?,
+      featureId: jsonSerialization['featureId'] as int,
       feature: jsonSerialization['feature'] == null
           ? null
-          : _i4.RaceFeatureData.fromJson(
+          : _i2.RaceFeatureData.fromJson(
               (jsonSerialization['feature'] as Map<String, dynamic>)),
       kind: jsonSerialization['kind'] == null
           ? null
-          : _i5.RaceChoiceKind.fromJson((jsonSerialization['kind'] as String)),
+          : _i3.RaceChoiceKind.fromJson((jsonSerialization['kind'] as String)),
       pickCount: jsonSerialization['pickCount'] as int?,
-      options: (jsonSerialization['options'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      optionValue: jsonSerialization['optionValue'] as int?,
       mustBeDistinct: jsonSerialization['mustBeDistinct'] as bool?,
       description: jsonSerialization['description'] as String?,
+      choiceOptions: (jsonSerialization['choiceOptions'] as List?)
+          ?.map((e) =>
+              _i4.RaceChoiceOptionData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
@@ -100,29 +79,19 @@ abstract class RaceChoiceSetData implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int? raceId;
+  int featureId;
 
-  _i2.RaceData? race;
+  _i2.RaceFeatureData? feature;
 
-  int? subraceId;
-
-  _i3.SubraceData? subrace;
-
-  int? featureId;
-
-  _i4.RaceFeatureData? feature;
-
-  _i5.RaceChoiceKind? kind;
+  _i3.RaceChoiceKind? kind;
 
   int? pickCount;
-
-  List<String>? options;
-
-  int? optionValue;
 
   bool? mustBeDistinct;
 
   String? description;
+
+  List<_i4.RaceChoiceOptionData>? choiceOptions;
 
   String? source;
 
@@ -137,18 +106,13 @@ abstract class RaceChoiceSetData implements _i1.SerializableModel {
   @_i1.useResult
   RaceChoiceSetData copyWith({
     int? id,
-    int? raceId,
-    _i2.RaceData? race,
-    int? subraceId,
-    _i3.SubraceData? subrace,
     int? featureId,
-    _i4.RaceFeatureData? feature,
-    _i5.RaceChoiceKind? kind,
+    _i2.RaceFeatureData? feature,
+    _i3.RaceChoiceKind? kind,
     int? pickCount,
-    List<String>? options,
-    int? optionValue,
     bool? mustBeDistinct,
     String? description,
+    List<_i4.RaceChoiceOptionData>? choiceOptions,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -158,18 +122,14 @@ abstract class RaceChoiceSetData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (raceId != null) 'raceId': raceId,
-      if (race != null) 'race': race?.toJson(),
-      if (subraceId != null) 'subraceId': subraceId,
-      if (subrace != null) 'subrace': subrace?.toJson(),
-      if (featureId != null) 'featureId': featureId,
+      'featureId': featureId,
       if (feature != null) 'feature': feature?.toJson(),
       if (kind != null) 'kind': kind?.toJson(),
       if (pickCount != null) 'pickCount': pickCount,
-      if (options != null) 'options': options?.toJson(),
-      if (optionValue != null) 'optionValue': optionValue,
       if (mustBeDistinct != null) 'mustBeDistinct': mustBeDistinct,
       if (description != null) 'description': description,
+      if (choiceOptions != null)
+        'choiceOptions': choiceOptions?.toJson(valueToJson: (v) => v.toJson()),
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -188,36 +148,26 @@ class _Undefined {}
 class _RaceChoiceSetDataImpl extends RaceChoiceSetData {
   _RaceChoiceSetDataImpl({
     int? id,
-    int? raceId,
-    _i2.RaceData? race,
-    int? subraceId,
-    _i3.SubraceData? subrace,
-    int? featureId,
-    _i4.RaceFeatureData? feature,
-    _i5.RaceChoiceKind? kind,
+    required int featureId,
+    _i2.RaceFeatureData? feature,
+    _i3.RaceChoiceKind? kind,
     int? pickCount,
-    List<String>? options,
-    int? optionValue,
     bool? mustBeDistinct,
     String? description,
+    List<_i4.RaceChoiceOptionData>? choiceOptions,
     String? source,
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
           id: id,
-          raceId: raceId,
-          race: race,
-          subraceId: subraceId,
-          subrace: subrace,
           featureId: featureId,
           feature: feature,
           kind: kind,
           pickCount: pickCount,
-          options: options,
-          optionValue: optionValue,
           mustBeDistinct: mustBeDistinct,
           description: description,
+          choiceOptions: choiceOptions,
           source: source,
           version: version,
           createdAt: createdAt,
@@ -230,18 +180,13 @@ class _RaceChoiceSetDataImpl extends RaceChoiceSetData {
   @override
   RaceChoiceSetData copyWith({
     Object? id = _Undefined,
-    Object? raceId = _Undefined,
-    Object? race = _Undefined,
-    Object? subraceId = _Undefined,
-    Object? subrace = _Undefined,
-    Object? featureId = _Undefined,
+    int? featureId,
     Object? feature = _Undefined,
     Object? kind = _Undefined,
     Object? pickCount = _Undefined,
-    Object? options = _Undefined,
-    Object? optionValue = _Undefined,
     Object? mustBeDistinct = _Undefined,
     Object? description = _Undefined,
+    Object? choiceOptions = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
@@ -249,22 +194,17 @@ class _RaceChoiceSetDataImpl extends RaceChoiceSetData {
   }) {
     return RaceChoiceSetData(
       id: id is int? ? id : this.id,
-      raceId: raceId is int? ? raceId : this.raceId,
-      race: race is _i2.RaceData? ? race : this.race?.copyWith(),
-      subraceId: subraceId is int? ? subraceId : this.subraceId,
-      subrace: subrace is _i3.SubraceData? ? subrace : this.subrace?.copyWith(),
-      featureId: featureId is int? ? featureId : this.featureId,
+      featureId: featureId ?? this.featureId,
       feature:
-          feature is _i4.RaceFeatureData? ? feature : this.feature?.copyWith(),
-      kind: kind is _i5.RaceChoiceKind? ? kind : this.kind,
+          feature is _i2.RaceFeatureData? ? feature : this.feature?.copyWith(),
+      kind: kind is _i3.RaceChoiceKind? ? kind : this.kind,
       pickCount: pickCount is int? ? pickCount : this.pickCount,
-      options: options is List<String>?
-          ? options
-          : this.options?.map((e0) => e0).toList(),
-      optionValue: optionValue is int? ? optionValue : this.optionValue,
       mustBeDistinct:
           mustBeDistinct is bool? ? mustBeDistinct : this.mustBeDistinct,
       description: description is String? ? description : this.description,
+      choiceOptions: choiceOptions is List<_i4.RaceChoiceOptionData>?
+          ? choiceOptions
+          : this.choiceOptions?.map((e0) => e0.copyWith()).toList(),
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,

@@ -12,6 +12,9 @@ class BounsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attributeStateProvider);
+    final notifier = ref.read(attributeStateProvider.notifier);
+    final hasRules = notifier.hasSelectableBonusRules(bonus);
+
     return Padding(
       padding: const EdgeInsets.only(top: 12.0),
       child: Container(
@@ -21,16 +24,26 @@ class BounsSection extends ConsumerWidget {
         child: ListView(
           physics: NeverScrollableScrollPhysics(),
           children: Attribute.values.map((attribute) {
+            final isAvailable = notifier.isBonusAvailable(
+              attribute: attribute,
+              bonusValue: bonus,
+            );
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 28.0),
               child: Checkbox(
                 value: bonus == 1
                     ? state.bonusesPlusOne[attribute]
                     : state.bonusesPlusTwo[attribute],
-                onChanged: (bool? value) {
-                  ref.read(attributeStateProvider.notifier).toggleBonus(
-                      attribute: attribute, bonusValue: bonus, value: value);
-                },
+                onChanged: hasRules && isAvailable
+                    ? (bool? value) {
+                        notifier.toggleBonus(
+                          attribute: attribute,
+                          bonusValue: bonus,
+                          value: value,
+                        );
+                      }
+                    : null,
               ),
             );
           }).toList(),

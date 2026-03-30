@@ -9,19 +9,23 @@ fields:
   updatedAt: DateTime?
 
   speed: int?
-  size: String?
-  abilityBonuses: Map<String, int>?
+  size: CreatureSize?
+  strengthBonus: int?
+  dexterityBonus: int?
+  constitutionBonus: int?
+  intelligenceBonus: int?
+  wisdomBonus: int?
+  charismaBonus: int?
   traits: List<String>?
   languages: List<String>?
 
-  visionType: String?
+  visionType: SenseType?
   visionRange: int?
-  resistances: List<String>?
+  resistances: List<DamageType>?
   skillProficiencies: List<String>?
   armorProficiencies: List<String>?
   weaponProficiencies: List<String>?
   toolProficiencies: List<String>?
-  spellcasting: Map<String, SpellData>?
-  choiceSets: List<RaceChoiceSetData>?, relation
+  features: List<RaceFeatureData>?, relation(name=race_features)
 
   imageURL: String?

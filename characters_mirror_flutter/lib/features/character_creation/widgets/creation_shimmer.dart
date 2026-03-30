@@ -5,11 +5,11 @@ import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
 
-class CreationShimmer extends StatelessWidget {
+class CreationShimmer extends ConsumerWidget {
   const CreationShimmer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final appWidth = MediaQuery.of(context).size.width;
     final crossAxisCount = appWidth > 680
@@ -19,11 +19,23 @@ class CreationShimmer extends StatelessWidget {
             : 2;
     final shimmerBaseColor = colorScheme.primary.withAlpha(80);
     final shimmerHighlightColor = colorScheme.primary.withAlpha(40);
+    final providerStep = ref.watch(
+      characterCreationProvider.select((state) => state.step),
+    );
+    final routeStep = CreationStepX.fromContext(context);
+    final currentStep = routeStep ?? providerStep;
+
+    if (routeStep != null && routeStep != providerStep) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(characterCreationProvider.notifier).syncStep(routeStep);
+      });
+    }
 
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(CreationAppBar.height),
         child: _CreationAppBarShimmer(
+          currentStep: currentStep,
           baseColor: shimmerBaseColor,
           highlightColor: shimmerHighlightColor,
         ),
@@ -101,10 +113,12 @@ class CreationShimmer extends StatelessWidget {
 }
 
 class _CreationAppBarShimmer extends StatelessWidget {
+  final Step currentStep;
   final Color baseColor;
   final Color highlightColor;
 
   const _CreationAppBarShimmer({
+    required this.currentStep,
     required this.baseColor,
     required this.highlightColor,
   });
@@ -194,6 +208,7 @@ class _CreationAppBarShimmer extends StatelessWidget {
                     ),
                   ),
                   child: _ProgressionShimmer(
+                    currentStep: currentStep,
                     activeBaseColor: baseColor,
                     activeHighlightColor: highlightColor,
                     inactiveBaseColor: neutralBaseColor,
@@ -209,13 +224,15 @@ class _CreationAppBarShimmer extends StatelessWidget {
   }
 }
 
-class _ProgressionShimmer extends ConsumerWidget {
+class _ProgressionShimmer extends StatelessWidget {
+  final Step currentStep;
   final Color activeBaseColor;
   final Color activeHighlightColor;
   final Color inactiveBaseColor;
   final Color inactiveHighlightColor;
 
   const _ProgressionShimmer({
+    required this.currentStep,
     required this.activeBaseColor,
     required this.activeHighlightColor,
     required this.inactiveBaseColor,
@@ -223,11 +240,7 @@ class _ProgressionShimmer extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentStep = ref.watch(
-      characterCreationProvider.select((state) => state.step),
-    );
-
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

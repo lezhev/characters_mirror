@@ -12,12 +12,23 @@ class CreationNavBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final width = MediaQuery.of(context).size.width;
-    final state = ref.read(characterCreationProvider);
+    final providerStep = ref.watch(
+      characterCreationProvider.select((state) => state.step),
+    );
+    final routeStep = CreationStepX.fromContext(context);
+    final currentStep = routeStep ?? providerStep;
     final notifier = ref.read(characterCreationProvider.notifier);
+
+    if (routeStep != null && routeStep != providerStep) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(characterCreationProvider.notifier).syncStep(routeStep);
+      });
+    }
+
     return Row(
       children: [
         SizedBox(width: width > 1000 ? (width - 1000) / 2 : 0),
-        state.step == Step.introduction
+        currentStep == Step.introduction
             ? SizedBox.shrink()
             : Button.outlined(
                 leading: Icon(Icons.arrow_back,
