@@ -9,13 +9,18 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
-  abilityBonuses: Map<String, int>?
+  strengthBonus: int?
+  dexterityBonus: int?
+  constitutionBonus: int?
+  intelligenceBonus: int?
+  wisdomBonus: int?
+  charismaBonus: int?
   traits: List<String>?
   speedOverride: int?
   visionRangeOverride: int?
   skillProficiencies: List<String>?
-  resistances: List<String>?
+  resistances: List<DamageType>?
   armorProficiencies: List<String>?
   weaponProficiencies: List<String>?
   toolProficiencies: List<String>?
-  choiceSets: List<RaceChoiceSetData>?, relation
+  features: List<RaceFeatureData>?, relation(name=subrace_features)

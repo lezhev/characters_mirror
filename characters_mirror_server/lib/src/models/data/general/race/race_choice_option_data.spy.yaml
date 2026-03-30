@@ -1,0 +1,23 @@
+class: RaceChoiceOptionData
+table: race_choice_option_data
+fields:
+  choiceSet: RaceChoiceSetData?, relation(name=race_choice_set_options)
+  optionKey: String?
+  name: String?
+  description: String?
+  sortOrder: int?
+  ability: Ability?
+  skill: Skill?
+  language: Language?
+  spell: SpellData?, relation(optional)
+  toolKey: String?
+  bonusValue: int?
+  damageType: DamageType?
+  areaOfEffectType: AreaOfEffectType?
+  areaText: String?
+  saveAbility: Ability?
+  damageByLevel: Map<String, String>?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

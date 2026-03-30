@@ -54,6 +54,30 @@ class ReferenceDataEndpoint extends Endpoint {
           await SubraceData.db.insertRow(session, SubraceData.fromJson(data));
           break;
 
+        case 'racefeature':
+        case 'race_feature':
+          await RaceFeatureData.db
+              .insertRow(session, RaceFeatureData.fromJson(data));
+          break;
+
+        case 'racechoiceset':
+        case 'race_choice_set':
+          await RaceChoiceSetData.db
+              .insertRow(session, RaceChoiceSetData.fromJson(data));
+          break;
+
+        case 'racechoiceoption':
+        case 'race_choice_option':
+          await RaceChoiceOptionData.db
+              .insertRow(session, RaceChoiceOptionData.fromJson(data));
+          break;
+
+        case 'racefeaturespellgrant':
+        case 'race_feature_spell_grant':
+          await RaceFeatureSpellGrantData.db
+              .insertRow(session, RaceFeatureSpellGrantData.fromJson(data));
+          break;
+
         case 'subclass':
         case 'subclassdata':
           await SubclassData.db.insertRow(session, SubclassData.fromJson(data));

@@ -23,6 +23,7 @@ class AttributeSelection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attributeStateProvider);
+    final notifier = ref.read(attributeStateProvider.notifier);
     final character = ref.watch(
       characterCreationProvider.select((value) => value.character),
     );
@@ -35,10 +36,50 @@ class AttributeSelection extends ConsumerWidget {
           child: Column(
             children: [
               const Gap(8),
-              _RaceBonusRecommendationCard(
-                raceLabel: raceLabel,
-                bonuses: raceBonusRecommendation,
-              ),
+              if (state.selectionType != SelectType.manual)
+                _RaceBonusRecommendationCard(
+                  raceLabel: raceLabel,
+                  bonuses: raceBonusRecommendation,
+                ),
+              if (state.selectionType != SelectType.manual &&
+                  (notifier.hasRacialBonusMode ||
+                      notifier.hasFlexiblePlusTwoOneMode ||
+                      notifier.hasFlexibleThreePlusOneMode))
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, bottom: 4),
+                  child: Wrap(
+                    spacing: 8,
+                    children: [
+                      if (notifier.hasRacialBonusMode)
+                        ChoiceChip(
+                          label: const Text('Раса / подраса'),
+                          selected:
+                              state.bonusMode == AttributeBonusMode.racial,
+                          onSelected: (_) => notifier.setBonusMode(
+                            AttributeBonusMode.racial,
+                          ),
+                        ),
+                      if (notifier.hasFlexiblePlusTwoOneMode)
+                        ChoiceChip(
+                          label: const Text('+2 / +1'),
+                          selected: state.bonusMode ==
+                              AttributeBonusMode.flexiblePlusTwoOne,
+                          onSelected: (_) => notifier.setBonusMode(
+                            AttributeBonusMode.flexiblePlusTwoOne,
+                          ),
+                        ),
+                      if (notifier.hasFlexibleThreePlusOneMode)
+                        ChoiceChip(
+                          label: const Text('3 x +1'),
+                          selected: state.bonusMode ==
+                              AttributeBonusMode.flexibleThreePlusOne,
+                          onSelected: (_) => notifier.setBonusMode(
+                            AttributeBonusMode.flexibleThreePlusOne,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               const Gap(16),
               _buildRemainingAttributesBlock(
                   state.selectionType, state.remainingValues),
@@ -193,7 +234,7 @@ class _RaceBonusRecommendationCard extends StatelessWidget {
                   children: [
                     TextSpan(
                       text:
-                          'Для ${raceLabel ?? 'выбранной расы'} по правилам лучше выбрать именно ',
+                          'Для расы ${raceLabel!.toLowerCase()} лучше выбрать именно ',
                     ),
                     TextSpan(
                       text: _formatBonuses(bonuses),
@@ -201,7 +242,7 @@ class _RaceBonusRecommendationCard extends StatelessWidget {
                     ),
                     const TextSpan(
                       text:
-                          '. Это базовый вариант по правилам. Часто на практике вместо этого распределяют ',
+                          '. Это вариант по правилам. Часто на практике вместо этого распределяют ',
                     ),
                     const TextSpan(
                       text: '+2 и +1',
@@ -214,14 +255,14 @@ class _RaceBonusRecommendationCard extends StatelessWidget {
                     ),
                     const TextSpan(
                       text:
-                          ', но это уже более свободный вариант, а не основная рекомендация.',
+                          ', но это уже более свободный вариант, если хотите следовать ему, согласуйте с Мастером.',
                     ),
                   ],
                 ),
               )
             else
               Text(
-                'Сначала выбери расу, чтобы здесь появилась рекомендация по её бонусам к характеристикам.',
+                'Необходимо выбрать расу, чтобы здесь появилась рекомендация по её бонусам к характеристикам.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
           ],
@@ -232,19 +273,25 @@ class _RaceBonusRecommendationCard extends StatelessWidget {
 }
 
 Map<Attribute, int> _resolveRaceBonusRecommendation(CharacterData character) {
-  final mergedBonuses = <String, int>{
-    ...?character.race?.abilityBonuses,
-    ...?character.subrace?.abilityBonuses,
-  };
-
   final resolved = <Attribute, int>{};
-
-  for (final entry in mergedBonuses.entries) {
-    final attribute =
-        Attribute.values.where((value) => value.name == entry.key);
-    if (attribute.isEmpty) continue;
-    resolved[attribute.first] = entry.value;
+  void addBonus(Attribute attribute, int? value) {
+    if (value == null || value == 0) return;
+    resolved[attribute] = (resolved[attribute] ?? 0) + value;
   }
+
+  addBonus(Attribute.strength, character.race?.strengthBonus);
+  addBonus(Attribute.dexterity, character.race?.dexterityBonus);
+  addBonus(Attribute.constitution, character.race?.constitutionBonus);
+  addBonus(Attribute.intelligence, character.race?.intelligenceBonus);
+  addBonus(Attribute.wisdom, character.race?.wisdomBonus);
+  addBonus(Attribute.charisma, character.race?.charismaBonus);
+
+  addBonus(Attribute.strength, character.subrace?.strengthBonus);
+  addBonus(Attribute.dexterity, character.subrace?.dexterityBonus);
+  addBonus(Attribute.constitution, character.subrace?.constitutionBonus);
+  addBonus(Attribute.intelligence, character.subrace?.intelligenceBonus);
+  addBonus(Attribute.wisdom, character.subrace?.wisdomBonus);
+  addBonus(Attribute.charisma, character.subrace?.charismaBonus);
 
   return resolved;
 }

@@ -1,15 +1,12 @@
 class: RaceChoiceSetData
 table: race_choice_set_data
 fields:
-  race: RaceData?, relation(optional)
-  subrace: SubraceData?, relation(optional)
-  feature: RaceFeatureData?, relation(optional)
+  feature: RaceFeatureData?, relation(name=race_feature_choice_sets)
   kind: RaceChoiceKind?
   pickCount: int?
-  options: List<String>?
-  optionValue: int?
   mustBeDistinct: bool?
   description: String?
+  choiceOptions: List<RaceChoiceOptionData>?, relation(name=race_choice_set_options)
   source: String?
   version: int?
   createdAt: DateTime?

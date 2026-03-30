@@ -23,12 +23,10 @@ class RaceStep extends HookConsumerWidget {
 
     return ref.watch(raceStateProvider).when(
       data: (data) {
-        final selectedRaceKey =
-            data.selectedRace == null
-                ? null
-                : '${data.selectedRace!.id ?? data.selectedRace!.name}';
-        final showJumpButton =
-            selectedRaceKey != null &&
+        final selectedRaceKey = data.selectedRace == null
+            ? null
+            : '${data.selectedRace!.id ?? data.selectedRace!.name}';
+        final showJumpButton = selectedRaceKey != null &&
             dismissedSelectionKey.value != selectedRaceKey;
 
         return Scaffold(
@@ -90,11 +88,12 @@ class RaceStep extends HookConsumerWidget {
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: CreationNavBar(
                 onPressedNext: () {
-                  final notifier =
-                      ref.read(characterCreationProvider.notifier);
+                  final notifier = ref.read(characterCreationProvider.notifier);
                   notifier.syncRaceDraft(
                     selectedRace: data.selectedRace,
                     selectedSubrace: data.selectedSubrace,
+                    raceChoices:
+                        ref.read(raceStateProvider.notifier).buildRaceChoices(),
                   );
                   notifier.goToStep(context, Step.classStep);
                 },
@@ -129,6 +128,7 @@ void _syncAndGo({
   notifier.syncRaceDraft(
     selectedRace: data.selectedRace,
     selectedSubrace: data.selectedSubrace,
+    raceChoices: ref.read(raceStateProvider.notifier).buildRaceChoices(),
   );
   notifier.goToStep(context, target);
 }

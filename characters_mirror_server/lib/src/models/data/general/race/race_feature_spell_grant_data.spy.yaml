@@ -1,7 +1,7 @@
 class: RaceFeatureSpellGrantData
 table: race_feature_spell_grant_data
 fields:
-  feature: RaceFeatureData?, relation
+  feature: RaceFeatureData?, relation(name=race_feature_spell_grants)
   spell: SpellData?, relation
   grantedAtLevel: int?
   castingAbility: Ability?

@@ -61,6 +61,7 @@ raceData:
   - getAll:
   - add:
   - upsert:
+  - getStepView:
   - delete:
 raceFeature:
   - getAll:
@@ -72,12 +73,12 @@ subraceData:
   - add:
   - upsert:
   - delete:
-dragonbornAncestryData:
+raceChoiceSetData:
   - getAll:
   - add:
   - upsert:
   - delete:
-raceChoiceSetData:
+raceChoiceOptionData:
   - getAll:
   - add:
   - upsert:

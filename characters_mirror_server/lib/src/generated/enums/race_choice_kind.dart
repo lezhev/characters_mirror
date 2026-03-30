@@ -16,7 +16,8 @@ enum RaceChoiceKind implements _i1.SerializableModel {
   skillProficiencyChoice,
   languageChoice,
   toolProficiencyChoice,
-  cantripChoice;
+  cantripChoice,
+  dragonbornAncestryChoice;
 
   static RaceChoiceKind fromJson(String name) {
     switch (name) {
@@ -30,6 +31,8 @@ enum RaceChoiceKind implements _i1.SerializableModel {
         return RaceChoiceKind.toolProficiencyChoice;
       case 'cantripChoice':
         return RaceChoiceKind.cantripChoice;
+      case 'dragonbornAncestryChoice':
+        return RaceChoiceKind.dragonbornAncestryChoice;
       default:
         throw ArgumentError(
             'Value "$name" cannot be converted to "RaceChoiceKind"');

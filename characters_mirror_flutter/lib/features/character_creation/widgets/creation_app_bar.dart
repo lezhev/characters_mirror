@@ -28,9 +28,17 @@ class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final currentStep = ref.watch(
+    final providerStep = ref.watch(
       characterCreationProvider.select((state) => state.step),
     );
+    final routeStep = CreationStepX.fromContext(context);
+    final currentStep = routeStep ?? providerStep;
+
+    if (routeStep != null && routeStep != providerStep) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(characterCreationProvider.notifier).syncStep(routeStep);
+      });
+    }
 
     return SafeArea(
       child: Container(
@@ -114,7 +122,10 @@ class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       color: colorScheme.outline.withValues(alpha: 0.9),
                     ),
                   ),
-                  child: CreationProgression(onStepTap: onStepTap),
+                  child: CreationProgression(
+                    currentStep: currentStep,
+                    onStepTap: onStepTap,
+                  ),
                 ),
               ],
             ),

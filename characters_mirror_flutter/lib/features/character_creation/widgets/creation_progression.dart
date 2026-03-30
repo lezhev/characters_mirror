@@ -5,44 +5,82 @@ import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreationProgression extends StatelessWidget {
+  final Step currentStep;
   final FutureOr<void> Function(Step target)? onStepTap;
 
-  const CreationProgression({super.key, this.onStepTap});
+  const CreationProgression({
+    super.key,
+    required this.currentStep,
+    this.onStepTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        StepIndicator(step: Step.introduction, onTap: onStepTap),
+        StepIndicator(
+          step: Step.introduction,
+          currentStep: currentStep,
+          onTap: onStepTap,
+        ),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.race, onTap: onStepTap),
+        StepIndicator(
+          step: Step.race,
+          currentStep: currentStep,
+          onTap: onStepTap,
+        ),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.classStep, onTap: onStepTap),
+        StepIndicator(
+          step: Step.classStep,
+          currentStep: currentStep,
+          onTap: onStepTap,
+        ),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.background, onTap: onStepTap),
+        StepIndicator(
+          step: Step.background,
+          currentStep: currentStep,
+          onTap: onStepTap,
+        ),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.attributes, onTap: onStepTap),
+        StepIndicator(
+          step: Step.attributes,
+          currentStep: currentStep,
+          onTap: onStepTap,
+        ),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.personal, onTap: onStepTap),
+        StepIndicator(
+          step: Step.personal,
+          currentStep: currentStep,
+          onTap: onStepTap,
+        ),
         Expanded(child: StepLine()),
-        StepIndicator(step: Step.summary, onTap: onStepTap),
+        StepIndicator(
+          step: Step.summary,
+          currentStep: currentStep,
+          onTap: onStepTap,
+        ),
       ],
     );
   }
 }
 
-class StepIndicator extends ConsumerWidget {
+class StepIndicator extends StatelessWidget {
   final Step step;
+  final Step currentStep;
   final FutureOr<void> Function(Step target)? onTap;
 
-  const StepIndicator({super.key, required this.step, this.onTap});
+  const StepIndicator({
+    super.key,
+    required this.step,
+    required this.currentStep,
+    this.onTap,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(characterCreationProvider);
-    final isCurrent = step == state.step;
+    final isCurrent = step == currentStep;
     final isWide = MediaQuery.of(context).size.width > 500;
     final radius = isCurrent
         ? (isWide ? 28.0 : 20.0)

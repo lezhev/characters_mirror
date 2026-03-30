@@ -49,9 +49,9 @@ import 'package:characters_mirror_server/src/generated/data/general/race/race_fe
     as _i26;
 import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
     as _i27;
-import 'package:characters_mirror_server/src/generated/data/general/race/dragonborn_ancestry_data.dart'
-    as _i28;
 import 'package:characters_mirror_server/src/generated/data/general/race/race_choice_set_data.dart'
+    as _i28;
+import 'package:characters_mirror_server/src/generated/data/general/race/race_choice_option_data.dart'
     as _i29;
 import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
     as _i30;
@@ -167,16 +167,16 @@ class Endpoints extends _i1.EndpointDispatch {
           'subraceData',
           null,
         ),
-      'dragonbornAncestryData': _i9.DragonbornAncestryDataEndpoint()
-        ..initialize(
-          server,
-          'dragonbornAncestryData',
-          null,
-        ),
       'raceChoiceSetData': _i9.RaceChoiceSetDataEndpoint()
         ..initialize(
           server,
           'raceChoiceSetData',
+          null,
+        ),
+      'raceChoiceOptionData': _i9.RaceChoiceOptionDataEndpoint()
+        ..initialize(
+          server,
+          'raceChoiceOptionData',
           null,
         ),
       'raceFeatureSpellGrantData': _i9.RaceFeatureSpellGrantDataEndpoint()
@@ -1148,6 +1148,24 @@ class Endpoints extends _i1.EndpointDispatch {
             params['race'],
           ),
         ),
+        'getStepView': _i1.MethodConnector(
+          name: 'getStepView',
+          params: {
+            'raceId': _i1.ParameterDescription(
+              name: 'raceId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['raceData'] as _i9.RaceDataEndpoint).getStepView(
+            session,
+            params['raceId'],
+          ),
+        ),
         'delete': _i1.MethodConnector(
           name: 'delete',
           params: {
@@ -1308,83 +1326,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    connectors['dragonbornAncestryData'] = _i1.EndpointConnector(
-      name: 'dragonbornAncestryData',
-      endpoint: endpoints['dragonbornAncestryData']!,
-      methodConnectors: {
-        'getAll': _i1.MethodConnector(
-          name: 'getAll',
-          params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['dragonbornAncestryData']
-                      as _i9.DragonbornAncestryDataEndpoint)
-                  .getAll(session),
-        ),
-        'add': _i1.MethodConnector(
-          name: 'add',
-          params: {
-            'item': _i1.ParameterDescription(
-              name: 'item',
-              type: _i1.getType<_i28.DragonbornAncestryData>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['dragonbornAncestryData']
-                      as _i9.DragonbornAncestryDataEndpoint)
-                  .add(
-            session,
-            params['item'],
-          ),
-        ),
-        'upsert': _i1.MethodConnector(
-          name: 'upsert',
-          params: {
-            'dragonbornAncestry': _i1.ParameterDescription(
-              name: 'dragonbornAncestry',
-              type: _i1.getType<_i28.DragonbornAncestryData>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['dragonbornAncestryData']
-                      as _i9.DragonbornAncestryDataEndpoint)
-                  .upsert(
-            session,
-            params['dragonbornAncestry'],
-          ),
-        ),
-        'delete': _i1.MethodConnector(
-          name: 'delete',
-          params: {
-            'id': _i1.ParameterDescription(
-              name: 'id',
-              type: _i1.getType<int>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['dragonbornAncestryData']
-                      as _i9.DragonbornAncestryDataEndpoint)
-                  .delete(
-            session,
-            params['id'],
-          ),
-        ),
-      },
-    );
     connectors['raceChoiceSetData'] = _i1.EndpointConnector(
       name: 'raceChoiceSetData',
       endpoint: endpoints['raceChoiceSetData']!,
@@ -1404,7 +1345,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i29.RaceChoiceSetData>(),
+              type: _i1.getType<_i28.RaceChoiceSetData>(),
               nullable: false,
             )
           },
@@ -1423,7 +1364,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i29.RaceChoiceSetData>(),
+              type: _i1.getType<_i28.RaceChoiceSetData>(),
               nullable: false,
             )
           },
@@ -1451,6 +1392,83 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceChoiceSetData'] as _i9.RaceChoiceSetDataEndpoint)
+                  .delete(
+            session,
+            params['id'],
+          ),
+        ),
+      },
+    );
+    connectors['raceChoiceOptionData'] = _i1.EndpointConnector(
+      name: 'raceChoiceOptionData',
+      endpoint: endpoints['raceChoiceOptionData']!,
+      methodConnectors: {
+        'getAll': _i1.MethodConnector(
+          name: 'getAll',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['raceChoiceOptionData']
+                      as _i9.RaceChoiceOptionDataEndpoint)
+                  .getAll(session),
+        ),
+        'add': _i1.MethodConnector(
+          name: 'add',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i29.RaceChoiceOptionData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['raceChoiceOptionData']
+                      as _i9.RaceChoiceOptionDataEndpoint)
+                  .add(
+            session,
+            params['item'],
+          ),
+        ),
+        'upsert': _i1.MethodConnector(
+          name: 'upsert',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i29.RaceChoiceOptionData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['raceChoiceOptionData']
+                      as _i9.RaceChoiceOptionDataEndpoint)
+                  .upsert(
+            session,
+            params['item'],
+          ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['raceChoiceOptionData']
+                      as _i9.RaceChoiceOptionDataEndpoint)
                   .delete(
             session,
             params['id'],

@@ -6,3 +6,5 @@ values:
   - cylinder
   - line
   - sphere
+  - square
+  - circle

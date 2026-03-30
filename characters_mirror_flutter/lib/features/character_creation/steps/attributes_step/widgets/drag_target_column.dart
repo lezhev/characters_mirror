@@ -9,6 +9,7 @@ class DragTargetColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attributeStateProvider);
+    final notifier = ref.read(attributeStateProvider.notifier);
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 68),
       child: ListView(
@@ -21,9 +22,7 @@ class DragTargetColumn extends ConsumerWidget {
               builder: (context, candidateData, rejectedData) {
                 return GestureDetector(
                   onTap: () {
-                    ref
-                        .read(attributeStateProvider.notifier)
-                        .unselectAttribute(attribute);
+                    notifier.unselectAttribute(attribute);
                   },
                   child: Container(
                     height: 60,
@@ -39,10 +38,7 @@ class DragTargetColumn extends ConsumerWidget {
                     ),
                     child: Center(
                       child: Text(
-                        (ref
-                                .read(attributeStateProvider.notifier)
-                                .mergeStatsAndBonuses()[attribute])
-                            .toString(),
+                        notifier.mergeStatsAndBonuses()[attribute].toString(),
                         style: TextStyle(
                           fontSize: 18,
                           color: state.assignedAttributes[attribute] != 0
@@ -55,9 +51,7 @@ class DragTargetColumn extends ConsumerWidget {
                 );
               },
               onAcceptWithDetails: (details) {
-                ref
-                    .read(attributeStateProvider.notifier)
-                    .onAcceptWithDetailes(details, attribute);
+                notifier.onAcceptWithDetailes(details, attribute);
               },
               onWillAcceptWithDetails: (details) => true,
             ),

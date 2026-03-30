@@ -1,0 +1,1443 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "dragonborn_ancestry_data"
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "race_choice_option_data",
+        "dartName": "RaceChoiceOptionData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('race_choice_option_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "choiceSetId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "optionKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "sortOrder",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "ability",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          },
+          {
+            "name": "skill",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Skill?"
+          },
+          {
+            "name": "language",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Language?"
+          },
+          {
+            "name": "spellId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "toolKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "bonusValue",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "damageType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:DamageType?"
+          },
+          {
+            "name": "areaOfEffectType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:AreaOfEffectType?"
+          },
+          {
+            "name": "areaText",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "saveAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          },
+          {
+            "name": "damageByLevel",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,String>?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "race_choice_option_data_fk_0",
+            "columns": [
+              "choiceSetId"
+            ],
+            "referenceTable": "race_choice_set_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "race_choice_option_data_fk_1",
+            "columns": [
+              "spellId"
+            ],
+            "referenceTable": "spell_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "race_choice_option_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_choice_set_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "raceId",
+          "subraceId",
+          "options",
+          "optionValue",
+          "_raceDataChoicesetsRaceDataId",
+          "_raceFeatureDataChoicesetsRaceFeatureDataId",
+          "_subraceDataChoicesetsSubraceDataId"
+        ],
+        "modifyColumns": [
+          {
+            "columnName": "featureId",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "race_choice_set_data_fk_0",
+            "columns": [
+              "featureId"
+            ],
+            "referenceTable": "race_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "race_choice_set_data_fk_1",
+          "race_choice_set_data_fk_2",
+          "race_choice_set_data_fk_3",
+          "race_choice_set_data_fk_4",
+          "race_choice_set_data_fk_5",
+          "race_choice_set_data_fk_0"
+        ],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"dragonborn_ancestry_data\" will be dropped.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"raceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "raceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subraceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "subraceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"options\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "options"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionValue\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "optionValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceDataChoicesetsRaceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceDataChoicesetsRaceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataChoicesetsRaceFeatureDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceFeatureDataChoicesetsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_subraceDataChoicesetsSubraceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_subraceDataChoicesetsSubraceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column featureId of table race_choice_set_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "featureId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spellcasting\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "spellcasting"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column size of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "size"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column visionType of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "visionType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spells\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "spells"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column usesPerRest of table race_feature_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_data",
+            "columns": [
+              "usesPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataSpellgrantsRaceFeatureDataId\" of table \"race_feature_spell_grant_data\" will be dropped.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "strengthBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "dexterityBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "constitutionBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "intelligenceBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "wisdomBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "charismaBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "size",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:CreatureSize?"
+          },
+          {
+            "name": "visionType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:SenseType?"
+          },
+          {
+            "name": "resistances",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:DamageType>?"
+          }
+        ],
+        "deleteColumns": [
+          "abilityBonuses",
+          "spellcasting",
+          "size",
+          "visionType",
+          "resistances"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"dragonborn_ancestry_data\" will be dropped.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"raceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "raceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subraceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "subraceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"options\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "options"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionValue\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "optionValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceDataChoicesetsRaceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceDataChoicesetsRaceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataChoicesetsRaceFeatureDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceFeatureDataChoicesetsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_subraceDataChoicesetsSubraceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_subraceDataChoicesetsSubraceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column featureId of table race_choice_set_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "featureId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spellcasting\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "spellcasting"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column size of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "size"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column visionType of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "visionType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spells\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "spells"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column usesPerRest of table race_feature_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_data",
+            "columns": [
+              "usesPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataSpellgrantsRaceFeatureDataId\" of table \"race_feature_spell_grant_data\" will be dropped.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "usesPerRest",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:RestType?"
+          }
+        ],
+        "deleteColumns": [
+          "spells",
+          "usesPerRest"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"dragonborn_ancestry_data\" will be dropped.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"raceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "raceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subraceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "subraceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"options\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "options"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionValue\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "optionValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceDataChoicesetsRaceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceDataChoicesetsRaceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataChoicesetsRaceFeatureDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceFeatureDataChoicesetsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_subraceDataChoicesetsSubraceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_subraceDataChoicesetsSubraceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column featureId of table race_choice_set_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "featureId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spellcasting\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "spellcasting"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column size of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "size"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column visionType of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "visionType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spells\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "spells"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column usesPerRest of table race_feature_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_data",
+            "columns": [
+              "usesPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataSpellgrantsRaceFeatureDataId\" of table \"race_feature_spell_grant_data\" will be dropped.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_spell_grant_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [
+          "race_feature_spell_grant_data_fk_2"
+        ],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"dragonborn_ancestry_data\" will be dropped.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"raceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "raceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subraceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "subraceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"options\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "options"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionValue\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "optionValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceDataChoicesetsRaceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceDataChoicesetsRaceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataChoicesetsRaceFeatureDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceFeatureDataChoicesetsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_subraceDataChoicesetsSubraceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_subraceDataChoicesetsSubraceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column featureId of table race_choice_set_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "featureId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spellcasting\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "spellcasting"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column size of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "size"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column visionType of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "visionType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spells\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "spells"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column usesPerRest of table race_feature_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_data",
+            "columns": [
+              "usesPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataSpellgrantsRaceFeatureDataId\" of table \"race_feature_spell_grant_data\" will be dropped.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subrace_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "strengthBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "dexterityBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "constitutionBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "intelligenceBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "wisdomBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "charismaBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "resistances",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:DamageType>?"
+          }
+        ],
+        "deleteColumns": [
+          "abilityBonuses",
+          "resistances"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"dragonborn_ancestry_data\" will be dropped.",
+            "table": "dragonborn_ancestry_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"raceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "raceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subraceId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "subraceId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"options\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "options"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionValue\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "optionValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceDataChoicesetsRaceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceDataChoicesetsRaceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataChoicesetsRaceFeatureDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_raceFeatureDataChoicesetsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_subraceDataChoicesetsSubraceDataId\" of table \"race_choice_set_data\" will be dropped.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "_subraceDataChoicesetsSubraceDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "notNullAdded",
+            "message": "Column featureId of table race_choice_set_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "race_choice_set_data",
+            "columns": [
+              "featureId"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spellcasting\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "spellcasting"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column size of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "size"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column visionType of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "visionType"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"spells\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "spells"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column usesPerRest of table race_feature_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_feature_data",
+            "columns": [
+              "usesPerRest"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"_raceFeatureDataSpellgrantsRaceFeatureDataId\" of table \"race_feature_spell_grant_data\" will be dropped.",
+            "table": "race_feature_spell_grant_data",
+            "columns": [
+              "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"abilityBonuses\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "abilityBonuses"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column resistances of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "resistances"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"dragonborn_ancestry_data\" will be dropped.",
+      "table": "dragonborn_ancestry_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"raceId\" of table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "raceId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"subraceId\" of table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "subraceId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"options\" of table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "options"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"optionValue\" of table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "optionValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"_raceDataChoicesetsRaceDataId\" of table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "_raceDataChoicesetsRaceDataId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"_raceFeatureDataChoicesetsRaceFeatureDataId\" of table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "_raceFeatureDataChoicesetsRaceFeatureDataId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"_subraceDataChoicesetsSubraceDataId\" of table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "_subraceDataChoicesetsSubraceDataId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "notNullAdded",
+      "message": "Column featureId of table race_choice_set_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "race_choice_set_data",
+      "columns": [
+        "featureId"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"abilityBonuses\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "abilityBonuses"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"spellcasting\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "spellcasting"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column size of table race_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_data",
+      "columns": [
+        "size"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column visionType of table race_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_data",
+      "columns": [
+        "visionType"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column resistances of table race_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_data",
+      "columns": [
+        "resistances"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"spells\" of table \"race_feature_data\" will be dropped.",
+      "table": "race_feature_data",
+      "columns": [
+        "spells"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column usesPerRest of table race_feature_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_feature_data",
+      "columns": [
+        "usesPerRest"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"_raceFeatureDataSpellgrantsRaceFeatureDataId\" of table \"race_feature_spell_grant_data\" will be dropped.",
+      "table": "race_feature_spell_grant_data",
+      "columns": [
+        "_raceFeatureDataSpellgrantsRaceFeatureDataId"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"abilityBonuses\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "abilityBonuses"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column resistances of table subrace_data is modified in a way that it must be deleted and recreated.",
+      "table": "subrace_data",
+      "columns": [
+        "resistances"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

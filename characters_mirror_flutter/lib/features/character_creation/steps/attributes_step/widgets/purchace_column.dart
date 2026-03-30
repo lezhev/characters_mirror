@@ -8,15 +8,14 @@ class PurchaceColumn extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(attributeStateProvider.notifier);
     return SizedBox(
       width: 68, // внешний контейнер
       child: ListView(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         children: Attribute.values.map((attribute) {
-          final value = ref
-              .read(attributeStateProvider.notifier)
-              .mergeStatsAndBonuses()[attribute];
+          final value = notifier.mergeStatsAndBonuses()[attribute];
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -57,9 +56,7 @@ class PurchaceColumn extends ConsumerWidget {
                         padding: EdgeInsets.zero,
                         icon: const Icon(Icons.remove),
                         onPressed: () {
-                          ref
-                              .read(attributeStateProvider.notifier)
-                              .changeAttributeBy(attribute, -1);
+                          notifier.changeAttributeBy(attribute, -1);
                         },
                       ),
                     ),
@@ -79,9 +76,7 @@ class PurchaceColumn extends ConsumerWidget {
                         padding: EdgeInsets.zero,
                         icon: const Icon(Icons.add),
                         onPressed: () {
-                          ref
-                              .read(attributeStateProvider.notifier)
-                              .changeAttributeBy(attribute, 1);
+                          notifier.changeAttributeBy(attribute, 1);
                         },
                       ),
                     ),

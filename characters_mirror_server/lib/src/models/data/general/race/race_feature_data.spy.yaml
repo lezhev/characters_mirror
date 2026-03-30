@@ -1,8 +1,8 @@
 class: RaceFeatureData
 table: race_feature_data
 fields:
-  race: RaceData?, relation (optional)
-  subrace: SubraceData?, relation (optional)
+  race: RaceData?, relation(name=race_features, optional)
+  subrace: SubraceData?, relation(name=subrace_features, optional)
   name: String?
   description: String?
   source: String?
@@ -11,9 +11,8 @@ fields:
   updatedAt: DateTime?
 
   level: int?
-  spells: Map<String, int>? # deprecated; use spellGrants
-  usesPerRest: String?
+  usesPerRest: RestType?
   usesFormula: String?
   tags: List<FeatureTag>?
-  spellGrants: List<RaceFeatureSpellGrantData>?, relation
-  choiceSets: List<RaceChoiceSetData>?, relation
+  spellGrants: List<RaceFeatureSpellGrantData>?, relation(name=race_feature_spell_grants)
+  choiceSets: List<RaceChoiceSetData>?, relation(name=race_feature_choice_sets)

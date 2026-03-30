@@ -210,8 +210,8 @@ Future<CharacterData> _requireOwnedCharacter(
     where: (t) => t.id.equals(characterId) & t.userId.equals(userId),
     limit: 1,
     include: CharacterData.include(
-      race: RaceData.include(),
-      subrace: SubraceData.include(),
+      race: _raceDataInclude(),
+      subrace: _subraceDataInclude(),
       background: BackgroundData.include(),
     ),
   );
@@ -310,10 +310,9 @@ Future<CharacterSheetSnapshotData> _rebuildSnapshot(
   }
 
   final senses = <String>[
-    if (character.race?.visionType?.isNotEmpty == true)
-      character.race!.visionType!,
+    if (character.race?.visionType != null) character.race!.visionType!.name,
   ];
-  final resistances = _collectDamageTypes(character);
+  final resistances = _collectDamageTypes(character, choices);
 
   final existing = await _findSnapshot(session, character.id!);
   final snapshot = (existing ??
@@ -361,20 +360,131 @@ Map<String, int> _buildAbilityScores(
     ...?character.baseAbilityScores,
   };
 
-  void applyBonuses(Map<String, int>? bonuses) {
-    if (bonuses == null) return;
-    bonuses.forEach((key, value) {
-      scores[key] = (scores[key] ?? 10) + value;
-    });
+  final raceChoices = _racialChoicesForSource(
+      choices, ChoiceSourceType.race, character.race?.id);
+  final subraceChoices = _racialChoicesForSource(
+    choices,
+    ChoiceSourceType.subrace,
+    character.subrace?.id,
+  );
+  final activeBonusMode = _resolveActiveBonusMode(raceChoices);
+  final activeRaceChoices = _filterChoicesForActiveBonusMode(
+    raceChoices,
+    activeBonusMode,
+  );
+  final activeSubraceChoices = _filterChoicesForActiveBonusMode(
+    subraceChoices,
+    activeBonusMode,
+  );
+  final usesFlexibleBonuses =
+      activeBonusMode == _BonusMode.flexiblePlusTwoOne ||
+          activeBonusMode == _BonusMode.flexibleThreePlusOne;
+
+  if (activeRaceChoices.isEmpty) {
+    _applyFixedRaceBonuses(
+      scores,
+      _abilityBonusesFromRace(character.race),
+    );
+  } else {
+    _applyRacialChoiceBonuses(scores, activeRaceChoices);
   }
 
-  applyBonuses(character.race?.abilityBonuses);
-  applyBonuses(character.subrace?.abilityBonuses);
-  for (final choice in choices) {
-    final key = choice.optionKey;
-    if (key == null) continue;
+  if (usesFlexibleBonuses) {
+    // Flexible +2/+1 replaces both the race and subrace default bonuses.
+  } else if (activeSubraceChoices.isEmpty) {
+    _applyFixedRaceBonuses(
+      scores,
+      _abilityBonusesFromSubrace(character.subrace),
+    );
+  } else {
+    _applyRacialChoiceBonuses(scores, activeSubraceChoices);
   }
+
   return scores;
+}
+
+enum _BonusMode { racial, flexiblePlusTwoOne, flexibleThreePlusOne }
+
+_BonusMode _resolveActiveBonusMode(List<CharacterChoiceData> raceChoices) {
+  for (final choice in raceChoices) {
+    if (choice.groupKey != 'race_bonus_mode') continue;
+
+    switch (choice.selectedText) {
+      case 'flexiblePlusTwoOne':
+        return _BonusMode.flexiblePlusTwoOne;
+      case 'flexibleThreePlusOne':
+        return _BonusMode.flexibleThreePlusOne;
+      case 'racial':
+      default:
+        return _BonusMode.racial;
+    }
+  }
+
+  return _BonusMode.racial;
+}
+
+List<CharacterChoiceData> _filterChoicesForActiveBonusMode(
+  List<CharacterChoiceData> choices,
+  _BonusMode activeMode,
+) {
+  return choices.where((choice) {
+    final groupKey = choice.groupKey;
+    if (groupKey == null || groupKey == 'race_bonus_mode') {
+      return false;
+    }
+
+    final isFlexible = groupKey.startsWith('race_flexible_bonus');
+    switch (activeMode) {
+      case _BonusMode.racial:
+        return !isFlexible;
+      case _BonusMode.flexiblePlusTwoOne:
+        return groupKey == 'race_flexible_bonus_plus2' ||
+            groupKey == 'race_flexible_bonus_plus1';
+      case _BonusMode.flexibleThreePlusOne:
+        return groupKey == 'race_flexible_bonus_three_plus1';
+    }
+  }).toList();
+}
+
+List<CharacterChoiceData> _racialChoicesForSource(
+  List<CharacterChoiceData> choices,
+  ChoiceSourceType sourceType,
+  int? sourceId,
+) {
+  if (sourceId == null) {
+    return const [];
+  }
+
+  return choices.where((choice) {
+    return choice.sourceType == sourceType && choice.sourceId == sourceId;
+  }).toList();
+}
+
+void _applyRacialChoiceBonuses(
+  Map<String, int> scores,
+  List<CharacterChoiceData> choices,
+) {
+  for (final choice in choices) {
+    final key = choice.optionKey?.trim();
+    final bonus = choice.selectedCount ?? 0;
+    if (key == null || key.isEmpty || bonus == 0) {
+      continue;
+    }
+
+    final abilityKey = _normalizeAbilityKey(key);
+    if (abilityKey == null) continue;
+
+    scores[abilityKey] = (scores[abilityKey] ?? 10) + bonus;
+  }
+}
+
+String? _normalizeAbilityKey(String raw) {
+  for (final ability in Ability.values) {
+    if (ability.name == raw) {
+      return ability.name;
+    }
+  }
+  return null;
 }
 
 Set<Skill> _collectSkillProficiencies(
@@ -391,6 +501,11 @@ Set<Skill> _collectSkillProficiencies(
     final skill = _skillFromName(choice.selectedText!);
     if (skill != null) {
       skills.add(skill);
+    }
+  }
+  for (final option in _selectedRaceChoiceOptions(character, choices)) {
+    if (option.skill != null) {
+      skills.add(option.skill!);
     }
   }
   return skills;
@@ -505,28 +620,21 @@ Skill? _skillFromName(String raw) {
   return null;
 }
 
-List<DamageType> _collectDamageTypes(CharacterData character) {
+List<DamageType> _collectDamageTypes(
+  CharacterData character,
+  List<CharacterChoiceData> choices,
+) {
   final values = <DamageType>{};
-  for (final raw in [
+  values.addAll([
     ...?character.race?.resistances,
     ...?character.subrace?.resistances,
-  ]) {
-    final damageType = _damageTypeFromName(raw);
-    if (damageType != null) {
-      values.add(damageType);
+  ]);
+  for (final option in _selectedRaceChoiceOptions(character, choices)) {
+    if (option.damageType != null) {
+      values.add(option.damageType!);
     }
   }
-  return values.toList();
-}
-
-DamageType? _damageTypeFromName(String raw) {
-  final normalized = raw.trim();
-  for (final value in DamageType.values) {
-    if (value.name == normalized) {
-      return value;
-    }
-  }
-  return null;
+  return values.toList()..sort((a, b) => a.name.compareTo(b.name));
 }
 
 int? _resolveHitDie(ClassData? classData) {
@@ -560,4 +668,126 @@ Ability _abilityForSkill(Skill skill) {
     case Skill.persuasion:
       return Ability.charisma;
   }
+}
+
+void _applyFixedRaceBonuses(
+  Map<String, int> scores,
+  Map<String, int> bonuses,
+) {
+  bonuses.forEach((key, value) {
+    scores[key] = (scores[key] ?? 10) + value;
+  });
+}
+
+Map<String, int> _abilityBonusesFromRace(RaceData? race) {
+  return {
+    if (race?.strengthBonus != null) Ability.strength.name: race!.strengthBonus!,
+    if (race?.dexterityBonus != null)
+      Ability.dexterity.name: race!.dexterityBonus!,
+    if (race?.constitutionBonus != null)
+      Ability.constitution.name: race!.constitutionBonus!,
+    if (race?.intelligenceBonus != null)
+      Ability.intelligence.name: race!.intelligenceBonus!,
+    if (race?.wisdomBonus != null) Ability.wisdom.name: race!.wisdomBonus!,
+    if (race?.charismaBonus != null) Ability.charisma.name: race!.charismaBonus!,
+  };
+}
+
+Map<String, int> _abilityBonusesFromSubrace(SubraceData? subrace) {
+  return {
+    if (subrace?.strengthBonus != null)
+      Ability.strength.name: subrace!.strengthBonus!,
+    if (subrace?.dexterityBonus != null)
+      Ability.dexterity.name: subrace!.dexterityBonus!,
+    if (subrace?.constitutionBonus != null)
+      Ability.constitution.name: subrace!.constitutionBonus!,
+    if (subrace?.intelligenceBonus != null)
+      Ability.intelligence.name: subrace!.intelligenceBonus!,
+    if (subrace?.wisdomBonus != null)
+      Ability.wisdom.name: subrace!.wisdomBonus!,
+    if (subrace?.charismaBonus != null)
+      Ability.charisma.name: subrace!.charismaBonus!,
+  };
+}
+
+List<RaceChoiceOptionData> _selectedRaceChoiceOptions(
+  CharacterData character,
+  List<CharacterChoiceData> choices,
+) {
+  final optionsByGroupKey = <String, Map<String, RaceChoiceOptionData>>{};
+
+  void registerFeatures(List<RaceFeatureData>? features) {
+    for (final feature in features ?? const <RaceFeatureData>[]) {
+      for (final choiceSet in feature.choiceSets ?? const <RaceChoiceSetData>[]) {
+        final groupKey = _choiceSetGroupKey(choiceSet.id);
+        if (groupKey == null) continue;
+
+        optionsByGroupKey[groupKey] = {
+          for (final option
+              in choiceSet.choiceOptions ?? const <RaceChoiceOptionData>[])
+            if (option.optionKey?.trim().isNotEmpty == true)
+              option.optionKey!.trim(): option,
+        };
+      }
+    }
+  }
+
+  registerFeatures(character.race?.features);
+  registerFeatures(character.subrace?.features);
+
+  final selected = <RaceChoiceOptionData>[];
+  for (final choice in choices) {
+    final groupKey = choice.groupKey;
+    final optionKey = choice.optionKey?.trim();
+    if (groupKey == null || optionKey == null || optionKey.isEmpty) {
+      continue;
+    }
+
+    final option = optionsByGroupKey[groupKey]?[optionKey];
+    if (option != null) {
+      selected.add(option);
+    }
+  }
+
+  return selected;
+}
+
+String? _choiceSetGroupKey(int? choiceSetId) {
+  if (choiceSetId == null) return null;
+  return 'race_choice_$choiceSetId';
+}
+
+RaceDataInclude _raceDataInclude() {
+  return RaceData.include(
+    features: RaceFeatureData.includeList(
+      include: _raceFeatureInclude(),
+    ),
+  );
+}
+
+SubraceDataInclude _subraceDataInclude() {
+  return SubraceData.include(
+    features: RaceFeatureData.includeList(
+      include: _raceFeatureInclude(),
+    ),
+  );
+}
+
+RaceFeatureDataInclude _raceFeatureInclude() {
+  return RaceFeatureData.include(
+    spellGrants: RaceFeatureSpellGrantData.includeList(
+      include: RaceFeatureSpellGrantData.include(
+        spell: SpellData.include(),
+      ),
+    ),
+    choiceSets: RaceChoiceSetData.includeList(
+      include: RaceChoiceSetData.include(
+        choiceOptions: RaceChoiceOptionData.includeList(
+          include: RaceChoiceOptionData.include(
+            spell: SpellData.include(),
+          ),
+        ),
+      ),
+    ),
+  );
 }

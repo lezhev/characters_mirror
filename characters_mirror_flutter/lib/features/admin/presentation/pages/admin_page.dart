@@ -38,7 +38,9 @@ class _AdminPageState extends State<AdminPage> {
     'spell': SpellRepository(),
     'subclassfeature': SubclassFeatureRepository(),
     'racefeature': RaceFeatureRepository(),
-    'dragonbornancestry': DragonbornAncestryRepository(),
+    'racechoiceset': RaceChoiceSetRepository(),
+    'racechoiceoption': RaceChoiceOptionRepository(),
+    'racefeaturespellgrant': RaceFeatureSpellGrantRepository(),
   };
 
   final List<String> _entities = [
@@ -59,7 +61,9 @@ class _AdminPageState extends State<AdminPage> {
     'feat',
     'spell',
     'racefeature',
-    'dragonbornancestry'
+    'racechoiceset',
+    'racechoiceoption',
+    'racefeaturespellgrant',
   ];
 
   Repository<dynamic>? get _currentRepo => _selectedEntity != null
@@ -108,72 +112,73 @@ class _AdminPageState extends State<AdminPage> {
         throw Exception('JSON должен быть объектом или массив объектов');
       }
 
-      // Проверяем, репозиторий поддерживает upsertAll
-      if (_selectedEntity!.toLowerCase() == 'dragonbornancestry') {
-        final entities =
-            dataList.map((e) => DragonbornAncestryData.fromJson(e)).toList();
-        await (_currentRepo as DragonbornAncestryRepository)
-            .upsertAll(entities);
-      } else {
-        for (final dataMap in dataList) {
-          dynamic entity;
-          switch (_selectedEntity!.toLowerCase()) {
-            case 'class':
-              entity = ClassData.fromJson(dataMap);
-              break;
-            case 'classfeature':
-              entity = ClassFeatureData.fromJson(dataMap);
-              break;
-            case 'classlevel':
-              entity = ClassLevelData.fromJson(dataMap);
-              break;
-            case 'classchoicegroup':
-              entity = ClassChoiceGroupData.fromJson(dataMap);
-              break;
-            case 'classchoiceoption':
-              entity = ClassChoiceOptionData.fromJson(dataMap);
-              break;
-            case 'race':
-              entity = RaceData.fromJson(dataMap);
-              break;
-            case 'subrace':
-              entity = SubraceData.fromJson(dataMap);
-              break;
-            case 'subclass':
-              entity = SubclassData.fromJson(dataMap);
-              break;
-            case 'item':
-              entity = ItemData.fromJson(dataMap);
-              break;
-            case 'weapon':
-              entity = WeaponData.fromJson(dataMap);
-              break;
-            case 'armor':
-              entity = ArmorData.fromJson(dataMap);
-              break;
-            case 'magicitem':
-              entity = MagicItemData.fromJson(dataMap);
-              break;
-            case 'background':
-              entity = BackgroundData.fromJson(dataMap);
-              break;
-            case 'feat':
-              entity = FeatData.fromJson(dataMap);
-              break;
-            case 'spell':
-              entity = SpellData.fromJson(dataMap);
-              break;
-            case 'subclassfeature':
-              entity = SubclassFeatureData.fromJson(dataMap);
-              break;
-            case 'racefeature':
-              entity = RaceFeatureData.fromJson(dataMap);
-              break;
-            default:
-              throw Exception('Неизвестная сущность: $_selectedEntity');
-          }
-          await _currentRepo!.upsert(entity);
+      for (final dataMap in dataList) {
+        dynamic entity;
+        switch (_selectedEntity!.toLowerCase()) {
+          case 'class':
+            entity = ClassData.fromJson(dataMap);
+            break;
+          case 'classfeature':
+            entity = ClassFeatureData.fromJson(dataMap);
+            break;
+          case 'classlevel':
+            entity = ClassLevelData.fromJson(dataMap);
+            break;
+          case 'classchoicegroup':
+            entity = ClassChoiceGroupData.fromJson(dataMap);
+            break;
+          case 'classchoiceoption':
+            entity = ClassChoiceOptionData.fromJson(dataMap);
+            break;
+          case 'race':
+            entity = RaceData.fromJson(dataMap);
+            break;
+          case 'subrace':
+            entity = SubraceData.fromJson(dataMap);
+            break;
+          case 'racefeature':
+            entity = RaceFeatureData.fromJson(dataMap);
+            break;
+          case 'racechoiceset':
+            entity = RaceChoiceSetData.fromJson(dataMap);
+            break;
+          case 'racechoiceoption':
+            entity = RaceChoiceOptionData.fromJson(dataMap);
+            break;
+          case 'racefeaturespellgrant':
+            entity = RaceFeatureSpellGrantData.fromJson(dataMap);
+            break;
+          case 'subclass':
+            entity = SubclassData.fromJson(dataMap);
+            break;
+          case 'item':
+            entity = ItemData.fromJson(dataMap);
+            break;
+          case 'weapon':
+            entity = WeaponData.fromJson(dataMap);
+            break;
+          case 'armor':
+            entity = ArmorData.fromJson(dataMap);
+            break;
+          case 'magicitem':
+            entity = MagicItemData.fromJson(dataMap);
+            break;
+          case 'background':
+            entity = BackgroundData.fromJson(dataMap);
+            break;
+          case 'feat':
+            entity = FeatData.fromJson(dataMap);
+            break;
+          case 'spell':
+            entity = SpellData.fromJson(dataMap);
+            break;
+          case 'subclassfeature':
+            entity = SubclassFeatureData.fromJson(dataMap);
+            break;
+          default:
+            throw Exception('Неизвестная сущность: $_selectedEntity');
         }
+        await _currentRepo!.upsert(entity);
       }
 
       ScaffoldMessenger.of(context).showSnackBar(

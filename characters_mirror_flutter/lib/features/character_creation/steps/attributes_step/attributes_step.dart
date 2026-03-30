@@ -1,3 +1,4 @@
+import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/state/attribute_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/widgets/attribute_selection.dart';
@@ -63,7 +64,9 @@ class AttributesStep extends ConsumerWidget {
           child: CreationNavBar(
             onPressedNext: () {
               final notifier = ref.read(characterCreationProvider.notifier);
-              notifier.syncAttributesDraft(_mergedAttributes(ref));
+              notifier.syncAttributesDraft(_baseAttributes(ref));
+              notifier.syncRacialAttributeChoicesDraft(
+                  _racialAttributeChoices(ref));
               notifier.nextStep(context);
             },
             route: 'personal',
@@ -74,11 +77,17 @@ class AttributesStep extends ConsumerWidget {
   }
 }
 
-Map<String, int> _mergedAttributes(WidgetRef ref) {
+Map<String, int> _baseAttributes(WidgetRef ref) {
+  return ref
+      .read(attributeStateProvider)
+      .assignedAttributes
+      .map((key, value) => MapEntry(key.name, value));
+}
+
+List<CharacterChoiceData> _racialAttributeChoices(WidgetRef ref) {
   return ref
       .read(attributeStateProvider.notifier)
-      .mergeStatsAndBonuses()
-      .map((key, value) => MapEntry(key.name, value));
+      .buildRacialAttributeChoices();
 }
 
 void _syncAndGo({
@@ -87,6 +96,7 @@ void _syncAndGo({
   required Step target,
 }) {
   final notifier = ref.read(characterCreationProvider.notifier);
-  notifier.syncAttributesDraft(_mergedAttributes(ref));
+  notifier.syncAttributesDraft(_baseAttributes(ref));
+  notifier.syncRacialAttributeChoicesDraft(_racialAttributeChoices(ref));
   notifier.goToStep(context, target);
 }
