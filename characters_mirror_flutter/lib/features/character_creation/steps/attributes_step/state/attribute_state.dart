@@ -63,7 +63,8 @@ class AttributeState extends _$AttributeState {
     final subrace =
         ref.watch(characterCreationProvider.select((c) => c.character.subrace));
     final savedChoices =
-        ref.watch(characterCreationProvider.select((c) => c.choices));
+        ref.watch(characterCreationProvider.select((c) => c.character.choices)) ??
+            const <CharacterChoiceData>[];
 
     final fixedRaceBonuses =
         _resolveFixedRaceBonuses(race: race, subrace: subrace);
@@ -357,15 +358,12 @@ class AttributeState extends _$AttributeState {
 
   List<CharacterChoiceData> buildRacialAttributeChoices() {
     final result = <CharacterChoiceData>[];
-    final characterId =
-        ref.read(characterCreationProvider.select((c) => c.character.id)) ?? 0;
     final raceId =
         ref.read(characterCreationProvider.select((c) => c.character.race?.id));
 
     if (raceId != null) {
       result.add(
         CharacterChoiceData(
-          characterId: characterId,
           sourceType: ChoiceSourceType.race,
           sourceId: raceId,
           groupKey: bonusModeGroupKey,
@@ -383,7 +381,6 @@ class AttributeState extends _$AttributeState {
       for (final attribute in attributes) {
         result.add(
           CharacterChoiceData(
-            characterId: characterId,
             sourceType: rule.sourceType,
             sourceId: rule.sourceId,
             groupKey: rule.groupKey,

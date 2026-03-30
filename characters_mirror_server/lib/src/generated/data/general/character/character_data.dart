@@ -8,17 +8,18 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
-// ignore_for_file: unnecessary_null_comparison
-
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../enums/character_alignment.dart' as _i2;
 import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
+import '../../../data/general/character/character_class_entry_data.dart' as _i6;
+import '../../../data/general/character/character_choice_data.dart' as _i7;
+import '../../../data/general/character/character_derived_data.dart' as _i8;
 
 abstract class CharacterData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _i1.SerializableModel, _i1.ProtocolSerialization {
   CharacterData._({
     this.id,
     this.name,
@@ -39,20 +40,19 @@ abstract class CharacterData
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.userId,
     this.experience,
     this.alignmentValue,
-    this.raceId,
     this.race,
-    this.subraceId,
     this.subrace,
-    this.backgroundId,
     this.background,
     this.baseAbilityScores,
     this.temporaryHp,
     this.currentHp,
     this.inspiration,
     this.notes,
+    this.classEntries,
+    this.choices,
+    this.derived,
   });
 
   factory CharacterData({
@@ -75,20 +75,19 @@ abstract class CharacterData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
-    int? raceId,
     _i3.RaceData? race,
-    int? subraceId,
     _i4.SubraceData? subrace,
-    int? backgroundId,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
+    List<_i6.CharacterClassEntryData>? classEntries,
+    List<_i7.CharacterChoiceData>? choices,
+    _i8.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -116,23 +115,19 @@ abstract class CharacterData
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      userId: jsonSerialization['userId'] as int?,
       experience: jsonSerialization['experience'] as int?,
       alignmentValue: jsonSerialization['alignmentValue'] == null
           ? null
           : _i2.CharacterAlignment.fromJson(
               (jsonSerialization['alignmentValue'] as String)),
-      raceId: jsonSerialization['raceId'] as int?,
       race: jsonSerialization['race'] == null
           ? null
           : _i3.RaceData.fromJson(
               (jsonSerialization['race'] as Map<String, dynamic>)),
-      subraceId: jsonSerialization['subraceId'] as int?,
       subrace: jsonSerialization['subrace'] == null
           ? null
           : _i4.SubraceData.fromJson(
               (jsonSerialization['subrace'] as Map<String, dynamic>)),
-      backgroundId: jsonSerialization['backgroundId'] as int?,
       background: jsonSerialization['background'] == null
           ? null
           : _i5.BackgroundData.fromJson(
@@ -146,14 +141,21 @@ abstract class CharacterData
       currentHp: jsonSerialization['currentHp'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
       notes: jsonSerialization['notes'] as String?,
+      classEntries: (jsonSerialization['classEntries'] as List?)
+          ?.map((e) =>
+              _i6.CharacterClassEntryData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      choices: (jsonSerialization['choices'] as List?)
+          ?.map((e) =>
+              _i7.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      derived: jsonSerialization['derived'] == null
+          ? null
+          : _i8.CharacterDerivedData.fromJson(
+              (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
 
-  static final t = CharacterDataTable();
-
-  static const db = CharacterDataRepository._();
-
-  @override
   int? id;
 
   String? name;
@@ -192,21 +194,13 @@ abstract class CharacterData
 
   DateTime? updatedAt;
 
-  int? userId;
-
   int? experience;
 
   _i2.CharacterAlignment? alignmentValue;
 
-  int? raceId;
-
   _i3.RaceData? race;
 
-  int? subraceId;
-
   _i4.SubraceData? subrace;
-
-  int? backgroundId;
 
   _i5.BackgroundData? background;
 
@@ -220,8 +214,11 @@ abstract class CharacterData
 
   String? notes;
 
-  @override
-  _i1.Table<int?> get table => t;
+  List<_i6.CharacterClassEntryData>? classEntries;
+
+  List<_i7.CharacterChoiceData>? choices;
+
+  _i8.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
@@ -246,20 +243,19 @@ abstract class CharacterData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
-    int? raceId,
     _i3.RaceData? race,
-    int? subraceId,
     _i4.SubraceData? subrace,
-    int? backgroundId,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
+    List<_i6.CharacterClassEntryData>? classEntries,
+    List<_i7.CharacterChoiceData>? choices,
+    _i8.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -284,14 +280,10 @@ abstract class CharacterData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (userId != null) 'userId': userId,
       if (experience != null) 'experience': experience,
       if (alignmentValue != null) 'alignmentValue': alignmentValue?.toJson(),
-      if (raceId != null) 'raceId': raceId,
       if (race != null) 'race': race?.toJson(),
-      if (subraceId != null) 'subraceId': subraceId,
       if (subrace != null) 'subrace': subrace?.toJson(),
-      if (backgroundId != null) 'backgroundId': backgroundId,
       if (background != null) 'background': background?.toJson(),
       if (baseAbilityScores != null)
         'baseAbilityScores': baseAbilityScores?.toJson(),
@@ -299,6 +291,11 @@ abstract class CharacterData
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
       if (notes != null) 'notes': notes,
+      if (classEntries != null)
+        'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
+      if (choices != null)
+        'choices': choices?.toJson(valueToJson: (v) => v.toJson()),
+      if (derived != null) 'derived': derived?.toJson(),
     };
   }
 
@@ -325,14 +322,10 @@ abstract class CharacterData
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (userId != null) 'userId': userId,
       if (experience != null) 'experience': experience,
       if (alignmentValue != null) 'alignmentValue': alignmentValue?.toJson(),
-      if (raceId != null) 'raceId': raceId,
       if (race != null) 'race': race?.toJsonForProtocol(),
-      if (subraceId != null) 'subraceId': subraceId,
       if (subrace != null) 'subrace': subrace?.toJsonForProtocol(),
-      if (backgroundId != null) 'backgroundId': backgroundId,
       if (background != null) 'background': background?.toJsonForProtocol(),
       if (baseAbilityScores != null)
         'baseAbilityScores': baseAbilityScores?.toJson(),
@@ -340,39 +333,13 @@ abstract class CharacterData
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
       if (notes != null) 'notes': notes,
+      if (classEntries != null)
+        'classEntries':
+            classEntries?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (choices != null)
+        'choices': choices?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (derived != null) 'derived': derived?.toJsonForProtocol(),
     };
-  }
-
-  static CharacterDataInclude include({
-    _i3.RaceDataInclude? race,
-    _i4.SubraceDataInclude? subrace,
-    _i5.BackgroundDataInclude? background,
-  }) {
-    return CharacterDataInclude._(
-      race: race,
-      subrace: subrace,
-      background: background,
-    );
-  }
-
-  static CharacterDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<CharacterDataTable>? where,
-    int? limit,
-    int? offset,
-    _i1.OrderByBuilder<CharacterDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterDataTable>? orderByList,
-    CharacterDataInclude? include,
-  }) {
-    return CharacterDataIncludeList._(
-      where: where,
-      limit: limit,
-      offset: offset,
-      orderBy: orderBy?.call(CharacterData.t),
-      orderDescending: orderDescending,
-      orderByList: orderByList?.call(CharacterData.t),
-      include: include,
-    );
   }
 
   @override
@@ -404,20 +371,19 @@ class _CharacterDataImpl extends CharacterData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
-    int? raceId,
     _i3.RaceData? race,
-    int? subraceId,
     _i4.SubraceData? subrace,
-    int? backgroundId,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
+    List<_i6.CharacterClassEntryData>? classEntries,
+    List<_i7.CharacterChoiceData>? choices,
+    _i8.CharacterDerivedData? derived,
   }) : super._(
           id: id,
           name: name,
@@ -438,20 +404,19 @@ class _CharacterDataImpl extends CharacterData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          userId: userId,
           experience: experience,
           alignmentValue: alignmentValue,
-          raceId: raceId,
           race: race,
-          subraceId: subraceId,
           subrace: subrace,
-          backgroundId: backgroundId,
           background: background,
           baseAbilityScores: baseAbilityScores,
           temporaryHp: temporaryHp,
           currentHp: currentHp,
           inspiration: inspiration,
           notes: notes,
+          classEntries: classEntries,
+          choices: choices,
+          derived: derived,
         );
 
   /// Returns a shallow copy of this [CharacterData]
@@ -478,20 +443,19 @@ class _CharacterDataImpl extends CharacterData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? userId = _Undefined,
     Object? experience = _Undefined,
     Object? alignmentValue = _Undefined,
-    Object? raceId = _Undefined,
     Object? race = _Undefined,
-    Object? subraceId = _Undefined,
     Object? subrace = _Undefined,
-    Object? backgroundId = _Undefined,
     Object? background = _Undefined,
     Object? baseAbilityScores = _Undefined,
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
     Object? inspiration = _Undefined,
     Object? notes = _Undefined,
+    Object? classEntries = _Undefined,
+    Object? choices = _Undefined,
+    Object? derived = _Undefined,
   }) {
     return CharacterData(
       id: id is int? ? id : this.id,
@@ -517,16 +481,12 @@ class _CharacterDataImpl extends CharacterData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      userId: userId is int? ? userId : this.userId,
       experience: experience is int? ? experience : this.experience,
       alignmentValue: alignmentValue is _i2.CharacterAlignment?
           ? alignmentValue
           : this.alignmentValue,
-      raceId: raceId is int? ? raceId : this.raceId,
       race: race is _i3.RaceData? ? race : this.race?.copyWith(),
-      subraceId: subraceId is int? ? subraceId : this.subraceId,
       subrace: subrace is _i4.SubraceData? ? subrace : this.subrace?.copyWith(),
-      backgroundId: backgroundId is int? ? backgroundId : this.backgroundId,
       background: background is _i5.BackgroundData?
           ? background
           : this.background?.copyWith(),
@@ -544,693 +504,15 @@ class _CharacterDataImpl extends CharacterData {
       currentHp: currentHp is int? ? currentHp : this.currentHp,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
       notes: notes is String? ? notes : this.notes,
-    );
-  }
-}
-
-class CharacterDataTable extends _i1.Table<int?> {
-  CharacterDataTable({super.tableRelation}) : super(tableName: 'characters') {
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    age = _i1.ColumnString(
-      'age',
-      this,
-    );
-    height = _i1.ColumnString(
-      'height',
-      this,
-    );
-    weight = _i1.ColumnString(
-      'weight',
-      this,
-    );
-    eyes = _i1.ColumnString(
-      'eyes',
-      this,
-    );
-    skin = _i1.ColumnString(
-      'skin',
-      this,
-    );
-    hair = _i1.ColumnString(
-      'hair',
-      this,
-    );
-    appearance = _i1.ColumnString(
-      'appearance',
-      this,
-    );
-    backstory = _i1.ColumnString(
-      'backstory',
-      this,
-    );
-    goals = _i1.ColumnString(
-      'goals',
-      this,
-    );
-    alliesOrganizations = _i1.ColumnString(
-      'alliesOrganizations',
-      this,
-    );
-    personalityTraits = _i1.ColumnString(
-      'personalityTraits',
-      this,
-    );
-    ideals = _i1.ColumnString(
-      'ideals',
-      this,
-    );
-    bonds = _i1.ColumnString(
-      'bonds',
-      this,
-    );
-    flaws = _i1.ColumnString(
-      'flaws',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-    userId = _i1.ColumnInt(
-      'userId',
-      this,
-    );
-    experience = _i1.ColumnInt(
-      'experience',
-      this,
-    );
-    alignmentValue = _i1.ColumnEnum(
-      'alignmentValue',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    raceId = _i1.ColumnInt(
-      'raceId',
-      this,
-    );
-    subraceId = _i1.ColumnInt(
-      'subraceId',
-      this,
-    );
-    backgroundId = _i1.ColumnInt(
-      'backgroundId',
-      this,
-    );
-    baseAbilityScores = _i1.ColumnSerializable(
-      'baseAbilityScores',
-      this,
-    );
-    temporaryHp = _i1.ColumnInt(
-      'temporaryHp',
-      this,
-    );
-    currentHp = _i1.ColumnInt(
-      'currentHp',
-      this,
-    );
-    inspiration = _i1.ColumnBool(
-      'inspiration',
-      this,
-    );
-    notes = _i1.ColumnString(
-      'notes',
-      this,
-    );
-  }
-
-  late final _i1.ColumnString name;
-
-  late final _i1.ColumnString age;
-
-  late final _i1.ColumnString height;
-
-  late final _i1.ColumnString weight;
-
-  late final _i1.ColumnString eyes;
-
-  late final _i1.ColumnString skin;
-
-  late final _i1.ColumnString hair;
-
-  late final _i1.ColumnString appearance;
-
-  late final _i1.ColumnString backstory;
-
-  late final _i1.ColumnString goals;
-
-  late final _i1.ColumnString alliesOrganizations;
-
-  late final _i1.ColumnString personalityTraits;
-
-  late final _i1.ColumnString ideals;
-
-  late final _i1.ColumnString bonds;
-
-  late final _i1.ColumnString flaws;
-
-  late final _i1.ColumnInt version;
-
-  late final _i1.ColumnDateTime createdAt;
-
-  late final _i1.ColumnDateTime updatedAt;
-
-  late final _i1.ColumnInt userId;
-
-  late final _i1.ColumnInt experience;
-
-  late final _i1.ColumnEnum<_i2.CharacterAlignment> alignmentValue;
-
-  late final _i1.ColumnInt raceId;
-
-  _i3.RaceDataTable? _race;
-
-  late final _i1.ColumnInt subraceId;
-
-  _i4.SubraceDataTable? _subrace;
-
-  late final _i1.ColumnInt backgroundId;
-
-  _i5.BackgroundDataTable? _background;
-
-  late final _i1.ColumnSerializable baseAbilityScores;
-
-  late final _i1.ColumnInt temporaryHp;
-
-  late final _i1.ColumnInt currentHp;
-
-  late final _i1.ColumnBool inspiration;
-
-  late final _i1.ColumnString notes;
-
-  _i3.RaceDataTable get race {
-    if (_race != null) return _race!;
-    _race = _i1.createRelationTable(
-      relationFieldName: 'race',
-      field: CharacterData.t.raceId,
-      foreignField: _i3.RaceData.t.id,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.RaceDataTable(tableRelation: foreignTableRelation),
-    );
-    return _race!;
-  }
-
-  _i4.SubraceDataTable get subrace {
-    if (_subrace != null) return _subrace!;
-    _subrace = _i1.createRelationTable(
-      relationFieldName: 'subrace',
-      field: CharacterData.t.subraceId,
-      foreignField: _i4.SubraceData.t.id,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i4.SubraceDataTable(tableRelation: foreignTableRelation),
-    );
-    return _subrace!;
-  }
-
-  _i5.BackgroundDataTable get background {
-    if (_background != null) return _background!;
-    _background = _i1.createRelationTable(
-      relationFieldName: 'background',
-      field: CharacterData.t.backgroundId,
-      foreignField: _i5.BackgroundData.t.id,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i5.BackgroundDataTable(tableRelation: foreignTableRelation),
-    );
-    return _background!;
-  }
-
-  @override
-  List<_i1.Column> get columns => [
-        id,
-        name,
-        age,
-        height,
-        weight,
-        eyes,
-        skin,
-        hair,
-        appearance,
-        backstory,
-        goals,
-        alliesOrganizations,
-        personalityTraits,
-        ideals,
-        bonds,
-        flaws,
-        version,
-        createdAt,
-        updatedAt,
-        userId,
-        experience,
-        alignmentValue,
-        raceId,
-        subraceId,
-        backgroundId,
-        baseAbilityScores,
-        temporaryHp,
-        currentHp,
-        inspiration,
-        notes,
-      ];
-
-  @override
-  _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'race') {
-      return race;
-    }
-    if (relationField == 'subrace') {
-      return subrace;
-    }
-    if (relationField == 'background') {
-      return background;
-    }
-    return null;
-  }
-}
-
-class CharacterDataInclude extends _i1.IncludeObject {
-  CharacterDataInclude._({
-    _i3.RaceDataInclude? race,
-    _i4.SubraceDataInclude? subrace,
-    _i5.BackgroundDataInclude? background,
-  }) {
-    _race = race;
-    _subrace = subrace;
-    _background = background;
-  }
-
-  _i3.RaceDataInclude? _race;
-
-  _i4.SubraceDataInclude? _subrace;
-
-  _i5.BackgroundDataInclude? _background;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'race': _race,
-        'subrace': _subrace,
-        'background': _background,
-      };
-
-  @override
-  _i1.Table<int?> get table => CharacterData.t;
-}
-
-class CharacterDataIncludeList extends _i1.IncludeList {
-  CharacterDataIncludeList._({
-    _i1.WhereExpressionBuilder<CharacterDataTable>? where,
-    super.limit,
-    super.offset,
-    super.orderBy,
-    super.orderDescending,
-    super.orderByList,
-    super.include,
-  }) {
-    super.where = where?.call(CharacterData.t);
-  }
-
-  @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
-
-  @override
-  _i1.Table<int?> get table => CharacterData.t;
-}
-
-class CharacterDataRepository {
-  const CharacterDataRepository._();
-
-  final attachRow = const CharacterDataAttachRowRepository._();
-
-  final detachRow = const CharacterDataDetachRowRepository._();
-
-  /// Returns a list of [CharacterData]s matching the given query parameters.
-  ///
-  /// Use [where] to specify which items to include in the return value.
-  /// If none is specified, all items will be returned.
-  ///
-  /// To specify the order of the items use [orderBy] or [orderByList]
-  /// when sorting by multiple columns.
-  ///
-  /// The maximum number of items can be set by [limit]. If no limit is set,
-  /// all items matching the query will be returned.
-  ///
-  /// [offset] defines how many items to skip, after which [limit] (or all)
-  /// items are read from the database.
-  ///
-  /// ```dart
-  /// var persons = await Persons.db.find(
-  ///   session,
-  ///   where: (t) => t.lastName.equals('Jones'),
-  ///   orderBy: (t) => t.firstName,
-  ///   limit: 100,
-  /// );
-  /// ```
-  Future<List<CharacterData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterDataTable>? where,
-    int? limit,
-    int? offset,
-    _i1.OrderByBuilder<CharacterDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterDataTable>? orderByList,
-    _i1.Transaction? transaction,
-    CharacterDataInclude? include,
-  }) async {
-    return session.db.find<CharacterData>(
-      where: where?.call(CharacterData.t),
-      orderBy: orderBy?.call(CharacterData.t),
-      orderByList: orderByList?.call(CharacterData.t),
-      orderDescending: orderDescending,
-      limit: limit,
-      offset: offset,
-      transaction: transaction,
-      include: include,
-    );
-  }
-
-  /// Returns the first matching [CharacterData] matching the given query parameters.
-  ///
-  /// Use [where] to specify which items to include in the return value.
-  /// If none is specified, all items will be returned.
-  ///
-  /// To specify the order use [orderBy] or [orderByList]
-  /// when sorting by multiple columns.
-  ///
-  /// [offset] defines how many items to skip, after which the next one will be picked.
-  ///
-  /// ```dart
-  /// var youngestPerson = await Persons.db.findFirstRow(
-  ///   session,
-  ///   where: (t) => t.lastName.equals('Jones'),
-  ///   orderBy: (t) => t.age,
-  /// );
-  /// ```
-  Future<CharacterData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterDataTable>? where,
-    int? offset,
-    _i1.OrderByBuilder<CharacterDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterDataTable>? orderByList,
-    _i1.Transaction? transaction,
-    CharacterDataInclude? include,
-  }) async {
-    return session.db.findFirstRow<CharacterData>(
-      where: where?.call(CharacterData.t),
-      orderBy: orderBy?.call(CharacterData.t),
-      orderByList: orderByList?.call(CharacterData.t),
-      orderDescending: orderDescending,
-      offset: offset,
-      transaction: transaction,
-      include: include,
-    );
-  }
-
-  /// Finds a single [CharacterData] by its [id] or null if no such row exists.
-  Future<CharacterData?> findById(
-    _i1.Session session,
-    int id, {
-    _i1.Transaction? transaction,
-    CharacterDataInclude? include,
-  }) async {
-    return session.db.findById<CharacterData>(
-      id,
-      transaction: transaction,
-      include: include,
-    );
-  }
-
-  /// Inserts all [CharacterData]s in the list and returns the inserted rows.
-  ///
-  /// The returned [CharacterData]s will have their `id` fields set.
-  ///
-  /// This is an atomic operation, meaning that if one of the rows fails to
-  /// insert, none of the rows will be inserted.
-  Future<List<CharacterData>> insert(
-    _i1.Session session,
-    List<CharacterData> rows, {
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.insert<CharacterData>(
-      rows,
-      transaction: transaction,
-    );
-  }
-
-  /// Inserts a single [CharacterData] and returns the inserted row.
-  ///
-  /// The returned [CharacterData] will have its `id` field set.
-  Future<CharacterData> insertRow(
-    _i1.Session session,
-    CharacterData row, {
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.insertRow<CharacterData>(
-      row,
-      transaction: transaction,
-    );
-  }
-
-  /// Updates all [CharacterData]s in the list and returns the updated rows. If
-  /// [columns] is provided, only those columns will be updated. Defaults to
-  /// all columns.
-  /// This is an atomic operation, meaning that if one of the rows fails to
-  /// update, none of the rows will be updated.
-  Future<List<CharacterData>> update(
-    _i1.Session session,
-    List<CharacterData> rows, {
-    _i1.ColumnSelections<CharacterDataTable>? columns,
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.update<CharacterData>(
-      rows,
-      columns: columns?.call(CharacterData.t),
-      transaction: transaction,
-    );
-  }
-
-  /// Updates a single [CharacterData]. The row needs to have its id set.
-  /// Optionally, a list of [columns] can be provided to only update those
-  /// columns. Defaults to all columns.
-  Future<CharacterData> updateRow(
-    _i1.Session session,
-    CharacterData row, {
-    _i1.ColumnSelections<CharacterDataTable>? columns,
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.updateRow<CharacterData>(
-      row,
-      columns: columns?.call(CharacterData.t),
-      transaction: transaction,
-    );
-  }
-
-  /// Deletes all [CharacterData]s in the list and returns the deleted rows.
-  /// This is an atomic operation, meaning that if one of the rows fail to
-  /// be deleted, none of the rows will be deleted.
-  Future<List<CharacterData>> delete(
-    _i1.Session session,
-    List<CharacterData> rows, {
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.delete<CharacterData>(
-      rows,
-      transaction: transaction,
-    );
-  }
-
-  /// Deletes a single [CharacterData].
-  Future<CharacterData> deleteRow(
-    _i1.Session session,
-    CharacterData row, {
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.deleteRow<CharacterData>(
-      row,
-      transaction: transaction,
-    );
-  }
-
-  /// Deletes all rows matching the [where] expression.
-  Future<List<CharacterData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<CharacterDataTable> where,
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.deleteWhere<CharacterData>(
-      where: where(CharacterData.t),
-      transaction: transaction,
-    );
-  }
-
-  /// Counts the number of rows matching the [where] expression. If omitted,
-  /// will return the count of all rows in the table.
-  Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterDataTable>? where,
-    int? limit,
-    _i1.Transaction? transaction,
-  }) async {
-    return session.db.count<CharacterData>(
-      where: where?.call(CharacterData.t),
-      limit: limit,
-      transaction: transaction,
-    );
-  }
-}
-
-class CharacterDataAttachRowRepository {
-  const CharacterDataAttachRowRepository._();
-
-  /// Creates a relation between the given [CharacterData] and [RaceData]
-  /// by setting the [CharacterData]'s foreign key `raceId` to refer to the [RaceData].
-  Future<void> race(
-    _i1.Session session,
-    CharacterData characterData,
-    _i3.RaceData race, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (characterData.id == null) {
-      throw ArgumentError.notNull('characterData.id');
-    }
-    if (race.id == null) {
-      throw ArgumentError.notNull('race.id');
-    }
-
-    var $characterData = characterData.copyWith(raceId: race.id);
-    await session.db.updateRow<CharacterData>(
-      $characterData,
-      columns: [CharacterData.t.raceId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between the given [CharacterData] and [SubraceData]
-  /// by setting the [CharacterData]'s foreign key `subraceId` to refer to the [SubraceData].
-  Future<void> subrace(
-    _i1.Session session,
-    CharacterData characterData,
-    _i4.SubraceData subrace, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (characterData.id == null) {
-      throw ArgumentError.notNull('characterData.id');
-    }
-    if (subrace.id == null) {
-      throw ArgumentError.notNull('subrace.id');
-    }
-
-    var $characterData = characterData.copyWith(subraceId: subrace.id);
-    await session.db.updateRow<CharacterData>(
-      $characterData,
-      columns: [CharacterData.t.subraceId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between the given [CharacterData] and [BackgroundData]
-  /// by setting the [CharacterData]'s foreign key `backgroundId` to refer to the [BackgroundData].
-  Future<void> background(
-    _i1.Session session,
-    CharacterData characterData,
-    _i5.BackgroundData background, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (characterData.id == null) {
-      throw ArgumentError.notNull('characterData.id');
-    }
-    if (background.id == null) {
-      throw ArgumentError.notNull('background.id');
-    }
-
-    var $characterData = characterData.copyWith(backgroundId: background.id);
-    await session.db.updateRow<CharacterData>(
-      $characterData,
-      columns: [CharacterData.t.backgroundId],
-      transaction: transaction,
-    );
-  }
-}
-
-class CharacterDataDetachRowRepository {
-  const CharacterDataDetachRowRepository._();
-
-  /// Detaches the relation between this [CharacterData] and the [RaceData] set in `race`
-  /// by setting the [CharacterData]'s foreign key `raceId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> race(
-    _i1.Session session,
-    CharacterData characterdata, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (characterdata.id == null) {
-      throw ArgumentError.notNull('characterdata.id');
-    }
-
-    var $characterdata = characterdata.copyWith(raceId: null);
-    await session.db.updateRow<CharacterData>(
-      $characterdata,
-      columns: [CharacterData.t.raceId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [CharacterData] and the [SubraceData] set in `subrace`
-  /// by setting the [CharacterData]'s foreign key `subraceId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> subrace(
-    _i1.Session session,
-    CharacterData characterdata, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (characterdata.id == null) {
-      throw ArgumentError.notNull('characterdata.id');
-    }
-
-    var $characterdata = characterdata.copyWith(subraceId: null);
-    await session.db.updateRow<CharacterData>(
-      $characterdata,
-      columns: [CharacterData.t.subraceId],
-      transaction: transaction,
-    );
-  }
-
-  /// Detaches the relation between this [CharacterData] and the [BackgroundData] set in `background`
-  /// by setting the [CharacterData]'s foreign key `backgroundId` to `null`.
-  ///
-  /// This removes the association between the two models without deleting
-  /// the related record.
-  Future<void> background(
-    _i1.Session session,
-    CharacterData characterdata, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (characterdata.id == null) {
-      throw ArgumentError.notNull('characterdata.id');
-    }
-
-    var $characterdata = characterdata.copyWith(backgroundId: null);
-    await session.db.updateRow<CharacterData>(
-      $characterdata,
-      columns: [CharacterData.t.backgroundId],
-      transaction: transaction,
+      classEntries: classEntries is List<_i6.CharacterClassEntryData>?
+          ? classEntries
+          : this.classEntries?.map((e0) => e0.copyWith()).toList(),
+      choices: choices is List<_i7.CharacterChoiceData>?
+          ? choices
+          : this.choices?.map((e0) => e0.copyWith()).toList(),
+      derived: derived is _i8.CharacterDerivedData?
+          ? derived
+          : this.derived?.copyWith(),
     );
   }
 }

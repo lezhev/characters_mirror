@@ -10,21 +10,16 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/character/character_data.dart' as _i2;
-import '../../../data/general/class/class_data.dart' as _i3;
-import '../../../data/general/class/subclass_data.dart' as _i4;
-import '../../../enums/hit_point_mode.dart' as _i5;
+import '../../../data/general/class/class_data.dart' as _i2;
+import '../../../data/general/class/subclass_data.dart' as _i3;
+import '../../../enums/hit_point_mode.dart' as _i4;
 
 abstract class CharacterClassEntryData implements _i1.SerializableModel {
   CharacterClassEntryData._({
     this.id,
-    required this.characterId,
-    this.character,
-    required this.classDataId,
     this.classData,
-    this.subclassId,
     this.subclass,
-    required this.level,
+    this.level,
     this.isStartingClass,
     this.classOrder,
     this.hpMode,
@@ -34,16 +29,12 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
 
   factory CharacterClassEntryData({
     int? id,
-    required int characterId,
-    _i2.CharacterData? character,
-    required int classDataId,
-    _i3.ClassData? classData,
-    int? subclassId,
-    _i4.SubclassData? subclass,
-    required int level,
+    _i2.ClassData? classData,
+    _i3.SubclassData? subclass,
+    int? level,
     bool? isStartingClass,
     int? classOrder,
-    _i5.HitPointMode? hpMode,
+    _i4.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
   }) = _CharacterClassEntryDataImpl;
@@ -52,27 +43,20 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
       Map<String, dynamic> jsonSerialization) {
     return CharacterClassEntryData(
       id: jsonSerialization['id'] as int?,
-      characterId: jsonSerialization['characterId'] as int,
-      character: jsonSerialization['character'] == null
-          ? null
-          : _i2.CharacterData.fromJson(
-              (jsonSerialization['character'] as Map<String, dynamic>)),
-      classDataId: jsonSerialization['classDataId'] as int,
       classData: jsonSerialization['classData'] == null
           ? null
-          : _i3.ClassData.fromJson(
+          : _i2.ClassData.fromJson(
               (jsonSerialization['classData'] as Map<String, dynamic>)),
-      subclassId: jsonSerialization['subclassId'] as int?,
       subclass: jsonSerialization['subclass'] == null
           ? null
-          : _i4.SubclassData.fromJson(
+          : _i3.SubclassData.fromJson(
               (jsonSerialization['subclass'] as Map<String, dynamic>)),
-      level: jsonSerialization['level'] as int,
+      level: jsonSerialization['level'] as int?,
       isStartingClass: jsonSerialization['isStartingClass'] as bool?,
       classOrder: jsonSerialization['classOrder'] as int?,
       hpMode: jsonSerialization['hpMode'] == null
           ? null
-          : _i5.HitPointMode.fromJson((jsonSerialization['hpMode'] as String)),
+          : _i4.HitPointMode.fromJson((jsonSerialization['hpMode'] as String)),
       hpRolledValues: (jsonSerialization['hpRolledValues'] as List?)
           ?.map((e) => e as int)
           .toList(),
@@ -80,30 +64,19 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
     );
   }
 
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
   int? id;
 
-  int characterId;
+  _i2.ClassData? classData;
 
-  _i2.CharacterData? character;
+  _i3.SubclassData? subclass;
 
-  int classDataId;
-
-  _i3.ClassData? classData;
-
-  int? subclassId;
-
-  _i4.SubclassData? subclass;
-
-  int level;
+  int? level;
 
   bool? isStartingClass;
 
   int? classOrder;
 
-  _i5.HitPointMode? hpMode;
+  _i4.HitPointMode? hpMode;
 
   List<int>? hpRolledValues;
 
@@ -114,16 +87,12 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
   @_i1.useResult
   CharacterClassEntryData copyWith({
     int? id,
-    int? characterId,
-    _i2.CharacterData? character,
-    int? classDataId,
-    _i3.ClassData? classData,
-    int? subclassId,
-    _i4.SubclassData? subclass,
+    _i2.ClassData? classData,
+    _i3.SubclassData? subclass,
     int? level,
     bool? isStartingClass,
     int? classOrder,
-    _i5.HitPointMode? hpMode,
+    _i4.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
   });
@@ -131,13 +100,9 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'characterId': characterId,
-      if (character != null) 'character': character?.toJson(),
-      'classDataId': classDataId,
       if (classData != null) 'classData': classData?.toJson(),
-      if (subclassId != null) 'subclassId': subclassId,
       if (subclass != null) 'subclass': subclass?.toJson(),
-      'level': level,
+      if (level != null) 'level': level,
       if (isStartingClass != null) 'isStartingClass': isStartingClass,
       if (classOrder != null) 'classOrder': classOrder,
       if (hpMode != null) 'hpMode': hpMode?.toJson(),
@@ -157,25 +122,17 @@ class _Undefined {}
 class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
   _CharacterClassEntryDataImpl({
     int? id,
-    required int characterId,
-    _i2.CharacterData? character,
-    required int classDataId,
-    _i3.ClassData? classData,
-    int? subclassId,
-    _i4.SubclassData? subclass,
-    required int level,
+    _i2.ClassData? classData,
+    _i3.SubclassData? subclass,
+    int? level,
     bool? isStartingClass,
     int? classOrder,
-    _i5.HitPointMode? hpMode,
+    _i4.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
   }) : super._(
           id: id,
-          characterId: characterId,
-          character: character,
-          classDataId: classDataId,
           classData: classData,
-          subclassId: subclassId,
           subclass: subclass,
           level: level,
           isStartingClass: isStartingClass,
@@ -191,13 +148,9 @@ class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
   @override
   CharacterClassEntryData copyWith({
     Object? id = _Undefined,
-    int? characterId,
-    Object? character = _Undefined,
-    int? classDataId,
     Object? classData = _Undefined,
-    Object? subclassId = _Undefined,
     Object? subclass = _Undefined,
-    int? level,
+    Object? level = _Undefined,
     Object? isStartingClass = _Undefined,
     Object? classOrder = _Undefined,
     Object? hpMode = _Undefined,
@@ -206,21 +159,15 @@ class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
   }) {
     return CharacterClassEntryData(
       id: id is int? ? id : this.id,
-      characterId: characterId ?? this.characterId,
-      character: character is _i2.CharacterData?
-          ? character
-          : this.character?.copyWith(),
-      classDataId: classDataId ?? this.classDataId,
       classData:
-          classData is _i3.ClassData? ? classData : this.classData?.copyWith(),
-      subclassId: subclassId is int? ? subclassId : this.subclassId,
+          classData is _i2.ClassData? ? classData : this.classData?.copyWith(),
       subclass:
-          subclass is _i4.SubclassData? ? subclass : this.subclass?.copyWith(),
-      level: level ?? this.level,
+          subclass is _i3.SubclassData? ? subclass : this.subclass?.copyWith(),
+      level: level is int? ? level : this.level,
       isStartingClass:
           isStartingClass is bool? ? isStartingClass : this.isStartingClass,
       classOrder: classOrder is int? ? classOrder : this.classOrder,
-      hpMode: hpMode is _i5.HitPointMode? ? hpMode : this.hpMode,
+      hpMode: hpMode is _i4.HitPointMode? ? hpMode : this.hpMode,
       hpRolledValues: hpRolledValues is List<int>?
           ? hpRolledValues
           : this.hpRolledValues?.map((e0) => e0).toList(),

@@ -1,0 +1,13 @@
+class: CharacterClassEntryRecord
+serverOnly: true
+table: character_class_relation
+fields:
+  character: CharacterRecord?, relation
+  classData: ClassData?, relation
+  subclass: SubclassData?, relation(optional)
+  level: int
+  isStartingClass: bool?
+  classOrder: int?
+  hpMode: HitPointMode?
+  hpRolledValues: List<int>?
+  notes: String?

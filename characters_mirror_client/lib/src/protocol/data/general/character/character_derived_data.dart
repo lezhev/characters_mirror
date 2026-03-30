@@ -10,14 +10,10 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/character/character_data.dart' as _i2;
-import '../../../enums/damage_type.dart' as _i3;
+import '../../../enums/damage_type.dart' as _i2;
 
-abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
-  CharacterSheetSnapshotData._({
-    this.id,
-    required this.characterId,
-    this.character,
+abstract class CharacterDerivedData implements _i1.SerializableModel {
+  CharacterDerivedData._({
     this.totalLevel,
     this.proficiencyBonus,
     this.armorClass,
@@ -34,14 +30,10 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
     this.hitDiceSummary,
     this.senses,
     this.resistances,
-    this.sheetVersion,
     this.rebuiltAt,
   });
 
-  factory CharacterSheetSnapshotData({
-    int? id,
-    required int characterId,
-    _i2.CharacterData? character,
+  factory CharacterDerivedData({
     int? totalLevel,
     int? proficiencyBonus,
     int? armorClass,
@@ -57,20 +49,13 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
     Map<int, int>? pactSlots,
     Map<String, int>? hitDiceSummary,
     List<String>? senses,
-    List<_i3.DamageType>? resistances,
-    int? sheetVersion,
+    List<_i2.DamageType>? resistances,
     DateTime? rebuiltAt,
-  }) = _CharacterSheetSnapshotDataImpl;
+  }) = _CharacterDerivedDataImpl;
 
-  factory CharacterSheetSnapshotData.fromJson(
+  factory CharacterDerivedData.fromJson(
       Map<String, dynamic> jsonSerialization) {
-    return CharacterSheetSnapshotData(
-      id: jsonSerialization['id'] as int?,
-      characterId: jsonSerialization['characterId'] as int,
-      character: jsonSerialization['character'] == null
-          ? null
-          : _i2.CharacterData.fromJson(
-              (jsonSerialization['character'] as Map<String, dynamic>)),
+    return CharacterDerivedData(
       totalLevel: jsonSerialization['totalLevel'] as int?,
       proficiencyBonus: jsonSerialization['proficiencyBonus'] as int?,
       armorClass: jsonSerialization['armorClass'] as int?,
@@ -104,23 +89,13 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
           ?.map((e) => e as String)
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i3.DamageType.fromJson((e as String)))
+          ?.map((e) => _i2.DamageType.fromJson((e as String)))
           .toList(),
-      sheetVersion: jsonSerialization['sheetVersion'] as int?,
       rebuiltAt: jsonSerialization['rebuiltAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['rebuiltAt']),
     );
   }
-
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
-  int? id;
-
-  int characterId;
-
-  _i2.CharacterData? character;
 
   int? totalLevel;
 
@@ -152,19 +127,14 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
 
   List<String>? senses;
 
-  List<_i3.DamageType>? resistances;
-
-  int? sheetVersion;
+  List<_i2.DamageType>? resistances;
 
   DateTime? rebuiltAt;
 
-  /// Returns a shallow copy of this [CharacterSheetSnapshotData]
+  /// Returns a shallow copy of this [CharacterDerivedData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  CharacterSheetSnapshotData copyWith({
-    int? id,
-    int? characterId,
-    _i2.CharacterData? character,
+  CharacterDerivedData copyWith({
     int? totalLevel,
     int? proficiencyBonus,
     int? armorClass,
@@ -180,16 +150,12 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
     Map<int, int>? pactSlots,
     Map<String, int>? hitDiceSummary,
     List<String>? senses,
-    List<_i3.DamageType>? resistances,
-    int? sheetVersion,
+    List<_i2.DamageType>? resistances,
     DateTime? rebuiltAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
-      'characterId': characterId,
-      if (character != null) 'character': character?.toJson(),
       if (totalLevel != null) 'totalLevel': totalLevel,
       if (proficiencyBonus != null) 'proficiencyBonus': proficiencyBonus,
       if (armorClass != null) 'armorClass': armorClass,
@@ -209,7 +175,6 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
       if (senses != null) 'senses': senses?.toJson(),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
-      if (sheetVersion != null) 'sheetVersion': sheetVersion,
       if (rebuiltAt != null) 'rebuiltAt': rebuiltAt?.toJson(),
     };
   }
@@ -222,11 +187,8 @@ abstract class CharacterSheetSnapshotData implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _CharacterSheetSnapshotDataImpl extends CharacterSheetSnapshotData {
-  _CharacterSheetSnapshotDataImpl({
-    int? id,
-    required int characterId,
-    _i2.CharacterData? character,
+class _CharacterDerivedDataImpl extends CharacterDerivedData {
+  _CharacterDerivedDataImpl({
     int? totalLevel,
     int? proficiencyBonus,
     int? armorClass,
@@ -242,13 +204,9 @@ class _CharacterSheetSnapshotDataImpl extends CharacterSheetSnapshotData {
     Map<int, int>? pactSlots,
     Map<String, int>? hitDiceSummary,
     List<String>? senses,
-    List<_i3.DamageType>? resistances,
-    int? sheetVersion,
+    List<_i2.DamageType>? resistances,
     DateTime? rebuiltAt,
   }) : super._(
-          id: id,
-          characterId: characterId,
-          character: character,
           totalLevel: totalLevel,
           proficiencyBonus: proficiencyBonus,
           armorClass: armorClass,
@@ -265,18 +223,14 @@ class _CharacterSheetSnapshotDataImpl extends CharacterSheetSnapshotData {
           hitDiceSummary: hitDiceSummary,
           senses: senses,
           resistances: resistances,
-          sheetVersion: sheetVersion,
           rebuiltAt: rebuiltAt,
         );
 
-  /// Returns a shallow copy of this [CharacterSheetSnapshotData]
+  /// Returns a shallow copy of this [CharacterDerivedData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  CharacterSheetSnapshotData copyWith({
-    Object? id = _Undefined,
-    int? characterId,
-    Object? character = _Undefined,
+  CharacterDerivedData copyWith({
     Object? totalLevel = _Undefined,
     Object? proficiencyBonus = _Undefined,
     Object? armorClass = _Undefined,
@@ -293,15 +247,9 @@ class _CharacterSheetSnapshotDataImpl extends CharacterSheetSnapshotData {
     Object? hitDiceSummary = _Undefined,
     Object? senses = _Undefined,
     Object? resistances = _Undefined,
-    Object? sheetVersion = _Undefined,
     Object? rebuiltAt = _Undefined,
   }) {
-    return CharacterSheetSnapshotData(
-      id: id is int? ? id : this.id,
-      characterId: characterId ?? this.characterId,
-      character: character is _i2.CharacterData?
-          ? character
-          : this.character?.copyWith(),
+    return CharacterDerivedData(
       totalLevel: totalLevel is int? ? totalLevel : this.totalLevel,
       proficiencyBonus:
           proficiencyBonus is int? ? proficiencyBonus : this.proficiencyBonus,
@@ -370,10 +318,9 @@ class _CharacterSheetSnapshotDataImpl extends CharacterSheetSnapshotData {
       senses: senses is List<String>?
           ? senses
           : this.senses?.map((e0) => e0).toList(),
-      resistances: resistances is List<_i3.DamageType>?
+      resistances: resistances is List<_i2.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      sheetVersion: sheetVersion is int? ? sheetVersion : this.sheetVersion,
       rebuiltAt: rebuiltAt is DateTime? ? rebuiltAt : this.rebuiltAt,
     );
   }

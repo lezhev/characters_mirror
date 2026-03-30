@@ -6,7 +6,7 @@ part of 'race_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$raceStateHash() => r'ef932358eaca1dac0004bfb2f4f6102e2b03ee1f';
+String _$raceStateHash() => r'2f554197279422f37c274106abb5663d11bf9072';
 
 /// See also [RaceState].
 @ProviderFor(RaceState)

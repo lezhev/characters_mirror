@@ -1,7 +1,9 @@
-class: CharacterChoiceData
+class: CharacterChoiceRecord
+serverOnly: true
+table: character_choice_data
 fields:
-  id: int?
-  classEntry: CharacterClassEntryData?
+  character: CharacterRecord?, relation
+  classEntry: CharacterClassEntryRecord?, relation(optional)
   sourceType: ChoiceSourceType?
   sourceId: int?
   groupKey: String?

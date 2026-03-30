@@ -10,12 +10,6 @@ class ReferenceDataEndpoint extends Endpoint {
 
       switch (entityType.toLowerCase()) {
         // --- General ---
-        case 'character':
-        case 'characterdata':
-          await CharacterData.db
-              .insertRow(session, CharacterData.fromJson(data));
-          break;
-
         case 'class':
         case 'classdata':
           await ClassData.db.insertRow(session, ClassData.fromJson(data));

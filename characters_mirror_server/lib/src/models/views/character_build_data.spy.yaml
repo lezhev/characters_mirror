@@ -1,6 +1,0 @@
-class: CharacterBuildData
-fields:
-  character: CharacterData?
-  classEntries: List<CharacterClassEntryData>?
-  choices: List<CharacterChoiceData>?
-  snapshot: CharacterSheetSnapshotData?

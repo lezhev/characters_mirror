@@ -73,14 +73,14 @@ extension CreationStepX on Step {
 sealed class CharacterCreationState with _$CharacterCreationState {
   const factory CharacterCreationState({
     required CharacterData character,
-    @Default([]) List<CharacterClassEntryData> classEntries,
-    @Default([]) List<CharacterChoiceData> choices,
-    CharacterSheetSnapshotData? snapshot,
     required Step step,
   }) = _CharacterCreationState;
 
   factory CharacterCreationState.initial() => CharacterCreationState(
-        character: CharacterData(),
+        character: CharacterData(
+          classEntries: const [],
+          choices: const [],
+        ),
         step: Step.introduction,
       );
 }
@@ -118,26 +118,28 @@ class CharacterCreation extends _$CharacterCreation {
     if (selectedRace == null) return;
     final raceChanged = state.character.race?.id != selectedRace.id;
     final subraceChanged = state.character.subrace?.id != selectedSubrace?.id;
+    final currentChoices = state.character.choices ?? const <CharacterChoiceData>[];
     final updatedCharacter = state.character.copyWith(
       race: selectedRace,
       subrace: selectedSubrace,
     );
     final preservedChoices = raceChanged || subraceChanged
         ? _withoutChoiceSources(
-            state.choices,
+            currentChoices,
             const {
               ChoiceSourceType.race,
               ChoiceSourceType.subrace,
             },
           )
         : _withoutChoiceGroups(
-            state.choices,
+            currentChoices,
             _racialNonAttributeChoiceGroups(updatedCharacter),
           );
 
-    state = state.copyWith(
-      character: updatedCharacter,
-      choices: [...preservedChoices, ...raceChoices],
+    _updateCharacter(
+      updatedCharacter.copyWith(
+        choices: [...preservedChoices, ...raceChoices],
+      ),
     );
   }
 
@@ -156,12 +158,14 @@ class CharacterCreation extends _$CharacterCreation {
 
   void syncRacialAttributeChoicesDraft(List<CharacterChoiceData> choices) {
     final preserved = _withoutChoiceGroups(
-      state.choices,
+      state.character.choices ?? const <CharacterChoiceData>[],
       _racialAttributeChoiceGroups(state.character),
     );
 
-    state = state.copyWith(
-      choices: [...preserved, ...choices],
+    _updateCharacter(
+      state.character.copyWith(
+        choices: [...preserved, ...choices],
+      ),
     );
   }
 
@@ -246,29 +250,33 @@ class CharacterCreation extends _$CharacterCreation {
       );
 
   void setRace(RaceData? race) => state = state.copyWith(
-        character: state.character.copyWith(race: race),
-        choices: state.character.race?.id != race?.id
-            ? _withoutChoiceSources(
-                state.choices,
-                const {
-                  ChoiceSourceType.race,
-                  ChoiceSourceType.subrace,
-                },
-              )
-            : state.choices,
+        character: state.character.copyWith(
+          race: race,
+          choices: state.character.race?.id != race?.id
+              ? _withoutChoiceSources(
+                  state.character.choices ?? const <CharacterChoiceData>[],
+                  const {
+                    ChoiceSourceType.race,
+                    ChoiceSourceType.subrace,
+                  },
+                )
+              : state.character.choices,
+        ),
       );
 
   void setSubrace(SubraceData? subrace) => state = state.copyWith(
-        character: state.character.copyWith(subrace: subrace),
-        choices: state.character.subrace?.id != subrace?.id
-            ? _withoutChoiceSources(
-                state.choices,
-                const {
-                  ChoiceSourceType.race,
-                  ChoiceSourceType.subrace,
-                },
-              )
-            : state.choices,
+        character: state.character.copyWith(
+          subrace: subrace,
+          choices: state.character.subrace?.id != subrace?.id
+              ? _withoutChoiceSources(
+                  state.character.choices ?? const <CharacterChoiceData>[],
+                  const {
+                    ChoiceSourceType.race,
+                    ChoiceSourceType.subrace,
+                  },
+                )
+              : state.character.choices,
+        ),
       );
 
   void setBackground(BackgroundData? background) =>
@@ -291,15 +299,21 @@ class CharacterCreation extends _$CharacterCreation {
       );
 
   void setClassEntries(List<CharacterClassEntryData> entries) {
-    state = state.copyWith(classEntries: entries);
+    _updateCharacter(
+      state.character.copyWith(classEntries: entries),
+    );
   }
 
   void setChoices(List<CharacterChoiceData> choices) {
-    state = state.copyWith(choices: choices);
+    _updateCharacter(
+      state.character.copyWith(choices: choices),
+    );
   }
 
-  void setSnapshot(CharacterSheetSnapshotData? snapshot) {
-    state = state.copyWith(snapshot: snapshot);
+  void setDerived(CharacterDerivedData? derived) {
+    _updateCharacter(
+      state.character.copyWith(derived: derived),
+    );
   }
 
   void applyPrimaryClassSelection({
@@ -309,11 +323,7 @@ class CharacterCreation extends _$CharacterCreation {
     List<CharacterChoiceData> choices = const [],
   }) {
     final entry = CharacterClassEntryData(
-      characterId: state.character.id ?? 0,
-      character: state.character.id == null ? null : state.character,
-      classDataId: classData.id ?? 0,
       classData: classData,
-      subclassId: subclass?.id,
       subclass: subclass,
       level: level,
       isStartingClass: true,
@@ -322,7 +332,7 @@ class CharacterCreation extends _$CharacterCreation {
     );
 
     final preserved = _withoutChoiceSources(
-      state.choices,
+      state.character.choices ?? const <CharacterChoiceData>[],
       const {
         ChoiceSourceType.classData,
         ChoiceSourceType.subclass,
@@ -331,9 +341,15 @@ class CharacterCreation extends _$CharacterCreation {
       },
     );
 
-    state = state.copyWith(
-      classEntries: [entry],
-      choices: [...preserved, ...choices],
+    final linkedChoices = choices
+        .map((choice) => choice.copyWith(classEntry: choice.classEntry ?? entry))
+        .toList();
+
+    _updateCharacter(
+      state.character.copyWith(
+        classEntries: [entry],
+        choices: [...preserved, ...linkedChoices],
+      ),
     );
   }
 
@@ -342,7 +358,6 @@ class CharacterCreation extends _$CharacterCreation {
     required List<ClassChoiceGroupView> groups,
   }) {
     final choices = <CharacterChoiceData>[];
-    final characterId = state.character.id ?? 0;
 
     for (final groupView in groups) {
       final group = groupView.group;
@@ -356,7 +371,6 @@ class CharacterCreation extends _$CharacterCreation {
 
       choices.add(
         CharacterChoiceData(
-          characterId: characterId,
           sourceType: _resolveChoiceSourceType(group),
           sourceId: group.id,
           groupKey: groupKey,
@@ -367,15 +381,6 @@ class CharacterCreation extends _$CharacterCreation {
     }
 
     return choices;
-  }
-
-  CharacterBuildData toBuild() {
-    return CharacterBuildData(
-      character: state.character,
-      classEntries: state.classEntries,
-      choices: state.choices,
-      snapshot: state.snapshot,
-    );
   }
 
   void _updateCharacter(CharacterData updated) {

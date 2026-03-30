@@ -14,6 +14,9 @@ import '../../../enums/character_alignment.dart' as _i2;
 import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
+import '../../../data/general/character/character_class_entry_data.dart' as _i6;
+import '../../../data/general/character/character_choice_data.dart' as _i7;
+import '../../../data/general/character/character_derived_data.dart' as _i8;
 
 abstract class CharacterData implements _i1.SerializableModel {
   CharacterData._({
@@ -36,20 +39,19 @@ abstract class CharacterData implements _i1.SerializableModel {
     this.version,
     this.createdAt,
     this.updatedAt,
-    this.userId,
     this.experience,
     this.alignmentValue,
-    this.raceId,
     this.race,
-    this.subraceId,
     this.subrace,
-    this.backgroundId,
     this.background,
     this.baseAbilityScores,
     this.temporaryHp,
     this.currentHp,
     this.inspiration,
     this.notes,
+    this.classEntries,
+    this.choices,
+    this.derived,
   });
 
   factory CharacterData({
@@ -72,20 +74,19 @@ abstract class CharacterData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
-    int? raceId,
     _i3.RaceData? race,
-    int? subraceId,
     _i4.SubraceData? subrace,
-    int? backgroundId,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
+    List<_i6.CharacterClassEntryData>? classEntries,
+    List<_i7.CharacterChoiceData>? choices,
+    _i8.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -113,23 +114,19 @@ abstract class CharacterData implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      userId: jsonSerialization['userId'] as int?,
       experience: jsonSerialization['experience'] as int?,
       alignmentValue: jsonSerialization['alignmentValue'] == null
           ? null
           : _i2.CharacterAlignment.fromJson(
               (jsonSerialization['alignmentValue'] as String)),
-      raceId: jsonSerialization['raceId'] as int?,
       race: jsonSerialization['race'] == null
           ? null
           : _i3.RaceData.fromJson(
               (jsonSerialization['race'] as Map<String, dynamic>)),
-      subraceId: jsonSerialization['subraceId'] as int?,
       subrace: jsonSerialization['subrace'] == null
           ? null
           : _i4.SubraceData.fromJson(
               (jsonSerialization['subrace'] as Map<String, dynamic>)),
-      backgroundId: jsonSerialization['backgroundId'] as int?,
       background: jsonSerialization['background'] == null
           ? null
           : _i5.BackgroundData.fromJson(
@@ -143,12 +140,21 @@ abstract class CharacterData implements _i1.SerializableModel {
       currentHp: jsonSerialization['currentHp'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
       notes: jsonSerialization['notes'] as String?,
+      classEntries: (jsonSerialization['classEntries'] as List?)
+          ?.map((e) =>
+              _i6.CharacterClassEntryData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      choices: (jsonSerialization['choices'] as List?)
+          ?.map((e) =>
+              _i7.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      derived: jsonSerialization['derived'] == null
+          ? null
+          : _i8.CharacterDerivedData.fromJson(
+              (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
 
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
   int? id;
 
   String? name;
@@ -187,21 +193,13 @@ abstract class CharacterData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  int? userId;
-
   int? experience;
 
   _i2.CharacterAlignment? alignmentValue;
 
-  int? raceId;
-
   _i3.RaceData? race;
 
-  int? subraceId;
-
   _i4.SubraceData? subrace;
-
-  int? backgroundId;
 
   _i5.BackgroundData? background;
 
@@ -214,6 +212,12 @@ abstract class CharacterData implements _i1.SerializableModel {
   bool? inspiration;
 
   String? notes;
+
+  List<_i6.CharacterClassEntryData>? classEntries;
+
+  List<_i7.CharacterChoiceData>? choices;
+
+  _i8.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
@@ -238,20 +242,19 @@ abstract class CharacterData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
-    int? raceId,
     _i3.RaceData? race,
-    int? subraceId,
     _i4.SubraceData? subrace,
-    int? backgroundId,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
+    List<_i6.CharacterClassEntryData>? classEntries,
+    List<_i7.CharacterChoiceData>? choices,
+    _i8.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -276,14 +279,10 @@ abstract class CharacterData implements _i1.SerializableModel {
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
-      if (userId != null) 'userId': userId,
       if (experience != null) 'experience': experience,
       if (alignmentValue != null) 'alignmentValue': alignmentValue?.toJson(),
-      if (raceId != null) 'raceId': raceId,
       if (race != null) 'race': race?.toJson(),
-      if (subraceId != null) 'subraceId': subraceId,
       if (subrace != null) 'subrace': subrace?.toJson(),
-      if (backgroundId != null) 'backgroundId': backgroundId,
       if (background != null) 'background': background?.toJson(),
       if (baseAbilityScores != null)
         'baseAbilityScores': baseAbilityScores?.toJson(),
@@ -291,6 +290,11 @@ abstract class CharacterData implements _i1.SerializableModel {
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
       if (notes != null) 'notes': notes,
+      if (classEntries != null)
+        'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
+      if (choices != null)
+        'choices': choices?.toJson(valueToJson: (v) => v.toJson()),
+      if (derived != null) 'derived': derived?.toJson(),
     };
   }
 
@@ -323,20 +327,19 @@ class _CharacterDataImpl extends CharacterData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    int? userId,
     int? experience,
     _i2.CharacterAlignment? alignmentValue,
-    int? raceId,
     _i3.RaceData? race,
-    int? subraceId,
     _i4.SubraceData? subrace,
-    int? backgroundId,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
+    List<_i6.CharacterClassEntryData>? classEntries,
+    List<_i7.CharacterChoiceData>? choices,
+    _i8.CharacterDerivedData? derived,
   }) : super._(
           id: id,
           name: name,
@@ -357,20 +360,19 @@ class _CharacterDataImpl extends CharacterData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
-          userId: userId,
           experience: experience,
           alignmentValue: alignmentValue,
-          raceId: raceId,
           race: race,
-          subraceId: subraceId,
           subrace: subrace,
-          backgroundId: backgroundId,
           background: background,
           baseAbilityScores: baseAbilityScores,
           temporaryHp: temporaryHp,
           currentHp: currentHp,
           inspiration: inspiration,
           notes: notes,
+          classEntries: classEntries,
+          choices: choices,
+          derived: derived,
         );
 
   /// Returns a shallow copy of this [CharacterData]
@@ -397,20 +399,19 @@ class _CharacterDataImpl extends CharacterData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
-    Object? userId = _Undefined,
     Object? experience = _Undefined,
     Object? alignmentValue = _Undefined,
-    Object? raceId = _Undefined,
     Object? race = _Undefined,
-    Object? subraceId = _Undefined,
     Object? subrace = _Undefined,
-    Object? backgroundId = _Undefined,
     Object? background = _Undefined,
     Object? baseAbilityScores = _Undefined,
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
     Object? inspiration = _Undefined,
     Object? notes = _Undefined,
+    Object? classEntries = _Undefined,
+    Object? choices = _Undefined,
+    Object? derived = _Undefined,
   }) {
     return CharacterData(
       id: id is int? ? id : this.id,
@@ -436,16 +437,12 @@ class _CharacterDataImpl extends CharacterData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      userId: userId is int? ? userId : this.userId,
       experience: experience is int? ? experience : this.experience,
       alignmentValue: alignmentValue is _i2.CharacterAlignment?
           ? alignmentValue
           : this.alignmentValue,
-      raceId: raceId is int? ? raceId : this.raceId,
       race: race is _i3.RaceData? ? race : this.race?.copyWith(),
-      subraceId: subraceId is int? ? subraceId : this.subraceId,
       subrace: subrace is _i4.SubraceData? ? subrace : this.subrace?.copyWith(),
-      backgroundId: backgroundId is int? ? backgroundId : this.backgroundId,
       background: background is _i5.BackgroundData?
           ? background
           : this.background?.copyWith(),
@@ -463,6 +460,15 @@ class _CharacterDataImpl extends CharacterData {
       currentHp: currentHp is int? ? currentHp : this.currentHp,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
       notes: notes is String? ? notes : this.notes,
+      classEntries: classEntries is List<_i6.CharacterClassEntryData>?
+          ? classEntries
+          : this.classEntries?.map((e0) => e0.copyWith()).toList(),
+      choices: choices is List<_i7.CharacterChoiceData>?
+          ? choices
+          : this.choices?.map((e0) => e0.copyWith()).toList(),
+      derived: derived is _i8.CharacterDerivedData?
+          ? derived
+          : this.derived?.copyWith(),
     );
   }
 }
