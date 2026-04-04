@@ -1,3 +1,4 @@
+import 'package:characters_mirror_flutter/data/Enums/alignment.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/button.dart';
 import 'package:flutter/material.dart' hide Step;
@@ -11,7 +12,6 @@ class CreationNavBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final width = MediaQuery.of(context).size.width;
     final providerStep = ref.watch(
       characterCreationProvider.select((state) => state.step),
     );
@@ -25,34 +25,34 @@ class CreationNavBar extends ConsumerWidget {
       });
     }
 
-    return Row(
-      children: [
-        SizedBox(width: width > 1000 ? (width - 1000) / 2 : 0),
-        currentStep == Step.introduction
-            ? SizedBox.shrink()
-            : Button.outlined(
-                leading: Icon(Icons.arrow_back,
-                    color: Theme.of(context).colorScheme.primary),
-                onPressed: () => notifier.prevStep(context),
-                title: 'Назад',
-              ),
-        Spacer(),
-        route == 'character'
-            ? Button.filled(
-                leading: Icon(Icons.auto_awesome_outlined,
-                    color: Theme.of(context).colorScheme.onPrimary),
-                title: 'Завершить',
-                width: 168,
-                onPressed: () {},
-              )
-            : Button.filled(
-                onPressed: onPressedNext,
-                title: 'Далее',
-                trailing: Icon(Icons.arrow_forward,
-                    color: Theme.of(context).colorScheme.onPrimary),
-              ),
-        SizedBox(width: width > 1000 ? (width - 1000) / 2 : 0),
-      ],
+    return PageSizeLimiter(
+      child: Row(
+        children: [
+          currentStep == Step.introduction
+              ? SizedBox.shrink()
+              : Button.outlined(
+                  leading: Icon(Icons.arrow_back,
+                      color: Theme.of(context).colorScheme.primary),
+                  onPressed: () => notifier.prevStep(context),
+                  title: 'Назад',
+                ),
+          Spacer(),
+          route == 'character'
+              ? Button.filled(
+                  leading: Icon(Icons.auto_awesome_outlined,
+                      color: Theme.of(context).colorScheme.onPrimary),
+                  title: 'Завершить',
+                  width: 168,
+                  onPressed: onPressedNext,
+                )
+              : Button.filled(
+                  onPressed: onPressedNext,
+                  title: 'Далее',
+                  trailing: Icon(Icons.arrow_forward,
+                      color: Theme.of(context).colorScheme.onPrimary),
+                ),
+        ],
+      ),
     );
   }
 }

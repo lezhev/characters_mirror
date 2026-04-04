@@ -509,7 +509,7 @@ String _raceChoiceKindLabel(RaceChoiceKind? kind) {
       return 'Заговоры';
     case RaceChoiceKind.dragonbornAncestryChoice:
       return 'Драконье наследие';
-    case null:
+    default:
       return 'Выбор';
   }
 }

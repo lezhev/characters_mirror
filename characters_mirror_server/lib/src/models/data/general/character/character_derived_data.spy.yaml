@@ -2,6 +2,8 @@ class: CharacterDerivedData
 fields:
   totalLevel: int?
   proficiencyBonus: int?
+  abilityScores: Map<String, int>?
+  abilityModifiers: Map<String, int>?
   armorClass: int?
   initiative: int?
   speed: int?
@@ -14,6 +16,14 @@ fields:
   spellSlots: Map<int, int>?
   pactSlots: Map<int, int>?
   hitDiceSummary: Map<String, int>?
+  languages: List<String>?
+  toolProficiencies: List<String>?
+  armorTraining: List<String>?
+  weaponTraining: List<String>?
+  featureTags: List<FeatureTag>?
+  featIds: List<int>?
+  grantedSpellKeys: List<String>?
+  grantedItemKeys: List<String>?
   senses: List<String>?
   resistances: List<DamageType>?
   rebuiltAt: DateTime?

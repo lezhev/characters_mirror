@@ -33,6 +33,7 @@ class ClassDataEndpoint extends Endpoint {
     int classId, {
     int selectedLevel = 1,
     bool isStartingClass = true,
+    int? selectedSubclassId,
   }) async {
     final classData = await _requireById<ClassData>(
       await ClassData.db.find(
@@ -54,6 +55,13 @@ class ClassDataEndpoint extends Endpoint {
       where: (t) => t.parentClassId.equals(classId),
       orderBy: (t) => t.levelRequired,
     );
+    final subclassFeatures = selectedSubclassId == null
+        ? const <SubclassFeatureData>[]
+        : await SubclassFeatureData.db.find(
+            session,
+            where: (t) => t.parentSubclassId.equals(selectedSubclassId),
+            orderBy: (t) => t.level,
+          );
     final progression = await ClassLevelData.db.find(
       session,
       where: (t) => t.classDataId.equals(classId),
@@ -65,14 +73,24 @@ class ClassDataEndpoint extends Endpoint {
         .map((feature) => feature.id)
         .whereType<int>()
         .toSet();
+    final currentSubclassFeatureIds = subclassFeatures
+        .where((feature) => feature.level <= selectedLevel)
+        .map((feature) => feature.id)
+        .whereType<int>()
+        .toSet();
 
     final currentGroups = <ClassChoiceGroupView>[];
     for (final group in groups.where((group) {
       final byClass = group.sourceClassId == classId;
       final byFeature = group.sourceFeatureId != null &&
           currentFeatureIds.contains(group.sourceFeatureId);
+      final bySubclass =
+          selectedSubclassId != null && group.sourceSubclassId == selectedSubclassId;
+      final bySubclassFeature = group.sourceSubclassFeatureId != null &&
+          currentSubclassFeatureIds.contains(group.sourceSubclassFeatureId);
       final unlocked = (group.level ?? 1) <= selectedLevel;
-      return unlocked && (byClass || byFeature);
+      return unlocked &&
+          (byClass || byFeature || bySubclass || bySubclassFeature);
     })) {
       final options = await ClassChoiceOptionData.db.find(
         session,
@@ -106,6 +124,12 @@ class ClassDataEndpoint extends Endpoint {
           features.where((feature) => feature.level <= selectedLevel).toList(),
       futureLevelFeatures:
           features.where((feature) => feature.level > selectedLevel).toList(),
+      currentSubclassFeatures: subclassFeatures
+          .where((feature) => feature.level <= selectedLevel)
+          .toList(),
+      futureSubclassFeatures: subclassFeatures
+          .where((feature) => feature.level > selectedLevel)
+          .toList(),
       subclassChoice: ClassStepSubclassChoiceView(
         requiredLevel: classData.subclassChoiceLevel,
         subclasses: subclasses,

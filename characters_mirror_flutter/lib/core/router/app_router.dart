@@ -1,6 +1,8 @@
 import 'package:characters_mirror_flutter/features/admin/admin.dart';
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/character_creation/character_creation.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/invalid_caracter_sheet_page.dart';
 import 'package:characters_mirror_flutter/features/characters/characters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +39,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/sign-in', builder: (_, __) => const SignInPage()),
       GoRoute(path: '/sign-up', builder: (_, __) => const SignUpPage()),
       GoRoute(path: '/characters', builder: (_, __) => const CharactersList()),
+      GoRoute(
+        path: '/characters/sheet/:id',
+        builder: (_, state) {
+          final rawId = state.pathParameters['id'];
+          final characterId = rawId == null ? null : int.tryParse(rawId);
+          if (characterId == null) {
+            return const InvalidCharacterSheetPage();
+          }
+          return CharacterSheet(characterId: characterId);
+        },
+      ),
       GoRoute(path: '/admin', builder: (_, __) => const AdminPage()),
       GoRoute(path: '/create', builder: (_, __) => const IntroductionStep()),
       GoRoute(path: '/create/race', builder: (_, __) => const RaceStep()),

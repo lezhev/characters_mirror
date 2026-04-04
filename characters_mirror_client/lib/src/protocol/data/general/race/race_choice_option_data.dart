@@ -15,8 +15,9 @@ import '../../../enums/ability.dart' as _i3;
 import '../../../enums/skill.dart' as _i4;
 import '../../../enums/language.dart' as _i5;
 import '../../../data/spell_data.dart' as _i6;
-import '../../../enums/damage_type.dart' as _i7;
-import '../../../enums/spell/area_of_effect_type.dart' as _i8;
+import '../../../data/feat_data.dart' as _i7;
+import '../../../enums/damage_type.dart' as _i8;
+import '../../../enums/spell/area_of_effect_type.dart' as _i9;
 
 abstract class RaceChoiceOptionData implements _i1.SerializableModel {
   RaceChoiceOptionData._({
@@ -32,6 +33,8 @@ abstract class RaceChoiceOptionData implements _i1.SerializableModel {
     this.language,
     this.spellId,
     this.spell,
+    this.featId,
+    this.feat,
     this.toolKey,
     this.bonusValue,
     this.damageType,
@@ -58,10 +61,12 @@ abstract class RaceChoiceOptionData implements _i1.SerializableModel {
     _i5.Language? language,
     int? spellId,
     _i6.SpellData? spell,
+    int? featId,
+    _i7.FeatData? feat,
     String? toolKey,
     int? bonusValue,
-    _i7.DamageType? damageType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    _i8.DamageType? damageType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     _i3.Ability? saveAbility,
     Map<String, String>? damageByLevel,
@@ -98,15 +103,20 @@ abstract class RaceChoiceOptionData implements _i1.SerializableModel {
           ? null
           : _i6.SpellData.fromJson(
               (jsonSerialization['spell'] as Map<String, dynamic>)),
+      featId: jsonSerialization['featId'] as int?,
+      feat: jsonSerialization['feat'] == null
+          ? null
+          : _i7.FeatData.fromJson(
+              (jsonSerialization['feat'] as Map<String, dynamic>)),
       toolKey: jsonSerialization['toolKey'] as String?,
       bonusValue: jsonSerialization['bonusValue'] as int?,
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i7.DamageType.fromJson(
+          : _i8.DamageType.fromJson(
               (jsonSerialization['damageType'] as String)),
       areaOfEffectType: jsonSerialization['areaOfEffectType'] == null
           ? null
-          : _i8.AreaOfEffectType.fromJson(
+          : _i9.AreaOfEffectType.fromJson(
               (jsonSerialization['areaOfEffectType'] as String)),
       areaText: jsonSerialization['areaText'] as String?,
       saveAbility: jsonSerialization['saveAbility'] == null
@@ -155,13 +165,17 @@ abstract class RaceChoiceOptionData implements _i1.SerializableModel {
 
   _i6.SpellData? spell;
 
+  int? featId;
+
+  _i7.FeatData? feat;
+
   String? toolKey;
 
   int? bonusValue;
 
-  _i7.DamageType? damageType;
+  _i8.DamageType? damageType;
 
-  _i8.AreaOfEffectType? areaOfEffectType;
+  _i9.AreaOfEffectType? areaOfEffectType;
 
   String? areaText;
 
@@ -193,10 +207,12 @@ abstract class RaceChoiceOptionData implements _i1.SerializableModel {
     _i5.Language? language,
     int? spellId,
     _i6.SpellData? spell,
+    int? featId,
+    _i7.FeatData? feat,
     String? toolKey,
     int? bonusValue,
-    _i7.DamageType? damageType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    _i8.DamageType? damageType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     _i3.Ability? saveAbility,
     Map<String, String>? damageByLevel,
@@ -220,6 +236,8 @@ abstract class RaceChoiceOptionData implements _i1.SerializableModel {
       if (language != null) 'language': language?.toJson(),
       if (spellId != null) 'spellId': spellId,
       if (spell != null) 'spell': spell?.toJson(),
+      if (featId != null) 'featId': featId,
+      if (feat != null) 'feat': feat?.toJson(),
       if (toolKey != null) 'toolKey': toolKey,
       if (bonusValue != null) 'bonusValue': bonusValue,
       if (damageType != null) 'damageType': damageType?.toJson(),
@@ -257,10 +275,12 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
     _i5.Language? language,
     int? spellId,
     _i6.SpellData? spell,
+    int? featId,
+    _i7.FeatData? feat,
     String? toolKey,
     int? bonusValue,
-    _i7.DamageType? damageType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    _i8.DamageType? damageType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     _i3.Ability? saveAbility,
     Map<String, String>? damageByLevel,
@@ -281,6 +301,8 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
           language: language,
           spellId: spellId,
           spell: spell,
+          featId: featId,
+          feat: feat,
           toolKey: toolKey,
           bonusValue: bonusValue,
           damageType: damageType,
@@ -311,6 +333,8 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
     Object? language = _Undefined,
     Object? spellId = _Undefined,
     Object? spell = _Undefined,
+    Object? featId = _Undefined,
+    Object? feat = _Undefined,
     Object? toolKey = _Undefined,
     Object? bonusValue = _Undefined,
     Object? damageType = _Undefined,
@@ -338,10 +362,12 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
       language: language is _i5.Language? ? language : this.language,
       spellId: spellId is int? ? spellId : this.spellId,
       spell: spell is _i6.SpellData? ? spell : this.spell?.copyWith(),
+      featId: featId is int? ? featId : this.featId,
+      feat: feat is _i7.FeatData? ? feat : this.feat?.copyWith(),
       toolKey: toolKey is String? ? toolKey : this.toolKey,
       bonusValue: bonusValue is int? ? bonusValue : this.bonusValue,
-      damageType: damageType is _i7.DamageType? ? damageType : this.damageType,
-      areaOfEffectType: areaOfEffectType is _i8.AreaOfEffectType?
+      damageType: damageType is _i8.DamageType? ? damageType : this.damageType,
+      areaOfEffectType: areaOfEffectType is _i9.AreaOfEffectType?
           ? areaOfEffectType
           : this.areaOfEffectType,
       areaText: areaText is String? ? areaText : this.areaText,

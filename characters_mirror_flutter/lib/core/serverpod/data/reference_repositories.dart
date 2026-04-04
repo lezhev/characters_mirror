@@ -26,11 +26,13 @@ class ClassRepository implements Repository<ClassData> {
     int classId, {
     int selectedLevel = 1,
     bool isStartingClass = true,
+    int? selectedSubclassId,
   }) {
     return client.classData.getStepView(
       classId,
       selectedLevel: selectedLevel,
       isStartingClass: isStartingClass,
+      selectedSubclassId: selectedSubclassId,
     );
   }
 
@@ -288,6 +290,9 @@ class BackgroundRepository implements Repository<BackgroundData> {
   @override
   Future<BackgroundData> upsert(BackgroundData entity) =>
       client.backgroundData.upsert(entity);
+
+  Future<BackgroundStepView> getStepView(int backgroundId) =>
+      client.backgroundData.getStepView(backgroundId);
 
   @override
   Future<void> delete(int id) => client.backgroundData.delete(id);

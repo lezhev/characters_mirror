@@ -1,0 +1,9 @@
+class: CharacterAttackData
+fields:
+  name: String?
+  leadingAbility: Ability?
+  damage: String?
+  customAttackBonus: int?
+  damageType: DamageType?
+  tags: List<String>?
+  description: String?

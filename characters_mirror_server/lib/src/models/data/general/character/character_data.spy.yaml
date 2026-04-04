@@ -25,10 +25,12 @@ fields:
   subrace: SubraceData?
   background: BackgroundData?
   baseAbilityScores: Map<String, int>?
+  useFlexibleAbilityBonuses: bool?
   temporaryHp: int?
   currentHp: int?
   inspiration: bool?
   notes: String?
+  attacks: List<CharacterAttackData>?
   classEntries: List<CharacterClassEntryData>?
   choices: List<CharacterChoiceData>?
   derived: CharacterDerivedData?

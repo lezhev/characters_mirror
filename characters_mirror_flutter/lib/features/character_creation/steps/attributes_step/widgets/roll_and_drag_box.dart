@@ -60,7 +60,7 @@ class RollOrDragBox extends HookConsumerWidget {
   Widget _diceContainer(BuildContext context,
       {AnimationController? rotationController}) {
     Widget diceIcon = SvgPicture.asset(
-      'svg/dice.svg',
+      'assets/svg/dice.svg',
       width: 28,
       height: 28,
       colorFilter: ColorFilter.mode(

@@ -27,8 +27,11 @@ class AttributeSelection extends ConsumerWidget {
     final character = ref.watch(
       characterCreationProvider.select((value) => value.character),
     );
+    final creationNotifier = ref.read(characterCreationProvider.notifier);
     final raceBonusRecommendation = _resolveRaceBonusRecommendation(character);
     final raceLabel = _buildRaceLabel(character);
+    final useFlexibleAbilityBonuses =
+        character.useFlexibleAbilityBonuses ?? false;
 
     return Expanded(
       child: SingleChildScrollView(
@@ -36,6 +39,20 @@ class AttributeSelection extends ConsumerWidget {
           child: Column(
             children: [
               const Gap(8),
+              PageSizeLimiter(
+                maxWidth: 560,
+                child: SwitchListTile(
+                  value: useFlexibleAbilityBonuses,
+                  onChanged: (value) {
+                    creationNotifier.setUseFlexibleAbilityBonuses(value);
+                  },
+                  title: const Text('Опциональные правила происхождения'),
+                  subtitle: const Text(
+                    'По умолчанию используется strict PHB 2014. Включите это, если хотите открыть flexible +2/+1 и 3 x +1.',
+                  ),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
               if (state.selectionType != SelectType.manual)
                 _RaceBonusRecommendationCard(
                   raceLabel: raceLabel,

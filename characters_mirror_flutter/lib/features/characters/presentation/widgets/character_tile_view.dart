@@ -5,10 +5,12 @@ import 'package:gap/gap.dart';
 class CharacterTileView extends StatelessWidget {
   const CharacterTileView({
     required this.onCreateCharacter,
+    required this.onPlaceholderCharacterTap,
     super.key,
   });
 
   final VoidCallback onCreateCharacter;
+  final VoidCallback onPlaceholderCharacterTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class CharacterTileView extends StatelessWidget {
           ),
           itemCount: 12,
           itemBuilder: (context, index) {
-            return const CharacterTile();
+            return CharacterTile(onTap: onPlaceholderCharacterTap);
           },
         ),
       ],
@@ -62,14 +64,19 @@ class _CreateCharacterTile extends StatelessWidget {
 }
 
 class CharacterTile extends StatelessWidget {
-  const CharacterTile({super.key});
+  const CharacterTile({
+    required this.onTap,
+    super.key,
+  });
+
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return CharacterTileCard(
-      onTap: () {},
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(

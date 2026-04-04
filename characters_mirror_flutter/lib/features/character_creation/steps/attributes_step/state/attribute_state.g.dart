@@ -6,7 +6,7 @@ part of 'attribute_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$attributeStateHash() => r'8f917ad58b35fb6bbba30229e6fe3049e0359794';
+String _$attributeStateHash() => r'555a7a14a4e9a0d60de8de6046e23159088b9b75';
 
 /// See also [AttributeState].
 @ProviderFor(AttributeState)

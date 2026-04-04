@@ -62,14 +62,22 @@ class AttributeState extends _$AttributeState {
         ref.watch(characterCreationProvider.select((c) => c.character.race));
     final subrace =
         ref.watch(characterCreationProvider.select((c) => c.character.subrace));
+    final useFlexibleAbilityBonuses = ref.watch(
+      characterCreationProvider.select(
+        (c) => c.character.useFlexibleAbilityBonuses ?? false,
+      ),
+    );
     final savedChoices =
         ref.watch(characterCreationProvider.select((c) => c.character.choices)) ??
             const <CharacterChoiceData>[];
 
     final fixedRaceBonuses =
         _resolveFixedRaceBonuses(race: race, subrace: subrace);
-    final resolvedBonusRules =
-        _resolveSelectableBonusRules(race: race, subrace: subrace);
+    final resolvedBonusRules = _resolveSelectableBonusRules(
+      race: race,
+      subrace: subrace,
+      includeFlexibleRules: useFlexibleAbilityBonuses,
+    );
     final bonusMode = _restoreBonusMode(
       fixedRaceBonuses: fixedRaceBonuses,
       rules: resolvedBonusRules,
@@ -360,8 +368,10 @@ class AttributeState extends _$AttributeState {
     final result = <CharacterChoiceData>[];
     final raceId =
         ref.read(characterCreationProvider.select((c) => c.character.race?.id));
+    final hasFlexibleModes =
+        state.resolvedBonusRules.any((rule) => _isFlexibleRule(rule));
 
-    if (raceId != null) {
+    if (raceId != null && hasFlexibleModes) {
       result.add(
         CharacterChoiceData(
           sourceType: ChoiceSourceType.race,
@@ -384,7 +394,9 @@ class AttributeState extends _$AttributeState {
             sourceType: rule.sourceType,
             sourceId: rule.sourceId,
             groupKey: rule.groupKey,
+            selectionIndex: result.length,
             optionKey: attribute.name,
+            selectedAbility: _abilityFromAttribute(attribute),
             selectedCount: rule.bonusValue,
           ),
         );
@@ -492,6 +504,7 @@ class AttributeState extends _$AttributeState {
   List<AttributeBonusRule> _resolveSelectableBonusRules({
     RaceData? race,
     SubraceData? subrace,
+    required bool includeFlexibleRules,
   }) {
     final rules = <AttributeBonusRule>[];
 
@@ -557,9 +570,11 @@ class AttributeState extends _$AttributeState {
       sourceType: ChoiceSourceType.subrace,
       sourceId: subrace?.id,
     );
-    rules.addAll(
-      _buildFlexibleRules(raceId: race?.id),
-    );
+    if (includeFlexibleRules) {
+      rules.addAll(
+        _buildFlexibleRules(raceId: race?.id),
+      );
+    }
     return rules;
   }
 
@@ -571,19 +586,24 @@ class AttributeState extends _$AttributeState {
     for (final choice in savedChoices) {
       if (choice.groupKey != bonusModeGroupKey) continue;
       final parsedMode = _bonusModeFromRaw(choice.selectedText);
-      if (parsedMode != null) {
+      if (parsedMode != null &&
+          (parsedMode == AttributeBonusMode.racial ||
+              _activeRules(rules: rules, mode: parsedMode).isNotEmpty)) {
         return parsedMode;
       }
     }
 
-    final hasFlexibleThreePlusOneChoice = savedChoices.any(
+    final hasFlexibleThreePlusOneChoice =
+        rules.any(_isFlexibleThreePlusOneRule) &&
+            savedChoices.any(
       (choice) => choice.groupKey == _flexibleThreePlusOneGroupKey,
     );
     if (hasFlexibleThreePlusOneChoice) {
       return AttributeBonusMode.flexibleThreePlusOne;
     }
 
-    final hasFlexibleChoice = savedChoices.any(
+    final hasFlexibleChoice = rules.any(_isFlexiblePlusTwoOneRule) &&
+        savedChoices.any(
       (choice) => choice.groupKey?.startsWith(_flexibleGroupKeyPrefix) == true,
     );
     if (hasFlexibleChoice) {
@@ -620,7 +640,8 @@ class AttributeState extends _$AttributeState {
 
       final selected = <Attribute>{};
       for (final choice in matchingChoices) {
-        final attribute = _attributeFromKey(choice.optionKey);
+        final attribute = _attributeFromAbility(choice.selectedAbility) ??
+            _attributeFromKey(choice.optionKey);
         if (attribute == null || !rule.allowedAttributes.contains(attribute)) {
           continue;
         }
@@ -816,6 +837,23 @@ class AttributeState extends _$AttributeState {
         return Attribute.charisma;
       case null:
         return null;
+    }
+  }
+
+  Ability? _abilityFromAttribute(Attribute attribute) {
+    switch (attribute) {
+      case Attribute.strength:
+        return Ability.strength;
+      case Attribute.dexterity:
+        return Ability.dexterity;
+      case Attribute.constitution:
+        return Ability.constitution;
+      case Attribute.intelligence:
+        return Ability.intelligence;
+      case Attribute.wisdom:
+        return Ability.wisdom;
+      case Attribute.charisma:
+        return Ability.charisma;
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_group_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/jump_to_details_button.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_shimmer.dart';
@@ -25,12 +26,10 @@ class BackgroundStep extends HookConsumerWidget {
 
     return ref.watch(backgroundStateProvider).when(
       data: (data) {
-        final selectedBackgroundKey =
-            data.selectedBackground == null
-                ? null
-                : '${data.selectedBackground!.id ?? data.selectedBackground!.name}';
-        final showJumpButton =
-            selectedBackgroundKey != null &&
+        final selectedBackgroundKey = data.selectedBackground == null
+            ? null
+            : '${data.selectedBackground!.id ?? data.selectedBackground!.name}';
+        final showJumpButton = selectedBackgroundKey != null &&
             dismissedSelectionKey.value != selectedBackgroundKey;
 
         return Scaffold(
@@ -69,6 +68,8 @@ class BackgroundStep extends HookConsumerWidget {
                               key: detailsKey,
                               child: BackgroundFeatures(
                                 selectedBackground: data.selectedBackground!,
+                                stepView: data.stepView,
+                                selectedOptions: data.selectedOptions,
                               ),
                             ),
                           ),
@@ -92,9 +93,12 @@ class BackgroundStep extends HookConsumerWidget {
                   const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: CreationNavBar(
                 onPressedNext: () {
-                  final notifier =
-                      ref.read(characterCreationProvider.notifier);
-                  notifier.syncBackgroundDraft(data.selectedBackground);
+                  final notifier = ref.read(characterCreationProvider.notifier);
+                  notifier.syncBackgroundDraft(
+                    selectedBackground: data.selectedBackground,
+                    choiceGroups: data.stepView?.choiceGroups ?? const [],
+                    selectedOptions: data.selectedOptions,
+                  );
                   notifier.nextStep(context);
                 },
                 route: 'attributes',
@@ -124,7 +128,11 @@ void _syncAndGo({
   required Step target,
 }) {
   final notifier = ref.read(characterCreationProvider.notifier);
-  notifier.syncBackgroundDraft(data.selectedBackground);
+  notifier.syncBackgroundDraft(
+    selectedBackground: data.selectedBackground,
+    choiceGroups: data.stepView?.choiceGroups ?? const [],
+    selectedOptions: data.selectedOptions,
+  );
   notifier.goToStep(context, target);
 }
 
@@ -140,13 +148,20 @@ Future<void> _scrollToDetails(GlobalKey key) async {
   );
 }
 
-class BackgroundFeatures extends StatelessWidget {
+class BackgroundFeatures extends ConsumerWidget {
   final BackgroundData selectedBackground;
+  final BackgroundStepView? stepView;
+  final Map<String, List<ClassChoiceOptionData>> selectedOptions;
 
-  const BackgroundFeatures({super.key, required this.selectedBackground});
+  const BackgroundFeatures({
+    super.key,
+    required this.selectedBackground,
+    required this.stepView,
+    required this.selectedOptions,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final cards = <Widget>[
@@ -246,8 +261,30 @@ class BackgroundFeatures extends StatelessWidget {
           ),
         ),
     ];
+    final choiceCards = (stepView?.choiceGroups ?? const <ClassChoiceGroupView>[])
+        .where((groupView) => groupView.group != null)
+        .map(
+          (groupView) => Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: CreationChoiceGroupCard(
+              groupView: groupView,
+              selectedOptions:
+                  selectedOptions[_groupKey(groupView.group!)] ??
+                      const <ClassChoiceOptionData>[],
+              onToggleOption:
+                  ref.read(backgroundStateProvider.notifier).toggleOption,
+              onIncrementOption:
+                  ref.read(backgroundStateProvider.notifier).incrementOption,
+              onDecrementOption:
+                  ref.read(backgroundStateProvider.notifier).decrementOption,
+              onClearGroup:
+                  ref.read(backgroundStateProvider.notifier).clearGroup,
+            ),
+          ),
+        )
+        .toList();
 
-    if (cards.isEmpty) {
+    if (cards.isEmpty && choiceCards.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 12.0),
@@ -266,6 +303,18 @@ class BackgroundFeatures extends StatelessWidget {
             width: double.infinity, height: 2, color: colorScheme.primary),
         const Gap(2),
         ...cards,
+        if (choiceCards.isNotEmpty) ...[
+          const Gap(12),
+          Text('Выборы предыстории', style: textTheme.headlineSmall),
+          const Gap(4),
+          Container(
+            width: double.infinity,
+            height: 2,
+            color: colorScheme.primary,
+          ),
+          const Gap(2),
+          ...choiceCards,
+        ],
       ],
     );
   }
@@ -550,7 +599,7 @@ class BackgroundTile extends HookConsumerWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: SvgPicture.asset(
-                                  'svg/placeholder.svg',
+                                  'assets/svg/placeholder.svg',
                                   colorFilter: ColorFilter.mode(
                                     colorScheme.surfaceContainerLowest,
                                     BlendMode.srcIn,
@@ -583,3 +632,8 @@ class BackgroundTile extends HookConsumerWidget {
         );
   }
 }
+
+String _groupKey(ClassChoiceGroupData group) =>
+    group.exclusiveKey?.trim().isNotEmpty == true
+        ? group.exclusiveKey!
+        : 'group_${group.id ?? group.name ?? group.type?.name ?? 'unknown'}';

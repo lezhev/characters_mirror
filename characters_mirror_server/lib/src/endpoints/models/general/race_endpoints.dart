@@ -208,6 +208,7 @@ class RaceChoiceOptionDataEndpoint extends Endpoint {
       session,
       include: RaceChoiceOptionData.include(
         spell: SpellData.include(),
+        feat: FeatData.include(),
       ),
     );
   }
@@ -311,6 +312,7 @@ Future<List<RaceFeatureData>> _findRaceFeatures(
           choiceOptions: RaceChoiceOptionData.includeList(
             include: RaceChoiceOptionData.include(
               spell: SpellData.include(),
+              feat: FeatData.include(),
             ),
           ),
         ),
@@ -461,6 +463,13 @@ Future<void> _validateRaceChoiceOption(
       if (item.spellId == null || item.spellId! <= 0) {
         throw ArgumentError(
           'Cantrip choice options require spellId.',
+        );
+      }
+      break;
+    case RaceChoiceKind.featChoice:
+      if (item.featId == null || item.featId! <= 0) {
+        throw ArgumentError(
+          'Feat choice options require featId.',
         );
       }
       break;

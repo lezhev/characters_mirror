@@ -14,9 +14,10 @@ import '../../../enums/character_alignment.dart' as _i2;
 import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
-import '../../../data/general/character/character_class_entry_data.dart' as _i6;
-import '../../../data/general/character/character_choice_data.dart' as _i7;
-import '../../../data/general/character/character_derived_data.dart' as _i8;
+import '../../../data/general/character/character_attack_data.dart' as _i6;
+import '../../../data/general/character/character_class_entry_data.dart' as _i7;
+import '../../../data/general/character/character_choice_data.dart' as _i8;
+import '../../../data/general/character/character_derived_data.dart' as _i9;
 
 abstract class CharacterData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -46,10 +47,12 @@ abstract class CharacterData
     this.subrace,
     this.background,
     this.baseAbilityScores,
+    this.useFlexibleAbilityBonuses,
     this.temporaryHp,
     this.currentHp,
     this.inspiration,
     this.notes,
+    this.attacks,
     this.classEntries,
     this.choices,
     this.derived,
@@ -81,13 +84,15 @@ abstract class CharacterData
     _i4.SubraceData? subrace,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
+    bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
-    List<_i6.CharacterClassEntryData>? classEntries,
-    List<_i7.CharacterChoiceData>? choices,
-    _i8.CharacterDerivedData? derived,
+    List<_i6.CharacterAttackData>? attacks,
+    List<_i7.CharacterClassEntryData>? classEntries,
+    List<_i8.CharacterChoiceData>? choices,
+    _i9.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -137,21 +142,27 @@ abstract class CharacterData
                 k as String,
                 v as int,
               )),
+      useFlexibleAbilityBonuses:
+          jsonSerialization['useFlexibleAbilityBonuses'] as bool?,
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
       notes: jsonSerialization['notes'] as String?,
+      attacks: (jsonSerialization['attacks'] as List?)
+          ?.map((e) =>
+              _i6.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       classEntries: (jsonSerialization['classEntries'] as List?)
           ?.map((e) =>
-              _i6.CharacterClassEntryData.fromJson((e as Map<String, dynamic>)))
+              _i7.CharacterClassEntryData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       choices: (jsonSerialization['choices'] as List?)
           ?.map((e) =>
-              _i7.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
+              _i8.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       derived: jsonSerialization['derived'] == null
           ? null
-          : _i8.CharacterDerivedData.fromJson(
+          : _i9.CharacterDerivedData.fromJson(
               (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
@@ -206,6 +217,8 @@ abstract class CharacterData
 
   Map<String, int>? baseAbilityScores;
 
+  bool? useFlexibleAbilityBonuses;
+
   int? temporaryHp;
 
   int? currentHp;
@@ -214,11 +227,13 @@ abstract class CharacterData
 
   String? notes;
 
-  List<_i6.CharacterClassEntryData>? classEntries;
+  List<_i6.CharacterAttackData>? attacks;
 
-  List<_i7.CharacterChoiceData>? choices;
+  List<_i7.CharacterClassEntryData>? classEntries;
 
-  _i8.CharacterDerivedData? derived;
+  List<_i8.CharacterChoiceData>? choices;
+
+  _i9.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
@@ -249,13 +264,15 @@ abstract class CharacterData
     _i4.SubraceData? subrace,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
+    bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
-    List<_i6.CharacterClassEntryData>? classEntries,
-    List<_i7.CharacterChoiceData>? choices,
-    _i8.CharacterDerivedData? derived,
+    List<_i6.CharacterAttackData>? attacks,
+    List<_i7.CharacterClassEntryData>? classEntries,
+    List<_i8.CharacterChoiceData>? choices,
+    _i9.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -287,10 +304,14 @@ abstract class CharacterData
       if (background != null) 'background': background?.toJson(),
       if (baseAbilityScores != null)
         'baseAbilityScores': baseAbilityScores?.toJson(),
+      if (useFlexibleAbilityBonuses != null)
+        'useFlexibleAbilityBonuses': useFlexibleAbilityBonuses,
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
       if (notes != null) 'notes': notes,
+      if (attacks != null)
+        'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
       if (classEntries != null)
         'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
       if (choices != null)
@@ -329,10 +350,14 @@ abstract class CharacterData
       if (background != null) 'background': background?.toJsonForProtocol(),
       if (baseAbilityScores != null)
         'baseAbilityScores': baseAbilityScores?.toJson(),
+      if (useFlexibleAbilityBonuses != null)
+        'useFlexibleAbilityBonuses': useFlexibleAbilityBonuses,
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
       if (notes != null) 'notes': notes,
+      if (attacks != null)
+        'attacks': attacks?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (classEntries != null)
         'classEntries':
             classEntries?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -377,13 +402,15 @@ class _CharacterDataImpl extends CharacterData {
     _i4.SubraceData? subrace,
     _i5.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
+    bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
     String? notes,
-    List<_i6.CharacterClassEntryData>? classEntries,
-    List<_i7.CharacterChoiceData>? choices,
-    _i8.CharacterDerivedData? derived,
+    List<_i6.CharacterAttackData>? attacks,
+    List<_i7.CharacterClassEntryData>? classEntries,
+    List<_i8.CharacterChoiceData>? choices,
+    _i9.CharacterDerivedData? derived,
   }) : super._(
           id: id,
           name: name,
@@ -410,10 +437,12 @@ class _CharacterDataImpl extends CharacterData {
           subrace: subrace,
           background: background,
           baseAbilityScores: baseAbilityScores,
+          useFlexibleAbilityBonuses: useFlexibleAbilityBonuses,
           temporaryHp: temporaryHp,
           currentHp: currentHp,
           inspiration: inspiration,
           notes: notes,
+          attacks: attacks,
           classEntries: classEntries,
           choices: choices,
           derived: derived,
@@ -449,10 +478,12 @@ class _CharacterDataImpl extends CharacterData {
     Object? subrace = _Undefined,
     Object? background = _Undefined,
     Object? baseAbilityScores = _Undefined,
+    Object? useFlexibleAbilityBonuses = _Undefined,
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
     Object? inspiration = _Undefined,
     Object? notes = _Undefined,
+    Object? attacks = _Undefined,
     Object? classEntries = _Undefined,
     Object? choices = _Undefined,
     Object? derived = _Undefined,
@@ -500,17 +531,23 @@ class _CharacterDataImpl extends CharacterData {
                     key0,
                     value0,
                   )),
+      useFlexibleAbilityBonuses: useFlexibleAbilityBonuses is bool?
+          ? useFlexibleAbilityBonuses
+          : this.useFlexibleAbilityBonuses,
       temporaryHp: temporaryHp is int? ? temporaryHp : this.temporaryHp,
       currentHp: currentHp is int? ? currentHp : this.currentHp,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
       notes: notes is String? ? notes : this.notes,
-      classEntries: classEntries is List<_i6.CharacterClassEntryData>?
+      attacks: attacks is List<_i6.CharacterAttackData>?
+          ? attacks
+          : this.attacks?.map((e0) => e0.copyWith()).toList(),
+      classEntries: classEntries is List<_i7.CharacterClassEntryData>?
           ? classEntries
           : this.classEntries?.map((e0) => e0.copyWith()).toList(),
-      choices: choices is List<_i7.CharacterChoiceData>?
+      choices: choices is List<_i8.CharacterChoiceData>?
           ? choices
           : this.choices?.map((e0) => e0.copyWith()).toList(),
-      derived: derived is _i8.CharacterDerivedData?
+      derived: derived is _i9.CharacterDerivedData?
           ? derived
           : this.derived?.copyWith(),
     );

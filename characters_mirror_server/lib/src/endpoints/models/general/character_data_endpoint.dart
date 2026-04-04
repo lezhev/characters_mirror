@@ -27,7 +27,8 @@ class CharacterDataEndpoint extends Endpoint {
     CharacterData character,
   ) async {
     final userId = await _requireCurrentUserId(session);
-    final savedRecord = await _upsertCharacterRecord(session, character, userId);
+    final savedRecord =
+        await _upsertCharacterRecord(session, character, userId);
 
     await CharacterChoiceRecord.db.deleteWhere(
       session,
@@ -174,10 +175,12 @@ CharacterRecord _toCharacterRecord(
     subraceId: character.subrace?.id,
     backgroundId: character.background?.id,
     baseAbilityScores: character.baseAbilityScores,
+    useFlexibleAbilityBonuses: character.useFlexibleAbilityBonuses,
     temporaryHp: character.temporaryHp,
     currentHp: character.currentHp,
     inspiration: character.inspiration,
     notes: character.notes,
+    attacks: character.attacks,
   );
 }
 
@@ -220,7 +223,8 @@ Future<List<CharacterChoiceRecord>> _insertChoiceRecords(
 ) async {
   final savedChoices = <CharacterChoiceRecord>[];
   for (final choice in choices) {
-    final matchedEntry = _matchSavedEntryRecord(choice.classEntry, savedEntries);
+    final matchedEntry =
+        _matchSavedEntryRecord(choice.classEntry, savedEntries);
     final saved = await CharacterChoiceRecord.db.insertRow(
       session,
       CharacterChoiceRecord(
@@ -232,8 +236,13 @@ Future<List<CharacterChoiceRecord>> _insertChoiceRecords(
         sourceId: choice.sourceId,
         groupKey: choice.groupKey,
         optionKey: choice.optionKey,
+        selectionIndex: choice.selectionIndex,
+        selectedAbility: choice.selectedAbility,
+        selectedLanguage: choice.selectedLanguage,
+        selectedToolKey: choice.selectedToolKey,
         selectedSpellKey: choice.selectedSpellKey,
         selectedItemKey: choice.selectedItemKey,
+        selectedFeatId: choice.selectedFeatId,
         selectedText: choice.selectedText,
         selectedCount: choice.selectedCount,
       ),
@@ -341,7 +350,8 @@ Future<CharacterData> _buildCharacterAggregate(
   );
   final choices = choiceRecords
       .map((record) => _toCharacterChoiceData(record, entriesById))
-      .toList();
+      .toList()
+    ..sort(_compareCharacterChoices);
 
   final character = _toCharacterData(record).copyWith(
     classEntries: entries,
@@ -378,10 +388,12 @@ CharacterData _toCharacterData(CharacterRecord record) {
     subrace: record.subrace,
     background: record.background,
     baseAbilityScores: record.baseAbilityScores,
+    useFlexibleAbilityBonuses: record.useFlexibleAbilityBonuses,
     temporaryHp: record.temporaryHp,
     currentHp: record.currentHp,
     inspiration: record.inspiration,
     notes: record.notes,
+    attacks: record.attacks,
   );
 }
 
@@ -407,15 +419,19 @@ CharacterChoiceData _toCharacterChoiceData(
 ) {
   return CharacterChoiceData(
     id: record.id,
-    classEntry: record.classEntryId == null
-        ? null
-        : entriesById[record.classEntryId!],
+    classEntry:
+        record.classEntryId == null ? null : entriesById[record.classEntryId!],
     sourceType: record.sourceType,
     sourceId: record.sourceId,
     groupKey: record.groupKey,
     optionKey: record.optionKey,
+    selectionIndex: record.selectionIndex,
+    selectedAbility: record.selectedAbility,
+    selectedLanguage: record.selectedLanguage,
+    selectedToolKey: record.selectedToolKey,
     selectedSpellKey: record.selectedSpellKey,
     selectedItemKey: record.selectedItemKey,
+    selectedFeatId: record.selectedFeatId,
     selectedText: record.selectedText,
     selectedCount: record.selectedCount,
   );
@@ -427,9 +443,16 @@ Future<CharacterDerivedData> _buildDerivedData(
 ) async {
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
   final choices = character.choices ?? const <CharacterChoiceData>[];
-  final totalLevel = entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
+  final totalLevel =
+      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
+  final resolvedSources =
+      await _resolveDerivedSources(session, character, choices);
   final scores = _buildAbilityScores(character, choices);
+  final abilityModifiers = {
+    for (final ability in Ability.values)
+      ability.name: _abilityModifier(scores[ability.name] ?? 10),
+  };
   final dexMod = _abilityModifier(scores['dexterity'] ?? 10);
   final conMod = _abilityModifier(scores['constitution'] ?? 10);
 
@@ -440,7 +463,12 @@ Future<CharacterDerivedData> _buildDerivedData(
       ability.name,
   };
 
-  final skillProficiencies = _collectSkillProficiencies(character, choices);
+  final skillProficiencies = _collectSkillProficiencies(
+    character,
+    choices,
+    resolvedSources.classBackgroundOptions,
+    resolvedSources.raceOptions,
+  );
   final skillBonuses = <String, int>{};
   for (final skill in Skill.values) {
     final base = _abilityModifier(scores[_abilityForSkill(skill).name] ?? 10);
@@ -462,6 +490,48 @@ Future<CharacterDerivedData> _buildDerivedData(
       10 + (skillBonuses[Skill.investigation.name] ?? 0);
   final passiveInsight = 10 + (skillBonuses[Skill.insight.name] ?? 0);
   final spellData = await _resolveSpellSlots(session, entries);
+  final languages = _collectLanguages(
+    character,
+    choices,
+    resolvedSources.classBackgroundOptions,
+    resolvedSources.raceOptions,
+  );
+  final toolProficiencies = _collectToolProficiencies(
+    character,
+    entries,
+    choices,
+    resolvedSources.classBackgroundOptions,
+    resolvedSources.raceOptions,
+  );
+  final armorTraining = _collectArmorTraining(
+    character,
+    entries,
+    resolvedSources.classBackgroundOptions,
+  );
+  final weaponTraining = _collectWeaponTraining(
+    character,
+    entries,
+    resolvedSources.classBackgroundOptions,
+  );
+  final featIds = _collectFeatIds(choices, resolvedSources.raceOptions);
+  final featTags = await _loadFeatTags(session, featIds);
+  final featureTags = _collectFeatureTags(
+    character: character,
+    totalLevel: totalLevel,
+    resolvedSources: resolvedSources,
+    featTags: featTags,
+  );
+  final grantedSpellKeys = _collectGrantedSpellKeys(
+    character,
+    choices,
+    resolvedSources.classBackgroundOptions,
+    resolvedSources.raceOptions,
+    totalLevel,
+  );
+  final grantedItemKeys = _collectGrantedItemKeys(
+    choices,
+    resolvedSources.classBackgroundOptions,
+  );
   final hitDiceSummary = <String, int>{};
   for (final entry in entries) {
     final hitDie = _resolveHitDie(entry.classData);
@@ -480,6 +550,8 @@ Future<CharacterDerivedData> _buildDerivedData(
   return CharacterDerivedData(
     totalLevel: totalLevel,
     proficiencyBonus: proficiencyBonus,
+    abilityScores: scores,
+    abilityModifiers: abilityModifiers,
     armorClass: 10 + dexMod,
     initiative: dexMod,
     speed: character.race?.speed ?? 30,
@@ -492,6 +564,14 @@ Future<CharacterDerivedData> _buildDerivedData(
     spellSlots: spellData.spellSlots,
     pactSlots: spellData.pactSlots,
     hitDiceSummary: hitDiceSummary,
+    languages: languages,
+    toolProficiencies: toolProficiencies,
+    armorTraining: armorTraining,
+    weaponTraining: weaponTraining,
+    featureTags: featureTags,
+    featIds: featIds,
+    grantedSpellKeys: grantedSpellKeys,
+    grantedItemKeys: grantedItemKeys,
     senses: senses,
     resistances: resistances,
     rebuiltAt: DateTime.now(),
@@ -615,8 +695,8 @@ void _applyRacialChoiceBonuses(
   List<CharacterChoiceData> choices,
 ) {
   for (final choice in choices) {
-    final key = choice.optionKey?.trim();
     final bonus = choice.selectedCount ?? 0;
+    final key = choice.selectedAbility?.name ?? choice.optionKey?.trim();
     if (key == null || key.isEmpty || bonus == 0) {
       continue;
     }
@@ -640,24 +720,31 @@ String? _normalizeAbilityKey(String raw) {
 Set<Skill> _collectSkillProficiencies(
   CharacterData character,
   List<CharacterChoiceData> choices,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+  List<RaceChoiceOptionData> raceOptions,
 ) {
   final skills = <Skill>{};
   _addSkillNames(skills, character.race?.skillProficiencies);
   _addSkillNames(skills, character.subrace?.skillProficiencies);
   _addSkillNames(skills, character.background?.skillProficiencies);
 
-  for (final choice in choices) {
-    if (choice.selectedText == null) continue;
-    final skill = _skillFromName(choice.selectedText!);
-    if (skill != null) {
-      skills.add(skill);
-    }
+  for (final option in classBackgroundOptions) {
+    skills.addAll(option.grantedSkills ?? const <Skill>[]);
   }
-  for (final option in _selectedRaceChoiceOptions(character, choices)) {
+
+  for (final option in raceOptions) {
     if (option.skill != null) {
       skills.add(option.skill!);
     }
   }
+
+  for (final choice in choices) {
+    final skill = _skillFromName(choice.selectedText ?? '');
+    if (skill != null) {
+      skills.add(skill);
+    }
+  }
+
   return skills;
 }
 
@@ -757,6 +844,128 @@ class _SpellSlotData {
 
 int _abilityModifier(int score) => ((score - 10) / 2).floor();
 
+class _ResolvedDerivedSources {
+  final List<ClassChoiceOptionData> classBackgroundOptions;
+  final List<RaceChoiceOptionData> raceOptions;
+  final List<ClassFeatureData> currentClassFeatures;
+  final List<SubclassFeatureData> currentSubclassFeatures;
+
+  const _ResolvedDerivedSources({
+    required this.classBackgroundOptions,
+    required this.raceOptions,
+    required this.currentClassFeatures,
+    required this.currentSubclassFeatures,
+  });
+}
+
+Future<_ResolvedDerivedSources> _resolveDerivedSources(
+  Session session,
+  CharacterData character,
+  List<CharacterChoiceData> choices,
+) async {
+  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
+  final currentClassFeatures = <ClassFeatureData>[];
+  final currentSubclassFeatures = <SubclassFeatureData>[];
+  final classLevels = <int, int>{};
+  final subclassLevels = <int, int>{};
+
+  for (final entry in entries) {
+    final level = entry.level ?? 0;
+    final classId = entry.classData?.id;
+    if (classId != null) {
+      classLevels[classId] = max(classLevels[classId] ?? 0, level);
+      currentClassFeatures.addAll(
+        await ClassFeatureData.db.find(
+          session,
+          where: (t) => t.parentClassId.equals(classId) & (t.level <= level),
+          orderBy: (t) => t.level,
+        ),
+      );
+    }
+
+    final subclassId = entry.subclass?.id;
+    if (subclassId != null) {
+      subclassLevels[subclassId] = max(subclassLevels[subclassId] ?? 0, level);
+      currentSubclassFeatures.addAll(
+        await SubclassFeatureData.db.find(
+          session,
+          where: (t) =>
+              t.parentSubclassId.equals(subclassId) & (t.level <= level),
+          orderBy: (t) => t.level,
+        ),
+      );
+    }
+  }
+
+  final currentClassFeatureIds = {
+    for (final feature in currentClassFeatures)
+      if (feature.id != null) feature.id!,
+  };
+  final currentSubclassFeatureIds = {
+    for (final feature in currentSubclassFeatures)
+      if (feature.id != null) feature.id!,
+  };
+
+  final allGroups = await ClassChoiceGroupData.db.find(
+    session,
+    orderBy: (t) => t.id,
+  );
+  final relevantGroups = allGroups.where((group) {
+    final groupLevel = group.level ?? 1;
+    final byClass = group.sourceClassId != null &&
+        (classLevels[group.sourceClassId!] ?? 0) >= groupLevel;
+    final bySubclass = group.sourceSubclassId != null &&
+        (subclassLevels[group.sourceSubclassId!] ?? 0) >= groupLevel;
+    final byFeature = group.sourceFeatureId != null &&
+        currentClassFeatureIds.contains(group.sourceFeatureId);
+    final bySubclassFeature = group.sourceSubclassFeatureId != null &&
+        currentSubclassFeatureIds.contains(group.sourceSubclassFeatureId);
+    final byBackground = group.sourceBackgroundId != null &&
+        group.sourceBackgroundId == character.background?.id;
+
+    return byClass ||
+        bySubclass ||
+        byFeature ||
+        bySubclassFeature ||
+        byBackground;
+  }).toList();
+
+  final optionsByGroupKey = <String, Map<String, ClassChoiceOptionData>>{};
+  for (final group in relevantGroups) {
+    final groupId = group.id;
+    if (groupId == null) continue;
+
+    final options = await ClassChoiceOptionData.db.find(
+      session,
+      where: (t) => t.choiceGroupId.equals(groupId),
+    );
+    optionsByGroupKey[_classChoiceGroupKey(group)] = {
+      for (final option in options)
+        if (_normalizedTextOrNull(option.optionKey) != null)
+          option.optionKey!.trim(): option,
+    };
+  }
+
+  final classBackgroundOptions = <ClassChoiceOptionData>[];
+  for (final choice in choices.where(_isClassOrBackgroundChoice)) {
+    final groupKey = choice.groupKey;
+    final optionKey = _normalizedTextOrNull(choice.optionKey);
+    if (groupKey == null || optionKey == null) continue;
+
+    final option = optionsByGroupKey[groupKey]?[optionKey];
+    if (option != null) {
+      classBackgroundOptions.add(option);
+    }
+  }
+
+  return _ResolvedDerivedSources(
+    classBackgroundOptions: classBackgroundOptions,
+    raceOptions: _selectedRaceChoiceOptions(character, choices),
+    currentClassFeatures: currentClassFeatures,
+    currentSubclassFeatures: currentSubclassFeatures,
+  );
+}
+
 void _addSkillNames(Set<Skill> target, List<String>? names) {
   for (final name in names ?? const <String>[]) {
     final skill = _skillFromName(name);
@@ -776,6 +985,246 @@ Skill? _skillFromName(String raw) {
   return null;
 }
 
+List<String> _collectLanguages(
+  CharacterData character,
+  List<CharacterChoiceData> choices,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+  List<RaceChoiceOptionData> raceOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.languages));
+  values.addAll(_normalizedTexts(character.background?.languages));
+
+  for (final option in classBackgroundOptions) {
+    values.addAll([
+      for (final language in option.grantedLanguages ?? const <Language>[])
+        language.name,
+    ]);
+  }
+  for (final option in raceOptions) {
+    if (option.language != null) {
+      values.add(option.language!.name);
+    }
+  }
+  for (final choice in choices) {
+    if (choice.selectedLanguage != null) {
+      values.add(choice.selectedLanguage!.name);
+      continue;
+    }
+
+    final legacyLanguage = _languageFromName(choice.selectedText ?? '');
+    if (legacyLanguage != null) {
+      values.add(legacyLanguage.name);
+    }
+  }
+
+  return values.toList()..sort();
+}
+
+List<String> _collectToolProficiencies(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  List<CharacterChoiceData> choices,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+  List<RaceChoiceOptionData> raceOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.toolProficiencies));
+  values.addAll(_normalizedTexts(character.subrace?.toolProficiencies));
+  values.addAll(_normalizedTexts(character.background?.toolProficiencies));
+
+  for (final entry in entries) {
+    final classData = entry.classData;
+    if (classData == null) continue;
+    final isStarting = entry.isStartingClass ?? false;
+    values.addAll(_normalizedTexts(
+      isStarting ? classData.toolTraining : classData.multiclassToolTraining,
+    ));
+  }
+  for (final option in classBackgroundOptions) {
+    values.addAll(_normalizedTexts(option.grantedToolKeys));
+  }
+  for (final option in raceOptions) {
+    final toolKey = _normalizedTextOrNull(option.toolKey);
+    if (toolKey != null) {
+      values.add(toolKey);
+    }
+  }
+  for (final choice in choices) {
+    final toolKey = _normalizedTextOrNull(choice.selectedToolKey);
+    if (toolKey != null) {
+      values.add(toolKey);
+    }
+  }
+
+  return values.toList()..sort();
+}
+
+List<String> _collectArmorTraining(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.armorProficiencies));
+  values.addAll(_normalizedTexts(character.subrace?.armorProficiencies));
+
+  for (final entry in entries) {
+    final classData = entry.classData;
+    if (classData == null) continue;
+    final source = (entry.isStartingClass ?? false)
+        ? classData.armorTraining
+        : classData.multiclassArmorTraining;
+    values.addAll([
+      for (final training in source ?? const <ArmorCategory>[]) training.name,
+    ]);
+  }
+  for (final option in classBackgroundOptions) {
+    values.addAll([
+      for (final training
+          in option.grantedArmorTraining ?? const <ArmorCategory>[])
+        training.name,
+    ]);
+  }
+
+  return values.toList()..sort();
+}
+
+List<String> _collectWeaponTraining(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.weaponProficiencies));
+  values.addAll(_normalizedTexts(character.subrace?.weaponProficiencies));
+
+  for (final entry in entries) {
+    final classData = entry.classData;
+    if (classData == null) continue;
+    final source = (entry.isStartingClass ?? false)
+        ? classData.weaponTraining
+        : classData.multiclassWeaponTraining;
+    values.addAll([
+      for (final training in source ?? const <WeaponCategory>[]) training.name,
+    ]);
+  }
+  for (final option in classBackgroundOptions) {
+    values.addAll([
+      for (final training
+          in option.grantedWeaponTraining ?? const <WeaponCategory>[])
+        training.name,
+    ]);
+  }
+
+  return values.toList()..sort();
+}
+
+List<int> _collectFeatIds(
+  List<CharacterChoiceData> choices,
+  List<RaceChoiceOptionData> raceOptions,
+) {
+  final values = <int>{
+    for (final choice in choices)
+      if (choice.selectedFeatId != null) choice.selectedFeatId!,
+    for (final option in raceOptions)
+      if (option.featId != null) option.featId!,
+  };
+  return values.toList()..sort();
+}
+
+Future<Set<FeatureTag>> _loadFeatTags(
+  Session session,
+  List<int> featIds,
+) async {
+  if (featIds.isEmpty) {
+    return const <FeatureTag>{};
+  }
+
+  final feats = await FeatData.db.find(
+    session,
+    where: (t) => t.id.inSet(featIds.toSet()),
+  );
+  return {
+    for (final feat in feats) ...?feat.tags,
+  };
+}
+
+List<FeatureTag> _collectFeatureTags({
+  required CharacterData character,
+  required int totalLevel,
+  required _ResolvedDerivedSources resolvedSources,
+  required Set<FeatureTag> featTags,
+}) {
+  final values = <FeatureTag>{
+    ...featTags,
+    for (final feature in resolvedSources.currentClassFeatures)
+      ...?feature.tags,
+    for (final feature in resolvedSources.currentSubclassFeatures)
+      ...?feature.tags,
+    for (final feature in _currentRaceFeatures(character, totalLevel))
+      ...?feature.tags,
+    for (final option in resolvedSources.classBackgroundOptions)
+      ...?option.grantedFeatureTags,
+  };
+
+  final list = values.toList()..sort((a, b) => a.name.compareTo(b.name));
+  return list;
+}
+
+List<String> _collectGrantedSpellKeys(
+  CharacterData character,
+  List<CharacterChoiceData> choices,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+  List<RaceChoiceOptionData> raceOptions,
+  int totalLevel,
+) {
+  final values = <String>{};
+  for (final option in classBackgroundOptions) {
+    values.addAll(_normalizedTexts(option.grantedSpellKeys));
+  }
+  for (final option in raceOptions) {
+    final spellName = _normalizedTextOrNull(option.spell?.name);
+    if (spellName != null) {
+      values.add(spellName);
+    }
+  }
+  for (final feature in _currentRaceFeatures(character, totalLevel)) {
+    for (final grant
+        in feature.spellGrants ?? const <RaceFeatureSpellGrantData>[]) {
+      if ((grant.grantedAtLevel ?? 1) > max(totalLevel, 1)) continue;
+      final spellName = _normalizedTextOrNull(grant.spell?.name);
+      if (spellName != null) {
+        values.add(spellName);
+      }
+    }
+  }
+  for (final choice in choices) {
+    final spellKey = _normalizedTextOrNull(choice.selectedSpellKey);
+    if (spellKey != null) {
+      values.add(spellKey);
+    }
+  }
+  return values.toList()..sort();
+}
+
+List<String> _collectGrantedItemKeys(
+  List<CharacterChoiceData> choices,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+) {
+  final values = <String>{};
+  for (final option in classBackgroundOptions) {
+    values.addAll(_normalizedTexts(option.grantedItemKeys));
+  }
+  for (final choice in choices) {
+    final itemKey = _normalizedTextOrNull(choice.selectedItemKey);
+    if (itemKey != null) {
+      values.add(itemKey);
+    }
+  }
+  return values.toList()..sort();
+}
+
 List<DamageType> _collectDamageTypes(
   CharacterData character,
   List<CharacterChoiceData> choices,
@@ -791,6 +1240,72 @@ List<DamageType> _collectDamageTypes(
     }
   }
   return values.toList()..sort((a, b) => a.name.compareTo(b.name));
+}
+
+bool _isClassOrBackgroundChoice(CharacterChoiceData choice) {
+  switch (choice.sourceType) {
+    case ChoiceSourceType.background:
+    case ChoiceSourceType.classData:
+    case ChoiceSourceType.subclass:
+    case ChoiceSourceType.classFeature:
+    case ChoiceSourceType.subclassFeature:
+      return true;
+    case ChoiceSourceType.race:
+    case ChoiceSourceType.subrace:
+    case null:
+      return false;
+  }
+}
+
+String _classChoiceGroupKey(ClassChoiceGroupData group) {
+  final explicitKey = _normalizedTextOrNull(group.exclusiveKey);
+  if (explicitKey != null) {
+    return explicitKey;
+  }
+  return 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
+}
+
+String? _normalizedTextOrNull(String? value) {
+  final trimmed = value?.trim();
+  return trimmed == null || trimmed.isEmpty ? null : trimmed;
+}
+
+Iterable<String> _normalizedTexts(Iterable<String>? values) sync* {
+  for (final value in values ?? const <String>[]) {
+    final normalized = _normalizedTextOrNull(value);
+    if (normalized != null) {
+      yield normalized;
+    }
+  }
+}
+
+Language? _languageFromName(String raw) {
+  final normalized = raw.trim();
+  for (final value in Language.values) {
+    if (value.name == normalized) {
+      return value;
+    }
+  }
+  return null;
+}
+
+List<RaceFeatureData> _currentRaceFeatures(
+  CharacterData character,
+  int totalLevel,
+) {
+  final characterLevel = max(totalLevel, 1);
+  return [
+    ...?character.race?.features,
+    ...?character.subrace?.features,
+  ].where((feature) => (feature.level ?? 1) <= characterLevel).toList();
+}
+
+String? _safeEnumToken(Object? value) {
+  if (value == null) return null;
+  final raw = value.toString();
+  if (raw.trim().isEmpty) return null;
+  final parts = raw.split('.');
+  return parts.isEmpty ? raw : parts.last;
 }
 
 int? _resolveHitDie(ClassData? classData) {
@@ -837,7 +1352,8 @@ void _applyFixedRaceBonuses(
 
 Map<String, int> _abilityBonusesFromRace(RaceData? race) {
   return {
-    if (race?.strengthBonus != null) Ability.strength.name: race!.strengthBonus!,
+    if (race?.strengthBonus != null)
+      Ability.strength.name: race!.strengthBonus!,
     if (race?.dexterityBonus != null)
       Ability.dexterity.name: race!.dexterityBonus!,
     if (race?.constitutionBonus != null)
@@ -845,7 +1361,8 @@ Map<String, int> _abilityBonusesFromRace(RaceData? race) {
     if (race?.intelligenceBonus != null)
       Ability.intelligence.name: race!.intelligenceBonus!,
     if (race?.wisdomBonus != null) Ability.wisdom.name: race!.wisdomBonus!,
-    if (race?.charismaBonus != null) Ability.charisma.name: race!.charismaBonus!,
+    if (race?.charismaBonus != null)
+      Ability.charisma.name: race!.charismaBonus!,
   };
 }
 
@@ -874,7 +1391,8 @@ List<RaceChoiceOptionData> _selectedRaceChoiceOptions(
 
   void registerFeatures(List<RaceFeatureData>? features) {
     for (final feature in features ?? const <RaceFeatureData>[]) {
-      for (final choiceSet in feature.choiceSets ?? const <RaceChoiceSetData>[]) {
+      for (final choiceSet
+          in feature.choiceSets ?? const <RaceChoiceSetData>[]) {
         final groupKey = _choiceSetGroupKey(choiceSet.id);
         if (groupKey == null) continue;
 
@@ -906,6 +1424,17 @@ List<RaceChoiceOptionData> _selectedRaceChoiceOptions(
   }
 
   return selected;
+}
+
+int _compareCharacterChoices(CharacterChoiceData a, CharacterChoiceData b) {
+  final groupCompare = (a.groupKey ?? '').compareTo(b.groupKey ?? '');
+  if (groupCompare != 0) return groupCompare;
+
+  final selectionCompare =
+      (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0);
+  if (selectionCompare != 0) return selectionCompare;
+
+  return (a.id ?? 0).compareTo(b.id ?? 0);
 }
 
 String? _choiceSetGroupKey(int? choiceSetId) {
@@ -949,6 +1478,7 @@ RaceFeatureDataInclude _raceFeatureInclude() {
         choiceOptions: RaceChoiceOptionData.includeList(
           include: RaceChoiceOptionData.include(
             spell: SpellData.include(),
+            feat: FeatData.include(),
           ),
         ),
       ),
