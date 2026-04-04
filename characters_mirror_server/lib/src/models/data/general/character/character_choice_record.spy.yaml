@@ -8,7 +8,12 @@ fields:
   sourceId: int?
   groupKey: String?
   optionKey: String?
+  selectionIndex: int?
+  selectedAbility: Ability?
+  selectedLanguage: Language?
+  selectedToolKey: String?
   selectedSpellKey: String?
   selectedItemKey: String?
+  selectedFeatId: int?
   selectedText: String?
   selectedCount: int?

@@ -25,10 +25,71 @@ class $AssetsImagesGen {
   List<AssetGenImage> get values => [icon, melifaro];
 }
 
+class $AssetsSvgGen {
+  const $AssetsSvgGen();
+
+  /// File path: assets/svg/dice.svg
+  String get dice => 'assets/svg/dice.svg';
+
+  /// File path: assets/svg/placeholder.svg
+  String get placeholder => 'assets/svg/placeholder.svg';
+
+  /// Directory path: assets/svg/races
+  $AssetsSvgRacesGen get races => const $AssetsSvgRacesGen();
+
+  /// List of all assets
+  List<String> get values => [dice, placeholder];
+}
+
+class $AssetsSvgRacesGen {
+  const $AssetsSvgRacesGen();
+
+  /// File path: assets/svg/races/dragonborn.svg
+  String get dragonborn => 'assets/svg/races/dragonborn.svg';
+
+  /// File path: assets/svg/races/dwarf.svg
+  String get dwarf => 'assets/svg/races/dwarf.svg';
+
+  /// File path: assets/svg/races/elf.svg
+  String get elf => 'assets/svg/races/elf.svg';
+
+  /// File path: assets/svg/races/gnome.svg
+  String get gnome => 'assets/svg/races/gnome.svg';
+
+  /// File path: assets/svg/races/half_elf.svg
+  String get halfElf => 'assets/svg/races/half_elf.svg';
+
+  /// File path: assets/svg/races/half_orc.svg
+  String get halfOrc => 'assets/svg/races/half_orc.svg';
+
+  /// File path: assets/svg/races/halfling.svg
+  String get halfling => 'assets/svg/races/halfling.svg';
+
+  /// File path: assets/svg/races/human.svg
+  String get human => 'assets/svg/races/human.svg';
+
+  /// File path: assets/svg/races/tiefling.svg
+  String get tiefling => 'assets/svg/races/tiefling.svg';
+
+  /// List of all assets
+  List<String> get values => [
+        dragonborn,
+        dwarf,
+        elf,
+        gnome,
+        halfElf,
+        halfOrc,
+        halfling,
+        human,
+        tiefling
+      ];
+}
+
 class Assets {
   const Assets._();
 
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsSvgGen svg = $AssetsSvgGen();
 }
 
 class AssetGenImage {

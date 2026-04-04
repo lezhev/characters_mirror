@@ -6,6 +6,7 @@ fields:
   sourceClass: ClassData?, relation(optional)
   sourceSubclass: SubclassData?, relation(optional)
   sourceFeature: ClassFeatureData?, relation(optional)
+  sourceSubclassFeature: SubclassFeatureData?, relation(optional)
   sourceRace: RaceData?, relation(optional)
   sourceSubrace: SubraceData?, relation(optional)
   sourceBackground: BackgroundData?, relation(optional)

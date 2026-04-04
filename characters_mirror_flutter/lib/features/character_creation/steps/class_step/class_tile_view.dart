@@ -114,7 +114,7 @@ class ClassTile extends HookConsumerWidget {
                                 ],
                               ),
                               child: SvgPicture.asset(
-                                'svg/classes/${tileClass.imageURL}.svg',
+                                'assets/svg/classes/${tileClass.imageURL}.svg',
                                 width: 96,
                                 height: 96,
                                 colorFilter: ColorFilter.mode(

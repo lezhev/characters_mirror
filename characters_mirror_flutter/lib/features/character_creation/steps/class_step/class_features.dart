@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_group_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/expand_section.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class ClassFeatures extends HookConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final isFutureExpanded = useState(false);
+    final isFutureSubclassExpanded = useState(false);
     final currentStepView = stepView;
 
     if (currentStepView == null || currentStepView.classData == null) {
@@ -34,6 +36,10 @@ class ClassFeatures extends HookConsumerWidget {
         currentStepView.currentLevelFeatures ?? const <ClassFeatureData>[];
     final futureFeatures =
         currentStepView.futureLevelFeatures ?? const <ClassFeatureData>[];
+    final currentSubclassFeatures =
+        currentStepView.currentSubclassFeatures ?? const <SubclassFeatureData>[];
+    final futureSubclassFeatures =
+        currentStepView.futureSubclassFeatures ?? const <SubclassFeatureData>[];
     final subclassChoice = currentStepView.subclassChoice;
 
     return ref.watch(classStateProvider).when(
@@ -60,13 +66,40 @@ class ClassFeatures extends HookConsumerWidget {
                   const Gap(8),
                   ...choiceGroups
                       .where((groupView) => groupView.group != null)
-                      .map((groupView) => ClassChoiceGroupCard(groupView: groupView))
+                      .map(
+                        (groupView) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: CreationChoiceGroupCard(
+                            groupView: groupView,
+                            selectedOptions: data.selectedOptions[
+                                    _groupKey(groupView.group!)] ??
+                                const <ClassChoiceOptionData>[],
+                            onToggleOption:
+                                ref.read(classStateProvider.notifier).toggleOption,
+                            onIncrementOption: ref
+                                .read(classStateProvider.notifier)
+                                .incrementOption,
+                            onDecrementOption: ref
+                                .read(classStateProvider.notifier)
+                                .decrementOption,
+                            onClearGroup:
+                                ref.read(classStateProvider.notifier).clearGroup,
+                          ),
+                        ),
+                      )
                 ],
                 if (currentFeatures.isNotEmpty) ...[
                   const Gap(12),
                   Text('Умения текущего уровня', style: textTheme.titleLarge),
                   const Gap(8),
                   ...currentFeatures.map((feature) => ClassFeatureCard(feature: feature)),
+                ],
+                if (currentSubclassFeatures.isNotEmpty) ...[
+                  const Gap(12),
+                  Text('Умения подкласса', style: textTheme.titleLarge),
+                  const Gap(8),
+                  ...currentSubclassFeatures
+                      .map((feature) => SubclassFeatureCard(feature: feature)),
                 ],
                 if (futureFeatures.isNotEmpty) ...[
                   const Gap(12),
@@ -91,6 +124,37 @@ class ClassFeatures extends HookConsumerWidget {
                     child: Column(
                       children: futureFeatures
                           .map((feature) => ClassFeatureCard(feature: feature))
+                          .toList(),
+                    ),
+                  ),
+                ],
+                if (futureSubclassFeatures.isNotEmpty) ...[
+                  const Gap(12),
+                  InkWell(
+                    onTap: () =>
+                        isFutureSubclassExpanded.value = !isFutureSubclassExpanded.value,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Будущие умения подкласса',
+                          style: textTheme.titleLarge,
+                        ),
+                        Icon(
+                          isFutureSubclassExpanded.value
+                              ? Icons.expand_less
+                              : Icons.expand_more,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Gap(8),
+                  ExpandableSection(
+                    extraOffset: 64,
+                    expand: isFutureSubclassExpanded.value,
+                    child: Column(
+                      children: futureSubclassFeatures
+                          .map((feature) => SubclassFeatureCard(feature: feature))
                           .toList(),
                     ),
                   ),
@@ -240,6 +304,68 @@ class ClassFeatureCard extends StatelessWidget {
   }
 }
 
+class SubclassFeatureCard extends StatelessWidget {
+  final SubclassFeatureData feature;
+
+  const SubclassFeatureCard({super.key, required this.feature});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tags = feature.tags ?? const <FeatureTag>[];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.surfaceDim,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Уровень ${feature.level}: ${feature.name ?? 'Без названия'}',
+              style: theme.textTheme.titleMedium,
+            ),
+            const Gap(6),
+            if ((feature.description ?? '').isNotEmpty)
+              Text(
+                feature.description!,
+                style: theme.textTheme.bodyMedium,
+                textAlign: TextAlign.justify,
+              ),
+            if (tags.isNotEmpty) ...[
+              const Gap(8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: tags
+                    .map(
+                      (tag) => Chip(
+                        label: Text(_formatName(_enumToken(tag))),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class SubclassChoice extends ConsumerWidget {
   const SubclassChoice({super.key});
 
@@ -305,97 +431,10 @@ class SubclassChoice extends ConsumerWidget {
   }
 }
 
-class ClassChoiceGroupCard extends ConsumerWidget {
-  final ClassChoiceGroupView groupView;
-
-  const ClassChoiceGroupCard({super.key, required this.groupView});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final group = groupView.group!;
-    final options = groupView.options ?? const <ClassChoiceOptionData>[];
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return ref.watch(classStateProvider).when(
-          data: (data) {
-            final key = group.exclusiveKey?.trim().isNotEmpty == true
-                ? group.exclusiveKey!
-                : 'group_${group.id ?? group.name ?? _enumToken(group.type)}';
-            final selected = data.selectedOptions[key];
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.surfaceDim,
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(group.name ?? 'Выбор', style: textTheme.titleMedium),
-                    if ((group.description ?? '').isNotEmpty) ...[
-                      const Gap(6),
-                      Text(group.description!, style: textTheme.bodyMedium),
-                    ],
-                    const Gap(10),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: options.map((option) {
-                        final isSelected = selected?.id == option.id;
-                        return InkWell(
-                          onTap: () {
-                            if (isSelected) {
-                              ref.read(classStateProvider.notifier).unselectOption(group);
-                              return;
-                            }
-                            ref.read(classStateProvider.notifier).selectOption(group, option);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: isSelected
-                                    ? colorScheme.primary
-                                    : colorScheme.outline,
-                              ),
-                            ),
-                            child: Text(option.name ?? '', style: textTheme.bodySmall),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    if (selected != null && (selected.description ?? '').isNotEmpty) ...[
-                      const Gap(10),
-                      Text(selected.description!, style: textTheme.bodyMedium),
-                    ],
-                  ],
-                ),
-              ),
-            );
-          },
-          error: (e, s) => errorWidget(
-            e: e,
-            s: s,
-            refresh: () => ref.refresh(classStateProvider),
-            context: context,
-          ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-        );
-  }
-}
+String _groupKey(ClassChoiceGroupData group) =>
+    group.exclusiveKey?.trim().isNotEmpty == true
+        ? group.exclusiveKey!
+        : 'group_${group.id ?? group.name ?? _enumToken(group.type)}';
 
 String _joinNames(List<dynamic> values) =>
     values.map((value) => _formatName(_enumToken(value))).join(', ');

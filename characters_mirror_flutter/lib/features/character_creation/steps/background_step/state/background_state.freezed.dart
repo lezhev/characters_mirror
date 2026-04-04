@@ -16,6 +16,8 @@ T _$identity<T>(T value) => value;
 mixin _$BackgroundStateModel {
   List<BackgroundData> get allBackgrounds;
   BackgroundData? get selectedBackground;
+  BackgroundStepView? get stepView;
+  Map<String, List<ClassChoiceOptionData>> get selectedOptions;
 
   /// Create a copy of BackgroundStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -33,16 +35,24 @@ mixin _$BackgroundStateModel {
             const DeepCollectionEquality()
                 .equals(other.allBackgrounds, allBackgrounds) &&
             (identical(other.selectedBackground, selectedBackground) ||
-                other.selectedBackground == selectedBackground));
+                other.selectedBackground == selectedBackground) &&
+            (identical(other.stepView, stepView) ||
+                other.stepView == stepView) &&
+            const DeepCollectionEquality()
+                .equals(other.selectedOptions, selectedOptions));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(allBackgrounds), selectedBackground);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(allBackgrounds),
+      selectedBackground,
+      stepView,
+      const DeepCollectionEquality().hash(selectedOptions));
 
   @override
   String toString() {
-    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground)';
+    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground, stepView: $stepView, selectedOptions: $selectedOptions)';
   }
 }
 
@@ -54,7 +64,9 @@ abstract mixin class $BackgroundStateModelCopyWith<$Res> {
   @useResult
   $Res call(
       {List<BackgroundData> allBackgrounds,
-      BackgroundData? selectedBackground});
+      BackgroundData? selectedBackground,
+      BackgroundStepView? stepView,
+      Map<String, List<ClassChoiceOptionData>> selectedOptions});
 }
 
 /// @nodoc
@@ -72,6 +84,8 @@ class _$BackgroundStateModelCopyWithImpl<$Res>
   $Res call({
     Object? allBackgrounds = null,
     Object? selectedBackground = freezed,
+    Object? stepView = freezed,
+    Object? selectedOptions = null,
   }) {
     return _then(_self.copyWith(
       allBackgrounds: null == allBackgrounds
@@ -82,6 +96,14 @@ class _$BackgroundStateModelCopyWithImpl<$Res>
           ? _self.selectedBackground
           : selectedBackground // ignore: cast_nullable_to_non_nullable
               as BackgroundData?,
+      stepView: freezed == stepView
+          ? _self.stepView
+          : stepView // ignore: cast_nullable_to_non_nullable
+              as BackgroundStepView?,
+      selectedOptions: null == selectedOptions
+          ? _self.selectedOptions
+          : selectedOptions // ignore: cast_nullable_to_non_nullable
+              as Map<String, List<ClassChoiceOptionData>>,
     ));
   }
 }
@@ -179,15 +201,19 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(List<BackgroundData> allBackgrounds,
-            BackgroundData? selectedBackground)?
+    TResult Function(
+            List<BackgroundData> allBackgrounds,
+            BackgroundData? selectedBackground,
+            BackgroundStepView? stepView,
+            Map<String, List<ClassChoiceOptionData>> selectedOptions)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _BackgroundStateModel() when $default != null:
-        return $default(_that.allBackgrounds, _that.selectedBackground);
+        return $default(_that.allBackgrounds, _that.selectedBackground,
+            _that.stepView, _that.selectedOptions);
       case _:
         return orElse();
     }
@@ -208,14 +234,18 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(List<BackgroundData> allBackgrounds,
-            BackgroundData? selectedBackground)
+    TResult Function(
+            List<BackgroundData> allBackgrounds,
+            BackgroundData? selectedBackground,
+            BackgroundStepView? stepView,
+            Map<String, List<ClassChoiceOptionData>> selectedOptions)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _BackgroundStateModel():
-        return $default(_that.allBackgrounds, _that.selectedBackground);
+        return $default(_that.allBackgrounds, _that.selectedBackground,
+            _that.stepView, _that.selectedOptions);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -235,14 +265,18 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(List<BackgroundData> allBackgrounds,
-            BackgroundData? selectedBackground)?
+    TResult? Function(
+            List<BackgroundData> allBackgrounds,
+            BackgroundData? selectedBackground,
+            BackgroundStepView? stepView,
+            Map<String, List<ClassChoiceOptionData>> selectedOptions)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _BackgroundStateModel() when $default != null:
-        return $default(_that.allBackgrounds, _that.selectedBackground);
+        return $default(_that.allBackgrounds, _that.selectedBackground,
+            _that.stepView, _that.selectedOptions);
       case _:
         return null;
     }
@@ -254,8 +288,12 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
 class _BackgroundStateModel implements BackgroundStateModel {
   const _BackgroundStateModel(
       {final List<BackgroundData> allBackgrounds = const [],
-      this.selectedBackground})
-      : _allBackgrounds = allBackgrounds;
+      this.selectedBackground,
+      this.stepView,
+      final Map<String, List<ClassChoiceOptionData>> selectedOptions =
+          const {}})
+      : _allBackgrounds = allBackgrounds,
+        _selectedOptions = selectedOptions;
 
   final List<BackgroundData> _allBackgrounds;
   @override
@@ -268,6 +306,16 @@ class _BackgroundStateModel implements BackgroundStateModel {
 
   @override
   final BackgroundData? selectedBackground;
+  @override
+  final BackgroundStepView? stepView;
+  final Map<String, List<ClassChoiceOptionData>> _selectedOptions;
+  @override
+  @JsonKey()
+  Map<String, List<ClassChoiceOptionData>> get selectedOptions {
+    if (_selectedOptions is EqualUnmodifiableMapView) return _selectedOptions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_selectedOptions);
+  }
 
   /// Create a copy of BackgroundStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -286,16 +334,24 @@ class _BackgroundStateModel implements BackgroundStateModel {
             const DeepCollectionEquality()
                 .equals(other._allBackgrounds, _allBackgrounds) &&
             (identical(other.selectedBackground, selectedBackground) ||
-                other.selectedBackground == selectedBackground));
+                other.selectedBackground == selectedBackground) &&
+            (identical(other.stepView, stepView) ||
+                other.stepView == stepView) &&
+            const DeepCollectionEquality()
+                .equals(other._selectedOptions, _selectedOptions));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_allBackgrounds), selectedBackground);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_allBackgrounds),
+      selectedBackground,
+      stepView,
+      const DeepCollectionEquality().hash(_selectedOptions));
 
   @override
   String toString() {
-    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground)';
+    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground, stepView: $stepView, selectedOptions: $selectedOptions)';
   }
 }
 
@@ -309,7 +365,9 @@ abstract mixin class _$BackgroundStateModelCopyWith<$Res>
   @useResult
   $Res call(
       {List<BackgroundData> allBackgrounds,
-      BackgroundData? selectedBackground});
+      BackgroundData? selectedBackground,
+      BackgroundStepView? stepView,
+      Map<String, List<ClassChoiceOptionData>> selectedOptions});
 }
 
 /// @nodoc
@@ -327,6 +385,8 @@ class __$BackgroundStateModelCopyWithImpl<$Res>
   $Res call({
     Object? allBackgrounds = null,
     Object? selectedBackground = freezed,
+    Object? stepView = freezed,
+    Object? selectedOptions = null,
   }) {
     return _then(_BackgroundStateModel(
       allBackgrounds: null == allBackgrounds
@@ -337,6 +397,14 @@ class __$BackgroundStateModelCopyWithImpl<$Res>
           ? _self.selectedBackground
           : selectedBackground // ignore: cast_nullable_to_non_nullable
               as BackgroundData?,
+      stepView: freezed == stepView
+          ? _self.stepView
+          : stepView // ignore: cast_nullable_to_non_nullable
+              as BackgroundStepView?,
+      selectedOptions: null == selectedOptions
+          ? _self._selectedOptions
+          : selectedOptions // ignore: cast_nullable_to_non_nullable
+              as Map<String, List<ClassChoiceOptionData>>,
     ));
   }
 }

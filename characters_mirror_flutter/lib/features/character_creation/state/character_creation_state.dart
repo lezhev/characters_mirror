@@ -80,6 +80,7 @@ sealed class CharacterCreationState with _$CharacterCreationState {
         character: CharacterData(
           classEntries: const [],
           choices: const [],
+          useFlexibleAbilityBonuses: false,
         ),
         step: Step.introduction,
       );
@@ -143,10 +144,36 @@ class CharacterCreation extends _$CharacterCreation {
     );
   }
 
-  void syncBackgroundDraft(BackgroundData? selectedBackground) {
+  void syncBackgroundDraft({
+    required BackgroundData? selectedBackground,
+    List<ClassChoiceGroupView> choiceGroups = const [],
+    Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+  }) {
     if (selectedBackground == null) return;
+
+    final backgroundChanged =
+        state.character.background?.id != selectedBackground.id;
+    final currentChoices =
+        state.character.choices ?? const <CharacterChoiceData>[];
+    final backgroundChoices = buildBackgroundChoices(
+      selectedOptions: selectedOptions,
+      groups: choiceGroups,
+    );
+    final preservedChoices = backgroundChanged
+        ? _withoutChoiceSources(
+            currentChoices,
+            const {ChoiceSourceType.background},
+          )
+        : _withoutChoiceGroups(
+            currentChoices,
+            _classChoiceGroupKeys(choiceGroups),
+          );
+
     _updateCharacter(
-      state.character.copyWith(background: selectedBackground),
+      state.character.copyWith(
+        background: selectedBackground,
+        choices: [...preservedChoices, ...backgroundChoices],
+      ),
     );
   }
 
@@ -173,7 +200,7 @@ class CharacterCreation extends _$CharacterCreation {
     required ClassData? classData,
     SubclassData? subclass,
     List<ClassChoiceGroupView> choiceGroups = const [],
-    Map<String, ClassChoiceOptionData> selectedOptions = const {},
+    Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
     int level = 1,
   }) {
     if (classData == null) return;
@@ -316,6 +343,12 @@ class CharacterCreation extends _$CharacterCreation {
     );
   }
 
+  void setUseFlexibleAbilityBonuses(bool value) {
+    _updateCharacter(
+      state.character.copyWith(useFlexibleAbilityBonuses: value),
+    );
+  }
+
   void applyPrimaryClassSelection({
     required ClassData classData,
     SubclassData? subclass,
@@ -354,33 +387,23 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   List<CharacterChoiceData> buildClassChoices({
-    required Map<String, ClassChoiceOptionData> selectedOptions,
+    required Map<String, List<ClassChoiceOptionData>> selectedOptions,
     required List<ClassChoiceGroupView> groups,
   }) {
-    final choices = <CharacterChoiceData>[];
+    return _buildGroupedChoices(
+      selectedOptions: selectedOptions,
+      groups: groups,
+    );
+  }
 
-    for (final groupView in groups) {
-      final group = groupView.group;
-      if (group == null) continue;
-
-      final groupKey = group.exclusiveKey?.trim().isNotEmpty == true
-          ? group.exclusiveKey!
-          : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
-      final selected = selectedOptions[groupKey];
-      if (selected == null) continue;
-
-      choices.add(
-        CharacterChoiceData(
-          sourceType: _resolveChoiceSourceType(group),
-          sourceId: group.id,
-          groupKey: groupKey,
-          optionKey: selected.optionKey,
-          selectedText: selected.name,
-        ),
-      );
-    }
-
-    return choices;
+  List<CharacterChoiceData> buildBackgroundChoices({
+    required Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    required List<ClassChoiceGroupView> groups,
+  }) {
+    return _buildGroupedChoices(
+      selectedOptions: selectedOptions,
+      groups: groups,
+    );
   }
 
   void _updateCharacter(CharacterData updated) {
@@ -466,12 +489,83 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   ChoiceSourceType _resolveChoiceSourceType(ClassChoiceGroupData group) {
+    if (group.sourceSubclassFeatureId != null) {
+      return ChoiceSourceType.subclassFeature;
+    }
     if (group.sourceFeatureId != null) return ChoiceSourceType.classFeature;
     if (group.sourceSubclassId != null) return ChoiceSourceType.subclass;
     if (group.sourceBackgroundId != null) return ChoiceSourceType.background;
     if (group.sourceSubraceId != null) return ChoiceSourceType.subrace;
     if (group.sourceRaceId != null) return ChoiceSourceType.race;
     return ChoiceSourceType.classData;
+  }
+
+  int? _resolveChoiceSourceId(
+    ClassChoiceGroupData group,
+    ChoiceSourceType sourceType,
+  ) {
+    switch (sourceType) {
+      case ChoiceSourceType.race:
+        return group.sourceRaceId;
+      case ChoiceSourceType.subrace:
+        return group.sourceSubraceId;
+      case ChoiceSourceType.background:
+        return group.sourceBackgroundId;
+      case ChoiceSourceType.classData:
+        return group.sourceClassId;
+      case ChoiceSourceType.subclass:
+        return group.sourceSubclassId;
+      case ChoiceSourceType.classFeature:
+        return group.sourceFeatureId;
+      case ChoiceSourceType.subclassFeature:
+        return group.sourceSubclassFeatureId;
+    }
+  }
+
+  List<CharacterChoiceData> _buildGroupedChoices({
+    required Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    required List<ClassChoiceGroupView> groups,
+  }) {
+    final choices = <CharacterChoiceData>[];
+
+    for (final groupView in groups) {
+      final group = groupView.group;
+      if (group == null) continue;
+
+      final sourceType = _resolveChoiceSourceType(group);
+      final groupKey = _classChoiceGroupKey(group);
+      final selected = selectedOptions[groupKey] ?? const <ClassChoiceOptionData>[];
+      if (selected.isEmpty) continue;
+
+      for (var index = 0; index < selected.length; index++) {
+        final option = selected[index];
+        choices.add(
+          CharacterChoiceData(
+            sourceType: sourceType,
+            sourceId: _resolveChoiceSourceId(group, sourceType),
+            groupKey: groupKey,
+            optionKey: option.optionKey,
+            selectionIndex: index,
+            selectedText: option.name,
+          ),
+        );
+      }
+    }
+
+    return choices;
+  }
+
+  Set<String> _classChoiceGroupKeys(List<ClassChoiceGroupView> groups) {
+    return {
+      for (final groupView in groups)
+        if (groupView.group != null) _classChoiceGroupKey(groupView.group!),
+    };
+  }
+
+  String _classChoiceGroupKey(ClassChoiceGroupData group) {
+    return group.exclusiveKey?.trim().isNotEmpty == true
+        ? group.exclusiveKey!
+        : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
   }
 
   void reset() {

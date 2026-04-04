@@ -4,6 +4,8 @@ fields:
   selectedLevel: int?
   currentLevelFeatures: List<ClassFeatureData>?
   futureLevelFeatures: List<ClassFeatureData>?
+  currentSubclassFeatures: List<SubclassFeatureData>?
+  futureSubclassFeatures: List<SubclassFeatureData>?
   subclassChoice: ClassStepSubclassChoiceView?
   choiceGroups: List<ClassChoiceGroupView>?
   startingProficiencies: ProficiencyBundleView?

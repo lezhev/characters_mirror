@@ -16,6 +16,8 @@ import '../../../data/general/character/character_record.dart' as _i2;
 import '../../../data/general/character/character_class_entry_record.dart'
     as _i3;
 import '../../../enums/choice_source_type.dart' as _i4;
+import '../../../enums/ability.dart' as _i5;
+import '../../../enums/language.dart' as _i6;
 
 abstract class CharacterChoiceRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -29,8 +31,13 @@ abstract class CharacterChoiceRecord
     this.sourceId,
     this.groupKey,
     this.optionKey,
+    this.selectionIndex,
+    this.selectedAbility,
+    this.selectedLanguage,
+    this.selectedToolKey,
     this.selectedSpellKey,
     this.selectedItemKey,
+    this.selectedFeatId,
     this.selectedText,
     this.selectedCount,
   });
@@ -45,8 +52,13 @@ abstract class CharacterChoiceRecord
     int? sourceId,
     String? groupKey,
     String? optionKey,
+    int? selectionIndex,
+    _i5.Ability? selectedAbility,
+    _i6.Language? selectedLanguage,
+    String? selectedToolKey,
     String? selectedSpellKey,
     String? selectedItemKey,
+    int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
   }) = _CharacterChoiceRecordImpl;
@@ -72,8 +84,19 @@ abstract class CharacterChoiceRecord
       sourceId: jsonSerialization['sourceId'] as int?,
       groupKey: jsonSerialization['groupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
+      selectionIndex: jsonSerialization['selectionIndex'] as int?,
+      selectedAbility: jsonSerialization['selectedAbility'] == null
+          ? null
+          : _i5.Ability.fromJson(
+              (jsonSerialization['selectedAbility'] as String)),
+      selectedLanguage: jsonSerialization['selectedLanguage'] == null
+          ? null
+          : _i6.Language.fromJson(
+              (jsonSerialization['selectedLanguage'] as String)),
+      selectedToolKey: jsonSerialization['selectedToolKey'] as String?,
       selectedSpellKey: jsonSerialization['selectedSpellKey'] as String?,
       selectedItemKey: jsonSerialization['selectedItemKey'] as String?,
+      selectedFeatId: jsonSerialization['selectedFeatId'] as int?,
       selectedText: jsonSerialization['selectedText'] as String?,
       selectedCount: jsonSerialization['selectedCount'] as int?,
     );
@@ -102,9 +125,19 @@ abstract class CharacterChoiceRecord
 
   String? optionKey;
 
+  int? selectionIndex;
+
+  _i5.Ability? selectedAbility;
+
+  _i6.Language? selectedLanguage;
+
+  String? selectedToolKey;
+
   String? selectedSpellKey;
 
   String? selectedItemKey;
+
+  int? selectedFeatId;
 
   String? selectedText;
 
@@ -126,8 +159,13 @@ abstract class CharacterChoiceRecord
     int? sourceId,
     String? groupKey,
     String? optionKey,
+    int? selectionIndex,
+    _i5.Ability? selectedAbility,
+    _i6.Language? selectedLanguage,
+    String? selectedToolKey,
     String? selectedSpellKey,
     String? selectedItemKey,
+    int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
   });
@@ -143,8 +181,14 @@ abstract class CharacterChoiceRecord
       if (sourceId != null) 'sourceId': sourceId,
       if (groupKey != null) 'groupKey': groupKey,
       if (optionKey != null) 'optionKey': optionKey,
+      if (selectionIndex != null) 'selectionIndex': selectionIndex,
+      if (selectedAbility != null) 'selectedAbility': selectedAbility?.toJson(),
+      if (selectedLanguage != null)
+        'selectedLanguage': selectedLanguage?.toJson(),
+      if (selectedToolKey != null) 'selectedToolKey': selectedToolKey,
       if (selectedSpellKey != null) 'selectedSpellKey': selectedSpellKey,
       if (selectedItemKey != null) 'selectedItemKey': selectedItemKey,
+      if (selectedFeatId != null) 'selectedFeatId': selectedFeatId,
       if (selectedText != null) 'selectedText': selectedText,
       if (selectedCount != null) 'selectedCount': selectedCount,
     };
@@ -204,8 +248,13 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     int? sourceId,
     String? groupKey,
     String? optionKey,
+    int? selectionIndex,
+    _i5.Ability? selectedAbility,
+    _i6.Language? selectedLanguage,
+    String? selectedToolKey,
     String? selectedSpellKey,
     String? selectedItemKey,
+    int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
   }) : super._(
@@ -218,8 +267,13 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
           sourceId: sourceId,
           groupKey: groupKey,
           optionKey: optionKey,
+          selectionIndex: selectionIndex,
+          selectedAbility: selectedAbility,
+          selectedLanguage: selectedLanguage,
+          selectedToolKey: selectedToolKey,
           selectedSpellKey: selectedSpellKey,
           selectedItemKey: selectedItemKey,
+          selectedFeatId: selectedFeatId,
           selectedText: selectedText,
           selectedCount: selectedCount,
         );
@@ -238,8 +292,13 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     Object? sourceId = _Undefined,
     Object? groupKey = _Undefined,
     Object? optionKey = _Undefined,
+    Object? selectionIndex = _Undefined,
+    Object? selectedAbility = _Undefined,
+    Object? selectedLanguage = _Undefined,
+    Object? selectedToolKey = _Undefined,
     Object? selectedSpellKey = _Undefined,
     Object? selectedItemKey = _Undefined,
+    Object? selectedFeatId = _Undefined,
     Object? selectedText = _Undefined,
     Object? selectedCount = _Undefined,
   }) {
@@ -258,11 +317,23 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
       sourceId: sourceId is int? ? sourceId : this.sourceId,
       groupKey: groupKey is String? ? groupKey : this.groupKey,
       optionKey: optionKey is String? ? optionKey : this.optionKey,
+      selectionIndex:
+          selectionIndex is int? ? selectionIndex : this.selectionIndex,
+      selectedAbility: selectedAbility is _i5.Ability?
+          ? selectedAbility
+          : this.selectedAbility,
+      selectedLanguage: selectedLanguage is _i6.Language?
+          ? selectedLanguage
+          : this.selectedLanguage,
+      selectedToolKey:
+          selectedToolKey is String? ? selectedToolKey : this.selectedToolKey,
       selectedSpellKey: selectedSpellKey is String?
           ? selectedSpellKey
           : this.selectedSpellKey,
       selectedItemKey:
           selectedItemKey is String? ? selectedItemKey : this.selectedItemKey,
+      selectedFeatId:
+          selectedFeatId is int? ? selectedFeatId : this.selectedFeatId,
       selectedText: selectedText is String? ? selectedText : this.selectedText,
       selectedCount: selectedCount is int? ? selectedCount : this.selectedCount,
     );
@@ -297,12 +368,34 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
       'optionKey',
       this,
     );
+    selectionIndex = _i1.ColumnInt(
+      'selectionIndex',
+      this,
+    );
+    selectedAbility = _i1.ColumnEnum(
+      'selectedAbility',
+      this,
+      _i1.EnumSerialization.byName,
+    );
+    selectedLanguage = _i1.ColumnEnum(
+      'selectedLanguage',
+      this,
+      _i1.EnumSerialization.byName,
+    );
+    selectedToolKey = _i1.ColumnString(
+      'selectedToolKey',
+      this,
+    );
     selectedSpellKey = _i1.ColumnString(
       'selectedSpellKey',
       this,
     );
     selectedItemKey = _i1.ColumnString(
       'selectedItemKey',
+      this,
+    );
+    selectedFeatId = _i1.ColumnInt(
+      'selectedFeatId',
       this,
     );
     selectedText = _i1.ColumnString(
@@ -331,9 +424,19 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString optionKey;
 
+  late final _i1.ColumnInt selectionIndex;
+
+  late final _i1.ColumnEnum<_i5.Ability> selectedAbility;
+
+  late final _i1.ColumnEnum<_i6.Language> selectedLanguage;
+
+  late final _i1.ColumnString selectedToolKey;
+
   late final _i1.ColumnString selectedSpellKey;
 
   late final _i1.ColumnString selectedItemKey;
+
+  late final _i1.ColumnInt selectedFeatId;
 
   late final _i1.ColumnString selectedText;
 
@@ -374,8 +477,13 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
         sourceId,
         groupKey,
         optionKey,
+        selectionIndex,
+        selectedAbility,
+        selectedLanguage,
+        selectedToolKey,
         selectedSpellKey,
         selectedItemKey,
+        selectedFeatId,
         selectedText,
         selectedCount,
       ];

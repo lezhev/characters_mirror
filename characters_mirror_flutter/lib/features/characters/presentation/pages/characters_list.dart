@@ -37,6 +37,8 @@ class CharactersList extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
                 child: CharacterTileView(
                   onCreateCharacter: () => context.go('/create'),
+                  onPlaceholderCharacterTap: () =>
+                      context.go('/characters/sheet/1'),
                 ),
               ),
             ),

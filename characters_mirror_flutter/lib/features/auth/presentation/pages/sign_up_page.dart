@@ -21,6 +21,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   bool _isLoading = false;
   bool _showValidation = false;
+  bool _rememberMe = true;
   String? _feedbackMessage;
   bool _isError = false;
 
@@ -50,6 +51,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
           _userNameController.text.trim(),
           _emailController.text.trim(),
           _passwordController.text,
+          rememberMe: _rememberMe,
         );
 
     if (!mounted) {
@@ -172,6 +174,21 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   }
                   return null;
                 },
+              ),
+              CheckboxListTile(
+                value: _rememberMe,
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                title: const Text('Запомнить меня'),
+                onChanged: _isLoading
+                    ? null
+                    : (value) {
+                        if (value == null) {
+                          return;
+                        }
+
+                        setState(() => _rememberMe = value);
+                      },
               ),
               const SizedBox(height: 24),
               FilledButton(

@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/serverpod/remember_me_persistence.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,10 +14,17 @@ final serverpodClientProvider = Provider<Client>((ref) {
   return client;
 });
 
+final rememberMePersistenceControllerProvider =
+    Provider<RememberMePersistenceController>((ref) {
+  return rememberMePersistenceController;
+});
+
 final authServiceProvider = Provider<AuthService>((ref) {
   final service = ServerpodAuthService(
     client: ref.watch(serverpodClientProvider),
     sessionManager: ref.watch(sessionManagerProvider),
+    rememberMePersistenceController:
+        ref.watch(rememberMePersistenceControllerProvider),
   );
   ref.onDispose(service.dispose);
   return service;
@@ -79,12 +87,17 @@ abstract class AuthService extends ChangeNotifier {
   auth.UserInfo? get currentUser;
   bool get isSignedIn;
 
-  Future<AuthActionResult> signIn(String email, String password);
+  Future<AuthActionResult> signIn(
+    String email,
+    String password, {
+    required bool rememberMe,
+  });
   Future<AuthActionResult> register(
     String userName,
     String email,
-    String password,
-  );
+    String password, {
+    required bool rememberMe,
+  });
   Future<AuthActionResult> signOut();
 }
 
@@ -92,13 +105,16 @@ class ServerpodAuthService extends AuthService {
   ServerpodAuthService({
     required Client client,
     required SessionManager sessionManager,
+    required RememberMePersistenceController rememberMePersistenceController,
   })  : _client = client,
-        _sessionManager = sessionManager {
+        _sessionManager = sessionManager,
+        _rememberMePersistenceController = rememberMePersistenceController {
     _sessionManager.addListener(_relaySessionUpdates);
   }
 
   final Client _client;
   final SessionManager _sessionManager;
+  final RememberMePersistenceController _rememberMePersistenceController;
 
   @override
   auth.UserInfo? get currentUser => _sessionManager.signedInUser;
@@ -107,8 +123,13 @@ class ServerpodAuthService extends AuthService {
   bool get isSignedIn => _sessionManager.isSignedIn;
 
   @override
-  Future<AuthActionResult> signIn(String email, String password) async {
+  Future<AuthActionResult> signIn(
+    String email,
+    String password, {
+    required bool rememberMe,
+  }) async {
     try {
+      await _rememberMePersistenceController.setRememberMe(rememberMe);
       final response = await _client.modules.auth.email.authenticate(
         email.trim().toLowerCase(),
         password,
@@ -149,8 +170,9 @@ class ServerpodAuthService extends AuthService {
   Future<AuthActionResult> register(
     String userName,
     String email,
-    String password,
-  ) async {
+    String password, {
+    required bool rememberMe,
+  }) async {
     try {
       final result = await _client.appAuth.register(
         userName.trim(),
@@ -166,7 +188,11 @@ class ServerpodAuthService extends AuthService {
         );
       }
 
-      final signInResult = await signIn(email, password);
+      final signInResult = await signIn(
+        email,
+        password,
+        rememberMe: rememberMe,
+      );
       if (!signInResult.success) {
         return AuthActionResult(
           success: false,
@@ -234,8 +260,16 @@ class AuthController extends StateNotifier<AuthState> {
 
   final AuthService _service;
 
-  Future<AuthActionResult> signIn(String email, String password) async {
-    final result = await _service.signIn(email, password);
+  Future<AuthActionResult> signIn(
+    String email,
+    String password, {
+    required bool rememberMe,
+  }) async {
+    final result = await _service.signIn(
+      email,
+      password,
+      rememberMe: rememberMe,
+    );
     _syncFromService();
     return result;
   }
@@ -243,9 +277,15 @@ class AuthController extends StateNotifier<AuthState> {
   Future<AuthActionResult> register(
     String userName,
     String email,
-    String password,
-  ) async {
-    final result = await _service.register(userName, email, password);
+    String password, {
+    required bool rememberMe,
+  }) async {
+    final result = await _service.register(
+      userName,
+      email,
+      password,
+      rememberMe: rememberMe,
+    );
     _syncFromService();
     return result;
   }

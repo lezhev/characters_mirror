@@ -1,4 +1,11 @@
+import 'dart:async';
+
+import 'package:characters_mirror_client/characters_mirror_client.dart'
+    as protocol;
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
+import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/characters/characters.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_progression.dart';
@@ -19,6 +26,64 @@ void main() {
 
       expect(find.text('Вход'), findsOneWidget);
       expect(find.text('Создать аккаунт'), findsNothing);
+    });
+
+    testWidgets('sign in shows remember me enabled by default', (tester) async {
+      final service = FakeAuthService();
+
+      await tester.pumpWidget(_TestRouterApp(service: service));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Запомнить меня'), findsOneWidget);
+      expect(
+        tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
+        isTrue,
+      );
+    });
+
+    testWidgets('sign in passes remember me choice', (tester) async {
+      final service = FakeAuthService();
+
+      await tester.pumpWidget(_TestRouterApp(service: service));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'user@example.com',
+      );
+      await tester.enterText(
+        find.byType(TextFormField).at(1),
+        'password123',
+      );
+      await tester.tap(find.text('Запомнить меня'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Войти'));
+      await tester.pumpAndSettle();
+
+      expect(service.lastSignInRememberMe, isFalse);
+      expect(find.text('Список персонажей'), findsOneWidget);
+    });
+
+    testWidgets('sign up shows remember me enabled by default', (tester) async {
+      final service = FakeAuthService();
+      final container = ProviderContainer(
+        overrides: [authServiceProvider.overrideWithValue(service)],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      final router = container.read(routerProvider);
+      router.go('/sign-up');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Запомнить меня'), findsOneWidget);
+      expect(
+        tester.widget<CheckboxListTile>(find.byType(CheckboxListTile)).value,
+        isTrue,
+      );
     });
 
     testWidgets('sign up validates username and password confirmation',
@@ -55,6 +120,47 @@ void main() {
       expect(find.text('Введите имя пользователя.'), findsOneWidget);
       expect(find.text('Пароли не совпадают.'), findsOneWidget);
       expect(service.registerCallCount, 0);
+    });
+
+    testWidgets('sign up passes remember me choice', (tester) async {
+      final service = FakeAuthService();
+      final container = ProviderContainer(
+        overrides: [authServiceProvider.overrideWithValue(service)],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      final router = container.read(routerProvider);
+      router.go('/sign-up');
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'Melifaro',
+      );
+      await tester.enterText(
+        find.byType(TextFormField).at(1),
+        'user@example.com',
+      );
+      await tester.enterText(
+        find.byType(TextFormField).at(2),
+        'password123',
+      );
+      await tester.enterText(
+        find.byType(TextFormField).at(3),
+        'password123',
+      );
+      await tester.tap(find.text('Запомнить меня'));
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Создать аккаунт'));
+      await tester.tap(find.text('Создать аккаунт'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(service.lastRegisterRememberMe, isFalse);
+      expect(find.text('Список персонажей'), findsOneWidget);
     });
 
     testWidgets('logout returns user to sign in screen', (tester) async {
@@ -134,6 +240,234 @@ void main() {
       expect(activeCircle.height, greaterThan(inactiveCircle.height));
     });
   });
+
+  group('Character sheet draft flow', () {
+    testWidgets('finish on summary saves character and opens sheet page',
+        (tester) async {
+      final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
+      final repository = FakeCharacterRepository(
+        onSave: (character) async => character.copyWith(id: 42),
+        initialCharacters: {
+          42: protocol.CharacterData(
+            id: 42,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authServiceProvider.overrideWithValue(service),
+          characterRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      container.read(characterCreationProvider.notifier).setName(
+            'Тестовый герой',
+          );
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      final router = container.read(routerProvider);
+      router.go('/create/summary');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Сводка персонажа'), findsOneWidget);
+
+      await tester.ensureVisible(find.text('Завершить'));
+      await tester.tap(find.text('Завершить'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(repository.saveCallCount, 1);
+      expect(find.text('Лист персонажа'), findsOneWidget);
+      expect(
+        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('finish action cannot trigger duplicate save requests',
+        (tester) async {
+      final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
+      final saveCompleter = Completer<protocol.CharacterData>();
+      final repository = FakeCharacterRepository(
+        onSave: (_) => saveCompleter.future,
+        initialCharacters: {
+          42: protocol.CharacterData(
+            id: 42,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authServiceProvider.overrideWithValue(service),
+          characterRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      container.read(characterCreationProvider.notifier).setName(
+            'Тестовый герой',
+          );
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      final router = container.read(routerProvider);
+      router.go('/create/summary');
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Завершить'));
+      await tester.tap(find.text('Завершить'), warnIfMissed: false);
+      await tester.tap(find.text('Завершить'), warnIfMissed: false);
+      await tester.pump();
+
+      expect(repository.saveCallCount, 1);
+      expect(find.text('Сводка персонажа'), findsOneWidget);
+
+      saveCompleter.complete(
+        protocol.CharacterData(
+          id: 42,
+          name: 'Тестовый герой',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Лист персонажа'), findsOneWidget);
+      expect(
+        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('save failure keeps user on summary and shows snackbar',
+        (tester) async {
+      final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
+      final repository = FakeCharacterRepository(
+        onSave: (_) async => throw Exception('Failed to fetch'),
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authServiceProvider.overrideWithValue(service),
+          characterRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      container.read(characterCreationProvider.notifier).setName(
+            'Тестовый герой',
+          );
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      final router = container.read(routerProvider);
+      router.go('/create/summary');
+      await tester.pumpAndSettle();
+
+      await tester.ensureVisible(find.text('Завершить'));
+      await tester.tap(find.text('Завершить'), warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Сводка персонажа'), findsOneWidget);
+      expect(
+        find.text('Не удалось подключиться к серверу. Проверьте соединение.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('sheet page loads character by id', (tester) async {
+      final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
+      final repository = FakeCharacterRepository(
+        initialCharacters: {
+          42: protocol.CharacterData(
+            id: 42,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authServiceProvider.overrideWithValue(service),
+          characterRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      final router = container.read(routerProvider);
+      router.go('/characters/sheet/42');
+      await tester.pumpAndSettle();
+
+      expect(repository.getCharacterCallCount, 1);
+      expect(find.text('Лист персонажа'), findsOneWidget);
+      expect(
+        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('invalid sheet id shows fallback page', (tester) async {
+      final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
+      final repository = FakeCharacterRepository();
+      final container = ProviderContainer(
+        overrides: [
+          authServiceProvider.overrideWithValue(service),
+          characterRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      final router = container.read(routerProvider);
+      router.go('/characters/sheet/bad-id');
+      await tester.pumpAndSettle();
+
+      expect(
+          find.text('Некорректный идентификатор персонажа.'), findsOneWidget);
+    });
+
+    testWidgets('placeholder tile opens character sheet for id 1',
+        (tester) async {
+      final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
+      final repository = FakeCharacterRepository(
+        initialCharacters: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authServiceProvider.overrideWithValue(service),
+          characterRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+      _setLargeSurface(tester);
+
+      await _pumpRouterAppWithContainer(tester, container);
+
+      expect(find.text('Список персонажей'), findsOneWidget);
+
+      await tester.tap(find.text('Character Name').first);
+      await tester.pumpAndSettle();
+
+      expect(repository.getCharacterCallCount, 1);
+      expect(find.text('Лист персонажа'), findsOneWidget);
+      expect(
+        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
+        findsOneWidget,
+      );
+    });
+  });
 }
 
 class _TestRouterApp extends StatelessWidget {
@@ -148,6 +482,19 @@ class _TestRouterApp extends StatelessWidget {
       child: const _RouterHost(),
     );
   }
+}
+
+Future<void> _pumpRouterAppWithContainer(
+  WidgetTester tester,
+  ProviderContainer container,
+) async {
+  await tester.pumpWidget(
+    UncontrolledProviderScope(
+      container: container,
+      child: const _RouterHost(),
+    ),
+  );
+  await tester.pumpAndSettle();
 }
 
 void _setLargeSurface(WidgetTester tester) {
@@ -185,7 +532,10 @@ class FakeAuthService extends AuthService {
 
   auth.UserInfo? _user;
   int registerCallCount = 0;
+  int signInCallCount = 0;
   int signOutCallCount = 0;
+  bool? lastRegisterRememberMe;
+  bool? lastSignInRememberMe;
 
   @override
   auth.UserInfo? get currentUser => _user;
@@ -197,9 +547,11 @@ class FakeAuthService extends AuthService {
   Future<AuthActionResult> register(
     String userName,
     String email,
-    String password,
-  ) async {
+    String password, {
+    required bool rememberMe,
+  }) async {
     registerCallCount += 1;
+    lastRegisterRememberMe = rememberMe;
     _user = _user ??
         auth.UserInfo(
           userIdentifier: email,
@@ -218,7 +570,13 @@ class FakeAuthService extends AuthService {
   }
 
   @override
-  Future<AuthActionResult> signIn(String email, String password) async {
+  Future<AuthActionResult> signIn(
+    String email,
+    String password, {
+    required bool rememberMe,
+  }) async {
+    signInCallCount += 1;
+    lastSignInRememberMe = rememberMe;
     _user = auth.UserInfo(
       userIdentifier: email,
       userName: 'Hero',
@@ -245,6 +603,79 @@ class FakeAuthService extends AuthService {
       code: 'ok',
       message: 'Вы вышли из аккаунта.',
     );
+  }
+}
+
+class FakeCharacterRepository extends CharacterRepository {
+  FakeCharacterRepository({
+    Map<int, protocol.CharacterData>? initialCharacters,
+    this.onSave,
+    this.onGetCharacter,
+  }) : _charactersById = Map<int, protocol.CharacterData>.from(
+          initialCharacters ?? const {},
+        );
+
+  final Map<int, protocol.CharacterData> _charactersById;
+  final Future<protocol.CharacterData> Function(
+      protocol.CharacterData character)? onSave;
+  final Future<protocol.CharacterData> Function(int id)? onGetCharacter;
+  int saveCallCount = 0;
+  int getCharacterCallCount = 0;
+  int _nextId = 100;
+
+  @override
+  Future<List<protocol.CharacterData>> getAll() async {
+    return _charactersById.values.toList();
+  }
+
+  @override
+  Future<protocol.CharacterData?> getById(int id) async {
+    return _charactersById[id];
+  }
+
+  @override
+  Future<protocol.CharacterData> saveCharacter(
+    protocol.CharacterData character,
+  ) async {
+    saveCallCount += 1;
+
+    if (onSave != null) {
+      final saved = await onSave!(character);
+      if (saved.id != null) {
+        _charactersById[saved.id!] = saved;
+      }
+      return saved;
+    }
+
+    final id = character.id ?? _nextId++;
+    final saved = character.copyWith(id: id);
+    _charactersById[id] = saved;
+    return saved;
+  }
+
+  @override
+  Future<protocol.CharacterData> getCharacter(int characterId) async {
+    getCharacterCallCount += 1;
+
+    if (onGetCharacter != null) {
+      return onGetCharacter!(characterId);
+    }
+
+    final character = _charactersById[characterId];
+    if (character == null) {
+      throw Exception('Character not found');
+    }
+    return character;
+  }
+
+  @override
+  Future<protocol.CharacterData> upsert(protocol.CharacterData entity) {
+    return saveCharacter(entity);
+  }
+
+  @override
+  Future<void> delete(int id) async {
+    _charactersById.remove(id);
   }
 }
 

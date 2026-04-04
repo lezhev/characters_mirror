@@ -27,7 +27,9 @@ fields:
   subrace: SubraceData?, relation(optional)
   background: BackgroundData?, relation(optional)
   baseAbilityScores: Map<String, int>?
+  useFlexibleAbilityBonuses: bool?
   temporaryHp: int?
   currentHp: int?
   inspiration: bool?
   notes: String?
+  attacks: List<CharacterAttackData>?

@@ -15,10 +15,11 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
 import '../../../data/general/class/subclass_data.dart' as _i3;
 import '../../../data/general/class/class_feature_data.dart' as _i4;
-import '../../../data/general/race/race_data.dart' as _i5;
-import '../../../data/general/race/subrace_data.dart' as _i6;
-import '../../../data/background_data.dart' as _i7;
-import '../../../enums/class_choice_type.dart' as _i8;
+import '../../../data/general/class/subclass_feature_data.dart' as _i5;
+import '../../../data/general/race/race_data.dart' as _i6;
+import '../../../data/general/race/subrace_data.dart' as _i7;
+import '../../../data/background_data.dart' as _i8;
+import '../../../enums/class_choice_type.dart' as _i9;
 
 abstract class ClassChoiceGroupData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -32,6 +33,8 @@ abstract class ClassChoiceGroupData
     this.sourceSubclass,
     this.sourceFeatureId,
     this.sourceFeature,
+    this.sourceSubclassFeatureId,
+    this.sourceSubclassFeature,
     this.sourceRaceId,
     this.sourceRace,
     this.sourceSubraceId,
@@ -60,14 +63,16 @@ abstract class ClassChoiceGroupData
     _i3.SubclassData? sourceSubclass,
     int? sourceFeatureId,
     _i4.ClassFeatureData? sourceFeature,
+    int? sourceSubclassFeatureId,
+    _i5.SubclassFeatureData? sourceSubclassFeature,
     int? sourceRaceId,
-    _i5.RaceData? sourceRace,
+    _i6.RaceData? sourceRace,
     int? sourceSubraceId,
-    _i6.SubraceData? sourceSubrace,
+    _i7.SubraceData? sourceSubrace,
     int? sourceBackgroundId,
-    _i7.BackgroundData? sourceBackground,
+    _i8.BackgroundData? sourceBackground,
     int? level,
-    _i8.ClassChoiceType? type,
+    _i9.ClassChoiceType? type,
     int? selectionCount,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
@@ -99,25 +104,32 @@ abstract class ClassChoiceGroupData
           ? null
           : _i4.ClassFeatureData.fromJson(
               (jsonSerialization['sourceFeature'] as Map<String, dynamic>)),
+      sourceSubclassFeatureId:
+          jsonSerialization['sourceSubclassFeatureId'] as int?,
+      sourceSubclassFeature: jsonSerialization['sourceSubclassFeature'] == null
+          ? null
+          : _i5.SubclassFeatureData.fromJson(
+              (jsonSerialization['sourceSubclassFeature']
+                  as Map<String, dynamic>)),
       sourceRaceId: jsonSerialization['sourceRaceId'] as int?,
       sourceRace: jsonSerialization['sourceRace'] == null
           ? null
-          : _i5.RaceData.fromJson(
+          : _i6.RaceData.fromJson(
               (jsonSerialization['sourceRace'] as Map<String, dynamic>)),
       sourceSubraceId: jsonSerialization['sourceSubraceId'] as int?,
       sourceSubrace: jsonSerialization['sourceSubrace'] == null
           ? null
-          : _i6.SubraceData.fromJson(
+          : _i7.SubraceData.fromJson(
               (jsonSerialization['sourceSubrace'] as Map<String, dynamic>)),
       sourceBackgroundId: jsonSerialization['sourceBackgroundId'] as int?,
       sourceBackground: jsonSerialization['sourceBackground'] == null
           ? null
-          : _i7.BackgroundData.fromJson(
+          : _i8.BackgroundData.fromJson(
               (jsonSerialization['sourceBackground'] as Map<String, dynamic>)),
       level: jsonSerialization['level'] as int?,
       type: jsonSerialization['type'] == null
           ? null
-          : _i8.ClassChoiceType.fromJson((jsonSerialization['type'] as String)),
+          : _i9.ClassChoiceType.fromJson((jsonSerialization['type'] as String)),
       selectionCount: jsonSerialization['selectionCount'] as int?,
       appliesAtCharacterLevel:
           jsonSerialization['appliesAtCharacterLevel'] as bool?,
@@ -157,21 +169,25 @@ abstract class ClassChoiceGroupData
 
   _i4.ClassFeatureData? sourceFeature;
 
+  int? sourceSubclassFeatureId;
+
+  _i5.SubclassFeatureData? sourceSubclassFeature;
+
   int? sourceRaceId;
 
-  _i5.RaceData? sourceRace;
+  _i6.RaceData? sourceRace;
 
   int? sourceSubraceId;
 
-  _i6.SubraceData? sourceSubrace;
+  _i7.SubraceData? sourceSubrace;
 
   int? sourceBackgroundId;
 
-  _i7.BackgroundData? sourceBackground;
+  _i8.BackgroundData? sourceBackground;
 
   int? level;
 
-  _i8.ClassChoiceType? type;
+  _i9.ClassChoiceType? type;
 
   int? selectionCount;
 
@@ -205,14 +221,16 @@ abstract class ClassChoiceGroupData
     _i3.SubclassData? sourceSubclass,
     int? sourceFeatureId,
     _i4.ClassFeatureData? sourceFeature,
+    int? sourceSubclassFeatureId,
+    _i5.SubclassFeatureData? sourceSubclassFeature,
     int? sourceRaceId,
-    _i5.RaceData? sourceRace,
+    _i6.RaceData? sourceRace,
     int? sourceSubraceId,
-    _i6.SubraceData? sourceSubrace,
+    _i7.SubraceData? sourceSubrace,
     int? sourceBackgroundId,
-    _i7.BackgroundData? sourceBackground,
+    _i8.BackgroundData? sourceBackground,
     int? level,
-    _i8.ClassChoiceType? type,
+    _i9.ClassChoiceType? type,
     int? selectionCount,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
@@ -234,6 +252,10 @@ abstract class ClassChoiceGroupData
       if (sourceSubclass != null) 'sourceSubclass': sourceSubclass?.toJson(),
       if (sourceFeatureId != null) 'sourceFeatureId': sourceFeatureId,
       if (sourceFeature != null) 'sourceFeature': sourceFeature?.toJson(),
+      if (sourceSubclassFeatureId != null)
+        'sourceSubclassFeatureId': sourceSubclassFeatureId,
+      if (sourceSubclassFeature != null)
+        'sourceSubclassFeature': sourceSubclassFeature?.toJson(),
       if (sourceRaceId != null) 'sourceRaceId': sourceRaceId,
       if (sourceRace != null) 'sourceRace': sourceRace?.toJson(),
       if (sourceSubraceId != null) 'sourceSubraceId': sourceSubraceId,
@@ -269,6 +291,10 @@ abstract class ClassChoiceGroupData
       if (sourceFeatureId != null) 'sourceFeatureId': sourceFeatureId,
       if (sourceFeature != null)
         'sourceFeature': sourceFeature?.toJsonForProtocol(),
+      if (sourceSubclassFeatureId != null)
+        'sourceSubclassFeatureId': sourceSubclassFeatureId,
+      if (sourceSubclassFeature != null)
+        'sourceSubclassFeature': sourceSubclassFeature?.toJsonForProtocol(),
       if (sourceRaceId != null) 'sourceRaceId': sourceRaceId,
       if (sourceRace != null) 'sourceRace': sourceRace?.toJsonForProtocol(),
       if (sourceSubraceId != null) 'sourceSubraceId': sourceSubraceId,
@@ -295,14 +321,16 @@ abstract class ClassChoiceGroupData
     _i2.ClassDataInclude? sourceClass,
     _i3.SubclassDataInclude? sourceSubclass,
     _i4.ClassFeatureDataInclude? sourceFeature,
-    _i5.RaceDataInclude? sourceRace,
-    _i6.SubraceDataInclude? sourceSubrace,
-    _i7.BackgroundDataInclude? sourceBackground,
+    _i5.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _i6.RaceDataInclude? sourceRace,
+    _i7.SubraceDataInclude? sourceSubrace,
+    _i8.BackgroundDataInclude? sourceBackground,
   }) {
     return ClassChoiceGroupDataInclude._(
       sourceClass: sourceClass,
       sourceSubclass: sourceSubclass,
       sourceFeature: sourceFeature,
+      sourceSubclassFeature: sourceSubclassFeature,
       sourceRace: sourceRace,
       sourceSubrace: sourceSubrace,
       sourceBackground: sourceBackground,
@@ -348,14 +376,16 @@ class _ClassChoiceGroupDataImpl extends ClassChoiceGroupData {
     _i3.SubclassData? sourceSubclass,
     int? sourceFeatureId,
     _i4.ClassFeatureData? sourceFeature,
+    int? sourceSubclassFeatureId,
+    _i5.SubclassFeatureData? sourceSubclassFeature,
     int? sourceRaceId,
-    _i5.RaceData? sourceRace,
+    _i6.RaceData? sourceRace,
     int? sourceSubraceId,
-    _i6.SubraceData? sourceSubrace,
+    _i7.SubraceData? sourceSubrace,
     int? sourceBackgroundId,
-    _i7.BackgroundData? sourceBackground,
+    _i8.BackgroundData? sourceBackground,
     int? level,
-    _i8.ClassChoiceType? type,
+    _i9.ClassChoiceType? type,
     int? selectionCount,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
@@ -374,6 +404,8 @@ class _ClassChoiceGroupDataImpl extends ClassChoiceGroupData {
           sourceSubclass: sourceSubclass,
           sourceFeatureId: sourceFeatureId,
           sourceFeature: sourceFeature,
+          sourceSubclassFeatureId: sourceSubclassFeatureId,
+          sourceSubclassFeature: sourceSubclassFeature,
           sourceRaceId: sourceRaceId,
           sourceRace: sourceRace,
           sourceSubraceId: sourceSubraceId,
@@ -406,6 +438,8 @@ class _ClassChoiceGroupDataImpl extends ClassChoiceGroupData {
     Object? sourceSubclass = _Undefined,
     Object? sourceFeatureId = _Undefined,
     Object? sourceFeature = _Undefined,
+    Object? sourceSubclassFeatureId = _Undefined,
+    Object? sourceSubclassFeature = _Undefined,
     Object? sourceRaceId = _Undefined,
     Object? sourceRace = _Undefined,
     Object? sourceSubraceId = _Undefined,
@@ -441,23 +475,29 @@ class _ClassChoiceGroupDataImpl extends ClassChoiceGroupData {
       sourceFeature: sourceFeature is _i4.ClassFeatureData?
           ? sourceFeature
           : this.sourceFeature?.copyWith(),
+      sourceSubclassFeatureId: sourceSubclassFeatureId is int?
+          ? sourceSubclassFeatureId
+          : this.sourceSubclassFeatureId,
+      sourceSubclassFeature: sourceSubclassFeature is _i5.SubclassFeatureData?
+          ? sourceSubclassFeature
+          : this.sourceSubclassFeature?.copyWith(),
       sourceRaceId: sourceRaceId is int? ? sourceRaceId : this.sourceRaceId,
-      sourceRace: sourceRace is _i5.RaceData?
+      sourceRace: sourceRace is _i6.RaceData?
           ? sourceRace
           : this.sourceRace?.copyWith(),
       sourceSubraceId:
           sourceSubraceId is int? ? sourceSubraceId : this.sourceSubraceId,
-      sourceSubrace: sourceSubrace is _i6.SubraceData?
+      sourceSubrace: sourceSubrace is _i7.SubraceData?
           ? sourceSubrace
           : this.sourceSubrace?.copyWith(),
       sourceBackgroundId: sourceBackgroundId is int?
           ? sourceBackgroundId
           : this.sourceBackgroundId,
-      sourceBackground: sourceBackground is _i7.BackgroundData?
+      sourceBackground: sourceBackground is _i8.BackgroundData?
           ? sourceBackground
           : this.sourceBackground?.copyWith(),
       level: level is int? ? level : this.level,
-      type: type is _i8.ClassChoiceType? ? type : this.type,
+      type: type is _i9.ClassChoiceType? ? type : this.type,
       selectionCount:
           selectionCount is int? ? selectionCount : this.selectionCount,
       appliesAtCharacterLevel: appliesAtCharacterLevel is bool?
@@ -495,6 +535,10 @@ class ClassChoiceGroupDataTable extends _i1.Table<int?> {
     );
     sourceFeatureId = _i1.ColumnInt(
       'sourceFeatureId',
+      this,
+    );
+    sourceSubclassFeatureId = _i1.ColumnInt(
+      'sourceSubclassFeatureId',
       this,
     );
     sourceRaceId = _i1.ColumnInt(
@@ -568,21 +612,25 @@ class ClassChoiceGroupDataTable extends _i1.Table<int?> {
 
   _i4.ClassFeatureDataTable? _sourceFeature;
 
+  late final _i1.ColumnInt sourceSubclassFeatureId;
+
+  _i5.SubclassFeatureDataTable? _sourceSubclassFeature;
+
   late final _i1.ColumnInt sourceRaceId;
 
-  _i5.RaceDataTable? _sourceRace;
+  _i6.RaceDataTable? _sourceRace;
 
   late final _i1.ColumnInt sourceSubraceId;
 
-  _i6.SubraceDataTable? _sourceSubrace;
+  _i7.SubraceDataTable? _sourceSubrace;
 
   late final _i1.ColumnInt sourceBackgroundId;
 
-  _i7.BackgroundDataTable? _sourceBackground;
+  _i8.BackgroundDataTable? _sourceBackground;
 
   late final _i1.ColumnInt level;
 
-  late final _i1.ColumnEnum<_i8.ClassChoiceType> type;
+  late final _i1.ColumnEnum<_i9.ClassChoiceType> type;
 
   late final _i1.ColumnInt selectionCount;
 
@@ -639,41 +687,54 @@ class ClassChoiceGroupDataTable extends _i1.Table<int?> {
     return _sourceFeature!;
   }
 
-  _i5.RaceDataTable get sourceRace {
+  _i5.SubclassFeatureDataTable get sourceSubclassFeature {
+    if (_sourceSubclassFeature != null) return _sourceSubclassFeature!;
+    _sourceSubclassFeature = _i1.createRelationTable(
+      relationFieldName: 'sourceSubclassFeature',
+      field: ClassChoiceGroupData.t.sourceSubclassFeatureId,
+      foreignField: _i5.SubclassFeatureData.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i5.SubclassFeatureDataTable(tableRelation: foreignTableRelation),
+    );
+    return _sourceSubclassFeature!;
+  }
+
+  _i6.RaceDataTable get sourceRace {
     if (_sourceRace != null) return _sourceRace!;
     _sourceRace = _i1.createRelationTable(
       relationFieldName: 'sourceRace',
       field: ClassChoiceGroupData.t.sourceRaceId,
-      foreignField: _i5.RaceData.t.id,
+      foreignField: _i6.RaceData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i5.RaceDataTable(tableRelation: foreignTableRelation),
+          _i6.RaceDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceRace!;
   }
 
-  _i6.SubraceDataTable get sourceSubrace {
+  _i7.SubraceDataTable get sourceSubrace {
     if (_sourceSubrace != null) return _sourceSubrace!;
     _sourceSubrace = _i1.createRelationTable(
       relationFieldName: 'sourceSubrace',
       field: ClassChoiceGroupData.t.sourceSubraceId,
-      foreignField: _i6.SubraceData.t.id,
+      foreignField: _i7.SubraceData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i6.SubraceDataTable(tableRelation: foreignTableRelation),
+          _i7.SubraceDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceSubrace!;
   }
 
-  _i7.BackgroundDataTable get sourceBackground {
+  _i8.BackgroundDataTable get sourceBackground {
     if (_sourceBackground != null) return _sourceBackground!;
     _sourceBackground = _i1.createRelationTable(
       relationFieldName: 'sourceBackground',
       field: ClassChoiceGroupData.t.sourceBackgroundId,
-      foreignField: _i7.BackgroundData.t.id,
+      foreignField: _i8.BackgroundData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i7.BackgroundDataTable(tableRelation: foreignTableRelation),
+          _i8.BackgroundDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceBackground!;
   }
@@ -686,6 +747,7 @@ class ClassChoiceGroupDataTable extends _i1.Table<int?> {
         sourceClassId,
         sourceSubclassId,
         sourceFeatureId,
+        sourceSubclassFeatureId,
         sourceRaceId,
         sourceSubraceId,
         sourceBackgroundId,
@@ -712,6 +774,9 @@ class ClassChoiceGroupDataTable extends _i1.Table<int?> {
     if (relationField == 'sourceFeature') {
       return sourceFeature;
     }
+    if (relationField == 'sourceSubclassFeature') {
+      return sourceSubclassFeature;
+    }
     if (relationField == 'sourceRace') {
       return sourceRace;
     }
@@ -730,13 +795,15 @@ class ClassChoiceGroupDataInclude extends _i1.IncludeObject {
     _i2.ClassDataInclude? sourceClass,
     _i3.SubclassDataInclude? sourceSubclass,
     _i4.ClassFeatureDataInclude? sourceFeature,
-    _i5.RaceDataInclude? sourceRace,
-    _i6.SubraceDataInclude? sourceSubrace,
-    _i7.BackgroundDataInclude? sourceBackground,
+    _i5.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _i6.RaceDataInclude? sourceRace,
+    _i7.SubraceDataInclude? sourceSubrace,
+    _i8.BackgroundDataInclude? sourceBackground,
   }) {
     _sourceClass = sourceClass;
     _sourceSubclass = sourceSubclass;
     _sourceFeature = sourceFeature;
+    _sourceSubclassFeature = sourceSubclassFeature;
     _sourceRace = sourceRace;
     _sourceSubrace = sourceSubrace;
     _sourceBackground = sourceBackground;
@@ -748,17 +815,20 @@ class ClassChoiceGroupDataInclude extends _i1.IncludeObject {
 
   _i4.ClassFeatureDataInclude? _sourceFeature;
 
-  _i5.RaceDataInclude? _sourceRace;
+  _i5.SubclassFeatureDataInclude? _sourceSubclassFeature;
 
-  _i6.SubraceDataInclude? _sourceSubrace;
+  _i6.RaceDataInclude? _sourceRace;
 
-  _i7.BackgroundDataInclude? _sourceBackground;
+  _i7.SubraceDataInclude? _sourceSubrace;
+
+  _i8.BackgroundDataInclude? _sourceBackground;
 
   @override
   Map<String, _i1.Include?> get includes => {
         'sourceClass': _sourceClass,
         'sourceSubclass': _sourceSubclass,
         'sourceFeature': _sourceFeature,
+        'sourceSubclassFeature': _sourceSubclassFeature,
         'sourceRace': _sourceRace,
         'sourceSubrace': _sourceSubrace,
         'sourceBackground': _sourceBackground,
@@ -1086,12 +1156,36 @@ class ClassChoiceGroupDataAttachRowRepository {
     );
   }
 
+  /// Creates a relation between the given [ClassChoiceGroupData] and [SubclassFeatureData]
+  /// by setting the [ClassChoiceGroupData]'s foreign key `sourceSubclassFeatureId` to refer to the [SubclassFeatureData].
+  Future<void> sourceSubclassFeature(
+    _i1.Session session,
+    ClassChoiceGroupData classChoiceGroupData,
+    _i5.SubclassFeatureData sourceSubclassFeature, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classChoiceGroupData.id == null) {
+      throw ArgumentError.notNull('classChoiceGroupData.id');
+    }
+    if (sourceSubclassFeature.id == null) {
+      throw ArgumentError.notNull('sourceSubclassFeature.id');
+    }
+
+    var $classChoiceGroupData = classChoiceGroupData.copyWith(
+        sourceSubclassFeatureId: sourceSubclassFeature.id);
+    await session.db.updateRow<ClassChoiceGroupData>(
+      $classChoiceGroupData,
+      columns: [ClassChoiceGroupData.t.sourceSubclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between the given [ClassChoiceGroupData] and [RaceData]
   /// by setting the [ClassChoiceGroupData]'s foreign key `sourceRaceId` to refer to the [RaceData].
   Future<void> sourceRace(
     _i1.Session session,
     ClassChoiceGroupData classChoiceGroupData,
-    _i5.RaceData sourceRace, {
+    _i6.RaceData sourceRace, {
     _i1.Transaction? transaction,
   }) async {
     if (classChoiceGroupData.id == null) {
@@ -1115,7 +1209,7 @@ class ClassChoiceGroupDataAttachRowRepository {
   Future<void> sourceSubrace(
     _i1.Session session,
     ClassChoiceGroupData classChoiceGroupData,
-    _i6.SubraceData sourceSubrace, {
+    _i7.SubraceData sourceSubrace, {
     _i1.Transaction? transaction,
   }) async {
     if (classChoiceGroupData.id == null) {
@@ -1139,7 +1233,7 @@ class ClassChoiceGroupDataAttachRowRepository {
   Future<void> sourceBackground(
     _i1.Session session,
     ClassChoiceGroupData classChoiceGroupData,
-    _i7.BackgroundData sourceBackground, {
+    _i8.BackgroundData sourceBackground, {
     _i1.Transaction? transaction,
   }) async {
     if (classChoiceGroupData.id == null) {
@@ -1227,6 +1321,29 @@ class ClassChoiceGroupDataDetachRowRepository {
     await session.db.updateRow<ClassChoiceGroupData>(
       $classchoicegroupdata,
       columns: [ClassChoiceGroupData.t.sourceFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [ClassChoiceGroupData] and the [SubclassFeatureData] set in `sourceSubclassFeature`
+  /// by setting the [ClassChoiceGroupData]'s foreign key `sourceSubclassFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> sourceSubclassFeature(
+    _i1.Session session,
+    ClassChoiceGroupData classchoicegroupdata, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classchoicegroupdata.id == null) {
+      throw ArgumentError.notNull('classchoicegroupdata.id');
+    }
+
+    var $classchoicegroupdata =
+        classchoicegroupdata.copyWith(sourceSubclassFeatureId: null);
+    await session.db.updateRow<ClassChoiceGroupData>(
+      $classchoicegroupdata,
+      columns: [ClassChoiceGroupData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }

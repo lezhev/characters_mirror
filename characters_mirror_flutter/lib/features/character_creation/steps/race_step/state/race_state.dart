@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/features/character_creation/data/reference_repositories.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,7 +29,9 @@ class RaceState extends _$RaceState {
 
   @override
   FutureOr<RaceStateModel> build() async {
-    final races = await RaceRepository().getAll().timeout(_requestTimeout);
+    final races = await ref.watch(raceRepositoryProvider)
+        .getAll()
+        .timeout(_requestTimeout);
     races.sort(_compareRaces);
 
     final baseState = RaceStateModel(allRaces: races);
@@ -190,15 +192,22 @@ class RaceState extends _$RaceState {
         final selectedOptions =
             current.selectedChoiceOptionsByGroup[groupKey] ??
                 const <RaceChoiceOptionData>[];
-        for (final option in selectedOptions) {
+        for (var index = 0; index < selectedOptions.length; index++) {
+          final option = selectedOptions[index];
           result.add(
             CharacterChoiceData(
               sourceType: sourceType,
               sourceId: sourceId,
               groupKey: groupKey,
               optionKey: option.optionKey,
+              selectionIndex: index,
+              selectedAbility: option.ability,
+              selectedLanguage: option.language,
+              selectedToolKey: option.toolKey,
               selectedText: _choiceOptionLabel(option),
               selectedSpellKey: option.spell?.name,
+              selectedFeatId: option.featId,
+              selectedCount: option.bonusValue,
             ),
           );
         }
@@ -226,8 +235,10 @@ class RaceState extends _$RaceState {
       );
     }
 
-    final stepView =
-        await RaceRepository().getStepView(raceId).timeout(_requestTimeout);
+    final stepView = await ref
+        .read(raceRepositoryProvider)
+        .getStepView(raceId)
+        .timeout(_requestTimeout);
     final resolvedRace = _normalizedRace(stepView.race ?? race);
     final resolvedSubraces = [...?stepView.subraces]
         .map(_normalizedSubrace)

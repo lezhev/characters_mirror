@@ -115,7 +115,7 @@ class RaceTile extends HookConsumerWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: SvgPicture.asset(
-                                  'svg/races/${race.imageURL}.svg',
+                                  'assets/svg/races/${race.imageURL}.svg', // ${race.imageURL}
                                   colorFilter: ColorFilter.mode(
                                     colorScheme.surfaceContainerLowest,
                                     BlendMode.srcIn,

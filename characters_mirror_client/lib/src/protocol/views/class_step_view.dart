@@ -12,10 +12,11 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../data/general/class/class_data.dart' as _i2;
 import '../data/general/class/class_feature_data.dart' as _i3;
-import '../views/class_step_subclass_choice_view.dart' as _i4;
-import '../views/class_choice_group_view.dart' as _i5;
-import '../views/proficiency_bundle_view.dart' as _i6;
-import '../data/general/class/class_level_data.dart' as _i7;
+import '../data/general/class/subclass_feature_data.dart' as _i4;
+import '../views/class_step_subclass_choice_view.dart' as _i5;
+import '../views/class_choice_group_view.dart' as _i6;
+import '../views/proficiency_bundle_view.dart' as _i7;
+import '../data/general/class/class_level_data.dart' as _i8;
 
 abstract class ClassStepView implements _i1.SerializableModel {
   ClassStepView._({
@@ -23,6 +24,8 @@ abstract class ClassStepView implements _i1.SerializableModel {
     this.selectedLevel,
     this.currentLevelFeatures,
     this.futureLevelFeatures,
+    this.currentSubclassFeatures,
+    this.futureSubclassFeatures,
     this.subclassChoice,
     this.choiceGroups,
     this.startingProficiencies,
@@ -35,11 +38,13 @@ abstract class ClassStepView implements _i1.SerializableModel {
     int? selectedLevel,
     List<_i3.ClassFeatureData>? currentLevelFeatures,
     List<_i3.ClassFeatureData>? futureLevelFeatures,
-    _i4.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i5.ClassChoiceGroupView>? choiceGroups,
-    _i6.ProficiencyBundleView? startingProficiencies,
+    List<_i4.SubclassFeatureData>? currentSubclassFeatures,
+    List<_i4.SubclassFeatureData>? futureSubclassFeatures,
+    _i5.ClassStepSubclassChoiceView? subclassChoice,
+    List<_i6.ClassChoiceGroupView>? choiceGroups,
+    _i7.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
-    List<_i7.ClassLevelData>? progression,
+    List<_i8.ClassLevelData>? progression,
   }) = _ClassStepViewImpl;
 
   factory ClassStepView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -57,24 +62,34 @@ abstract class ClassStepView implements _i1.SerializableModel {
           ?.map(
               (e) => _i3.ClassFeatureData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      currentSubclassFeatures:
+          (jsonSerialization['currentSubclassFeatures'] as List?)
+              ?.map((e) =>
+                  _i4.SubclassFeatureData.fromJson((e as Map<String, dynamic>)))
+              .toList(),
+      futureSubclassFeatures:
+          (jsonSerialization['futureSubclassFeatures'] as List?)
+              ?.map((e) =>
+                  _i4.SubclassFeatureData.fromJson((e as Map<String, dynamic>)))
+              .toList(),
       subclassChoice: jsonSerialization['subclassChoice'] == null
           ? null
-          : _i4.ClassStepSubclassChoiceView.fromJson(
+          : _i5.ClassStepSubclassChoiceView.fromJson(
               (jsonSerialization['subclassChoice'] as Map<String, dynamic>)),
       choiceGroups: (jsonSerialization['choiceGroups'] as List?)
           ?.map((e) =>
-              _i5.ClassChoiceGroupView.fromJson((e as Map<String, dynamic>)))
+              _i6.ClassChoiceGroupView.fromJson((e as Map<String, dynamic>)))
           .toList(),
       startingProficiencies: jsonSerialization['startingProficiencies'] == null
           ? null
-          : _i6.ProficiencyBundleView.fromJson(
+          : _i7.ProficiencyBundleView.fromJson(
               (jsonSerialization['startingProficiencies']
                   as Map<String, dynamic>)),
       multiclassWarnings: (jsonSerialization['multiclassWarnings'] as List?)
           ?.map((e) => e as String)
           .toList(),
       progression: (jsonSerialization['progression'] as List?)
-          ?.map((e) => _i7.ClassLevelData.fromJson((e as Map<String, dynamic>)))
+          ?.map((e) => _i8.ClassLevelData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -87,15 +102,19 @@ abstract class ClassStepView implements _i1.SerializableModel {
 
   List<_i3.ClassFeatureData>? futureLevelFeatures;
 
-  _i4.ClassStepSubclassChoiceView? subclassChoice;
+  List<_i4.SubclassFeatureData>? currentSubclassFeatures;
 
-  List<_i5.ClassChoiceGroupView>? choiceGroups;
+  List<_i4.SubclassFeatureData>? futureSubclassFeatures;
 
-  _i6.ProficiencyBundleView? startingProficiencies;
+  _i5.ClassStepSubclassChoiceView? subclassChoice;
+
+  List<_i6.ClassChoiceGroupView>? choiceGroups;
+
+  _i7.ProficiencyBundleView? startingProficiencies;
 
   List<String>? multiclassWarnings;
 
-  List<_i7.ClassLevelData>? progression;
+  List<_i8.ClassLevelData>? progression;
 
   /// Returns a shallow copy of this [ClassStepView]
   /// with some or all fields replaced by the given arguments.
@@ -105,11 +124,13 @@ abstract class ClassStepView implements _i1.SerializableModel {
     int? selectedLevel,
     List<_i3.ClassFeatureData>? currentLevelFeatures,
     List<_i3.ClassFeatureData>? futureLevelFeatures,
-    _i4.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i5.ClassChoiceGroupView>? choiceGroups,
-    _i6.ProficiencyBundleView? startingProficiencies,
+    List<_i4.SubclassFeatureData>? currentSubclassFeatures,
+    List<_i4.SubclassFeatureData>? futureSubclassFeatures,
+    _i5.ClassStepSubclassChoiceView? subclassChoice,
+    List<_i6.ClassChoiceGroupView>? choiceGroups,
+    _i7.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
-    List<_i7.ClassLevelData>? progression,
+    List<_i8.ClassLevelData>? progression,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -122,6 +143,12 @@ abstract class ClassStepView implements _i1.SerializableModel {
       if (futureLevelFeatures != null)
         'futureLevelFeatures':
             futureLevelFeatures?.toJson(valueToJson: (v) => v.toJson()),
+      if (currentSubclassFeatures != null)
+        'currentSubclassFeatures':
+            currentSubclassFeatures?.toJson(valueToJson: (v) => v.toJson()),
+      if (futureSubclassFeatures != null)
+        'futureSubclassFeatures':
+            futureSubclassFeatures?.toJson(valueToJson: (v) => v.toJson()),
       if (subclassChoice != null) 'subclassChoice': subclassChoice?.toJson(),
       if (choiceGroups != null)
         'choiceGroups': choiceGroups?.toJson(valueToJson: (v) => v.toJson()),
@@ -148,16 +175,20 @@ class _ClassStepViewImpl extends ClassStepView {
     int? selectedLevel,
     List<_i3.ClassFeatureData>? currentLevelFeatures,
     List<_i3.ClassFeatureData>? futureLevelFeatures,
-    _i4.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i5.ClassChoiceGroupView>? choiceGroups,
-    _i6.ProficiencyBundleView? startingProficiencies,
+    List<_i4.SubclassFeatureData>? currentSubclassFeatures,
+    List<_i4.SubclassFeatureData>? futureSubclassFeatures,
+    _i5.ClassStepSubclassChoiceView? subclassChoice,
+    List<_i6.ClassChoiceGroupView>? choiceGroups,
+    _i7.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
-    List<_i7.ClassLevelData>? progression,
+    List<_i8.ClassLevelData>? progression,
   }) : super._(
           classData: classData,
           selectedLevel: selectedLevel,
           currentLevelFeatures: currentLevelFeatures,
           futureLevelFeatures: futureLevelFeatures,
+          currentSubclassFeatures: currentSubclassFeatures,
+          futureSubclassFeatures: futureSubclassFeatures,
           subclassChoice: subclassChoice,
           choiceGroups: choiceGroups,
           startingProficiencies: startingProficiencies,
@@ -174,6 +205,8 @@ class _ClassStepViewImpl extends ClassStepView {
     Object? selectedLevel = _Undefined,
     Object? currentLevelFeatures = _Undefined,
     Object? futureLevelFeatures = _Undefined,
+    Object? currentSubclassFeatures = _Undefined,
+    Object? futureSubclassFeatures = _Undefined,
     Object? subclassChoice = _Undefined,
     Object? choiceGroups = _Undefined,
     Object? startingProficiencies = _Undefined,
@@ -190,19 +223,27 @@ class _ClassStepViewImpl extends ClassStepView {
       futureLevelFeatures: futureLevelFeatures is List<_i3.ClassFeatureData>?
           ? futureLevelFeatures
           : this.futureLevelFeatures?.map((e0) => e0.copyWith()).toList(),
-      subclassChoice: subclassChoice is _i4.ClassStepSubclassChoiceView?
+      currentSubclassFeatures: currentSubclassFeatures
+              is List<_i4.SubclassFeatureData>?
+          ? currentSubclassFeatures
+          : this.currentSubclassFeatures?.map((e0) => e0.copyWith()).toList(),
+      futureSubclassFeatures: futureSubclassFeatures
+              is List<_i4.SubclassFeatureData>?
+          ? futureSubclassFeatures
+          : this.futureSubclassFeatures?.map((e0) => e0.copyWith()).toList(),
+      subclassChoice: subclassChoice is _i5.ClassStepSubclassChoiceView?
           ? subclassChoice
           : this.subclassChoice?.copyWith(),
-      choiceGroups: choiceGroups is List<_i5.ClassChoiceGroupView>?
+      choiceGroups: choiceGroups is List<_i6.ClassChoiceGroupView>?
           ? choiceGroups
           : this.choiceGroups?.map((e0) => e0.copyWith()).toList(),
-      startingProficiencies: startingProficiencies is _i6.ProficiencyBundleView?
+      startingProficiencies: startingProficiencies is _i7.ProficiencyBundleView?
           ? startingProficiencies
           : this.startingProficiencies?.copyWith(),
       multiclassWarnings: multiclassWarnings is List<String>?
           ? multiclassWarnings
           : this.multiclassWarnings?.map((e0) => e0).toList(),
-      progression: progression is List<_i7.ClassLevelData>?
+      progression: progression is List<_i8.ClassLevelData>?
           ? progression
           : this.progression?.map((e0) => e0.copyWith()).toList(),
     );

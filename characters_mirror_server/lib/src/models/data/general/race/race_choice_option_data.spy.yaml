@@ -10,6 +10,7 @@ fields:
   skill: Skill?
   language: Language?
   spell: SpellData?, relation(optional)
+  feat: FeatData?, relation(optional)
   toolKey: String?
   bonusValue: int?
   damageType: DamageType?

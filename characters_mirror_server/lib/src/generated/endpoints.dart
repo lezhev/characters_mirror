@@ -336,6 +336,25 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['backgroundData'] as _i5.BackgroundDataEndpoint)
                   .getAll(session),
         ),
+        'getStepView': _i1.MethodConnector(
+          name: 'getStepView',
+          params: {
+            'backgroundId': _i1.ParameterDescription(
+              name: 'backgroundId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['backgroundData'] as _i5.BackgroundDataEndpoint)
+                  .getStepView(
+            session,
+            params['backgroundId'],
+          ),
+        ),
         'add': _i1.MethodConnector(
           name: 'add',
           params: {
@@ -602,6 +621,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<bool>(),
               nullable: false,
             ),
+            'selectedSubclassId': _i1.ParameterDescription(
+              name: 'selectedSubclassId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
           },
           call: (
             _i1.Session session,
@@ -612,6 +636,7 @@ class Endpoints extends _i1.EndpointDispatch {
             params['classId'],
             selectedLevel: params['selectedLevel'],
             isStartingClass: params['isStartingClass'],
+            selectedSubclassId: params['selectedSubclassId'],
           ),
         ),
         'delete': _i1.MethodConnector(
