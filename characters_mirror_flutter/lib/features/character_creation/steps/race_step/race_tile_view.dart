@@ -55,6 +55,8 @@ class RaceTile extends HookConsumerWidget {
 
     return ref.watch(raceStateProvider).when(
           data: (data) {
+            final isSelected = _isSelectedRace(data.selectedRace, race);
+
             return Material(
               borderRadius: BorderRadius.circular(8),
               color: Colors.transparent,
@@ -64,7 +66,7 @@ class RaceTile extends HookConsumerWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
-                    data.selectedRace == race
+                    isSelected
                         ? ref.read(raceStateProvider.notifier).unselectRace()
                         : ref.read(raceStateProvider.notifier).selectRace(race);
                   },
@@ -84,10 +86,10 @@ class RaceTile extends HookConsumerWidget {
                           ),
                       ],
                       border: Border.all(
-                        color: isHovered.value || data.selectedRace == race
+                        color: isHovered.value || isSelected
                             ? colorScheme.outline
                             : Colors.transparent,
-                        width: data.selectedRace == race ? 2 : 1,
+                        width: isSelected ? 2 : 1,
                       ),
                     ),
                     child: SizedBox(
@@ -147,4 +149,13 @@ class RaceTile extends HookConsumerWidget {
           ),
         );
   }
+}
+
+bool _isSelectedRace(RaceData? selectedRace, RaceData race) {
+  final selectedId = selectedRace?.id;
+  final raceId = race.id;
+  if (selectedId != null && raceId != null) {
+    return selectedId == raceId;
+  }
+  return selectedRace == race;
 }

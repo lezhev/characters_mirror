@@ -1,0 +1,7 @@
+enum: CharacterFeatureSourceType
+serialized: byName
+values:
+  - classFeature
+  - subclassFeature
+  - raceFeature
+  - subraceFeature

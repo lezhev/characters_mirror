@@ -33,3 +33,4 @@ fields:
   inspiration: bool?
   notes: String?
   attacks: List<CharacterAttackData>?
+  featureOverrides: List<CharacterFeatureOverrideData>?

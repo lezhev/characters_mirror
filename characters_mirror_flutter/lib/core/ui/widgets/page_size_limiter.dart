@@ -25,6 +25,7 @@ class PageSizeLimiter extends StatelessWidget {
               availableWidth > maxWidth ? (availableWidth - maxWidth) / 2 : 0.0;
 
           return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(width: sidePadding),
               ConstrainedBox(

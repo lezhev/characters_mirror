@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,6 +8,14 @@ part 'character_sheet_state.g.dart';
 
 final characterRepositoryProvider = Provider<CharacterRepository>((ref) {
   return CharacterRepository();
+});
+
+final selectedFightFeatureTagsProvider =
+    StateProvider.autoDispose.family<Set<FeatureTag>, int>((ref, characterId) {
+  return {
+    FeatureTag.combat,
+    FeatureTag.defense,
+  };
 });
 
 @riverpod
@@ -66,6 +75,102 @@ class CharacterSheetController
     await _saveCharacter(current.copyWith(attacks: attacks));
   }
 
+  Future<void> saveFeatureOverride(
+    CharacterFeatureViewData feature, {
+    String? name,
+    String? description,
+    List<FeatureTag>? tags,
+  }) async {
+    final current = _requireCharacter();
+    final normalizedName = _normalizedText(name);
+    final normalizedDescription = _normalizedText(description);
+    final defaultName = _normalizedText(feature.defaultName);
+    final defaultDescription = _normalizedText(feature.defaultDescription);
+    final normalizedTags = _normalizedFeatureTags(
+      tags ?? feature.tags,
+      preserveEmpty: true,
+    );
+    final defaultTags = _normalizedFeatureTags(
+      feature.defaultTags,
+      preserveEmpty: false,
+    );
+    final featureOverrides = [...?current.featureOverrides];
+    final overrideIndex = featureOverrides.indexWhere(
+      (item) =>
+          item.sourceType == feature.sourceType &&
+          item.sourceId == feature.sourceId,
+    );
+    final matchesDefault = normalizedName == defaultName &&
+        normalizedDescription == defaultDescription &&
+        _featureTagsEqual(
+          normalizedTags,
+          defaultTags,
+          preserveEmpty: false,
+        );
+
+    if (matchesDefault) {
+      if (overrideIndex >= 0) {
+        featureOverrides.removeAt(overrideIndex);
+      }
+    } else {
+      final override = CharacterFeatureOverrideData(
+        sourceType: feature.sourceType,
+        sourceId: feature.sourceId,
+        name: normalizedName,
+        description: normalizedDescription,
+        tags: normalizedTags,
+      );
+      if (overrideIndex >= 0) {
+        featureOverrides[overrideIndex] = override;
+      } else {
+        featureOverrides.add(override);
+      }
+    }
+
+    final updatedFeatures = _updateDerivedFeatureViews(
+      current.derived?.activeFeatures,
+      feature.sourceType,
+      feature.sourceId,
+      name: matchesDefault ? feature.defaultName : normalizedName,
+      description:
+          matchesDefault ? feature.defaultDescription : normalizedDescription,
+      tags: matchesDefault ? feature.defaultTags : normalizedTags,
+      isCustomized: !matchesDefault,
+    );
+
+    await _saveCharacter(
+      current.copyWith(
+        featureOverrides: featureOverrides,
+        derived: current.derived?.copyWith(activeFeatures: updatedFeatures),
+      ),
+    );
+  }
+
+  Future<void> resetFeatureOverride(CharacterFeatureViewData feature) async {
+    final current = _requireCharacter();
+    final featureOverrides = [...?current.featureOverrides]..removeWhere(
+        (item) =>
+            item.sourceType == feature.sourceType &&
+            item.sourceId == feature.sourceId,
+      );
+    final updatedFeatures = _updateDerivedFeatureViews(
+      current.derived?.activeFeatures,
+      feature.sourceType,
+      feature.sourceId,
+      name: feature.defaultName,
+      description: feature.defaultDescription,
+      tags: feature.defaultTags,
+      isCustomized: false,
+    );
+
+    await _saveCharacter(
+      current.copyWith(
+        featureOverrides: featureOverrides,
+        derived: current.derived?.copyWith(activeFeatures: updatedFeatures),
+      ),
+    );
+  }
+
   CharacterData _requireCharacter() {
     final current = state.valueOrNull;
     if (current == null) {
@@ -92,4 +197,74 @@ class CharacterSheetController
       Error.throwWithStackTrace(error, stackTrace);
     }
   }
+}
+
+List<CharacterFeatureViewData>? _updateDerivedFeatureViews(
+  List<CharacterFeatureViewData>? features,
+  CharacterFeatureSourceType sourceType,
+  int sourceId, {
+  required String? name,
+  required String? description,
+  required List<FeatureTag>? tags,
+  required bool isCustomized,
+}) {
+  if (features == null) {
+    return null;
+  }
+
+  return [
+    for (final feature in features)
+      if (feature.sourceType == sourceType && feature.sourceId == sourceId)
+        feature.copyWith(
+          name: name,
+          description: description,
+          tags: tags,
+          isCustomized: isCustomized,
+        )
+      else
+        feature,
+  ];
+}
+
+List<FeatureTag>? _normalizedFeatureTags(
+  List<FeatureTag>? tags, {
+  required bool preserveEmpty,
+}) {
+  if (tags == null) {
+    return null;
+  }
+
+  final normalized = {...tags}.toList()
+    ..sort((a, b) => a.name.compareTo(b.name));
+  if (normalized.isEmpty && !preserveEmpty) {
+    return null;
+  }
+  return normalized;
+}
+
+bool _featureTagsEqual(
+  List<FeatureTag>? left,
+  List<FeatureTag>? right, {
+  required bool preserveEmpty,
+}) {
+  final normalizedLeft = _normalizedFeatureTags(
+    left,
+    preserveEmpty: preserveEmpty,
+  );
+  final normalizedRight = _normalizedFeatureTags(
+    right,
+    preserveEmpty: preserveEmpty,
+  );
+  if (normalizedLeft == null || normalizedRight == null) {
+    return normalizedLeft == normalizedRight;
+  }
+  return listEquals(normalizedLeft, normalizedRight);
+}
+
+String? _normalizedText(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
+  }
+  return trimmed;
 }

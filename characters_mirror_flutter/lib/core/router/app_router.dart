@@ -1,6 +1,7 @@
 import 'package:characters_mirror_flutter/features/admin/admin.dart';
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/character_creation/character_creation.dart';
+import 'package:characters_mirror_flutter/core/router/default_route_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/invalid_caracter_sheet_page.dart';
 import 'package:characters_mirror_flutter/features/characters/characters.dart';
@@ -12,13 +13,17 @@ final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
 
   return GoRouter(
-    initialLocation: '/characters',
+    initialLocation: '/',
     redirect: (context, state) {
       final location = state.matchedLocation;
       const publicRoutes = {'/sign-in', '/sign-up'};
 
       if (authState.isChecking) {
         return null;
+      }
+
+      if (location == '/') {
+        return authState.isSignedOut ? '/sign-in' : '/characters';
       }
 
       if (authState.isSignedOut && !publicRoutes.contains(location)) {
@@ -36,6 +41,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(path: '/', builder: (_, __) => const DefaultRoutePage()),
       GoRoute(path: '/sign-in', builder: (_, __) => const SignInPage()),
       GoRoute(path: '/sign-up', builder: (_, __) => const SignUpPage()),
       GoRoute(path: '/characters', builder: (_, __) => const CharactersList()),

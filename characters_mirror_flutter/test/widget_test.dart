@@ -18,6 +18,17 @@ import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 
 void main() {
   group('Auth flow', () {
+    testWidgets('default route redirects signed out user to sign in',
+        (tester) async {
+      final service = FakeAuthService();
+
+      await tester.pumpWidget(_TestRouterApp(service: service));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Вход'), findsOneWidget);
+      expect(find.text('Список персонажей'), findsNothing);
+    });
+
     testWidgets('signed out user is redirected to sign in', (tester) async {
       final service = FakeAuthService();
 
@@ -26,6 +37,17 @@ void main() {
 
       expect(find.text('Вход'), findsOneWidget);
       expect(find.text('Создать аккаунт'), findsNothing);
+    });
+
+    testWidgets('default route redirects signed in user to characters list',
+        (tester) async {
+      final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
+
+      await tester.pumpWidget(_TestRouterApp(service: service));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Список персонажей'), findsOneWidget);
+      expect(find.text('Вход'), findsNothing);
     });
 
     testWidgets('sign in shows remember me enabled by default', (tester) async {

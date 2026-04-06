@@ -17,6 +17,8 @@ import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
 import '../../../data/general/character/character_attack_data.dart' as _i6;
+import '../../../data/general/character/character_feature_override_data.dart'
+    as _i7;
 
 abstract class CharacterRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -56,6 +58,7 @@ abstract class CharacterRecord
     this.inspiration,
     this.notes,
     this.attacks,
+    this.featureOverrides,
   });
 
   factory CharacterRecord({
@@ -94,6 +97,7 @@ abstract class CharacterRecord
     bool? inspiration,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
+    List<_i7.CharacterFeatureOverrideData>? featureOverrides,
   }) = _CharacterRecordImpl;
 
   factory CharacterRecord.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -156,6 +160,10 @@ abstract class CharacterRecord
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
               _i6.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      featureOverrides: (jsonSerialization['featureOverrides'] as List?)
+          ?.map((e) => _i7.CharacterFeatureOverrideData.fromJson(
+              (e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -235,6 +243,8 @@ abstract class CharacterRecord
 
   List<_i6.CharacterAttackData>? attacks;
 
+  List<_i7.CharacterFeatureOverrideData>? featureOverrides;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -277,6 +287,7 @@ abstract class CharacterRecord
     bool? inspiration,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
+    List<_i7.CharacterFeatureOverrideData>? featureOverrides,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -320,6 +331,9 @@ abstract class CharacterRecord
       if (notes != null) 'notes': notes,
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
+      if (featureOverrides != null)
+        'featureOverrides':
+            featureOverrides?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -405,6 +419,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     bool? inspiration,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
+    List<_i7.CharacterFeatureOverrideData>? featureOverrides,
   }) : super._(
           id: id,
           name: name,
@@ -441,6 +456,7 @@ class _CharacterRecordImpl extends CharacterRecord {
           inspiration: inspiration,
           notes: notes,
           attacks: attacks,
+          featureOverrides: featureOverrides,
         );
 
   /// Returns a shallow copy of this [CharacterRecord]
@@ -483,6 +499,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? inspiration = _Undefined,
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
+    Object? featureOverrides = _Undefined,
   }) {
     return CharacterRecord(
       id: id is int? ? id : this.id,
@@ -541,6 +558,10 @@ class _CharacterRecordImpl extends CharacterRecord {
       attacks: attacks is List<_i6.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
+      featureOverrides:
+          featureOverrides is List<_i7.CharacterFeatureOverrideData>?
+              ? featureOverrides
+              : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -672,6 +693,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'attacks',
       this,
     );
+    featureOverrides = _i1.ColumnSerializable(
+      'featureOverrides',
+      this,
+    );
   }
 
   late final _i1.ColumnString name;
@@ -741,6 +766,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnString notes;
 
   late final _i1.ColumnSerializable attacks;
+
+  late final _i1.ColumnSerializable featureOverrides;
 
   _i3.RaceDataTable get race {
     if (_race != null) return _race!;
@@ -815,6 +842,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
         inspiration,
         notes,
         attacks,
+        featureOverrides,
       ];
 
   @override

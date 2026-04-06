@@ -21,6 +21,9 @@ class CreationNavBar extends ConsumerWidget {
 
     if (routeStep != null && routeStep != providerStep) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) {
+          return;
+        }
         ref.read(characterCreationProvider.notifier).syncStep(routeStep);
       });
     }

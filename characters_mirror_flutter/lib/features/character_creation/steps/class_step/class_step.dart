@@ -2,12 +2,9 @@ import 'package:characters_mirror_flutter/features/character_creation/state/char
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/class_features.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/class_tile_view.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/jump_to_details_button.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_nav_bar.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_selection_step_scaffold.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_shimmer.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -31,86 +28,47 @@ class ClassStep extends HookConsumerWidget {
             selectedClassKey != null &&
             dismissedSelectionKey.value != selectedClassKey;
 
-        return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(CreationAppBar.height),
-            child: CreationAppBar(
-              title: "Создание персонажа",
-              onBack: () {
-                ref.read(characterCreationProvider.notifier).reset();
-                context.go('/characters');
-              },
-              onStepTap: (target) => _syncAndGo(
-                context: context,
-                ref: ref,
-                data: data,
-                target: target,
-              ),
-            ),
+        return CreationSelectionStepScaffold(
+          route: 'background',
+          onBack: () {
+            ref.read(characterCreationProvider.notifier).reset();
+            context.go('/characters');
+          },
+          onStepTap: (target) async => _syncAndGo(
+            context: context,
+            ref: ref,
+            data: data,
+            target: target,
           ),
-          body: PageSizeLimiter(
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                    horizontal: 16.0,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const ClassTileView(),
-                        if (data.selectedClass != null)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 88.0),
-                            child: KeyedSubtree(
-                              key: detailsKey,
-                              child: Column(
-                                children: [
-                                  const SizedBox(height: 12),
-                                  ClassFeatures(
-                                    stepView: data.stepView,
-                                    selectedLevel: 1,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
+          onPressedNext: () {
+            final notifier = ref.read(characterCreationProvider.notifier);
+            notifier.syncPrimaryClassDraft(
+              classData: data.selectedClass,
+              subclass: data.selectedSubclass,
+              choiceGroups: data.stepView?.choiceGroups ?? const [],
+              selectedOptions: data.selectedOptions,
+              level: data.selectedLevel,
+            );
+            notifier.nextStep(context);
+          },
+          selection: const ClassTileView(),
+          details: data.selectedClass == null
+              ? null
+              : Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    ClassFeatures(
+                      stepView: data.stepView,
+                      selectedLevel: 1,
                     ),
-                  ),
+                  ],
                 ),
-                if (showJumpButton)
-                  JumpToDetailsButton(
-                    onPressed: () {
-                      dismissedSelectionKey.value = selectedClassKey;
-                      _scrollToDetails(detailsKey);
-                    },
-                  ),
-              ],
-            ),
-          ),
-          bottomNavigationBar: SafeArea(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: CreationNavBar(
-                onPressedNext: () {
-                  final notifier =
-                      ref.read(characterCreationProvider.notifier);
-                  notifier.syncPrimaryClassDraft(
-                    classData: data.selectedClass,
-                    subclass: data.selectedSubclass,
-                    choiceGroups: data.stepView?.choiceGroups ?? const [],
-                    selectedOptions: data.selectedOptions,
-                    level: data.selectedLevel,
-                  );
-                  notifier.nextStep(context);
-                },
-                route: 'background',
-              ),
-            ),
-          ),
+          detailsKey: detailsKey,
+          showJumpButton: showJumpButton,
+          onJumpToDetails: () {
+            dismissedSelectionKey.value = selectedClassKey;
+            _scrollToDetails(detailsKey);
+          },
         );
       },
       error: (e, s) {

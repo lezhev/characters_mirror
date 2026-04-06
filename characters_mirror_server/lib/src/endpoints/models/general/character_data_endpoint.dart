@@ -27,8 +27,11 @@ class CharacterDataEndpoint extends Endpoint {
     CharacterData character,
   ) async {
     final userId = await _requireCurrentUserId(session);
+    final normalizedCharacter = character.copyWith(
+      featureOverrides: await _pruneFeatureOverrides(session, character),
+    );
     final savedRecord =
-        await _upsertCharacterRecord(session, character, userId);
+        await _upsertCharacterRecord(session, normalizedCharacter, userId);
 
     await CharacterChoiceRecord.db.deleteWhere(
       session,
@@ -42,13 +45,13 @@ class CharacterDataEndpoint extends Endpoint {
     final savedEntries = await _insertClassEntryRecords(
       session,
       savedRecord,
-      character.classEntries ?? const <CharacterClassEntryData>[],
+      normalizedCharacter.classEntries ?? const <CharacterClassEntryData>[],
     );
     await _insertChoiceRecords(
       session,
       savedRecord,
       savedEntries,
-      character.choices ?? const <CharacterChoiceData>[],
+      normalizedCharacter.choices ?? const <CharacterChoiceData>[],
     );
 
     final hydratedRecord = await _requireOwnedCharacterRecord(
@@ -79,6 +82,48 @@ class CharacterDataEndpoint extends Endpoint {
       where: (t) => t.id.equals(id),
     );
   }
+}
+
+Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
+  Session session,
+  CharacterData character,
+) async {
+  final normalizedOverrides = _normalizedFeatureOverrides(
+    character.featureOverrides,
+  );
+  if (normalizedOverrides.isEmpty) {
+    return const <CharacterFeatureOverrideData>[];
+  }
+
+  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
+  final choices = character.choices ?? const <CharacterChoiceData>[];
+  final totalLevel =
+      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
+  final resolvedSources =
+      await _resolveDerivedSources(session, character, choices);
+  final currentRaceFeatures =
+      _currentRaceFeaturesBySource(character, totalLevel);
+  final defaultFeatures = _buildActiveFeatures(
+    character: character.copyWith(
+      featureOverrides: const <CharacterFeatureOverrideData>[],
+    ),
+    resolvedSources: resolvedSources,
+    currentRaceFeatures: currentRaceFeatures,
+  );
+  final defaultByKey = {
+    for (final feature in defaultFeatures)
+      _featureOverrideKey(feature.sourceType, feature.sourceId): feature,
+  };
+
+  return [
+    for (final override in normalizedOverrides)
+      if (_isMeaningfulFeatureOverride(
+        override,
+        defaultByKey[
+            _featureOverrideKey(override.sourceType, override.sourceId)],
+      ))
+        override,
+  ];
 }
 
 Future<CharacterRecord> _upsertCharacterRecord(
@@ -181,6 +226,7 @@ CharacterRecord _toCharacterRecord(
     inspiration: character.inspiration,
     notes: character.notes,
     attacks: character.attacks,
+    featureOverrides: _normalizedFeatureOverrides(character.featureOverrides),
   );
 }
 
@@ -394,6 +440,7 @@ CharacterData _toCharacterData(CharacterRecord record) {
     inspiration: record.inspiration,
     notes: record.notes,
     attacks: record.attacks,
+    featureOverrides: record.featureOverrides,
   );
 }
 
@@ -448,6 +495,8 @@ Future<CharacterDerivedData> _buildDerivedData(
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
   final resolvedSources =
       await _resolveDerivedSources(session, character, choices);
+  final currentRaceFeatures =
+      _currentRaceFeaturesBySource(character, totalLevel);
   final scores = _buildAbilityScores(character, choices);
   final abilityModifiers = {
     for (final ability in Ability.values)
@@ -517,16 +566,20 @@ Future<CharacterDerivedData> _buildDerivedData(
   final featTags = await _loadFeatTags(session, featIds);
   final featureTags = _collectFeatureTags(
     character: character,
-    totalLevel: totalLevel,
     resolvedSources: resolvedSources,
+    currentRaceFeatures: currentRaceFeatures,
     featTags: featTags,
   );
+  final activeFeatures = _buildActiveFeatures(
+    character: character,
+    resolvedSources: resolvedSources,
+    currentRaceFeatures: currentRaceFeatures,
+  );
   final grantedSpellKeys = _collectGrantedSpellKeys(
-    character,
     choices,
     resolvedSources.classBackgroundOptions,
     resolvedSources.raceOptions,
-    totalLevel,
+    currentRaceFeatures,
   );
   final grantedItemKeys = _collectGrantedItemKeys(
     choices,
@@ -552,6 +605,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     proficiencyBonus: proficiencyBonus,
     abilityScores: scores,
     abilityModifiers: abilityModifiers,
+    activeFeatures: activeFeatures,
     armorClass: 10 + dexMod,
     initiative: dexMod,
     speed: character.race?.speed ?? 30,
@@ -858,6 +912,16 @@ class _ResolvedDerivedSources {
   });
 }
 
+class _CurrentRaceFeatures {
+  final List<RaceFeatureData> raceFeatures;
+  final List<RaceFeatureData> subraceFeatures;
+
+  const _CurrentRaceFeatures({
+    required this.raceFeatures,
+    required this.subraceFeatures,
+  });
+}
+
 Future<_ResolvedDerivedSources> _resolveDerivedSources(
   Session session,
   CharacterData character,
@@ -1152,8 +1216,8 @@ Future<Set<FeatureTag>> _loadFeatTags(
 
 List<FeatureTag> _collectFeatureTags({
   required CharacterData character,
-  required int totalLevel,
   required _ResolvedDerivedSources resolvedSources,
+  required _CurrentRaceFeatures currentRaceFeatures,
   required Set<FeatureTag> featTags,
 }) {
   final values = <FeatureTag>{
@@ -1162,8 +1226,8 @@ List<FeatureTag> _collectFeatureTags({
       ...?feature.tags,
     for (final feature in resolvedSources.currentSubclassFeatures)
       ...?feature.tags,
-    for (final feature in _currentRaceFeatures(character, totalLevel))
-      ...?feature.tags,
+    for (final feature in currentRaceFeatures.raceFeatures) ...?feature.tags,
+    for (final feature in currentRaceFeatures.subraceFeatures) ...?feature.tags,
     for (final option in resolvedSources.classBackgroundOptions)
       ...?option.grantedFeatureTags,
   };
@@ -1173,11 +1237,10 @@ List<FeatureTag> _collectFeatureTags({
 }
 
 List<String> _collectGrantedSpellKeys(
-  CharacterData character,
   List<CharacterChoiceData> choices,
   List<ClassChoiceOptionData> classBackgroundOptions,
   List<RaceChoiceOptionData> raceOptions,
-  int totalLevel,
+  _CurrentRaceFeatures currentRaceFeatures,
 ) {
   final values = <String>{};
   for (final option in classBackgroundOptions) {
@@ -1189,10 +1252,12 @@ List<String> _collectGrantedSpellKeys(
       values.add(spellName);
     }
   }
-  for (final feature in _currentRaceFeatures(character, totalLevel)) {
+  for (final feature in [
+    ...currentRaceFeatures.raceFeatures,
+    ...currentRaceFeatures.subraceFeatures,
+  ]) {
     for (final grant
         in feature.spellGrants ?? const <RaceFeatureSpellGrantData>[]) {
-      if ((grant.grantedAtLevel ?? 1) > max(totalLevel, 1)) continue;
       final spellName = _normalizedTextOrNull(grant.spell?.name);
       if (spellName != null) {
         values.add(spellName);
@@ -1289,15 +1354,299 @@ Language? _languageFromName(String raw) {
   return null;
 }
 
-List<RaceFeatureData> _currentRaceFeatures(
+_CurrentRaceFeatures _currentRaceFeaturesBySource(
   CharacterData character,
   int totalLevel,
 ) {
   final characterLevel = max(totalLevel, 1);
-  return [
-    ...?character.race?.features,
-    ...?character.subrace?.features,
-  ].where((feature) => (feature.level ?? 1) <= characterLevel).toList();
+
+  List<RaceFeatureData> filterCurrent(List<RaceFeatureData>? features) {
+    return [
+      for (final feature in features ?? const <RaceFeatureData>[])
+        if ((feature.level ?? 1) <= characterLevel) feature,
+    ];
+  }
+
+  return _CurrentRaceFeatures(
+    raceFeatures: filterCurrent(character.race?.features),
+    subraceFeatures: filterCurrent(character.subrace?.features),
+  );
+}
+
+List<CharacterFeatureViewData> _buildActiveFeatures({
+  required CharacterData character,
+  required _ResolvedDerivedSources resolvedSources,
+  required _CurrentRaceFeatures currentRaceFeatures,
+}) {
+  final normalizedOverrides = _normalizedFeatureOverrides(
+    character.featureOverrides,
+  );
+  final overridesByKey = {
+    for (final override in normalizedOverrides)
+      _featureOverrideKey(override.sourceType, override.sourceId): override,
+  };
+  final activeFeatures = <CharacterFeatureViewData>[];
+
+  void addFeature({
+    required CharacterFeatureSourceType sourceType,
+    required int? sourceId,
+    required String? sourceName,
+    required int? level,
+    required String? defaultName,
+    required String? defaultDescription,
+    required List<FeatureTag>? defaultTags,
+  }) {
+    if (sourceId == null) {
+      return;
+    }
+
+    final override = overridesByKey[_featureOverrideKey(sourceType, sourceId)];
+    final resolvedName = override?.name ?? defaultName;
+    final resolvedDescription = override?.description ?? defaultDescription;
+    final normalizedDefaultTags = _normalizedFeatureTags(
+      defaultTags,
+      preserveEmpty: false,
+    );
+    final resolvedTags = override?.tags != null
+        ? _normalizedFeatureTags(override!.tags, preserveEmpty: true)
+        : normalizedDefaultTags;
+    final isCustomized = override != null &&
+        (_normalizedTextOrNull(resolvedName) !=
+                _normalizedTextOrNull(defaultName) ||
+            _normalizedTextOrNull(resolvedDescription) !=
+                _normalizedTextOrNull(defaultDescription) ||
+            !_featureTagsEqual(
+              resolvedTags,
+              normalizedDefaultTags,
+              preserveEmpty: false,
+            ));
+
+    activeFeatures.add(
+      CharacterFeatureViewData(
+        sourceType: sourceType,
+        sourceId: sourceId,
+        sourceName: sourceName,
+        level: level,
+        defaultName: defaultName,
+        defaultDescription: defaultDescription,
+        defaultTags: normalizedDefaultTags,
+        name: resolvedName,
+        description: resolvedDescription,
+        tags: resolvedTags,
+        isCustomized: isCustomized,
+      ),
+    );
+  }
+
+  for (final feature in resolvedSources.currentClassFeatures) {
+    addFeature(
+      sourceType: CharacterFeatureSourceType.classFeature,
+      sourceId: feature.id,
+      sourceName: character.classEntries
+          ?.firstWhere(
+            (entry) => entry.classData?.id == feature.parentClassId,
+            orElse: CharacterClassEntryData.new,
+          )
+          .classData
+          ?.name,
+      level: feature.level,
+      defaultName: feature.name,
+      defaultDescription: feature.description,
+      defaultTags: feature.tags,
+    );
+  }
+  for (final feature in resolvedSources.currentSubclassFeatures) {
+    addFeature(
+      sourceType: CharacterFeatureSourceType.subclassFeature,
+      sourceId: feature.id,
+      sourceName: character.classEntries
+          ?.firstWhere(
+            (entry) => entry.subclass?.id == feature.parentSubclassId,
+            orElse: CharacterClassEntryData.new,
+          )
+          .subclass
+          ?.name,
+      level: feature.level,
+      defaultName: feature.name,
+      defaultDescription: feature.description,
+      defaultTags: feature.tags,
+    );
+  }
+  for (final feature in currentRaceFeatures.raceFeatures) {
+    addFeature(
+      sourceType: CharacterFeatureSourceType.raceFeature,
+      sourceId: feature.id,
+      sourceName: character.race?.name,
+      level: feature.level,
+      defaultName: feature.name,
+      defaultDescription: feature.description,
+      defaultTags: feature.tags,
+    );
+  }
+  for (final feature in currentRaceFeatures.subraceFeatures) {
+    addFeature(
+      sourceType: CharacterFeatureSourceType.subraceFeature,
+      sourceId: feature.id,
+      sourceName: character.subrace?.name,
+      level: feature.level,
+      defaultName: feature.name,
+      defaultDescription: feature.description,
+      defaultTags: feature.tags,
+    );
+  }
+
+  activeFeatures.sort(_compareActiveFeatures);
+  return activeFeatures;
+}
+
+List<CharacterFeatureOverrideData> _normalizedFeatureOverrides(
+  List<CharacterFeatureOverrideData>? overrides,
+) {
+  final normalized = <CharacterFeatureOverrideData>[];
+
+  for (final override in overrides ?? const <CharacterFeatureOverrideData>[]) {
+    final name = _normalizedTextOrNull(override.name);
+    final description = _normalizedTextOrNull(override.description);
+    final tags = _normalizedFeatureTags(override.tags, preserveEmpty: true);
+    if (name == null && description == null && tags == null) {
+      continue;
+    }
+
+    final candidate = CharacterFeatureOverrideData(
+      sourceType: override.sourceType,
+      sourceId: override.sourceId,
+      name: name,
+      description: description,
+      tags: tags,
+    );
+
+    final existingIndex = normalized.indexWhere(
+      (item) =>
+          item.sourceType == candidate.sourceType &&
+          item.sourceId == candidate.sourceId,
+    );
+    if (existingIndex >= 0) {
+      normalized[existingIndex] = candidate;
+    } else {
+      normalized.add(candidate);
+    }
+  }
+
+  normalized.sort((a, b) {
+    final sourceCompare = _featureSourceOrder(a.sourceType)
+        .compareTo(_featureSourceOrder(b.sourceType));
+    if (sourceCompare != 0) {
+      return sourceCompare;
+    }
+    return a.sourceId.compareTo(b.sourceId);
+  });
+  return normalized;
+}
+
+bool _isMeaningfulFeatureOverride(
+  CharacterFeatureOverrideData override,
+  CharacterFeatureViewData? defaultFeature,
+) {
+  if (defaultFeature == null) {
+    return false;
+  }
+
+  return _normalizedTextOrNull(override.name) !=
+          _normalizedTextOrNull(defaultFeature.defaultName) ||
+      _normalizedTextOrNull(override.description) !=
+          _normalizedTextOrNull(defaultFeature.defaultDescription) ||
+      !_featureTagsEqual(
+        override.tags,
+        defaultFeature.defaultTags,
+        preserveEmpty: false,
+      );
+}
+
+List<FeatureTag>? _normalizedFeatureTags(
+  List<FeatureTag>? tags, {
+  required bool preserveEmpty,
+}) {
+  if (tags == null) {
+    return null;
+  }
+
+  final normalized = {...tags}.toList()
+    ..sort((a, b) => a.name.compareTo(b.name));
+  if (normalized.isEmpty && !preserveEmpty) {
+    return null;
+  }
+  return normalized;
+}
+
+bool _featureTagsEqual(
+  List<FeatureTag>? left,
+  List<FeatureTag>? right, {
+  required bool preserveEmpty,
+}) {
+  final normalizedLeft = _normalizedFeatureTags(
+    left,
+    preserveEmpty: preserveEmpty,
+  );
+  final normalizedRight = _normalizedFeatureTags(
+    right,
+    preserveEmpty: preserveEmpty,
+  );
+  if (normalizedLeft == null || normalizedRight == null) {
+    return normalizedLeft == normalizedRight;
+  }
+  if (normalizedLeft.length != normalizedRight.length) {
+    return false;
+  }
+  for (var index = 0; index < normalizedLeft.length; index++) {
+    if (normalizedLeft[index] != normalizedRight[index]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+String _featureOverrideKey(
+  CharacterFeatureSourceType sourceType,
+  int sourceId,
+) {
+  return '${sourceType.name}:$sourceId';
+}
+
+int _compareActiveFeatures(
+  CharacterFeatureViewData a,
+  CharacterFeatureViewData b,
+) {
+  final sourceCompare = _featureSourceOrder(a.sourceType)
+      .compareTo(_featureSourceOrder(b.sourceType));
+  if (sourceCompare != 0) {
+    return sourceCompare;
+  }
+
+  final levelCompare = (a.level ?? 0).compareTo(b.level ?? 0);
+  if (levelCompare != 0) {
+    return levelCompare;
+  }
+
+  final nameCompare =
+      (a.name ?? a.defaultName ?? '').compareTo(b.name ?? b.defaultName ?? '');
+  if (nameCompare != 0) {
+    return nameCompare;
+  }
+
+  return a.sourceId.compareTo(b.sourceId);
+}
+
+int _featureSourceOrder(CharacterFeatureSourceType sourceType) {
+  switch (sourceType) {
+    case CharacterFeatureSourceType.classFeature:
+      return 0;
+    case CharacterFeatureSourceType.subclassFeature:
+      return 1;
+    case CharacterFeatureSourceType.raceFeature:
+      return 2;
+    case CharacterFeatureSourceType.subraceFeature:
+      return 3;
+  }
 }
 
 String? _safeEnumToken(Object? value) {

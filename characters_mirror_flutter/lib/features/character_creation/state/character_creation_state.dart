@@ -1,4 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_choice_builder.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_choice_filters.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_text_normalizer.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:go_router/go_router.dart';
@@ -125,16 +128,16 @@ class CharacterCreation extends _$CharacterCreation {
       subrace: selectedSubrace,
     );
     final preservedChoices = raceChanged || subraceChanged
-        ? _withoutChoiceSources(
+        ? withoutChoiceSources(
             currentChoices,
             const {
               ChoiceSourceType.race,
               ChoiceSourceType.subrace,
             },
           )
-        : _withoutChoiceGroups(
+        : withoutChoiceGroups(
             currentChoices,
-            _racialNonAttributeChoiceGroups(updatedCharacter),
+            racialNonAttributeChoiceGroups(updatedCharacter),
           );
 
     _updateCharacter(
@@ -160,13 +163,13 @@ class CharacterCreation extends _$CharacterCreation {
       groups: choiceGroups,
     );
     final preservedChoices = backgroundChanged
-        ? _withoutChoiceSources(
+        ? withoutChoiceSources(
             currentChoices,
             const {ChoiceSourceType.background},
           )
-        : _withoutChoiceGroups(
+        : withoutChoiceGroups(
             currentChoices,
-            _classChoiceGroupKeys(choiceGroups),
+            classChoiceGroupKeys(choiceGroups),
           );
 
     _updateCharacter(
@@ -184,9 +187,9 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void syncRacialAttributeChoicesDraft(List<CharacterChoiceData> choices) {
-    final preserved = _withoutChoiceGroups(
+    final preserved = withoutChoiceGroups(
       state.character.choices ?? const <CharacterChoiceData>[],
-      _racialAttributeChoiceGroups(state.character),
+      racialAttributeChoiceGroups(state.character),
     );
 
     _updateCharacter(
@@ -217,55 +220,85 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void setName(String? name) =>
-      _updateCharacter(state.character.copyWith(name: _normalizeText(name)));
+      _updateCharacter(
+        state.character.copyWith(name: normalizeCharacterCreationText(name)),
+      );
 
   void setAge(String? value) =>
-      _updateCharacter(state.character.copyWith(age: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(age: normalizeCharacterCreationText(value)),
+      );
 
   void setHeight(String? value) =>
-      _updateCharacter(state.character.copyWith(height: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(height: normalizeCharacterCreationText(value)),
+      );
 
   void setWeight(String? value) =>
-      _updateCharacter(state.character.copyWith(weight: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(weight: normalizeCharacterCreationText(value)),
+      );
 
   void setEyes(String? value) =>
-      _updateCharacter(state.character.copyWith(eyes: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(eyes: normalizeCharacterCreationText(value)),
+      );
 
   void setSkin(String? value) =>
-      _updateCharacter(state.character.copyWith(skin: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(skin: normalizeCharacterCreationText(value)),
+      );
 
   void setHair(String? value) =>
-      _updateCharacter(state.character.copyWith(hair: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(hair: normalizeCharacterCreationText(value)),
+      );
 
   void setAppearance(String? value) => _updateCharacter(
-        state.character.copyWith(appearance: _normalizeText(value)),
+        state.character.copyWith(
+          appearance: normalizeCharacterCreationText(value),
+        ),
       );
 
   void setBackstory(String? value) => _updateCharacter(
-        state.character.copyWith(backstory: _normalizeText(value)),
+        state.character.copyWith(
+          backstory: normalizeCharacterCreationText(value),
+        ),
       );
 
   void setGoals(String? value) =>
-      _updateCharacter(state.character.copyWith(goals: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(goals: normalizeCharacterCreationText(value)),
+      );
 
   void setAlliesOrganizations(String? value) => _updateCharacter(
         state.character.copyWith(
-          alliesOrganizations: _normalizeText(value),
+          alliesOrganizations: normalizeCharacterCreationText(value),
         ),
       );
 
   void setPersonalityTraits(String? value) => _updateCharacter(
-        state.character.copyWith(personalityTraits: _normalizeText(value)),
+        state.character.copyWith(
+          personalityTraits: normalizeCharacterCreationText(value),
+        ),
       );
 
   void setIdeals(String? value) =>
-      _updateCharacter(state.character.copyWith(ideals: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(
+          ideals: normalizeCharacterCreationText(value),
+        ),
+      );
 
   void setBonds(String? value) =>
-      _updateCharacter(state.character.copyWith(bonds: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(bonds: normalizeCharacterCreationText(value)),
+      );
 
   void setFlaws(String? value) =>
-      _updateCharacter(state.character.copyWith(flaws: _normalizeText(value)));
+      _updateCharacter(
+        state.character.copyWith(flaws: normalizeCharacterCreationText(value)),
+      );
 
   void setExperience(int? experience) =>
       _updateCharacter(state.character.copyWith(experience: experience));
@@ -280,7 +313,7 @@ class CharacterCreation extends _$CharacterCreation {
         character: state.character.copyWith(
           race: race,
           choices: state.character.race?.id != race?.id
-              ? _withoutChoiceSources(
+              ? withoutChoiceSources(
                   state.character.choices ?? const <CharacterChoiceData>[],
                   const {
                     ChoiceSourceType.race,
@@ -295,7 +328,7 @@ class CharacterCreation extends _$CharacterCreation {
         character: state.character.copyWith(
           subrace: subrace,
           choices: state.character.subrace?.id != subrace?.id
-              ? _withoutChoiceSources(
+              ? withoutChoiceSources(
                   state.character.choices ?? const <CharacterChoiceData>[],
                   const {
                     ChoiceSourceType.race,
@@ -322,7 +355,9 @@ class CharacterCreation extends _$CharacterCreation {
       _updateCharacter(state.character.copyWith(inspiration: value));
 
   void setNotes(String? notes) => _updateCharacter(
-        state.character.copyWith(notes: _normalizeText(notes)),
+        state.character.copyWith(
+          notes: normalizeCharacterCreationText(notes),
+        ),
       );
 
   void setClassEntries(List<CharacterClassEntryData> entries) {
@@ -364,7 +399,7 @@ class CharacterCreation extends _$CharacterCreation {
       hpMode: HitPointMode.fixed,
     );
 
-    final preserved = _withoutChoiceSources(
+    final preserved = withoutChoiceSources(
       state.character.choices ?? const <CharacterChoiceData>[],
       const {
         ChoiceSourceType.classData,
@@ -390,7 +425,7 @@ class CharacterCreation extends _$CharacterCreation {
     required Map<String, List<ClassChoiceOptionData>> selectedOptions,
     required List<ClassChoiceGroupView> groups,
   }) {
-    return _buildGroupedChoices(
+    return buildGroupedChoices(
       selectedOptions: selectedOptions,
       groups: groups,
     );
@@ -400,7 +435,7 @@ class CharacterCreation extends _$CharacterCreation {
     required Map<String, List<ClassChoiceOptionData>> selectedOptions,
     required List<ClassChoiceGroupView> groups,
   }) {
-    return _buildGroupedChoices(
+    return buildGroupedChoices(
       selectedOptions: selectedOptions,
       groups: groups,
     );
@@ -409,179 +444,7 @@ class CharacterCreation extends _$CharacterCreation {
   void _updateCharacter(CharacterData updated) {
     state = state.copyWith(character: updated);
   }
-
-  List<CharacterChoiceData> _withoutChoiceSources(
-    List<CharacterChoiceData> choices,
-    Set<ChoiceSourceType> sources,
-  ) {
-    return choices
-        .where((choice) => !sources.contains(choice.sourceType))
-        .toList();
-  }
-
-  List<CharacterChoiceData> _withoutChoiceGroups(
-    List<CharacterChoiceData> choices,
-    Set<String> groups,
-  ) {
-    if (groups.isEmpty) return choices;
-
-    return choices
-        .where((choice) => !groups.contains(choice.groupKey))
-        .toList();
-  }
-
-  Set<String> _racialAttributeChoiceGroups(CharacterData character) {
-    final groups = <String>{
-      'race_bonus_mode',
-      'race_flexible_bonus_plus2',
-      'race_flexible_bonus_plus1',
-      'race_flexible_bonus_three_plus1',
-    };
-
-    void addGroups(List<RaceFeatureData>? features) {
-      for (final feature in features ?? const <RaceFeatureData>[]) {
-        for (final choiceSet
-            in feature.choiceSets ?? const <RaceChoiceSetData>[]) {
-          if (choiceSet.kind != RaceChoiceKind.abilityBonusChoice) continue;
-          final choiceSetId = choiceSet.id;
-          if (choiceSetId == null) continue;
-          final bonusValues = <int>{
-            for (final option
-                in choiceSet.choiceOptions ?? const <RaceChoiceOptionData>[])
-              if ((option.bonusValue ?? 0) > 0) option.bonusValue!,
-          };
-
-          if (bonusValues.isEmpty) {
-            groups.add('race_choice_$choiceSetId');
-            continue;
-          }
-
-          for (final bonusValue in bonusValues) {
-            groups.add('race_choice_${choiceSetId}_bonus_$bonusValue');
-          }
-        }
-      }
-    }
-
-    addGroups(character.race?.features);
-    addGroups(character.subrace?.features);
-    return groups;
-  }
-
-  Set<String> _racialNonAttributeChoiceGroups(CharacterData character) {
-    final groups = <String>{};
-
-    void addGroups(List<RaceFeatureData>? features) {
-      for (final feature in features ?? const <RaceFeatureData>[]) {
-        for (final choiceSet
-            in feature.choiceSets ?? const <RaceChoiceSetData>[]) {
-          if (choiceSet.kind == RaceChoiceKind.abilityBonusChoice) continue;
-          final choiceSetId = choiceSet.id;
-          if (choiceSetId == null) continue;
-          groups.add('race_choice_$choiceSetId');
-        }
-      }
-    }
-
-    addGroups(character.race?.features);
-    addGroups(character.subrace?.features);
-    return groups;
-  }
-
-  ChoiceSourceType _resolveChoiceSourceType(ClassChoiceGroupData group) {
-    if (group.sourceSubclassFeatureId != null) {
-      return ChoiceSourceType.subclassFeature;
-    }
-    if (group.sourceFeatureId != null) return ChoiceSourceType.classFeature;
-    if (group.sourceSubclassId != null) return ChoiceSourceType.subclass;
-    if (group.sourceBackgroundId != null) return ChoiceSourceType.background;
-    if (group.sourceSubraceId != null) return ChoiceSourceType.subrace;
-    if (group.sourceRaceId != null) return ChoiceSourceType.race;
-    return ChoiceSourceType.classData;
-  }
-
-  int? _resolveChoiceSourceId(
-    ClassChoiceGroupData group,
-    ChoiceSourceType sourceType,
-  ) {
-    switch (sourceType) {
-      case ChoiceSourceType.race:
-        return group.sourceRaceId;
-      case ChoiceSourceType.subrace:
-        return group.sourceSubraceId;
-      case ChoiceSourceType.background:
-        return group.sourceBackgroundId;
-      case ChoiceSourceType.classData:
-        return group.sourceClassId;
-      case ChoiceSourceType.subclass:
-        return group.sourceSubclassId;
-      case ChoiceSourceType.classFeature:
-        return group.sourceFeatureId;
-      case ChoiceSourceType.subclassFeature:
-        return group.sourceSubclassFeatureId;
-    }
-  }
-
-  List<CharacterChoiceData> _buildGroupedChoices({
-    required Map<String, List<ClassChoiceOptionData>> selectedOptions,
-    required List<ClassChoiceGroupView> groups,
-  }) {
-    final choices = <CharacterChoiceData>[];
-
-    for (final groupView in groups) {
-      final group = groupView.group;
-      if (group == null) continue;
-
-      final sourceType = _resolveChoiceSourceType(group);
-      final groupKey = _classChoiceGroupKey(group);
-      final selected = selectedOptions[groupKey] ?? const <ClassChoiceOptionData>[];
-      if (selected.isEmpty) continue;
-
-      for (var index = 0; index < selected.length; index++) {
-        final option = selected[index];
-        choices.add(
-          CharacterChoiceData(
-            sourceType: sourceType,
-            sourceId: _resolveChoiceSourceId(group, sourceType),
-            groupKey: groupKey,
-            optionKey: option.optionKey,
-            selectionIndex: index,
-            selectedText: option.name,
-          ),
-        );
-      }
-    }
-
-    return choices;
-  }
-
-  Set<String> _classChoiceGroupKeys(List<ClassChoiceGroupView> groups) {
-    return {
-      for (final groupView in groups)
-        if (groupView.group != null) _classChoiceGroupKey(groupView.group!),
-    };
-  }
-
-  String _classChoiceGroupKey(ClassChoiceGroupData group) {
-    return group.exclusiveKey?.trim().isNotEmpty == true
-        ? group.exclusiveKey!
-        : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
-  }
-
   void reset() {
     state = CharacterCreationState.initial();
-  }
-
-  String? _normalizeText(String? value) {
-    final trimmed = value?.trim();
-    return trimmed == null || trimmed.isEmpty ? null : trimmed;
-  }
-
-  String? _safeEnumToken(Object? value) {
-    if (value == null) return null;
-    final raw = value.toString();
-    if (raw.trim().isEmpty) return null;
-    final parts = raw.split('.');
-    return parts.isEmpty ? raw : parts.last;
   }
 }
