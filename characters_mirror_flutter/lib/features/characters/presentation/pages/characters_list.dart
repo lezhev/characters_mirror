@@ -1,5 +1,7 @@
+import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
+import 'package:characters_mirror_flutter/features/characters/application/characters_list_state.dart';
 import 'package:characters_mirror_flutter/features/characters/presentation/widgets/authenticated_header.dart';
 import 'package:characters_mirror_flutter/features/characters/presentation/widgets/character_tile_view.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ class CharactersList extends ConsumerWidget {
       );
     }
 
+    final charactersState = ref.watch(charactersListControllerProvider);
+
     return Scaffold(
       body: Column(
         children: [
@@ -33,17 +37,110 @@ class CharactersList extends ConsumerWidget {
           Expanded(
             child: PageSizeLimiter(
               maxWidth: 1120,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
-                child: CharacterTileView(
-                  onCreateCharacter: () => context.go('/create'),
-                  onPlaceholderCharacterTap: () =>
-                      context.go('/characters/sheet/1'),
+              child: charactersState.characters.when(
+                data: (characters) => SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
+                  child: CharacterTileView(
+                    characters: characters,
+                    armedDeleteCharacterId:
+                        charactersState.armedDeleteCharacterId,
+                    deletingCharacterId: charactersState.deletingCharacterId,
+                    onCreateCharacter: () => context.go('/create'),
+                    onCharacterTap: (characterId) =>
+                        context.go('/characters/sheet/$characterId'),
+                    onDeleteIntent: ref
+                        .read(charactersListControllerProvider.notifier)
+                        .armDeleteCharacter,
+                    onDeleteMenuDismissed: ref
+                        .read(charactersListControllerProvider.notifier)
+                        .disarmDeleteCharacter,
+                    onDeleteConfirm: (characterId) => _handleDeleteCharacter(
+                      context,
+                      ref,
+                      characterId,
+                    ),
+                  ),
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, stackTrace) => _CharactersErrorState(
+                  error: error,
+                  stackTrace: stackTrace,
+                  onRetry: ref
+                      .read(charactersListControllerProvider.notifier)
+                      .reload,
                 ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _handleDeleteCharacter(
+    BuildContext context,
+    WidgetRef ref,
+    int characterId,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final result = await ref
+        .read(charactersListControllerProvider.notifier)
+        .deleteCharacter(characterId);
+
+    if (!context.mounted) {
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(content: Text(result.message)),
+    );
+  }
+}
+
+class _CharactersErrorState extends StatelessWidget {
+  const _CharactersErrorState({
+    required this.error,
+    required this.stackTrace,
+    required this.onRetry,
+  });
+
+  final Object error;
+  final StackTrace stackTrace;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline,
+              color: colorScheme.error,
+              size: 48,
+            ),
+            const SizedBox(height: 8),
+            SelectableText(
+              humanReadableError(error),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: onRetry,
+              child: const Text('Попробовать снова'),
+            ),
+            Offstage(
+              offstage: true,
+              child: Text(stackTrace.toString()),
+            ),
+          ],
+        ),
       ),
     );
   }

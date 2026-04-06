@@ -15,9 +15,11 @@ import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
 import '../../../data/general/character/character_attack_data.dart' as _i6;
-import '../../../data/general/character/character_class_entry_data.dart' as _i7;
-import '../../../data/general/character/character_choice_data.dart' as _i8;
-import '../../../data/general/character/character_derived_data.dart' as _i9;
+import '../../../data/general/character/character_feature_override_data.dart'
+    as _i7;
+import '../../../data/general/character/character_class_entry_data.dart' as _i8;
+import '../../../data/general/character/character_choice_data.dart' as _i9;
+import '../../../data/general/character/character_derived_data.dart' as _i10;
 
 abstract class CharacterData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -53,6 +55,7 @@ abstract class CharacterData
     this.inspiration,
     this.notes,
     this.attacks,
+    this.featureOverrides,
     this.classEntries,
     this.choices,
     this.derived,
@@ -90,9 +93,10 @@ abstract class CharacterData
     bool? inspiration,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
-    List<_i7.CharacterClassEntryData>? classEntries,
-    List<_i8.CharacterChoiceData>? choices,
-    _i9.CharacterDerivedData? derived,
+    List<_i7.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i8.CharacterClassEntryData>? classEntries,
+    List<_i9.CharacterChoiceData>? choices,
+    _i10.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -152,17 +156,21 @@ abstract class CharacterData
           ?.map((e) =>
               _i6.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      featureOverrides: (jsonSerialization['featureOverrides'] as List?)
+          ?.map((e) => _i7.CharacterFeatureOverrideData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       classEntries: (jsonSerialization['classEntries'] as List?)
           ?.map((e) =>
-              _i7.CharacterClassEntryData.fromJson((e as Map<String, dynamic>)))
+              _i8.CharacterClassEntryData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       choices: (jsonSerialization['choices'] as List?)
           ?.map((e) =>
-              _i8.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
+              _i9.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       derived: jsonSerialization['derived'] == null
           ? null
-          : _i9.CharacterDerivedData.fromJson(
+          : _i10.CharacterDerivedData.fromJson(
               (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
@@ -229,11 +237,13 @@ abstract class CharacterData
 
   List<_i6.CharacterAttackData>? attacks;
 
-  List<_i7.CharacterClassEntryData>? classEntries;
+  List<_i7.CharacterFeatureOverrideData>? featureOverrides;
 
-  List<_i8.CharacterChoiceData>? choices;
+  List<_i8.CharacterClassEntryData>? classEntries;
 
-  _i9.CharacterDerivedData? derived;
+  List<_i9.CharacterChoiceData>? choices;
+
+  _i10.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
@@ -270,9 +280,10 @@ abstract class CharacterData
     bool? inspiration,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
-    List<_i7.CharacterClassEntryData>? classEntries,
-    List<_i8.CharacterChoiceData>? choices,
-    _i9.CharacterDerivedData? derived,
+    List<_i7.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i8.CharacterClassEntryData>? classEntries,
+    List<_i9.CharacterChoiceData>? choices,
+    _i10.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -312,6 +323,9 @@ abstract class CharacterData
       if (notes != null) 'notes': notes,
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
+      if (featureOverrides != null)
+        'featureOverrides':
+            featureOverrides?.toJson(valueToJson: (v) => v.toJson()),
       if (classEntries != null)
         'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
       if (choices != null)
@@ -358,6 +372,9 @@ abstract class CharacterData
       if (notes != null) 'notes': notes,
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (featureOverrides != null)
+        'featureOverrides':
+            featureOverrides?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (classEntries != null)
         'classEntries':
             classEntries?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -408,9 +425,10 @@ class _CharacterDataImpl extends CharacterData {
     bool? inspiration,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
-    List<_i7.CharacterClassEntryData>? classEntries,
-    List<_i8.CharacterChoiceData>? choices,
-    _i9.CharacterDerivedData? derived,
+    List<_i7.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i8.CharacterClassEntryData>? classEntries,
+    List<_i9.CharacterChoiceData>? choices,
+    _i10.CharacterDerivedData? derived,
   }) : super._(
           id: id,
           name: name,
@@ -443,6 +461,7 @@ class _CharacterDataImpl extends CharacterData {
           inspiration: inspiration,
           notes: notes,
           attacks: attacks,
+          featureOverrides: featureOverrides,
           classEntries: classEntries,
           choices: choices,
           derived: derived,
@@ -484,6 +503,7 @@ class _CharacterDataImpl extends CharacterData {
     Object? inspiration = _Undefined,
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
+    Object? featureOverrides = _Undefined,
     Object? classEntries = _Undefined,
     Object? choices = _Undefined,
     Object? derived = _Undefined,
@@ -541,13 +561,17 @@ class _CharacterDataImpl extends CharacterData {
       attacks: attacks is List<_i6.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
-      classEntries: classEntries is List<_i7.CharacterClassEntryData>?
+      featureOverrides:
+          featureOverrides is List<_i7.CharacterFeatureOverrideData>?
+              ? featureOverrides
+              : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
+      classEntries: classEntries is List<_i8.CharacterClassEntryData>?
           ? classEntries
           : this.classEntries?.map((e0) => e0.copyWith()).toList(),
-      choices: choices is List<_i8.CharacterChoiceData>?
+      choices: choices is List<_i9.CharacterChoiceData>?
           ? choices
           : this.choices?.map((e0) => e0.copyWith()).toList(),
-      derived: derived is _i9.CharacterDerivedData?
+      derived: derived is _i10.CharacterDerivedData?
           ? derived
           : this.derived?.copyWith(),
     );

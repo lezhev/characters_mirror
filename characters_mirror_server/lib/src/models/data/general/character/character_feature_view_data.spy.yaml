@@ -1,0 +1,13 @@
+class: CharacterFeatureViewData
+fields:
+  sourceType: CharacterFeatureSourceType
+  sourceId: int
+  sourceName: String?
+  level: int?
+  defaultName: String?
+  defaultDescription: String?
+  defaultTags: List<FeatureTag>?
+  name: String?
+  description: String?
+  tags: List<FeatureTag>?
+  isCustomized: bool?

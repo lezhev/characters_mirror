@@ -99,6 +99,49 @@ void main() {
       );
     });
 
+    test('delete removes owned character from subsequent getAll results',
+        () async {
+      final ownerSession = authenticatedSession(101);
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Удаляемый герой'),
+      );
+
+      await endpoints.characterData.delete(ownerSession, saved.id!);
+
+      final ownedCharacters =
+          await endpoints.characterData.getAll(ownerSession);
+
+      expect(ownedCharacters, isEmpty);
+    });
+
+    test('delete rejects access for another authenticated user', () async {
+      final ownerSession = authenticatedSession(101);
+      final otherSession = authenticatedSession(202);
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Чужой удаляемый герой'),
+      );
+
+      await expectLater(
+        () => endpoints.characterData.delete(otherSession, saved.id!),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('Access denied'),
+          ),
+        ),
+      );
+
+      final ownedCharacters =
+          await endpoints.characterData.getAll(ownerSession);
+      expect(ownedCharacters, hasLength(1));
+      expect(ownedCharacters.first.id, saved.id);
+    });
+
     test(
         'save/get roundtrip preserves class and background choices and rebuilds derived data from canonical options',
         () async {
@@ -119,6 +162,7 @@ void main() {
         CharacterData(
           name: 'Канонический герой',
           race: fixture.race,
+          subrace: fixture.subrace,
           background: fixture.background,
           attacks: [
             CharacterAttackData(
@@ -129,6 +173,27 @@ void main() {
               damageType: DamageType.slashing,
               tags: const ['versatile', 'martial'],
               description: 'Основная атака оружием.',
+            ),
+          ],
+          featureOverrides: [
+            CharacterFeatureOverrideData(
+              sourceType: CharacterFeatureSourceType.classFeature,
+              sourceId: fixture.classFeature.id!,
+              name: 'Custom Fighting Style',
+              description: 'Custom class text.',
+            ),
+            CharacterFeatureOverrideData(
+              sourceType: CharacterFeatureSourceType.subraceFeature,
+              sourceId: fixture.subraceFeature.id!,
+              name: 'Shadow Step',
+              description: 'Custom subrace text.',
+              tags: const [FeatureTag.combat],
+            ),
+            CharacterFeatureOverrideData(
+              sourceType: CharacterFeatureSourceType.raceFeature,
+              sourceId: fixture.raceFeature.id!,
+              name: fixture.raceFeature.name,
+              description: fixture.raceFeature.description,
             ),
           ],
           classEntries: [primaryEntry],
@@ -242,6 +307,7 @@ void main() {
 
       final derived = loaded.derived;
       expect(derived, isNotNull);
+      expect(loaded.featureOverrides, hasLength(2));
       expect(derived!.languages, contains('celestial'));
       expect(derived.toolProficiencies, contains('smith_tools'));
       expect(derived.grantedItemKeys, contains('holy_symbol'));
@@ -259,6 +325,53 @@ void main() {
       expect(derived.skillBonuses?['athletics'], 2);
       expect(derived.skillBonuses?['insight'], 2);
       expect(derived.skillBonuses?['religion'], 2);
+      expect(
+        derived.activeFeatures?.map((feature) => feature.sourceType).toSet(),
+        containsAll({
+          CharacterFeatureSourceType.classFeature,
+          CharacterFeatureSourceType.subclassFeature,
+          CharacterFeatureSourceType.raceFeature,
+          CharacterFeatureSourceType.subraceFeature,
+        }),
+      );
+
+      final classFeatureView = derived.activeFeatures!.singleWhere(
+        (feature) =>
+            feature.sourceType == CharacterFeatureSourceType.classFeature &&
+            feature.sourceId == fixture.classFeature.id,
+      );
+      expect(classFeatureView.defaultName, 'Fighting Style');
+      expect(classFeatureView.name, 'Custom Fighting Style');
+      expect(classFeatureView.defaultDescription, isNull);
+      expect(classFeatureView.description, 'Custom class text.');
+      expect(classFeatureView.defaultTags, [FeatureTag.combat]);
+      expect(classFeatureView.tags, [FeatureTag.combat]);
+      expect(classFeatureView.isCustomized, isTrue);
+
+      final subraceFeatureView = derived.activeFeatures!.singleWhere(
+        (feature) =>
+            feature.sourceType == CharacterFeatureSourceType.subraceFeature &&
+            feature.sourceId == fixture.subraceFeature.id,
+      );
+      expect(subraceFeatureView.defaultName, 'Shadow Sight');
+      expect(subraceFeatureView.name, 'Shadow Step');
+      expect(
+        subraceFeatureView.defaultDescription,
+        'See through darkness more clearly.',
+      );
+      expect(subraceFeatureView.description, 'Custom subrace text.');
+      expect(subraceFeatureView.defaultTags, [FeatureTag.utility]);
+      expect(subraceFeatureView.tags, [FeatureTag.combat]);
+      expect(subraceFeatureView.isCustomized, isTrue);
+
+      final raceFeatureView = derived.activeFeatures!.singleWhere(
+        (feature) =>
+            feature.sourceType == CharacterFeatureSourceType.raceFeature &&
+            feature.sourceId == fixture.raceFeature.id,
+      );
+      expect(raceFeatureView.defaultName, fixture.raceFeature.name);
+      expect(raceFeatureView.name, fixture.raceFeature.name);
+      expect(raceFeatureView.isCustomized, isFalse);
 
       expect(loaded.attacks, hasLength(1));
       final attack = loaded.attacks!.single;
@@ -301,6 +414,52 @@ void main() {
       );
     });
 
+    test('feature override reset returns canonical feature text', () async {
+      final ownerSession = authenticatedSession(404);
+      final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+      final primaryEntry = CharacterClassEntryData(
+        classData: fixture.classData,
+        subclass: fixture.subclass,
+        level: 1,
+        isStartingClass: true,
+        classOrder: 0,
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          race: fixture.race,
+          subrace: fixture.subrace,
+          classEntries: [primaryEntry],
+          featureOverrides: [
+            CharacterFeatureOverrideData(
+              sourceType: CharacterFeatureSourceType.classFeature,
+              sourceId: fixture.classFeature.id!,
+              name: 'Temporary Override',
+              tags: const [FeatureTag.utility],
+            ),
+          ],
+        ),
+      );
+
+      final reset = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        saved.copyWith(
+          featureOverrides: const <CharacterFeatureOverrideData>[],
+        ),
+      );
+
+      expect(reset.featureOverrides, isEmpty);
+      final classFeatureView = reset.derived!.activeFeatures!.singleWhere(
+        (feature) =>
+            feature.sourceType == CharacterFeatureSourceType.classFeature &&
+            feature.sourceId == fixture.classFeature.id,
+      );
+      expect(classFeatureView.name, 'Fighting Style');
+      expect(classFeatureView.tags, [FeatureTag.combat]);
+      expect(classFeatureView.isCustomized, isFalse);
+    });
+
     test('background step view exposes variable background choices', () async {
       final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
 
@@ -327,19 +486,27 @@ void main() {
 class _CreationFixture {
   const _CreationFixture({
     required this.classData,
+    required this.classFeature,
     required this.subclass,
     required this.subclassFeature,
     required this.background,
     required this.race,
+    required this.raceFeature,
+    required this.subrace,
+    required this.subraceFeature,
     required this.raceChoiceSet,
     required this.feat,
   });
 
   final ClassData classData;
+  final ClassFeatureData classFeature;
   final SubclassData subclass;
   final SubclassFeatureData subclassFeature;
   final BackgroundData background;
   final RaceData race;
+  final RaceFeatureData raceFeature;
+  final SubraceData subrace;
+  final RaceFeatureData subraceFeature;
   final RaceChoiceSetData raceChoiceSet;
   final FeatData feat;
 }
@@ -378,7 +545,7 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
-  await endpoints.classFeatureData.upsert(
+  final classFeature = await endpoints.classFeatureData.upsert(
     sessionBuilder,
     ClassFeatureData(
       parentClassId: classData.id!,
@@ -572,6 +739,26 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
+  final subrace = await endpoints.subraceData.upsert(
+    sessionBuilder,
+    SubraceData(
+      parentRaceId: race.id!,
+      name: 'Fixture Nightfolk',
+      description: 'Subrace used in integration tests.',
+    ),
+  );
+
+  final subraceFeature = await endpoints.raceFeature.upsert(
+    sessionBuilder,
+    RaceFeatureData(
+      subraceId: subrace.id,
+      name: 'Shadow Sight',
+      description: 'See through darkness more clearly.',
+      level: 1,
+      tags: const [FeatureTag.utility],
+    ),
+  );
+
   final raceChoiceSet = await endpoints.raceChoiceSetData.upsert(
     sessionBuilder,
     RaceChoiceSetData(
@@ -600,10 +787,14 @@ Future<_CreationFixture> _seedCreationFixture(
 
   return _CreationFixture(
     classData: classData,
+    classFeature: classFeature,
     subclass: subclass,
     subclassFeature: subclassFeature,
     background: background,
     race: hydratedRace.race!,
+    raceFeature: raceFeature,
+    subrace: subrace,
+    subraceFeature: subraceFeature,
     raceChoiceSet: raceChoiceSet,
     feat: feat,
   );

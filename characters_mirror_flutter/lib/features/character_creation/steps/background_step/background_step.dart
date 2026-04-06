@@ -1,17 +1,13 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_group_card.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/jump_to_details_button.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_nav_bar.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/widgets/background_features.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_selection_step_scaffold.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_shimmer.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -32,79 +28,41 @@ class BackgroundStep extends HookConsumerWidget {
         final showJumpButton = selectedBackgroundKey != null &&
             dismissedSelectionKey.value != selectedBackgroundKey;
 
-        return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(CreationAppBar.height),
-            child: CreationAppBar(
-              title: "Создание персонажа",
-              onBack: () {
-                ref.read(characterCreationProvider.notifier).reset();
-                context.go('/characters');
-              },
-              onStepTap: (target) => _syncAndGo(
-                context: context,
-                ref: ref,
-                data: data,
-                target: target,
-              ),
-            ),
+        return CreationSelectionStepScaffold(
+          route: 'attributes',
+          onBack: () {
+            ref.read(characterCreationProvider.notifier).reset();
+            context.go('/characters');
+          },
+          onStepTap: (target) async => _syncAndGo(
+            context: context,
+            ref: ref,
+            data: data,
+            target: target,
           ),
-          body: PageSizeLimiter(
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8.0,
-                    horizontal: 16.0,
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        BackgroundTileView(),
-                        if (data.selectedBackground != null)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 88.0),
-                            child: KeyedSubtree(
-                              key: detailsKey,
-                              child: BackgroundFeatures(
-                                selectedBackground: data.selectedBackground!,
-                                stepView: data.stepView,
-                                selectedOptions: data.selectedOptions,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
+          onPressedNext: () {
+            final notifier = ref.read(characterCreationProvider.notifier);
+            notifier.syncBackgroundDraft(
+              selectedBackground: data.selectedBackground,
+              choiceGroups: data.stepView?.choiceGroups ?? const [],
+              selectedOptions: data.selectedOptions,
+            );
+            notifier.nextStep(context);
+          },
+          selection: BackgroundTileView(),
+          details: data.selectedBackground == null
+              ? null
+              : BackgroundFeatures(
+                  selectedBackground: data.selectedBackground!,
+                  stepView: data.stepView,
+                  selectedOptions: data.selectedOptions,
                 ),
-                if (showJumpButton)
-                  JumpToDetailsButton(
-                    onPressed: () {
-                      dismissedSelectionKey.value = selectedBackgroundKey;
-                      _scrollToDetails(detailsKey);
-                    },
-                  ),
-              ],
-            ),
-          ),
-          bottomNavigationBar: SafeArea(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: CreationNavBar(
-                onPressedNext: () {
-                  final notifier = ref.read(characterCreationProvider.notifier);
-                  notifier.syncBackgroundDraft(
-                    selectedBackground: data.selectedBackground,
-                    choiceGroups: data.stepView?.choiceGroups ?? const [],
-                    selectedOptions: data.selectedOptions,
-                  );
-                  notifier.nextStep(context);
-                },
-                route: 'attributes',
-              ),
-            ),
-          ),
+          detailsKey: detailsKey,
+          showJumpButton: showJumpButton,
+          onJumpToDetails: () {
+            dismissedSelectionKey.value = selectedBackgroundKey;
+            _scrollToDetails(detailsKey);
+          },
         );
       },
       error: (e, s) {
@@ -148,224 +106,6 @@ Future<void> _scrollToDetails(GlobalKey key) async {
   );
 }
 
-class BackgroundFeatures extends ConsumerWidget {
-  final BackgroundData selectedBackground;
-  final BackgroundStepView? stepView;
-  final Map<String, List<ClassChoiceOptionData>> selectedOptions;
-
-  const BackgroundFeatures({
-    super.key,
-    required this.selectedBackground,
-    required this.stepView,
-    required this.selectedOptions,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    final cards = <Widget>[
-      if (_hasText(selectedBackground.description))
-        BackgroundFeatureCard(
-          title: 'Описание',
-          child: Text(
-            selectedBackground.description!,
-            style: textTheme.bodyMedium,
-            textAlign: TextAlign.justify,
-          ),
-        ),
-      if (_hasText(selectedBackground.feature))
-        BackgroundFeatureCard(
-          title: 'Особенность',
-          child: Text(
-            selectedBackground.feature!,
-            style: textTheme.bodyMedium,
-            textAlign: TextAlign.justify,
-          ),
-        ),
-      if (_hasAnyValues([
-        selectedBackground.skillProficiencies,
-        selectedBackground.toolProficiencies,
-        selectedBackground.languages,
-      ]))
-        BackgroundFeatureCard(
-          title: 'Владения и языки',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _BackgroundValueGroup(
-                label: 'Владение навыками',
-                values: selectedBackground.skillProficiencies,
-              ),
-              _BackgroundValueGroup(
-                label: 'Владение инструментами',
-                values: selectedBackground.toolProficiencies,
-              ),
-              _BackgroundValueGroup(
-                label: 'Языки',
-                values: selectedBackground.languages,
-              ),
-            ],
-          ),
-        ),
-      if (_hasTextList(selectedBackground.items) ||
-          selectedBackground.coins != null)
-        BackgroundFeatureCard(
-          title: 'Снаряжение и ресурсы',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _BackgroundValueGroup(
-                label: 'Предметы',
-                values: selectedBackground.items,
-              ),
-              if (selectedBackground.coins != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    'Монеты: ${_formatCoins(selectedBackground.coins!)}',
-                    style: textTheme.bodyMedium,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      if (_hasAnyValues([
-        selectedBackground.suggestedPersonality,
-        selectedBackground.suggestedIdeal,
-        selectedBackground.suggestedBond,
-        selectedBackground.suggestedFlaw,
-      ]))
-        BackgroundFeatureCard(
-          title: 'Ролевые зацепки',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _BackgroundPromptGroup(
-                label: 'Черты характера',
-                values: selectedBackground.suggestedPersonality,
-              ),
-              _BackgroundPromptGroup(
-                label: 'Идеалы',
-                values: selectedBackground.suggestedIdeal,
-              ),
-              _BackgroundPromptGroup(
-                label: 'Привязанности',
-                values: selectedBackground.suggestedBond,
-              ),
-              _BackgroundPromptGroup(
-                label: 'Слабости',
-                values: selectedBackground.suggestedFlaw,
-              ),
-            ],
-          ),
-        ),
-    ];
-    final choiceCards = (stepView?.choiceGroups ?? const <ClassChoiceGroupView>[])
-        .where((groupView) => groupView.group != null)
-        .map(
-          (groupView) => Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: CreationChoiceGroupCard(
-              groupView: groupView,
-              selectedOptions:
-                  selectedOptions[_groupKey(groupView.group!)] ??
-                      const <ClassChoiceOptionData>[],
-              onToggleOption:
-                  ref.read(backgroundStateProvider.notifier).toggleOption,
-              onIncrementOption:
-                  ref.read(backgroundStateProvider.notifier).incrementOption,
-              onDecrementOption:
-                  ref.read(backgroundStateProvider.notifier).decrementOption,
-              onClearGroup:
-                  ref.read(backgroundStateProvider.notifier).clearGroup,
-            ),
-          ),
-        )
-        .toList();
-
-    if (cards.isEmpty && choiceCards.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 12.0),
-          child: Text('COMING SOON', style: textTheme.displayLarge),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Gap(4),
-        Text('Особенности предыстории', style: textTheme.headlineSmall),
-        const Gap(4),
-        Container(
-            width: double.infinity, height: 2, color: colorScheme.primary),
-        const Gap(2),
-        ...cards,
-        if (choiceCards.isNotEmpty) ...[
-          const Gap(12),
-          Text('Выборы предыстории', style: textTheme.headlineSmall),
-          const Gap(4),
-          Container(
-            width: double.infinity,
-            height: 2,
-            color: colorScheme.primary,
-          ),
-          const Gap(2),
-          ...choiceCards,
-        ],
-      ],
-    );
-  }
-}
-
-class BackgroundFeatureCard extends StatelessWidget {
-  final String title;
-  final Widget child;
-
-  const BackgroundFeatureCard({
-    super.key,
-    required this.title,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.surfaceDim,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: textTheme.labelLarge),
-              const Gap(8),
-              child,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class BackgroundTileView extends HookConsumerWidget {
   const BackgroundTileView({super.key});
   @override
@@ -400,126 +140,6 @@ class BackgroundTileView extends HookConsumerWidget {
           ),
         );
   }
-}
-
-class _BackgroundValueGroup extends StatelessWidget {
-  final String label;
-  final List<dynamic>? values;
-
-  const _BackgroundValueGroup({
-    required this.label,
-    required this.values,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_hasTextList(values)) {
-      return const SizedBox.shrink();
-    }
-
-    final textTheme = Theme.of(context).textTheme;
-    final chips = values!
-        .map(_displayValue)
-        .where((value) => value.trim().isNotEmpty)
-        .map(
-          (value) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.outline),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(value, style: textTheme.bodySmall),
-          ),
-        )
-        .toList();
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: textTheme.titleSmall),
-          const Gap(6),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: chips,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BackgroundPromptGroup extends StatelessWidget {
-  final String label;
-  final List<String>? values;
-
-  const _BackgroundPromptGroup({
-    required this.label,
-    required this.values,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_hasTextList(values)) {
-      return const SizedBox.shrink();
-    }
-
-    final textTheme = Theme.of(context).textTheme;
-    final prompts = values!.where((value) => value.trim().isNotEmpty).toList();
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: textTheme.titleSmall),
-          const Gap(6),
-          ...prompts.map(
-            (value) => Padding(
-              padding: const EdgeInsets.only(bottom: 6.0),
-              child: Text(
-                '• $value',
-                style: textTheme.bodyMedium,
-                textAlign: TextAlign.justify,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
-
-bool _hasTextList(List<dynamic>? values) =>
-    values != null &&
-    values.any((value) => _displayValue(value).trim().isNotEmpty);
-
-bool _hasAnyValues(List<List<dynamic>?> groups) =>
-    groups.any((group) => _hasTextList(group));
-
-String _formatCoins(double value) {
-  return value.truncateToDouble() == value
-      ? value.toInt().toString()
-      : value.toString();
-}
-
-String _displayValue(dynamic value) {
-  if (value == null) return '';
-  if (value is String) return value;
-
-  final raw = value.name?.toString() ?? value.toString();
-  final normalized = raw.replaceAllMapped(
-    RegExp(r'([a-z])([A-Z])'),
-    (match) => '${match.group(1)} ${match.group(2)}',
-  );
-
-  return normalized.isEmpty
-      ? normalized
-      : normalized[0].toUpperCase() + normalized.substring(1);
 }
 
 class BackgroundTile extends HookConsumerWidget {
@@ -632,8 +252,3 @@ class BackgroundTile extends HookConsumerWidget {
         );
   }
 }
-
-String _groupKey(ClassChoiceGroupData group) =>
-    group.exclusiveKey?.trim().isNotEmpty == true
-        ? group.exclusiveKey!
-        : 'group_${group.id ?? group.name ?? group.type?.name ?? 'unknown'}';

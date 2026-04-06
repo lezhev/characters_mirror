@@ -4,6 +4,7 @@ fields:
   proficiencyBonus: int?
   abilityScores: Map<String, int>?
   abilityModifiers: Map<String, int>?
+  activeFeatures: List<CharacterFeatureViewData>?
   armorClass: int?
   initiative: int?
   speed: int?
