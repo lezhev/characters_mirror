@@ -33,6 +33,7 @@ class _SmoothSwitcherAbilityConfig {
     this.onReset,
     required this.showTitle,
     required this.showText,
+    required this.isEditable,
     this.emptyTextPlaceholder,
   });
 
@@ -46,6 +47,7 @@ class _SmoothSwitcherAbilityConfig {
   final Future<void> Function()? onReset;
   final bool showTitle;
   final bool showText;
+  final bool isEditable;
   final String? emptyTextPlaceholder;
   final String dialogTitle = 'Редактирование способности';
   final String titleFieldLabel = 'Название';

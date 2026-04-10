@@ -1,0 +1,18 @@
+class: StartingEquipmentLineData
+table: starting_equipment_line_data
+fields:
+  block: StartingEquipmentBlockData?, relation(optional)
+  option: StartingEquipmentOptionData?, relation(optional)
+  lineKey: String?
+  orderIndex: int?
+  kind: StartingEquipmentLineKind?
+  displayText: String?
+  quantity: int?
+  catalogType: EquipmentCatalogType?
+  referenceKey: String?
+  allowedWeaponCategories: List<WeaponCategory>?
+  allowedItemCategories: List<String>?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/starting_equipment_selection_support.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,6 +15,8 @@ abstract class BackgroundStateModel with _$BackgroundStateModel {
     BackgroundData? selectedBackground,
     BackgroundStepView? stepView,
     @Default({}) Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    @Default([])
+    List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
   }) = _BackgroundStateModel;
 }
 
@@ -21,6 +24,8 @@ abstract class BackgroundStateModel with _$BackgroundStateModel {
 class BackgroundState extends _$BackgroundState {
   @override
   FutureOr<BackgroundStateModel> build() async {
+    ref.keepAlive();
+
     final backgrounds = await ref.watch(backgroundRepositoryProvider).getAll();
     backgrounds.sort((a, b) => a.id!.compareTo(b.id!));
 
@@ -41,6 +46,9 @@ class BackgroundState extends _$BackgroundState {
       background: selectedBackground,
       savedChoices:
           characterCreation.character.choices ?? const <CharacterChoiceData>[],
+      savedEquipmentSelections:
+          characterCreation.character.startingEquipmentSelections ??
+              const <CharacterStartingEquipmentSelectionData>[],
     );
   }
 
@@ -62,6 +70,7 @@ class BackgroundState extends _$BackgroundState {
         selectedBackground: null,
         stepView: null,
         selectedOptions: const {},
+        startingEquipmentSelections: const [],
       ),
     );
   }
@@ -111,7 +120,8 @@ class BackgroundState extends _$BackgroundState {
     );
   }
 
-  void incrementOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
+  void incrementOption(
+      ClassChoiceGroupData group, ClassChoiceOptionData option) {
     if (group.allowDuplicates != true) return;
 
     final current = Map<String, List<ClassChoiceOptionData>>.from(
@@ -130,7 +140,8 @@ class BackgroundState extends _$BackgroundState {
     );
   }
 
-  void decrementOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
+  void decrementOption(
+      ClassChoiceGroupData group, ClassChoiceOptionData option) {
     final current = Map<String, List<ClassChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
@@ -167,10 +178,168 @@ class BackgroundState extends _$BackgroundState {
     );
   }
 
+  void selectStartingEquipmentOption(
+    StartingEquipmentBlockView blockView,
+    StartingEquipmentOptionView optionView,
+  ) {
+    final currentState = state.value;
+    final backgroundId = currentState?.selectedBackground?.id;
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    final optionKey = normalizedEquipmentKey(optionView.option?.optionKey);
+    if (currentState == null ||
+        backgroundId == null ||
+        blockKey == null ||
+        optionKey == null) {
+      return;
+    }
+
+    final selections = [
+      for (final selection in currentState.startingEquipmentSelections)
+        if (normalizedEquipmentKey(selection.blockKey) != blockKey) selection,
+    ];
+    final existing = currentState.startingEquipmentSelections.firstWhere(
+      (selection) => normalizedEquipmentKey(selection.blockKey) == blockKey,
+      orElse: () => CharacterStartingEquipmentSelectionData(
+        sourceType: ChoiceSourceType.background,
+        sourceId: backgroundId,
+        blockKey: blockKey,
+      ),
+    );
+    final isSameOption =
+        normalizedEquipmentKey(existing.optionKey) == optionKey;
+
+    if (!isSameOption) {
+      selections.add(
+        CharacterStartingEquipmentSelectionData(
+          sourceType: ChoiceSourceType.background,
+          sourceId: backgroundId,
+          blockKey: blockKey,
+          optionKey: optionView.option?.optionKey,
+          selectionIndex: 0,
+          resolutions: const [],
+        ),
+      );
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: currentState.stepView?.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: selections,
+          sourceType: ChoiceSourceType.background,
+          sourceId: backgroundId,
+        ),
+      ),
+    );
+  }
+
+  void clearStartingEquipmentBlock(StartingEquipmentBlockView blockView) {
+    final currentState = state.value;
+    final backgroundId = currentState?.selectedBackground?.id;
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    if (currentState == null || backgroundId == null || blockKey == null) {
+      return;
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: currentState.stepView?.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: [
+            for (final selection in currentState.startingEquipmentSelections)
+              if (normalizedEquipmentKey(selection.blockKey) != blockKey)
+                selection,
+          ],
+          sourceType: ChoiceSourceType.background,
+          sourceId: backgroundId,
+        ),
+      ),
+    );
+  }
+
+  void setStartingEquipmentResolution({
+    required StartingEquipmentBlockView blockView,
+    required StartingEquipmentLineData line,
+    required EquipmentCatalogType catalogType,
+    required String referenceKey,
+  }) {
+    final currentState = state.value;
+    final backgroundId = currentState?.selectedBackground?.id;
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    final lineKey = normalizedEquipmentKey(line.lineKey);
+    if (currentState == null ||
+        backgroundId == null ||
+        blockKey == null ||
+        lineKey == null ||
+        normalizedEquipmentKey(referenceKey) == null) {
+      return;
+    }
+
+    final selectedOption = _selectedStartingEquipmentOption(
+      blockView: blockView,
+      selections: currentState.startingEquipmentSelections,
+    );
+    final optionKey = normalizedEquipmentKey(selectedOption?.option?.optionKey);
+    final existingSelection =
+        currentState.startingEquipmentSelections.firstWhere(
+      (selection) =>
+          normalizedEquipmentKey(selection.blockKey) == blockKey &&
+          normalizedEquipmentKey(selection.optionKey) == optionKey,
+      orElse: () => CharacterStartingEquipmentSelectionData(
+        sourceType: ChoiceSourceType.background,
+        sourceId: backgroundId,
+        blockKey: blockKey,
+        optionKey: selectedOption?.option?.optionKey,
+        selectionIndex: 0,
+      ),
+    );
+
+    final updatedResolutions = [
+      for (final resolution in existingSelection.resolutions ??
+          const <CharacterStartingEquipmentResolutionData>[])
+        if (normalizedEquipmentKey(resolution.lineKey) != lineKey) resolution,
+      CharacterStartingEquipmentResolutionData(
+        lineKey: line.lineKey,
+        catalogType: catalogType,
+        referenceKey: normalizedEquipmentKey(referenceKey),
+        quantity: line.quantity,
+      ),
+    ];
+    final nextSelections = [
+      for (final selection in currentState.startingEquipmentSelections)
+        if (!(normalizedEquipmentKey(selection.blockKey) == blockKey &&
+            normalizedEquipmentKey(selection.optionKey) == optionKey))
+          selection,
+      existingSelection.copyWith(
+        sourceType: ChoiceSourceType.background,
+        sourceId: backgroundId,
+        blockKey: blockView.block?.blockKey,
+        optionKey: selectedOption?.option?.optionKey,
+        resolutions: updatedResolutions,
+      ),
+    ];
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: currentState.stepView?.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: nextSelections,
+          sourceType: ChoiceSourceType.background,
+          sourceId: backgroundId,
+        ),
+      ),
+    );
+  }
+
   Future<BackgroundStateModel> _loadBackgroundSelection({
     required BackgroundStateModel current,
     required BackgroundData background,
     List<CharacterChoiceData> savedChoices = const [],
+    List<CharacterStartingEquipmentSelectionData> savedEquipmentSelections =
+        const [],
   }) async {
     final backgroundId = background.id;
     if (backgroundId == null) {
@@ -178,6 +347,7 @@ class BackgroundState extends _$BackgroundState {
         selectedBackground: background,
         stepView: null,
         selectedOptions: const {},
+        startingEquipmentSelections: const [],
       );
     }
 
@@ -190,6 +360,13 @@ class BackgroundState extends _$BackgroundState {
         stepView.choiceGroups,
         savedChoices,
       ),
+      startingEquipmentSelections: normalizeStartingEquipmentSelections(
+        blocks: stepView.startingEquipmentBlocks ??
+            const <StartingEquipmentBlockView>[],
+        selections: savedEquipmentSelections,
+        sourceType: ChoiceSourceType.background,
+        sourceId: backgroundId,
+      ),
     );
   }
 
@@ -199,8 +376,9 @@ class BackgroundState extends _$BackgroundState {
   ) {
     final optionsByGroupKey = _availableOptionsByGroup(groups);
     final restored = <String, List<ClassChoiceOptionData>>{};
-    final sortedChoices = [...savedChoices]
-      ..sort((a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
+    final sortedChoices = [
+      ...savedChoices
+    ]..sort((a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
 
     for (final choice in sortedChoices) {
       if (choice.sourceType != ChoiceSourceType.background) continue;
@@ -225,7 +403,8 @@ class BackgroundState extends _$BackgroundState {
   ) {
     final choiceGroups = {
       for (final groupView in groups ?? const <ClassChoiceGroupView>[])
-        if (groupView.group != null) _groupKey(groupView.group!): groupView.group!,
+        if (groupView.group != null)
+          _groupKey(groupView.group!): groupView.group!,
     };
     final availableOptions = _availableOptionsByGroup(groups);
     final normalized = <String, List<ClassChoiceOptionData>>{};
@@ -274,13 +453,39 @@ class BackgroundState extends _$BackgroundState {
       if (group == null) continue;
 
       result[_groupKey(group)] = {
-        for (final option in groupView.options ?? const <ClassChoiceOptionData>[])
+        for (final option
+            in groupView.options ?? const <ClassChoiceOptionData>[])
           if (option.optionKey?.trim().isNotEmpty == true)
             option.optionKey!.trim(): option,
       };
     }
 
     return result;
+  }
+
+  StartingEquipmentOptionView? _selectedStartingEquipmentOption({
+    required StartingEquipmentBlockView blockView,
+    required List<CharacterStartingEquipmentSelectionData> selections,
+  }) {
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    if (blockKey == null) {
+      return null;
+    }
+    final selection = selections.firstWhere(
+      (item) => normalizedEquipmentKey(item.blockKey) == blockKey,
+      orElse: () => CharacterStartingEquipmentSelectionData(),
+    );
+    final optionKey = normalizedEquipmentKey(selection.optionKey);
+    if (optionKey == null) {
+      return null;
+    }
+    for (final optionView
+        in blockView.options ?? const <StartingEquipmentOptionView>[]) {
+      if (normalizedEquipmentKey(optionView.option?.optionKey) == optionKey) {
+        return optionView;
+      }
+    }
+    return null;
   }
 
   BackgroundData? _findBackgroundById(List<BackgroundData> items, int? id) {

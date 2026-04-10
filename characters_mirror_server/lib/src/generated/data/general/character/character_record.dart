@@ -56,6 +56,7 @@ abstract class CharacterRecord
     this.temporaryHp,
     this.currentHp,
     this.inspiration,
+    this.equipment,
     this.notes,
     this.attacks,
     this.featureOverrides,
@@ -95,6 +96,7 @@ abstract class CharacterRecord
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
+    String? equipment,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
     List<_i7.CharacterFeatureOverrideData>? featureOverrides,
@@ -156,6 +158,7 @@ abstract class CharacterRecord
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
+      equipment: jsonSerialization['equipment'] as String?,
       notes: jsonSerialization['notes'] as String?,
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
@@ -239,6 +242,8 @@ abstract class CharacterRecord
 
   bool? inspiration;
 
+  String? equipment;
+
   String? notes;
 
   List<_i6.CharacterAttackData>? attacks;
@@ -285,6 +290,7 @@ abstract class CharacterRecord
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
+    String? equipment,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
     List<_i7.CharacterFeatureOverrideData>? featureOverrides,
@@ -328,6 +334,7 @@ abstract class CharacterRecord
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
+      if (equipment != null) 'equipment': equipment,
       if (notes != null) 'notes': notes,
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
@@ -417,6 +424,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
+    String? equipment,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
     List<_i7.CharacterFeatureOverrideData>? featureOverrides,
@@ -454,6 +462,7 @@ class _CharacterRecordImpl extends CharacterRecord {
           temporaryHp: temporaryHp,
           currentHp: currentHp,
           inspiration: inspiration,
+          equipment: equipment,
           notes: notes,
           attacks: attacks,
           featureOverrides: featureOverrides,
@@ -497,6 +506,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
     Object? inspiration = _Undefined,
+    Object? equipment = _Undefined,
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
@@ -554,6 +564,7 @@ class _CharacterRecordImpl extends CharacterRecord {
       temporaryHp: temporaryHp is int? ? temporaryHp : this.temporaryHp,
       currentHp: currentHp is int? ? currentHp : this.currentHp,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
+      equipment: equipment is String? ? equipment : this.equipment,
       notes: notes is String? ? notes : this.notes,
       attacks: attacks is List<_i6.CharacterAttackData>?
           ? attacks
@@ -685,6 +696,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'inspiration',
       this,
     );
+    equipment = _i1.ColumnString(
+      'equipment',
+      this,
+    );
     notes = _i1.ColumnString(
       'notes',
       this,
@@ -763,6 +778,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool inspiration;
 
+  late final _i1.ColumnString equipment;
+
   late final _i1.ColumnString notes;
 
   late final _i1.ColumnSerializable attacks;
@@ -840,6 +857,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
         temporaryHp,
         currentHp,
         inspiration,
+        equipment,
         notes,
         attacks,
         featureOverrides,

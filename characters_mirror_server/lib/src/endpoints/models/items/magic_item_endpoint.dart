@@ -11,9 +11,12 @@ class MagicItemDataEndpoint extends Endpoint {
   }
 
   Future<MagicItemData> upsert(Session session, MagicItemData magicItem) async {
+    final normalizedReferenceKey = magicItem.referenceKey?.trim();
     final existing = await MagicItemData.db.find(
       session,
-      where: (t) => t.name.equals(magicItem.name),
+      where: normalizedReferenceKey != null && normalizedReferenceKey.isNotEmpty
+          ? (t) => t.referenceKey.equals(normalizedReferenceKey)
+          : (t) => t.name.equals(magicItem.name),
       limit: 1,
     );
 

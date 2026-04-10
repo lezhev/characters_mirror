@@ -29,7 +29,10 @@ class RaceState extends _$RaceState {
 
   @override
   FutureOr<RaceStateModel> build() async {
-    final races = await ref.watch(raceRepositoryProvider)
+    ref.keepAlive();
+
+    final races = await ref
+        .watch(raceRepositoryProvider)
         .getAll()
         .timeout(_requestTimeout);
     races.sort(_compareRaces);

@@ -17,6 +17,7 @@ abstract class WeaponData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   WeaponData._({
     this.id,
+    this.referenceKey,
     this.name,
     this.description,
     this.source,
@@ -35,6 +36,7 @@ abstract class WeaponData
 
   factory WeaponData({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -54,6 +56,7 @@ abstract class WeaponData
   factory WeaponData.fromJson(Map<String, dynamic> jsonSerialization) {
     return WeaponData(
       id: jsonSerialization['id'] as int?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -89,6 +92,8 @@ abstract class WeaponData
 
   @override
   int? id;
+
+  String? referenceKey;
 
   String? name;
 
@@ -126,6 +131,7 @@ abstract class WeaponData
   @_i1.useResult
   WeaponData copyWith({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -145,6 +151,7 @@ abstract class WeaponData
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -166,6 +173,7 @@ abstract class WeaponData
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -218,6 +226,7 @@ class _Undefined {}
 class _WeaponDataImpl extends WeaponData {
   _WeaponDataImpl({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -234,6 +243,7 @@ class _WeaponDataImpl extends WeaponData {
     int? rangeMax,
   }) : super._(
           id: id,
+          referenceKey: referenceKey,
           name: name,
           description: description,
           source: source,
@@ -256,6 +266,7 @@ class _WeaponDataImpl extends WeaponData {
   @override
   WeaponData copyWith({
     Object? id = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
@@ -273,6 +284,7 @@ class _WeaponDataImpl extends WeaponData {
   }) {
     return WeaponData(
       id: id is int? ? id : this.id,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,
@@ -297,6 +309,10 @@ class _WeaponDataImpl extends WeaponData {
 
 class WeaponDataTable extends _i1.Table<int?> {
   WeaponDataTable({super.tableRelation}) : super(tableName: 'weapon_data') {
+    referenceKey = _i1.ColumnString(
+      'referenceKey',
+      this,
+    );
     name = _i1.ColumnString(
       'name',
       this,
@@ -357,6 +373,8 @@ class WeaponDataTable extends _i1.Table<int?> {
     );
   }
 
+  late final _i1.ColumnString referenceKey;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString description;
@@ -388,6 +406,7 @@ class WeaponDataTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        referenceKey,
         name,
         description,
         source,

@@ -24,7 +24,7 @@ fields:
   featureTags: List<FeatureTag>?
   featIds: List<int>?
   grantedSpellKeys: List<String>?
-  grantedItemKeys: List<String>?
+  grantedEquipment: List<CharacterEquipmentEntryView>?
   senses: List<String>?
   resistances: List<DamageType>?
   rebuiltAt: DateTime?

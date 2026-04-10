@@ -19,6 +19,7 @@ mixin _$ClassStateModel {
   ClassStepView? get stepView;
   SubclassData? get selectedSubclass;
   Map<String, List<ClassChoiceOptionData>> get selectedOptions;
+  List<CharacterStartingEquipmentSelectionData> get startingEquipmentSelections;
   int get selectedLevel;
 
   /// Create a copy of ClassStateModel
@@ -44,6 +45,9 @@ mixin _$ClassStateModel {
                 other.selectedSubclass == selectedSubclass) &&
             const DeepCollectionEquality()
                 .equals(other.selectedOptions, selectedOptions) &&
+            const DeepCollectionEquality().equals(
+                other.startingEquipmentSelections,
+                startingEquipmentSelections) &&
             (identical(other.selectedLevel, selectedLevel) ||
                 other.selectedLevel == selectedLevel));
   }
@@ -56,11 +60,12 @@ mixin _$ClassStateModel {
       stepView,
       selectedSubclass,
       const DeepCollectionEquality().hash(selectedOptions),
+      const DeepCollectionEquality().hash(startingEquipmentSelections),
       selectedLevel);
 
   @override
   String toString() {
-    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, stepView: $stepView, selectedSubclass: $selectedSubclass, selectedOptions: $selectedOptions, selectedLevel: $selectedLevel)';
+    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, stepView: $stepView, selectedSubclass: $selectedSubclass, selectedOptions: $selectedOptions, startingEquipmentSelections: $startingEquipmentSelections, selectedLevel: $selectedLevel)';
   }
 }
 
@@ -76,6 +81,7 @@ abstract mixin class $ClassStateModelCopyWith<$Res> {
       ClassStepView? stepView,
       SubclassData? selectedSubclass,
       Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
       int selectedLevel});
 }
 
@@ -97,6 +103,7 @@ class _$ClassStateModelCopyWithImpl<$Res>
     Object? stepView = freezed,
     Object? selectedSubclass = freezed,
     Object? selectedOptions = null,
+    Object? startingEquipmentSelections = null,
     Object? selectedLevel = null,
   }) {
     return _then(_self.copyWith(
@@ -120,6 +127,10 @@ class _$ClassStateModelCopyWithImpl<$Res>
           ? _self.selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
               as Map<String, List<ClassChoiceOptionData>>,
+      startingEquipmentSelections: null == startingEquipmentSelections
+          ? _self.startingEquipmentSelections
+          : startingEquipmentSelections // ignore: cast_nullable_to_non_nullable
+              as List<CharacterStartingEquipmentSelectionData>,
       selectedLevel: null == selectedLevel
           ? _self.selectedLevel
           : selectedLevel // ignore: cast_nullable_to_non_nullable
@@ -225,6 +236,8 @@ extension ClassStateModelPatterns on ClassStateModel {
             ClassStepView? stepView,
             SubclassData? selectedSubclass,
             Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            List<CharacterStartingEquipmentSelectionData>
+                startingEquipmentSelections,
             int selectedLevel)?
         $default, {
     required TResult orElse(),
@@ -232,8 +245,14 @@ extension ClassStateModelPatterns on ClassStateModel {
     final _that = this;
     switch (_that) {
       case _ClassStateModel() when $default != null:
-        return $default(_that.allClasses, _that.selectedClass, _that.stepView,
-            _that.selectedSubclass, _that.selectedOptions, _that.selectedLevel);
+        return $default(
+            _that.allClasses,
+            _that.selectedClass,
+            _that.stepView,
+            _that.selectedSubclass,
+            _that.selectedOptions,
+            _that.startingEquipmentSelections,
+            _that.selectedLevel);
       case _:
         return orElse();
     }
@@ -260,14 +279,22 @@ extension ClassStateModelPatterns on ClassStateModel {
             ClassStepView? stepView,
             SubclassData? selectedSubclass,
             Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            List<CharacterStartingEquipmentSelectionData>
+                startingEquipmentSelections,
             int selectedLevel)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ClassStateModel():
-        return $default(_that.allClasses, _that.selectedClass, _that.stepView,
-            _that.selectedSubclass, _that.selectedOptions, _that.selectedLevel);
+        return $default(
+            _that.allClasses,
+            _that.selectedClass,
+            _that.stepView,
+            _that.selectedSubclass,
+            _that.selectedOptions,
+            _that.startingEquipmentSelections,
+            _that.selectedLevel);
     }
   }
 
@@ -291,14 +318,22 @@ extension ClassStateModelPatterns on ClassStateModel {
             ClassStepView? stepView,
             SubclassData? selectedSubclass,
             Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            List<CharacterStartingEquipmentSelectionData>
+                startingEquipmentSelections,
             int selectedLevel)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _ClassStateModel() when $default != null:
-        return $default(_that.allClasses, _that.selectedClass, _that.stepView,
-            _that.selectedSubclass, _that.selectedOptions, _that.selectedLevel);
+        return $default(
+            _that.allClasses,
+            _that.selectedClass,
+            _that.stepView,
+            _that.selectedSubclass,
+            _that.selectedOptions,
+            _that.startingEquipmentSelections,
+            _that.selectedLevel);
       case _:
         return null;
     }
@@ -314,9 +349,12 @@ class _ClassStateModel implements ClassStateModel {
       this.stepView,
       this.selectedSubclass,
       final Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+      final List<CharacterStartingEquipmentSelectionData>
+          startingEquipmentSelections = const [],
       this.selectedLevel = 1})
       : _allClasses = allClasses,
-        _selectedOptions = selectedOptions;
+        _selectedOptions = selectedOptions,
+        _startingEquipmentSelections = startingEquipmentSelections;
 
   final List<ClassData> _allClasses;
   @override
@@ -340,6 +378,18 @@ class _ClassStateModel implements ClassStateModel {
     if (_selectedOptions is EqualUnmodifiableMapView) return _selectedOptions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_selectedOptions);
+  }
+
+  final List<CharacterStartingEquipmentSelectionData>
+      _startingEquipmentSelections;
+  @override
+  @JsonKey()
+  List<CharacterStartingEquipmentSelectionData>
+      get startingEquipmentSelections {
+    if (_startingEquipmentSelections is EqualUnmodifiableListView)
+      return _startingEquipmentSelections;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_startingEquipmentSelections);
   }
 
   @override
@@ -369,6 +419,9 @@ class _ClassStateModel implements ClassStateModel {
                 other.selectedSubclass == selectedSubclass) &&
             const DeepCollectionEquality()
                 .equals(other._selectedOptions, _selectedOptions) &&
+            const DeepCollectionEquality().equals(
+                other._startingEquipmentSelections,
+                _startingEquipmentSelections) &&
             (identical(other.selectedLevel, selectedLevel) ||
                 other.selectedLevel == selectedLevel));
   }
@@ -381,11 +434,12 @@ class _ClassStateModel implements ClassStateModel {
       stepView,
       selectedSubclass,
       const DeepCollectionEquality().hash(_selectedOptions),
+      const DeepCollectionEquality().hash(_startingEquipmentSelections),
       selectedLevel);
 
   @override
   String toString() {
-    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, stepView: $stepView, selectedSubclass: $selectedSubclass, selectedOptions: $selectedOptions, selectedLevel: $selectedLevel)';
+    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, stepView: $stepView, selectedSubclass: $selectedSubclass, selectedOptions: $selectedOptions, startingEquipmentSelections: $startingEquipmentSelections, selectedLevel: $selectedLevel)';
   }
 }
 
@@ -403,6 +457,7 @@ abstract mixin class _$ClassStateModelCopyWith<$Res>
       ClassStepView? stepView,
       SubclassData? selectedSubclass,
       Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
       int selectedLevel});
 }
 
@@ -424,6 +479,7 @@ class __$ClassStateModelCopyWithImpl<$Res>
     Object? stepView = freezed,
     Object? selectedSubclass = freezed,
     Object? selectedOptions = null,
+    Object? startingEquipmentSelections = null,
     Object? selectedLevel = null,
   }) {
     return _then(_ClassStateModel(
@@ -447,6 +503,10 @@ class __$ClassStateModelCopyWithImpl<$Res>
           ? _self._selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
               as Map<String, List<ClassChoiceOptionData>>,
+      startingEquipmentSelections: null == startingEquipmentSelections
+          ? _self._startingEquipmentSelections
+          : startingEquipmentSelections // ignore: cast_nullable_to_non_nullable
+              as List<CharacterStartingEquipmentSelectionData>,
       selectedLevel: null == selectedLevel
           ? _self.selectedLevel
           : selectedLevel // ignore: cast_nullable_to_non_nullable

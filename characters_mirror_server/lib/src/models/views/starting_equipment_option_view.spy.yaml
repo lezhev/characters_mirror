@@ -1,0 +1,4 @@
+class: StartingEquipmentOptionView
+fields:
+  option: StartingEquipmentOptionData?
+  lines: List<StartingEquipmentLineData>?

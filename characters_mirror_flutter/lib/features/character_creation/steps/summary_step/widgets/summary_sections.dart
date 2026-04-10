@@ -1,7 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/summary/widgets/summary_line.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/widgets/summary_line.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -22,7 +22,8 @@ class SummaryIdentitySection extends StatelessWidget {
       child: Column(
         children: [
           SummaryLine(label: 'Имя', value: character.name ?? 'Без имени'),
-          SummaryLine(label: 'Раса', value: character.race?.name ?? 'Не выбрана'),
+          SummaryLine(
+              label: 'Раса', value: character.race?.name ?? 'Не выбрана'),
           SummaryLine(
             label: 'Подраса',
             value: character.subrace?.name ?? 'Не выбрана',

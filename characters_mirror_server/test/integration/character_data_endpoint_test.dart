@@ -199,7 +199,7 @@ void main() {
           classEntries: [primaryEntry],
           baseAbilityScores: const {
             'strength': 10,
-            'dexterity': 10,
+            'dexterity': 16,
             'constitution': 10,
             'intelligence': 10,
             'wisdom': 10,
@@ -247,19 +247,65 @@ void main() {
               selectionIndex: 0,
             ),
             CharacterChoiceData(
-              sourceType: ChoiceSourceType.background,
-              sourceId: fixture.background.id,
-              groupKey: 'background_item_pick',
-              optionKey: 'holy_symbol_pack',
-              selectionIndex: 0,
-            ),
-            CharacterChoiceData(
               sourceType: ChoiceSourceType.race,
               sourceId: fixture.race.id,
               groupKey: 'race_choice_${fixture.raceChoiceSet.id}',
               optionKey: 'skilled_feat',
               selectionIndex: 0,
               selectedFeatId: fixture.feat.id,
+            ),
+          ],
+          startingEquipmentSelections: [
+            CharacterStartingEquipmentSelectionData(
+              sourceType: ChoiceSourceType.background,
+              sourceId: fixture.background.id,
+              blockKey: 'background_item_pick',
+              optionKey: 'holy_symbol_pack',
+              selectionIndex: 0,
+            ),
+            CharacterStartingEquipmentSelectionData(
+              sourceType: ChoiceSourceType.classData,
+              sourceId: fixture.classData.id,
+              blockKey: 'class_weapon_pick',
+              optionKey: 'simple_weapon_option',
+              selectionIndex: 0,
+              resolutions: [
+                CharacterStartingEquipmentResolutionData(
+                  lineKey: 'class_weapon_any_simple',
+                  catalogType: EquipmentCatalogType.weapon,
+                  referenceKey: 'club',
+                  quantity: 1,
+                ),
+              ],
+            ),
+            CharacterStartingEquipmentSelectionData(
+              sourceType: ChoiceSourceType.classData,
+              sourceId: fixture.classData.id,
+              blockKey: 'class_focus_pick',
+              optionKey: 'focus_option',
+              selectionIndex: 0,
+              resolutions: [
+                CharacterStartingEquipmentResolutionData(
+                  lineKey: 'class_focus_any_focus',
+                  catalogType: EquipmentCatalogType.item,
+                  referenceKey: 'crystal_focus',
+                  quantity: 1,
+                ),
+              ],
+            ),
+            CharacterStartingEquipmentSelectionData(
+              sourceType: ChoiceSourceType.classData,
+              sourceId: fixture.classData.id,
+              blockKey: 'class_fixed_pack',
+              selectionIndex: 0,
+              resolutions: [
+                CharacterStartingEquipmentResolutionData(
+                  lineKey: 'class_fixed_any_simple',
+                  catalogType: EquipmentCatalogType.weapon,
+                  referenceKey: 'club',
+                  quantity: 1,
+                ),
+              ],
             ),
           ],
         ),
@@ -296,8 +342,19 @@ void main() {
           .toList();
       expect(backgroundChoices.map((choice) => choice.groupKey).toSet(), {
         'background_language_pick',
-        'background_item_pick',
       });
+
+      final startingEquipmentSelections =
+          loaded.startingEquipmentSelections ?? const [];
+      expect(startingEquipmentSelections, hasLength(4));
+      final loadedWeaponSelection = startingEquipmentSelections.singleWhere(
+        (selection) => selection.blockKey == 'class_weapon_pick',
+      );
+      expect(loadedWeaponSelection.optionKey, 'simple_weapon_option');
+      expect(
+        loadedWeaponSelection.resolutions?.single.referenceKey,
+        'club',
+      );
 
       final raceFeatChoice = loaded.choices!.singleWhere(
         (choice) =>
@@ -310,8 +367,25 @@ void main() {
       expect(loaded.featureOverrides, hasLength(2));
       expect(derived!.languages, contains('celestial'));
       expect(derived.toolProficiencies, contains('smith_tools'));
-      expect(derived.grantedItemKeys, contains('holy_symbol'));
       expect(derived.grantedSpellKeys, contains('light'));
+      expect(
+        derived.grantedEquipment?.map((entry) => entry.referenceKey),
+        containsAll([
+          'holy_symbol',
+          'club',
+          'crystal_focus',
+          'dagger',
+          'leather_armor',
+        ]),
+      );
+      final clubEntry = derived.grantedEquipment!.singleWhere(
+        (entry) => entry.referenceKey == 'club',
+      );
+      expect(clubEntry.quantity, 2);
+      final daggerEntry = derived.grantedEquipment!.singleWhere(
+        (entry) => entry.referenceKey == 'dagger',
+      );
+      expect(daggerEntry.quantity, 2);
       expect(derived.featIds, contains(fixture.feat.id));
       expect(
           derived.featureTags,
@@ -321,7 +395,7 @@ void main() {
           ]));
       expect(derived.abilityScores?['strength'], 10);
       expect(derived.abilityModifiers?['strength'], 0);
-      expect(derived.skillBonuses?['acrobatics'], 2);
+      expect(derived.skillBonuses?['acrobatics'], 5);
       expect(derived.skillBonuses?['athletics'], 2);
       expect(derived.skillBonuses?['insight'], 2);
       expect(derived.skillBonuses?['religion'], 2);
@@ -373,15 +447,48 @@ void main() {
       expect(raceFeatureView.name, fixture.raceFeature.name);
       expect(raceFeatureView.isCustomized, isFalse);
 
-      expect(loaded.attacks, hasLength(1));
-      final attack = loaded.attacks!.single;
-      expect(attack.name, 'Длинный меч');
-      expect(attack.leadingAbility, Ability.strength);
-      expect(attack.damage, '1d8');
-      expect(attack.customAttackBonus, 1);
-      expect(attack.damageType, DamageType.slashing);
-      expect(attack.tags, containsAll(['versatile', 'martial']));
-      expect(attack.description, 'Основная атака оружием.');
+      expect(loaded.equipment, isNotNull);
+      expect(loaded.equipment, contains('Club x2'));
+      expect(loaded.equipment, contains('Dagger x2'));
+      expect(loaded.equipment, contains('Leather Armor'));
+      expect(loaded.equipment, contains('Holy symbol'));
+      expect(loaded.equipment, contains('Crystal Focus'));
+
+      expect(loaded.attacks, hasLength(3));
+      final manualAttack = loaded.attacks!.singleWhere(
+        (attack) => attack.name == 'Длинный меч',
+      );
+      expect(manualAttack.leadingAbility, Ability.strength);
+      expect(manualAttack.damage, '1d8');
+      expect(manualAttack.customAttackBonus, 1);
+      expect(manualAttack.damageType, DamageType.slashing);
+      expect(manualAttack.tags, containsAll(['versatile', 'martial']));
+      expect(manualAttack.description, 'Основная атака оружием.');
+
+      final clubAttack = loaded.attacks!.singleWhere(
+        (attack) => attack.name == 'Club',
+      );
+      expect(clubAttack.leadingAbility, Ability.strength);
+      expect(clubAttack.damage, '1d4');
+      expect(clubAttack.customAttackBonus, 0);
+      expect(clubAttack.damageType, DamageType.bludgeoning);
+      expect(clubAttack.tags, ['light']);
+
+      final daggerAttack = loaded.attacks!.singleWhere(
+        (attack) => attack.name == 'Dagger',
+      );
+      expect(daggerAttack.leadingAbility, Ability.dexterity);
+      expect(daggerAttack.damage, '1d4');
+      expect(daggerAttack.customAttackBonus, 0);
+      expect(daggerAttack.damageType, DamageType.piercing);
+      expect(daggerAttack.tags, containsAll(['finesse', 'light', 'thrown']));
+
+      final resaved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        loaded.copyWith(equipment: 'Manual equipment text'),
+      );
+      expect(resaved.equipment, 'Manual equipment text');
+      expect(resaved.attacks, hasLength(3));
     });
 
     test(
@@ -411,6 +518,27 @@ void main() {
           'subclass_tool_pick',
           'subclass_spell_pick',
         }),
+      );
+      expect(
+        stepView.startingEquipmentBlocks
+            ?.map((blockView) => blockView.block?.blockKey)
+            .whereType<String>()
+            .toSet(),
+        containsAll({
+          'class_fixed_pack',
+          'class_weapon_pick',
+          'class_focus_pick',
+        }),
+      );
+      final classWeaponBlock = stepView.startingEquipmentBlocks!.singleWhere(
+        (blockView) => blockView.block?.blockKey == 'class_weapon_pick',
+      );
+      final simpleWeaponOption = classWeaponBlock.options!.singleWhere(
+        (optionView) => optionView.option?.optionKey == 'simple_weapon_option',
+      );
+      expect(
+        simpleWeaponOption.lines?.single.kind,
+        StartingEquipmentLineKind.weaponCategory,
       );
     });
 
@@ -474,10 +602,135 @@ void main() {
             ?.map((groupView) => groupView.group?.exclusiveKey)
             .whereType<String>()
             .toSet(),
-        containsAll({
-          'background_language_pick',
-          'background_item_pick',
-        }),
+        contains('background_language_pick'),
+      );
+      expect(
+        stepView.startingEquipmentBlocks
+            ?.map((blockView) => blockView.block?.blockKey)
+            .whereType<String>()
+            .toSet(),
+        contains('background_item_pick'),
+      );
+    });
+
+    test('warlock step view bootstraps canonical starting equipment', () async {
+      final warlock = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Warlock',
+          hitDieValue: 8,
+          primaryAbilities: const [Ability.charisma],
+          savingThrowProficiencies: const [Ability.wisdom, Ability.charisma],
+          armorTraining: const [ArmorCategory.light],
+          weaponTraining: const [
+            WeaponCategory.simpleMelee,
+            WeaponCategory.simpleRanged,
+          ],
+          availableSkills: const [Skill.arcana, Skill.deception],
+          skillCount: 2,
+          subclassChoiceLevel: 1,
+          imageURL: 'warlock',
+        ),
+      );
+
+      final stepView = await endpoints.classData.getStepView(
+        sessionBuilder,
+        warlock.id!,
+        selectedLevel: 1,
+        isStartingClass: true,
+      );
+
+      final blockKeys = stepView.startingEquipmentBlocks
+              ?.map((blockView) => blockView.block?.blockKey)
+              .whereType<String>()
+              .toList() ??
+          const <String>[];
+      expect(
+        blockKeys,
+        orderedEquals([
+          'warlock_weapon_choice',
+          'warlock_focus_choice',
+          'warlock_pack_choice',
+          'warlock_fixed_equipment',
+        ]),
+      );
+
+      final weaponBlock = stepView.startingEquipmentBlocks!.firstWhere(
+        (blockView) => blockView.block?.blockKey == 'warlock_weapon_choice',
+      );
+      expect(
+        weaponBlock.options
+            ?.map((optionView) => optionView.option?.optionKey)
+            .whereType<String>(),
+        containsAll(
+            ['warlock_crossbow_option', 'warlock_simple_weapon_option']),
+      );
+
+      final packBlock = stepView.startingEquipmentBlocks!.firstWhere(
+        (blockView) => blockView.block?.blockKey == 'warlock_pack_choice',
+      );
+      expect(
+        packBlock.options
+            ?.map((optionView) => optionView.option?.optionKey)
+            .whereType<String>(),
+        containsAll([
+          'warlock_scholar_pack_option',
+          'warlock_dungeoneer_pack_option',
+        ]),
+      );
+
+      final fixedBlock = stepView.startingEquipmentBlocks!.firstWhere(
+        (blockView) => blockView.block?.blockKey == 'warlock_fixed_equipment',
+      );
+      expect(
+        fixedBlock.fixedLines
+            ?.map((line) => line.lineKey)
+            .whereType<String>()
+            .toList(),
+        orderedEquals([
+          'warlock_fixed_leather_armor',
+          'warlock_fixed_simple_weapon',
+          'warlock_fixed_daggers',
+        ]),
+      );
+
+      final items = await endpoints.itemData.getAll(sessionBuilder);
+      final itemKeys =
+          items.map((item) => item.referenceKey).whereType<String>().toSet();
+      expect(
+        itemKeys,
+        containsAll([
+          'component_pouch',
+          'scholar_pack',
+          'dungeoneer_pack',
+          'bolts',
+          'crystal_focus',
+        ]),
+      );
+
+      final weapons = await endpoints.weaponData.getAll(sessionBuilder);
+      final weaponKeys = weapons
+          .map((weapon) => weapon.referenceKey)
+          .whereType<String>()
+          .toSet();
+      expect(
+        weaponKeys,
+        containsAll([
+          'club',
+          'dagger',
+          'greatclub',
+          'handaxe',
+          'javelin',
+          'light_hammer',
+          'mace',
+          'quarterstaff',
+          'sickle',
+          'spear',
+          'light_crossbow',
+          'dart',
+          'shortbow',
+          'sling',
+        ]),
       );
     });
   });
@@ -686,24 +939,291 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
-  final backgroundItemGroup = await endpoints.classChoiceGroupData.upsert(
+  await endpoints.itemData.upsert(
     sessionBuilder,
-    ClassChoiceGroupData(
-      name: 'Background item',
-      sourceBackgroundId: background.id,
-      type: ClassChoiceType.equipment,
-      selectionCount: 1,
-      allowDuplicates: false,
-      exclusiveKey: 'background_item_pick',
+    ItemData(
+      referenceKey: 'holy_symbol',
+      name: 'Holy Symbol',
+      category: 'Gear',
     ),
   );
-  await endpoints.classChoiceOptionData.upsert(
+  await endpoints.itemData.upsert(
     sessionBuilder,
-    ClassChoiceOptionData(
-      choiceGroupId: backgroundItemGroup.id!,
+    ItemData(
+      referenceKey: 'crystal_focus',
+      name: 'Crystal Focus',
+      category: 'Focus',
+    ),
+  );
+  await endpoints.itemData.upsert(
+    sessionBuilder,
+    ItemData(
+      referenceKey: 'component_pouch',
+      name: 'Component Pouch',
+      category: 'Gear',
+    ),
+  );
+  await endpoints.itemData.upsert(
+    sessionBuilder,
+    ItemData(
+      referenceKey: 'bolts',
+      name: 'Crossbow Bolts',
+      category: 'Ammunition',
+    ),
+  );
+  await endpoints.weaponData.upsert(
+    sessionBuilder,
+    WeaponData(
+      referenceKey: 'club',
+      name: 'Club',
+      category: WeaponCategory.simpleMelee,
+      damage: '1d4',
+      damageTypeValue: DamageType.bludgeoning,
+      properties: const ['light'],
+    ),
+  );
+  await endpoints.weaponData.upsert(
+    sessionBuilder,
+    WeaponData(
+      referenceKey: 'dagger',
+      name: 'Dagger',
+      category: WeaponCategory.simpleMelee,
+      damage: '1d4',
+      damageTypeValue: DamageType.piercing,
+      properties: const ['finesse', 'light', 'thrown'],
+    ),
+  );
+  await endpoints.weaponData.upsert(
+    sessionBuilder,
+    WeaponData(
+      referenceKey: 'light_crossbow',
+      name: 'Light Crossbow',
+      category: WeaponCategory.simpleRanged,
+      damage: '1d8',
+      damageTypeValue: DamageType.piercing,
+      properties: const ['ammunition', 'loading', 'two-handed'],
+    ),
+  );
+  await endpoints.armorData.upsert(
+    sessionBuilder,
+    ArmorData(
+      referenceKey: 'leather_armor',
+      name: 'Leather Armor',
+      categoryValue: ArmorCategory.light,
+    ),
+  );
+
+  final backgroundItemBlock = await endpoints.startingEquipmentBlockData.upsert(
+    sessionBuilder,
+    StartingEquipmentBlockData(
+      sourceBackgroundId: background.id,
+      blockKey: 'background_item_pick',
+      orderIndex: 0,
+      kind: StartingEquipmentBlockKind.choice,
+      selectionCount: 1,
+      name: 'Background item',
+    ),
+  );
+  final holySymbolOption = await endpoints.startingEquipmentOptionData.upsert(
+    sessionBuilder,
+    StartingEquipmentOptionData(
+      blockId: backgroundItemBlock.id!,
       optionKey: 'holy_symbol_pack',
+      orderIndex: 0,
       name: 'Holy symbol',
-      grantedItemKeys: const ['holy_symbol'],
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      optionId: holySymbolOption.id!,
+      lineKey: 'background_holy_symbol',
+      orderIndex: 0,
+      kind: StartingEquipmentLineKind.catalogRef,
+      catalogType: EquipmentCatalogType.item,
+      referenceKey: 'holy_symbol',
+      displayText: 'Holy symbol',
+      quantity: 1,
+    ),
+  );
+
+  final classFixedBlock = await endpoints.startingEquipmentBlockData.upsert(
+    sessionBuilder,
+    StartingEquipmentBlockData(
+      sourceClassId: classData.id,
+      blockKey: 'class_fixed_pack',
+      orderIndex: 0,
+      kind: StartingEquipmentBlockKind.fixedGrant,
+      selectionCount: 1,
+      name: 'Warlock fixed equipment',
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      blockId: classFixedBlock.id!,
+      lineKey: 'class_fixed_leather',
+      orderIndex: 0,
+      kind: StartingEquipmentLineKind.catalogRef,
+      catalogType: EquipmentCatalogType.armor,
+      referenceKey: 'leather_armor',
+      displayText: 'Leather Armor',
+      quantity: 1,
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      blockId: classFixedBlock.id!,
+      lineKey: 'class_fixed_any_simple',
+      orderIndex: 1,
+      kind: StartingEquipmentLineKind.weaponCategory,
+      displayText: 'Any simple weapon',
+      quantity: 1,
+      allowedWeaponCategories: const [
+        WeaponCategory.simpleMelee,
+        WeaponCategory.simpleRanged,
+      ],
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      blockId: classFixedBlock.id!,
+      lineKey: 'class_fixed_daggers',
+      orderIndex: 2,
+      kind: StartingEquipmentLineKind.catalogRef,
+      catalogType: EquipmentCatalogType.weapon,
+      referenceKey: 'dagger',
+      displayText: 'Dagger',
+      quantity: 2,
+    ),
+  );
+
+  final classWeaponBlock = await endpoints.startingEquipmentBlockData.upsert(
+    sessionBuilder,
+    StartingEquipmentBlockData(
+      sourceClassId: classData.id,
+      blockKey: 'class_weapon_pick',
+      orderIndex: 1,
+      kind: StartingEquipmentBlockKind.choice,
+      selectionCount: 1,
+      name: 'Weapon choice',
+    ),
+  );
+  final crossbowOption = await endpoints.startingEquipmentOptionData.upsert(
+    sessionBuilder,
+    StartingEquipmentOptionData(
+      blockId: classWeaponBlock.id!,
+      optionKey: 'crossbow_pack',
+      orderIndex: 0,
+      name: 'Light crossbow and 20 bolts',
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      optionId: crossbowOption.id!,
+      lineKey: 'class_weapon_crossbow',
+      orderIndex: 0,
+      kind: StartingEquipmentLineKind.catalogRef,
+      catalogType: EquipmentCatalogType.weapon,
+      referenceKey: 'light_crossbow',
+      displayText: 'Light Crossbow',
+      quantity: 1,
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      optionId: crossbowOption.id!,
+      lineKey: 'class_weapon_bolts',
+      orderIndex: 1,
+      kind: StartingEquipmentLineKind.catalogRef,
+      catalogType: EquipmentCatalogType.item,
+      referenceKey: 'bolts',
+      displayText: 'Crossbow Bolts',
+      quantity: 20,
+    ),
+  );
+  final simpleWeaponOption = await endpoints.startingEquipmentOptionData.upsert(
+    sessionBuilder,
+    StartingEquipmentOptionData(
+      blockId: classWeaponBlock.id!,
+      optionKey: 'simple_weapon_option',
+      orderIndex: 1,
+      name: 'Any simple weapon',
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      optionId: simpleWeaponOption.id!,
+      lineKey: 'class_weapon_any_simple',
+      orderIndex: 0,
+      kind: StartingEquipmentLineKind.weaponCategory,
+      displayText: 'Any simple weapon',
+      quantity: 1,
+      allowedWeaponCategories: const [
+        WeaponCategory.simpleMelee,
+        WeaponCategory.simpleRanged,
+      ],
+    ),
+  );
+
+  final classFocusBlock = await endpoints.startingEquipmentBlockData.upsert(
+    sessionBuilder,
+    StartingEquipmentBlockData(
+      sourceClassId: classData.id,
+      blockKey: 'class_focus_pick',
+      orderIndex: 2,
+      kind: StartingEquipmentBlockKind.choice,
+      selectionCount: 1,
+      name: 'Focus choice',
+    ),
+  );
+  final componentPouchOption =
+      await endpoints.startingEquipmentOptionData.upsert(
+    sessionBuilder,
+    StartingEquipmentOptionData(
+      blockId: classFocusBlock.id!,
+      optionKey: 'component_pouch_option',
+      orderIndex: 0,
+      name: 'Component pouch',
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      optionId: componentPouchOption.id!,
+      lineKey: 'class_focus_component_pouch',
+      orderIndex: 0,
+      kind: StartingEquipmentLineKind.catalogRef,
+      catalogType: EquipmentCatalogType.item,
+      referenceKey: 'component_pouch',
+      displayText: 'Component Pouch',
+      quantity: 1,
+    ),
+  );
+  final focusOption = await endpoints.startingEquipmentOptionData.upsert(
+    sessionBuilder,
+    StartingEquipmentOptionData(
+      blockId: classFocusBlock.id!,
+      optionKey: 'focus_option',
+      orderIndex: 1,
+      name: 'Arcane focus',
+    ),
+  );
+  await endpoints.startingEquipmentLineData.upsert(
+    sessionBuilder,
+    StartingEquipmentLineData(
+      optionId: focusOption.id!,
+      lineKey: 'class_focus_any_focus',
+      orderIndex: 0,
+      kind: StartingEquipmentLineKind.itemCategory,
+      displayText: 'Arcane focus',
+      quantity: 1,
+      allowedItemCategories: const ['Focus'],
     ),
   );
 

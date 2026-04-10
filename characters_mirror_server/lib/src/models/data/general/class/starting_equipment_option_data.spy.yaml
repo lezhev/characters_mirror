@@ -1,0 +1,12 @@
+class: StartingEquipmentOptionData
+table: starting_equipment_option_data
+fields:
+  block: StartingEquipmentBlockData?, relation
+  optionKey: String?
+  orderIndex: int?
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

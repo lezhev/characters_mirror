@@ -1,6 +1,6 @@
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/personal/application/personal_form_bindings.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/personal/widgets/personal_sections.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/personal_step/application/personal_form_bindings.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/personal_step/widgets/personal_sections.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:gap/gap.dart';
@@ -49,9 +49,8 @@ class _PersonalStepState extends ConsumerState<PersonalStep> {
           PersonalShortFieldsSection(
             bindings: _bindings,
             alignment: state.character.alignmentValue,
-            onAlignmentChanged: ref
-                .read(characterCreationProvider.notifier)
-                .setAlignment,
+            onAlignmentChanged:
+                ref.read(characterCreationProvider.notifier).setAlignment,
           ),
           const Gap(24),
           PersonalNarrativeSection(bindings: _bindings),

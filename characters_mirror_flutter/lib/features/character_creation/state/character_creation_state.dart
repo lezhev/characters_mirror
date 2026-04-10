@@ -2,6 +2,10 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_choice_builder.dart';
 import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_choice_filters.dart';
 import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_text_normalizer.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/starting_equipment_selection_support.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:go_router/go_router.dart';
@@ -83,6 +87,7 @@ sealed class CharacterCreationState with _$CharacterCreationState {
         character: CharacterData(
           classEntries: const [],
           choices: const [],
+          startingEquipmentSelections: const [],
           useFlexibleAbilityBonuses: false,
         ),
         step: Step.introduction,
@@ -122,7 +127,8 @@ class CharacterCreation extends _$CharacterCreation {
     if (selectedRace == null) return;
     final raceChanged = state.character.race?.id != selectedRace.id;
     final subraceChanged = state.character.subrace?.id != selectedSubrace?.id;
-    final currentChoices = state.character.choices ?? const <CharacterChoiceData>[];
+    final currentChoices =
+        state.character.choices ?? const <CharacterChoiceData>[];
     final updatedCharacter = state.character.copyWith(
       race: selectedRace,
       subrace: selectedSubrace,
@@ -151,6 +157,8 @@ class CharacterCreation extends _$CharacterCreation {
     required BackgroundData? selectedBackground,
     List<ClassChoiceGroupView> choiceGroups = const [],
     Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+    List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
+        const [],
   }) {
     if (selectedBackground == null) return;
 
@@ -158,6 +166,9 @@ class CharacterCreation extends _$CharacterCreation {
         state.character.background?.id != selectedBackground.id;
     final currentChoices =
         state.character.choices ?? const <CharacterChoiceData>[];
+    final currentEquipmentSelections =
+        state.character.startingEquipmentSelections ??
+            const <CharacterStartingEquipmentSelectionData>[];
     final backgroundChoices = buildBackgroundChoices(
       selectedOptions: selectedOptions,
       groups: choiceGroups,
@@ -176,6 +187,18 @@ class CharacterCreation extends _$CharacterCreation {
       state.character.copyWith(
         background: selectedBackground,
         choices: [...preservedChoices, ...backgroundChoices],
+        startingEquipmentSelections: replaceEquipmentSelectionsForSource(
+          existingSelections: backgroundChanged
+              ? currentEquipmentSelections
+                  .where(
+                    (selection) =>
+                        selection.sourceType != ChoiceSourceType.background,
+                  )
+                  .toList()
+              : currentEquipmentSelections,
+          sourceType: ChoiceSourceType.background,
+          replacementSelections: startingEquipmentSelections,
+        ),
       ),
     );
   }
@@ -204,6 +227,8 @@ class CharacterCreation extends _$CharacterCreation {
     SubclassData? subclass,
     List<ClassChoiceGroupView> choiceGroups = const [],
     Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+    List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
+        const [],
     int level = 1,
   }) {
     if (classData == null) return;
@@ -216,41 +241,35 @@ class CharacterCreation extends _$CharacterCreation {
         selectedOptions: selectedOptions,
         groups: choiceGroups,
       ),
+      startingEquipmentSelections: startingEquipmentSelections,
     );
   }
 
-  void setName(String? name) =>
-      _updateCharacter(
+  void setName(String? name) => _updateCharacter(
         state.character.copyWith(name: normalizeCharacterCreationText(name)),
       );
 
-  void setAge(String? value) =>
-      _updateCharacter(
+  void setAge(String? value) => _updateCharacter(
         state.character.copyWith(age: normalizeCharacterCreationText(value)),
       );
 
-  void setHeight(String? value) =>
-      _updateCharacter(
+  void setHeight(String? value) => _updateCharacter(
         state.character.copyWith(height: normalizeCharacterCreationText(value)),
       );
 
-  void setWeight(String? value) =>
-      _updateCharacter(
+  void setWeight(String? value) => _updateCharacter(
         state.character.copyWith(weight: normalizeCharacterCreationText(value)),
       );
 
-  void setEyes(String? value) =>
-      _updateCharacter(
+  void setEyes(String? value) => _updateCharacter(
         state.character.copyWith(eyes: normalizeCharacterCreationText(value)),
       );
 
-  void setSkin(String? value) =>
-      _updateCharacter(
+  void setSkin(String? value) => _updateCharacter(
         state.character.copyWith(skin: normalizeCharacterCreationText(value)),
       );
 
-  void setHair(String? value) =>
-      _updateCharacter(
+  void setHair(String? value) => _updateCharacter(
         state.character.copyWith(hair: normalizeCharacterCreationText(value)),
       );
 
@@ -266,8 +285,7 @@ class CharacterCreation extends _$CharacterCreation {
         ),
       );
 
-  void setGoals(String? value) =>
-      _updateCharacter(
+  void setGoals(String? value) => _updateCharacter(
         state.character.copyWith(goals: normalizeCharacterCreationText(value)),
       );
 
@@ -283,20 +301,17 @@ class CharacterCreation extends _$CharacterCreation {
         ),
       );
 
-  void setIdeals(String? value) =>
-      _updateCharacter(
+  void setIdeals(String? value) => _updateCharacter(
         state.character.copyWith(
           ideals: normalizeCharacterCreationText(value),
         ),
       );
 
-  void setBonds(String? value) =>
-      _updateCharacter(
+  void setBonds(String? value) => _updateCharacter(
         state.character.copyWith(bonds: normalizeCharacterCreationText(value)),
       );
 
-  void setFlaws(String? value) =>
-      _updateCharacter(
+  void setFlaws(String? value) => _updateCharacter(
         state.character.copyWith(flaws: normalizeCharacterCreationText(value)),
       );
 
@@ -389,6 +404,8 @@ class CharacterCreation extends _$CharacterCreation {
     SubclassData? subclass,
     int level = 1,
     List<CharacterChoiceData> choices = const [],
+    List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
+        const [],
   }) {
     final entry = CharacterClassEntryData(
       classData: classData,
@@ -410,13 +427,22 @@ class CharacterCreation extends _$CharacterCreation {
     );
 
     final linkedChoices = choices
-        .map((choice) => choice.copyWith(classEntry: choice.classEntry ?? entry))
+        .map(
+            (choice) => choice.copyWith(classEntry: choice.classEntry ?? entry))
         .toList();
+    final currentEquipmentSelections =
+        state.character.startingEquipmentSelections ??
+            const <CharacterStartingEquipmentSelectionData>[];
 
     _updateCharacter(
       state.character.copyWith(
         classEntries: [entry],
         choices: [...preserved, ...linkedChoices],
+        startingEquipmentSelections: replaceEquipmentSelectionsForSource(
+          existingSelections: currentEquipmentSelections,
+          sourceType: ChoiceSourceType.classData,
+          replacementSelections: startingEquipmentSelections,
+        ),
       ),
     );
   }
@@ -444,7 +470,11 @@ class CharacterCreation extends _$CharacterCreation {
   void _updateCharacter(CharacterData updated) {
     state = state.copyWith(character: updated);
   }
+
   void reset() {
     state = CharacterCreationState.initial();
+    ref.invalidate(raceStateProvider);
+    ref.invalidate(classStateProvider);
+    ref.invalidate(backgroundStateProvider);
   }
 }

@@ -20,12 +20,10 @@ class ClassStep extends HookConsumerWidget {
 
     return ref.watch(classStateProvider).when(
       data: (data) {
-        final selectedClassKey =
-            data.selectedClass == null
-                ? null
-                : '${data.selectedClass!.id ?? data.selectedClass!.name}';
-        final showJumpButton =
-            selectedClassKey != null &&
+        final selectedClassKey = data.selectedClass == null
+            ? null
+            : '${data.selectedClass!.id ?? data.selectedClass!.name}';
+        final showJumpButton = selectedClassKey != null &&
             dismissedSelectionKey.value != selectedClassKey;
 
         return CreationSelectionStepScaffold(
@@ -47,6 +45,7 @@ class ClassStep extends HookConsumerWidget {
               subclass: data.selectedSubclass,
               choiceGroups: data.stepView?.choiceGroups ?? const [],
               selectedOptions: data.selectedOptions,
+              startingEquipmentSelections: data.startingEquipmentSelections,
               level: data.selectedLevel,
             );
             notifier.nextStep(context);
@@ -80,7 +79,7 @@ class ClassStep extends HookConsumerWidget {
         );
       },
       loading: () {
-        return CreationShimmer();
+        return const DelayedCreationShimmer();
       },
     );
   }
@@ -97,6 +96,7 @@ void _syncAndGo({
         subclass: data.selectedSubclass,
         choiceGroups: data.stepView?.choiceGroups ?? const [],
         selectedOptions: data.selectedOptions,
+        startingEquipmentSelections: data.startingEquipmentSelections,
         level: data.selectedLevel,
       );
   ref.read(characterCreationProvider.notifier).goToStep(context, target);

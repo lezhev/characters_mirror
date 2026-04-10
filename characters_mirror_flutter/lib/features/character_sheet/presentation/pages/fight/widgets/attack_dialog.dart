@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
 import 'package:flutter/material.dart';
@@ -259,13 +260,10 @@ class _AttackDialogState extends State<AttackDialog> {
                   ],
                 ),
               const SizedBox(height: 12),
-              TextFormField(
+              AppAutosizeTextField(
+                label: 'Описание',
                 controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Описание',
-                ),
                 minLines: 3,
-                maxLines: 3,
                 onChanged: (_) => _queueSave(),
               ),
             ],

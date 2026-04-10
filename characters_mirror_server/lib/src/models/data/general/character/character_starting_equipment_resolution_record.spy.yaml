@@ -1,0 +1,9 @@
+class: CharacterStartingEquipmentResolutionRecord
+serverOnly: true
+table: character_starting_equipment_resolution_data
+fields:
+  selection: CharacterStartingEquipmentSelectionRecord?, relation
+  lineKey: String?
+  catalogType: EquipmentCatalogType?
+  referenceKey: String?
+  quantity: int?

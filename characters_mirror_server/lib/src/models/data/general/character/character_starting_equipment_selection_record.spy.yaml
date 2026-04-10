@@ -1,0 +1,10 @@
+class: CharacterStartingEquipmentSelectionRecord
+serverOnly: true
+table: character_starting_equipment_selection_data
+fields:
+  character: CharacterRecord?, relation
+  sourceType: ChoiceSourceType?
+  sourceId: int?
+  blockKey: String?
+  optionKey: String?
+  selectionIndex: int?

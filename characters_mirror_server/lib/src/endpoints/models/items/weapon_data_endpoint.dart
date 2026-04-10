@@ -11,9 +11,12 @@ class WeaponDataEndpoint extends Endpoint {
   }
 
   Future<WeaponData> upsert(Session session, WeaponData weapon) async {
+    final normalizedReferenceKey = weapon.referenceKey?.trim();
     final existing = await WeaponData.db.find(
       session,
-      where: (t) => t.name.equals(weapon.name),
+      where: normalizedReferenceKey != null && normalizedReferenceKey.isNotEmpty
+          ? (t) => t.referenceKey.equals(normalizedReferenceKey)
+          : (t) => t.name.equals(weapon.name),
       limit: 1,
     );
 

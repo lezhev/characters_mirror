@@ -1,9 +1,64 @@
+import 'dart:async';
+
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shimmer/shimmer.dart';
+
+class DelayedCreationShimmer extends StatefulWidget {
+  const DelayedCreationShimmer({
+    super.key,
+    this.delay = const Duration(milliseconds: 180),
+    this.placeholder,
+    this.shimmerBuilder,
+  });
+
+  final Duration delay;
+  final Widget? placeholder;
+  final WidgetBuilder? shimmerBuilder;
+
+  @override
+  State<DelayedCreationShimmer> createState() => _DelayedCreationShimmerState();
+}
+
+class _DelayedCreationShimmerState extends State<DelayedCreationShimmer> {
+  Timer? _timer;
+  bool _isVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(widget.delay, () {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isVisible = true;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isVisible) {
+      return widget.shimmerBuilder?.call(context) ?? const CreationShimmer();
+    }
+
+    return widget.placeholder ??
+        ColoredBox(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: const SizedBox.expand(),
+        );
+  }
+}
 
 class CreationShimmer extends ConsumerWidget {
   const CreationShimmer({super.key});

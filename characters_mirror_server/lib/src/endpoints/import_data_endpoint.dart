@@ -38,6 +38,24 @@ class ReferenceDataEndpoint extends Endpoint {
               .insertRow(session, ClassChoiceOptionData.fromJson(data));
           break;
 
+        case 'startingequipmentblock':
+        case 'starting_equipment_block':
+          await StartingEquipmentBlockData.db
+              .insertRow(session, StartingEquipmentBlockData.fromJson(data));
+          break;
+
+        case 'startingequipmentoption':
+        case 'starting_equipment_option':
+          await StartingEquipmentOptionData.db
+              .insertRow(session, StartingEquipmentOptionData.fromJson(data));
+          break;
+
+        case 'startingequipmentline':
+        case 'starting_equipment_line':
+          await StartingEquipmentLineData.db
+              .insertRow(session, StartingEquipmentLineData.fromJson(data));
+          break;
+
         case 'race':
         case 'racedata':
           await RaceData.db.insertRow(session, RaceData.fromJson(data));

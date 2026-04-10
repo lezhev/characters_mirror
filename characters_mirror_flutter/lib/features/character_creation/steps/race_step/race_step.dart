@@ -43,7 +43,8 @@ class RaceStep extends HookConsumerWidget {
             notifier.syncRaceDraft(
               selectedRace: data.selectedRace,
               selectedSubrace: data.selectedSubrace,
-              raceChoices: ref.read(raceStateProvider.notifier).buildRaceChoices(),
+              raceChoices:
+                  ref.read(raceStateProvider.notifier).buildRaceChoices(),
             );
             notifier.goToStep(context, Step.classStep);
           },
@@ -70,7 +71,7 @@ class RaceStep extends HookConsumerWidget {
         );
       },
       loading: () {
-        return CreationShimmer();
+        return const DelayedCreationShimmer();
       },
     );
   }

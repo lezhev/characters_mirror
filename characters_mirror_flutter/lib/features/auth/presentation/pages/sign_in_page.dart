@@ -13,9 +13,13 @@ class SignInPage extends ConsumerStatefulWidget {
 }
 
 class _SignInPageState extends ConsumerState<SignInPage> {
+  // TODO: Remove development credential autofill before release.
+  static const _defaultEmail = String.fromEnvironment('CM_DEFAULT_EMAIL');
+  static const _defaultPassword = String.fromEnvironment('CM_DEFAULT_PASSWORD');
+
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController(text: _defaultEmail);
+  final _passwordController = TextEditingController(text: _defaultPassword);
 
   bool _isLoading = false;
   bool _showValidation = false;

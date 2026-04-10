@@ -1,0 +1,6 @@
+enum: StartingEquipmentLineKind
+serialized: byName
+values:
+  - catalogRef
+  - weaponCategory
+  - itemCategory

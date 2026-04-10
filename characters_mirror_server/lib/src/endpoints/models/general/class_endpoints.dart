@@ -1,6 +1,9 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
+import 'starting_equipment_endpoints.dart';
+import 'warlock_starting_equipment_bootstrap.dart';
+
 class ClassDataEndpoint extends Endpoint {
   Future<List<ClassData>> getAll(Session session) async {
     return ClassData.db.find(session);
@@ -44,6 +47,9 @@ class ClassDataEndpoint extends Endpoint {
       'ClassData',
       classId,
     );
+    if (isStartingClass) {
+      await ensureWarlockStartingEquipmentData(session, classData);
+    }
 
     final features = await ClassFeatureData.db.find(
       session,
@@ -84,8 +90,8 @@ class ClassDataEndpoint extends Endpoint {
       final byClass = group.sourceClassId == classId;
       final byFeature = group.sourceFeatureId != null &&
           currentFeatureIds.contains(group.sourceFeatureId);
-      final bySubclass =
-          selectedSubclassId != null && group.sourceSubclassId == selectedSubclassId;
+      final bySubclass = selectedSubclassId != null &&
+          group.sourceSubclassId == selectedSubclassId;
       final bySubclassFeature = group.sourceSubclassFeatureId != null &&
           currentSubclassFeatureIds.contains(group.sourceSubclassFeatureId);
       final unlocked = (group.level ?? 1) <= selectedLevel;
@@ -103,6 +109,12 @@ class ClassDataEndpoint extends Endpoint {
         ),
       );
     }
+    final startingEquipmentBlocks = isStartingClass
+        ? await loadStartingEquipmentBlockViews(
+            session,
+            sourceClassId: classId,
+          )
+        : const <StartingEquipmentBlockView>[];
 
     final warnings = <String>[];
     if (!isStartingClass) {
@@ -135,6 +147,7 @@ class ClassDataEndpoint extends Endpoint {
         subclasses: subclasses,
       ),
       choiceGroups: currentGroups,
+      startingEquipmentBlocks: startingEquipmentBlocks,
       startingProficiencies: ProficiencyBundleView(
         savingThrows: classData.savingThrowProficiencies,
         skills: classData.availableSkills,
@@ -189,7 +202,8 @@ class ClassFeatureDataEndpoint extends Endpoint {
   }
 
   Future<void> delete(Session session, int id) async {
-    await ClassFeatureData.db.deleteWhere(session, where: (t) => t.id.equals(id));
+    await ClassFeatureData.db
+        .deleteWhere(session, where: (t) => t.id.equals(id));
   }
 }
 

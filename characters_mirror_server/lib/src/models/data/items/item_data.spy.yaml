@@ -1,6 +1,7 @@
 class: ItemData
 table: item_data
 fields:
+  referenceKey: String?
   name: String?
   description: String?
   source: String?
@@ -12,3 +13,7 @@ fields:
   weight: double?
   cost: int?
   effects: List<String>?       # например "advantage on tool checks"
+indexes:
+  item_reference_key_idx:
+    fields: referenceKey
+    unique: true

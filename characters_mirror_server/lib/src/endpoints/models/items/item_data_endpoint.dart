@@ -11,9 +11,12 @@ class ItemDataEndpoint extends Endpoint {
   }
 
   Future<ItemData> upsert(Session session, ItemData item) async {
+    final normalizedReferenceKey = item.referenceKey?.trim();
     final existing = await ItemData.db.find(
       session,
-      where: (t) => t.name.equals(item.name),
+      where: normalizedReferenceKey != null && normalizedReferenceKey.isNotEmpty
+          ? (t) => t.referenceKey.equals(normalizedReferenceKey)
+          : (t) => t.name.equals(item.name),
       limit: 1,
     );
 

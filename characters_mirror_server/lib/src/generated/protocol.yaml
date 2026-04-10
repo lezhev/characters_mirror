@@ -88,6 +88,21 @@ raceFeatureSpellGrantData:
   - add:
   - upsert:
   - delete:
+startingEquipmentBlockData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+startingEquipmentOptionData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
+startingEquipmentLineData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
 armorData:
   - getAll:
   - add:

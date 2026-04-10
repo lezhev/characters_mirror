@@ -1,0 +1,9 @@
+class: CharacterStartingEquipmentSelectionData
+fields:
+  id: int?
+  sourceType: ChoiceSourceType?
+  sourceId: int?
+  blockKey: String?
+  optionKey: String?
+  selectionIndex: int?
+  resolutions: List<CharacterStartingEquipmentResolutionData>?

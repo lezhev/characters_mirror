@@ -1,0 +1,1113 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "armor_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "armor_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"armor_reference_key_idx\" is added to table \"armor_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "armor_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"selectedItemKey\" of table \"character_choice_data\" will be dropped.",
+            "table": "character_choice_data",
+            "columns": [
+              "selectedItemKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"grantedItemKeys\" of table \"class_choice_option_data\" will be dropped.",
+            "table": "class_choice_option_data",
+            "columns": [
+              "grantedItemKeys"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"item_reference_key_idx\" is added to table \"item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"magic_item_reference_key_idx\" is added to table \"magic_item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "magic_item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"weapon_reference_key_idx\" is added to table \"weapon_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "weapon_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "character_choice_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "selectedItemKey"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"armor_reference_key_idx\" is added to table \"armor_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "armor_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"selectedItemKey\" of table \"character_choice_data\" will be dropped.",
+            "table": "character_choice_data",
+            "columns": [
+              "selectedItemKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"grantedItemKeys\" of table \"class_choice_option_data\" will be dropped.",
+            "table": "class_choice_option_data",
+            "columns": [
+              "grantedItemKeys"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"item_reference_key_idx\" is added to table \"item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"magic_item_reference_key_idx\" is added to table \"magic_item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "magic_item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"weapon_reference_key_idx\" is added to table \"weapon_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "weapon_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "character_starting_equipment_resolution_data",
+        "dartName": "CharacterStartingEquipmentResolutionRecord",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('character_starting_equipment_resolution_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "selectionId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "lineKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "catalogType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:EquipmentCatalogType?"
+          },
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "quantity",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "character_starting_equipment_resolution_data_fk_0",
+            "columns": [
+              "selectionId"
+            ],
+            "referenceTable": "character_starting_equipment_selection_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "character_starting_equipment_resolution_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "character_starting_equipment_selection_data",
+        "dartName": "CharacterStartingEquipmentSelectionRecord",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('character_starting_equipment_selection_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "characterId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "sourceType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:ChoiceSourceType?"
+          },
+          {
+            "name": "sourceId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "blockKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "optionKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "selectionIndex",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "character_starting_equipment_selection_data_fk_0",
+            "columns": [
+              "characterId"
+            ],
+            "referenceTable": "characters",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "character_starting_equipment_selection_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_choice_option_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "grantedItemKeys"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"armor_reference_key_idx\" is added to table \"armor_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "armor_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"selectedItemKey\" of table \"character_choice_data\" will be dropped.",
+            "table": "character_choice_data",
+            "columns": [
+              "selectedItemKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"grantedItemKeys\" of table \"class_choice_option_data\" will be dropped.",
+            "table": "class_choice_option_data",
+            "columns": [
+              "grantedItemKeys"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"item_reference_key_idx\" is added to table \"item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"magic_item_reference_key_idx\" is added to table \"magic_item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "magic_item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"weapon_reference_key_idx\" is added to table \"weapon_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "weapon_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "item_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "item_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"armor_reference_key_idx\" is added to table \"armor_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "armor_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"selectedItemKey\" of table \"character_choice_data\" will be dropped.",
+            "table": "character_choice_data",
+            "columns": [
+              "selectedItemKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"grantedItemKeys\" of table \"class_choice_option_data\" will be dropped.",
+            "table": "class_choice_option_data",
+            "columns": [
+              "grantedItemKeys"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"item_reference_key_idx\" is added to table \"item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"magic_item_reference_key_idx\" is added to table \"magic_item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "magic_item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"weapon_reference_key_idx\" is added to table \"weapon_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "weapon_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "magic_item_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "magic_item_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"armor_reference_key_idx\" is added to table \"armor_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "armor_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"selectedItemKey\" of table \"character_choice_data\" will be dropped.",
+            "table": "character_choice_data",
+            "columns": [
+              "selectedItemKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"grantedItemKeys\" of table \"class_choice_option_data\" will be dropped.",
+            "table": "class_choice_option_data",
+            "columns": [
+              "grantedItemKeys"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"item_reference_key_idx\" is added to table \"item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"magic_item_reference_key_idx\" is added to table \"magic_item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "magic_item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"weapon_reference_key_idx\" is added to table \"weapon_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "weapon_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "starting_equipment_block_data",
+        "dartName": "StartingEquipmentBlockData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('starting_equipment_block_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "blockKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "orderIndex",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "kind",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:StartingEquipmentBlockKind?"
+          },
+          {
+            "name": "selectionCount",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceClassId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceBackgroundId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "starting_equipment_block_data_fk_0",
+            "columns": [
+              "sourceClassId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "starting_equipment_block_data_fk_1",
+            "columns": [
+              "sourceBackgroundId"
+            ],
+            "referenceTable": "background_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "starting_equipment_block_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "starting_equipment_line_data",
+        "dartName": "StartingEquipmentLineData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('starting_equipment_line_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "blockId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "optionId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "lineKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "orderIndex",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "kind",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:StartingEquipmentLineKind?"
+          },
+          {
+            "name": "displayText",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "quantity",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "catalogType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:EquipmentCatalogType?"
+          },
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "allowedWeaponCategories",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:WeaponCategory>?"
+          },
+          {
+            "name": "allowedItemCategories",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "starting_equipment_line_data_fk_0",
+            "columns": [
+              "blockId"
+            ],
+            "referenceTable": "starting_equipment_block_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "starting_equipment_line_data_fk_1",
+            "columns": [
+              "optionId"
+            ],
+            "referenceTable": "starting_equipment_option_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "starting_equipment_line_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "starting_equipment_option_data",
+        "dartName": "StartingEquipmentOptionData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('starting_equipment_option_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "blockId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "optionKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "orderIndex",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "starting_equipment_option_data_fk_0",
+            "columns": [
+              "blockId"
+            ],
+            "referenceTable": "starting_equipment_block_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "starting_equipment_option_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "weapon_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "weapon_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"armor_reference_key_idx\" is added to table \"armor_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "armor_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"selectedItemKey\" of table \"character_choice_data\" will be dropped.",
+            "table": "character_choice_data",
+            "columns": [
+              "selectedItemKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"grantedItemKeys\" of table \"class_choice_option_data\" will be dropped.",
+            "table": "class_choice_option_data",
+            "columns": [
+              "grantedItemKeys"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"item_reference_key_idx\" is added to table \"item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"magic_item_reference_key_idx\" is added to table \"magic_item_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "magic_item_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"weapon_reference_key_idx\" is added to table \"weapon_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "weapon_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"armor_reference_key_idx\" is added to table \"armor_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "armor_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"selectedItemKey\" of table \"character_choice_data\" will be dropped.",
+      "table": "character_choice_data",
+      "columns": [
+        "selectedItemKey"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"grantedItemKeys\" of table \"class_choice_option_data\" will be dropped.",
+      "table": "class_choice_option_data",
+      "columns": [
+        "grantedItemKeys"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"item_reference_key_idx\" is added to table \"item_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "item_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"magic_item_reference_key_idx\" is added to table \"magic_item_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "magic_item_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"weapon_reference_key_idx\" is added to table \"weapon_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "weapon_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

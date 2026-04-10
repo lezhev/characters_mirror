@@ -15,6 +15,7 @@ import '../../enums/armor_category.dart' as _i2;
 abstract class ArmorData implements _i1.SerializableModel {
   ArmorData._({
     this.id,
+    this.referenceKey,
     this.name,
     this.description,
     this.source,
@@ -33,6 +34,7 @@ abstract class ArmorData implements _i1.SerializableModel {
 
   factory ArmorData({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -52,6 +54,7 @@ abstract class ArmorData implements _i1.SerializableModel {
   factory ArmorData.fromJson(Map<String, dynamic> jsonSerialization) {
     return ArmorData(
       id: jsonSerialization['id'] as int?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -80,6 +83,8 @@ abstract class ArmorData implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  String? referenceKey;
 
   String? name;
 
@@ -114,6 +119,7 @@ abstract class ArmorData implements _i1.SerializableModel {
   @_i1.useResult
   ArmorData copyWith({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -133,6 +139,7 @@ abstract class ArmorData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -163,6 +170,7 @@ class _Undefined {}
 class _ArmorDataImpl extends ArmorData {
   _ArmorDataImpl({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -179,6 +187,7 @@ class _ArmorDataImpl extends ArmorData {
     String? cost,
   }) : super._(
           id: id,
+          referenceKey: referenceKey,
           name: name,
           description: description,
           source: source,
@@ -201,6 +210,7 @@ class _ArmorDataImpl extends ArmorData {
   @override
   ArmorData copyWith({
     Object? id = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
@@ -218,6 +228,7 @@ class _ArmorDataImpl extends ArmorData {
   }) {
     return ArmorData(
       id: id is int? ? id : this.id,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,

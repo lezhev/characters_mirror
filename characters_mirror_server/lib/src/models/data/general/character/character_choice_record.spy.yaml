@@ -13,7 +13,6 @@ fields:
   selectedLanguage: Language?
   selectedToolKey: String?
   selectedSpellKey: String?
-  selectedItemKey: String?
   selectedFeatId: int?
   selectedText: String?
   selectedCount: int?

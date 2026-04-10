@@ -34,7 +34,6 @@ abstract class ClassChoiceOptionData
     this.grantedArmorTraining,
     this.grantedWeaponTraining,
     this.grantedToolKeys,
-    this.grantedItemKeys,
     this.grantedSpellKeys,
     this.grantedFeatureTags,
     this.source,
@@ -56,7 +55,6 @@ abstract class ClassChoiceOptionData
     List<_i5.ArmorCategory>? grantedArmorTraining,
     List<_i6.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
-    List<String>? grantedItemKeys,
     List<String>? grantedSpellKeys,
     List<_i7.FeatureTag>? grantedFeatureTags,
     String? source,
@@ -97,9 +95,6 @@ abstract class ClassChoiceOptionData
               ?.map((e) => _i6.WeaponCategory.fromJson((e as String)))
               .toList(),
       grantedToolKeys: (jsonSerialization['grantedToolKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      grantedItemKeys: (jsonSerialization['grantedItemKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
@@ -148,8 +143,6 @@ abstract class ClassChoiceOptionData
 
   List<String>? grantedToolKeys;
 
-  List<String>? grantedItemKeys;
-
   List<String>? grantedSpellKeys;
 
   List<_i7.FeatureTag>? grantedFeatureTags;
@@ -181,7 +174,6 @@ abstract class ClassChoiceOptionData
     List<_i5.ArmorCategory>? grantedArmorTraining,
     List<_i6.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
-    List<String>? grantedItemKeys,
     List<String>? grantedSpellKeys,
     List<_i7.FeatureTag>? grantedFeatureTags,
     String? source,
@@ -212,7 +204,6 @@ abstract class ClassChoiceOptionData
         'grantedWeaponTraining':
             grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
-      if (grantedItemKeys != null) 'grantedItemKeys': grantedItemKeys?.toJson(),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (grantedFeatureTags != null)
@@ -248,7 +239,6 @@ abstract class ClassChoiceOptionData
         'grantedWeaponTraining':
             grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
-      if (grantedItemKeys != null) 'grantedItemKeys': grantedItemKeys?.toJson(),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (grantedFeatureTags != null)
@@ -308,7 +298,6 @@ class _ClassChoiceOptionDataImpl extends ClassChoiceOptionData {
     List<_i5.ArmorCategory>? grantedArmorTraining,
     List<_i6.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
-    List<String>? grantedItemKeys,
     List<String>? grantedSpellKeys,
     List<_i7.FeatureTag>? grantedFeatureTags,
     String? source,
@@ -328,7 +317,6 @@ class _ClassChoiceOptionDataImpl extends ClassChoiceOptionData {
           grantedArmorTraining: grantedArmorTraining,
           grantedWeaponTraining: grantedWeaponTraining,
           grantedToolKeys: grantedToolKeys,
-          grantedItemKeys: grantedItemKeys,
           grantedSpellKeys: grantedSpellKeys,
           grantedFeatureTags: grantedFeatureTags,
           source: source,
@@ -354,7 +342,6 @@ class _ClassChoiceOptionDataImpl extends ClassChoiceOptionData {
     Object? grantedArmorTraining = _Undefined,
     Object? grantedWeaponTraining = _Undefined,
     Object? grantedToolKeys = _Undefined,
-    Object? grantedItemKeys = _Undefined,
     Object? grantedSpellKeys = _Undefined,
     Object? grantedFeatureTags = _Undefined,
     Object? source = _Undefined,
@@ -396,9 +383,6 @@ class _ClassChoiceOptionDataImpl extends ClassChoiceOptionData {
       grantedToolKeys: grantedToolKeys is List<String>?
           ? grantedToolKeys
           : this.grantedToolKeys?.map((e0) => e0).toList(),
-      grantedItemKeys: grantedItemKeys is List<String>?
-          ? grantedItemKeys
-          : this.grantedItemKeys?.map((e0) => e0).toList(),
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
@@ -456,10 +440,6 @@ class ClassChoiceOptionDataTable extends _i1.Table<int?> {
       'grantedToolKeys',
       this,
     );
-    grantedItemKeys = _i1.ColumnSerializable(
-      'grantedItemKeys',
-      this,
-    );
     grantedSpellKeys = _i1.ColumnSerializable(
       'grantedSpellKeys',
       this,
@@ -508,8 +488,6 @@ class ClassChoiceOptionDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable grantedToolKeys;
 
-  late final _i1.ColumnSerializable grantedItemKeys;
-
   late final _i1.ColumnSerializable grantedSpellKeys;
 
   late final _i1.ColumnSerializable grantedFeatureTags;
@@ -548,7 +526,6 @@ class ClassChoiceOptionDataTable extends _i1.Table<int?> {
         grantedArmorTraining,
         grantedWeaponTraining,
         grantedToolKeys,
-        grantedItemKeys,
         grantedSpellKeys,
         grantedFeatureTags,
         source,
