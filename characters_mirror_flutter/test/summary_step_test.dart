@@ -1,6 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/summary.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

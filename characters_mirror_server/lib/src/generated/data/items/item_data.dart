@@ -15,6 +15,7 @@ abstract class ItemData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   ItemData._({
     this.id,
+    this.referenceKey,
     this.name,
     this.description,
     this.source,
@@ -29,6 +30,7 @@ abstract class ItemData
 
   factory ItemData({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -44,6 +46,7 @@ abstract class ItemData
   factory ItemData.fromJson(Map<String, dynamic> jsonSerialization) {
     return ItemData(
       id: jsonSerialization['id'] as int?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -69,6 +72,8 @@ abstract class ItemData
 
   @override
   int? id;
+
+  String? referenceKey;
 
   String? name;
 
@@ -98,6 +103,7 @@ abstract class ItemData
   @_i1.useResult
   ItemData copyWith({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -113,6 +119,7 @@ abstract class ItemData
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -130,6 +137,7 @@ abstract class ItemData
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -178,6 +186,7 @@ class _Undefined {}
 class _ItemDataImpl extends ItemData {
   _ItemDataImpl({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -190,6 +199,7 @@ class _ItemDataImpl extends ItemData {
     List<String>? effects,
   }) : super._(
           id: id,
+          referenceKey: referenceKey,
           name: name,
           description: description,
           source: source,
@@ -208,6 +218,7 @@ class _ItemDataImpl extends ItemData {
   @override
   ItemData copyWith({
     Object? id = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
@@ -221,6 +232,7 @@ class _ItemDataImpl extends ItemData {
   }) {
     return ItemData(
       id: id is int? ? id : this.id,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,
@@ -239,6 +251,10 @@ class _ItemDataImpl extends ItemData {
 
 class ItemDataTable extends _i1.Table<int?> {
   ItemDataTable({super.tableRelation}) : super(tableName: 'item_data') {
+    referenceKey = _i1.ColumnString(
+      'referenceKey',
+      this,
+    );
     name = _i1.ColumnString(
       'name',
       this,
@@ -281,6 +297,8 @@ class ItemDataTable extends _i1.Table<int?> {
     );
   }
 
+  late final _i1.ColumnString referenceKey;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString description;
@@ -304,6 +322,7 @@ class ItemDataTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        referenceKey,
         name,
         description,
         source,

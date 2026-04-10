@@ -1,5 +1,5 @@
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/personal.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/personal_step/personal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -31,7 +31,8 @@ void main() {
 
     await tester.enterText(
       find.byWidgetPredicate(
-        (widget) => widget is TextField && widget.decoration?.labelText == 'Имя',
+        (widget) =>
+            widget is TextField && widget.decoration?.labelText == 'Имя',
       ),
       'Мелифаро',
     );
@@ -43,6 +44,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(container.read(characterCreationProvider).character.name, 'Мелифаро');
+    expect(
+        container.read(characterCreationProvider).character.name, 'Мелифаро');
   });
 }

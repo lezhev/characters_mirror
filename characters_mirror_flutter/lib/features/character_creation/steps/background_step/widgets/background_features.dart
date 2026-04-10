@@ -4,6 +4,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart'
 import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_choice_builder.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_group_card.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -67,7 +68,8 @@ class BackgroundFeatures extends ConsumerWidget {
             ],
           ),
         ),
-      if (_hasTextList(selectedBackground.items) || selectedBackground.coins != null)
+      if (_hasTextList(selectedBackground.items) ||
+          selectedBackground.coins != null)
         BackgroundFeatureCard(
           title: 'Снаряжение и ресурсы',
           child: Column(
@@ -119,28 +121,31 @@ class BackgroundFeatures extends ConsumerWidget {
           ),
         ),
     ];
-    final choiceCards = (stepView?.choiceGroups ?? const <ClassChoiceGroupView>[])
-        .where((groupView) => groupView.group != null)
-        .map(
-          (groupView) => Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: CreationChoiceGroupCard(
-              groupView: groupView,
-              selectedOptions:
-                  selectedOptions[classChoiceGroupKey(groupView.group!)] ??
-                      const <ClassChoiceOptionData>[],
-              onToggleOption:
-                  ref.read(backgroundStateProvider.notifier).toggleOption,
-              onIncrementOption:
-                  ref.read(backgroundStateProvider.notifier).incrementOption,
-              onDecrementOption:
-                  ref.read(backgroundStateProvider.notifier).decrementOption,
-              onClearGroup:
-                  ref.read(backgroundStateProvider.notifier).clearGroup,
-            ),
-          ),
-        )
-        .toList();
+    final choiceCards =
+        (stepView?.choiceGroups ?? const <ClassChoiceGroupView>[])
+            .where((groupView) => groupView.group != null)
+            .map(
+              (groupView) => Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: CreationChoiceGroupCard(
+                  groupView: groupView,
+                  selectedOptions:
+                      selectedOptions[classChoiceGroupKey(groupView.group!)] ??
+                          const <ClassChoiceOptionData>[],
+                  onToggleOption:
+                      ref.read(backgroundStateProvider.notifier).toggleOption,
+                  onIncrementOption: ref
+                      .read(backgroundStateProvider.notifier)
+                      .incrementOption,
+                  onDecrementOption: ref
+                      .read(backgroundStateProvider.notifier)
+                      .decrementOption,
+                  onClearGroup:
+                      ref.read(backgroundStateProvider.notifier).clearGroup,
+                ),
+              ),
+            )
+            .toList();
 
     if (cards.isEmpty && choiceCards.isEmpty) {
       return Center(
@@ -157,6 +162,39 @@ class BackgroundFeatures extends ConsumerWidget {
         const AppSectionHeader(title: 'Особенности предыстории'),
         const Gap(2),
         ...cards,
+        if ((stepView?.startingEquipmentBlocks?.isNotEmpty ?? false)) ...[
+          const Gap(12),
+          StartingEquipmentSection(
+            blocks: stepView?.startingEquipmentBlocks ??
+                const <StartingEquipmentBlockView>[],
+            selections: ref
+                    .watch(backgroundStateProvider)
+                    .valueOrNull
+                    ?.startingEquipmentSelections ??
+                const <CharacterStartingEquipmentSelectionData>[],
+            onSelectOption: ref
+                .read(backgroundStateProvider.notifier)
+                .selectStartingEquipmentOption,
+            onClearBlock: ref
+                .read(backgroundStateProvider.notifier)
+                .clearStartingEquipmentBlock,
+            onSetResolution: ({
+              required blockView,
+              required line,
+              required catalogType,
+              required referenceKey,
+            }) {
+              ref
+                  .read(backgroundStateProvider.notifier)
+                  .setStartingEquipmentResolution(
+                    blockView: blockView,
+                    line: line,
+                    catalogType: catalogType,
+                    referenceKey: referenceKey,
+                  );
+            },
+          ),
+        ],
         if (choiceCards.isNotEmpty) ...[
           const Gap(12),
           const AppSectionHeader(title: 'Выборы предыстории'),
@@ -289,7 +327,8 @@ class BackgroundPromptGroup extends StatelessWidget {
 bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
 
 bool _hasTextList(List<dynamic>? values) =>
-    values != null && values.any((value) => _displayValue(value).trim().isNotEmpty);
+    values != null &&
+    values.any((value) => _displayValue(value).trim().isNotEmpty);
 
 bool _hasAnyValues(List<List<dynamic>?> groups) =>
     groups.any((group) => _hasTextList(group));

@@ -1,5 +1,5 @@
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character_page.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight_page.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/fight_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/inventory_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/notes_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/spell_page.dart';
@@ -31,9 +31,9 @@ List<CharacterSheetTab> buildCharacterSheetTabs(int characterId) {
         label: 'Персонаж',
       ),
     ),
-    const CharacterSheetTab(
-      builder: _buildInventoryPage,
-      destination: NavigationDestination(
+    CharacterSheetTab(
+      builder: () => InventoryPage(characterId: characterId),
+      destination: const NavigationDestination(
         icon: Icon(Icons.inventory),
         label: 'Инвентарь',
       ),
@@ -56,6 +56,5 @@ List<CharacterSheetTab> buildCharacterSheetTabs(int characterId) {
 }
 
 Widget _buildCharacterPage() => const CharacterPage();
-Widget _buildInventoryPage() => const InventoryPage();
 Widget _buildNotesPage() => const NotesPage();
 Widget _buildSpellPage() => const SpellPage();

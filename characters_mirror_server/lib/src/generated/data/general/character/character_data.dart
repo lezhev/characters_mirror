@@ -19,7 +19,9 @@ import '../../../data/general/character/character_feature_override_data.dart'
     as _i7;
 import '../../../data/general/character/character_class_entry_data.dart' as _i8;
 import '../../../data/general/character/character_choice_data.dart' as _i9;
-import '../../../data/general/character/character_derived_data.dart' as _i10;
+import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+    as _i10;
+import '../../../data/general/character/character_derived_data.dart' as _i11;
 
 abstract class CharacterData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -53,11 +55,13 @@ abstract class CharacterData
     this.temporaryHp,
     this.currentHp,
     this.inspiration,
+    this.equipment,
     this.notes,
     this.attacks,
     this.featureOverrides,
     this.classEntries,
     this.choices,
+    this.startingEquipmentSelections,
     this.derived,
   });
 
@@ -91,12 +95,15 @@ abstract class CharacterData
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
+    String? equipment,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
     List<_i7.CharacterFeatureOverrideData>? featureOverrides,
     List<_i8.CharacterClassEntryData>? classEntries,
     List<_i9.CharacterChoiceData>? choices,
-    _i10.CharacterDerivedData? derived,
+    List<_i10.CharacterStartingEquipmentSelectionData>?
+        startingEquipmentSelections,
+    _i11.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -151,6 +158,7 @@ abstract class CharacterData
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
+      equipment: jsonSerialization['equipment'] as String?,
       notes: jsonSerialization['notes'] as String?,
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
@@ -168,9 +176,15 @@ abstract class CharacterData
           ?.map((e) =>
               _i9.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      startingEquipmentSelections:
+          (jsonSerialization['startingEquipmentSelections'] as List?)
+              ?.map((e) =>
+                  _i10.CharacterStartingEquipmentSelectionData.fromJson(
+                      (e as Map<String, dynamic>)))
+              .toList(),
       derived: jsonSerialization['derived'] == null
           ? null
-          : _i10.CharacterDerivedData.fromJson(
+          : _i11.CharacterDerivedData.fromJson(
               (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
@@ -233,6 +247,8 @@ abstract class CharacterData
 
   bool? inspiration;
 
+  String? equipment;
+
   String? notes;
 
   List<_i6.CharacterAttackData>? attacks;
@@ -243,7 +259,10 @@ abstract class CharacterData
 
   List<_i9.CharacterChoiceData>? choices;
 
-  _i10.CharacterDerivedData? derived;
+  List<_i10.CharacterStartingEquipmentSelectionData>?
+      startingEquipmentSelections;
+
+  _i11.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
@@ -278,12 +297,15 @@ abstract class CharacterData
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
+    String? equipment,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
     List<_i7.CharacterFeatureOverrideData>? featureOverrides,
     List<_i8.CharacterClassEntryData>? classEntries,
     List<_i9.CharacterChoiceData>? choices,
-    _i10.CharacterDerivedData? derived,
+    List<_i10.CharacterStartingEquipmentSelectionData>?
+        startingEquipmentSelections,
+    _i11.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -320,6 +342,7 @@ abstract class CharacterData
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
+      if (equipment != null) 'equipment': equipment,
       if (notes != null) 'notes': notes,
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
@@ -330,6 +353,9 @@ abstract class CharacterData
         'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
       if (choices != null)
         'choices': choices?.toJson(valueToJson: (v) => v.toJson()),
+      if (startingEquipmentSelections != null)
+        'startingEquipmentSelections':
+            startingEquipmentSelections?.toJson(valueToJson: (v) => v.toJson()),
       if (derived != null) 'derived': derived?.toJson(),
     };
   }
@@ -369,6 +395,7 @@ abstract class CharacterData
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
+      if (equipment != null) 'equipment': equipment,
       if (notes != null) 'notes': notes,
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -380,6 +407,9 @@ abstract class CharacterData
             classEntries?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (choices != null)
         'choices': choices?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (startingEquipmentSelections != null)
+        'startingEquipmentSelections': startingEquipmentSelections?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
       if (derived != null) 'derived': derived?.toJsonForProtocol(),
     };
   }
@@ -423,12 +453,15 @@ class _CharacterDataImpl extends CharacterData {
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
+    String? equipment,
     String? notes,
     List<_i6.CharacterAttackData>? attacks,
     List<_i7.CharacterFeatureOverrideData>? featureOverrides,
     List<_i8.CharacterClassEntryData>? classEntries,
     List<_i9.CharacterChoiceData>? choices,
-    _i10.CharacterDerivedData? derived,
+    List<_i10.CharacterStartingEquipmentSelectionData>?
+        startingEquipmentSelections,
+    _i11.CharacterDerivedData? derived,
   }) : super._(
           id: id,
           name: name,
@@ -459,11 +492,13 @@ class _CharacterDataImpl extends CharacterData {
           temporaryHp: temporaryHp,
           currentHp: currentHp,
           inspiration: inspiration,
+          equipment: equipment,
           notes: notes,
           attacks: attacks,
           featureOverrides: featureOverrides,
           classEntries: classEntries,
           choices: choices,
+          startingEquipmentSelections: startingEquipmentSelections,
           derived: derived,
         );
 
@@ -501,11 +536,13 @@ class _CharacterDataImpl extends CharacterData {
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
     Object? inspiration = _Undefined,
+    Object? equipment = _Undefined,
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
     Object? classEntries = _Undefined,
     Object? choices = _Undefined,
+    Object? startingEquipmentSelections = _Undefined,
     Object? derived = _Undefined,
   }) {
     return CharacterData(
@@ -557,6 +594,7 @@ class _CharacterDataImpl extends CharacterData {
       temporaryHp: temporaryHp is int? ? temporaryHp : this.temporaryHp,
       currentHp: currentHp is int? ? currentHp : this.currentHp,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
+      equipment: equipment is String? ? equipment : this.equipment,
       notes: notes is String? ? notes : this.notes,
       attacks: attacks is List<_i6.CharacterAttackData>?
           ? attacks
@@ -571,7 +609,14 @@ class _CharacterDataImpl extends CharacterData {
       choices: choices is List<_i9.CharacterChoiceData>?
           ? choices
           : this.choices?.map((e0) => e0.copyWith()).toList(),
-      derived: derived is _i10.CharacterDerivedData?
+      startingEquipmentSelections: startingEquipmentSelections
+              is List<_i10.CharacterStartingEquipmentSelectionData>?
+          ? startingEquipmentSelections
+          : this
+              .startingEquipmentSelections
+              ?.map((e0) => e0.copyWith())
+              .toList(),
+      derived: derived is _i11.CharacterDerivedData?
           ? derived
           : this.derived?.copyWith(),
     );

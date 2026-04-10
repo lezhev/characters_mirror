@@ -1,6 +1,8 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
+import 'general/starting_equipment_endpoints.dart';
+
 class BackgroundDataEndpoint extends Endpoint {
   Future<List<BackgroundData>> getAll(Session session) async {
     return await BackgroundData.db.find(session);
@@ -38,9 +40,15 @@ class BackgroundDataEndpoint extends Endpoint {
       );
     }
 
+    final startingEquipmentBlocks = await loadStartingEquipmentBlockViews(
+      session,
+      sourceBackgroundId: backgroundId,
+    );
+
     return BackgroundStepView(
       background: backgrounds.first,
       choiceGroups: choiceGroups,
+      startingEquipmentBlocks: startingEquipmentBlocks,
     );
   }
 

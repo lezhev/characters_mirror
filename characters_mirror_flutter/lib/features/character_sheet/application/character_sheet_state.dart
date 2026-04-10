@@ -75,6 +75,13 @@ class CharacterSheetController
     await _saveCharacter(current.copyWith(attacks: attacks));
   }
 
+  Future<void> saveEquipment(String? equipment) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(equipment: _normalizedText(equipment)),
+    );
+  }
+
   Future<void> saveFeatureOverride(
     CharacterFeatureViewData feature, {
     String? name,

@@ -13,7 +13,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/character/character_feature_view_data.dart'
     as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
-import '../../../enums/damage_type.dart' as _i4;
+import '../../../views/character_equipment_entry_view.dart' as _i4;
+import '../../../enums/damage_type.dart' as _i5;
 
 abstract class CharacterDerivedData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -42,7 +43,7 @@ abstract class CharacterDerivedData
     this.featureTags,
     this.featIds,
     this.grantedSpellKeys,
-    this.grantedItemKeys,
+    this.grantedEquipment,
     this.senses,
     this.resistances,
     this.rebuiltAt,
@@ -73,9 +74,9 @@ abstract class CharacterDerivedData
     List<_i3.FeatureTag>? featureTags,
     List<int>? featIds,
     List<String>? grantedSpellKeys,
-    List<String>? grantedItemKeys,
+    List<_i4.CharacterEquipmentEntryView>? grantedEquipment,
     List<String>? senses,
-    List<_i4.DamageType>? resistances,
+    List<_i5.DamageType>? resistances,
     DateTime? rebuiltAt,
   }) = _CharacterDerivedDataImpl;
 
@@ -146,14 +147,15 @@ abstract class CharacterDerivedData
       grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      grantedItemKeys: (jsonSerialization['grantedItemKeys'] as List?)
-          ?.map((e) => e as String)
+      grantedEquipment: (jsonSerialization['grantedEquipment'] as List?)
+          ?.map((e) => _i4.CharacterEquipmentEntryView.fromJson(
+              (e as Map<String, dynamic>)))
           .toList(),
       senses: (jsonSerialization['senses'] as List?)
           ?.map((e) => e as String)
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i4.DamageType.fromJson((e as String)))
+          ?.map((e) => _i5.DamageType.fromJson((e as String)))
           .toList(),
       rebuiltAt: jsonSerialization['rebuiltAt'] == null
           ? null
@@ -209,11 +211,11 @@ abstract class CharacterDerivedData
 
   List<String>? grantedSpellKeys;
 
-  List<String>? grantedItemKeys;
+  List<_i4.CharacterEquipmentEntryView>? grantedEquipment;
 
   List<String>? senses;
 
-  List<_i4.DamageType>? resistances;
+  List<_i5.DamageType>? resistances;
 
   DateTime? rebuiltAt;
 
@@ -245,9 +247,9 @@ abstract class CharacterDerivedData
     List<_i3.FeatureTag>? featureTags,
     List<int>? featIds,
     List<String>? grantedSpellKeys,
-    List<String>? grantedItemKeys,
+    List<_i4.CharacterEquipmentEntryView>? grantedEquipment,
     List<String>? senses,
-    List<_i4.DamageType>? resistances,
+    List<_i5.DamageType>? resistances,
     DateTime? rebuiltAt,
   });
   @override
@@ -285,7 +287,9 @@ abstract class CharacterDerivedData
       if (featIds != null) 'featIds': featIds?.toJson(),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
-      if (grantedItemKeys != null) 'grantedItemKeys': grantedItemKeys?.toJson(),
+      if (grantedEquipment != null)
+        'grantedEquipment':
+            grantedEquipment?.toJson(valueToJson: (v) => v.toJson()),
       if (senses != null) 'senses': senses?.toJson(),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
@@ -328,7 +332,9 @@ abstract class CharacterDerivedData
       if (featIds != null) 'featIds': featIds?.toJson(),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
-      if (grantedItemKeys != null) 'grantedItemKeys': grantedItemKeys?.toJson(),
+      if (grantedEquipment != null)
+        'grantedEquipment':
+            grantedEquipment?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (senses != null) 'senses': senses?.toJson(),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
@@ -370,9 +376,9 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     List<_i3.FeatureTag>? featureTags,
     List<int>? featIds,
     List<String>? grantedSpellKeys,
-    List<String>? grantedItemKeys,
+    List<_i4.CharacterEquipmentEntryView>? grantedEquipment,
     List<String>? senses,
-    List<_i4.DamageType>? resistances,
+    List<_i5.DamageType>? resistances,
     DateTime? rebuiltAt,
   }) : super._(
           totalLevel: totalLevel,
@@ -399,7 +405,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           featureTags: featureTags,
           featIds: featIds,
           grantedSpellKeys: grantedSpellKeys,
-          grantedItemKeys: grantedItemKeys,
+          grantedEquipment: grantedEquipment,
           senses: senses,
           resistances: resistances,
           rebuiltAt: rebuiltAt,
@@ -434,7 +440,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Object? featureTags = _Undefined,
     Object? featIds = _Undefined,
     Object? grantedSpellKeys = _Undefined,
-    Object? grantedItemKeys = _Undefined,
+    Object? grantedEquipment = _Undefined,
     Object? senses = _Undefined,
     Object? resistances = _Undefined,
     Object? rebuiltAt = _Undefined,
@@ -549,13 +555,14 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
-      grantedItemKeys: grantedItemKeys is List<String>?
-          ? grantedItemKeys
-          : this.grantedItemKeys?.map((e0) => e0).toList(),
+      grantedEquipment:
+          grantedEquipment is List<_i4.CharacterEquipmentEntryView>?
+              ? grantedEquipment
+              : this.grantedEquipment?.map((e0) => e0.copyWith()).toList(),
       senses: senses is List<String>?
           ? senses
           : this.senses?.map((e0) => e0).toList(),
-      resistances: resistances is List<_i4.DamageType>?
+      resistances: resistances is List<_i5.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
       rebuiltAt: rebuiltAt is DateTime? ? rebuiltAt : this.rebuiltAt,

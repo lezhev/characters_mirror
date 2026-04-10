@@ -28,7 +28,6 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
     this.selectedLanguage,
     this.selectedToolKey,
     this.selectedSpellKey,
-    this.selectedItemKey,
     this.selectedFeatId,
     this.selectedText,
     this.selectedCount,
@@ -46,7 +45,6 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
     _i5.Language? selectedLanguage,
     String? selectedToolKey,
     String? selectedSpellKey,
-    String? selectedItemKey,
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
@@ -77,7 +75,6 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
               (jsonSerialization['selectedLanguage'] as String)),
       selectedToolKey: jsonSerialization['selectedToolKey'] as String?,
       selectedSpellKey: jsonSerialization['selectedSpellKey'] as String?,
-      selectedItemKey: jsonSerialization['selectedItemKey'] as String?,
       selectedFeatId: jsonSerialization['selectedFeatId'] as int?,
       selectedText: jsonSerialization['selectedText'] as String?,
       selectedCount: jsonSerialization['selectedCount'] as int?,
@@ -106,8 +103,6 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
 
   String? selectedSpellKey;
 
-  String? selectedItemKey;
-
   int? selectedFeatId;
 
   String? selectedText;
@@ -129,7 +124,6 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
     _i5.Language? selectedLanguage,
     String? selectedToolKey,
     String? selectedSpellKey,
-    String? selectedItemKey,
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
@@ -149,7 +143,6 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
         'selectedLanguage': selectedLanguage?.toJson(),
       if (selectedToolKey != null) 'selectedToolKey': selectedToolKey,
       if (selectedSpellKey != null) 'selectedSpellKey': selectedSpellKey,
-      if (selectedItemKey != null) 'selectedItemKey': selectedItemKey,
       if (selectedFeatId != null) 'selectedFeatId': selectedFeatId,
       if (selectedText != null) 'selectedText': selectedText,
       if (selectedCount != null) 'selectedCount': selectedCount,
@@ -177,7 +170,6 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
     _i5.Language? selectedLanguage,
     String? selectedToolKey,
     String? selectedSpellKey,
-    String? selectedItemKey,
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
@@ -193,7 +185,6 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
           selectedLanguage: selectedLanguage,
           selectedToolKey: selectedToolKey,
           selectedSpellKey: selectedSpellKey,
-          selectedItemKey: selectedItemKey,
           selectedFeatId: selectedFeatId,
           selectedText: selectedText,
           selectedCount: selectedCount,
@@ -215,7 +206,6 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
     Object? selectedLanguage = _Undefined,
     Object? selectedToolKey = _Undefined,
     Object? selectedSpellKey = _Undefined,
-    Object? selectedItemKey = _Undefined,
     Object? selectedFeatId = _Undefined,
     Object? selectedText = _Undefined,
     Object? selectedCount = _Undefined,
@@ -243,8 +233,6 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
       selectedSpellKey: selectedSpellKey is String?
           ? selectedSpellKey
           : this.selectedSpellKey,
-      selectedItemKey:
-          selectedItemKey is String? ? selectedItemKey : this.selectedItemKey,
       selectedFeatId:
           selectedFeatId is int? ? selectedFeatId : this.selectedFeatId,
       selectedText: selectedText is String? ? selectedText : this.selectedText,

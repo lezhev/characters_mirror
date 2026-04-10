@@ -1,6 +1,7 @@
 class: ArmorData
 table: armor_data
 fields:
+  referenceKey: String?
   name: String?
   description: String?
   source: String?
@@ -16,3 +17,7 @@ fields:
   stealthDisadvantage: bool?
   weight: double?
   cost: String?
+indexes:
+  armor_reference_key_idx:
+    fields: referenceKey
+    unique: true

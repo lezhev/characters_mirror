@@ -8,7 +8,6 @@ values:
   - expertise
   - spell
   - cantrip
-  - equipment
   - subclassFeature
   - featureOption
   - invocation

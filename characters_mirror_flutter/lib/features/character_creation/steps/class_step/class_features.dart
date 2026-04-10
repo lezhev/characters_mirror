@@ -5,6 +5,7 @@ import 'package:characters_mirror_flutter/features/character_creation/steps/clas
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/class_feature_cards.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/class_profile_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/class_progression_sections.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -50,13 +51,43 @@ class ClassFeatures extends HookConsumerWidget {
     final subclassChoice = currentStepView.subclassChoice;
 
     return ref.watch(classStateProvider).when(
-          data: (_) {
+          data: (stateData) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const AppSectionHeader(title: 'Профиль класса'),
                 const Gap(8),
                 ClassProfileCard(classData: currentStepView.classData!),
+                if ((currentStepView.startingEquipmentBlocks?.isNotEmpty ??
+                    false)) ...[
+                  const Gap(12),
+                  StartingEquipmentSection(
+                    blocks: currentStepView.startingEquipmentBlocks ??
+                        const <StartingEquipmentBlockView>[],
+                    selections: stateData.startingEquipmentSelections,
+                    onSelectOption: ref
+                        .read(classStateProvider.notifier)
+                        .selectStartingEquipmentOption,
+                    onClearBlock: ref
+                        .read(classStateProvider.notifier)
+                        .clearStartingEquipmentBlock,
+                    onSetResolution: ({
+                      required blockView,
+                      required line,
+                      required catalogType,
+                      required referenceKey,
+                    }) {
+                      ref
+                          .read(classStateProvider.notifier)
+                          .setStartingEquipmentResolution(
+                            blockView: blockView,
+                            line: line,
+                            catalogType: catalogType,
+                            referenceKey: referenceKey,
+                          );
+                    },
+                  ),
+                ],
                 if (subclassChoice != null &&
                     (subclassChoice.requiredLevel ?? 99) <= selectedLevel &&
                     (subclassChoice.subclasses?.isNotEmpty ?? false)) ...[
@@ -78,17 +109,15 @@ class ClassFeatures extends HookConsumerWidget {
                         isFutureExpanded.value = !isFutureExpanded.value,
                   ),
                 ],
-                if ((currentStepView.multiclassWarnings?.isNotEmpty ?? false)) ...[
+                if ((currentStepView.multiclassWarnings?.isNotEmpty ??
+                    false)) ...[
                   const Gap(12),
                   for (final warning in currentStepView.multiclassWarnings!)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Text(
                         warning,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).colorScheme.error,
                             ),
                       ),

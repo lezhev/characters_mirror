@@ -14,6 +14,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class MagicItemData implements _i1.SerializableModel {
   MagicItemData._({
     this.id,
+    this.referenceKey,
     this.name,
     this.description,
     this.source,
@@ -32,6 +33,7 @@ abstract class MagicItemData implements _i1.SerializableModel {
 
   factory MagicItemData({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -51,6 +53,7 @@ abstract class MagicItemData implements _i1.SerializableModel {
   factory MagicItemData.fromJson(Map<String, dynamic> jsonSerialization) {
     return MagicItemData(
       id: jsonSerialization['id'] as int?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -81,6 +84,8 @@ abstract class MagicItemData implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  String? referenceKey;
 
   String? name;
 
@@ -115,6 +120,7 @@ abstract class MagicItemData implements _i1.SerializableModel {
   @_i1.useResult
   MagicItemData copyWith({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -134,6 +140,7 @@ abstract class MagicItemData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -163,6 +170,7 @@ class _Undefined {}
 class _MagicItemDataImpl extends MagicItemData {
   _MagicItemDataImpl({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -179,6 +187,7 @@ class _MagicItemDataImpl extends MagicItemData {
     List<String>? effects,
   }) : super._(
           id: id,
+          referenceKey: referenceKey,
           name: name,
           description: description,
           source: source,
@@ -201,6 +210,7 @@ class _MagicItemDataImpl extends MagicItemData {
   @override
   MagicItemData copyWith({
     Object? id = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
@@ -218,6 +228,7 @@ class _MagicItemDataImpl extends MagicItemData {
   }) {
     return MagicItemData(
       id: id is int? ? id : this.id,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,

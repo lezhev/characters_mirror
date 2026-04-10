@@ -1,6 +1,7 @@
 class: WeaponData
 table: weapon_data
 fields:
+  referenceKey: String?
   name: String?
   description: String?
   source: String?
@@ -16,3 +17,7 @@ fields:
   cost: double?
   rangeNormal: int?
   rangeMax: int?
+indexes:
+  weapon_reference_key_idx:
+    fields: referenceKey
+    unique: true

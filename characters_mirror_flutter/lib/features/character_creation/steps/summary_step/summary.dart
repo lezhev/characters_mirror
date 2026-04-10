@@ -2,7 +2,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/summary/widgets/summary_sections.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/widgets/summary_sections.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

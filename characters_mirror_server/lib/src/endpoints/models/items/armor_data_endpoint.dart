@@ -11,9 +11,12 @@ class ArmorDataEndpoint extends Endpoint {
   }
 
   Future<ArmorData> upsert(Session session, ArmorData armor) async {
+    final normalizedReferenceKey = armor.referenceKey?.trim();
     final existing = await ArmorData.db.find(
       session,
-      where: (t) => t.name.equals(armor.name),
+      where: normalizedReferenceKey != null && normalizedReferenceKey.isNotEmpty
+          ? (t) => t.referenceKey.equals(normalizedReferenceKey)
+          : (t) => t.name.equals(armor.name),
       limit: 1,
     );
 

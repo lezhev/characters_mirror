@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_cards_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -16,8 +17,6 @@ class RaceChoiceSetCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     final options = [...?choiceSet.choiceOptions]..sort(compareChoiceOptions);
     if (options.isEmpty) {
       return const SizedBox.shrink();
@@ -26,97 +25,69 @@ class RaceChoiceSetCard extends ConsumerWidget {
     final isAbilityChoice = choiceSet.kind == RaceChoiceKind.abilityBonusChoice;
     final selectedKeys = {
       for (final option in selectedOptions)
-        if (option.optionKey?.trim().isNotEmpty == true) option.optionKey!.trim(),
+        if (option.optionKey?.trim().isNotEmpty == true)
+          option.optionKey!.trim(),
     };
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: colorScheme.outlineVariant),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            raceChoiceKindLabel(choiceSet.kind),
-            style: textTheme.titleSmall,
-          ),
-          if ((choiceSet.description ?? '').trim().isNotEmpty) ...[
-            const Gap(6),
-            Text(
-              choiceSet.description!,
-              style: textTheme.bodyMedium,
-            ),
-          ],
-          const Gap(8),
-          Text(
-            isAbilityChoice
-                ? 'Этот выбор применяется на шаге характеристик.'
-                : 'Выберите ${choiceSet.pickCount ?? 1}.',
-            style: textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const Gap(8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: options.map((option) {
-              final optionKey = option.optionKey?.trim();
-              final isSelected =
-                  optionKey != null && selectedKeys.contains(optionKey);
+    if (isAbilityChoice) {
+      final colorScheme = Theme.of(context).colorScheme;
+      final textTheme = Theme.of(context).textTheme;
 
-              return InkWell(
-                onTap: isAbilityChoice
-                    ? null
-                    : () => ref
-                        .read(raceStateProvider.notifier)
-                        .toggleChoiceOption(choiceSet, option),
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: isSelected
-                          ? colorScheme.primary
-                          : colorScheme.outline,
-                    ),
-                    color: isSelected
-                        ? colorScheme.primaryContainer.withValues(alpha: 0.5)
-                        : Colors.transparent,
-                  ),
-                  child: Text(
-                    choiceOptionLabel(option),
-                    style: textTheme.bodySmall,
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-          if (selectedOptions.any(
-            (option) => (option.description ?? '').trim().isNotEmpty,
-          )) ...[
-            const Gap(10),
-            ...selectedOptions
-                .where((option) => (option.description ?? '').trim().isNotEmpty)
-                .map(
-                  (option) => Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
-                    child: Text(
-                      option.description!,
-                      style: textTheme.bodyMedium,
-                    ),
-                  ),
-                ),
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: colorScheme.outlineVariant),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              raceChoiceKindLabel(choiceSet.kind),
+              style: textTheme.titleSmall,
+            ),
+            if ((choiceSet.description ?? '').trim().isNotEmpty) ...[
+              const Gap(6),
+              Text(
+                choiceSet.description!,
+                style: textTheme.bodyMedium,
+              ),
+            ],
+            const Gap(8),
+            Text(
+              'Этот выбор применяется на шаге характеристик.',
+              style: textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
           ],
-        ],
-      ),
+        ),
+      );
+    }
+
+    return CreationChoiceCardsSwitcher(
+      title: raceChoiceKindLabel(choiceSet.kind),
+      description: choiceSet.description,
+      switchKey: choiceSet.id ?? choiceSet.kind?.name ?? 'race',
+      items: options.map((option) {
+        final optionKey = option.optionKey?.trim();
+        final title = choiceOptionLabel(option);
+        return CreationChoiceCardItem(
+          id: optionKey ?? title,
+          title: title,
+          subtitle: option.description,
+          isSelected: optionKey != null && selectedKeys.contains(optionKey),
+          onTap: () => ref
+              .read(raceStateProvider.notifier)
+              .toggleChoiceOption(choiceSet, option),
+          onInfoTap: () => showChoiceOptionPlaceholderDialog(
+            context: context,
+            title: title,
+            description: option.description,
+          ),
+        );
+      }).toList(),
     );
   }
 }

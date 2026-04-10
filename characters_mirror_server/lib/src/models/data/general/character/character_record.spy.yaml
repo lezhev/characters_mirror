@@ -31,6 +31,7 @@ fields:
   temporaryHp: int?
   currentHp: int?
   inspiration: bool?
+  equipment: String?
   notes: String?
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?

@@ -18,6 +18,7 @@ mixin _$BackgroundStateModel {
   BackgroundData? get selectedBackground;
   BackgroundStepView? get stepView;
   Map<String, List<ClassChoiceOptionData>> get selectedOptions;
+  List<CharacterStartingEquipmentSelectionData> get startingEquipmentSelections;
 
   /// Create a copy of BackgroundStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -39,7 +40,10 @@ mixin _$BackgroundStateModel {
             (identical(other.stepView, stepView) ||
                 other.stepView == stepView) &&
             const DeepCollectionEquality()
-                .equals(other.selectedOptions, selectedOptions));
+                .equals(other.selectedOptions, selectedOptions) &&
+            const DeepCollectionEquality().equals(
+                other.startingEquipmentSelections,
+                startingEquipmentSelections));
   }
 
   @override
@@ -48,11 +52,12 @@ mixin _$BackgroundStateModel {
       const DeepCollectionEquality().hash(allBackgrounds),
       selectedBackground,
       stepView,
-      const DeepCollectionEquality().hash(selectedOptions));
+      const DeepCollectionEquality().hash(selectedOptions),
+      const DeepCollectionEquality().hash(startingEquipmentSelections));
 
   @override
   String toString() {
-    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground, stepView: $stepView, selectedOptions: $selectedOptions)';
+    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground, stepView: $stepView, selectedOptions: $selectedOptions, startingEquipmentSelections: $startingEquipmentSelections)';
   }
 }
 
@@ -66,7 +71,9 @@ abstract mixin class $BackgroundStateModelCopyWith<$Res> {
       {List<BackgroundData> allBackgrounds,
       BackgroundData? selectedBackground,
       BackgroundStepView? stepView,
-      Map<String, List<ClassChoiceOptionData>> selectedOptions});
+      Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      List<CharacterStartingEquipmentSelectionData>
+          startingEquipmentSelections});
 }
 
 /// @nodoc
@@ -86,6 +93,7 @@ class _$BackgroundStateModelCopyWithImpl<$Res>
     Object? selectedBackground = freezed,
     Object? stepView = freezed,
     Object? selectedOptions = null,
+    Object? startingEquipmentSelections = null,
   }) {
     return _then(_self.copyWith(
       allBackgrounds: null == allBackgrounds
@@ -104,6 +112,10 @@ class _$BackgroundStateModelCopyWithImpl<$Res>
           ? _self.selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
               as Map<String, List<ClassChoiceOptionData>>,
+      startingEquipmentSelections: null == startingEquipmentSelections
+          ? _self.startingEquipmentSelections
+          : startingEquipmentSelections // ignore: cast_nullable_to_non_nullable
+              as List<CharacterStartingEquipmentSelectionData>,
     ));
   }
 }
@@ -205,15 +217,21 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
             List<BackgroundData> allBackgrounds,
             BackgroundData? selectedBackground,
             BackgroundStepView? stepView,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions)?
+            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            List<CharacterStartingEquipmentSelectionData>
+                startingEquipmentSelections)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _BackgroundStateModel() when $default != null:
-        return $default(_that.allBackgrounds, _that.selectedBackground,
-            _that.stepView, _that.selectedOptions);
+        return $default(
+            _that.allBackgrounds,
+            _that.selectedBackground,
+            _that.stepView,
+            _that.selectedOptions,
+            _that.startingEquipmentSelections);
       case _:
         return orElse();
     }
@@ -238,14 +256,20 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
             List<BackgroundData> allBackgrounds,
             BackgroundData? selectedBackground,
             BackgroundStepView? stepView,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions)
+            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            List<CharacterStartingEquipmentSelectionData>
+                startingEquipmentSelections)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _BackgroundStateModel():
-        return $default(_that.allBackgrounds, _that.selectedBackground,
-            _that.stepView, _that.selectedOptions);
+        return $default(
+            _that.allBackgrounds,
+            _that.selectedBackground,
+            _that.stepView,
+            _that.selectedOptions,
+            _that.startingEquipmentSelections);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -269,14 +293,20 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
             List<BackgroundData> allBackgrounds,
             BackgroundData? selectedBackground,
             BackgroundStepView? stepView,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions)?
+            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            List<CharacterStartingEquipmentSelectionData>
+                startingEquipmentSelections)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _BackgroundStateModel() when $default != null:
-        return $default(_that.allBackgrounds, _that.selectedBackground,
-            _that.stepView, _that.selectedOptions);
+        return $default(
+            _that.allBackgrounds,
+            _that.selectedBackground,
+            _that.stepView,
+            _that.selectedOptions,
+            _that.startingEquipmentSelections);
       case _:
         return null;
     }
@@ -290,10 +320,12 @@ class _BackgroundStateModel implements BackgroundStateModel {
       {final List<BackgroundData> allBackgrounds = const [],
       this.selectedBackground,
       this.stepView,
-      final Map<String, List<ClassChoiceOptionData>> selectedOptions =
-          const {}})
+      final Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+      final List<CharacterStartingEquipmentSelectionData>
+          startingEquipmentSelections = const []})
       : _allBackgrounds = allBackgrounds,
-        _selectedOptions = selectedOptions;
+        _selectedOptions = selectedOptions,
+        _startingEquipmentSelections = startingEquipmentSelections;
 
   final List<BackgroundData> _allBackgrounds;
   @override
@@ -317,6 +349,18 @@ class _BackgroundStateModel implements BackgroundStateModel {
     return EqualUnmodifiableMapView(_selectedOptions);
   }
 
+  final List<CharacterStartingEquipmentSelectionData>
+      _startingEquipmentSelections;
+  @override
+  @JsonKey()
+  List<CharacterStartingEquipmentSelectionData>
+      get startingEquipmentSelections {
+    if (_startingEquipmentSelections is EqualUnmodifiableListView)
+      return _startingEquipmentSelections;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_startingEquipmentSelections);
+  }
+
   /// Create a copy of BackgroundStateModel
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -338,7 +382,10 @@ class _BackgroundStateModel implements BackgroundStateModel {
             (identical(other.stepView, stepView) ||
                 other.stepView == stepView) &&
             const DeepCollectionEquality()
-                .equals(other._selectedOptions, _selectedOptions));
+                .equals(other._selectedOptions, _selectedOptions) &&
+            const DeepCollectionEquality().equals(
+                other._startingEquipmentSelections,
+                _startingEquipmentSelections));
   }
 
   @override
@@ -347,11 +394,12 @@ class _BackgroundStateModel implements BackgroundStateModel {
       const DeepCollectionEquality().hash(_allBackgrounds),
       selectedBackground,
       stepView,
-      const DeepCollectionEquality().hash(_selectedOptions));
+      const DeepCollectionEquality().hash(_selectedOptions),
+      const DeepCollectionEquality().hash(_startingEquipmentSelections));
 
   @override
   String toString() {
-    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground, stepView: $stepView, selectedOptions: $selectedOptions)';
+    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground, stepView: $stepView, selectedOptions: $selectedOptions, startingEquipmentSelections: $startingEquipmentSelections)';
   }
 }
 
@@ -367,7 +415,9 @@ abstract mixin class _$BackgroundStateModelCopyWith<$Res>
       {List<BackgroundData> allBackgrounds,
       BackgroundData? selectedBackground,
       BackgroundStepView? stepView,
-      Map<String, List<ClassChoiceOptionData>> selectedOptions});
+      Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      List<CharacterStartingEquipmentSelectionData>
+          startingEquipmentSelections});
 }
 
 /// @nodoc
@@ -387,6 +437,7 @@ class __$BackgroundStateModelCopyWithImpl<$Res>
     Object? selectedBackground = freezed,
     Object? stepView = freezed,
     Object? selectedOptions = null,
+    Object? startingEquipmentSelections = null,
   }) {
     return _then(_BackgroundStateModel(
       allBackgrounds: null == allBackgrounds
@@ -405,6 +456,10 @@ class __$BackgroundStateModelCopyWithImpl<$Res>
           ? _self._selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
               as Map<String, List<ClassChoiceOptionData>>,
+      startingEquipmentSelections: null == startingEquipmentSelections
+          ? _self._startingEquipmentSelections
+          : startingEquipmentSelections // ignore: cast_nullable_to_non_nullable
+              as List<CharacterStartingEquipmentSelectionData>,
     ));
   }
 }

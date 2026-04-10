@@ -1,0 +1,6 @@
+class: CharacterEquipmentEntryView
+fields:
+  catalogType: EquipmentCatalogType?
+  referenceKey: String?
+  displayText: String?
+  quantity: int?

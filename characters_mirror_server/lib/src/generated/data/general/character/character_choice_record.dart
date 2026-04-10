@@ -36,7 +36,6 @@ abstract class CharacterChoiceRecord
     this.selectedLanguage,
     this.selectedToolKey,
     this.selectedSpellKey,
-    this.selectedItemKey,
     this.selectedFeatId,
     this.selectedText,
     this.selectedCount,
@@ -57,7 +56,6 @@ abstract class CharacterChoiceRecord
     _i6.Language? selectedLanguage,
     String? selectedToolKey,
     String? selectedSpellKey,
-    String? selectedItemKey,
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
@@ -95,7 +93,6 @@ abstract class CharacterChoiceRecord
               (jsonSerialization['selectedLanguage'] as String)),
       selectedToolKey: jsonSerialization['selectedToolKey'] as String?,
       selectedSpellKey: jsonSerialization['selectedSpellKey'] as String?,
-      selectedItemKey: jsonSerialization['selectedItemKey'] as String?,
       selectedFeatId: jsonSerialization['selectedFeatId'] as int?,
       selectedText: jsonSerialization['selectedText'] as String?,
       selectedCount: jsonSerialization['selectedCount'] as int?,
@@ -135,8 +132,6 @@ abstract class CharacterChoiceRecord
 
   String? selectedSpellKey;
 
-  String? selectedItemKey;
-
   int? selectedFeatId;
 
   String? selectedText;
@@ -164,7 +159,6 @@ abstract class CharacterChoiceRecord
     _i6.Language? selectedLanguage,
     String? selectedToolKey,
     String? selectedSpellKey,
-    String? selectedItemKey,
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
@@ -187,7 +181,6 @@ abstract class CharacterChoiceRecord
         'selectedLanguage': selectedLanguage?.toJson(),
       if (selectedToolKey != null) 'selectedToolKey': selectedToolKey,
       if (selectedSpellKey != null) 'selectedSpellKey': selectedSpellKey,
-      if (selectedItemKey != null) 'selectedItemKey': selectedItemKey,
       if (selectedFeatId != null) 'selectedFeatId': selectedFeatId,
       if (selectedText != null) 'selectedText': selectedText,
       if (selectedCount != null) 'selectedCount': selectedCount,
@@ -253,7 +246,6 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     _i6.Language? selectedLanguage,
     String? selectedToolKey,
     String? selectedSpellKey,
-    String? selectedItemKey,
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
@@ -272,7 +264,6 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
           selectedLanguage: selectedLanguage,
           selectedToolKey: selectedToolKey,
           selectedSpellKey: selectedSpellKey,
-          selectedItemKey: selectedItemKey,
           selectedFeatId: selectedFeatId,
           selectedText: selectedText,
           selectedCount: selectedCount,
@@ -297,7 +288,6 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     Object? selectedLanguage = _Undefined,
     Object? selectedToolKey = _Undefined,
     Object? selectedSpellKey = _Undefined,
-    Object? selectedItemKey = _Undefined,
     Object? selectedFeatId = _Undefined,
     Object? selectedText = _Undefined,
     Object? selectedCount = _Undefined,
@@ -330,8 +320,6 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
       selectedSpellKey: selectedSpellKey is String?
           ? selectedSpellKey
           : this.selectedSpellKey,
-      selectedItemKey:
-          selectedItemKey is String? ? selectedItemKey : this.selectedItemKey,
       selectedFeatId:
           selectedFeatId is int? ? selectedFeatId : this.selectedFeatId,
       selectedText: selectedText is String? ? selectedText : this.selectedText,
@@ -390,10 +378,6 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
       'selectedSpellKey',
       this,
     );
-    selectedItemKey = _i1.ColumnString(
-      'selectedItemKey',
-      this,
-    );
     selectedFeatId = _i1.ColumnInt(
       'selectedFeatId',
       this,
@@ -433,8 +417,6 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnString selectedToolKey;
 
   late final _i1.ColumnString selectedSpellKey;
-
-  late final _i1.ColumnString selectedItemKey;
 
   late final _i1.ColumnInt selectedFeatId;
 
@@ -482,7 +464,6 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
         selectedLanguage,
         selectedToolKey,
         selectedSpellKey,
-        selectedItemKey,
         selectedFeatId,
         selectedText,
         selectedCount,

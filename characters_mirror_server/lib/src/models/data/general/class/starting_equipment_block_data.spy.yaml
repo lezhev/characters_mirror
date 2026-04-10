@@ -1,0 +1,15 @@
+class: StartingEquipmentBlockData
+table: starting_equipment_block_data
+fields:
+  blockKey: String?
+  orderIndex: int?
+  kind: StartingEquipmentBlockKind?
+  selectionCount: int?
+  sourceClass: ClassData?, relation(optional)
+  sourceBackground: BackgroundData?, relation(optional)
+  name: String?
+  description: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

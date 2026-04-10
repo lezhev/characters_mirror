@@ -1,6 +1,7 @@
 class: MagicItemData
 table: magic_item_data
 fields:
+  referenceKey: String?
   name: String?
   description: String?
   source: String?
@@ -16,3 +17,7 @@ fields:
   charges: int?
   rechargeCondition: String?
   effects: List<String>?
+indexes:
+  magic_item_reference_key_idx:
+    fields: referenceKey
+    unique: true

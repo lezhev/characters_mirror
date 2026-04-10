@@ -84,6 +84,7 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
         widget.text,
         abilityConfig.showTitle,
         abilityConfig.showText,
+        abilityConfig.isEditable,
         abilityConfig.emptyTextPlaceholder,
         ...?abilityConfig.tags?.map((tag) => tag.name),
       ]);
@@ -150,8 +151,8 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
             _EditableTextLine(
               text: title,
               style: widget.titleStyle,
-              isEditable: true,
-              onTap: _openEditDialog,
+              isEditable: abilityConfig.isEditable,
+              onTap: abilityConfig.isEditable ? _openEditDialog : null,
             ),
           if (hasTitle && (hasText || showTextPlaceholder))
             SizedBox(height: widget.spacing),
@@ -159,8 +160,8 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
             _EditableTextLine(
               text: text,
               style: widget.textStyle,
-              isEditable: true,
-              onTap: _openEditDialog,
+              isEditable: abilityConfig.isEditable,
+              onTap: abilityConfig.isEditable ? _openEditDialog : null,
             ),
           if (showTextPlaceholder)
             _EditableTextLine(
@@ -171,8 +172,8 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
                   theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
-              isEditable: true,
-              onTap: _openEditDialog,
+              isEditable: abilityConfig.isEditable,
+              onTap: abilityConfig.isEditable ? _openEditDialog : null,
             ),
         ],
       ),

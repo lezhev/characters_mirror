@@ -29,9 +29,11 @@ fields:
   temporaryHp: int?
   currentHp: int?
   inspiration: bool?
+  equipment: String?
   notes: String?
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?
   classEntries: List<CharacterClassEntryData>?
   choices: List<CharacterChoiceData>?
+  startingEquipmentSelections: List<CharacterStartingEquipmentSelectionData>?
   derived: CharacterDerivedData?

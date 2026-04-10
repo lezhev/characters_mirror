@@ -1,0 +1,7 @@
+enum: EquipmentCatalogType
+serialized: byName
+values:
+  - item
+  - weapon
+  - armor
+  - magicItem

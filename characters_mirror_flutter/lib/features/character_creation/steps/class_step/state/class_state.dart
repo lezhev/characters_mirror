@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/starting_equipment_selection_support.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,6 +18,8 @@ sealed class ClassStateModel with _$ClassStateModel {
     ClassStepView? stepView,
     SubclassData? selectedSubclass,
     @Default({}) Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    @Default([])
+    List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
     @Default(1) int selectedLevel,
   }) = _ClassStateModel;
 }
@@ -27,6 +30,8 @@ class ClassState extends _$ClassState {
 
   @override
   FutureOr<ClassStateModel> build() async {
+    ref.keepAlive();
+
     final repository = ref.watch(classRepositoryProvider);
     final classes = await repository.getAll().timeout(_requestTimeout);
     classes.sort((a, b) => (a.id ?? 0).compareTo(b.id ?? 0));
@@ -37,7 +42,8 @@ class ClassState extends _$ClassState {
 
     final characterCreation = ref.read(characterCreationProvider);
     final entry = _resolvePrimaryEntry(
-      characterCreation.character.classEntries ?? const <CharacterClassEntryData>[],
+      characterCreation.character.classEntries ??
+          const <CharacterClassEntryData>[],
     );
     final selectedClassId = entry?.classData?.id;
     if (selectedClassId == null) {
@@ -56,6 +62,9 @@ class ClassState extends _$ClassState {
       selectedLevel: entry?.level ?? 1,
       savedChoices:
           characterCreation.character.choices ?? const <CharacterChoiceData>[],
+      savedEquipmentSelections:
+          characterCreation.character.startingEquipmentSelections ??
+              const <CharacterStartingEquipmentSelectionData>[],
     );
   }
 
@@ -78,7 +87,8 @@ class ClassState extends _$ClassState {
     if (current == null || selectedClass?.id == null) return;
 
     state = await AsyncValue.guard(() async {
-      final stepView = await ref.read(classRepositoryProvider)
+      final stepView = await ref
+          .read(classRepositoryProvider)
           .getStepView(
             selectedClass!.id!,
             selectedLevel: current.selectedLevel,
@@ -93,8 +103,15 @@ class ClassState extends _$ClassState {
           stepView.subclassChoice?.subclasses,
           newSubclass.id,
         ),
-        selectedOptions:
-            _normalizeSelectedOptions(current.selectedOptions, stepView.choiceGroups),
+        selectedOptions: _normalizeSelectedOptions(
+            current.selectedOptions, stepView.choiceGroups),
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: stepView.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: current.startingEquipmentSelections,
+          sourceType: ChoiceSourceType.classData,
+          sourceId: selectedClass.id!,
+        ),
       );
     });
   }
@@ -105,7 +122,8 @@ class ClassState extends _$ClassState {
     if (current == null || selectedClass?.id == null) return;
 
     state = await AsyncValue.guard(() async {
-      final stepView = await ref.read(classRepositoryProvider)
+      final stepView = await ref
+          .read(classRepositoryProvider)
           .getStepView(
             selectedClass!.id!,
             selectedLevel: current.selectedLevel,
@@ -116,8 +134,15 @@ class ClassState extends _$ClassState {
       return current.copyWith(
         stepView: stepView,
         selectedSubclass: null,
-        selectedOptions:
-            _normalizeSelectedOptions(current.selectedOptions, stepView.choiceGroups),
+        selectedOptions: _normalizeSelectedOptions(
+            current.selectedOptions, stepView.choiceGroups),
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: stepView.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: current.startingEquipmentSelections,
+          sourceType: ChoiceSourceType.classData,
+          sourceId: selectedClass.id!,
+        ),
       );
     });
   }
@@ -167,7 +192,8 @@ class ClassState extends _$ClassState {
     );
   }
 
-  void incrementOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
+  void incrementOption(
+      ClassChoiceGroupData group, ClassChoiceOptionData option) {
     if (group.allowDuplicates != true) return;
 
     final current = Map<String, List<ClassChoiceOptionData>>.from(
@@ -186,7 +212,8 @@ class ClassState extends _$ClassState {
     );
   }
 
-  void decrementOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
+  void decrementOption(
+      ClassChoiceGroupData group, ClassChoiceOptionData option) {
     final current = Map<String, List<ClassChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
@@ -230,7 +257,164 @@ class ClassState extends _$ClassState {
         stepView: null,
         selectedSubclass: null,
         selectedOptions: {},
+        startingEquipmentSelections: const [],
         selectedLevel: 1,
+      ),
+    );
+  }
+
+  void selectStartingEquipmentOption(
+    StartingEquipmentBlockView blockView,
+    StartingEquipmentOptionView optionView,
+  ) {
+    final currentState = state.value;
+    final classId = currentState?.selectedClass?.id;
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    final optionKey = normalizedEquipmentKey(optionView.option?.optionKey);
+    if (currentState == null ||
+        classId == null ||
+        blockKey == null ||
+        optionKey == null) {
+      return;
+    }
+
+    final selections = [
+      for (final selection in currentState.startingEquipmentSelections)
+        if (normalizedEquipmentKey(selection.blockKey) != blockKey) selection,
+    ];
+    final existing = currentState.startingEquipmentSelections.firstWhere(
+      (selection) => normalizedEquipmentKey(selection.blockKey) == blockKey,
+      orElse: () => CharacterStartingEquipmentSelectionData(
+        sourceType: ChoiceSourceType.classData,
+        sourceId: classId,
+        blockKey: blockKey,
+      ),
+    );
+    final isSameOption =
+        normalizedEquipmentKey(existing.optionKey) == optionKey;
+
+    if (!isSameOption) {
+      selections.add(
+        CharacterStartingEquipmentSelectionData(
+          sourceType: ChoiceSourceType.classData,
+          sourceId: classId,
+          blockKey: blockKey,
+          optionKey: optionView.option?.optionKey,
+          selectionIndex: 0,
+          resolutions: const [],
+        ),
+      );
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: currentState.stepView?.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: selections,
+          sourceType: ChoiceSourceType.classData,
+          sourceId: classId,
+        ),
+      ),
+    );
+  }
+
+  void clearStartingEquipmentBlock(StartingEquipmentBlockView blockView) {
+    final currentState = state.value;
+    final classId = currentState?.selectedClass?.id;
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    if (currentState == null || classId == null || blockKey == null) {
+      return;
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: currentState.stepView?.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: [
+            for (final selection in currentState.startingEquipmentSelections)
+              if (normalizedEquipmentKey(selection.blockKey) != blockKey)
+                selection,
+          ],
+          sourceType: ChoiceSourceType.classData,
+          sourceId: classId,
+        ),
+      ),
+    );
+  }
+
+  void setStartingEquipmentResolution({
+    required StartingEquipmentBlockView blockView,
+    required StartingEquipmentLineData line,
+    required EquipmentCatalogType catalogType,
+    required String referenceKey,
+  }) {
+    final currentState = state.value;
+    final classId = currentState?.selectedClass?.id;
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    final lineKey = normalizedEquipmentKey(line.lineKey);
+    if (currentState == null ||
+        classId == null ||
+        blockKey == null ||
+        lineKey == null ||
+        normalizedEquipmentKey(referenceKey) == null) {
+      return;
+    }
+
+    final selectedOption = _selectedStartingEquipmentOption(
+      blockView: blockView,
+      selections: currentState.startingEquipmentSelections,
+    );
+    final optionKey = normalizedEquipmentKey(selectedOption?.option?.optionKey);
+    final existingSelection =
+        currentState.startingEquipmentSelections.firstWhere(
+      (selection) =>
+          normalizedEquipmentKey(selection.blockKey) == blockKey &&
+          normalizedEquipmentKey(selection.optionKey) == optionKey,
+      orElse: () => CharacterStartingEquipmentSelectionData(
+        sourceType: ChoiceSourceType.classData,
+        sourceId: classId,
+        blockKey: blockKey,
+        optionKey: selectedOption?.option?.optionKey,
+        selectionIndex: 0,
+      ),
+    );
+
+    final updatedResolutions = [
+      for (final resolution in existingSelection.resolutions ??
+          const <CharacterStartingEquipmentResolutionData>[])
+        if (normalizedEquipmentKey(resolution.lineKey) != lineKey) resolution,
+      CharacterStartingEquipmentResolutionData(
+        lineKey: line.lineKey,
+        catalogType: catalogType,
+        referenceKey: normalizedEquipmentKey(referenceKey),
+        quantity: line.quantity,
+      ),
+    ];
+    final nextSelections = [
+      for (final selection in currentState.startingEquipmentSelections)
+        if (!(normalizedEquipmentKey(selection.blockKey) == blockKey &&
+            normalizedEquipmentKey(selection.optionKey) == optionKey))
+          selection,
+      existingSelection.copyWith(
+        sourceType: ChoiceSourceType.classData,
+        sourceId: classId,
+        blockKey: blockView.block?.blockKey,
+        optionKey: selectedOption?.option?.optionKey,
+        resolutions: updatedResolutions,
+      ),
+    ];
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: currentState.stepView?.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: nextSelections,
+          sourceType: ChoiceSourceType.classData,
+          sourceId: classId,
+        ),
       ),
     );
   }
@@ -241,6 +425,8 @@ class ClassState extends _$ClassState {
     int? selectedSubclassId,
     int selectedLevel = 1,
     List<CharacterChoiceData> savedChoices = const [],
+    List<CharacterStartingEquipmentSelectionData> savedEquipmentSelections =
+        const [],
   }) async {
     final classId = classData.id;
     if (classId == null) {
@@ -249,11 +435,13 @@ class ClassState extends _$ClassState {
         stepView: null,
         selectedSubclass: null,
         selectedOptions: const {},
+        startingEquipmentSelections: const [],
         selectedLevel: selectedLevel,
       );
     }
 
-    final stepView = await ref.read(classRepositoryProvider)
+    final stepView = await ref
+        .read(classRepositoryProvider)
         .getStepView(
           classId,
           selectedLevel: selectedLevel,
@@ -273,8 +461,40 @@ class ClassState extends _$ClassState {
         stepView.choiceGroups,
         savedChoices,
       ),
+      startingEquipmentSelections: normalizeStartingEquipmentSelections(
+        blocks: stepView.startingEquipmentBlocks ??
+            const <StartingEquipmentBlockView>[],
+        selections: savedEquipmentSelections,
+        sourceType: ChoiceSourceType.classData,
+        sourceId: classId,
+      ),
       selectedLevel: selectedLevel,
     );
+  }
+
+  StartingEquipmentOptionView? _selectedStartingEquipmentOption({
+    required StartingEquipmentBlockView blockView,
+    required List<CharacterStartingEquipmentSelectionData> selections,
+  }) {
+    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
+    if (blockKey == null) {
+      return null;
+    }
+    final selection = selections.firstWhere(
+      (item) => normalizedEquipmentKey(item.blockKey) == blockKey,
+      orElse: () => CharacterStartingEquipmentSelectionData(),
+    );
+    final optionKey = normalizedEquipmentKey(selection.optionKey);
+    if (optionKey == null) {
+      return null;
+    }
+    for (final optionView
+        in blockView.options ?? const <StartingEquipmentOptionView>[]) {
+      if (normalizedEquipmentKey(optionView.option?.optionKey) == optionKey) {
+        return optionView;
+      }
+    }
+    return null;
   }
 
   Map<String, List<ClassChoiceOptionData>> _restoreSelectedOptions(
@@ -283,8 +503,9 @@ class ClassState extends _$ClassState {
   ) {
     final optionsByGroupKey = _availableOptionsByGroup(groups);
     final restored = <String, List<ClassChoiceOptionData>>{};
-    final sortedChoices = [...savedChoices]
-      ..sort((a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
+    final sortedChoices = [
+      ...savedChoices
+    ]..sort((a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
 
     for (final choice in sortedChoices) {
       if (!_isClassChoiceSource(choice.sourceType)) continue;
@@ -309,7 +530,8 @@ class ClassState extends _$ClassState {
   ) {
     final choiceGroups = {
       for (final groupView in groups ?? const <ClassChoiceGroupView>[])
-        if (groupView.group != null) _groupKey(groupView.group!): groupView.group!,
+        if (groupView.group != null)
+          _groupKey(groupView.group!): groupView.group!,
     };
     final availableOptions = _availableOptionsByGroup(groups);
     final normalized = <String, List<ClassChoiceOptionData>>{};
@@ -358,7 +580,8 @@ class ClassState extends _$ClassState {
       if (group == null) continue;
 
       result[_groupKey(group)] = {
-        for (final option in groupView.options ?? const <ClassChoiceOptionData>[])
+        for (final option
+            in groupView.options ?? const <ClassChoiceOptionData>[])
           if (option.optionKey?.trim().isNotEmpty == true)
             option.optionKey!.trim(): option,
       };
@@ -415,10 +638,12 @@ class ClassState extends _$ClassState {
     }
   }
 
-  String _groupKey(ClassChoiceGroupData group) =>
-      group.exclusiveKey?.trim().isNotEmpty == true
-          ? group.exclusiveKey!
-          : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
+  String _groupKey(ClassChoiceGroupData group) => group.exclusiveKey
+              ?.trim()
+              .isNotEmpty ==
+          true
+      ? group.exclusiveKey!
+      : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
 
   String? _safeEnumToken(Object? value) {
     if (value == null) return null;

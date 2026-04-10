@@ -1,0 +1,5 @@
+class: StartingEquipmentBlockView
+fields:
+  block: StartingEquipmentBlockData?
+  fixedLines: List<StartingEquipmentLineData>?
+  options: List<StartingEquipmentOptionView>?

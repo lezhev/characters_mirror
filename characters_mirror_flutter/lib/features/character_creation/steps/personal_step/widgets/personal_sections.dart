@@ -1,7 +1,8 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/personal/application/personal_form_bindings.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/personal_step/application/personal_form_bindings.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -164,7 +165,6 @@ class PersonalNarrativeSection extends StatelessWidget {
                 label: 'История персонажа',
                 controller: bindings.backstoryController,
                 focusNode: bindings.backstoryFocusNode,
-                maxLines: 5,
               ),
               PersonalTextField.narrative(
                 label: 'Цели',
@@ -200,7 +200,6 @@ class PersonalNarrativeSection extends StatelessWidget {
                 label: 'Доп. заметки',
                 controller: bindings.notesController,
                 focusNode: bindings.notesFocusNode,
-                maxLines: 5,
               ),
             ],
           ),
@@ -227,8 +226,8 @@ class PersonalTextField extends StatelessWidget {
     required this.controller,
     required this.focusNode,
     super.key,
-    this.maxLines = 4,
   })  : minLines = 3,
+        maxLines = null,
         onSubmitted = null,
         textInputAction = TextInputAction.newline,
         isNarrative = true;
@@ -239,26 +238,33 @@ class PersonalTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final TextInputAction textInputAction;
   final int minLines;
-  final int maxLines;
+  final int? maxLines;
   final bool isNarrative;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: isNarrative ? 16.0 : 12.0),
-      child: TextField(
-        controller: controller,
-        focusNode: focusNode,
-        minLines: minLines,
-        maxLines: maxLines,
-        textInputAction: textInputAction,
-        onSubmitted: onSubmitted,
-        decoration: InputDecoration(
-          labelText: label,
-          alignLabelWithHint: isNarrative,
-          border: const OutlineInputBorder(),
-        ),
-      ),
+      child: isNarrative
+          ? AppAutosizeTextField(
+              label: label,
+              controller: controller,
+              focusNode: focusNode,
+              minLines: minLines,
+            )
+          : TextField(
+              controller: controller,
+              focusNode: focusNode,
+              minLines: minLines,
+              maxLines: maxLines,
+              textInputAction: textInputAction,
+              onSubmitted: onSubmitted,
+              decoration: InputDecoration(
+                labelText: label,
+                alignLabelWithHint: isNarrative,
+                border: const OutlineInputBorder(),
+              ),
+            ),
     );
   }
 }
