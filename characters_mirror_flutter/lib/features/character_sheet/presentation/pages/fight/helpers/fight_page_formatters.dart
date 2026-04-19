@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/weapon_property_localization.dart';
 import 'package:flutter/foundation.dart';
 
 String formatAttackBonus(CharacterData character, CharacterAttackData attack) {
@@ -80,7 +81,8 @@ String damageTypeLabel(DamageType damageType) {
 }
 
 String attackTagLabel(String tag) {
-  return _weaponPropertyLabels[tag.toLowerCase()] ?? tag;
+  final property = weaponPropertyFromTag(tag);
+  return property == null ? tag : weaponPropertyRuLabel(property);
 }
 
 List<String> matchingWeaponPropertySuggestions({
@@ -92,15 +94,19 @@ List<String> matchingWeaponPropertySuggestions({
     return const [];
   }
 
-  return _weaponPropertySuggestions.where((tag) {
+  return WeaponProperty.values.map((property) => property.name).where((tag) {
     final alreadySelected = selectedTags.any(
-      (selectedTag) => selectedTag.toLowerCase() == tag,
+      (selectedTag) => _normalizedAttackTagName(selectedTag) == tag,
     );
     if (alreadySelected) {
       return false;
     }
     return tag.startsWith(normalizedQuery);
   }).toList();
+}
+
+String _normalizedAttackTagName(String tag) {
+  return weaponPropertyFromTag(tag)?.name ?? tag.trim().toLowerCase();
 }
 
 String? normalizedAttackText(String? value) {
@@ -133,34 +139,7 @@ bool matchesSelectedFeatureTags(
     return false;
   }
 
-  final featureTags = feature.tags ?? feature.defaultTags ?? const <FeatureTag>[];
+  final featureTags =
+      feature.tags ?? feature.defaultTags ?? const <FeatureTag>[];
   return featureTags.any(selectedTags.contains);
 }
-
-const List<String> _weaponPropertySuggestions = [
-  'ammunition',
-  'finesse',
-  'heavy',
-  'light',
-  'loading',
-  'range',
-  'reach',
-  'special',
-  'thrown',
-  'two-handed',
-  'versatile',
-];
-
-const Map<String, String> _weaponPropertyLabels = {
-  'ammunition': 'Ammunition',
-  'finesse': 'Finesse',
-  'heavy': 'Heavy',
-  'light': 'Light',
-  'loading': 'Loading',
-  'range': 'Range',
-  'reach': 'Reach',
-  'special': 'Special',
-  'thrown': 'Thrown',
-  'two-handed': 'Two-Handed',
-  'versatile': 'Versatile',
-};

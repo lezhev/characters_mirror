@@ -228,7 +228,7 @@ class _AttackDialogState extends State<AttackDialog> {
                       controller: _tagController,
                       decoration: const InputDecoration(
                         labelText: 'Добавить тег',
-                        hintText: 'Например, finesse',
+                        hintText: 'Например, фехтовальное',
                       ),
                       onChanged: (_) {
                         setState(() {

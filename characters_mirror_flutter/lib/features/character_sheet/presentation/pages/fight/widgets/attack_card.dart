@@ -21,30 +21,15 @@ class AttackCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Row(
           children: [
-            Expanded(
-              flex: 3,
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(0, 0),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(attackBonusLabel),
-                ),
-              ),
+            _AttackValueButton(
+              label: attackBonusLabel,
+              onPressed: () {},
             ),
             const SizedBox(width: 12),
             Expanded(
-              flex: 4,
               child: InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: onNamePressed,
@@ -61,29 +46,49 @@ class AttackCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            Expanded(
-              flex: 3,
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(0, 0),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(
-                    damageLabel,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: _AttackValueButton(
+                label: damageLabel,
+                onPressed: () {},
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _AttackValueButton extends StatelessWidget {
+  const _AttackValueButton({
+    required this.label,
+    required this.onPressed,
+  });
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 10,
+        ),
+        minimumSize: const Size(0, 0),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
       ),
     );
   }

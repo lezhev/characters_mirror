@@ -55,12 +55,16 @@ void main() {
       await tester.tap(find.byIcon(Icons.person));
       await tester.pumpAndSettle();
 
-      expect(find.text('Страница персонажа'), findsOneWidget);
+      expect(find.text('Класс и раса'), findsOneWidget);
+      expect(find.text('Класс не выбран'), findsOneWidget);
+      expect(find.text('Раса не выбрана'), findsOneWidget);
+      expect(find.text('Короткие поля'), findsOneWidget);
+      expect(find.text('История и характер'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.inventory));
       await tester.pumpAndSettle();
 
-      expect(find.text('Страница инвентаря'), findsOneWidget);
+      expect(find.text('Инвентарь'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.note));
       await tester.pumpAndSettle();
@@ -77,6 +81,136 @@ void main() {
 
       expect(find.text('Атаки'), findsOneWidget);
       expect(repository.getCharacterCallCount, 1);
+    });
+
+    testWidgets('character tab opens class and race details', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            age: '24',
+            height: '180',
+            alignmentValue: protocol.CharacterAlignment.chaoticGood,
+            race: protocol.RaceData(
+              id: 1,
+              name: 'Человек',
+            ),
+            subrace: protocol.SubraceData(
+              id: 2,
+              parentRaceId: 1,
+              name: 'Вариант',
+              description: 'Описание выбранной подрасы.',
+            ),
+            classEntries: [
+              protocol.CharacterClassEntryData(
+                id: 1,
+                classOrder: 0,
+                level: 3,
+                classData: protocol.ClassData(
+                  id: 1,
+                  name: 'Воин',
+                  hitDieValue: 10,
+                  primaryAbilities: const [protocol.Ability.strength],
+                  savingThrowProficiencies: const [
+                    protocol.Ability.strength,
+                    protocol.Ability.constitution,
+                  ],
+                  armorTraining: const [protocol.ArmorCategory.heavy],
+                  weaponTraining: const [
+                    protocol.WeaponCategory.martialMelee,
+                  ],
+                  toolTraining: const ['Игровые кости'],
+                ),
+                subclass: protocol.SubclassData(
+                  id: 1,
+                  parentClassId: 1,
+                  name: 'Чемпион',
+                  description: 'Описание выбранного подкласса.',
+                ),
+              ),
+            ],
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      await tester.tap(find.byIcon(Icons.person));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Воин 3 уровень • Чемпион'), findsOneWidget);
+      expect(find.text('Человек • Вариант'), findsOneWidget);
+      expect(find.text('24'), findsOneWidget);
+      expect(find.text('Хаотичный добрый'), findsOneWidget);
+
+      await tester.tap(find.text('Класс и раса'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Описание выбранного подкласса.'), findsOneWidget);
+      expect(find.text('Описание выбранной подрасы.'), findsOneWidget);
+      expect(find.text('Кость хитов'), findsOneWidget);
+      expect(find.text('d10'), findsOneWidget);
+    });
+
+    testWidgets('burger opens mechanics page and returns to previous tab',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            derived: protocol.CharacterDerivedData(
+              abilityScores: const {
+                'strength': 10,
+                'dexterity': 10,
+                'constitution': 10,
+                'intelligence': 10,
+                'wisdom': 10,
+                'charisma': 10,
+              },
+              abilityModifiers: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              savingThrowBonuses: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              skillBonuses: const {},
+              savingThrowProficiencies: const [],
+            ),
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      await tester.tap(find.byIcon(Icons.note));
+      await tester.pumpAndSettle();
+      expect(find.text('Страница заметок'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Характеристики'), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byIcon(Icons.menu), findsNothing);
+      expect(find.byIcon(Icons.close_rounded), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.close_rounded));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Страница заметок'), findsOneWidget);
+      expect(find.byType(NavigationBar), findsOneWidget);
     });
   });
 }

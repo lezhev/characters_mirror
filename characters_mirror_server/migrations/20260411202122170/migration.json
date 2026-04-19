@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "weapon_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "damageType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:DamageType?"
+          }
+        ],
+        "deleteColumns": [
+          "damageTypeValue"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"damageTypeValue\" of table \"weapon_data\" will be dropped.",
+            "table": "weapon_data",
+            "columns": [
+              "damageTypeValue"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"damageTypeValue\" of table \"weapon_data\" will be dropped.",
+      "table": "weapon_data",
+      "columns": [
+        "damageTypeValue"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

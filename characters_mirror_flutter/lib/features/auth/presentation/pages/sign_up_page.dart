@@ -74,7 +74,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     return AuthScaffold(
       title: 'Новый аккаунт без лишних ритуалов',
       subtitle:
-          'Создайте профиль, сразу попадите в приложение и продолжайте работу с персонажами без ручной активации почты.',
+          'Создайте профиль, сразу попадите в приложение и продолжайте работу с персонажами.',
       child: AuthCard(
         title: 'Регистрация',
         description:

@@ -399,6 +399,15 @@ void main() {
       expect(derived.skillBonuses?['athletics'], 2);
       expect(derived.skillBonuses?['insight'], 2);
       expect(derived.skillBonuses?['religion'], 2);
+      expect(derived.savingThrowProficiencies, contains(Ability.strength));
+      expect(derived.savingThrowProficiencies, contains(Ability.constitution));
+      final acrobaticsLevel = derived.skillProficiencyLevels!.singleWhere(
+        (state) => state.skill == Skill.acrobatics,
+      );
+      expect(
+        acrobaticsLevel.level,
+        CharacterSkillProficiencyLevel.proficient,
+      );
       expect(
         derived.activeFeatures?.map((feature) => feature.sourceType).toSet(),
         containsAll({
@@ -489,6 +498,85 @@ void main() {
       );
       expect(resaved.equipment, 'Manual equipment text');
       expect(resaved.attacks, hasLength(3));
+    });
+
+    test('manual skill and saving throw proficiencies fully replace defaults',
+        () async {
+      final ownerSession = authenticatedSession(313);
+      final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+      final primaryEntry = CharacterClassEntryData(
+        classData: fixture.classData,
+        level: 1,
+        isStartingClass: true,
+        classOrder: 0,
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Ручные владения',
+          race: fixture.race,
+          background: fixture.background,
+          classEntries: [primaryEntry],
+          baseAbilityScores: const {
+            'strength': 16,
+            'dexterity': 14,
+            'constitution': 10,
+            'intelligence': 10,
+            'wisdom': 10,
+            'charisma': 10,
+          },
+          customAbilityBonuses: const {
+            'strength': 2,
+          },
+          manualSkillProficiencies: [
+            CharacterSkillProficiencyState(
+              skill: Skill.athletics,
+              level: CharacterSkillProficiencyLevel.expertise,
+            ),
+            CharacterSkillProficiencyState(
+              skill: Skill.stealth,
+              level: CharacterSkillProficiencyLevel.proficient,
+            ),
+          ],
+          manualSavingThrowProficiencies: const [Ability.dexterity],
+        ),
+      );
+
+      final derived = saved.derived!;
+      expect(derived.abilityScores?['strength'], 18);
+      expect(derived.abilityModifiers?['strength'], 4);
+      expect(derived.skillBonuses?['athletics'], 8);
+      expect(derived.skillBonuses?['stealth'], 4);
+      expect(derived.skillBonuses?['insight'], 0);
+      expect(derived.skillBonuses?['religion'], 0);
+      expect(derived.savingThrowBonuses?['strength'], 4);
+      expect(derived.savingThrowBonuses?['constitution'], 0);
+      expect(derived.savingThrowBonuses?['dexterity'], 4);
+      expect(derived.passivePerception, 10);
+      expect(derived.savingThrowProficiencies, [Ability.dexterity]);
+
+      final athleticsLevel = derived.skillProficiencyLevels!.singleWhere(
+        (state) => state.skill == Skill.athletics,
+      );
+      final stealthLevel = derived.skillProficiencyLevels!.singleWhere(
+        (state) => state.skill == Skill.stealth,
+      );
+      final insightLevel = derived.skillProficiencyLevels!.singleWhere(
+        (state) => state.skill == Skill.insight,
+      );
+      expect(
+        athleticsLevel.level,
+        CharacterSkillProficiencyLevel.expertise,
+      );
+      expect(
+        stealthLevel.level,
+        CharacterSkillProficiencyLevel.proficient,
+      );
+      expect(insightLevel.level, CharacterSkillProficiencyLevel.none);
+      expect(saved.customAbilityBonuses, {'strength': 2});
+      expect(saved.manualSkillProficiencies, hasLength(2));
+      expect(saved.manualSavingThrowProficiencies, [Ability.dexterity]);
     });
 
     test(
@@ -978,8 +1066,8 @@ Future<_CreationFixture> _seedCreationFixture(
       name: 'Club',
       category: WeaponCategory.simpleMelee,
       damage: '1d4',
-      damageTypeValue: DamageType.bludgeoning,
-      properties: const ['light'],
+      damageType: DamageType.bludgeoning,
+      properties: const [WeaponProperty.light],
     ),
   );
   await endpoints.weaponData.upsert(
@@ -989,8 +1077,12 @@ Future<_CreationFixture> _seedCreationFixture(
       name: 'Dagger',
       category: WeaponCategory.simpleMelee,
       damage: '1d4',
-      damageTypeValue: DamageType.piercing,
-      properties: const ['finesse', 'light', 'thrown'],
+      damageType: DamageType.piercing,
+      properties: const [
+        WeaponProperty.finesse,
+        WeaponProperty.light,
+        WeaponProperty.thrown,
+      ],
     ),
   );
   await endpoints.weaponData.upsert(
@@ -1000,8 +1092,12 @@ Future<_CreationFixture> _seedCreationFixture(
       name: 'Light Crossbow',
       category: WeaponCategory.simpleRanged,
       damage: '1d8',
-      damageTypeValue: DamageType.piercing,
-      properties: const ['ammunition', 'loading', 'two-handed'],
+      damageType: DamageType.piercing,
+      properties: const [
+        WeaponProperty.ammunition,
+        WeaponProperty.loading,
+        WeaponProperty.twoHanded,
+      ],
     ),
   );
   await endpoints.armorData.upsert(

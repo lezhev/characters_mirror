@@ -25,11 +25,14 @@ fields:
   subrace: SubraceData?
   background: BackgroundData?
   baseAbilityScores: Map<String, int>?
+  customAbilityBonuses: Map<String, int>?
   useFlexibleAbilityBonuses: bool?
   temporaryHp: int?
   currentHp: int?
   inspiration: bool?
   equipment: String?
+  manualSkillProficiencies: List<CharacterSkillProficiencyState>?
+  manualSavingThrowProficiencies: List<Ability>?
   notes: String?
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?

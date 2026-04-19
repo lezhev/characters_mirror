@@ -1,0 +1,4 @@
+class: CharacterSkillProficiencyState
+fields:
+  skill: Skill
+  level: CharacterSkillProficiencyLevel

@@ -223,7 +223,7 @@ Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(
     }
 
     final weapon = rows.first;
-    if (_hasWeaponProperty(weapon, 'finesse')) {
+    if (_hasWeaponProperty(weapon, WeaponProperty.finesse)) {
       derived ??= await _buildDerivedData(session, character);
     }
 
@@ -233,7 +233,7 @@ Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(
         leadingAbility: _startingWeaponAbility(weapon, derived),
         damage: _normalizedTextOrNull(weapon.damage),
         customAttackBonus: 0,
-        damageType: weapon.damageTypeValue,
+        damageType: weapon.damageType,
         tags: _normalizedAttackTags(weapon.properties),
         description: _normalizedTextOrNull(weapon.description),
       ),
@@ -247,7 +247,7 @@ Ability _startingWeaponAbility(
   WeaponData weapon,
   CharacterDerivedData? derived,
 ) {
-  if (_hasWeaponProperty(weapon, 'finesse')) {
+  if (_hasWeaponProperty(weapon, WeaponProperty.finesse)) {
     final modifiers = derived?.abilityModifiers ?? const <String, int>{};
     final strength = modifiers[Ability.strength.name] ?? 0;
     final dexterity = modifiers[Ability.dexterity.name] ?? 0;
@@ -265,16 +265,15 @@ Ability _startingWeaponAbility(
   }
 }
 
-List<String>? _normalizedAttackTags(List<String>? tags) {
-  final normalized = _normalizedTexts(tags).toList();
+List<String>? _normalizedAttackTags(List<WeaponProperty>? tags) {
+  final normalized = [
+    for (final tag in tags ?? const <WeaponProperty>[]) tag.name,
+  ];
   return normalized.isEmpty ? null : normalized;
 }
 
-bool _hasWeaponProperty(WeaponData weapon, String property) {
-  final normalizedProperty = property.toLowerCase();
-  return (weapon.properties ?? const <String>[]).any(
-    (value) => value.trim().toLowerCase() == normalizedProperty,
-  );
+bool _hasWeaponProperty(WeaponData weapon, WeaponProperty property) {
+  return (weapon.properties ?? const <WeaponProperty>[]).contains(property);
 }
 
 bool _containsAttackWithName(
@@ -386,11 +385,14 @@ CharacterRecord _toCharacterRecord(
     subraceId: character.subrace?.id,
     backgroundId: character.background?.id,
     baseAbilityScores: character.baseAbilityScores,
+    customAbilityBonuses: character.customAbilityBonuses,
     useFlexibleAbilityBonuses: character.useFlexibleAbilityBonuses,
     temporaryHp: character.temporaryHp,
     currentHp: character.currentHp,
     inspiration: character.inspiration,
     equipment: character.equipment,
+    manualSkillProficiencies: character.manualSkillProficiencies,
+    manualSavingThrowProficiencies: character.manualSavingThrowProficiencies,
     notes: character.notes,
     attacks: character.attacks,
     featureOverrides: _normalizedFeatureOverrides(character.featureOverrides),
@@ -703,11 +705,14 @@ CharacterData _toCharacterData(CharacterRecord record) {
     subrace: record.subrace,
     background: record.background,
     baseAbilityScores: record.baseAbilityScores,
+    customAbilityBonuses: record.customAbilityBonuses,
     useFlexibleAbilityBonuses: record.useFlexibleAbilityBonuses,
     temporaryHp: record.temporaryHp,
     currentHp: record.currentHp,
     inspiration: record.inspiration,
     equipment: record.equipment,
+    manualSkillProficiencies: record.manualSkillProficiencies,
+    manualSavingThrowProficiencies: record.manualSavingThrowProficiencies,
     notes: record.notes,
     attacks: record.attacks,
     featureOverrides: record.featureOverrides,
@@ -802,11 +807,22 @@ Future<CharacterDerivedData> _buildDerivedData(
   final conMod = _abilityModifier(scores['constitution'] ?? 10);
 
   final startingEntry = _resolveStartingEntry(entries);
-  final savingThrowAbilities = {
+  final defaultSavingThrowAbilities = {
     for (final ability in startingEntry?.classData?.savingThrowProficiencies ??
         const <Ability>[])
       ability.name,
   };
+  final savingThrowAbilities = character.manualSavingThrowProficiencies == null
+      ? defaultSavingThrowAbilities
+      : {
+          for (final ability
+              in character.manualSavingThrowProficiencies ?? const <Ability>[])
+            ability.name,
+        };
+  final savingThrowProficiencies = [
+    for (final ability in Ability.values)
+      if (savingThrowAbilities.contains(ability.name)) ability,
+  ];
 
   final skillProficiencies = _collectSkillProficiencies(
     character,
@@ -814,11 +830,15 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.classBackgroundOptions,
     resolvedSources.raceOptions,
   );
+  final skillProficiencyLevels = character.manualSkillProficiencies == null
+      ? _defaultSkillProficiencyLevels(skillProficiencies)
+      : _normalizedSkillProficiencyLevels(character.manualSkillProficiencies);
   final skillBonuses = <String, int>{};
   for (final skill in Skill.values) {
     final base = _abilityModifier(scores[_abilityForSkill(skill).name] ?? 10);
-    final proficient = skillProficiencies.contains(skill);
-    skillBonuses[skill.name] = base + (proficient ? proficiencyBonus : 0);
+    final multiplier =
+        _skillProficiencyMultiplier(skillProficiencyLevels[skill]);
+    skillBonuses[skill.name] = base + (proficiencyBonus * multiplier);
   }
 
   final savingThrowBonuses = <String, int>{};
@@ -908,6 +928,8 @@ Future<CharacterDerivedData> _buildDerivedData(
     passiveInsight: passiveInsight,
     savingThrowBonuses: savingThrowBonuses,
     skillBonuses: skillBonuses,
+    skillProficiencyLevels: _skillProficiencyStateList(skillProficiencyLevels),
+    savingThrowProficiencies: savingThrowProficiencies,
     spellSlots: spellData.spellSlots,
     pactSlots: spellData.pactSlots,
     hitDiceSummary: hitDiceSummary,
@@ -977,7 +999,26 @@ Map<String, int> _buildAbilityScores(
     _applyRacialChoiceBonuses(scores, activeSubraceChoices);
   }
 
+  _applyCustomAbilityBonuses(scores, character.customAbilityBonuses);
+
   return scores;
+}
+
+void _applyCustomAbilityBonuses(
+  Map<String, int> scores,
+  Map<String, int>? bonuses,
+) {
+  if (bonuses == null) {
+    return;
+  }
+
+  for (final entry in bonuses.entries) {
+    final abilityKey = _normalizeAbilityKey(entry.key);
+    if (abilityKey == null || entry.value == 0) {
+      continue;
+    }
+    scores[abilityKey] = (scores[abilityKey] ?? 10) + entry.value;
+  }
 }
 
 enum _BonusMode { racial, flexiblePlusTwoOne, flexibleThreePlusOne }
@@ -1093,6 +1134,54 @@ Set<Skill> _collectSkillProficiencies(
   }
 
   return skills;
+}
+
+Map<Skill, CharacterSkillProficiencyLevel> _defaultSkillProficiencyLevels(
+  Set<Skill> skillProficiencies,
+) {
+  return {
+    for (final skill in Skill.values)
+      skill: skillProficiencies.contains(skill)
+          ? CharacterSkillProficiencyLevel.proficient
+          : CharacterSkillProficiencyLevel.none,
+  };
+}
+
+Map<Skill, CharacterSkillProficiencyLevel> _normalizedSkillProficiencyLevels(
+  List<CharacterSkillProficiencyState>? states,
+) {
+  final levels = {
+    for (final skill in Skill.values)
+      skill: CharacterSkillProficiencyLevel.none,
+  };
+  for (final state in states ?? const <CharacterSkillProficiencyState>[]) {
+    levels[state.skill] = state.level;
+  }
+  return levels;
+}
+
+List<CharacterSkillProficiencyState> _skillProficiencyStateList(
+  Map<Skill, CharacterSkillProficiencyLevel> levels,
+) {
+  return [
+    for (final skill in Skill.values)
+      CharacterSkillProficiencyState(
+        skill: skill,
+        level: levels[skill] ?? CharacterSkillProficiencyLevel.none,
+      ),
+  ];
+}
+
+int _skillProficiencyMultiplier(CharacterSkillProficiencyLevel? level) {
+  switch (level) {
+    case CharacterSkillProficiencyLevel.proficient:
+      return 1;
+    case CharacterSkillProficiencyLevel.expertise:
+      return 2;
+    case CharacterSkillProficiencyLevel.none:
+    case null:
+      return 0;
+  }
 }
 
 CharacterClassEntryData? _resolveStartingEntry(

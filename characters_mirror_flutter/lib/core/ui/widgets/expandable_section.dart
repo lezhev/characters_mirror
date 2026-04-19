@@ -5,10 +5,12 @@ class ExpandableSection extends StatefulWidget {
   final Widget child;
   final Duration duration;
   final double extraOffset;
+  final bool autoScrollOnExpand;
 
   const ExpandableSection({
     super.key,
     this.extraOffset = 0,
+    this.autoScrollOnExpand = true,
     required this.expand,
     required this.child,
     this.duration = const Duration(milliseconds: 250),
@@ -53,7 +55,11 @@ class _ExpandableSectionState extends State<ExpandableSection>
     super.didUpdateWidget(oldWidget);
 
     if (widget.expand && !oldWidget.expand) {
-      controller.forward().whenComplete(_scrollToBottom);
+      controller.forward().whenComplete(() {
+        if (widget.autoScrollOnExpand) {
+          _scrollToBottom();
+        }
+      });
     } else if (!widget.expand && oldWidget.expand) {
       controller.reverse();
     }

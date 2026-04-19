@@ -14,6 +14,8 @@ fields:
   passiveInsight: int?
   savingThrowBonuses: Map<String, int>?
   skillBonuses: Map<String, int>?
+  skillProficiencyLevels: List<CharacterSkillProficiencyState>?
+  savingThrowProficiencies: List<Ability>?
   spellSlots: Map<int, int>?
   pactSlots: Map<int, int>?
   hitDiceSummary: Map<String, int>?

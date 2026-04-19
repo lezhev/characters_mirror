@@ -51,6 +51,7 @@ class CreationChoiceGroupCard extends StatelessWidget {
         description: groupDescription,
         switchKey: group.exclusiveKey ?? group.id ?? groupTitle,
         onClear: selectedOptions.isNotEmpty ? () => onClearGroup(group) : null,
+        autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(group.type),
         items: options.map((option) {
           final optionKey = option.optionKey?.trim();
           final isSelected = optionKey != null &&
@@ -149,5 +150,26 @@ class CreationChoiceGroupCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+bool _shouldDisableChoiceAutoScroll(ClassChoiceType? type) {
+  switch (type) {
+    case ClassChoiceType.skill:
+    case ClassChoiceType.spell:
+    case ClassChoiceType.cantrip:
+      return true;
+    case ClassChoiceType.tool:
+    case ClassChoiceType.language:
+    case ClassChoiceType.fightingStyle:
+    case ClassChoiceType.expertise:
+    case ClassChoiceType.subclassFeature:
+    case ClassChoiceType.featureOption:
+    case ClassChoiceType.invocation:
+    case ClassChoiceType.abilityIncrease:
+    case ClassChoiceType.feat:
+    case ClassChoiceType.custom:
+    case null:
+      return false;
   }
 }

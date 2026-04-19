@@ -29,6 +29,7 @@ class CreationChoiceCardsSwitcher extends StatefulWidget {
     super.key,
     this.description,
     this.onClear,
+    this.autoScrollOnExpand = true,
   });
 
   final String title;
@@ -36,6 +37,7 @@ class CreationChoiceCardsSwitcher extends StatefulWidget {
   final List<CreationChoiceCardItem> items;
   final Object switchKey;
   final VoidCallback? onClear;
+  final bool autoScrollOnExpand;
 
   @override
   State<CreationChoiceCardsSwitcher> createState() =>
@@ -111,10 +113,12 @@ class _CreationChoiceCardsSwitcherState
           ExpandableSection(
             expand: _isExpanded,
             extraOffset: 64,
+            autoScrollOnExpand: widget.autoScrollOnExpand,
             child: Padding(
               padding: const EdgeInsets.only(top: 10),
               child: SmoothSwitcher(
                 switchKey: widget.switchKey,
+                autoScrollOnTransition: widget.autoScrollOnExpand,
                 child: Column(
                   key: ValueKey<Object>(widget.switchKey),
                   crossAxisAlignment: CrossAxisAlignment.stretch,

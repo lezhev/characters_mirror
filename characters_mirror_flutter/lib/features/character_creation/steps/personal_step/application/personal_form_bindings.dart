@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/character_alignment_labels.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,8 @@ class PersonalFormBindings {
     hairController = TextEditingController(text: character.hair ?? '');
     appearanceController =
         TextEditingController(text: character.appearance ?? '');
-    backstoryController = TextEditingController(text: character.backstory ?? '');
+    backstoryController =
+        TextEditingController(text: character.backstory ?? '');
     goalsController = TextEditingController(text: character.goals ?? '');
     alliesOrganizationsController =
         TextEditingController(text: character.alliesOrganizations ?? '');
@@ -191,30 +193,8 @@ class PersonalFormBindings {
     notesFocusNode.dispose();
   }
 
-  String alignmentLabel(CharacterAlignment value) {
-    switch (value) {
-      case CharacterAlignment.lawfulGood:
-        return 'Законопослушный добрый';
-      case CharacterAlignment.neutralGood:
-        return 'Нейтральный добрый';
-      case CharacterAlignment.chaoticGood:
-        return 'Хаотичный добрый';
-      case CharacterAlignment.lawfulNeutral:
-        return 'Законопослушный нейтральный';
-      case CharacterAlignment.trueNeutral:
-        return 'Истинно нейтральный';
-      case CharacterAlignment.chaoticNeutral:
-        return 'Хаотичный нейтральный';
-      case CharacterAlignment.lawfulEvil:
-        return 'Законопослушный злой';
-      case CharacterAlignment.neutralEvil:
-        return 'Нейтральный злой';
-      case CharacterAlignment.chaoticEvil:
-        return 'Хаотичный злой';
-      case CharacterAlignment.unaligned:
-        return 'Без мировоззрения';
-    }
-  }
+  String alignmentLabel(CharacterAlignment value) =>
+      characterAlignmentLabel(value);
 
   void _attachAutosave(FocusNode node, VoidCallback save) {
     node.addListener(() {
