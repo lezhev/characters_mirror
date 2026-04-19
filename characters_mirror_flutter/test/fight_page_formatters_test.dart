@@ -4,7 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('fight page formatters', () {
-    test('formats attack bonus from proficiency, ability, and custom bonus', () {
+    test('formats attack bonus from proficiency, ability, and custom bonus',
+        () {
       final character = CharacterData(
         derived: CharacterDerivedData(
           proficiencyBonus: 2,
@@ -44,6 +45,12 @@ void main() {
       );
 
       expect(result, ['finesse']);
+    });
+
+    test('localizes known weapon property tags', () {
+      expect(attackTagLabel('finesse'), 'Фехтовальное');
+      expect(attackTagLabel('two-handed'), 'Двуручное');
+      expect(attackTagLabel('martial'), 'martial');
     });
   });
 }

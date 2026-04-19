@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -79,6 +80,147 @@ class CharacterSheetController
     final current = _requireCharacter();
     await _saveCharacter(
       current.copyWith(equipment: _normalizedText(equipment)),
+    );
+  }
+
+  Future<void> savePersonalInfo({
+    String? name,
+    String? age,
+    String? height,
+    String? weight,
+    String? eyes,
+    String? skin,
+    String? hair,
+    CharacterAlignment? alignmentValue,
+    String? appearance,
+    String? backstory,
+    String? goals,
+    String? alliesOrganizations,
+    String? personalityTraits,
+    String? ideals,
+    String? bonds,
+    String? flaws,
+    String? notes,
+  }) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        name: _normalizedText(name),
+        age: _normalizedText(age),
+        height: _normalizedText(height),
+        weight: _normalizedText(weight),
+        eyes: _normalizedText(eyes),
+        skin: _normalizedText(skin),
+        hair: _normalizedText(hair),
+        alignmentValue: alignmentValue,
+        appearance: _normalizedText(appearance),
+        backstory: _normalizedText(backstory),
+        goals: _normalizedText(goals),
+        alliesOrganizations: _normalizedText(alliesOrganizations),
+        personalityTraits: _normalizedText(personalityTraits),
+        ideals: _normalizedText(ideals),
+        bonds: _normalizedText(bonds),
+        flaws: _normalizedText(flaws),
+        notes: _normalizedText(notes),
+      ),
+    );
+  }
+
+  Future<void> saveBaseAbilityScore(Ability ability, int? score) async {
+    final current = _requireCharacter();
+    final scores = <String, int>{...?current.baseAbilityScores};
+    if (score == null) {
+      scores.remove(ability.name);
+    } else {
+      scores[ability.name] = score;
+    }
+
+    await _saveCharacter(
+      current.copyWith(
+        baseAbilityScores: scores.isEmpty ? null : scores,
+      ),
+    );
+  }
+
+  Future<void> saveCustomAbilityBonus(Ability ability, int? bonus) async {
+    final current = _requireCharacter();
+    final bonuses = <String, int>{...?current.customAbilityBonuses};
+    if (bonus == null || bonus == 0) {
+      bonuses.remove(ability.name);
+    } else {
+      bonuses[ability.name] = bonus;
+    }
+
+    await _saveCharacter(
+      current.copyWith(
+        customAbilityBonuses: bonuses.isEmpty ? null : bonuses,
+      ),
+    );
+  }
+
+  Future<void> saveAbilityDetails({
+    required Ability ability,
+    required int? score,
+    required int? customBonus,
+    required bool savingThrowProficient,
+  }) async {
+    final current = _requireCharacter();
+    final scores = <String, int>{...?current.baseAbilityScores};
+    if (score == null) {
+      scores.remove(ability.name);
+    } else {
+      scores[ability.name] = score;
+    }
+
+    final bonuses = <String, int>{...?current.customAbilityBonuses};
+    if (customBonus == null || customBonus == 0) {
+      bonuses.remove(ability.name);
+    } else {
+      bonuses[ability.name] = customBonus;
+    }
+
+    await _saveCharacter(
+      current.copyWith(
+        baseAbilityScores: scores.isEmpty ? null : scores,
+        customAbilityBonuses: bonuses.isEmpty ? null : bonuses,
+        manualSavingThrowProficiencies: buildManualSavingThrowProficiencies(
+          character: current,
+          ability: ability,
+          proficient: savingThrowProficient,
+        ),
+      ),
+    );
+  }
+
+  Future<void> saveSkillProficiency(
+    Skill skill,
+    CharacterSkillProficiencyLevel level,
+  ) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        manualSkillProficiencies: buildManualSkillProficiencies(
+          character: current,
+          skill: skill,
+          level: level,
+        ),
+      ),
+    );
+  }
+
+  Future<void> saveSavingThrowProficiency(
+    Ability ability,
+    bool proficient,
+  ) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        manualSavingThrowProficiencies: buildManualSavingThrowProficiencies(
+          character: current,
+          ability: ability,
+          proficient: proficient,
+        ),
+      ),
     );
   }
 

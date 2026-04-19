@@ -12,6 +12,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../enums/weapon_category.dart' as _i2;
 import '../../enums/damage_type.dart' as _i3;
+import '../../enums/weapon_property.dart' as _i4;
 
 abstract class WeaponData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -26,7 +27,7 @@ abstract class WeaponData
     this.updatedAt,
     this.category,
     this.damage,
-    this.damageTypeValue,
+    this.damageType,
     this.properties,
     this.weight,
     this.cost,
@@ -45,8 +46,8 @@ abstract class WeaponData
     DateTime? updatedAt,
     _i2.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageTypeValue,
-    List<String>? properties,
+    _i3.DamageType? damageType,
+    List<_i4.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -72,12 +73,12 @@ abstract class WeaponData
           : _i2.WeaponCategory.fromJson(
               (jsonSerialization['category'] as String)),
       damage: jsonSerialization['damage'] as String?,
-      damageTypeValue: jsonSerialization['damageTypeValue'] == null
+      damageType: jsonSerialization['damageType'] == null
           ? null
           : _i3.DamageType.fromJson(
-              (jsonSerialization['damageTypeValue'] as String)),
+              (jsonSerialization['damageType'] as String)),
       properties: (jsonSerialization['properties'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i4.WeaponProperty.fromJson((e as String)))
           .toList(),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: (jsonSerialization['cost'] as num?)?.toDouble(),
@@ -111,9 +112,9 @@ abstract class WeaponData
 
   String? damage;
 
-  _i3.DamageType? damageTypeValue;
+  _i3.DamageType? damageType;
 
-  List<String>? properties;
+  List<_i4.WeaponProperty>? properties;
 
   double? weight;
 
@@ -140,8 +141,8 @@ abstract class WeaponData
     DateTime? updatedAt,
     _i2.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageTypeValue,
-    List<String>? properties,
+    _i3.DamageType? damageType,
+    List<_i4.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -160,8 +161,9 @@ abstract class WeaponData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (category != null) 'category': category?.toJson(),
       if (damage != null) 'damage': damage,
-      if (damageTypeValue != null) 'damageTypeValue': damageTypeValue?.toJson(),
-      if (properties != null) 'properties': properties?.toJson(),
+      if (damageType != null) 'damageType': damageType?.toJson(),
+      if (properties != null)
+        'properties': properties?.toJson(valueToJson: (v) => v.toJson()),
       if (weight != null) 'weight': weight,
       if (cost != null) 'cost': cost,
       if (rangeNormal != null) 'rangeNormal': rangeNormal,
@@ -182,8 +184,9 @@ abstract class WeaponData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (category != null) 'category': category?.toJson(),
       if (damage != null) 'damage': damage,
-      if (damageTypeValue != null) 'damageTypeValue': damageTypeValue?.toJson(),
-      if (properties != null) 'properties': properties?.toJson(),
+      if (damageType != null) 'damageType': damageType?.toJson(),
+      if (properties != null)
+        'properties': properties?.toJson(valueToJson: (v) => v.toJson()),
       if (weight != null) 'weight': weight,
       if (cost != null) 'cost': cost,
       if (rangeNormal != null) 'rangeNormal': rangeNormal,
@@ -235,8 +238,8 @@ class _WeaponDataImpl extends WeaponData {
     DateTime? updatedAt,
     _i2.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageTypeValue,
-    List<String>? properties,
+    _i3.DamageType? damageType,
+    List<_i4.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -252,7 +255,7 @@ class _WeaponDataImpl extends WeaponData {
           updatedAt: updatedAt,
           category: category,
           damage: damage,
-          damageTypeValue: damageTypeValue,
+          damageType: damageType,
           properties: properties,
           weight: weight,
           cost: cost,
@@ -275,7 +278,7 @@ class _WeaponDataImpl extends WeaponData {
     Object? updatedAt = _Undefined,
     Object? category = _Undefined,
     Object? damage = _Undefined,
-    Object? damageTypeValue = _Undefined,
+    Object? damageType = _Undefined,
     Object? properties = _Undefined,
     Object? weight = _Undefined,
     Object? cost = _Undefined,
@@ -293,10 +296,8 @@ class _WeaponDataImpl extends WeaponData {
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       category: category is _i2.WeaponCategory? ? category : this.category,
       damage: damage is String? ? damage : this.damage,
-      damageTypeValue: damageTypeValue is _i3.DamageType?
-          ? damageTypeValue
-          : this.damageTypeValue,
-      properties: properties is List<String>?
+      damageType: damageType is _i3.DamageType? ? damageType : this.damageType,
+      properties: properties is List<_i4.WeaponProperty>?
           ? properties
           : this.properties?.map((e0) => e0).toList(),
       weight: weight is double? ? weight : this.weight,
@@ -346,8 +347,8 @@ class WeaponDataTable extends _i1.Table<int?> {
       'damage',
       this,
     );
-    damageTypeValue = _i1.ColumnEnum(
-      'damageTypeValue',
+    damageType = _i1.ColumnEnum(
+      'damageType',
       this,
       _i1.EnumSerialization.byName,
     );
@@ -391,7 +392,7 @@ class WeaponDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString damage;
 
-  late final _i1.ColumnEnum<_i3.DamageType> damageTypeValue;
+  late final _i1.ColumnEnum<_i3.DamageType> damageType;
 
   late final _i1.ColumnSerializable properties;
 
@@ -415,7 +416,7 @@ class WeaponDataTable extends _i1.Table<int?> {
         updatedAt,
         category,
         damage,
-        damageTypeValue,
+        damageType,
         properties,
         weight,
         cost,

@@ -1,0 +1,14 @@
+enum: WeaponProperty
+serialized: byName
+values:
+  - ammunition
+  - finesse
+  - heavy
+  - light
+  - loading
+  - range
+  - reach
+  - special
+  - thrown
+  - twoHanded
+  - versatile

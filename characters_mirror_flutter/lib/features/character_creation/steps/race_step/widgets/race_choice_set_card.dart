@@ -70,6 +70,7 @@ class RaceChoiceSetCard extends ConsumerWidget {
       title: raceChoiceKindLabel(choiceSet.kind),
       description: choiceSet.description,
       switchKey: choiceSet.id ?? choiceSet.kind?.name ?? 'race',
+      autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(choiceSet.kind),
       items: options.map((option) {
         final optionKey = option.optionKey?.trim();
         final title = choiceOptionLabel(option);
@@ -89,6 +90,21 @@ class RaceChoiceSetCard extends ConsumerWidget {
         );
       }).toList(),
     );
+  }
+}
+
+bool _shouldDisableChoiceAutoScroll(RaceChoiceKind? kind) {
+  switch (kind) {
+    case RaceChoiceKind.skillProficiencyChoice:
+    case RaceChoiceKind.cantripChoice:
+      return true;
+    case RaceChoiceKind.abilityBonusChoice:
+    case RaceChoiceKind.languageChoice:
+    case RaceChoiceKind.toolProficiencyChoice:
+    case RaceChoiceKind.dragonbornAncestryChoice:
+    case RaceChoiceKind.featChoice:
+    case null:
+      return false;
   }
 }
 

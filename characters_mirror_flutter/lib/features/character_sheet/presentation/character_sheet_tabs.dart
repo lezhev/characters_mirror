@@ -24,9 +24,9 @@ List<CharacterSheetTab> buildCharacterSheetTabs(int characterId) {
         label: 'Бой',
       ),
     ),
-    const CharacterSheetTab(
-      builder: _buildCharacterPage,
-      destination: NavigationDestination(
+    CharacterSheetTab(
+      builder: () => CharacterPage(characterId: characterId),
+      destination: const NavigationDestination(
         icon: Icon(Icons.person),
         label: 'Персонаж',
       ),
@@ -55,6 +55,5 @@ List<CharacterSheetTab> buildCharacterSheetTabs(int characterId) {
   ];
 }
 
-Widget _buildCharacterPage() => const CharacterPage();
 Widget _buildNotesPage() => const NotesPage();
 Widget _buildSpellPage() => const SpellPage();

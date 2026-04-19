@@ -1,0 +1,6 @@
+enum: CharacterSkillProficiencyLevel
+serialized: byName
+values:
+  - none
+  - proficient
+  - expertise

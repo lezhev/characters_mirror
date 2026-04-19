@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../enums/weapon_category.dart' as _i2;
 import '../../enums/damage_type.dart' as _i3;
+import '../../enums/weapon_property.dart' as _i4;
 
 abstract class WeaponData implements _i1.SerializableModel {
   WeaponData._({
@@ -25,7 +26,7 @@ abstract class WeaponData implements _i1.SerializableModel {
     this.updatedAt,
     this.category,
     this.damage,
-    this.damageTypeValue,
+    this.damageType,
     this.properties,
     this.weight,
     this.cost,
@@ -44,8 +45,8 @@ abstract class WeaponData implements _i1.SerializableModel {
     DateTime? updatedAt,
     _i2.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageTypeValue,
-    List<String>? properties,
+    _i3.DamageType? damageType,
+    List<_i4.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -71,12 +72,12 @@ abstract class WeaponData implements _i1.SerializableModel {
           : _i2.WeaponCategory.fromJson(
               (jsonSerialization['category'] as String)),
       damage: jsonSerialization['damage'] as String?,
-      damageTypeValue: jsonSerialization['damageTypeValue'] == null
+      damageType: jsonSerialization['damageType'] == null
           ? null
           : _i3.DamageType.fromJson(
-              (jsonSerialization['damageTypeValue'] as String)),
+              (jsonSerialization['damageType'] as String)),
       properties: (jsonSerialization['properties'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i4.WeaponProperty.fromJson((e as String)))
           .toList(),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: (jsonSerialization['cost'] as num?)?.toDouble(),
@@ -108,9 +109,9 @@ abstract class WeaponData implements _i1.SerializableModel {
 
   String? damage;
 
-  _i3.DamageType? damageTypeValue;
+  _i3.DamageType? damageType;
 
-  List<String>? properties;
+  List<_i4.WeaponProperty>? properties;
 
   double? weight;
 
@@ -134,8 +135,8 @@ abstract class WeaponData implements _i1.SerializableModel {
     DateTime? updatedAt,
     _i2.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageTypeValue,
-    List<String>? properties,
+    _i3.DamageType? damageType,
+    List<_i4.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -154,8 +155,9 @@ abstract class WeaponData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (category != null) 'category': category?.toJson(),
       if (damage != null) 'damage': damage,
-      if (damageTypeValue != null) 'damageTypeValue': damageTypeValue?.toJson(),
-      if (properties != null) 'properties': properties?.toJson(),
+      if (damageType != null) 'damageType': damageType?.toJson(),
+      if (properties != null)
+        'properties': properties?.toJson(valueToJson: (v) => v.toJson()),
       if (weight != null) 'weight': weight,
       if (cost != null) 'cost': cost,
       if (rangeNormal != null) 'rangeNormal': rangeNormal,
@@ -183,8 +185,8 @@ class _WeaponDataImpl extends WeaponData {
     DateTime? updatedAt,
     _i2.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageTypeValue,
-    List<String>? properties,
+    _i3.DamageType? damageType,
+    List<_i4.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -200,7 +202,7 @@ class _WeaponDataImpl extends WeaponData {
           updatedAt: updatedAt,
           category: category,
           damage: damage,
-          damageTypeValue: damageTypeValue,
+          damageType: damageType,
           properties: properties,
           weight: weight,
           cost: cost,
@@ -223,7 +225,7 @@ class _WeaponDataImpl extends WeaponData {
     Object? updatedAt = _Undefined,
     Object? category = _Undefined,
     Object? damage = _Undefined,
-    Object? damageTypeValue = _Undefined,
+    Object? damageType = _Undefined,
     Object? properties = _Undefined,
     Object? weight = _Undefined,
     Object? cost = _Undefined,
@@ -241,10 +243,8 @@ class _WeaponDataImpl extends WeaponData {
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       category: category is _i2.WeaponCategory? ? category : this.category,
       damage: damage is String? ? damage : this.damage,
-      damageTypeValue: damageTypeValue is _i3.DamageType?
-          ? damageTypeValue
-          : this.damageTypeValue,
-      properties: properties is List<String>?
+      damageType: damageType is _i3.DamageType? ? damageType : this.damageType,
+      properties: properties is List<_i4.WeaponProperty>?
           ? properties
           : this.properties?.map((e0) => e0).toList(),
       weight: weight is double? ? weight : this.weight,

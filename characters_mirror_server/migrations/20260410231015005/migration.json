@@ -1,0 +1,34 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "manualSkillProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:CharacterSkillProficiencyState>?"
+          },
+          {
+            "name": "manualSavingThrowProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Ability>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

@@ -62,12 +62,14 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
       return;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || revision != _transitionRevision) {
-        return;
-      }
-      _scrollToBottom();
-    });
+    if (widget.autoScrollOnTransition) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || revision != _transitionRevision) {
+          return;
+        }
+        _scrollToBottom();
+      });
+    }
   }
 
   Object? _identityFor(SmoothSwitcher widget) {

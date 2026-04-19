@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 
 class AppSectionHeader extends StatelessWidget {
   const AppSectionHeader({
-    required this.title,
+    this.title,
     super.key,
     this.titleStyle,
     this.spacing = 4,
@@ -12,7 +12,7 @@ class AppSectionHeader extends StatelessWidget {
     this.trailing,
   });
 
-  final String title;
+  final String? title;
   final TextStyle? titleStyle;
   final double spacing;
   final bool showDivider;
@@ -30,7 +30,7 @@ class AppSectionHeader extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                title,
+                title ?? '',
                 style: titleStyle ?? theme.textTheme.headlineSmall,
               ),
             ),

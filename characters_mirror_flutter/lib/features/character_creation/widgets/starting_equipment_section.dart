@@ -64,11 +64,11 @@ class StartingEquipmentSection extends ConsumerWidget {
                 return;
               }
 
-              await showStartingEquipmentOptionDialog(
+              await _showRequiredResolutionDialogs(
                 context: context,
                 ref: ref,
-                optionView: optionView,
-                isSelected: true,
+                blockView: blocks[index],
+                lines: optionView.lines ?? const <StartingEquipmentLineData>[],
                 selectedReferenceKeysByLine:
                     startingEquipmentResolutionReferenceKeys(
                   selectionForStartingEquipmentOption(
@@ -77,43 +77,34 @@ class StartingEquipmentSection extends ConsumerWidget {
                   ),
                   optionView.lines ?? const <StartingEquipmentLineData>[],
                 ),
-                onSaveResolution: ({
-                  required line,
-                  required catalogType,
-                  required referenceKey,
-                }) {
-                  onSetResolution(
-                    blockView: blocks[index],
-                    line: line,
-                    catalogType: catalogType,
-                    referenceKey: referenceKey,
-                  );
-                },
+                onSetResolution: onSetResolution,
               );
             },
             onShowFixedLineDialog: (line) async {
-              await showStartingEquipmentLineDialog(
+              if (!startingEquipmentLineRequiresResolution(line)) {
+                return;
+              }
+
+              final choice = await showStartingEquipmentResolutionDialog(
                 context: context,
                 ref: ref,
                 line: line,
-                enabled: true,
                 selectedReferenceKey:
                     selectedStartingEquipmentReferenceKeyForLine(
                   blocks[index],
                   selections: selections,
                   line: line,
                 ),
-                onSaveResolution: ({
-                  required catalogType,
-                  required referenceKey,
-                }) {
-                  onSetResolution(
-                    blockView: blocks[index],
-                    line: line,
-                    catalogType: catalogType,
-                    referenceKey: referenceKey,
-                  );
-                },
+              );
+              if (choice == null) {
+                return;
+              }
+
+              onSetResolution(
+                blockView: blocks[index],
+                line: line,
+                catalogType: choice.catalogType,
+                referenceKey: choice.referenceKey,
               );
             },
           ),
@@ -121,5 +112,44 @@ class StartingEquipmentSection extends ConsumerWidget {
         ],
       ],
     );
+  }
+}
+
+Future<void> _showRequiredResolutionDialogs({
+  required BuildContext context,
+  required WidgetRef ref,
+  required StartingEquipmentBlockView blockView,
+  required List<StartingEquipmentLineData> lines,
+  required Map<String, String> selectedReferenceKeysByLine,
+  required void Function({
+    required StartingEquipmentBlockView blockView,
+    required StartingEquipmentLineData line,
+    required EquipmentCatalogType catalogType,
+    required String referenceKey,
+  }) onSetResolution,
+}) async {
+  for (final line in lines) {
+    if (!startingEquipmentLineRequiresResolution(line)) {
+      continue;
+    }
+    final choice = await showStartingEquipmentResolutionDialog(
+      context: context,
+      ref: ref,
+      line: line,
+      selectedReferenceKey: selectedReferenceKeysByLine[
+          normalizeStartingEquipmentText(line.lineKey)],
+    );
+    if (choice == null) {
+      return;
+    }
+    onSetResolution(
+      blockView: blockView,
+      line: line,
+      catalogType: choice.catalogType,
+      referenceKey: choice.referenceKey,
+    );
+    if (!context.mounted) {
+      return;
+    }
   }
 }

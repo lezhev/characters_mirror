@@ -11,8 +11,8 @@ fields:
 
   category: WeaponCategory?
   damage: String?
-  damageTypeValue: DamageType?
-  properties: List<String>?
+  damageType: DamageType?
+  properties: List<WeaponProperty>?
   weight: double?
   cost: double?
   rangeNormal: int?

@@ -5,10 +5,12 @@ import 'package:go_router/go_router.dart';
 class CharacterSheetAppBar extends StatelessWidget {
   const CharacterSheetAppBar({
     required this.characterName,
+    required this.onMenuPressed,
     super.key,
   });
 
   final String characterName;
+  final VoidCallback onMenuPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,10 @@ class CharacterSheetAppBar extends StatelessWidget {
                 const SizedBox(width: 8),
                 const SheetAppBarAction(icon: Icons.auto_awesome),
                 const SheetAppBarAction(icon: Icons.settings),
-                const SheetAppBarAction(icon: Icons.menu),
+                SheetAppBarAction(
+                  icon: Icons.menu,
+                  onPressed: onMenuPressed,
+                ),
               ],
             ),
           ),
@@ -54,16 +59,18 @@ class CharacterSheetAppBar extends StatelessWidget {
 class SheetAppBarAction extends StatelessWidget {
   const SheetAppBarAction({
     required this.icon,
+    this.onPressed,
     super.key,
   });
 
   final IconData icon;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      onPressed: () {},
+      onPressed: onPressed ?? () {},
       icon: Icon(icon),
     );
   }
