@@ -1,4 +1,5 @@
 import 'package:characters_mirror_flutter/core/app/characters_mirror_app.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ void main() async {
   }
   _installSafeFlutterErrorReporter();
   await initializeServerpodClient();
+  await initializeOfflineServices();
   runApp(const ProviderScope(child: CharactersMirrorApp()));
 }
 

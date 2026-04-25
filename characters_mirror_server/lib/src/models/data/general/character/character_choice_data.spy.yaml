@@ -1,6 +1,6 @@
 class: CharacterChoiceData
 fields:
-  id: int?
+  id: String?
   classEntry: CharacterClassEntryData?
   sourceType: ChoiceSourceType?
   sourceId: int?
@@ -14,3 +14,4 @@ fields:
   selectedFeatId: int?
   selectedText: String?
   selectedCount: int?
+  updatedAt: DateTime?

@@ -10,7 +10,7 @@ fields:
 
   skillProficiencies: List<String>?
   toolProficiencies: List<String>?
-  languages: List<String>?
+  languageCount: int?
   items: List<String>?
   coins: double?
   feature: String?

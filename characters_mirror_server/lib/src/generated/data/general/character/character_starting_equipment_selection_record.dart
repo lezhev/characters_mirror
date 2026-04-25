@@ -19,6 +19,7 @@ abstract class CharacterStartingEquipmentSelectionRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   CharacterStartingEquipmentSelectionRecord._({
     this.id,
+    this.syncId,
     required this.characterId,
     this.character,
     this.sourceType,
@@ -26,10 +27,12 @@ abstract class CharacterStartingEquipmentSelectionRecord
     this.blockKey,
     this.optionKey,
     this.selectionIndex,
+    this.updatedAt,
   });
 
   factory CharacterStartingEquipmentSelectionRecord({
     int? id,
+    String? syncId,
     required int characterId,
     _i2.CharacterRecord? character,
     _i3.ChoiceSourceType? sourceType,
@@ -37,12 +40,14 @@ abstract class CharacterStartingEquipmentSelectionRecord
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
+    DateTime? updatedAt,
   }) = _CharacterStartingEquipmentSelectionRecordImpl;
 
   factory CharacterStartingEquipmentSelectionRecord.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterStartingEquipmentSelectionRecord(
       id: jsonSerialization['id'] as int?,
+      syncId: jsonSerialization['syncId'] as String?,
       characterId: jsonSerialization['characterId'] as int,
       character: jsonSerialization['character'] == null
           ? null
@@ -56,6 +61,9 @@ abstract class CharacterStartingEquipmentSelectionRecord
       blockKey: jsonSerialization['blockKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -65,6 +73,8 @@ abstract class CharacterStartingEquipmentSelectionRecord
 
   @override
   int? id;
+
+  String? syncId;
 
   int characterId;
 
@@ -80,6 +90,8 @@ abstract class CharacterStartingEquipmentSelectionRecord
 
   int? selectionIndex;
 
+  DateTime? updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -88,6 +100,7 @@ abstract class CharacterStartingEquipmentSelectionRecord
   @_i1.useResult
   CharacterStartingEquipmentSelectionRecord copyWith({
     int? id,
+    String? syncId,
     int? characterId,
     _i2.CharacterRecord? character,
     _i3.ChoiceSourceType? sourceType,
@@ -95,11 +108,13 @@ abstract class CharacterStartingEquipmentSelectionRecord
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (syncId != null) 'syncId': syncId,
       'characterId': characterId,
       if (character != null) 'character': character?.toJson(),
       if (sourceType != null) 'sourceType': sourceType?.toJson(),
@@ -107,6 +122,7 @@ abstract class CharacterStartingEquipmentSelectionRecord
       if (blockKey != null) 'blockKey': blockKey,
       if (optionKey != null) 'optionKey': optionKey,
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -156,6 +172,7 @@ class _CharacterStartingEquipmentSelectionRecordImpl
     extends CharacterStartingEquipmentSelectionRecord {
   _CharacterStartingEquipmentSelectionRecordImpl({
     int? id,
+    String? syncId,
     required int characterId,
     _i2.CharacterRecord? character,
     _i3.ChoiceSourceType? sourceType,
@@ -163,8 +180,10 @@ class _CharacterStartingEquipmentSelectionRecordImpl
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
+          syncId: syncId,
           characterId: characterId,
           character: character,
           sourceType: sourceType,
@@ -172,6 +191,7 @@ class _CharacterStartingEquipmentSelectionRecordImpl
           blockKey: blockKey,
           optionKey: optionKey,
           selectionIndex: selectionIndex,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterStartingEquipmentSelectionRecord]
@@ -180,6 +200,7 @@ class _CharacterStartingEquipmentSelectionRecordImpl
   @override
   CharacterStartingEquipmentSelectionRecord copyWith({
     Object? id = _Undefined,
+    Object? syncId = _Undefined,
     int? characterId,
     Object? character = _Undefined,
     Object? sourceType = _Undefined,
@@ -187,9 +208,11 @@ class _CharacterStartingEquipmentSelectionRecordImpl
     Object? blockKey = _Undefined,
     Object? optionKey = _Undefined,
     Object? selectionIndex = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterStartingEquipmentSelectionRecord(
       id: id is int? ? id : this.id,
+      syncId: syncId is String? ? syncId : this.syncId,
       characterId: characterId ?? this.characterId,
       character: character is _i2.CharacterRecord?
           ? character
@@ -201,6 +224,7 @@ class _CharacterStartingEquipmentSelectionRecordImpl
       optionKey: optionKey is String? ? optionKey : this.optionKey,
       selectionIndex:
           selectionIndex is int? ? selectionIndex : this.selectionIndex,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }
@@ -208,6 +232,10 @@ class _CharacterStartingEquipmentSelectionRecordImpl
 class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
   CharacterStartingEquipmentSelectionRecordTable({super.tableRelation})
       : super(tableName: 'character_starting_equipment_selection_data') {
+    syncId = _i1.ColumnString(
+      'syncId',
+      this,
+    );
     characterId = _i1.ColumnInt(
       'characterId',
       this,
@@ -233,7 +261,13 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
       'selectionIndex',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
+
+  late final _i1.ColumnString syncId;
 
   late final _i1.ColumnInt characterId;
 
@@ -248,6 +282,8 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnString optionKey;
 
   late final _i1.ColumnInt selectionIndex;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   _i2.CharacterRecordTable get character {
     if (_character != null) return _character!;
@@ -265,12 +301,14 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        syncId,
         characterId,
         sourceType,
         sourceId,
         blockKey,
         optionKey,
         selectionIndex,
+        updatedAt,
       ];
 
   @override

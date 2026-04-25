@@ -49,13 +49,16 @@ class ClassFeatures extends HookConsumerWidget {
         ClassFeatureEntry.subclassFeature(feature),
     ]..sort(_compareFeatureEntries);
     final subclassChoice = currentStepView.subclassChoice;
+    final className = currentStepView.classData!.name?.trim();
+    final classTitle =
+        className == null || className.isEmpty ? 'Профиль класса' : className;
 
     return ref.watch(classStateProvider).when(
           data: (stateData) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppSectionHeader(title: 'Профиль класса'),
+                AppSectionHeader(title: classTitle),
                 const Gap(8),
                 ClassProfileCard(classData: currentStepView.classData!),
                 if ((currentStepView.startingEquipmentBlocks?.isNotEmpty ??

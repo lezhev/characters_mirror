@@ -25,10 +25,11 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
     this.hpMode,
     this.hpRolledValues,
     this.notes,
+    this.updatedAt,
   });
 
   factory CharacterClassEntryData({
-    int? id,
+    String? id,
     _i2.ClassData? classData,
     _i3.SubclassData? subclass,
     int? level,
@@ -37,12 +38,13 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
     _i4.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
+    DateTime? updatedAt,
   }) = _CharacterClassEntryDataImpl;
 
   factory CharacterClassEntryData.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterClassEntryData(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] as String?,
       classData: jsonSerialization['classData'] == null
           ? null
           : _i2.ClassData.fromJson(
@@ -61,10 +63,13 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
           ?.map((e) => e as int)
           .toList(),
       notes: jsonSerialization['notes'] as String?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
-  int? id;
+  String? id;
 
   _i2.ClassData? classData;
 
@@ -82,11 +87,13 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
 
   String? notes;
 
+  DateTime? updatedAt;
+
   /// Returns a shallow copy of this [CharacterClassEntryData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   CharacterClassEntryData copyWith({
-    int? id,
+    String? id,
     _i2.ClassData? classData,
     _i3.SubclassData? subclass,
     int? level,
@@ -95,6 +102,7 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
     _i4.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -108,6 +116,7 @@ abstract class CharacterClassEntryData implements _i1.SerializableModel {
       if (hpMode != null) 'hpMode': hpMode?.toJson(),
       if (hpRolledValues != null) 'hpRolledValues': hpRolledValues?.toJson(),
       if (notes != null) 'notes': notes,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -121,7 +130,7 @@ class _Undefined {}
 
 class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
   _CharacterClassEntryDataImpl({
-    int? id,
+    String? id,
     _i2.ClassData? classData,
     _i3.SubclassData? subclass,
     int? level,
@@ -130,6 +139,7 @@ class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
     _i4.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
           classData: classData,
@@ -140,6 +150,7 @@ class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
           hpMode: hpMode,
           hpRolledValues: hpRolledValues,
           notes: notes,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterClassEntryData]
@@ -156,9 +167,10 @@ class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
     Object? hpMode = _Undefined,
     Object? hpRolledValues = _Undefined,
     Object? notes = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterClassEntryData(
-      id: id is int? ? id : this.id,
+      id: id is String? ? id : this.id,
       classData:
           classData is _i2.ClassData? ? classData : this.classData?.copyWith(),
       subclass:
@@ -172,6 +184,7 @@ class _CharacterClassEntryDataImpl extends CharacterClassEntryData {
           ? hpRolledValues
           : this.hpRolledValues?.map((e0) => e0).toList(),
       notes: notes is String? ? notes : this.notes,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }

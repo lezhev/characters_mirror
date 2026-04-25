@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,16 +11,19 @@ final charactersListControllerProvider = StateNotifierProvider.autoDispose<
 class CharactersListState {
   const CharactersListState({
     this.characters = const AsyncValue<List<CharacterData>>.loading(),
+    this.offlineRecordsByCharacterId = const {},
     this.armedDeleteCharacterId,
     this.deletingCharacterId,
   });
 
   final AsyncValue<List<CharacterData>> characters;
+  final Map<int, OfflineCharacterRecord> offlineRecordsByCharacterId;
   final int? armedDeleteCharacterId;
   final int? deletingCharacterId;
 
   CharactersListState copyWith({
     AsyncValue<List<CharacterData>>? characters,
+    Map<int, OfflineCharacterRecord>? offlineRecordsByCharacterId,
     int? armedDeleteCharacterId,
     bool clearArmedDeleteCharacterId = false,
     int? deletingCharacterId,
@@ -27,6 +31,8 @@ class CharactersListState {
   }) {
     return CharactersListState(
       characters: characters ?? this.characters,
+      offlineRecordsByCharacterId:
+          offlineRecordsByCharacterId ?? this.offlineRecordsByCharacterId,
       armedDeleteCharacterId: clearArmedDeleteCharacterId
           ? null
           : armedDeleteCharacterId ?? this.armedDeleteCharacterId,
@@ -64,8 +70,12 @@ class CharactersListController extends StateNotifier<CharactersListState> {
 
     try {
       final characters = await _repository.getAll();
+      final offlineRecords = await _repository.getOfflineRecords();
       state = state.copyWith(
         characters: AsyncValue.data(characters),
+        offlineRecordsByCharacterId: {
+          for (final record in offlineRecords) record.localId: record,
+        },
         armedDeleteCharacterId: _resolveArmedDeleteCharacterId(
             characters, state.armedDeleteCharacterId),
         clearDeletingCharacterId: true,
@@ -107,8 +117,12 @@ class CharactersListController extends StateNotifier<CharactersListState> {
     try {
       await _repository.delete(id);
       final characters = await _repository.getAll();
+      final offlineRecords = await _repository.getOfflineRecords();
       state = state.copyWith(
         characters: AsyncValue.data(characters),
+        offlineRecordsByCharacterId: {
+          for (final record in offlineRecords) record.localId: record,
+        },
         clearArmedDeleteCharacterId: true,
         clearDeletingCharacterId: true,
       );

@@ -56,7 +56,7 @@ class _ExpandableSectionState extends State<ExpandableSection>
 
     if (widget.expand && !oldWidget.expand) {
       controller.forward().whenComplete(() {
-        if (widget.autoScrollOnExpand) {
+        if (mounted && widget.autoScrollOnExpand) {
           _scrollToBottom();
         }
       });
@@ -67,20 +67,31 @@ class _ExpandableSectionState extends State<ExpandableSection>
 
   void _scrollToBottom() {
     final context = _key.currentContext;
-    if (context == null) return;
+    if (!mounted || context == null || !context.mounted) return;
 
     final scrollable = Scrollable.of(context);
-    final position = scrollable.position;
-    final renderBox = context.findRenderObject() as RenderBox;
+    if (!scrollable.mounted) return;
 
-    final bottomOffset = renderBox
+    final scrollableRenderObject = scrollable.context.findRenderObject();
+    final renderObject = context.findRenderObject();
+    if (scrollableRenderObject == null ||
+        !scrollableRenderObject.attached ||
+        renderObject is! RenderBox ||
+        !renderObject.attached) {
+      return;
+    }
+
+    final position = scrollable.position;
+
+    final bottomOffset = renderObject
         .localToGlobal(
-          Offset(0, renderBox.size.height),
-          ancestor: scrollable.context.findRenderObject(),
+          Offset(0, renderObject.size.height),
+          ancestor: scrollableRenderObject,
         )
         .dy;
 
-    final viewportHeight = scrollable.context.size!.height;
+    final viewportHeight = scrollable.context.size?.height;
+    if (viewportHeight == null) return;
 
     if (bottomOffset > viewportHeight) {
       final diff = bottomOffset - viewportHeight;

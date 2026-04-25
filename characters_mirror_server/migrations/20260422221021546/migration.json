@@ -1,0 +1,50 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "notes",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [
+          "notes"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column notes of table characters is modified in a way that it must be deleted and recreated.",
+            "table": "characters",
+            "columns": [
+              "notes"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column notes of table characters is modified in a way that it must be deleted and recreated.",
+      "table": "characters",
+      "columns": [
+        "notes"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

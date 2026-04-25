@@ -6,12 +6,12 @@ part of 'attribute_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$attributeStateHash() => r'555a7a14a4e9a0d60de8de6046e23159088b9b75';
+String _$attributeStateHash() => r'21072a9b6e7d03dac5101ce71b8c9fdd1da4a8aa';
 
 /// See also [AttributeState].
 @ProviderFor(AttributeState)
 final attributeStateProvider =
-    AutoDisposeNotifierProvider<AttributeState, AttributeStateModel>.internal(
+    NotifierProvider<AttributeState, AttributeStateModel>.internal(
   AttributeState.new,
   name: r'attributeStateProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final attributeStateProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$AttributeState = AutoDisposeNotifier<AttributeStateModel>;
+typedef _$AttributeState = Notifier<AttributeStateModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

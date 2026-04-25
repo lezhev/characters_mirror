@@ -6,6 +6,8 @@ class AttributeNamesColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 150),
       child: ListView(
@@ -21,8 +23,7 @@ class AttributeNamesColumn extends StatelessWidget {
               ),
               child: Text(
                 attribute.getTitle(),
-                style: TextStyle(
-                  fontSize: 18,
+                style: textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),

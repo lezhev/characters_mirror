@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/state/attribute_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/widgets/drag_box.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_swipe_lock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,6 +16,12 @@ class RollOrDragBox extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attributeStateProvider);
+    if (index < 0 ||
+        index >= state.remainingValues.length ||
+        index >= state.boxStates.length) {
+      return const SizedBox.shrink();
+    }
+
     final rollValue = state.remainingValues[index];
     final boxState = state.boxStates[index];
     final controller = useAnimationController(
@@ -43,8 +50,17 @@ class RollOrDragBox extends HookConsumerWidget {
         return _diceContainer(context, rotationController: controller);
 
       case RollBoxState.filled:
+        if (rollValue == null) {
+          return const SizedBox.shrink();
+        }
         return Draggable<int>(
-          data: rollValue!,
+          data: rollValue,
+          onDragStarted: () {
+            ref.read(creationStepSwipeLockedProvider.notifier).state = true;
+          },
+          onDragEnd: (_) {
+            ref.read(creationStepSwipeLockedProvider.notifier).state = false;
+          },
           feedback: Material(
             color: Colors.transparent,
             child: DragBox(rollValue, isDragging: true),

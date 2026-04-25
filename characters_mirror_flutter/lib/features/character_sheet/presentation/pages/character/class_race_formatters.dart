@@ -1,5 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/mechanics/helpers/mechanics_labels.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
 
 String classSummary(List<CharacterClassEntryData>? entries) {
   final labels = [
@@ -42,7 +42,7 @@ List<CharacterClassEntryData> sortedClassEntries(
       if (orderCompare != 0) {
         return orderCompare;
       }
-      return (left.id ?? 0).compareTo(right.id ?? 0);
+      return (left.id ?? '').compareTo(right.id ?? '');
     });
 }
 
@@ -63,7 +63,7 @@ String joinAbilities(List<Ability> abilities) {
 }
 
 String abilityLabel(Ability ability) {
-  return mechanicsAbilityLabel(ability);
+  return attributesAbilityLabel(ability);
 }
 
 String joinArmorCategories(List<ArmorCategory> categories) {

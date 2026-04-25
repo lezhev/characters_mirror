@@ -27,7 +27,8 @@ class PersonalFormBindings {
     idealsController = TextEditingController(text: character.ideals ?? '');
     bondsController = TextEditingController(text: character.bonds ?? '');
     flawsController = TextEditingController(text: character.flaws ?? '');
-    notesController = TextEditingController(text: character.notes ?? '');
+    notesController =
+        TextEditingController(text: character.notes?.firstOrNull?.text ?? '');
 
     nameFocusNode = FocusNode();
     ageFocusNode = FocusNode();

@@ -23,6 +23,7 @@ abstract class CharacterChoiceRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   CharacterChoiceRecord._({
     this.id,
+    this.syncId,
     required this.characterId,
     this.character,
     this.classEntryId,
@@ -39,10 +40,12 @@ abstract class CharacterChoiceRecord
     this.selectedFeatId,
     this.selectedText,
     this.selectedCount,
+    this.updatedAt,
   });
 
   factory CharacterChoiceRecord({
     int? id,
+    String? syncId,
     required int characterId,
     _i2.CharacterRecord? character,
     int? classEntryId,
@@ -59,12 +62,14 @@ abstract class CharacterChoiceRecord
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
+    DateTime? updatedAt,
   }) = _CharacterChoiceRecordImpl;
 
   factory CharacterChoiceRecord.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterChoiceRecord(
       id: jsonSerialization['id'] as int?,
+      syncId: jsonSerialization['syncId'] as String?,
       characterId: jsonSerialization['characterId'] as int,
       character: jsonSerialization['character'] == null
           ? null
@@ -96,6 +101,9 @@ abstract class CharacterChoiceRecord
       selectedFeatId: jsonSerialization['selectedFeatId'] as int?,
       selectedText: jsonSerialization['selectedText'] as String?,
       selectedCount: jsonSerialization['selectedCount'] as int?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -105,6 +113,8 @@ abstract class CharacterChoiceRecord
 
   @override
   int? id;
+
+  String? syncId;
 
   int characterId;
 
@@ -138,6 +148,8 @@ abstract class CharacterChoiceRecord
 
   int? selectedCount;
 
+  DateTime? updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -146,6 +158,7 @@ abstract class CharacterChoiceRecord
   @_i1.useResult
   CharacterChoiceRecord copyWith({
     int? id,
+    String? syncId,
     int? characterId,
     _i2.CharacterRecord? character,
     int? classEntryId,
@@ -162,11 +175,13 @@ abstract class CharacterChoiceRecord
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (syncId != null) 'syncId': syncId,
       'characterId': characterId,
       if (character != null) 'character': character?.toJson(),
       if (classEntryId != null) 'classEntryId': classEntryId,
@@ -184,6 +199,7 @@ abstract class CharacterChoiceRecord
       if (selectedFeatId != null) 'selectedFeatId': selectedFeatId,
       if (selectedText != null) 'selectedText': selectedText,
       if (selectedCount != null) 'selectedCount': selectedCount,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -233,6 +249,7 @@ class _Undefined {}
 class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
   _CharacterChoiceRecordImpl({
     int? id,
+    String? syncId,
     required int characterId,
     _i2.CharacterRecord? character,
     int? classEntryId,
@@ -249,8 +266,10 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
+          syncId: syncId,
           characterId: characterId,
           character: character,
           classEntryId: classEntryId,
@@ -267,6 +286,7 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
           selectedFeatId: selectedFeatId,
           selectedText: selectedText,
           selectedCount: selectedCount,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterChoiceRecord]
@@ -275,6 +295,7 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
   @override
   CharacterChoiceRecord copyWith({
     Object? id = _Undefined,
+    Object? syncId = _Undefined,
     int? characterId,
     Object? character = _Undefined,
     Object? classEntryId = _Undefined,
@@ -291,9 +312,11 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     Object? selectedFeatId = _Undefined,
     Object? selectedText = _Undefined,
     Object? selectedCount = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterChoiceRecord(
       id: id is int? ? id : this.id,
+      syncId: syncId is String? ? syncId : this.syncId,
       characterId: characterId ?? this.characterId,
       character: character is _i2.CharacterRecord?
           ? character
@@ -324,6 +347,7 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
           selectedFeatId is int? ? selectedFeatId : this.selectedFeatId,
       selectedText: selectedText is String? ? selectedText : this.selectedText,
       selectedCount: selectedCount is int? ? selectedCount : this.selectedCount,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }
@@ -331,6 +355,10 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
 class CharacterChoiceRecordTable extends _i1.Table<int?> {
   CharacterChoiceRecordTable({super.tableRelation})
       : super(tableName: 'character_choice_data') {
+    syncId = _i1.ColumnString(
+      'syncId',
+      this,
+    );
     characterId = _i1.ColumnInt(
       'characterId',
       this,
@@ -390,7 +418,13 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
       'selectedCount',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
+
+  late final _i1.ColumnString syncId;
 
   late final _i1.ColumnInt characterId;
 
@@ -424,6 +458,8 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt selectedCount;
 
+  late final _i1.ColumnDateTime updatedAt;
+
   _i2.CharacterRecordTable get character {
     if (_character != null) return _character!;
     _character = _i1.createRelationTable(
@@ -453,6 +489,7 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        syncId,
         characterId,
         classEntryId,
         sourceType,
@@ -467,6 +504,7 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
         selectedFeatId,
         selectedText,
         selectedCount,
+        updatedAt,
       ];
 
   @override

@@ -1,0 +1,3 @@
+enum: CharacterEntityType
+values:
+  - character

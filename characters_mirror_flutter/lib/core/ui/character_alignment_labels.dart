@@ -3,23 +3,23 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 String characterAlignmentLabel(CharacterAlignment value) {
   switch (value) {
     case CharacterAlignment.lawfulGood:
-      return 'Законопослушный добрый';
+      return 'П-Д';
     case CharacterAlignment.neutralGood:
-      return 'Нейтральный добрый';
+      return 'Добрый';
     case CharacterAlignment.chaoticGood:
-      return 'Хаотичный добрый';
+      return 'Х-Д';
     case CharacterAlignment.lawfulNeutral:
-      return 'Законопослушный нейтральный';
+      return 'Принципиальный';
     case CharacterAlignment.trueNeutral:
-      return 'Истинно нейтральный';
+      return 'Нейтральный';
     case CharacterAlignment.chaoticNeutral:
-      return 'Хаотичный нейтральный';
+      return 'Хаотичный';
     case CharacterAlignment.lawfulEvil:
-      return 'Законопослушный злой';
+      return 'П-З';
     case CharacterAlignment.neutralEvil:
-      return 'Нейтральный злой';
+      return 'Злой';
     case CharacterAlignment.chaoticEvil:
-      return 'Хаотичный злой';
+      return 'Х-З';
     case CharacterAlignment.unaligned:
       return 'Без мировоззрения';
   }

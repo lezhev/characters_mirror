@@ -24,22 +24,24 @@ abstract class CharacterStartingEquipmentSelectionData
     this.optionKey,
     this.selectionIndex,
     this.resolutions,
+    this.updatedAt,
   });
 
   factory CharacterStartingEquipmentSelectionData({
-    int? id,
+    String? id,
     _i2.ChoiceSourceType? sourceType,
     int? sourceId,
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
     List<_i3.CharacterStartingEquipmentResolutionData>? resolutions,
+    DateTime? updatedAt,
   }) = _CharacterStartingEquipmentSelectionDataImpl;
 
   factory CharacterStartingEquipmentSelectionData.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterStartingEquipmentSelectionData(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] as String?,
       sourceType: jsonSerialization['sourceType'] == null
           ? null
           : _i2.ChoiceSourceType.fromJson(
@@ -52,10 +54,13 @@ abstract class CharacterStartingEquipmentSelectionData
           ?.map((e) => _i3.CharacterStartingEquipmentResolutionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
-  int? id;
+  String? id;
 
   _i2.ChoiceSourceType? sourceType;
 
@@ -69,17 +74,20 @@ abstract class CharacterStartingEquipmentSelectionData
 
   List<_i3.CharacterStartingEquipmentResolutionData>? resolutions;
 
+  DateTime? updatedAt;
+
   /// Returns a shallow copy of this [CharacterStartingEquipmentSelectionData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   CharacterStartingEquipmentSelectionData copyWith({
-    int? id,
+    String? id,
     _i2.ChoiceSourceType? sourceType,
     int? sourceId,
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
     List<_i3.CharacterStartingEquipmentResolutionData>? resolutions,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -92,6 +100,7 @@ abstract class CharacterStartingEquipmentSelectionData
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
       if (resolutions != null)
         'resolutions': resolutions?.toJson(valueToJson: (v) => v.toJson()),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -106,13 +115,14 @@ class _Undefined {}
 class _CharacterStartingEquipmentSelectionDataImpl
     extends CharacterStartingEquipmentSelectionData {
   _CharacterStartingEquipmentSelectionDataImpl({
-    int? id,
+    String? id,
     _i2.ChoiceSourceType? sourceType,
     int? sourceId,
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
     List<_i3.CharacterStartingEquipmentResolutionData>? resolutions,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
           sourceType: sourceType,
@@ -121,6 +131,7 @@ class _CharacterStartingEquipmentSelectionDataImpl
           optionKey: optionKey,
           selectionIndex: selectionIndex,
           resolutions: resolutions,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterStartingEquipmentSelectionData]
@@ -135,9 +146,10 @@ class _CharacterStartingEquipmentSelectionDataImpl
     Object? optionKey = _Undefined,
     Object? selectionIndex = _Undefined,
     Object? resolutions = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterStartingEquipmentSelectionData(
-      id: id is int? ? id : this.id,
+      id: id is String? ? id : this.id,
       sourceType:
           sourceType is _i2.ChoiceSourceType? ? sourceType : this.sourceType,
       sourceId: sourceId is int? ? sourceId : this.sourceId,
@@ -149,6 +161,7 @@ class _CharacterStartingEquipmentSelectionDataImpl
           resolutions is List<_i3.CharacterStartingEquipmentResolutionData>?
               ? resolutions
               : this.resolutions?.map((e0) => e0.copyWith()).toList(),
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }

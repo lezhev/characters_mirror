@@ -10,6 +10,7 @@ class ManualInputColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attributeStateProvider);
+    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       width: 80,
@@ -49,7 +50,7 @@ class ManualInputColumn extends ConsumerWidget {
                           FilteringTextInputFormatter.digitsOnly,
                         ],
                         keyboardType: TextInputType.number,
-                        style: const TextStyle(fontSize: 18),
+                        style: textTheme.titleMedium,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           isDense: true,

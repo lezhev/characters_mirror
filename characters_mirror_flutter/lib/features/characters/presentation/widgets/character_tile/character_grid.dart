@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/features/characters/presentation/widgets/character_tile/character_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,7 @@ class CharacterGrid extends StatelessWidget {
     required this.armedDeleteCharacterId,
     required this.deletingCharacterId,
     required this.onCreateCharacter,
+    required this.offlineRecordsByCharacterId,
     super.key,
   });
 
@@ -23,6 +25,7 @@ class CharacterGrid extends StatelessWidget {
   final int? armedDeleteCharacterId;
   final int? deletingCharacterId;
   final VoidCallback onCreateCharacter;
+  final Map<int, OfflineCharacterRecord> offlineRecordsByCharacterId;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +51,9 @@ class CharacterGrid extends StatelessWidget {
 
         return CharacterTile(
           character: character,
+          offlineRecord: characterId == null
+              ? null
+              : offlineRecordsByCharacterId[characterId],
           isDeleteArmed: armedDeleteCharacterId == characterId,
           isDeleting: deletingCharacterId == characterId,
           onTap: characterId == null ? null : () => onCharacterTap(characterId),

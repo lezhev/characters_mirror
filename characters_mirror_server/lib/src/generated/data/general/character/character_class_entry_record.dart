@@ -21,6 +21,7 @@ abstract class CharacterClassEntryRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   CharacterClassEntryRecord._({
     this.id,
+    this.syncId,
     required this.characterId,
     this.character,
     required this.classDataId,
@@ -33,10 +34,12 @@ abstract class CharacterClassEntryRecord
     this.hpMode,
     this.hpRolledValues,
     this.notes,
+    this.updatedAt,
   });
 
   factory CharacterClassEntryRecord({
     int? id,
+    String? syncId,
     required int characterId,
     _i2.CharacterRecord? character,
     required int classDataId,
@@ -49,12 +52,14 @@ abstract class CharacterClassEntryRecord
     _i5.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
+    DateTime? updatedAt,
   }) = _CharacterClassEntryRecordImpl;
 
   factory CharacterClassEntryRecord.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterClassEntryRecord(
       id: jsonSerialization['id'] as int?,
+      syncId: jsonSerialization['syncId'] as String?,
       characterId: jsonSerialization['characterId'] as int,
       character: jsonSerialization['character'] == null
           ? null
@@ -80,6 +85,9 @@ abstract class CharacterClassEntryRecord
           ?.map((e) => e as int)
           .toList(),
       notes: jsonSerialization['notes'] as String?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -89,6 +97,8 @@ abstract class CharacterClassEntryRecord
 
   @override
   int? id;
+
+  String? syncId;
 
   int characterId;
 
@@ -114,6 +124,8 @@ abstract class CharacterClassEntryRecord
 
   String? notes;
 
+  DateTime? updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -122,6 +134,7 @@ abstract class CharacterClassEntryRecord
   @_i1.useResult
   CharacterClassEntryRecord copyWith({
     int? id,
+    String? syncId,
     int? characterId,
     _i2.CharacterRecord? character,
     int? classDataId,
@@ -134,11 +147,13 @@ abstract class CharacterClassEntryRecord
     _i5.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (syncId != null) 'syncId': syncId,
       'characterId': characterId,
       if (character != null) 'character': character?.toJson(),
       'classDataId': classDataId,
@@ -151,6 +166,7 @@ abstract class CharacterClassEntryRecord
       if (hpMode != null) 'hpMode': hpMode?.toJson(),
       if (hpRolledValues != null) 'hpRolledValues': hpRolledValues?.toJson(),
       if (notes != null) 'notes': notes,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -202,6 +218,7 @@ class _Undefined {}
 class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
   _CharacterClassEntryRecordImpl({
     int? id,
+    String? syncId,
     required int characterId,
     _i2.CharacterRecord? character,
     required int classDataId,
@@ -214,8 +231,10 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
     _i5.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
+          syncId: syncId,
           characterId: characterId,
           character: character,
           classDataId: classDataId,
@@ -228,6 +247,7 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
           hpMode: hpMode,
           hpRolledValues: hpRolledValues,
           notes: notes,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterClassEntryRecord]
@@ -236,6 +256,7 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
   @override
   CharacterClassEntryRecord copyWith({
     Object? id = _Undefined,
+    Object? syncId = _Undefined,
     int? characterId,
     Object? character = _Undefined,
     int? classDataId,
@@ -248,9 +269,11 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
     Object? hpMode = _Undefined,
     Object? hpRolledValues = _Undefined,
     Object? notes = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterClassEntryRecord(
       id: id is int? ? id : this.id,
+      syncId: syncId is String? ? syncId : this.syncId,
       characterId: characterId ?? this.characterId,
       character: character is _i2.CharacterRecord?
           ? character
@@ -270,6 +293,7 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
           ? hpRolledValues
           : this.hpRolledValues?.map((e0) => e0).toList(),
       notes: notes is String? ? notes : this.notes,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }
@@ -277,6 +301,10 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
 class CharacterClassEntryRecordTable extends _i1.Table<int?> {
   CharacterClassEntryRecordTable({super.tableRelation})
       : super(tableName: 'character_class_relation') {
+    syncId = _i1.ColumnString(
+      'syncId',
+      this,
+    );
     characterId = _i1.ColumnInt(
       'characterId',
       this,
@@ -314,7 +342,13 @@ class CharacterClassEntryRecordTable extends _i1.Table<int?> {
       'notes',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
+
+  late final _i1.ColumnString syncId;
 
   late final _i1.ColumnInt characterId;
 
@@ -339,6 +373,8 @@ class CharacterClassEntryRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnSerializable hpRolledValues;
 
   late final _i1.ColumnString notes;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   _i2.CharacterRecordTable get character {
     if (_character != null) return _character!;
@@ -382,6 +418,7 @@ class CharacterClassEntryRecordTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        syncId,
         characterId,
         classDataId,
         subclassId,
@@ -391,6 +428,7 @@ class CharacterClassEntryRecordTable extends _i1.Table<int?> {
         hpMode,
         hpRolledValues,
         notes,
+        updatedAt,
       ];
 
   @override

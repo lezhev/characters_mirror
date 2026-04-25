@@ -210,7 +210,12 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
 
   void _scrollToBottom() {
     final ctx = _key.currentContext;
-    if (ctx == null) {
+    if (!mounted || ctx == null || !ctx.mounted) {
+      return;
+    }
+
+    final renderObject = ctx.findRenderObject();
+    if (renderObject == null || !renderObject.attached) {
       return;
     }
 

@@ -1,0 +1,6 @@
+class: CharacterSyncResult
+fields:
+  status: CharacterSyncStatus
+  character: CharacterData?
+  conflictCharacter: CharacterData?
+  message: String?

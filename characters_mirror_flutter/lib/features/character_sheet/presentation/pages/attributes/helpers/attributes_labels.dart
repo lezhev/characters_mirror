@@ -1,6 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 
-String mechanicsAbilityLabel(Ability ability) {
+String attributesAbilityLabel(Ability ability) {
   switch (ability) {
     case Ability.strength:
       return 'Сила';

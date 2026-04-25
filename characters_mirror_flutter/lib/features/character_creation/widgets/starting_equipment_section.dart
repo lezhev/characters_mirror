@@ -42,7 +42,7 @@ class StartingEquipmentSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(title: title),
+        AppSectionHeader(title: title, showDivider: false),
         const Gap(8),
         for (var index = 0; index < blocks.length; index++) ...[
           StartingEquipmentBlockCards(

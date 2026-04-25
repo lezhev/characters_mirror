@@ -1,5 +1,6 @@
 class: CharacterAttackData
 fields:
+  id: String?
   name: String?
   leadingAbility: Ability?
   damage: String?
@@ -7,3 +8,4 @@ fields:
   damageType: DamageType?
   tags: List<String>?
   description: String?
+  updatedAt: DateTime?

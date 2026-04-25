@@ -1,7 +1,8 @@
 class: CharacterStartingEquipmentResolutionData
 fields:
-  id: int?
+  id: String?
   lineKey: String?
   catalogType: EquipmentCatalogType?
   referenceKey: String?
   quantity: int?
+  updatedAt: DateTime?

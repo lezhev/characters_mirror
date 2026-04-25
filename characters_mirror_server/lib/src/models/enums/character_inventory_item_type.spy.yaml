@@ -1,0 +1,7 @@
+enum: CharacterInventoryItemType
+values:
+  - weapon
+  - armor
+  - item
+  - magicItem
+  - custom

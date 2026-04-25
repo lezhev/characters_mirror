@@ -1,7 +1,9 @@
 class: CharacterFeatureOverrideData
 fields:
+  id: String?
   sourceType: CharacterFeatureSourceType
   sourceId: int
   name: String?
   description: String?
   tags: List<FeatureTag>?
+  updatedAt: DateTime?

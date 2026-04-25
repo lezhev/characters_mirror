@@ -1,8 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class StartingEquipmentBlockCards extends StatelessWidget {
   const StartingEquipmentBlockCards({
@@ -38,58 +37,45 @@ class StartingEquipmentBlockCards extends StatelessWidget {
         return const SizedBox.shrink();
       }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (normalizeStartingEquipmentText(selection?.optionKey) != null)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => onClearBlock(blockView),
-                child: const Text('Сбросить выбор'),
-              ),
-            ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final useRow = constraints.maxWidth >= 560 && options.length > 1;
-              final children = [
-                for (var index = 0; index < options.length; index++) ...[
-                  if (useRow)
-                    Expanded(
-                      child: StartingEquipmentChoiceCard(
-                        title: startingEquipmentOptionTitle(
-                            optionView: options[index]),
-                        isSelected: isStartingEquipmentOptionSelected(
-                            options[index], selection),
-                        onTap: () => onShowChoiceDialog(options[index]),
-                      ),
-                    )
-                  else
-                    StartingEquipmentChoiceCard(
-                      title: startingEquipmentOptionTitle(
-                          optionView: options[index]),
-                      isSelected: isStartingEquipmentOptionSelected(
-                          options[index], selection),
-                      onTap: () => onShowChoiceDialog(options[index]),
-                    ),
-                  if (index < options.length - 1) const Gap(8),
-                ],
-              ];
+      final selectionCount = block.selectionCount ?? 1;
+      final items = options.map((optionView) {
+        final title = startingEquipmentOptionTitle(optionView: optionView);
+        final optionKey = normalizeStartingEquipmentText(
+          optionView.option?.optionKey,
+        );
+        return CreationChoiceSelectorItem(
+          id: optionKey ?? title,
+          title: title,
+          subtitle: optionView.option?.description,
+          isSelected: isStartingEquipmentOptionSelected(optionView, selection),
+          onTap: () => onShowChoiceDialog(optionView),
+        );
+      }).toList();
 
-              if (useRow) {
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: children,
-                );
-              }
+      if (selectionCount <= 1) {
+        return CreationChoiceSelector.single(
+          title:
+              normalizeStartingEquipmentText(block.name) ?? 'Выбор снаряжения',
+          description: block.description,
+          switchKey: block.blockKey ?? block.id ?? 'equipment_choice',
+          onClear: normalizeStartingEquipmentText(selection?.optionKey) != null
+              ? () => onClearBlock(blockView)
+              : null,
+          autoScrollOnExpand: false,
+          items: items,
+        );
+      }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: children,
-              );
-            },
-          ),
-        ],
+      return CreationChoiceSelector.multi(
+        title: normalizeStartingEquipmentText(block.name) ?? 'Выбор снаряжения',
+        description: block.description,
+        switchKey: block.blockKey ?? block.id ?? 'equipment_choice',
+        selectionLimit: selectionCount,
+        onClear: normalizeStartingEquipmentText(selection?.optionKey) != null
+            ? () => onClearBlock(blockView)
+            : null,
+        autoScrollOnExpand: false,
+        items: items,
       );
     }
 
@@ -102,58 +88,29 @@ class StartingEquipmentBlockCards extends StatelessWidget {
     final resolvedByLine =
         startingEquipmentResolutionReferenceKeys(selection, fixedLines);
 
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: [
+    return CreationChoiceSelector.fixed(
+      title: normalizeStartingEquipmentText(block.name),
+      description: block.description,
+      switchKey: block.blockKey ?? block.id ?? 'equipment_fixed',
+      items: [
         for (final line in fixedLines)
-          StartingEquipmentChoiceCard(
+          CreationChoiceSelectorItem(
+            id: normalizeStartingEquipmentText(line.lineKey) ??
+                startingEquipmentLineTitle(line),
             title: startingEquipmentLineTitle(line),
+            subtitle: startingEquipmentLineRequiresResolution(line)
+                ? startingEquipmentLineDescription(line)
+                : null,
             isSelected: !startingEquipmentLineRequiresResolution(line) ||
                 resolvedByLine.containsKey(
                   normalizeStartingEquipmentText(line.lineKey),
                 ),
-            onTap: () => onShowFixedLineDialog(line),
+            isEnabled: startingEquipmentLineRequiresResolution(line),
+            onTap: startingEquipmentLineRequiresResolution(line)
+                ? () => onShowFixedLineDialog(line)
+                : null,
           ),
       ],
-    );
-  }
-}
-
-class StartingEquipmentChoiceCard extends StatelessWidget {
-  const StartingEquipmentChoiceCard({
-    required this.title,
-    required this.isSelected,
-    required this.onTap,
-    super.key,
-  });
-
-  final String title;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: AppSurfaceCard(
-          backgroundColor: colorScheme.surface,
-          border: Border.all(
-            color:
-                isSelected ? colorScheme.primary : colorScheme.outlineVariant,
-            width: isSelected ? 1.5 : 1,
-          ),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-      ),
     );
   }
 }

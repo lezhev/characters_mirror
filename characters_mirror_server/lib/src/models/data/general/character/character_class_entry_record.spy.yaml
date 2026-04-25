@@ -2,6 +2,7 @@ class: CharacterClassEntryRecord
 serverOnly: true
 table: character_class_relation
 fields:
+  syncId: String?
   character: CharacterRecord?, relation
   classData: ClassData?, relation
   subclass: SubclassData?, relation(optional)
@@ -11,3 +12,4 @@ fields:
   hpMode: HitPointMode?
   hpRolledValues: List<int>?
   notes: String?
+  updatedAt: DateTime?

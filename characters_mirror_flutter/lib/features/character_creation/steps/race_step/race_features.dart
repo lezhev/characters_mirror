@@ -22,6 +22,9 @@ class RaceFeatures extends HookConsumerWidget {
     final isFutureFeaturesExpanded = useState(false);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final raceName = selectedRace.name?.trim();
+    final raceTitle =
+        raceName == null || raceName.isEmpty ? 'Описание' : raceName;
 
     return ref.watch(raceStateProvider).when(
           data: (data) {
@@ -39,7 +42,7 @@ class RaceFeatures extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if ((selectedRace.description ?? '').trim().isNotEmpty) ...[
-                  const AppSectionHeader(title: 'Описание'),
+                  AppSectionHeader(title: raceTitle),
                   const Gap(8),
                   Text(
                     selectedRace.description!,

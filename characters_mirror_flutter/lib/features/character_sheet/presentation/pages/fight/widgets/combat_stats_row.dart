@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class CombatStatsRow extends StatelessWidget {
   const CombatStatsRow({
     required this.character,
+    required this.onHpPressed,
     super.key,
   });
 
   final CharacterData character;
+  final VoidCallback onHpPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +20,7 @@ class CombatStatsRow extends StatelessWidget {
           child: CombatStatButton(
             icon: Icons.favorite,
             value: formatHpLabel(character),
+            onPressed: onHpPressed,
           ),
         ),
         Expanded(
@@ -41,11 +44,13 @@ class CombatStatButton extends StatelessWidget {
   const CombatStatButton({
     required this.icon,
     required this.value,
+    this.onPressed,
     super.key,
   });
 
   final IconData icon;
   final String value;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +59,7 @@ class CombatStatButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TextButton.icon(
-        onPressed: () {},
+        onPressed: onPressed ?? () {},
         style: TextButton.styleFrom(
           foregroundColor: Theme.of(context).colorScheme.onSurface,
           shape: const RoundedRectangleBorder(

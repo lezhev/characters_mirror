@@ -19,7 +19,10 @@ featData:
 characterData:
   - getAll:
   - saveCharacter:
+  - syncSaveCharacter:
+  - syncCharacters:
   - getCharacter:
+  - syncDeleteCharacter:
   - delete:
 classData:
   - getAll:
@@ -128,3 +131,5 @@ spellData:
   - add:
   - upsert:
   - delete:
+ping:
+  - ping:

@@ -81,6 +81,7 @@ sealed class CharacterCreationState with _$CharacterCreationState {
   const factory CharacterCreationState({
     required CharacterData character,
     required Step step,
+    @Default(0) int draftRevision,
   }) = _CharacterCreationState;
 
   factory CharacterCreationState.initial() => CharacterCreationState(
@@ -371,7 +372,7 @@ class CharacterCreation extends _$CharacterCreation {
 
   void setNotes(String? notes) => _updateCharacter(
         state.character.copyWith(
-          notes: normalizeCharacterCreationText(notes),
+          notes: _singleNoteList(notes),
         ),
       );
 
@@ -472,9 +473,16 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void reset() {
-    state = CharacterCreationState.initial();
+    state = CharacterCreationState.initial().copyWith(
+      draftRevision: state.draftRevision + 1,
+    );
     ref.invalidate(raceStateProvider);
     ref.invalidate(classStateProvider);
     ref.invalidate(backgroundStateProvider);
   }
+}
+
+List<CharacterNoteData>? _singleNoteList(String? value) {
+  final normalized = normalizeCharacterCreationText(value);
+  return normalized == null ? null : [CharacterNoteData(text: normalized)];
 }

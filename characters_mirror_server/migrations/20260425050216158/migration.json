@@ -1,0 +1,28 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_choice_option_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "grantedFeatureTags",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:FeatureTag>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}
