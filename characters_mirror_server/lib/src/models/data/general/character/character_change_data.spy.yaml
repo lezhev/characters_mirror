@@ -1,0 +1,9 @@
+class: CharacterChangeData
+fields:
+  id: String
+  changeType: CharacterChangeType
+  entityType: CharacterEntityType
+  entityId: String
+  payload: CharacterData?
+  createdAt: DateTime
+  baseUpdatedAt: DateTime?

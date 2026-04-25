@@ -23,7 +23,6 @@ typedef SavePersonalInfo = Future<void> Function({
   String? ideals,
   String? bonds,
   String? flaws,
-  String? notes,
 });
 
 class CharacterPersonalEditor extends StatefulWidget {
@@ -57,7 +56,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
   late final TextEditingController _idealsController;
   late final TextEditingController _bondsController;
   late final TextEditingController _flawsController;
-  late final TextEditingController _notesController;
 
   late final FocusNode _nameFocusNode;
   late final FocusNode _ageFocusNode;
@@ -75,7 +73,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
   late final FocusNode _idealsFocusNode;
   late final FocusNode _bondsFocusNode;
   late final FocusNode _flawsFocusNode;
-  late final FocusNode _notesFocusNode;
 
   late _PersonalInfoSnapshot _lastSavedSnapshot;
   _PersonalInfoSnapshot? _pendingSnapshot;
@@ -108,7 +105,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     _idealsController = TextEditingController(text: snapshot.ideals);
     _bondsController = TextEditingController(text: snapshot.bonds);
     _flawsController = TextEditingController(text: snapshot.flaws);
-    _notesController = TextEditingController(text: snapshot.notes);
 
     _nameFocusNode = FocusNode();
     _ageFocusNode = FocusNode();
@@ -126,7 +122,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     _idealsFocusNode = FocusNode();
     _bondsFocusNode = FocusNode();
     _flawsFocusNode = FocusNode();
-    _notesFocusNode = FocusNode();
   }
 
   @override
@@ -157,7 +152,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     _idealsController.dispose();
     _bondsController.dispose();
     _flawsController.dispose();
-    _notesController.dispose();
 
     _nameFocusNode.dispose();
     _ageFocusNode.dispose();
@@ -175,7 +169,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     _idealsFocusNode.dispose();
     _bondsFocusNode.dispose();
     _flawsFocusNode.dispose();
-    _notesFocusNode.dispose();
     super.dispose();
   }
 
@@ -273,69 +266,59 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
                     for (final field in pairedFields) _buildField(field),
                   const SizedBox(height: 12),
                   _buildField(alignmentField, hasBottomGap: false),
+                  const SizedBox(height: 16),
+                  _NarrativeTextField(
+                    label: 'Внешность',
+                    controller: _appearanceController,
+                    focusNode: _appearanceFocusNode,
+                    onChanged: _queueSave,
+                  ),
+                  _NarrativeTextField(
+                    label: 'История персонажа',
+                    controller: _backstoryController,
+                    focusNode: _backstoryFocusNode,
+                    onChanged: _queueSave,
+                  ),
+                  _NarrativeTextField(
+                    label: 'Цели',
+                    controller: _goalsController,
+                    focusNode: _goalsFocusNode,
+                    onChanged: _queueSave,
+                  ),
+                  _NarrativeTextField(
+                    label: 'Союзники и организации',
+                    controller: _alliesOrganizationsController,
+                    focusNode: _alliesOrganizationsFocusNode,
+                    onChanged: _queueSave,
+                  ),
+                  _NarrativeTextField(
+                    label: 'Черты характера',
+                    controller: _personalityTraitsController,
+                    focusNode: _personalityTraitsFocusNode,
+                    onChanged: _queueSave,
+                  ),
+                  _NarrativeTextField(
+                    label: 'Идеалы',
+                    controller: _idealsController,
+                    focusNode: _idealsFocusNode,
+                    onChanged: _queueSave,
+                  ),
+                  _NarrativeTextField(
+                    label: 'Привязанности',
+                    controller: _bondsController,
+                    focusNode: _bondsFocusNode,
+                    onChanged: _queueSave,
+                  ),
+                  _NarrativeTextField(
+                    label: 'Слабости',
+                    controller: _flawsController,
+                    focusNode: _flawsFocusNode,
+                    onChanged: _queueSave,
+                    isLast: true,
+                  ),
                 ],
               );
             },
-          ),
-        ),
-        const AppSectionHeader(
-          showDivider: false,
-        ),
-        AppSurfaceCard(
-          padding: const EdgeInsets.all(16),
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          child: Column(
-            children: [
-              _NarrativeTextField(
-                label: 'Внешность',
-                controller: _appearanceController,
-                focusNode: _appearanceFocusNode,
-                onChanged: _queueSave,
-              ),
-              _NarrativeTextField(
-                label: 'История персонажа',
-                controller: _backstoryController,
-                focusNode: _backstoryFocusNode,
-                onChanged: _queueSave,
-              ),
-              _NarrativeTextField(
-                label: 'Цели',
-                controller: _goalsController,
-                focusNode: _goalsFocusNode,
-                onChanged: _queueSave,
-              ),
-              _NarrativeTextField(
-                label: 'Союзники и организации',
-                controller: _alliesOrganizationsController,
-                focusNode: _alliesOrganizationsFocusNode,
-                onChanged: _queueSave,
-              ),
-              _NarrativeTextField(
-                label: 'Черты характера',
-                controller: _personalityTraitsController,
-                focusNode: _personalityTraitsFocusNode,
-                onChanged: _queueSave,
-              ),
-              _NarrativeTextField(
-                label: 'Идеалы',
-                controller: _idealsController,
-                focusNode: _idealsFocusNode,
-                onChanged: _queueSave,
-              ),
-              _NarrativeTextField(
-                label: 'Привязанности',
-                controller: _bondsController,
-                focusNode: _bondsFocusNode,
-                onChanged: _queueSave,
-              ),
-              _NarrativeTextField(
-                label: 'Слабости',
-                controller: _flawsController,
-                focusNode: _flawsFocusNode,
-                onChanged: _queueSave,
-                isLast: true,
-              ),
-            ],
           ),
         ),
       ],
@@ -374,24 +357,7 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
           spec: field,
           onChanged: _queueSave,
         ),
-      _AlignmentFieldSpec() => DropdownButtonFormField<CharacterAlignment>(
-          key: ValueKey(field.alignment),
-          focusNode: field.focusNode,
-          initialValue: field.alignment,
-          decoration: const InputDecoration(
-            labelText: 'Мировоззрение',
-            border: OutlineInputBorder(),
-          ),
-          items: CharacterAlignment.values
-              .map(
-                (value) => DropdownMenuItem(
-                  value: value,
-                  child: Text(characterAlignmentLabel(value)),
-                ),
-              )
-              .toList(),
-          onChanged: field.onChanged,
-        ),
+      _AlignmentFieldSpec() => _AlignmentPickerField(spec: field),
     };
 
     return Padding(
@@ -416,7 +382,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     _idealsController.text = snapshot.ideals;
     _bondsController.text = snapshot.bonds;
     _flawsController.text = snapshot.flaws;
-    _notesController.text = snapshot.notes;
     _alignment = snapshot.alignmentValue;
   }
 
@@ -438,7 +403,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
       _idealsFocusNode,
       _bondsFocusNode,
       _flawsFocusNode,
-      _notesFocusNode,
     ].any((node) => node.hasFocus);
   }
 
@@ -460,7 +424,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
       ideals: _idealsController.text,
       bonds: _bondsController.text,
       flaws: _flawsController.text,
-      notes: _notesController.text,
     );
   }
 
@@ -504,7 +467,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
           ideals: draft.ideals,
           bonds: draft.bonds,
           flaws: draft.flaws,
-          notes: draft.notes,
         );
         _lastSavedSnapshot = draft;
       } catch (error) {
@@ -586,6 +548,329 @@ class _ShortTextField extends StatelessWidget {
   }
 }
 
+class _AlignmentPickerField extends StatelessWidget {
+  const _AlignmentPickerField({
+    required this.spec,
+  });
+
+  final _AlignmentFieldSpec spec;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final alignment = spec.alignment;
+    final label =
+        alignment == null ? 'Не выбрано' : characterAlignmentLabel(alignment);
+    final swatchColor = alignment == null
+        ? colorScheme.outlineVariant
+        : _alignmentColors(context, alignment).background;
+
+    return Tooltip(
+      message: 'Выбрать мировоззрение',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          focusNode: spec.focusNode,
+          borderRadius: BorderRadius.circular(4),
+          onTap: () => _openDialog(context),
+          child: InputDecorator(
+            decoration: const InputDecoration(
+              labelText: 'Мировоззрение',
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.fromLTRB(12, 14, 10, 14),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: swatchColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: alignment == null
+                              ? colorScheme.onSurfaceVariant
+                              : colorScheme.onSurface,
+                        ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.grid_view_rounded,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openDialog(BuildContext context) async {
+    spec.focusNode.requestFocus();
+
+    final value = await showDialog<CharacterAlignment>(
+      context: context,
+      builder: (dialogContext) {
+        return _AlignmentPickerDialog(selectedAlignment: spec.alignment);
+      },
+    );
+
+    if (value != null) {
+      spec.onChanged(value);
+    }
+  }
+}
+
+class _AlignmentPickerDialog extends StatelessWidget {
+  const _AlignmentPickerDialog({
+    required this.selectedAlignment,
+  });
+
+  static const _gridValues = [
+    CharacterAlignment.lawfulGood,
+    CharacterAlignment.neutralGood,
+    CharacterAlignment.chaoticGood,
+    CharacterAlignment.lawfulNeutral,
+    CharacterAlignment.trueNeutral,
+    CharacterAlignment.chaoticNeutral,
+    CharacterAlignment.lawfulEvil,
+    CharacterAlignment.neutralEvil,
+    CharacterAlignment.chaoticEvil,
+  ];
+
+  final CharacterAlignment? selectedAlignment;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      titlePadding: const EdgeInsets.fromLTRB(24, 16, 12, 0),
+      title: Row(
+        children: [
+          const Expanded(child: Text('Мировоззрение')),
+          IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.close),
+            tooltip: 'Закрыть',
+          ),
+        ],
+      ),
+      content: SizedBox(
+        width: 520,
+        child: SingleChildScrollView(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 360;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    childAspectRatio: isNarrow ? 1.25 : 1.55,
+                    children: [
+                      for (final value in _gridValues)
+                        _AlignmentChoiceTile(
+                          value: value,
+                          selected: selectedAlignment == value,
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  _AlignmentChoiceTile(
+                    value: CharacterAlignment.unaligned,
+                    selected: selectedAlignment == CharacterAlignment.unaligned,
+                    wide: true,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AlignmentChoiceTile extends StatelessWidget {
+  const _AlignmentChoiceTile({
+    required this.value,
+    required this.selected,
+    this.wide = false,
+  });
+
+  final CharacterAlignment value;
+  final bool selected;
+  final bool wide;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final label = characterAlignmentLabel(value);
+    final borderRadius = BorderRadius.circular(8);
+    final colors = _alignmentColors(context, value);
+    final backgroundColor = selected
+        ? colors.background
+        : Color.alphaBlend(
+            colors.background.withValues(alpha: 0.22),
+            colorScheme.surfaceContainerHighest,
+          );
+    final foregroundColor =
+        selected ? colors.foreground : colorScheme.onSurface;
+
+    return Tooltip(
+      message: label,
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: label,
+        child: Card(
+          margin: EdgeInsets.zero,
+          color: backgroundColor,
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: borderRadius,
+            side: BorderSide(
+              color: selected ? colors.border : colorScheme.outline,
+              width: selected ? 2 : 1,
+            ),
+          ),
+          child: InkWell(
+            onTap: () => Navigator.of(context).pop(value),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 160),
+                    curve: Curves.easeOut,
+                    decoration: BoxDecoration(
+                      gradient: selected
+                          ? LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                colors.background,
+                                Color.alphaBlend(
+                                  colorScheme.surfaceTint
+                                      .withValues(alpha: 0.16),
+                                  colors.background,
+                                ),
+                              ],
+                            )
+                          : null,
+                    ),
+                  ),
+                ),
+                if (selected)
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: Icon(
+                      Icons.check_circle_rounded,
+                      size: 18,
+                      color: foregroundColor,
+                    ),
+                  ),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: wide ? 12 : 6,
+                      vertical: wide ? 10 : 6,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final compactLabelStyle = constraints.maxWidth < 96
+                            ? Theme.of(context).textTheme.labelSmall
+                            : Theme.of(context).textTheme.labelMedium;
+
+                        return Text(
+                          label,
+                          maxLines: wide ? 1 : 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: compactLabelStyle?.copyWith(
+                            color: foregroundColor,
+                            height: 1.1,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+_AlignmentTileColors _alignmentColors(
+  BuildContext context,
+  CharacterAlignment value,
+) {
+  final colorScheme = Theme.of(context).colorScheme;
+
+  return switch (value) {
+    CharacterAlignment.lawfulGood ||
+    CharacterAlignment.neutralGood ||
+    CharacterAlignment.chaoticGood =>
+      _AlignmentTileColors(
+        background: colorScheme.primaryContainer,
+        foreground: colorScheme.onPrimaryContainer,
+        border: colorScheme.primary,
+      ),
+    CharacterAlignment.lawfulNeutral ||
+    CharacterAlignment.trueNeutral ||
+    CharacterAlignment.chaoticNeutral =>
+      _AlignmentTileColors(
+        background: colorScheme.secondaryContainer,
+        foreground: colorScheme.onSecondaryContainer,
+        border: colorScheme.secondary,
+      ),
+    CharacterAlignment.lawfulEvil ||
+    CharacterAlignment.neutralEvil ||
+    CharacterAlignment.chaoticEvil =>
+      _AlignmentTileColors(
+        background: colorScheme.tertiaryContainer,
+        foreground: colorScheme.onTertiaryContainer,
+        border: colorScheme.tertiary,
+      ),
+    CharacterAlignment.unaligned => _AlignmentTileColors(
+        background: colorScheme.surfaceContainerHighest,
+        foreground: colorScheme.onSurface,
+        border: colorScheme.outlineVariant,
+      ),
+  };
+}
+
+class _AlignmentTileColors {
+  const _AlignmentTileColors({
+    required this.background,
+    required this.foreground,
+    required this.border,
+  });
+
+  final Color background;
+  final Color foreground;
+  final Color border;
+}
+
 class _NarrativeTextField extends StatelessWidget {
   const _NarrativeTextField({
     required this.label,
@@ -634,7 +919,6 @@ class _PersonalInfoSnapshot {
     required this.ideals,
     required this.bonds,
     required this.flaws,
-    required this.notes,
   });
 
   factory _PersonalInfoSnapshot.fromCharacter(CharacterData character) {
@@ -655,7 +939,6 @@ class _PersonalInfoSnapshot {
       ideals: character.ideals ?? '',
       bonds: character.bonds ?? '',
       flaws: character.flaws ?? '',
-      notes: character.notes ?? '',
     );
   }
 
@@ -675,7 +958,6 @@ class _PersonalInfoSnapshot {
   final String ideals;
   final String bonds;
   final String flaws;
-  final String notes;
 
   @override
   bool operator ==(Object other) {
@@ -695,8 +977,7 @@ class _PersonalInfoSnapshot {
         other.personalityTraits == personalityTraits &&
         other.ideals == ideals &&
         other.bonds == bonds &&
-        other.flaws == flaws &&
-        other.notes == notes;
+        other.flaws == flaws;
   }
 
   @override
@@ -717,6 +998,5 @@ class _PersonalInfoSnapshot {
         ideals,
         bonds,
         flaws,
-        notes,
       );
 }

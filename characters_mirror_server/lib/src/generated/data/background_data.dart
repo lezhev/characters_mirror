@@ -23,7 +23,7 @@ abstract class BackgroundData
     this.updatedAt,
     this.skillProficiencies,
     this.toolProficiencies,
-    this.languages,
+    this.languageCount,
     this.items,
     this.coins,
     this.feature,
@@ -43,7 +43,7 @@ abstract class BackgroundData
     DateTime? updatedAt,
     List<String>? skillProficiencies,
     List<String>? toolProficiencies,
-    List<String>? languages,
+    int? languageCount,
     List<String>? items,
     double? coins,
     String? feature,
@@ -72,9 +72,7 @@ abstract class BackgroundData
       toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      languages: (jsonSerialization['languages'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      languageCount: jsonSerialization['languageCount'] as int?,
       items: (jsonSerialization['items'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -118,7 +116,7 @@ abstract class BackgroundData
 
   List<String>? toolProficiencies;
 
-  List<String>? languages;
+  int? languageCount;
 
   List<String>? items;
 
@@ -150,7 +148,7 @@ abstract class BackgroundData
     DateTime? updatedAt,
     List<String>? skillProficiencies,
     List<String>? toolProficiencies,
-    List<String>? languages,
+    int? languageCount,
     List<String>? items,
     double? coins,
     String? feature,
@@ -173,7 +171,7 @@ abstract class BackgroundData
         'skillProficiencies': skillProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (languages != null) 'languages': languages?.toJson(),
+      if (languageCount != null) 'languageCount': languageCount,
       if (items != null) 'items': items?.toJson(),
       if (coins != null) 'coins': coins,
       if (feature != null) 'feature': feature,
@@ -199,7 +197,7 @@ abstract class BackgroundData
         'skillProficiencies': skillProficiencies?.toJson(),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
-      if (languages != null) 'languages': languages?.toJson(),
+      if (languageCount != null) 'languageCount': languageCount,
       if (items != null) 'items': items?.toJson(),
       if (coins != null) 'coins': coins,
       if (feature != null) 'feature': feature,
@@ -254,7 +252,7 @@ class _BackgroundDataImpl extends BackgroundData {
     DateTime? updatedAt,
     List<String>? skillProficiencies,
     List<String>? toolProficiencies,
-    List<String>? languages,
+    int? languageCount,
     List<String>? items,
     double? coins,
     String? feature,
@@ -272,7 +270,7 @@ class _BackgroundDataImpl extends BackgroundData {
           updatedAt: updatedAt,
           skillProficiencies: skillProficiencies,
           toolProficiencies: toolProficiencies,
-          languages: languages,
+          languageCount: languageCount,
           items: items,
           coins: coins,
           feature: feature,
@@ -296,7 +294,7 @@ class _BackgroundDataImpl extends BackgroundData {
     Object? updatedAt = _Undefined,
     Object? skillProficiencies = _Undefined,
     Object? toolProficiencies = _Undefined,
-    Object? languages = _Undefined,
+    Object? languageCount = _Undefined,
     Object? items = _Undefined,
     Object? coins = _Undefined,
     Object? feature = _Undefined,
@@ -319,9 +317,7 @@ class _BackgroundDataImpl extends BackgroundData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
-      languages: languages is List<String>?
-          ? languages
-          : this.languages?.map((e0) => e0).toList(),
+      languageCount: languageCount is int? ? languageCount : this.languageCount,
       items:
           items is List<String>? ? items : this.items?.map((e0) => e0).toList(),
       coins: coins is double? ? coins : this.coins,
@@ -377,8 +373,8 @@ class BackgroundDataTable extends _i1.Table<int?> {
       'toolProficiencies',
       this,
     );
-    languages = _i1.ColumnSerializable(
-      'languages',
+    languageCount = _i1.ColumnInt(
+      'languageCount',
       this,
     );
     items = _i1.ColumnSerializable(
@@ -427,7 +423,7 @@ class BackgroundDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable toolProficiencies;
 
-  late final _i1.ColumnSerializable languages;
+  late final _i1.ColumnInt languageCount;
 
   late final _i1.ColumnSerializable items;
 
@@ -454,7 +450,7 @@ class BackgroundDataTable extends _i1.Table<int?> {
         updatedAt,
         skillProficiencies,
         toolProficiencies,
-        languages,
+        languageCount,
         items,
         coins,
         feature,

@@ -1,7 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_cards_switcher.dart';
+import 'package:characters_mirror_flutter/core/ui/language_labels.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class CreationChoiceGroupCard extends StatelessWidget {
   const CreationChoiceGroupCard({
@@ -29,8 +29,6 @@ class CreationChoiceGroupCard extends StatelessWidget {
     final group = groupView.group;
     if (group == null) return const SizedBox.shrink();
 
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     final options = [...?groupView.options]
       ..sort((a, b) => (a.name ?? '').compareTo(b.name ?? ''));
     final selectionCount = group.selectionCount ?? 1;
@@ -44,113 +42,85 @@ class CreationChoiceGroupCard extends StatelessWidget {
     }
     final groupTitle = group.name ?? 'Выбор';
     final groupDescription = group.description;
+    final switchKey = group.exclusiveKey ?? group.id ?? groupTitle;
 
     if (!allowDuplicates) {
-      return CreationChoiceCardsSwitcher(
+      final items = options.map((option) {
+        final optionKey = option.optionKey?.trim();
+        final isSelected =
+            optionKey != null && (selectedCountByOptionKey[optionKey] ?? 0) > 0;
+        final title = _choiceOptionTitle(group, option);
+        return CreationChoiceSelectorItem(
+          id: optionKey ?? title,
+          title: title,
+          subtitle: option.description,
+          isSelected: isSelected,
+          onTap: () => onToggleOption(group, option),
+          onInfoTap: () => showChoiceOptionPlaceholderDialog(
+            context: context,
+            title: title,
+            description: option.description,
+          ),
+        );
+      }).toList();
+
+      if (selectionCount <= 1) {
+        return CreationChoiceSelector.single(
+          title: groupTitle,
+          description: groupDescription,
+          switchKey: switchKey,
+          onClear:
+              selectedOptions.isNotEmpty ? () => onClearGroup(group) : null,
+          autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(group.type),
+          items: items,
+        );
+      }
+
+      return CreationChoiceSelector.multi(
         title: groupTitle,
         description: groupDescription,
-        switchKey: group.exclusiveKey ?? group.id ?? groupTitle,
+        switchKey: switchKey,
+        selectionLimit: selectionCount,
         onClear: selectedOptions.isNotEmpty ? () => onClearGroup(group) : null,
         autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(group.type),
-        items: options.map((option) {
-          final optionKey = option.optionKey?.trim();
-          final isSelected = optionKey != null &&
-              (selectedCountByOptionKey[optionKey] ?? 0) > 0;
-          final title = option.name ?? option.optionKey ?? 'Опция';
-          return CreationChoiceCardItem(
-            id: optionKey ?? title,
-            title: title,
-            subtitle: option.description,
-            isSelected: isSelected,
-            onTap: () => onToggleOption(group, option),
-            onInfoTap: () => showChoiceOptionPlaceholderDialog(
-              context: context,
-              title: title,
-              description: option.description,
-            ),
-          );
-        }).toList(),
+        items: items,
       );
     }
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.surfaceDim,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(groupTitle, style: textTheme.titleMedium),
-                    if ((groupDescription ?? '').trim().isNotEmpty) ...[
-                      const Gap(6),
-                      Text(groupDescription!, style: textTheme.bodyMedium),
-                    ],
-                  ],
-                ),
-              ),
-              if (selectedOptions.isNotEmpty)
-                TextButton(
-                  onPressed: () => onClearGroup(group),
-                  child: const Text('Сбросить'),
-                ),
-            ],
-          ),
-          const Gap(10),
-          Column(
-            children: options.map((option) {
-              final optionKey = option.optionKey?.trim();
-              final count = optionKey == null
-                  ? 0
-                  : (selectedCountByOptionKey[optionKey] ?? 0);
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        option.name ?? option.optionKey ?? 'Опция',
-                        style: textTheme.bodyMedium,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: count > 0
-                          ? () => onDecrementOption(group, option)
-                          : null,
-                      icon: const Icon(Icons.remove_circle_outline),
-                    ),
-                    Text('$count', style: textTheme.titleSmall),
-                    IconButton(
-                      onPressed: selectedOptions.length < selectionCount
-                          ? () => onIncrementOption(group, option)
-                          : null,
-                      icon: const Icon(Icons.add_circle_outline),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
+    return CreationChoiceSelector.counter(
+      title: groupTitle,
+      description: groupDescription,
+      switchKey: switchKey,
+      selectionLimit: selectionCount,
+      onClear: selectedOptions.isNotEmpty ? () => onClearGroup(group) : null,
+      items: options.map((option) {
+        final optionKey = option.optionKey?.trim();
+        final title = _choiceOptionTitle(group, option);
+        final count =
+            optionKey == null ? 0 : (selectedCountByOptionKey[optionKey] ?? 0);
+        return CreationChoiceSelectorItem(
+          id: optionKey ?? title,
+          title: title,
+          count: count,
+          onIncrement: () => onIncrementOption(group, option),
+          onDecrement: () => onDecrementOption(group, option),
+        );
+      }).toList(),
     );
   }
+}
+
+String _choiceOptionTitle(
+  ClassChoiceGroupData group,
+  ClassChoiceOptionData option,
+) {
+  if (group.type == ClassChoiceType.language) {
+    final languages = option.grantedLanguages ?? const <Language>[];
+    if (languages.length == 1) {
+      return languageLabel(languages.single);
+    }
+  }
+  return option.name ?? option.optionKey ?? 'Опция';
 }
 
 bool _shouldDisableChoiceAutoScroll(ClassChoiceType? type) {
@@ -158,9 +128,9 @@ bool _shouldDisableChoiceAutoScroll(ClassChoiceType? type) {
     case ClassChoiceType.skill:
     case ClassChoiceType.spell:
     case ClassChoiceType.cantrip:
+    case ClassChoiceType.language:
       return true;
     case ClassChoiceType.tool:
-    case ClassChoiceType.language:
     case ClassChoiceType.fightingStyle:
     case ClassChoiceType.expertise:
     case ClassChoiceType.subclassFeature:

@@ -1,0 +1,7 @@
+class: CharacterInventoryItemData
+fields:
+  id: String?
+  name: String?
+  quantity: int?
+  type: CharacterInventoryItemType?
+  updatedAt: DateTime?

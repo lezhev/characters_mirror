@@ -1,5 +1,7 @@
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/characters/application/characters_list_state.dart';
 import 'package:characters_mirror_flutter/features/characters/presentation/widgets/authenticated_header.dart';
@@ -42,6 +44,8 @@ class CharactersList extends ConsumerWidget {
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
                   child: CharacterTileView(
                     characters: characters,
+                    offlineRecordsByCharacterId:
+                        charactersState.offlineRecordsByCharacterId,
                     armedDeleteCharacterId:
                         charactersState.armedDeleteCharacterId,
                     deletingCharacterId: charactersState.deletingCharacterId,
@@ -147,6 +151,7 @@ class _CharactersErrorState extends StatelessWidget {
 }
 
 enum _CharacterSheetsMenuAction {
+  settings,
   admin,
   signOut,
 }
@@ -171,6 +176,13 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
           child: _AccountMenuHeader(user: user),
         ),
         const PopupMenuDivider(),
+        const PopupMenuItem<_CharacterSheetsMenuAction>(
+          value: _CharacterSheetsMenuAction.settings,
+          child: _AccountMenuItem(
+            icon: Icons.settings_outlined,
+            label: 'Настройки',
+          ),
+        ),
         if (showAdminAction)
           const PopupMenuItem<_CharacterSheetsMenuAction>(
             value: _CharacterSheetsMenuAction.admin,
@@ -200,11 +212,43 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
     _CharacterSheetsMenuAction action,
   ) async {
     switch (action) {
+      case _CharacterSheetsMenuAction.settings:
+        context.go('/settings');
+        return;
       case _CharacterSheetsMenuAction.admin:
         context.go('/admin');
         return;
       case _CharacterSheetsMenuAction.signOut:
         final messenger = ScaffoldMessenger.of(context);
+        final repository = CharacterRepository();
+        final offlineUserId = currentOfflineUserId();
+        if (await repository.hasUnsyncedChanges()) {
+          if (!context.mounted) {
+            return;
+          }
+          final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Есть несинхронизированные изменения'),
+              content: const Text(
+                'При выходе локальный кэш персонажей и очередь синхронизации будут очищены.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Отмена'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Выйти'),
+                ),
+              ],
+            ),
+          );
+          if (confirmed != true) {
+            return;
+          }
+        }
         final result = await ref.read(authProvider.notifier).signOut();
 
         if (!context.mounted) {
@@ -216,6 +260,12 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
         );
 
         if (result.success) {
+          if (offlineUserId != null) {
+            await repository.clearLocalUserCacheForUser(offlineUserId);
+          }
+          if (!context.mounted) {
+            return;
+          }
           context.go('/sign-in');
         }
         return;

@@ -20,6 +20,7 @@ import '../../../data/spell_data.dart' as _i6;
 import '../../../data/feat_data.dart' as _i7;
 import '../../../enums/damage_type.dart' as _i8;
 import '../../../enums/spell/area_of_effect_type.dart' as _i9;
+import '../../../enums/feature_tag.dart' as _i10;
 
 abstract class RaceChoiceOptionData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -45,6 +46,7 @@ abstract class RaceChoiceOptionData
     this.areaText,
     this.saveAbility,
     this.damageByLevel,
+    this.grantedFeatureTags,
     this.source,
     this.version,
     this.createdAt,
@@ -73,6 +75,7 @@ abstract class RaceChoiceOptionData
     String? areaText,
     _i3.Ability? saveAbility,
     Map<String, String>? damageByLevel,
+    List<_i10.FeatureTag>? grantedFeatureTags,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -130,6 +133,9 @@ abstract class RaceChoiceOptionData
                 k as String,
                 v as String,
               )),
+      grantedFeatureTags: (jsonSerialization['grantedFeatureTags'] as List?)
+          ?.map((e) => _i10.FeatureTag.fromJson((e as String)))
+          .toList(),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
@@ -188,6 +194,8 @@ abstract class RaceChoiceOptionData
 
   Map<String, String>? damageByLevel;
 
+  List<_i10.FeatureTag>? grantedFeatureTags;
+
   String? source;
 
   int? version;
@@ -224,6 +232,7 @@ abstract class RaceChoiceOptionData
     String? areaText,
     _i3.Ability? saveAbility,
     Map<String, String>? damageByLevel,
+    List<_i10.FeatureTag>? grantedFeatureTags,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -254,6 +263,9 @@ abstract class RaceChoiceOptionData
       if (areaText != null) 'areaText': areaText,
       if (saveAbility != null) 'saveAbility': saveAbility?.toJson(),
       if (damageByLevel != null) 'damageByLevel': damageByLevel?.toJson(),
+      if (grantedFeatureTags != null)
+        'grantedFeatureTags':
+            grantedFeatureTags?.toJson(valueToJson: (v) => v.toJson()),
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -286,6 +298,9 @@ abstract class RaceChoiceOptionData
       if (areaText != null) 'areaText': areaText,
       if (saveAbility != null) 'saveAbility': saveAbility?.toJson(),
       if (damageByLevel != null) 'damageByLevel': damageByLevel?.toJson(),
+      if (grantedFeatureTags != null)
+        'grantedFeatureTags':
+            grantedFeatureTags?.toJson(valueToJson: (v) => v.toJson()),
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -356,6 +371,7 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
     String? areaText,
     _i3.Ability? saveAbility,
     Map<String, String>? damageByLevel,
+    List<_i10.FeatureTag>? grantedFeatureTags,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -382,6 +398,7 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
           areaText: areaText,
           saveAbility: saveAbility,
           damageByLevel: damageByLevel,
+          grantedFeatureTags: grantedFeatureTags,
           source: source,
           version: version,
           createdAt: createdAt,
@@ -414,6 +431,7 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
     Object? areaText = _Undefined,
     Object? saveAbility = _Undefined,
     Object? damageByLevel = _Undefined,
+    Object? grantedFeatureTags = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
@@ -454,6 +472,9 @@ class _RaceChoiceOptionDataImpl extends RaceChoiceOptionData {
                     key0,
                     value0,
                   )),
+      grantedFeatureTags: grantedFeatureTags is List<_i10.FeatureTag>?
+          ? grantedFeatureTags
+          : this.grantedFeatureTags?.map((e0) => e0).toList(),
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
@@ -539,6 +560,10 @@ class RaceChoiceOptionDataTable extends _i1.Table<int?> {
       'damageByLevel',
       this,
     );
+    grantedFeatureTags = _i1.ColumnSerializable(
+      'grantedFeatureTags',
+      this,
+    );
     source = _i1.ColumnString(
       'source',
       this,
@@ -596,6 +621,8 @@ class RaceChoiceOptionDataTable extends _i1.Table<int?> {
   late final _i1.ColumnEnum<_i3.Ability> saveAbility;
 
   late final _i1.ColumnSerializable damageByLevel;
+
+  late final _i1.ColumnSerializable grantedFeatureTags;
 
   late final _i1.ColumnString source;
 
@@ -664,6 +691,7 @@ class RaceChoiceOptionDataTable extends _i1.Table<int?> {
         areaText,
         saveAbility,
         damageByLevel,
+        grantedFeatureTags,
         source,
         version,
         createdAt,

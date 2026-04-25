@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$CharacterCreationState {
   CharacterData get character;
   Step get step;
+  int get draftRevision;
 
   /// Create a copy of CharacterCreationState
   /// with the given fields replaced by the non-null parameter values.
@@ -32,15 +33,17 @@ mixin _$CharacterCreationState {
             other is CharacterCreationState &&
             (identical(other.character, character) ||
                 other.character == character) &&
-            (identical(other.step, step) || other.step == step));
+            (identical(other.step, step) || other.step == step) &&
+            (identical(other.draftRevision, draftRevision) ||
+                other.draftRevision == draftRevision));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, character, step);
+  int get hashCode => Object.hash(runtimeType, character, step, draftRevision);
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step)';
+    return 'CharacterCreationState(character: $character, step: $step, draftRevision: $draftRevision)';
   }
 }
 
@@ -50,7 +53,7 @@ abstract mixin class $CharacterCreationStateCopyWith<$Res> {
           $Res Function(CharacterCreationState) _then) =
       _$CharacterCreationStateCopyWithImpl;
   @useResult
-  $Res call({CharacterData character, Step step});
+  $Res call({CharacterData character, Step step, int draftRevision});
 }
 
 /// @nodoc
@@ -68,6 +71,7 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
   $Res call({
     Object? character = null,
     Object? step = null,
+    Object? draftRevision = null,
   }) {
     return _then(_self.copyWith(
       character: null == character
@@ -78,6 +82,10 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.step
           : step // ignore: cast_nullable_to_non_nullable
               as Step,
+      draftRevision: null == draftRevision
+          ? _self.draftRevision
+          : draftRevision // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -173,13 +181,14 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step)? $default, {
+    TResult Function(CharacterData character, Step step, int draftRevision)?
+        $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step);
+        return $default(_that.character, _that.step, _that.draftRevision);
       case _:
         return orElse();
     }
@@ -200,12 +209,13 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step) $default,
+    TResult Function(CharacterData character, Step step, int draftRevision)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState():
-        return $default(_that.character, _that.step);
+        return $default(_that.character, _that.step, _that.draftRevision);
     }
   }
 
@@ -223,12 +233,13 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(CharacterData character, Step step)? $default,
+    TResult? Function(CharacterData character, Step step, int draftRevision)?
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step);
+        return $default(_that.character, _that.step, _that.draftRevision);
       case _:
         return null;
     }
@@ -238,12 +249,16 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 /// @nodoc
 
 class _CharacterCreationState implements CharacterCreationState {
-  const _CharacterCreationState({required this.character, required this.step});
+  const _CharacterCreationState(
+      {required this.character, required this.step, this.draftRevision = 0});
 
   @override
   final CharacterData character;
   @override
   final Step step;
+  @override
+  @JsonKey()
+  final int draftRevision;
 
   /// Create a copy of CharacterCreationState
   /// with the given fields replaced by the non-null parameter values.
@@ -261,15 +276,17 @@ class _CharacterCreationState implements CharacterCreationState {
             other is _CharacterCreationState &&
             (identical(other.character, character) ||
                 other.character == character) &&
-            (identical(other.step, step) || other.step == step));
+            (identical(other.step, step) || other.step == step) &&
+            (identical(other.draftRevision, draftRevision) ||
+                other.draftRevision == draftRevision));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, character, step);
+  int get hashCode => Object.hash(runtimeType, character, step, draftRevision);
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step)';
+    return 'CharacterCreationState(character: $character, step: $step, draftRevision: $draftRevision)';
   }
 }
 
@@ -281,7 +298,7 @@ abstract mixin class _$CharacterCreationStateCopyWith<$Res>
       __$CharacterCreationStateCopyWithImpl;
   @override
   @useResult
-  $Res call({CharacterData character, Step step});
+  $Res call({CharacterData character, Step step, int draftRevision});
 }
 
 /// @nodoc
@@ -299,6 +316,7 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
   $Res call({
     Object? character = null,
     Object? step = null,
+    Object? draftRevision = null,
   }) {
     return _then(_CharacterCreationState(
       character: null == character
@@ -309,6 +327,10 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.step
           : step // ignore: cast_nullable_to_non_nullable
               as Step,
+      draftRevision: null == draftRevision
+          ? _self.draftRevision
+          : draftRevision // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }

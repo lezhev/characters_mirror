@@ -28,6 +28,8 @@ List<CharacterChoiceData> buildGroupedChoices({
           groupKey: groupKey,
           optionKey: option.optionKey,
           selectionIndex: index,
+          selectedLanguage:
+              _selectedLanguageForChoice(group.type, option),
           selectedText: option.name,
         ),
       );
@@ -35,6 +37,17 @@ List<CharacterChoiceData> buildGroupedChoices({
   }
 
   return choices;
+}
+
+Language? _selectedLanguageForChoice(
+  ClassChoiceType? type,
+  ClassChoiceOptionData option,
+) {
+  if (type != ClassChoiceType.language) {
+    return null;
+  }
+  final languages = option.grantedLanguages ?? const <Language>[];
+  return languages.length == 1 ? languages.single : null;
 }
 
 Set<String> classChoiceGroupKeys(List<ClassChoiceGroupView> groups) {

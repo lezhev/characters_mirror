@@ -285,6 +285,7 @@ class _AttackDialogState extends State<AttackDialog> {
 
   CharacterAttackData _buildDraft() {
     return CharacterAttackData(
+      id: widget.attack.id,
       name: normalizedAttackText(_nameController.text),
       leadingAbility: _leadingAbility,
       damage: normalizedAttackText(_damageController.text),
@@ -292,6 +293,7 @@ class _AttackDialogState extends State<AttackDialog> {
       damageType: _damageType,
       tags: _selectedTags,
       description: normalizedAttackText(_descriptionController.text),
+      updatedAt: widget.attack.updatedAt,
     );
   }
 

@@ -20,28 +20,33 @@ abstract class CharacterStartingEquipmentResolutionRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   CharacterStartingEquipmentResolutionRecord._({
     this.id,
+    this.syncId,
     required this.selectionId,
     this.selection,
     this.lineKey,
     this.catalogType,
     this.referenceKey,
     this.quantity,
+    this.updatedAt,
   });
 
   factory CharacterStartingEquipmentResolutionRecord({
     int? id,
+    String? syncId,
     required int selectionId,
     _i2.CharacterStartingEquipmentSelectionRecord? selection,
     String? lineKey,
     _i3.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
+    DateTime? updatedAt,
   }) = _CharacterStartingEquipmentResolutionRecordImpl;
 
   factory CharacterStartingEquipmentResolutionRecord.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterStartingEquipmentResolutionRecord(
       id: jsonSerialization['id'] as int?,
+      syncId: jsonSerialization['syncId'] as String?,
       selectionId: jsonSerialization['selectionId'] as int,
       selection: jsonSerialization['selection'] == null
           ? null
@@ -54,6 +59,9 @@ abstract class CharacterStartingEquipmentResolutionRecord
               (jsonSerialization['catalogType'] as String)),
       referenceKey: jsonSerialization['referenceKey'] as String?,
       quantity: jsonSerialization['quantity'] as int?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -63,6 +71,8 @@ abstract class CharacterStartingEquipmentResolutionRecord
 
   @override
   int? id;
+
+  String? syncId;
 
   int selectionId;
 
@@ -76,6 +86,8 @@ abstract class CharacterStartingEquipmentResolutionRecord
 
   int? quantity;
 
+  DateTime? updatedAt;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -84,23 +96,27 @@ abstract class CharacterStartingEquipmentResolutionRecord
   @_i1.useResult
   CharacterStartingEquipmentResolutionRecord copyWith({
     int? id,
+    String? syncId,
     int? selectionId,
     _i2.CharacterStartingEquipmentSelectionRecord? selection,
     String? lineKey,
     _i3.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (syncId != null) 'syncId': syncId,
       'selectionId': selectionId,
       if (selection != null) 'selection': selection?.toJson(),
       if (lineKey != null) 'lineKey': lineKey,
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (quantity != null) 'quantity': quantity,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -151,20 +167,24 @@ class _CharacterStartingEquipmentResolutionRecordImpl
     extends CharacterStartingEquipmentResolutionRecord {
   _CharacterStartingEquipmentResolutionRecordImpl({
     int? id,
+    String? syncId,
     required int selectionId,
     _i2.CharacterStartingEquipmentSelectionRecord? selection,
     String? lineKey,
     _i3.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
+          syncId: syncId,
           selectionId: selectionId,
           selection: selection,
           lineKey: lineKey,
           catalogType: catalogType,
           referenceKey: referenceKey,
           quantity: quantity,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterStartingEquipmentResolutionRecord]
@@ -173,15 +193,18 @@ class _CharacterStartingEquipmentResolutionRecordImpl
   @override
   CharacterStartingEquipmentResolutionRecord copyWith({
     Object? id = _Undefined,
+    Object? syncId = _Undefined,
     int? selectionId,
     Object? selection = _Undefined,
     Object? lineKey = _Undefined,
     Object? catalogType = _Undefined,
     Object? referenceKey = _Undefined,
     Object? quantity = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterStartingEquipmentResolutionRecord(
       id: id is int? ? id : this.id,
+      syncId: syncId is String? ? syncId : this.syncId,
       selectionId: selectionId ?? this.selectionId,
       selection: selection is _i2.CharacterStartingEquipmentSelectionRecord?
           ? selection
@@ -192,6 +215,7 @@ class _CharacterStartingEquipmentResolutionRecordImpl
           : this.catalogType,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       quantity: quantity is int? ? quantity : this.quantity,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }
@@ -199,6 +223,10 @@ class _CharacterStartingEquipmentResolutionRecordImpl
 class CharacterStartingEquipmentResolutionRecordTable extends _i1.Table<int?> {
   CharacterStartingEquipmentResolutionRecordTable({super.tableRelation})
       : super(tableName: 'character_starting_equipment_resolution_data') {
+    syncId = _i1.ColumnString(
+      'syncId',
+      this,
+    );
     selectionId = _i1.ColumnInt(
       'selectionId',
       this,
@@ -220,7 +248,13 @@ class CharacterStartingEquipmentResolutionRecordTable extends _i1.Table<int?> {
       'quantity',
       this,
     );
+    updatedAt = _i1.ColumnDateTime(
+      'updatedAt',
+      this,
+    );
   }
+
+  late final _i1.ColumnString syncId;
 
   late final _i1.ColumnInt selectionId;
 
@@ -233,6 +267,8 @@ class CharacterStartingEquipmentResolutionRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnString referenceKey;
 
   late final _i1.ColumnInt quantity;
+
+  late final _i1.ColumnDateTime updatedAt;
 
   _i2.CharacterStartingEquipmentSelectionRecordTable get selection {
     if (_selection != null) return _selection!;
@@ -251,11 +287,13 @@ class CharacterStartingEquipmentResolutionRecordTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        syncId,
         selectionId,
         lineKey,
         catalogType,
         referenceKey,
         quantity,
+        updatedAt,
       ];
 
   @override

@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/language_labels.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/widgets/summary_line.dart';
@@ -139,9 +140,11 @@ String formatChoiceSummary(List<CharacterChoiceData> choices) {
   final labels = choices
       .map(
         (choice) =>
+            (choice.selectedLanguage == null
+                ? null
+                : languageLabel(choice.selectedLanguage!)) ??
             choice.selectedText ??
             choice.optionKey ??
-            choice.selectedLanguage?.name ??
             choice.selectedToolKey ??
             choice.selectedSpellKey ??
             choice.selectedAbility?.name,

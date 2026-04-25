@@ -1,0 +1,6 @@
+enum: CharacterSyncStatus
+values:
+  - saved
+  - deleted
+  - conflict
+  - notFound

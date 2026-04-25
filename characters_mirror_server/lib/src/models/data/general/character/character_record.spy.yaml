@@ -32,9 +32,9 @@ fields:
   temporaryHp: int?
   currentHp: int?
   inspiration: bool?
-  equipment: String?
+  equipment: List<CharacterInventoryItemData>?
   manualSkillProficiencies: List<CharacterSkillProficiencyState>?
   manualSavingThrowProficiencies: List<Ability>?
-  notes: String?
+  notes: List<CharacterNoteData>?
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?

@@ -39,6 +39,12 @@ class BackgroundDataEndpoint extends Endpoint {
         ),
       );
     }
+    final languageChoiceGroup =
+        _buildLanguageChoiceGroup(backgrounds.first);
+    if (languageChoiceGroup != null &&
+        !_hasLanguageChoiceGroup(choiceGroups)) {
+      choiceGroups.add(languageChoiceGroup);
+    }
 
     final startingEquipmentBlocks = await loadStartingEquipmentBlockViews(
       session,
@@ -76,4 +82,39 @@ class BackgroundDataEndpoint extends Endpoint {
   Future<void> delete(Session session, int id) async {
     await BackgroundData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
+}
+
+bool _hasLanguageChoiceGroup(List<ClassChoiceGroupView> groups) {
+  return groups.any((view) => view.group?.type == ClassChoiceType.language);
+}
+
+ClassChoiceGroupView? _buildLanguageChoiceGroup(BackgroundData background) {
+  final languageCount = background.languageCount ?? 0;
+  final backgroundId = background.id;
+  if (languageCount <= 0 || backgroundId == null) {
+    return null;
+  }
+
+  final groupId = -backgroundId;
+  return ClassChoiceGroupView(
+    group: ClassChoiceGroupData(
+      id: groupId,
+      name: 'Языки',
+      description: 'Выберите языки, которые дает предыстория.',
+      sourceBackgroundId: backgroundId,
+      type: ClassChoiceType.language,
+      selectionCount: languageCount,
+      exclusiveKey: 'background_${backgroundId}_language_pick',
+      allowDuplicates: false,
+    ),
+    options: [
+      for (final language in Language.values)
+        ClassChoiceOptionData(
+          choiceGroupId: groupId,
+          optionKey: language.name,
+          name: language.name,
+          grantedLanguages: [language],
+        ),
+    ],
+  );
 }

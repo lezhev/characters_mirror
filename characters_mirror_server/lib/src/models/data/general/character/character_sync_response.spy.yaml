@@ -1,0 +1,6 @@
+class: CharacterSyncResponse
+fields:
+  acknowledgedChangeIds: List<String>?
+  rejectedChanges: List<CharacterRejectedChangeData>?
+  characters: List<CharacterData>?
+  serverTime: DateTime?

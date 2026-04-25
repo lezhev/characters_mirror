@@ -16,12 +16,15 @@ import '../../../enums/character_alignment.dart' as _i2;
 import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
-import '../../../data/general/character/character_skill_proficiency_state.dart'
+import '../../../data/general/character/character_inventory_item_data.dart'
     as _i6;
-import '../../../enums/ability.dart' as _i7;
-import '../../../data/general/character/character_attack_data.dart' as _i8;
+import '../../../data/general/character/character_skill_proficiency_state.dart'
+    as _i7;
+import '../../../enums/ability.dart' as _i8;
+import '../../../data/general/character/character_note_data.dart' as _i9;
+import '../../../data/general/character/character_attack_data.dart' as _i10;
 import '../../../data/general/character/character_feature_override_data.dart'
-    as _i9;
+    as _i11;
 
 abstract class CharacterRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -103,12 +106,12 @@ abstract class CharacterRecord
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
-    String? equipment,
-    List<_i6.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i7.Ability>? manualSavingThrowProficiencies,
-    String? notes,
-    List<_i8.CharacterAttackData>? attacks,
-    List<_i9.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i6.CharacterInventoryItemData>? equipment,
+    List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i8.Ability>? manualSavingThrowProficiencies,
+    List<_i9.CharacterNoteData>? notes,
+    List<_i10.CharacterAttackData>? attacks,
+    List<_i11.CharacterFeatureOverrideData>? featureOverrides,
   }) = _CharacterRecordImpl;
 
   factory CharacterRecord.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -172,23 +175,29 @@ abstract class CharacterRecord
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
-      equipment: jsonSerialization['equipment'] as String?,
+      equipment: (jsonSerialization['equipment'] as List?)
+          ?.map((e) => _i6.CharacterInventoryItemData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       manualSkillProficiencies:
           (jsonSerialization['manualSkillProficiencies'] as List?)
-              ?.map((e) => _i6.CharacterSkillProficiencyState.fromJson(
+              ?.map((e) => _i7.CharacterSkillProficiencyState.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
       manualSavingThrowProficiencies:
           (jsonSerialization['manualSavingThrowProficiencies'] as List?)
-              ?.map((e) => _i7.Ability.fromJson((e as String)))
+              ?.map((e) => _i8.Ability.fromJson((e as String)))
               .toList(),
-      notes: jsonSerialization['notes'] as String?,
+      notes: (jsonSerialization['notes'] as List?)
+          ?.map((e) =>
+              _i9.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
-              _i8.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+              _i10.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       featureOverrides: (jsonSerialization['featureOverrides'] as List?)
-          ?.map((e) => _i9.CharacterFeatureOverrideData.fromJson(
+          ?.map((e) => _i11.CharacterFeatureOverrideData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
     );
@@ -267,17 +276,17 @@ abstract class CharacterRecord
 
   bool? inspiration;
 
-  String? equipment;
+  List<_i6.CharacterInventoryItemData>? equipment;
 
-  List<_i6.CharacterSkillProficiencyState>? manualSkillProficiencies;
+  List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies;
 
-  List<_i7.Ability>? manualSavingThrowProficiencies;
+  List<_i8.Ability>? manualSavingThrowProficiencies;
 
-  String? notes;
+  List<_i9.CharacterNoteData>? notes;
 
-  List<_i8.CharacterAttackData>? attacks;
+  List<_i10.CharacterAttackData>? attacks;
 
-  List<_i9.CharacterFeatureOverrideData>? featureOverrides;
+  List<_i11.CharacterFeatureOverrideData>? featureOverrides;
 
   @override
   _i1.Table<int?> get table => t;
@@ -320,12 +329,12 @@ abstract class CharacterRecord
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
-    String? equipment,
-    List<_i6.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i7.Ability>? manualSavingThrowProficiencies,
-    String? notes,
-    List<_i8.CharacterAttackData>? attacks,
-    List<_i9.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i6.CharacterInventoryItemData>? equipment,
+    List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i8.Ability>? manualSavingThrowProficiencies,
+    List<_i9.CharacterNoteData>? notes,
+    List<_i10.CharacterAttackData>? attacks,
+    List<_i11.CharacterFeatureOverrideData>? featureOverrides,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -368,14 +377,15 @@ abstract class CharacterRecord
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
       if (inspiration != null) 'inspiration': inspiration,
-      if (equipment != null) 'equipment': equipment,
+      if (equipment != null)
+        'equipment': equipment?.toJson(valueToJson: (v) => v.toJson()),
       if (manualSkillProficiencies != null)
         'manualSkillProficiencies':
             manualSkillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (manualSavingThrowProficiencies != null)
         'manualSavingThrowProficiencies': manualSavingThrowProficiencies
             ?.toJson(valueToJson: (v) => v.toJson()),
-      if (notes != null) 'notes': notes,
+      if (notes != null) 'notes': notes?.toJson(valueToJson: (v) => v.toJson()),
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
       if (featureOverrides != null)
@@ -465,12 +475,12 @@ class _CharacterRecordImpl extends CharacterRecord {
     int? temporaryHp,
     int? currentHp,
     bool? inspiration,
-    String? equipment,
-    List<_i6.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i7.Ability>? manualSavingThrowProficiencies,
-    String? notes,
-    List<_i8.CharacterAttackData>? attacks,
-    List<_i9.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i6.CharacterInventoryItemData>? equipment,
+    List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i8.Ability>? manualSavingThrowProficiencies,
+    List<_i9.CharacterNoteData>? notes,
+    List<_i10.CharacterAttackData>? attacks,
+    List<_i11.CharacterFeatureOverrideData>? featureOverrides,
   }) : super._(
           id: id,
           name: name,
@@ -623,21 +633,25 @@ class _CharacterRecordImpl extends CharacterRecord {
       temporaryHp: temporaryHp is int? ? temporaryHp : this.temporaryHp,
       currentHp: currentHp is int? ? currentHp : this.currentHp,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
-      equipment: equipment is String? ? equipment : this.equipment,
+      equipment: equipment is List<_i6.CharacterInventoryItemData>?
+          ? equipment
+          : this.equipment?.map((e0) => e0.copyWith()).toList(),
       manualSkillProficiencies: manualSkillProficiencies
-              is List<_i6.CharacterSkillProficiencyState>?
+              is List<_i7.CharacterSkillProficiencyState>?
           ? manualSkillProficiencies
           : this.manualSkillProficiencies?.map((e0) => e0.copyWith()).toList(),
       manualSavingThrowProficiencies:
-          manualSavingThrowProficiencies is List<_i7.Ability>?
+          manualSavingThrowProficiencies is List<_i8.Ability>?
               ? manualSavingThrowProficiencies
               : this.manualSavingThrowProficiencies?.map((e0) => e0).toList(),
-      notes: notes is String? ? notes : this.notes,
-      attacks: attacks is List<_i8.CharacterAttackData>?
+      notes: notes is List<_i9.CharacterNoteData>?
+          ? notes
+          : this.notes?.map((e0) => e0.copyWith()).toList(),
+      attacks: attacks is List<_i10.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
       featureOverrides:
-          featureOverrides is List<_i9.CharacterFeatureOverrideData>?
+          featureOverrides is List<_i11.CharacterFeatureOverrideData>?
               ? featureOverrides
               : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
     );
@@ -767,7 +781,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'inspiration',
       this,
     );
-    equipment = _i1.ColumnString(
+    equipment = _i1.ColumnSerializable(
       'equipment',
       this,
     );
@@ -779,7 +793,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'manualSavingThrowProficiencies',
       this,
     );
-    notes = _i1.ColumnString(
+    notes = _i1.ColumnSerializable(
       'notes',
       this,
     );
@@ -859,13 +873,13 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool inspiration;
 
-  late final _i1.ColumnString equipment;
+  late final _i1.ColumnSerializable equipment;
 
   late final _i1.ColumnSerializable manualSkillProficiencies;
 
   late final _i1.ColumnSerializable manualSavingThrowProficiencies;
 
-  late final _i1.ColumnString notes;
+  late final _i1.ColumnSerializable notes;
 
   late final _i1.ColumnSerializable attacks;
 

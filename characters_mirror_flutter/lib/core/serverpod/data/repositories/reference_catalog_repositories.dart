@@ -1,10 +1,18 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/repositories/repository_base.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 
 class ItemRepository implements Repository<ItemData> {
   @override
-  Future<List<ItemData>> getAll() => client.itemData.getAll();
+  Future<List<ItemData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'item',
+        loadRemote: client.itemData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ItemData.fromJson,
+      );
 
   @override
   Future<ItemData?> getById(int id) async {
@@ -25,7 +33,13 @@ class ItemRepository implements Repository<ItemData> {
 
 class WeaponRepository implements Repository<WeaponData> {
   @override
-  Future<List<WeaponData>> getAll() => client.weaponData.getAll();
+  Future<List<WeaponData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'weapon',
+        loadRemote: client.weaponData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: WeaponData.fromJson,
+      );
 
   @override
   Future<WeaponData?> getById(int id) async {
@@ -47,7 +61,13 @@ class WeaponRepository implements Repository<WeaponData> {
 
 class ArmorRepository implements Repository<ArmorData> {
   @override
-  Future<List<ArmorData>> getAll() => client.armorData.getAll();
+  Future<List<ArmorData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'armor',
+        loadRemote: client.armorData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ArmorData.fromJson,
+      );
 
   @override
   Future<ArmorData?> getById(int id) async {
@@ -68,7 +88,13 @@ class ArmorRepository implements Repository<ArmorData> {
 
 class MagicItemRepository implements Repository<MagicItemData> {
   @override
-  Future<List<MagicItemData>> getAll() => client.magicItemData.getAll();
+  Future<List<MagicItemData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'magic_item',
+        loadRemote: client.magicItemData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: MagicItemData.fromJson,
+      );
 
   @override
   Future<MagicItemData?> getById(int id) async {
@@ -90,7 +116,13 @@ class MagicItemRepository implements Repository<MagicItemData> {
 
 class FeatRepository implements Repository<FeatData> {
   @override
-  Future<List<FeatData>> getAll() => client.featData.getAll();
+  Future<List<FeatData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'feat',
+        loadRemote: client.featData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: FeatData.fromJson,
+      );
 
   @override
   Future<FeatData?> getById(int id) async {
@@ -111,7 +143,13 @@ class FeatRepository implements Repository<FeatData> {
 
 class SpellRepository implements Repository<SpellData> {
   @override
-  Future<List<SpellData>> getAll() => client.spellData.getAll();
+  Future<List<SpellData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'spell',
+        loadRemote: client.spellData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: SpellData.fromJson,
+      );
 
   @override
   Future<SpellData?> getById(int id) async {

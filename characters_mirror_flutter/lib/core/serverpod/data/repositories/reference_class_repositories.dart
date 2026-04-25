@@ -1,10 +1,19 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_character_resolver.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/repositories/repository_base.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 
 class ClassRepository implements Repository<ClassData> {
   @override
-  Future<List<ClassData>> getAll() => client.classData.getAll();
+  Future<List<ClassData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'class',
+        loadRemote: client.classData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ClassData.fromJson,
+      );
 
   @override
   Future<ClassData?> getById(int id) async {
@@ -21,14 +30,24 @@ class ClassRepository implements Repository<ClassData> {
     int selectedLevel = 1,
     bool isStartingClass = true,
     int? selectedSubclassId,
-  }) {
-    return client.classData.getStepView(
-      classId,
-      selectedLevel: selectedLevel,
-      isStartingClass: isStartingClass,
-      selectedSubclassId: selectedSubclassId,
-    );
-  }
+  }) =>
+      cachedValueFallback(
+        cache: offlineCacheDatabase,
+        kind: offlineClassStepKind,
+        key: offlineClassStepKey(
+          classId,
+          selectedLevel: selectedLevel,
+          selectedSubclassId: selectedSubclassId,
+        ),
+        loadRemote: () => client.classData.getStepView(
+          classId,
+          selectedLevel: selectedLevel,
+          isStartingClass: isStartingClass,
+          selectedSubclassId: selectedSubclassId,
+        ),
+        toJson: (value) => value.toJson(),
+        fromJson: ClassStepView.fromJson,
+      );
 
   @override
   Future<ClassData> upsert(ClassData entity) => client.classData.upsert(entity);
@@ -39,7 +58,13 @@ class ClassRepository implements Repository<ClassData> {
 
 class ClassFeatureRepository implements Repository<ClassFeatureData> {
   @override
-  Future<List<ClassFeatureData>> getAll() => client.classFeatureData.getAll();
+  Future<List<ClassFeatureData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'class_feature',
+        loadRemote: client.classFeatureData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ClassFeatureData.fromJson,
+      );
 
   @override
   Future<ClassFeatureData?> getById(int id) async {
@@ -66,7 +91,13 @@ class ClassFeatureRepository implements Repository<ClassFeatureData> {
 
 class ClassLevelRepository implements Repository<ClassLevelData> {
   @override
-  Future<List<ClassLevelData>> getAll() => client.classLevelData.getAll();
+  Future<List<ClassLevelData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'class_level',
+        loadRemote: client.classLevelData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ClassLevelData.fromJson,
+      );
 
   @override
   Future<ClassLevelData?> getById(int id) async {
@@ -93,7 +124,13 @@ class ClassLevelRepository implements Repository<ClassLevelData> {
 
 class SubclassRepository implements Repository<SubclassData> {
   @override
-  Future<List<SubclassData>> getAll() => client.subclassData.getAll();
+  Future<List<SubclassData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'subclass',
+        loadRemote: client.subclassData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: SubclassData.fromJson,
+      );
 
   @override
   Future<SubclassData?> getById(int id) async {
@@ -120,8 +157,13 @@ class SubclassRepository implements Repository<SubclassData> {
 
 class ClassChoiceGroupRepository implements Repository<ClassChoiceGroupData> {
   @override
-  Future<List<ClassChoiceGroupData>> getAll() =>
-      client.classChoiceGroupData.getAll();
+  Future<List<ClassChoiceGroupData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'class_choice_group',
+        loadRemote: client.classChoiceGroupData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ClassChoiceGroupData.fromJson,
+      );
 
   @override
   Future<ClassChoiceGroupData?> getById(int id) async {
@@ -143,8 +185,13 @@ class ClassChoiceGroupRepository implements Repository<ClassChoiceGroupData> {
 
 class ClassChoiceOptionRepository implements Repository<ClassChoiceOptionData> {
   @override
-  Future<List<ClassChoiceOptionData>> getAll() =>
-      client.classChoiceOptionData.getAll();
+  Future<List<ClassChoiceOptionData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'class_choice_option',
+        loadRemote: client.classChoiceOptionData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ClassChoiceOptionData.fromJson,
+      );
 
   @override
   Future<ClassChoiceOptionData?> getById(int id) async {
@@ -171,8 +218,13 @@ class ClassChoiceOptionRepository implements Repository<ClassChoiceOptionData> {
 
 class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
   @override
-  Future<List<SubclassFeatureData>> getAll() =>
-      client.subclassFeatureData.getAll();
+  Future<List<SubclassFeatureData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'subclass_feature',
+        loadRemote: client.subclassFeatureData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: SubclassFeatureData.fromJson,
+      );
 
   @override
   Future<SubclassFeatureData?> getById(int id) async {
@@ -195,4 +247,94 @@ class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
 
   @override
   Future<void> delete(int id) => client.subclassFeatureData.delete(id);
+}
+
+class StartingEquipmentBlockRepository
+    implements Repository<StartingEquipmentBlockData> {
+  @override
+  Future<List<StartingEquipmentBlockData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'starting_equipment_block',
+        loadRemote: client.startingEquipmentBlockData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: StartingEquipmentBlockData.fromJson,
+      );
+
+  @override
+  Future<StartingEquipmentBlockData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<StartingEquipmentBlockData> upsert(
+          StartingEquipmentBlockData entity) =>
+      client.startingEquipmentBlockData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.startingEquipmentBlockData.delete(id);
+}
+
+class StartingEquipmentOptionRepository
+    implements Repository<StartingEquipmentOptionData> {
+  @override
+  Future<List<StartingEquipmentOptionData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'starting_equipment_option',
+        loadRemote: client.startingEquipmentOptionData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: StartingEquipmentOptionData.fromJson,
+      );
+
+  @override
+  Future<StartingEquipmentOptionData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<StartingEquipmentOptionData> upsert(
+    StartingEquipmentOptionData entity,
+  ) =>
+      client.startingEquipmentOptionData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.startingEquipmentOptionData.delete(id);
+}
+
+class StartingEquipmentLineRepository
+    implements Repository<StartingEquipmentLineData> {
+  @override
+  Future<List<StartingEquipmentLineData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'starting_equipment_line',
+        loadRemote: client.startingEquipmentLineData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: StartingEquipmentLineData.fromJson,
+      );
+
+  @override
+  Future<StartingEquipmentLineData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<StartingEquipmentLineData> upsert(StartingEquipmentLineData entity) =>
+      client.startingEquipmentLineData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.startingEquipmentLineData.delete(id);
 }

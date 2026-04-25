@@ -9,6 +9,8 @@ class DragBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Container(
       width: 60,
       height: 60,
@@ -25,8 +27,9 @@ class DragBox extends StatelessWidget {
       child: Center(
         child: Text(
           value.toString(),
-          style: TextStyle(
-              fontSize: 18, color: Theme.of(context).colorScheme.onPrimary),
+          style: textTheme.titleMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
         ),
       ),
     );

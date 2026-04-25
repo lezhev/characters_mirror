@@ -1,6 +1,10 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,6 +14,13 @@ part 'character_sheet_state.g.dart';
 final characterRepositoryProvider = Provider<CharacterRepository>((ref) {
   return CharacterRepository();
 });
+
+final offlineCharacterRecordProvider =
+    FutureProvider.autoDispose.family<OfflineCharacterRecord?, int>(
+  (ref, characterId) {
+    return ref.watch(characterRepositoryProvider).getOfflineRecord(characterId);
+  },
+);
 
 final selectedFightFeatureTagsProvider =
     StateProvider.autoDispose.family<Set<FeatureTag>, int>((ref, characterId) {
@@ -61,7 +72,11 @@ class CharacterSheetController
       throw RangeError.index(index, attacks, 'index');
     }
 
-    attacks[index] = attack;
+    final previousAttack = attacks[index];
+    attacks[index] = attack.copyWith(
+      id: attack.id ?? previousAttack.id,
+      updatedAt: attack.updatedAt ?? previousAttack.updatedAt,
+    );
     await _saveCharacter(current.copyWith(attacks: attacks));
   }
 
@@ -79,7 +94,31 @@ class CharacterSheetController
   Future<void> saveEquipment(String? equipment) async {
     final current = _requireCharacter();
     await _saveCharacter(
-      current.copyWith(equipment: _normalizedText(equipment)),
+      current.copyWith(
+        equipment: inventoryItemsFromText(
+          equipment,
+          previous: current.equipment,
+        ),
+      ),
+    );
+  }
+
+  Future<void> saveHitPoints({
+    required int currentHp,
+    required int temporaryHp,
+  }) async {
+    final current = _requireCharacter();
+    final hitPoints = normalizeHitPointsForSave(
+      currentHp: currentHp,
+      maxHp: current.derived?.maxHp ?? 0,
+      temporaryHp: temporaryHp,
+    );
+
+    await _saveCharacter(
+      current.copyWith(
+        currentHp: hitPoints.currentHp,
+        temporaryHp: hitPoints.temporaryHp,
+      ),
     );
   }
 
@@ -100,7 +139,6 @@ class CharacterSheetController
     String? ideals,
     String? bonds,
     String? flaws,
-    String? notes,
   }) async {
     final current = _requireCharacter();
     await _saveCharacter(
@@ -121,7 +159,55 @@ class CharacterSheetController
         ideals: _normalizedText(ideals),
         bonds: _normalizedText(bonds),
         flaws: _normalizedText(flaws),
-        notes: _normalizedText(notes),
+      ),
+    );
+  }
+
+  Future<void> addNote() async {}
+
+  Future<void> updateNote(int index, String note) async {
+    final current = _requireCharacter();
+    final noteTexts = [...current.noteTexts];
+    if (index < 0) {
+      throw RangeError.index(index, noteTexts, 'index');
+    }
+
+    final normalized = _normalizedText(note);
+    if (normalized == null) {
+      if (index < noteTexts.length) {
+        noteTexts.removeAt(index);
+      } else {
+        return;
+      }
+    } else {
+      if (index < noteTexts.length) {
+        noteTexts[index] = normalized;
+      } else {
+        noteTexts.add(normalized);
+      }
+    }
+
+    await _saveCharacter(
+      current.copyWith(
+        notes: notesFromTexts(noteTexts, previous: current.notes),
+      ),
+    );
+  }
+
+  Future<void> deleteNote(int index) async {
+    final current = _requireCharacter();
+    final noteTexts = [...current.noteTexts];
+    if (index < 0) {
+      throw RangeError.index(index, noteTexts, 'index');
+    }
+    if (index >= noteTexts.length) {
+      return;
+    }
+
+    noteTexts.removeAt(index);
+    await _saveCharacter(
+      current.copyWith(
+        notes: notesFromTexts(noteTexts, previous: current.notes),
       ),
     );
   }
@@ -330,14 +416,16 @@ class CharacterSheetController
 
   Future<void> _saveCharacter(CharacterData updated) async {
     final previous = _requireCharacter();
+    final stamped = stampCharacterMutation(previous: previous, next: updated);
     final revision = ++_saveRevision;
-    state = AsyncValue.data(updated);
+    state = AsyncValue.data(stamped);
 
     try {
-      final saved = await _repository.saveCharacter(updated);
+      final saved = await _repository.saveCharacter(stamped);
       if (revision == _saveRevision) {
         state = AsyncValue.data(saved);
         ref.invalidate(characterSheetProvider(_characterId));
+        ref.invalidate(offlineCharacterRecordProvider(_characterId));
       }
     } catch (error, stackTrace) {
       if (revision == _saveRevision) {

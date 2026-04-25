@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
@@ -85,7 +86,7 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
   @override
   void initState() {
     super.initState();
-    _lastSavedText = widget.character.equipment;
+    _lastSavedText = widget.character.equipmentText;
     _controller = TextEditingController(text: _lastSavedText ?? '');
     _controller.addListener(_handleControllerChanged);
     _focusNode = FocusNode();
@@ -94,7 +95,7 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
   @override
   void didUpdateWidget(_EquipmentEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final incomingText = widget.character.equipment;
+    final incomingText = widget.character.equipmentText;
     if (!_focusNode.hasFocus && incomingText != _lastSavedText) {
       _lastSavedText = incomingText;
       _controller.text = incomingText ?? '';

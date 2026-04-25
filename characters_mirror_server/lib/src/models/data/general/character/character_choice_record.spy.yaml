@@ -2,6 +2,7 @@ class: CharacterChoiceRecord
 serverOnly: true
 table: character_choice_data
 fields:
+  syncId: String?
   character: CharacterRecord?, relation
   classEntry: CharacterClassEntryRecord?, relation(optional)
   sourceType: ChoiceSourceType?
@@ -16,3 +17,4 @@ fields:
   selectedFeatId: int?
   selectedText: String?
   selectedCount: int?
+  updatedAt: DateTime?

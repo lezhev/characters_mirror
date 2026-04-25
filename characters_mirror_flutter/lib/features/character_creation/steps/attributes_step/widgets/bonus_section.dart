@@ -28,6 +28,10 @@ class BounsSection extends ConsumerWidget {
               attribute: attribute,
               bonusValue: bonus,
             );
+            final isEditable = notifier.isBonusEditable(
+              attribute: attribute,
+              bonusValue: bonus,
+            );
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 28.0),
@@ -35,7 +39,7 @@ class BounsSection extends ConsumerWidget {
                 value: bonus == 1
                     ? state.bonusesPlusOne[attribute]
                     : state.bonusesPlusTwo[attribute],
-                onChanged: hasRules && isAvailable
+                onChanged: hasRules && isAvailable && isEditable
                     ? (bool? value) {
                         notifier.toggleBonus(
                           attribute: attribute,

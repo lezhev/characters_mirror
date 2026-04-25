@@ -47,7 +47,7 @@ sealed class AttributeStateModel with _$AttributeStateModel {
   }) = _AttributeStateModel;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AttributeState extends _$AttributeState {
   static const _flexibleGroupKeyPrefix = 'race_flexible_bonus';
   static const _flexiblePlusTwoGroupKey = '${_flexibleGroupKeyPrefix}_plus2';
@@ -55,9 +55,24 @@ class AttributeState extends _$AttributeState {
   static const _flexibleThreePlusOneGroupKey =
       '${_flexibleGroupKeyPrefix}_three_plus1';
   static const bonusModeGroupKey = 'race_bonus_mode';
+  AttributeStateModel? _previousState;
+  int? _draftRevision;
+  bool _isListeningToSelf = false;
 
   @override
   AttributeStateModel build() {
+    if (!_isListeningToSelf) {
+      listenSelf((_, next) {
+        _previousState = next;
+      });
+      _isListeningToSelf = true;
+    }
+
+    final draftRevision = ref.watch(
+      characterCreationProvider.select((c) => c.draftRevision),
+    );
+    final previous = _draftRevision == draftRevision ? _previousState : null;
+    _draftRevision = draftRevision;
     final race =
         ref.watch(characterCreationProvider.select((c) => c.character.race));
     final subrace =
@@ -67,9 +82,15 @@ class AttributeState extends _$AttributeState {
         (c) => c.character.useFlexibleAbilityBonuses ?? false,
       ),
     );
-    final savedChoices =
-        ref.watch(characterCreationProvider.select((c) => c.character.choices)) ??
-            const <CharacterChoiceData>[];
+    final savedChoices = ref.watch(
+            characterCreationProvider.select((c) => c.character.choices)) ??
+        const <CharacterChoiceData>[];
+    final savedScores = ref.watch(
+          characterCreationProvider.select(
+            (c) => c.character.baseAbilityScores,
+          ),
+        ) ??
+        const <String, int>{};
 
     final fixedRaceBonuses =
         _resolveFixedRaceBonuses(race: race, subrace: subrace);
@@ -78,34 +99,70 @@ class AttributeState extends _$AttributeState {
       subrace: subrace,
       includeFlexibleRules: useFlexibleAbilityBonuses,
     );
-    final bonusMode = _restoreBonusMode(
+    final restoredBonusMode = _restoreBonusMode(
       fixedRaceBonuses: fixedRaceBonuses,
       rules: resolvedBonusRules,
       savedChoices: savedChoices,
     );
+    final bonusMode = previous != null &&
+            _isBonusModeAvailable(
+              previous.bonusMode,
+              fixedRaceBonuses: fixedRaceBonuses,
+              rules: resolvedBonusRules,
+            )
+        ? previous.bonusMode
+        : restoredBonusMode;
     final selectedBonusAttributesByRule = _restoreSelectedBonusAttributes(
       rules: resolvedBonusRules,
       savedChoices: savedChoices,
+      previousSelections: previous?.selectedBonusAttributesByRule,
     );
-    final (bonusesPlusOne, bonusesPlusTwo) = _buildSelectableBonusMaps(
-      selectedBonusAttributesByRule,
-      _activeRules(
+    final activeFixedRaceBonuses = _activeFixedRaceBonuses(
+      mode: bonusMode,
+      fixedRaceBonuses: fixedRaceBonuses,
+    );
+    final (bonusesPlusOne, bonusesPlusTwo) = _buildBonusMaps(
+      fixedRaceBonuses: activeFixedRaceBonuses,
+      selectedByRule: selectedBonusAttributesByRule,
+      rules: _activeRules(
         rules: resolvedBonusRules,
         mode: bonusMode,
       ),
     );
+    final restoredAttributes = _restoreAssignedAttributes(savedScores);
+    final assignedAttributes =
+        previous?.assignedAttributes ?? restoredAttributes;
+    final selectionType = previous?.selectionType ?? SelectType.defaultType;
+    final remainingValues = previous?.remainingValues ??
+        _initialRemainingValues(
+          selectionType: selectionType,
+          assignedAttributes: assignedAttributes,
+        );
+    final boxStates = previous?.boxStates ??
+        _initialBoxStates(
+          selectionType: selectionType,
+          remainingValues: remainingValues,
+        );
 
-    return AttributeStateModel(
+    final nextState = AttributeStateModel(
+      selectionType: selectionType,
       bonusMode: bonusMode,
       fixedRaceBonuses: fixedRaceBonuses,
       resolvedBonusRules: resolvedBonusRules,
       selectedBonusAttributesByRule: selectedBonusAttributesByRule,
       bonusesPlusOne: bonusesPlusOne,
       bonusesPlusTwo: bonusesPlusTwo,
-      assignedAttributes: emptyAttributeMap,
-      remainingValues: defaultAttributes,
-      boxStates: List.filled(6, RollBoxState.initial),
+      assignedAttributes: assignedAttributes,
+      remainingValues: selectionType == SelectType.random
+          ? _normalizedRandomValues(remainingValues)
+          : remainingValues,
+      boxStates: selectionType == SelectType.random
+          ? _normalizedRandomStates(boxStates, remainingValues)
+          : boxStates,
+      purchacePoints: previous?.purchacePoints ?? 27,
     );
+    _previousState = nextState;
+    return nextState;
   }
 
   List<int?> get defaultAttributes => [15, 14, 13, 12, 10, 8];
@@ -129,12 +186,13 @@ class AttributeState extends _$AttributeState {
   void setBonusMode(AttributeBonusMode mode) {
     if (state.bonusMode == mode) return;
 
-    final (bonusesPlusOne, bonusesPlusTwo) = _buildSelectableBonusMaps(
-      state.selectedBonusAttributesByRule,
-      _activeRules(
-        rules: state.resolvedBonusRules,
+    final (bonusesPlusOne, bonusesPlusTwo) = _buildBonusMaps(
+      fixedRaceBonuses: _activeFixedRaceBonuses(
         mode: mode,
+        fixedRaceBonuses: state.fixedRaceBonuses,
       ),
+      selectedByRule: state.selectedBonusAttributesByRule,
+      rules: _activeRules(rules: state.resolvedBonusRules, mode: mode),
     );
 
     state = state.copyWith(
@@ -249,19 +307,40 @@ class AttributeState extends _$AttributeState {
   }
 
   void rollValueAt(int index) async {
+    if (state.selectionType != SelectType.random ||
+        index < 0 ||
+        index >= 6 ||
+        index >= state.remainingValues.length ||
+        index >= state.boxStates.length) {
+      return;
+    }
+
     state = state.copyWith(
-      boxStates: List<RollBoxState>.from(state.boxStates)
-        ..[index] = RollBoxState.rolling,
+      remainingValues: _normalizedRandomValues(state.remainingValues),
+      boxStates: _normalizedRandomStates(
+        state.boxStates,
+        state.remainingValues,
+      )..[index] = RollBoxState.rolling,
     );
 
     await Future.delayed(const Duration(milliseconds: 500));
 
     final value = _rollDice();
+    if (state.selectionType != SelectType.random ||
+        index < 0 ||
+        index >= 6 ||
+        index >= state.remainingValues.length ||
+        index >= state.boxStates.length) {
+      return;
+    }
 
     state = state.copyWith(
-      remainingValues: List<int?>.from(state.remainingValues)..[index] = value,
-      boxStates: List<RollBoxState>.from(state.boxStates)
-        ..[index] = RollBoxState.filled,
+      remainingValues: _normalizedRandomValues(state.remainingValues)
+        ..[index] = value,
+      boxStates: _normalizedRandomStates(
+        state.boxStates,
+        state.remainingValues,
+      )..[index] = RollBoxState.filled,
     );
   }
 
@@ -349,16 +428,28 @@ class AttributeState extends _$AttributeState {
     });
   }
 
+  bool isBonusEditable({
+    required Attribute attribute,
+    required int bonusValue,
+  }) {
+    return _activeRules(
+      rules: state.resolvedBonusRules,
+      mode: state.bonusMode,
+    ).any((rule) {
+      return rule.bonusValue == bonusValue &&
+          rule.allowedAttributes.contains(attribute) &&
+          !rule.defaultAttributes.contains(attribute);
+    });
+  }
+
   Map<Attribute, int> mergeStatsAndBonuses() {
     return state.assignedAttributes.map((attribute, value) {
-      if (value == 0) {
-        return MapEntry(attribute, 0);
-      }
-
-      final fixedBonus = state.fixedRaceBonuses[attribute] ?? 0;
-      final selectableBonus =
-          (state.bonusesPlusTwo[attribute] == true ? 2 : 0) +
-              (state.bonusesPlusOne[attribute] == true ? 1 : 0);
+      final fixedBonus = _activeFixedRaceBonuses(
+            mode: state.bonusMode,
+            fixedRaceBonuses: state.fixedRaceBonuses,
+          )[attribute] ??
+          0;
+      final selectableBonus = _selectedBonusValue(attribute);
 
       return MapEntry(attribute, value + fixedBonus + selectableBonus);
     });
@@ -382,7 +473,10 @@ class AttributeState extends _$AttributeState {
       );
     }
 
-    for (final rule in state.resolvedBonusRules) {
+    for (final rule in _activeRules(
+      rules: state.resolvedBonusRules,
+      mode: state.bonusMode,
+    )) {
       if (rule.sourceId <= 0) continue;
 
       final attributes = state.selectedBonusAttributesByRule[rule.groupKey] ??
@@ -415,15 +509,23 @@ class AttributeState extends _$AttributeState {
     final isRandom = state.selectionType == SelectType.random;
 
     if (isRandom) {
+      final normalizedValues = _normalizedRandomValues(updatedValues);
+      final normalizedStates = _normalizedRandomStates(
+        updatedStates,
+        normalizedValues,
+      );
       final emptyIndex =
-          updatedStates.indexWhere((s) => s == RollBoxState.empty);
-      if (emptyIndex != -1) {
-        updatedValues[emptyIndex] = currentValue;
-        updatedStates[emptyIndex] = RollBoxState.filled;
-      } else {
-        updatedValues.add(currentValue);
-        updatedStates.add(RollBoxState.filled);
-      }
+          normalizedStates.indexWhere((s) => s == RollBoxState.empty);
+      final targetIndex =
+          emptyIndex == -1 ? normalizedStates.length - 1 : emptyIndex;
+      normalizedValues[targetIndex] = currentValue;
+      normalizedStates[targetIndex] = RollBoxState.filled;
+      updatedValues
+        ..clear()
+        ..addAll(normalizedValues);
+      updatedStates
+        ..clear()
+        ..addAll(normalizedStates);
     } else {
       updatedValues.add(currentValue);
     }
@@ -449,19 +551,32 @@ class AttributeState extends _$AttributeState {
 
     final updatedValues = [...state.remainingValues];
     final updatedStates = [...state.boxStates];
+    final currentValue = state.assignedAttributes[attribute];
 
     if (state.selectionType == SelectType.random) {
-      updatedValues[fromIndex] = null;
-      updatedStates[fromIndex] = RollBoxState.empty;
+      final normalizedValues = _normalizedRandomValues(updatedValues);
+      final normalizedStates = _normalizedRandomStates(
+        updatedStates,
+        normalizedValues,
+      );
+      if (currentValue != 0) {
+        normalizedValues[fromIndex] = currentValue;
+        normalizedStates[fromIndex] = RollBoxState.filled;
+      } else {
+        normalizedValues[fromIndex] = null;
+        normalizedStates[fromIndex] = RollBoxState.empty;
+      }
+      updatedValues
+        ..clear()
+        ..addAll(normalizedValues);
+      updatedStates
+        ..clear()
+        ..addAll(normalizedStates);
     } else {
       updatedValues.removeAt(fromIndex);
-      updatedStates.removeAt(fromIndex);
-    }
-
-    final currentValue = state.assignedAttributes[attribute];
-    if (currentValue != 0) {
-      updatedValues.add(currentValue);
-      updatedStates.add(RollBoxState.filled);
+      if (currentValue != 0) {
+        updatedValues.add(currentValue);
+      }
     }
 
     state = state.copyWith(
@@ -553,6 +668,10 @@ class AttributeState extends _$AttributeState {
                 pickCount: pickCount,
                 mustBeDistinct: choiceSet.mustBeDistinct ?? true,
                 allowedAttributes: entry.value,
+                defaultAttributes: _defaultAttributesForRule(
+                  allowedAttributes: entry.value,
+                  pickCount: pickCount,
+                ),
               ),
             );
           }
@@ -596,16 +715,17 @@ class AttributeState extends _$AttributeState {
     final hasFlexibleThreePlusOneChoice =
         rules.any(_isFlexibleThreePlusOneRule) &&
             savedChoices.any(
-      (choice) => choice.groupKey == _flexibleThreePlusOneGroupKey,
-    );
+              (choice) => choice.groupKey == _flexibleThreePlusOneGroupKey,
+            );
     if (hasFlexibleThreePlusOneChoice) {
       return AttributeBonusMode.flexibleThreePlusOne;
     }
 
     final hasFlexibleChoice = rules.any(_isFlexiblePlusTwoOneRule) &&
         savedChoices.any(
-      (choice) => choice.groupKey?.startsWith(_flexibleGroupKeyPrefix) == true,
-    );
+          (choice) =>
+              choice.groupKey?.startsWith(_flexibleGroupKeyPrefix) == true,
+        );
     if (hasFlexibleChoice) {
       return AttributeBonusMode.flexiblePlusTwoOne;
     }
@@ -621,6 +741,7 @@ class AttributeState extends _$AttributeState {
   Map<String, Set<Attribute>> _restoreSelectedBonusAttributes({
     required List<AttributeBonusRule> rules,
     required List<CharacterChoiceData> savedChoices,
+    Map<String, Set<Attribute>>? previousSelections,
   }) {
     final restored = <String, Set<Attribute>>{
       for (final rule in rules) rule.groupKey: <Attribute>{},
@@ -632,6 +753,15 @@ class AttributeState extends _$AttributeState {
             choice.sourceId == rule.sourceId &&
             choice.groupKey == rule.groupKey;
       }).toList();
+
+      final previousSelected = previousSelections?[rule.groupKey];
+      if (previousSelected != null) {
+        restored[rule.groupKey] = previousSelected
+            .where((attribute) => rule.allowedAttributes.contains(attribute))
+            .take(rule.pickCount)
+            .toSet();
+        continue;
+      }
 
       if (matchingChoices.isEmpty) {
         restored[rule.groupKey] = {...rule.defaultAttributes};
@@ -655,12 +785,146 @@ class AttributeState extends _$AttributeState {
     return restored;
   }
 
-  (Map<Attribute, bool>, Map<Attribute, bool>) _buildSelectableBonusMaps(
-    Map<String, Set<Attribute>> selectedByRule,
-    List<AttributeBonusRule> rules,
+  bool _isBonusModeAvailable(
+    AttributeBonusMode mode, {
+    required Map<Attribute, int> fixedRaceBonuses,
+    required List<AttributeBonusRule> rules,
+  }) {
+    if (mode == AttributeBonusMode.racial) {
+      return fixedRaceBonuses.isNotEmpty ||
+          rules.any((rule) => !_isFlexibleRule(rule));
+    }
+    return _activeRules(rules: rules, mode: mode).isNotEmpty;
+  }
+
+  Set<Attribute> _defaultAttributesForRule({
+    required Set<Attribute> allowedAttributes,
+    required int pickCount,
+  }) {
+    if (allowedAttributes.length <= pickCount) {
+      return allowedAttributes;
+    }
+    return const <Attribute>{};
+  }
+
+  Map<Attribute, int> _restoreAssignedAttributes(Map<String, int> savedScores) {
+    return {
+      for (final attribute in Attribute.values)
+        attribute: savedScores[attribute.name] ?? 0,
+    };
+  }
+
+  List<int?> _initialRemainingValues({
+    required SelectType selectionType,
+    required Map<Attribute, int> assignedAttributes,
+  }) {
+    switch (selectionType) {
+      case SelectType.defaultType:
+        final remaining = [...defaultAttributes];
+        for (final value
+            in assignedAttributes.values.where((value) => value != 0)) {
+          remaining.remove(value);
+        }
+        return remaining;
+      case SelectType.random:
+        return List<int?>.filled(6, null);
+      case SelectType.purchace:
+      case SelectType.manual:
+        return const [];
+    }
+  }
+
+  List<RollBoxState> _initialBoxStates({
+    required SelectType selectionType,
+    required List<int?> remainingValues,
+  }) {
+    if (selectionType != SelectType.random) {
+      return selectionType == SelectType.defaultType
+          ? List.filled(6, RollBoxState.initial)
+          : const [];
+    }
+    return [
+      for (final value in _normalizedRandomValues(remainingValues))
+        value == null ? RollBoxState.initial : RollBoxState.filled,
+    ];
+  }
+
+  List<int?> _normalizedRandomValues(List<int?> values) {
+    return [
+      for (var index = 0; index < 6; index++)
+        index < values.length ? values[index] : null,
+    ];
+  }
+
+  List<RollBoxState> _normalizedRandomStates(
+    List<RollBoxState> states,
+    List<int?> values,
   ) {
+    final normalizedValues = _normalizedRandomValues(values);
+    return [
+      for (var index = 0; index < 6; index++)
+        _normalizedRandomStateAt(
+          index < states.length ? states[index] : null,
+          normalizedValues[index],
+        ),
+    ];
+  }
+
+  RollBoxState _normalizedRandomStateAt(RollBoxState? state, int? value) {
+    if (state == RollBoxState.rolling) {
+      return RollBoxState.rolling;
+    }
+    if (value != null) {
+      return RollBoxState.filled;
+    }
+    if (state == RollBoxState.empty) {
+      return RollBoxState.empty;
+    }
+    return RollBoxState.initial;
+  }
+
+  Map<Attribute, int> _activeFixedRaceBonuses({
+    required AttributeBonusMode mode,
+    required Map<Attribute, int> fixedRaceBonuses,
+  }) {
+    return mode == AttributeBonusMode.racial
+        ? fixedRaceBonuses
+        : const <Attribute, int>{};
+  }
+
+  int _selectedBonusValue(Attribute attribute) {
+    var total = 0;
+    for (final rule in _activeRules(
+      rules: state.resolvedBonusRules,
+      mode: state.bonusMode,
+    )) {
+      final selected = state.selectedBonusAttributesByRule[rule.groupKey] ??
+          const <Attribute>{};
+      if (selected.contains(attribute)) {
+        total += rule.bonusValue;
+      }
+    }
+    return total;
+  }
+
+  (Map<Attribute, bool>, Map<Attribute, bool>) _buildBonusMaps({
+    required Map<Attribute, int> fixedRaceBonuses,
+    required Map<String, Set<Attribute>> selectedByRule,
+    required List<AttributeBonusRule> rules,
+  }) {
     final bonusesPlusOne = falseAttributeMap;
     final bonusesPlusTwo = falseAttributeMap;
+
+    for (final entry in fixedRaceBonuses.entries) {
+      if (entry.value == 1) {
+        bonusesPlusOne[entry.key] = true;
+      } else if (entry.value == 2) {
+        bonusesPlusTwo[entry.key] = true;
+      } else if (entry.value >= 3) {
+        bonusesPlusOne[entry.key] = true;
+        bonusesPlusTwo[entry.key] = true;
+      }
+    }
 
     for (final rule in rules) {
       final selected = selectedByRule[rule.groupKey] ?? const <Attribute>{};
@@ -728,12 +992,14 @@ class AttributeState extends _$AttributeState {
       for (final rule in state.resolvedBonusRules)
         rule.groupKey: {...?selections[rule.groupKey]},
     };
-    final (bonusesPlusOne, bonusesPlusTwo) = _buildSelectableBonusMaps(
-      normalized,
-      _activeRules(
-        rules: state.resolvedBonusRules,
+    final (bonusesPlusOne, bonusesPlusTwo) = _buildBonusMaps(
+      fixedRaceBonuses: _activeFixedRaceBonuses(
         mode: state.bonusMode,
+        fixedRaceBonuses: state.fixedRaceBonuses,
       ),
+      selectedByRule: normalized,
+      rules:
+          _activeRules(rules: state.resolvedBonusRules, mode: state.bonusMode),
     );
 
     state = state.copyWith(

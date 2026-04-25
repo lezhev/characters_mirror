@@ -1,12 +1,18 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart'
     as protocol;
+import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character_sheet_settings_page.dart';
+import 'package:characters_mirror_flutter/features/settings/settings.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 void main() {
   group('Character sheet navigation', () {
@@ -29,11 +35,6 @@ void main() {
         navigationBar.labelBehavior,
         NavigationDestinationLabelBehavior.alwaysHide,
       );
-      expect(find.text('Бой'), findsNothing);
-      expect(find.text('Персонаж'), findsNothing);
-      expect(find.text('Инвентарь'), findsNothing);
-      expect(find.text('Заметки'), findsNothing);
-      expect(find.text('Заклинания'), findsNothing);
     });
 
     testWidgets('switches tabs and keeps fight page state alive',
@@ -58,18 +59,17 @@ void main() {
       expect(find.text('Класс и раса'), findsOneWidget);
       expect(find.text('Класс не выбран'), findsOneWidget);
       expect(find.text('Раса не выбрана'), findsOneWidget);
-      expect(find.text('Короткие поля'), findsOneWidget);
-      expect(find.text('История и характер'), findsOneWidget);
+      expect(find.text('Описание персонажа'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.inventory));
       await tester.pumpAndSettle();
 
-      expect(find.text('Инвентарь'), findsOneWidget);
+      expect(_textField('Снаряжение'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.note));
       await tester.pumpAndSettle();
 
-      expect(find.text('Страница заметок'), findsOneWidget);
+      expect(find.byTooltip('Добавить заметку'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.auto_fix_high));
       await tester.pumpAndSettle();
@@ -81,6 +81,81 @@ void main() {
 
       expect(find.text('Атаки'), findsOneWidget);
       expect(repository.getCharacterCallCount, 1);
+    });
+
+    testWidgets('switches tabs with horizontal swipes', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      expect(find.text('Атаки'), findsOneWidget);
+
+      await tester.drag(find.byType(PageView), const Offset(-700, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Описание персонажа'), findsOneWidget);
+
+      await tester.drag(find.byType(PageView), const Offset(700, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Атаки'), findsOneWidget);
+    });
+
+    testWidgets('wraps sheet swipes between fight and spells', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      expect(find.text('Атаки'), findsOneWidget);
+
+      await tester.drag(find.byType(PageView), const Offset(700, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Страница заклинаний'), findsOneWidget);
+
+      await tester.drag(find.byType(PageView), const Offset(-700, 0));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Атаки'), findsOneWidget);
+    });
+
+    testWidgets('ignores mouse edge swipes on character sheet', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      expect(find.text('Атаки'), findsOneWidget);
+
+      await _dragWithPointerKind(
+        tester,
+        find.byType(PageView),
+        const Offset(700, 0),
+        PointerDeviceKind.mouse,
+      );
+
+      expect(find.text('Атаки'), findsOneWidget);
+      expect(find.text('Страница заклинаний'), findsNothing);
     });
 
     testWidgets('character tab opens class and race details', (tester) async {
@@ -104,7 +179,7 @@ void main() {
             ),
             classEntries: [
               protocol.CharacterClassEntryData(
-                id: 1,
+                id: 'entry-1',
                 classOrder: 0,
                 level: 3,
                 classData: protocol.ClassData(
@@ -141,8 +216,6 @@ void main() {
 
       expect(find.text('Воин 3 уровень • Чемпион'), findsOneWidget);
       expect(find.text('Человек • Вариант'), findsOneWidget);
-      expect(find.text('24'), findsOneWidget);
-      expect(find.text('Хаотичный добрый'), findsOneWidget);
 
       await tester.tap(find.text('Класс и раса'));
       await tester.pumpAndSettle();
@@ -153,7 +226,80 @@ void main() {
       expect(find.text('d10'), findsOneWidget);
     });
 
-    testWidgets('burger opens mechanics page and returns to previous tab',
+    testWidgets('character alignment field fits narrow sheet widths',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            alignmentValue: protocol.CharacterAlignment.lawfulNeutral,
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(
+        tester,
+        repository,
+        surfaceSize: const Size(360, 800),
+      );
+
+      await tester.tap(find.byIcon(Icons.person));
+      await tester.pumpAndSettle();
+
+      await tester.drag(_characterPageScrollable(), const Offset(0, -500));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Принципиальный'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('character alignment dialog updates selected value',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            alignmentValue: protocol.CharacterAlignment.lawfulGood,
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      await tester.tap(find.byIcon(Icons.person));
+      await tester.pumpAndSettle();
+
+      await tester.drag(_characterPageScrollable(), const Offset(0, -500));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Выбрать мировоззрение'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+      await tester.tap(find.bySemanticsLabel('Х-З').first);
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.charactersById[1]?.alignmentValue,
+        protocol.CharacterAlignment.chaoticEvil,
+      );
+      expect(find.byType(AlertDialog), findsNothing);
+
+      await tester.tap(find.byTooltip('Выбрать мировоззрение'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+      await tester.tap(find.bySemanticsLabel('Без мировоззрения').first);
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.charactersById[1]?.alignmentValue,
+        protocol.CharacterAlignment.unaligned,
+      );
+      expect(find.byType(AlertDialog), findsNothing);
+    });
+
+    testWidgets('burger opens attributes page and returns to previous tab',
         (tester) async {
       final repository = _FakeCharacterRepository(
         charactersById: {
@@ -196,36 +342,230 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.note));
       await tester.pumpAndSettle();
-      expect(find.text('Страница заметок'), findsOneWidget);
+      expect(find.byTooltip('Добавить заметку'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.menu));
       await tester.pumpAndSettle();
 
       expect(find.text('Характеристики'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('attribute-card-strength')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey('attribute-card-intelligence')),
+        findsOneWidget,
+      );
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('attribute-card-charisma')),
+        300,
+      );
+      expect(
+        find.byKey(const ValueKey('attribute-card-charisma')),
+        findsOneWidget,
+      );
+      await tester.scrollUntilVisible(
+        find.byIcon(Icons.close_rounded),
+        -300,
+      );
+      expect(find.text('Акробатика'), findsOneWidget);
       expect(find.byType(NavigationBar), findsNothing);
       expect(find.byIcon(Icons.menu), findsNothing);
       expect(find.byIcon(Icons.close_rounded), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.close_rounded));
+      final closeButton = find.byIcon(Icons.close_rounded);
+      await tester.ensureVisible(closeButton);
+      await tester.pumpAndSettle();
+      await tester.tap(closeButton, warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      expect(find.text('Страница заметок'), findsOneWidget);
+      expect(find.byTooltip('Добавить заметку'), findsOneWidget);
       expect(find.byType(NavigationBar), findsOneWidget);
+    });
+
+    testWidgets('settings action opens character settings route',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheetRouter(tester, repository);
+
+      await tester.tap(find.byTooltip('Настройки персонажа'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Настройки персонажа'), findsNWidgets(2));
+      expect(find.text('Внешний вид'), findsOneWidget);
+      expect(find.text('Как в системе'), findsOneWidget);
+      expect(find.text('Синхронизировано'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Назад'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Атаки'), findsOneWidget);
+    });
+
+    testWidgets('character settings route keeps pending sync status',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheetRouter(
+        tester,
+        repository,
+        offlineRecord: OfflineCharacterRecord(
+          userId: 7,
+          localId: 1,
+          serverId: 1,
+          character: protocol.CharacterData(id: 1, name: 'Тестовый герой'),
+          status: OfflineCharacterSyncStatus.dirty,
+          operation: OfflineCharacterSyncOperation.upsert,
+        ),
+      );
+
+      await tester.tap(find.byTooltip('Настройки персонажа'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Внешний вид'), findsOneWidget);
+      expect(find.text('Ожидает синхронизации'), findsOneWidget);
+    });
+
+    testWidgets('notes tab shows, adds, edits, and deletes notes',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            notes: [
+              protocol.CharacterNoteData(
+                id: 'note-1',
+                text: 'Первая заметка',
+              ),
+            ],
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      await tester.tap(find.byIcon(Icons.note));
+      await tester.pumpAndSettle();
+
+      expect(find.byTooltip('Добавить заметку'), findsOneWidget);
+      expect(find.text('Первая заметка'), findsOneWidget);
+
+      await tester.enterText(_noteField('Заметка 1'), 'Обновленная заметка');
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
+        const ['Обновленная заметка'],
+      );
+
+      await tester.tap(find.byTooltip('Добавить заметку'));
+      await tester.pumpAndSettle();
+      await tester.enterText(_noteField('Заметка 2'), 'Новая заметка');
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
+        const ['Обновленная заметка', 'Новая заметка'],
+      );
+
+      await tester.tap(find.text('Удалить').first);
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
+        const ['Обновленная заметка', 'Новая заметка'],
+      );
+      expect(find.text('Точно?'), findsOneWidget);
+
+      await tester.tap(find.text('Точно?'));
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
+        const ['Новая заметка'],
+      );
+    });
+
+    testWidgets('notes tab keeps multiple unsaved blank notes focusable',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      await tester.tap(find.byIcon(Icons.note));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Добавить заметку'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Добавить заметку'));
+      await tester.pumpAndSettle();
+      await tester.tap(_noteField('Заметка 1'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(repository.charactersById[1]?.notes, isNull);
+      expect(_noteField('Заметка 1'), findsOneWidget);
+      expect(_noteField('Заметка 2'), findsOneWidget);
     });
   });
 }
 
+Finder _noteField(String label) {
+  return _textField(label);
+}
+
+Finder _textField(String label) {
+  return find.byWidgetPredicate(
+    (widget) => widget is TextField && widget.decoration?.labelText == label,
+  );
+}
+
+Finder _characterPageScrollable() {
+  return find.byType(ListView).first;
+}
+
 Future<void> _pumpCharacterSheet(
   WidgetTester tester,
-  _FakeCharacterRepository repository,
-) async {
-  await tester.binding.setSurfaceSize(const Size(1280, 800));
+  _FakeCharacterRepository repository, {
+  Size surfaceSize = const Size(1280, 800),
+  OfflineCharacterRecord? offlineRecord,
+}) async {
+  await tester.binding.setSurfaceSize(surfaceSize);
   addTearDown(() => tester.binding.setSurfaceSize(null));
 
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
         characterRepositoryProvider.overrideWithValue(repository),
+        if (offlineRecord != null)
+          offlineCharacterRecordProvider(1).overrideWith(
+            (ref) async => offlineRecord,
+          ),
       ],
       child: MaterialApp(
         theme: darkTheme,
@@ -236,6 +576,72 @@ Future<void> _pumpCharacterSheet(
   await tester.pumpAndSettle();
 }
 
+Future<void> _pumpCharacterSheetRouter(
+  WidgetTester tester,
+  _FakeCharacterRepository repository, {
+  Size surfaceSize = const Size(1280, 800),
+  OfflineCharacterRecord? offlineRecord,
+}) async {
+  await tester.binding.setSurfaceSize(surfaceSize);
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+
+  final router = GoRouter(
+    initialLocation: '/characters/sheet/1',
+    routes: [
+      GoRoute(
+        path: '/characters/sheet/:id',
+        builder: (_, state) {
+          final characterId = int.parse(state.pathParameters['id']!);
+          return CharacterSheet(characterId: characterId);
+        },
+      ),
+      GoRoute(
+        path: '/characters/sheet/:id/settings',
+        builder: (_, state) {
+          final characterId = int.parse(state.pathParameters['id']!);
+          return CharacterSheetSettingsPage(characterId: characterId);
+        },
+      ),
+    ],
+  );
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+        userSettingsRepositoryProvider.overrideWithValue(
+          UserSettingsRepository(storage: _FakeStorage()),
+        ),
+        if (offlineRecord != null)
+          offlineCharacterRecordProvider(1).overrideWith(
+            (ref) async => offlineRecord,
+          ),
+      ],
+      child: MaterialApp.router(
+        theme: darkTheme,
+        routerConfig: router,
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
+Future<void> _dragWithPointerKind(
+  WidgetTester tester,
+  Finder target,
+  Offset offset,
+  PointerDeviceKind kind,
+) async {
+  final start = tester.getCenter(target);
+  final gesture = await tester.createGesture(kind: kind);
+  await gesture.down(start);
+  await tester.pump();
+  await gesture.moveTo(start + offset);
+  await tester.pump();
+  await gesture.up();
+  await tester.pumpAndSettle();
+}
+
 class _FakeCharacterRepository extends CharacterRepository {
   _FakeCharacterRepository({
     required Map<int, protocol.CharacterData> charactersById,
@@ -243,6 +649,8 @@ class _FakeCharacterRepository extends CharacterRepository {
 
   final Map<int, protocol.CharacterData> _charactersById;
   int getCharacterCallCount = 0;
+
+  Map<int, protocol.CharacterData> get charactersById => _charactersById;
 
   @override
   Future<protocol.CharacterData> getCharacter(int characterId) async {
@@ -283,5 +691,34 @@ class _FakeCharacterRepository extends CharacterRepository {
   @override
   Future<void> delete(int id) async {
     _charactersById.remove(id);
+  }
+}
+
+class _FakeStorage implements Storage {
+  final Map<String, Object> values = {};
+
+  @override
+  Future<int?> getInt(String key) async {
+    return values[key] as int?;
+  }
+
+  @override
+  Future<String?> getString(String key) async {
+    return values[key] as String?;
+  }
+
+  @override
+  Future<void> remove(String key) async {
+    values.remove(key);
+  }
+
+  @override
+  Future<void> setInt(String key, int value) async {
+    values[key] = value;
+  }
+
+  @override
+  Future<void> setString(String key, String value) async {
+    values[key] = value;
   }
 }

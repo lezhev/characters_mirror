@@ -9,6 +9,7 @@ import 'package:characters_mirror_flutter/features/character_sheet/presentation/
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stats_row.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/feature_list_section.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/fight_error_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/hit_points_calculator_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -49,7 +50,8 @@ class FightPage extends ConsumerWidget {
             const <CharacterFeatureViewData>[];
         final visibleFeatures = activeFeatures
             .where(
-              (feature) => matchesSelectedFeatureTags(feature, selectedFeatureTags),
+              (feature) =>
+                  matchesSelectedFeatureTags(feature, selectedFeatureTags),
             )
             .toList();
 
@@ -58,7 +60,27 @@ class FightPage extends ConsumerWidget {
           child: PageSizeLimiter(
             child: ListView(
               children: [
-                CombatStatsRow(character: character),
+                CombatStatsRow(
+                  character: character,
+                  onHpPressed: () => showHitPointsCalculatorSheet(
+                    context: context,
+                    character: character,
+                    onSave: ({
+                      required currentHp,
+                      required temporaryHp,
+                    }) {
+                      return ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .saveHitPoints(
+                            currentHp: currentHp,
+                            temporaryHp: temporaryHp,
+                          );
+                    },
+                  ),
+                ),
                 const SizedBox(height: 20),
                 AttackListSection(
                   attacks: displayedAttacks,
@@ -103,7 +125,8 @@ class FightPage extends ConsumerWidget {
                     List<FeatureTag>? tags,
                   }) {
                     return ref
-                        .read(characterSheetControllerProvider(characterId).notifier)
+                        .read(characterSheetControllerProvider(characterId)
+                            .notifier)
                         .saveFeatureOverride(
                           feature,
                           name: name,
@@ -113,7 +136,8 @@ class FightPage extends ConsumerWidget {
                   },
                   onResetFeature: (feature) {
                     return ref
-                        .read(characterSheetControllerProvider(characterId).notifier)
+                        .read(characterSheetControllerProvider(characterId)
+                            .notifier)
                         .resetFeatureOverride(feature);
                   },
                 ),

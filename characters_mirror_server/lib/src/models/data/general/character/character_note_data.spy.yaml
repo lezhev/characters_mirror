@@ -1,0 +1,5 @@
+class: CharacterNoteData
+fields:
+  id: String?
+  text: String?
+  updatedAt: DateTime?

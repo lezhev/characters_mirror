@@ -1,6 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/language_labels.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_cards_switcher.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -66,29 +67,43 @@ class RaceChoiceSetCard extends ConsumerWidget {
       );
     }
 
-    return CreationChoiceCardsSwitcher(
+    final items = options.map((option) {
+      final optionKey = option.optionKey?.trim();
+      final title = choiceOptionLabel(option);
+      return CreationChoiceSelectorItem(
+        id: optionKey ?? title,
+        title: title,
+        subtitle: option.description,
+        isSelected: optionKey != null && selectedKeys.contains(optionKey),
+        onTap: () => ref
+            .read(raceStateProvider.notifier)
+            .toggleChoiceOption(choiceSet, option),
+        onInfoTap: () => showChoiceOptionPlaceholderDialog(
+          context: context,
+          title: title,
+          description: option.description,
+        ),
+      );
+    }).toList();
+    final pickCount = choiceSet.pickCount ?? 1;
+
+    if (pickCount <= 1) {
+      return CreationChoiceSelector.single(
+        title: raceChoiceKindLabel(choiceSet.kind),
+        description: choiceSet.description,
+        switchKey: choiceSet.id ?? choiceSet.kind?.name ?? 'race',
+        autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(choiceSet.kind),
+        items: items,
+      );
+    }
+
+    return CreationChoiceSelector.multi(
       title: raceChoiceKindLabel(choiceSet.kind),
       description: choiceSet.description,
       switchKey: choiceSet.id ?? choiceSet.kind?.name ?? 'race',
+      selectionLimit: pickCount,
       autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(choiceSet.kind),
-      items: options.map((option) {
-        final optionKey = option.optionKey?.trim();
-        final title = choiceOptionLabel(option);
-        return CreationChoiceCardItem(
-          id: optionKey ?? title,
-          title: title,
-          subtitle: option.description,
-          isSelected: optionKey != null && selectedKeys.contains(optionKey),
-          onTap: () => ref
-              .read(raceStateProvider.notifier)
-              .toggleChoiceOption(choiceSet, option),
-          onInfoTap: () => showChoiceOptionPlaceholderDialog(
-            context: context,
-            title: title,
-            description: option.description,
-          ),
-        );
-      }).toList(),
+      items: items,
     );
   }
 }
@@ -143,6 +158,10 @@ String? choiceSetGroupKey(int? choiceSetId) {
 }
 
 String choiceOptionLabel(RaceChoiceOptionData option) {
+  if (option.language != null) {
+    return languageLabel(option.language!);
+  }
+
   final explicitName = option.name?.trim();
   if (explicitName != null && explicitName.isNotEmpty) {
     return explicitName;
@@ -153,9 +172,6 @@ String choiceOptionLabel(RaceChoiceOptionData option) {
   }
   if (option.skill != null) {
     return formatRaceName(enumToken(option.skill));
-  }
-  if (option.language != null) {
-    return formatRaceName(enumToken(option.language));
   }
   if (option.ability != null && option.bonusValue != null) {
     return '${formatRaceName(enumToken(option.ability))} +${option.bonusValue}';

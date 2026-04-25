@@ -31,10 +31,11 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
     this.selectedFeatId,
     this.selectedText,
     this.selectedCount,
+    this.updatedAt,
   });
 
   factory CharacterChoiceData({
-    int? id,
+    String? id,
     _i2.CharacterClassEntryData? classEntry,
     _i3.ChoiceSourceType? sourceType,
     int? sourceId,
@@ -48,11 +49,12 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
+    DateTime? updatedAt,
   }) = _CharacterChoiceDataImpl;
 
   factory CharacterChoiceData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterChoiceData(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] as String?,
       classEntry: jsonSerialization['classEntry'] == null
           ? null
           : _i2.CharacterClassEntryData.fromJson(
@@ -78,10 +80,13 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
       selectedFeatId: jsonSerialization['selectedFeatId'] as int?,
       selectedText: jsonSerialization['selectedText'] as String?,
       selectedCount: jsonSerialization['selectedCount'] as int?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
-  int? id;
+  String? id;
 
   _i2.CharacterClassEntryData? classEntry;
 
@@ -109,11 +114,13 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
 
   int? selectedCount;
 
+  DateTime? updatedAt;
+
   /// Returns a shallow copy of this [CharacterChoiceData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   CharacterChoiceData copyWith({
-    int? id,
+    String? id,
     _i2.CharacterClassEntryData? classEntry,
     _i3.ChoiceSourceType? sourceType,
     int? sourceId,
@@ -127,6 +134,7 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -146,6 +154,7 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
       if (selectedFeatId != null) 'selectedFeatId': selectedFeatId,
       if (selectedText != null) 'selectedText': selectedText,
       if (selectedCount != null) 'selectedCount': selectedCount,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -159,7 +168,7 @@ class _Undefined {}
 
 class _CharacterChoiceDataImpl extends CharacterChoiceData {
   _CharacterChoiceDataImpl({
-    int? id,
+    String? id,
     _i2.CharacterClassEntryData? classEntry,
     _i3.ChoiceSourceType? sourceType,
     int? sourceId,
@@ -173,6 +182,7 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
     int? selectedFeatId,
     String? selectedText,
     int? selectedCount,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
           classEntry: classEntry,
@@ -188,6 +198,7 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
           selectedFeatId: selectedFeatId,
           selectedText: selectedText,
           selectedCount: selectedCount,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterChoiceData]
@@ -209,9 +220,10 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
     Object? selectedFeatId = _Undefined,
     Object? selectedText = _Undefined,
     Object? selectedCount = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterChoiceData(
-      id: id is int? ? id : this.id,
+      id: id is String? ? id : this.id,
       classEntry: classEntry is _i2.CharacterClassEntryData?
           ? classEntry
           : this.classEntry?.copyWith(),
@@ -237,6 +249,7 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
           selectedFeatId is int? ? selectedFeatId : this.selectedFeatId,
       selectedText: selectedText is String? ? selectedText : this.selectedText,
       selectedCount: selectedCount is int? ? selectedCount : this.selectedCount,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }

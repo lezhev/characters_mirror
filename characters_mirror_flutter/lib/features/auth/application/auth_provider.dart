@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_reference_prewarm.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/remember_me_persistence.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 import 'package:flutter/foundation.dart';
@@ -259,6 +263,7 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   final AuthService _service;
+  int? _prewarmedUserId;
 
   Future<AuthActionResult> signIn(
     String email,
@@ -299,11 +304,26 @@ class AuthController extends StateNotifier<AuthState> {
   void _syncFromService() {
     final user = _service.currentUser;
     if (user == null) {
+      _prewarmedUserId = null;
       state = const AuthState.signedOut();
       return;
     }
 
     state = AuthState.signedIn(user);
+    if (offlineCacheDatabase != null && _prewarmedUserId != user.id) {
+      _prewarmedUserId = user.id;
+      unawaited(_prewarmOfflineCache());
+      unawaited(offlineSyncCoordinator?.syncNow());
+    }
+  }
+
+  Future<void> _prewarmOfflineCache() async {
+    try {
+      await OfflineReferencePrewarmer().prewarm();
+    } catch (_) {
+      // The current online session remains usable; repositories will keep
+      // falling back to any cache that was already warmed.
+    }
   }
 
   @override

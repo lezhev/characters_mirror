@@ -27,13 +27,24 @@ class CharacterDataEndpoint extends Endpoint {
     CharacterData character,
   ) async {
     final userId = await _requireCurrentUserId(session);
-    final isNewCharacter = character.id == null;
     // TODO: Add server-side abuse limits for character count, text lengths,
     // list sizes, and save rate before accepting user-controlled payloads.
     var normalizedCharacter = character.copyWith(
       featureOverrides: await _pruneFeatureOverrides(session, character),
     );
-    if (isNewCharacter) {
+    final existingRecord = character.id == null
+        ? null
+        : await _findOwnedCharacterRecord(session, character.id!, userId);
+    if (_serverSnapshotIsNewer(existingRecord, normalizedCharacter)) {
+      return _buildCharacterAggregate(session, existingRecord!);
+    }
+
+    normalizedCharacter = _normalizeIncomingCharacter(
+      normalizedCharacter,
+      fallbackUpdatedAt:
+          normalizedCharacter.updatedAt ?? existingRecord?.updatedAt,
+    );
+    if (character.id == null) {
       normalizedCharacter = await _applyInitialEquipmentSnapshot(
         session,
         normalizedCharacter,
@@ -41,34 +52,7 @@ class CharacterDataEndpoint extends Endpoint {
     }
     final savedRecord =
         await _upsertCharacterRecord(session, normalizedCharacter, userId);
-
-    await CharacterChoiceRecord.db.deleteWhere(
-      session,
-      where: (t) => t.characterId.equals(savedRecord.id),
-    );
-    await _deleteStartingEquipmentRecords(session, savedRecord.id!);
-    await CharacterClassEntryRecord.db.deleteWhere(
-      session,
-      where: (t) => t.characterId.equals(savedRecord.id),
-    );
-
-    final savedEntries = await _insertClassEntryRecords(
-      session,
-      savedRecord,
-      normalizedCharacter.classEntries ?? const <CharacterClassEntryData>[],
-    );
-    await _insertChoiceRecords(
-      session,
-      savedRecord,
-      savedEntries,
-      normalizedCharacter.choices ?? const <CharacterChoiceData>[],
-    );
-    await _insertStartingEquipmentSelectionRecords(
-      session,
-      savedRecord,
-      normalizedCharacter.startingEquipmentSelections ??
-          const <CharacterStartingEquipmentSelectionData>[],
-    );
+    await _upsertCharacterRelations(session, savedRecord, normalizedCharacter);
 
     final hydratedRecord = await _requireOwnedCharacterRecord(
       session,
@@ -78,9 +62,166 @@ class CharacterDataEndpoint extends Endpoint {
     return _buildCharacterAggregate(session, hydratedRecord);
   }
 
+  Future<CharacterSyncResult> syncSaveCharacter(
+    Session session,
+    CharacterData character,
+    int? expectedVersion,
+  ) async {
+    final userId = await _requireCurrentUserId(session);
+    final characterId = character.id;
+    if (characterId != null) {
+      final currentRecord = await _findOwnedCharacterRecord(
+        session,
+        characterId,
+        userId,
+      );
+      if (currentRecord == null) {
+        return CharacterSyncResult(
+          status: CharacterSyncStatus.notFound,
+          message: 'Character was not found for this user.',
+        );
+      }
+      if (currentRecord.version != expectedVersion) {
+        return CharacterSyncResult(
+          status: CharacterSyncStatus.conflict,
+          conflictCharacter:
+              await _buildCharacterAggregate(session, currentRecord),
+          message: 'Character version conflict.',
+        );
+      }
+    }
+
+    final saved = await saveCharacter(session, character);
+    return CharacterSyncResult(
+      status: CharacterSyncStatus.saved,
+      character: saved,
+    );
+  }
+
+  Future<CharacterSyncResponse> syncCharacters(
+    Session session,
+    CharacterSyncRequest request,
+  ) async {
+    final userId = await _requireCurrentUserId(session);
+    final acknowledgedChangeIds = <String>[];
+    final rejectedChanges = <CharacterRejectedChangeData>[];
+    for (final change in request.changes ?? const <CharacterChangeData>[]) {
+      if (change.entityType != CharacterEntityType.character) {
+        rejectedChanges.add(
+          CharacterRejectedChangeData(
+            changeId: change.id,
+            reason: 'unsupported_entity',
+            message: 'Unsupported entity type ${change.entityType.name}.',
+          ),
+        );
+        continue;
+      }
+
+      switch (change.changeType) {
+        case CharacterChangeType.upsert:
+          final payload = change.payload;
+          if (payload == null) {
+            rejectedChanges.add(
+              CharacterRejectedChangeData(
+                changeId: change.id,
+                reason: 'missing_payload',
+                message: 'Upsert change requires payload.',
+              ),
+            );
+            continue;
+          }
+
+          final currentRecord = payload.id == null
+              ? null
+              : await _findOwnedCharacterRecord(session, payload.id!, userId);
+          if (_serverSnapshotIsNewer(currentRecord, payload)) {
+            rejectedChanges.add(
+              CharacterRejectedChangeData(
+                changeId: change.id,
+                reason: 'stale_update',
+                message:
+                    'Stored character is newer than the incoming snapshot.',
+                character: currentRecord == null
+                    ? null
+                    : await _buildCharacterAggregate(session, currentRecord),
+              ),
+            );
+            continue;
+          }
+
+          await saveCharacter(session, payload);
+          acknowledgedChangeIds.add(change.id);
+          continue;
+        case CharacterChangeType.delete:
+          final existing = await _findOwnedCharacterRecordByEntityId(
+            session,
+            userId,
+            change.entityId,
+          );
+          if (existing == null) {
+            acknowledgedChangeIds.add(change.id);
+            continue;
+          }
+          if (_serverDeleteShouldWin(existing, change.baseUpdatedAt)) {
+            rejectedChanges.add(
+              CharacterRejectedChangeData(
+                changeId: change.id,
+                reason: 'stale_delete',
+                message: 'Stored character is newer than the delete base.',
+                character: await _buildCharacterAggregate(session, existing),
+              ),
+            );
+            continue;
+          }
+          await delete(session, existing.id!);
+          acknowledgedChangeIds.add(change.id);
+          continue;
+      }
+    }
+
+    final pullCharacters = await _loadCharactersUpdatedAfter(
+      session,
+      userId: userId,
+      updatedAfter: request.pullSince,
+    );
+
+    return CharacterSyncResponse(
+      acknowledgedChangeIds: acknowledgedChangeIds,
+      rejectedChanges: rejectedChanges,
+      characters: pullCharacters,
+      serverTime: DateTime.now().toUtc(),
+    );
+  }
+
   Future<CharacterData> getCharacter(Session session, int id) async {
     final record = await _requireOwnedCharacterRecord(session, id);
     return _buildCharacterAggregate(session, record);
+  }
+
+  Future<CharacterSyncResult> syncDeleteCharacter(
+    Session session,
+    int id,
+    int? expectedVersion,
+  ) async {
+    final userId = await _requireCurrentUserId(session);
+    final currentRecord = await _findOwnedCharacterRecord(session, id, userId);
+    if (currentRecord == null) {
+      return CharacterSyncResult(
+        status: CharacterSyncStatus.notFound,
+        message: 'Character was not found for this user.',
+      );
+    }
+    if (currentRecord.version != expectedVersion) {
+      return CharacterSyncResult(
+        status: CharacterSyncStatus.conflict,
+        conflictCharacter:
+            await _buildCharacterAggregate(session, currentRecord),
+        message: 'Character version conflict.',
+      );
+    }
+
+    await delete(session, id);
+    return CharacterSyncResult(status: CharacterSyncStatus.deleted);
   }
 
   Future<void> delete(Session session, int id) async {
@@ -152,9 +293,13 @@ Future<CharacterData> _applyInitialEquipmentSnapshot(
     return character;
   }
 
-  final equipmentText = _normalizedTextOrNull(character.equipment) == null
-      ? _formatEquipmentSnapshot(grantedEquipment)
-      : character.equipment;
+  final equipment =
+      (character.equipment == null || character.equipment!.isEmpty)
+          ? _buildEquipmentSnapshot(
+              grantedEquipment,
+              fallbackUpdatedAt: character.updatedAt,
+            )
+          : character.equipment;
   final weaponAttacks = await _buildStartingWeaponAttacks(
     session,
     character,
@@ -168,25 +313,33 @@ Future<CharacterData> _applyInitialEquipmentSnapshot(
   }
 
   return character.copyWith(
-    equipment: equipmentText,
+    equipment: equipment,
     attacks: attacks.isEmpty ? character.attacks : attacks,
   );
 }
 
-String? _formatEquipmentSnapshot(
-  List<CharacterEquipmentEntryView> grantedEquipment,
-) {
-  final parts = <String>[];
+List<CharacterInventoryItemData> _buildEquipmentSnapshot(
+  List<CharacterEquipmentEntryView> grantedEquipment, {
+  required DateTime? fallbackUpdatedAt,
+}) {
+  final items = <CharacterInventoryItemData>[];
   for (final entry in grantedEquipment) {
     final name = _normalizedTextOrNull(entry.displayText) ??
         _normalizedTextOrNull(entry.referenceKey);
     if (name == null) {
       continue;
     }
-    final quantity = _normalizedPositiveQuantity(entry.quantity);
-    parts.add(quantity > 1 ? '$name x$quantity' : name);
+    items.add(
+      CharacterInventoryItemData(
+        id: _generateSyncId(),
+        name: name,
+        quantity: _normalizedPositiveQuantity(entry.quantity),
+        type: _inventoryItemTypeForCatalog(entry.catalogType),
+        updatedAt: fallbackUpdatedAt,
+      ),
+    );
   }
-  return parts.isEmpty ? null : parts.join(', ');
+  return items;
 }
 
 Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(
@@ -229,6 +382,7 @@ Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(
 
     attacks.add(
       CharacterAttackData(
+        id: _generateSyncId(),
         name: _normalizedTextOrNull(weapon.name) ?? referenceKey,
         leadingAbility: _startingWeaponAbility(weapon, derived),
         damage: _normalizedTextOrNull(weapon.damage),
@@ -236,6 +390,7 @@ Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(
         damageType: weapon.damageType,
         tags: _normalizedAttackTags(weapon.properties),
         description: _normalizedTextOrNull(weapon.description),
+        updatedAt: character.updatedAt,
       ),
     );
   }
@@ -296,7 +451,10 @@ Future<CharacterRecord> _upsertCharacterRecord(
   CharacterData character,
   int userId,
 ) async {
-  final now = DateTime.now();
+  final now = DateTime.now().toUtc();
+  final effectiveUpdatedAt = character.updatedAt?.toUtc() ?? now;
+  final effectiveCreatedAt =
+      character.createdAt?.toUtc() ?? character.updatedAt?.toUtc() ?? now;
 
   if (character.id == null) {
     return CharacterRecord.db.insertRow(
@@ -305,8 +463,8 @@ Future<CharacterRecord> _upsertCharacterRecord(
         character,
         userId: userId,
         version: character.version ?? 1,
-        createdAt: character.createdAt ?? now,
-        updatedAt: now,
+        createdAt: effectiveCreatedAt,
+        updatedAt: effectiveUpdatedAt,
       ),
     );
   }
@@ -322,8 +480,8 @@ Future<CharacterRecord> _upsertCharacterRecord(
       id: ownedRecord.id,
       userId: ownedRecord.userId ?? userId,
       version: (ownedRecord.version ?? 0) + 1,
-      createdAt: ownedRecord.createdAt ?? now,
-      updatedAt: now,
+      createdAt: ownedRecord.createdAt?.toUtc() ?? effectiveCreatedAt,
+      updatedAt: effectiveUpdatedAt,
     );
     await CharacterRecord.db.updateRow(session, updatedRecord);
     return updatedRecord;
@@ -344,8 +502,8 @@ Future<CharacterRecord> _upsertCharacterRecord(
       character,
       userId: userId,
       version: character.version ?? 1,
-      createdAt: character.createdAt ?? now,
-      updatedAt: now,
+      createdAt: effectiveCreatedAt,
+      updatedAt: effectiveUpdatedAt,
     ),
   );
 }
@@ -399,71 +557,156 @@ CharacterRecord _toCharacterRecord(
   );
 }
 
-Future<List<CharacterClassEntryRecord>> _insertClassEntryRecords(
+Future<void> _upsertCharacterRelations(
+  Session session,
+  CharacterRecord characterRecord,
+  CharacterData character,
+) async {
+  final entryResult = await _upsertClassEntryRecords(
+    session,
+    characterRecord,
+    character.classEntries ?? const <CharacterClassEntryData>[],
+  );
+  await _upsertChoiceRecords(
+    session,
+    characterRecord,
+    entryResult.savedEntries,
+    character.choices ?? const <CharacterChoiceData>[],
+  );
+  await _deleteMissingClassEntryRecords(
+    session,
+    characterRecord.id!,
+    entryResult.keepRowIds,
+  );
+  await _upsertStartingEquipmentSelectionRecords(
+    session,
+    characterRecord,
+    character.startingEquipmentSelections ??
+        const <CharacterStartingEquipmentSelectionData>[],
+  );
+}
+
+class _UpsertClassEntryResult {
+  const _UpsertClassEntryResult({
+    required this.savedEntries,
+    required this.keepRowIds,
+  });
+
+  final List<CharacterClassEntryRecord> savedEntries;
+  final Set<int> keepRowIds;
+}
+
+Future<_UpsertClassEntryResult> _upsertClassEntryRecords(
   Session session,
   CharacterRecord characterRecord,
   List<CharacterClassEntryData> entries,
 ) async {
+  final existingEntries = await CharacterClassEntryRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterRecord.id),
+  );
+  final existingBySyncId = {
+    for (final record in existingEntries)
+      if (record.syncId != null) record.syncId!: record,
+  };
+
   final savedEntries = <CharacterClassEntryRecord>[];
+  final keepRowIds = <int>{};
   for (final entry in entries) {
     final classDataId = entry.classData?.id;
     if (classDataId == null) {
       throw Exception('Character class entry requires classData.id.');
     }
-    final saved = await CharacterClassEntryRecord.db.insertRow(
-      session,
-      CharacterClassEntryRecord(
-        characterId: characterRecord.id!,
-        character: characterRecord,
-        classDataId: classDataId,
-        subclassId: entry.subclass?.id,
-        level: entry.level ?? 1,
-        isStartingClass: entry.isStartingClass,
-        classOrder: entry.classOrder,
-        hpMode: entry.hpMode,
-        hpRolledValues: entry.hpRolledValues,
-        notes: entry.notes,
-      ),
+
+    final syncId = entry.id ?? _generateSyncId();
+    final existingRecord = existingBySyncId[syncId];
+    final nextRecord = CharacterClassEntryRecord(
+      id: existingRecord?.id,
+      syncId: syncId,
+      characterId: characterRecord.id!,
+      character: characterRecord,
+      classDataId: classDataId,
+      subclassId: entry.subclass?.id,
+      level: entry.level ?? 1,
+      isStartingClass: entry.isStartingClass,
+      classOrder: entry.classOrder,
+      hpMode: entry.hpMode,
+      hpRolledValues: entry.hpRolledValues,
+      notes: entry.notes,
+      updatedAt: entry.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
+    final saved = existingRecord == null
+        ? await CharacterClassEntryRecord.db.insertRow(session, nextRecord)
+        : await CharacterClassEntryRecord.db.updateRow(session, nextRecord);
+    if (saved.id != null) {
+      keepRowIds.add(saved.id!);
+    }
     savedEntries.add(saved);
   }
-  return savedEntries;
+
+  return _UpsertClassEntryResult(
+    savedEntries: savedEntries,
+    keepRowIds: keepRowIds,
+  );
 }
 
-Future<List<CharacterChoiceRecord>> _insertChoiceRecords(
+Future<void> _upsertChoiceRecords(
   Session session,
   CharacterRecord characterRecord,
   List<CharacterClassEntryRecord> savedEntries,
   List<CharacterChoiceData> choices,
 ) async {
-  final savedChoices = <CharacterChoiceRecord>[];
+  final existingChoices = await CharacterChoiceRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterRecord.id),
+  );
+  final existingBySyncId = {
+    for (final record in existingChoices)
+      if (record.syncId != null) record.syncId!: record,
+  };
+  final savedEntriesBySyncId = {
+    for (final entry in savedEntries)
+      if (entry.syncId != null) entry.syncId!: entry,
+  };
+
+  final keepRowIds = <int>{};
   for (final choice in choices) {
-    final matchedEntry =
-        _matchSavedEntryRecord(choice.classEntry, savedEntries);
-    final saved = await CharacterChoiceRecord.db.insertRow(
-      session,
-      CharacterChoiceRecord(
-        characterId: characterRecord.id!,
-        character: characterRecord,
-        classEntryId: matchedEntry?.id,
-        classEntry: matchedEntry,
-        sourceType: choice.sourceType,
-        sourceId: choice.sourceId,
-        groupKey: choice.groupKey,
-        optionKey: choice.optionKey,
-        selectionIndex: choice.selectionIndex,
-        selectedAbility: choice.selectedAbility,
-        selectedLanguage: choice.selectedLanguage,
-        selectedToolKey: choice.selectedToolKey,
-        selectedSpellKey: choice.selectedSpellKey,
-        selectedFeatId: choice.selectedFeatId,
-        selectedText: choice.selectedText,
-        selectedCount: choice.selectedCount,
-      ),
+    final syncId = choice.id ?? _generateSyncId();
+    final existingRecord = existingBySyncId[syncId];
+    final matchedEntry = _matchSavedEntryRecord(
+      choice.classEntry,
+      savedEntriesBySyncId,
     );
-    savedChoices.add(saved);
+    final nextRecord = CharacterChoiceRecord(
+      id: existingRecord?.id,
+      syncId: syncId,
+      characterId: characterRecord.id!,
+      character: characterRecord,
+      classEntryId: matchedEntry?.id,
+      classEntry: matchedEntry,
+      sourceType: choice.sourceType,
+      sourceId: choice.sourceId,
+      groupKey: choice.groupKey,
+      optionKey: choice.optionKey,
+      selectionIndex: choice.selectionIndex,
+      selectedAbility: choice.selectedAbility,
+      selectedLanguage: choice.selectedLanguage,
+      selectedToolKey: choice.selectedToolKey,
+      selectedSpellKey: choice.selectedSpellKey,
+      selectedFeatId: choice.selectedFeatId,
+      selectedText: choice.selectedText,
+      selectedCount: choice.selectedCount,
+      updatedAt: choice.updatedAt?.toUtc() ?? characterRecord.updatedAt,
+    );
+    final saved = existingRecord == null
+        ? await CharacterChoiceRecord.db.insertRow(session, nextRecord)
+        : await CharacterChoiceRecord.db.updateRow(session, nextRecord);
+    if (saved.id != null) {
+      keepRowIds.add(saved.id!);
+    }
   }
-  return savedChoices;
+
+  await _deleteMissingChoiceRecords(session, characterRecord.id!, keepRowIds);
 }
 
 Future<void> _deleteStartingEquipmentRecords(
@@ -491,68 +734,478 @@ Future<void> _deleteStartingEquipmentRecords(
   );
 }
 
-Future<List<CharacterStartingEquipmentSelectionRecord>>
-    _insertStartingEquipmentSelectionRecords(
+Future<void> _upsertStartingEquipmentSelectionRecords(
   Session session,
   CharacterRecord characterRecord,
   List<CharacterStartingEquipmentSelectionData> selections,
 ) async {
-  final savedSelections = <CharacterStartingEquipmentSelectionRecord>[];
+  final existingSelections =
+      await CharacterStartingEquipmentSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterRecord.id),
+  );
+  final existingSelectionsBySyncId = {
+    for (final record in existingSelections)
+      if (record.syncId != null) record.syncId!: record,
+  };
+  final keepSelectionRowIds = <int>{};
   for (final selection in selections) {
-    final savedSelection =
-        await CharacterStartingEquipmentSelectionRecord.db.insertRow(
-      session,
-      CharacterStartingEquipmentSelectionRecord(
-        characterId: characterRecord.id!,
-        character: characterRecord,
-        sourceType: selection.sourceType,
-        sourceId: selection.sourceId,
-        blockKey: selection.blockKey,
-        optionKey: selection.optionKey,
-        selectionIndex: selection.selectionIndex,
-      ),
+    final syncId = selection.id ?? _generateSyncId();
+    final existingSelection = existingSelectionsBySyncId[syncId];
+    final nextSelection = CharacterStartingEquipmentSelectionRecord(
+      id: existingSelection?.id,
+      syncId: syncId,
+      characterId: characterRecord.id!,
+      character: characterRecord,
+      sourceType: selection.sourceType,
+      sourceId: selection.sourceId,
+      blockKey: selection.blockKey,
+      optionKey: selection.optionKey,
+      selectionIndex: selection.selectionIndex,
+      updatedAt: selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
-    savedSelections.add(savedSelection);
-
-    for (final resolution in selection.resolutions ??
-        const <CharacterStartingEquipmentResolutionData>[]) {
-      await CharacterStartingEquipmentResolutionRecord.db.insertRow(
+    final savedSelection = existingSelection == null
+        ? await CharacterStartingEquipmentSelectionRecord.db.insertRow(
+            session,
+            nextSelection,
+          )
+        : await CharacterStartingEquipmentSelectionRecord.db.updateRow(
+            session,
+            nextSelection,
+          );
+    if (savedSelection.id != null) {
+      keepSelectionRowIds.add(savedSelection.id!);
+      await _upsertStartingEquipmentResolutionRecords(
         session,
-        CharacterStartingEquipmentResolutionRecord(
-          selectionId: savedSelection.id!,
-          selection: savedSelection,
-          lineKey: resolution.lineKey,
-          catalogType: resolution.catalogType,
-          referenceKey: resolution.referenceKey,
-          quantity: resolution.quantity,
-        ),
+        savedSelection,
+        selection.resolutions ??
+            const <CharacterStartingEquipmentResolutionData>[],
       );
     }
   }
+  await _deleteMissingStartingEquipmentSelections(
+    session,
+    characterRecord.id!,
+    keepSelectionRowIds,
+  );
+}
 
-  return savedSelections;
+Future<void> _upsertStartingEquipmentResolutionRecords(
+  Session session,
+  CharacterStartingEquipmentSelectionRecord selectionRecord,
+  List<CharacterStartingEquipmentResolutionData> resolutions,
+) async {
+  final existingResolutions =
+      await CharacterStartingEquipmentResolutionRecord.db.find(
+    session,
+    where: (t) => t.selectionId.equals(selectionRecord.id),
+  );
+  final existingBySyncId = {
+    for (final record in existingResolutions)
+      if (record.syncId != null) record.syncId!: record,
+  };
+  final keepRowIds = <int>{};
+  for (final resolution in resolutions) {
+    final syncId = resolution.id ?? _generateSyncId();
+    final existingRecord = existingBySyncId[syncId];
+    final nextRecord = CharacterStartingEquipmentResolutionRecord(
+      id: existingRecord?.id,
+      syncId: syncId,
+      selectionId: selectionRecord.id!,
+      selection: selectionRecord,
+      lineKey: resolution.lineKey,
+      catalogType: resolution.catalogType,
+      referenceKey: resolution.referenceKey,
+      quantity: resolution.quantity,
+      updatedAt: resolution.updatedAt?.toUtc() ?? selectionRecord.updatedAt,
+    );
+    final saved = existingRecord == null
+        ? await CharacterStartingEquipmentResolutionRecord.db.insertRow(
+            session,
+            nextRecord,
+          )
+        : await CharacterStartingEquipmentResolutionRecord.db.updateRow(
+            session,
+            nextRecord,
+          );
+    if (saved.id != null) {
+      keepRowIds.add(saved.id!);
+    }
+  }
+  await _deleteMissingStartingEquipmentResolutions(
+    session,
+    selectionRecord.id!,
+    keepRowIds,
+  );
 }
 
 CharacterClassEntryRecord? _matchSavedEntryRecord(
   CharacterClassEntryData? draftEntry,
-  List<CharacterClassEntryRecord> savedEntries,
+  Map<String, CharacterClassEntryRecord> savedEntriesBySyncId,
 ) {
   if (draftEntry == null) return null;
-  if (draftEntry.id != null) {
-    for (final saved in savedEntries) {
-      if (saved.id == draftEntry.id) {
-        return saved;
-      }
-    }
+  final syncId = draftEntry.id;
+  if (syncId == null) return null;
+  return savedEntriesBySyncId[syncId];
+}
+
+Future<void> _deleteMissingClassEntryRecords(
+  Session session,
+  int characterId,
+  Set<int> keepRowIds,
+) async {
+  final existingEntries = await CharacterClassEntryRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterId),
+  );
+  final removableIds = [
+    for (final entry in existingEntries)
+      if (entry.id != null && !keepRowIds.contains(entry.id)) entry.id!,
+  ];
+  if (removableIds.isEmpty) {
+    return;
   }
-  for (final saved in savedEntries) {
-    final sameClass = saved.classDataId == draftEntry.classData?.id;
-    final sameOrder = saved.classOrder == draftEntry.classOrder;
-    if (sameClass && sameOrder) {
-      return saved;
-    }
+  await CharacterClassEntryRecord.db.deleteWhere(
+    session,
+    where: (t) => t.id.inSet(removableIds.toSet()),
+  );
+}
+
+Future<void> _deleteMissingChoiceRecords(
+  Session session,
+  int characterId,
+  Set<int> keepRowIds,
+) async {
+  final existingChoices = await CharacterChoiceRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterId),
+  );
+  final removableIds = [
+    for (final choice in existingChoices)
+      if (choice.id != null && !keepRowIds.contains(choice.id)) choice.id!,
+  ];
+  if (removableIds.isEmpty) {
+    return;
+  }
+  await CharacterChoiceRecord.db.deleteWhere(
+    session,
+    where: (t) => t.id.inSet(removableIds.toSet()),
+  );
+}
+
+Future<void> _deleteMissingStartingEquipmentSelections(
+  Session session,
+  int characterId,
+  Set<int> keepSelectionRowIds,
+) async {
+  final existingSelections =
+      await CharacterStartingEquipmentSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterId),
+  );
+  final removableSelectionIds = [
+    for (final selection in existingSelections)
+      if (selection.id != null && !keepSelectionRowIds.contains(selection.id))
+        selection.id!,
+  ];
+  if (removableSelectionIds.isEmpty) {
+    return;
+  }
+  await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
+    session,
+    where: (t) => t.selectionId.inSet(removableSelectionIds.toSet()),
+  );
+  await CharacterStartingEquipmentSelectionRecord.db.deleteWhere(
+    session,
+    where: (t) => t.id.inSet(removableSelectionIds.toSet()),
+  );
+}
+
+Future<void> _deleteMissingStartingEquipmentResolutions(
+  Session session,
+  int selectionId,
+  Set<int> keepRowIds,
+) async {
+  final existingResolutions =
+      await CharacterStartingEquipmentResolutionRecord.db.find(
+    session,
+    where: (t) => t.selectionId.equals(selectionId),
+  );
+  final removableIds = [
+    for (final resolution in existingResolutions)
+      if (resolution.id != null && !keepRowIds.contains(resolution.id))
+        resolution.id!,
+  ];
+  if (removableIds.isEmpty) {
+    return;
+  }
+  await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
+    session,
+    where: (t) => t.id.inSet(removableIds.toSet()),
+  );
+}
+
+CharacterData _normalizeIncomingCharacter(
+  CharacterData character, {
+  required DateTime? fallbackUpdatedAt,
+}) {
+  final updatedAt = character.updatedAt?.toUtc() ?? fallbackUpdatedAt?.toUtc();
+
+  return character.copyWith(
+    updatedAt: updatedAt,
+    createdAt: character.createdAt?.toUtc() ?? updatedAt,
+    equipment: _normalizedInventoryItems(character.equipment, updatedAt),
+    notes: _normalizedNotes(character.notes, updatedAt),
+    attacks: _normalizedAttacks(character.attacks, updatedAt),
+    featureOverrides: _normalizedFeatureOverridesWithSync(
+        character.featureOverrides, updatedAt),
+    classEntries: _normalizedClassEntries(character.classEntries, updatedAt),
+    choices: _normalizedChoices(character.choices, updatedAt),
+    startingEquipmentSelections: _normalizedStartingEquipmentSelections(
+      character.startingEquipmentSelections,
+      updatedAt,
+    ),
+  );
+}
+
+List<CharacterInventoryItemData>? _normalizedInventoryItems(
+  List<CharacterInventoryItemData>? items,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final item in items ?? const <CharacterInventoryItemData>[])
+      if (_normalizedTextOrNull(item.name) != null)
+        CharacterInventoryItemData(
+          id: item.id ?? _generateSyncId(),
+          name: _normalizedTextOrNull(item.name),
+          quantity: _normalizedPositiveQuantity(item.quantity),
+          type: item.type ?? CharacterInventoryItemType.custom,
+          updatedAt: item.updatedAt?.toUtc() ?? updatedAt,
+        ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterNoteData>? _normalizedNotes(
+  List<CharacterNoteData>? notes,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final note in notes ?? const <CharacterNoteData>[])
+      if (_normalizedTextOrNull(note.text) != null)
+        CharacterNoteData(
+          id: note.id ?? _generateSyncId(),
+          text: _normalizedTextOrNull(note.text),
+          updatedAt: note.updatedAt?.toUtc() ?? updatedAt,
+        ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterAttackData>? _normalizedAttacks(
+  List<CharacterAttackData>? attacks,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final attack in attacks ?? const <CharacterAttackData>[])
+      CharacterAttackData(
+        id: attack.id ?? _generateSyncId(),
+        name: _normalizedTextOrNull(attack.name),
+        leadingAbility: attack.leadingAbility,
+        damage: _normalizedTextOrNull(attack.damage),
+        customAttackBonus: attack.customAttackBonus ?? 0,
+        damageType: attack.damageType,
+        tags: _normalizedAttackTagsFromStrings(attack.tags),
+        description: _normalizedTextOrNull(attack.description),
+        updatedAt: attack.updatedAt?.toUtc() ?? updatedAt,
+      ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterFeatureOverrideData> _normalizedFeatureOverridesWithSync(
+  List<CharacterFeatureOverrideData>? overrides,
+  DateTime? updatedAt,
+) {
+  return [
+    for (final override in _normalizedFeatureOverrides(overrides))
+      override.copyWith(
+        id: override.id ?? _generateSyncId(),
+        updatedAt: override.updatedAt?.toUtc() ?? updatedAt,
+      ),
+  ];
+}
+
+List<CharacterClassEntryData>? _normalizedClassEntries(
+  List<CharacterClassEntryData>? entries,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final entry in entries ?? const <CharacterClassEntryData>[])
+      if (entry.classData?.id != null)
+        entry.copyWith(
+          id: entry.id ?? _generateSyncId(),
+          notes: _normalizedTextOrNull(entry.notes),
+          updatedAt: entry.updatedAt?.toUtc() ?? updatedAt,
+        ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterChoiceData>? _normalizedChoices(
+  List<CharacterChoiceData>? choices,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final choice in choices ?? const <CharacterChoiceData>[])
+      choice.copyWith(
+        id: choice.id ?? _generateSyncId(),
+        selectedToolKey: _normalizedTextOrNull(choice.selectedToolKey),
+        selectedSpellKey: _normalizedTextOrNull(choice.selectedSpellKey),
+        selectedText: _normalizedTextOrNull(choice.selectedText),
+        updatedAt: choice.updatedAt?.toUtc() ?? updatedAt,
+      ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterStartingEquipmentSelectionData>?
+    _normalizedStartingEquipmentSelections(
+  List<CharacterStartingEquipmentSelectionData>? selections,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final selection
+        in selections ?? const <CharacterStartingEquipmentSelectionData>[])
+      selection.copyWith(
+        id: selection.id ?? _generateSyncId(),
+        optionKey: _normalizedTextOrNull(selection.optionKey),
+        resolutions: _normalizedStartingEquipmentResolutions(
+          selection.resolutions,
+          updatedAt,
+        ),
+        updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
+      ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterStartingEquipmentResolutionData>?
+    _normalizedStartingEquipmentResolutions(
+  List<CharacterStartingEquipmentResolutionData>? resolutions,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final resolution
+        in resolutions ?? const <CharacterStartingEquipmentResolutionData>[])
+      CharacterStartingEquipmentResolutionData(
+        id: resolution.id ?? _generateSyncId(),
+        lineKey: _normalizedTextOrNull(resolution.lineKey),
+        catalogType: resolution.catalogType,
+        referenceKey: _normalizedTextOrNull(resolution.referenceKey),
+        quantity: _normalizedPositiveQuantity(resolution.quantity),
+        updatedAt: resolution.updatedAt?.toUtc() ?? updatedAt,
+      ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<String>? _normalizedAttackTagsFromStrings(List<String>? tags) {
+  final normalized = [
+    for (final tag in tags ?? const <String>[])
+      if (_normalizedTextOrNull(tag) != null) _normalizedTextOrNull(tag)!,
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+bool _serverSnapshotIsNewer(
+  CharacterRecord? currentRecord,
+  CharacterData incoming,
+) {
+  final storedUpdatedAt = currentRecord?.updatedAt?.toUtc();
+  final incomingUpdatedAt = incoming.updatedAt?.toUtc();
+  if (storedUpdatedAt == null || incomingUpdatedAt == null) {
+    return false;
+  }
+  return storedUpdatedAt.isAfter(incomingUpdatedAt);
+}
+
+bool _serverDeleteShouldWin(
+    CharacterRecord currentRecord, DateTime? baseUpdatedAt) {
+  final storedUpdatedAt = currentRecord.updatedAt?.toUtc();
+  final base = baseUpdatedAt?.toUtc();
+  if (storedUpdatedAt == null || base == null) {
+    return false;
+  }
+  return storedUpdatedAt.isAfter(base);
+}
+
+Future<CharacterRecord?> _findOwnedCharacterRecordByEntityId(
+  Session session,
+  int userId,
+  String entityId,
+) async {
+  final numericId = int.tryParse(entityId);
+  if (numericId != null) {
+    return _findOwnedCharacterRecord(session, numericId, userId);
   }
   return null;
+}
+
+Future<List<CharacterData>> _loadCharactersUpdatedAfter(
+  Session session, {
+  required int userId,
+  required DateTime? updatedAfter,
+}) async {
+  final records = await CharacterRecord.db.find(
+    session,
+    where: (t) {
+      var expression = t.userId.equals(userId);
+      if (updatedAfter != null) {
+        expression &= t.updatedAt > updatedAfter.toUtc();
+      }
+      return expression;
+    },
+    orderBy: (t) => t.updatedAt,
+    orderDescending: false,
+    include: _characterRecordInclude(),
+  );
+
+  return Future.wait(
+    records.map((record) => _buildCharacterAggregate(session, record)),
+  );
+}
+
+CharacterInventoryItemType _inventoryItemTypeForCatalog(
+  EquipmentCatalogType? catalogType,
+) {
+  switch (catalogType) {
+    case EquipmentCatalogType.weapon:
+      return CharacterInventoryItemType.weapon;
+    case EquipmentCatalogType.armor:
+      return CharacterInventoryItemType.armor;
+    case EquipmentCatalogType.magicItem:
+      return CharacterInventoryItemType.magicItem;
+    case EquipmentCatalogType.item:
+    case null:
+      return CharacterInventoryItemType.item;
+  }
+}
+
+String _generateSyncId() {
+  final random = Random.secure();
+  final chunks = [
+    for (final length in const [8, 4, 4, 4, 12]) _randomHex(random, length),
+  ];
+  return chunks.join('-');
+}
+
+String _randomHex(Random random, int length) {
+  final buffer = StringBuffer();
+  for (var index = 0; index < length; index++) {
+    buffer.write(random.nextInt(16).toRadixString(16));
+  }
+  return buffer.toString();
 }
 
 Future<int> _requireCurrentUserId(Session session) async {
@@ -723,7 +1376,7 @@ CharacterClassEntryData _toCharacterClassEntryData(
   CharacterClassEntryRecord record,
 ) {
   return CharacterClassEntryData(
-    id: record.id,
+    id: record.syncId,
     classData: record.classData,
     subclass: record.subclass,
     level: record.level,
@@ -732,17 +1385,19 @@ CharacterClassEntryData _toCharacterClassEntryData(
     hpMode: record.hpMode,
     hpRolledValues: record.hpRolledValues,
     notes: record.notes,
+    updatedAt: record.updatedAt,
   );
 }
 
 CharacterChoiceData _toCharacterChoiceData(
   CharacterChoiceRecord record,
-  Map<int, CharacterClassEntryData> entriesById,
+  Map<String, CharacterClassEntryData> entriesById,
 ) {
   return CharacterChoiceData(
-    id: record.id,
-    classEntry:
-        record.classEntryId == null ? null : entriesById[record.classEntryId!],
+    id: record.syncId,
+    classEntry: record.classEntry?.syncId == null
+        ? null
+        : entriesById[record.classEntry!.syncId!],
     sourceType: record.sourceType,
     sourceId: record.sourceId,
     groupKey: record.groupKey,
@@ -755,6 +1410,7 @@ CharacterChoiceData _toCharacterChoiceData(
     selectedFeatId: record.selectedFeatId,
     selectedText: record.selectedText,
     selectedCount: record.selectedCount,
+    updatedAt: record.updatedAt,
   );
 }
 
@@ -766,22 +1422,24 @@ CharacterStartingEquipmentSelectionData
   final resolutions = [
     for (final resolution in resolutionRecords)
       CharacterStartingEquipmentResolutionData(
-        id: resolution.id,
+        id: resolution.syncId,
         lineKey: resolution.lineKey,
         catalogType: resolution.catalogType,
         referenceKey: resolution.referenceKey,
         quantity: resolution.quantity,
+        updatedAt: resolution.updatedAt,
       ),
   ]..sort(_compareStartingEquipmentResolutions);
 
   return CharacterStartingEquipmentSelectionData(
-    id: record.id,
+    id: record.syncId,
     sourceType: record.sourceType,
     sourceId: record.sourceId,
     blockKey: record.blockKey,
     optionKey: record.optionKey,
     selectionIndex: record.selectionIndex,
     resolutions: resolutions,
+    updatedAt: record.updatedAt,
   );
 }
 
@@ -979,25 +1637,23 @@ Map<String, int> _buildAbilityScores(
       activeBonusMode == _BonusMode.flexiblePlusTwoOne ||
           activeBonusMode == _BonusMode.flexibleThreePlusOne;
 
-  if (activeRaceChoices.isEmpty) {
+  if (!usesFlexibleBonuses) {
     _applyFixedRaceBonuses(
       scores,
       _abilityBonusesFromRace(character.race),
     );
-  } else {
-    _applyRacialChoiceBonuses(scores, activeRaceChoices);
   }
+  _applyRacialChoiceBonuses(scores, activeRaceChoices);
 
   if (usesFlexibleBonuses) {
     // Flexible +2/+1 replaces both the race and subrace default bonuses.
-  } else if (activeSubraceChoices.isEmpty) {
+  } else {
     _applyFixedRaceBonuses(
       scores,
       _abilityBonusesFromSubrace(character.subrace),
     );
-  } else {
-    _applyRacialChoiceBonuses(scores, activeSubraceChoices);
   }
+  _applyRacialChoiceBonuses(scores, activeSubraceChoices);
 
   _applyCustomAbilityBonuses(scores, character.customAbilityBonuses);
 
@@ -1467,7 +2123,6 @@ List<String> _collectLanguages(
 ) {
   final values = <String>{};
   values.addAll(_normalizedTexts(character.race?.languages));
-  values.addAll(_normalizedTexts(character.background?.languages));
 
   for (final option in classBackgroundOptions) {
     values.addAll([
@@ -1639,6 +2294,8 @@ List<FeatureTag> _collectFeatureTags({
     for (final feature in currentRaceFeatures.raceFeatures) ...?feature.tags,
     for (final feature in currentRaceFeatures.subraceFeatures) ...?feature.tags,
     for (final option in resolvedSources.classBackgroundOptions)
+      ...?option.grantedFeatureTags,
+    for (final option in resolvedSources.raceOptions)
       ...?option.grantedFeatureTags,
   };
 
@@ -2709,7 +3366,7 @@ int _compareCharacterChoices(CharacterChoiceData a, CharacterChoiceData b) {
       (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0);
   if (selectionCompare != 0) return selectionCompare;
 
-  return (a.id ?? 0).compareTo(b.id ?? 0);
+  return (a.id ?? '').compareTo(b.id ?? '');
 }
 
 int _compareStartingEquipmentSelections(
@@ -2743,7 +3400,7 @@ int _compareStartingEquipmentSelections(
     return optionCompare;
   }
 
-  return (a.id ?? 0).compareTo(b.id ?? 0);
+  return (a.id ?? '').compareTo(b.id ?? '');
 }
 
 int _compareStartingEquipmentResolutions(
@@ -2767,7 +3424,7 @@ int _compareStartingEquipmentResolutions(
     return referenceCompare;
   }
 
-  return (a.id ?? 0).compareTo(b.id ?? 0);
+  return (a.id ?? '').compareTo(b.id ?? '');
 }
 
 String? _choiceSetGroupKey(int? choiceSetId) {

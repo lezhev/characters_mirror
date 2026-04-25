@@ -1,0 +1,6 @@
+class: CharacterRejectedChangeData
+fields:
+  changeId: String
+  reason: String?
+  message: String?
+  character: CharacterData?

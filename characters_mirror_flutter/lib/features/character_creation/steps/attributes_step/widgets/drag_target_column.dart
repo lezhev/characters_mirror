@@ -10,6 +10,7 @@ class DragTargetColumn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attributeStateProvider);
     final notifier = ref.read(attributeStateProvider.notifier);
+    final textTheme = Theme.of(context).textTheme;
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 68),
       child: ListView(
@@ -39,8 +40,7 @@ class DragTargetColumn extends ConsumerWidget {
                     child: Center(
                       child: Text(
                         notifier.mergeStatsAndBonuses()[attribute].toString(),
-                        style: TextStyle(
-                          fontSize: 18,
+                        style: textTheme.titleMedium?.copyWith(
                           color: state.assignedAttributes[attribute] != 0
                               ? Theme.of(context).colorScheme.onPrimary
                               : Theme.of(context).colorScheme.onSurface,

@@ -15,6 +15,7 @@ import '../../../enums/damage_type.dart' as _i3;
 
 abstract class CharacterAttackData implements _i1.SerializableModel {
   CharacterAttackData._({
+    this.id,
     this.name,
     this.leadingAbility,
     this.damage,
@@ -22,9 +23,11 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
     this.damageType,
     this.tags,
     this.description,
+    this.updatedAt,
   });
 
   factory CharacterAttackData({
+    String? id,
     String? name,
     _i2.Ability? leadingAbility,
     String? damage,
@@ -32,10 +35,12 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
     _i3.DamageType? damageType,
     List<String>? tags,
     String? description,
+    DateTime? updatedAt,
   }) = _CharacterAttackDataImpl;
 
   factory CharacterAttackData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterAttackData(
+      id: jsonSerialization['id'] as String?,
       name: jsonSerialization['name'] as String?,
       leadingAbility: jsonSerialization['leadingAbility'] == null
           ? null
@@ -51,8 +56,13 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
           ?.map((e) => e as String)
           .toList(),
       description: jsonSerialization['description'] as String?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
+
+  String? id;
 
   String? name;
 
@@ -68,10 +78,13 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
 
   String? description;
 
+  DateTime? updatedAt;
+
   /// Returns a shallow copy of this [CharacterAttackData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   CharacterAttackData copyWith({
+    String? id,
     String? name,
     _i2.Ability? leadingAbility,
     String? damage,
@@ -79,10 +92,12 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
     _i3.DamageType? damageType,
     List<String>? tags,
     String? description,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (leadingAbility != null) 'leadingAbility': leadingAbility?.toJson(),
       if (damage != null) 'damage': damage,
@@ -90,6 +105,7 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
       if (damageType != null) 'damageType': damageType?.toJson(),
       if (tags != null) 'tags': tags?.toJson(),
       if (description != null) 'description': description,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -103,6 +119,7 @@ class _Undefined {}
 
 class _CharacterAttackDataImpl extends CharacterAttackData {
   _CharacterAttackDataImpl({
+    String? id,
     String? name,
     _i2.Ability? leadingAbility,
     String? damage,
@@ -110,7 +127,9 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
     _i3.DamageType? damageType,
     List<String>? tags,
     String? description,
+    DateTime? updatedAt,
   }) : super._(
+          id: id,
           name: name,
           leadingAbility: leadingAbility,
           damage: damage,
@@ -118,6 +137,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
           damageType: damageType,
           tags: tags,
           description: description,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterAttackData]
@@ -125,6 +145,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
   @_i1.useResult
   @override
   CharacterAttackData copyWith({
+    Object? id = _Undefined,
     Object? name = _Undefined,
     Object? leadingAbility = _Undefined,
     Object? damage = _Undefined,
@@ -132,8 +153,10 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
     Object? damageType = _Undefined,
     Object? tags = _Undefined,
     Object? description = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterAttackData(
+      id: id is String? ? id : this.id,
       name: name is String? ? name : this.name,
       leadingAbility:
           leadingAbility is _i2.Ability? ? leadingAbility : this.leadingAbility,
@@ -144,6 +167,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
       damageType: damageType is _i3.DamageType? ? damageType : this.damageType,
       tags: tags is List<String>? ? tags : this.tags?.map((e0) => e0).toList(),
       description: description is String? ? description : this.description,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }

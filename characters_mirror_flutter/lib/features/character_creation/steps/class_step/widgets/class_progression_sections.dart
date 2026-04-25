@@ -17,6 +17,9 @@ class SubclassChoiceSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final sectionTitleStyle = textTheme.titleLarge?.copyWith(
+      color: colorScheme.primary,
+    );
 
     return ref.watch(classStateProvider).when(
           data: (data) {
@@ -30,10 +33,10 @@ class SubclassChoiceSection extends ConsumerWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppSectionHeader(
+                AppSectionHeader(
                   title: 'Подкласс',
                   showDivider: false,
-                  titleStyle: TextStyle(fontSize: 22),
+                  titleStyle: sectionTitleStyle,
                 ),
                 const Gap(8),
                 Wrap(
@@ -44,7 +47,9 @@ class SubclassChoiceSection extends ConsumerWidget {
                     return InkWell(
                       onTap: () {
                         isSelected
-                            ? ref.read(classStateProvider.notifier).unselectSubclass()
+                            ? ref
+                                .read(classStateProvider.notifier)
+                                .unselectSubclass()
                             : ref
                                 .read(classStateProvider.notifier)
                                 .selectSubclass(subclass);
@@ -70,7 +75,8 @@ class SubclassChoiceSection extends ConsumerWidget {
                     );
                   }).toList(),
                 ),
-                if (selected != null && (selected.description ?? '').isNotEmpty) ...[
+                if (selected != null &&
+                    (selected.description ?? '').isNotEmpty) ...[
                   const Gap(10),
                   Text(
                     selected.description!,
@@ -106,15 +112,20 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
+    final theme = Theme.of(context);
+    final sectionTitleStyle = theme.textTheme.titleLarge?.copyWith(
+      color: theme.colorScheme.primary,
+    );
+
     return ref.watch(classStateProvider).when(
           data: (data) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AppSectionHeader(
-                  title: 'Выборы класса',
+                AppSectionHeader(
+                  title: 'Владения класса',
                   showDivider: false,
-                  titleStyle: TextStyle(fontSize: 22),
+                  titleStyle: sectionTitleStyle,
                 ),
                 const Gap(8),
                 ...choiceGroups
@@ -127,8 +138,9 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
                           selectedOptions: data.selectedOptions[
                                   classChoiceGroupKey(groupView.group!)] ??
                               const <ClassChoiceOptionData>[],
-                          onToggleOption:
-                              ref.read(classStateProvider.notifier).toggleOption,
+                          onToggleOption: ref
+                              .read(classStateProvider.notifier)
+                              .toggleOption,
                           onIncrementOption: ref
                               .read(classStateProvider.notifier)
                               .incrementOption,
@@ -178,10 +190,12 @@ class ClassProgressionSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (currentLevelEntries.isNotEmpty) ...[
-          const AppSectionHeader(
+          AppSectionHeader(
             title: 'Умения текущего уровня',
             showDivider: false,
-            titleStyle: TextStyle(fontSize: 22),
+            titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
           ),
           const Gap(8),
           ...currentLevelEntries.map((entry) => entry.buildCard()),

@@ -56,7 +56,6 @@ class BackgroundStep extends HookConsumerWidget {
               : BackgroundFeatures(
                   selectedBackground: data.selectedBackground!,
                   stepView: data.stepView,
-                  selectedOptions: data.selectedOptions,
                 ),
           detailsKey: detailsKey,
           showJumpButton: showJumpButton,
@@ -156,6 +155,10 @@ class BackgroundTile extends HookConsumerWidget {
 
     return ref.watch(backgroundStateProvider).when(
           data: (data) {
+            final isSelected = _isSameBackground(
+              data.selectedBackground,
+              background,
+            );
             return Material(
               borderRadius: BorderRadius.circular(8),
               color: Colors.transparent,
@@ -165,7 +168,7 @@ class BackgroundTile extends HookConsumerWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(8),
                   onTap: () {
-                    data.selectedBackground == background
+                    isSelected
                         ? ref
                             .read(backgroundStateProvider.notifier)
                             .unselectBackground()
@@ -189,11 +192,10 @@ class BackgroundTile extends HookConsumerWidget {
                           ),
                       ],
                       border: Border.all(
-                        color: isHovered.value ||
-                                data.selectedBackground == background
+                        color: isHovered.value || isSelected
                             ? colorScheme.outline
                             : Colors.transparent,
-                        width: data.selectedBackground == background ? 2 : 1,
+                        width: isSelected ? 2 : 1,
                       ),
                     ),
                     child: SizedBox(
@@ -253,4 +255,22 @@ class BackgroundTile extends HookConsumerWidget {
           ),
         );
   }
+}
+
+bool _isSameBackground(BackgroundData? selected, BackgroundData candidate) {
+  final selectedId = selected?.id;
+  final candidateId = candidate.id;
+  if (selectedId != null && candidateId != null) {
+    return selectedId == candidateId;
+  }
+
+  if (identical(selected, candidate)) {
+    return true;
+  }
+
+  final selectedName = selected?.name?.trim();
+  final candidateName = candidate.name?.trim();
+  return selectedName != null &&
+      selectedName.isNotEmpty &&
+      selectedName == candidateName;
 }

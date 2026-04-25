@@ -20,20 +20,22 @@ abstract class CharacterStartingEquipmentResolutionData
     this.catalogType,
     this.referenceKey,
     this.quantity,
+    this.updatedAt,
   });
 
   factory CharacterStartingEquipmentResolutionData({
-    int? id,
+    String? id,
     String? lineKey,
     _i2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
+    DateTime? updatedAt,
   }) = _CharacterStartingEquipmentResolutionDataImpl;
 
   factory CharacterStartingEquipmentResolutionData.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterStartingEquipmentResolutionData(
-      id: jsonSerialization['id'] as int?,
+      id: jsonSerialization['id'] as String?,
       lineKey: jsonSerialization['lineKey'] as String?,
       catalogType: jsonSerialization['catalogType'] == null
           ? null
@@ -41,10 +43,13 @@ abstract class CharacterStartingEquipmentResolutionData
               (jsonSerialization['catalogType'] as String)),
       referenceKey: jsonSerialization['referenceKey'] as String?,
       quantity: jsonSerialization['quantity'] as int?,
+      updatedAt: jsonSerialization['updatedAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
-  int? id;
+  String? id;
 
   String? lineKey;
 
@@ -54,15 +59,18 @@ abstract class CharacterStartingEquipmentResolutionData
 
   int? quantity;
 
+  DateTime? updatedAt;
+
   /// Returns a shallow copy of this [CharacterStartingEquipmentResolutionData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   CharacterStartingEquipmentResolutionData copyWith({
-    int? id,
+    String? id,
     String? lineKey,
     _i2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
+    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -72,6 +80,7 @@ abstract class CharacterStartingEquipmentResolutionData
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (quantity != null) 'quantity': quantity,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -83,6 +92,7 @@ abstract class CharacterStartingEquipmentResolutionData
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (quantity != null) 'quantity': quantity,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -97,17 +107,19 @@ class _Undefined {}
 class _CharacterStartingEquipmentResolutionDataImpl
     extends CharacterStartingEquipmentResolutionData {
   _CharacterStartingEquipmentResolutionDataImpl({
-    int? id,
+    String? id,
     String? lineKey,
     _i2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
+    DateTime? updatedAt,
   }) : super._(
           id: id,
           lineKey: lineKey,
           catalogType: catalogType,
           referenceKey: referenceKey,
           quantity: quantity,
+          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [CharacterStartingEquipmentResolutionData]
@@ -120,15 +132,17 @@ class _CharacterStartingEquipmentResolutionDataImpl
     Object? catalogType = _Undefined,
     Object? referenceKey = _Undefined,
     Object? quantity = _Undefined,
+    Object? updatedAt = _Undefined,
   }) {
     return CharacterStartingEquipmentResolutionData(
-      id: id is int? ? id : this.id,
+      id: id is String? ? id : this.id,
       lineKey: lineKey is String? ? lineKey : this.lineKey,
       catalogType: catalogType is _i2.EquipmentCatalogType?
           ? catalogType
           : this.catalogType,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       quantity: quantity is int? ? quantity : this.quantity,
+      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/mechanics/widgets/proficiency_toggle.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/widgets/proficiency_toggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

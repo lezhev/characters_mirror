@@ -18,6 +18,7 @@ fields:
   areaText: String?
   saveAbility: Ability?
   damageByLevel: Map<String, String>?
+  grantedFeatureTags: List<FeatureTag>?
   source: String?
   version: int?
   createdAt: DateTime?

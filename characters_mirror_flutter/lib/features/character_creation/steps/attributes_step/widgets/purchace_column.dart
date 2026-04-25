@@ -9,6 +9,7 @@ class PurchaceColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(attributeStateProvider.notifier);
+    final textTheme = Theme.of(context).textTheme;
     return SizedBox(
       width: 68, // внешний контейнер
       child: ListView(
@@ -38,7 +39,7 @@ class PurchaceColumn extends ConsumerWidget {
                     alignment: Alignment.center,
                     child: Text(
                       value.toString(),
-                      style: const TextStyle(fontSize: 18),
+                      style: textTheme.titleMedium,
                     ),
                   ),
                   // кнопка минус слева с задником

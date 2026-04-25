@@ -391,6 +391,7 @@ void main() {
           derived.featureTags,
           containsAll([
             FeatureTag.combat,
+            FeatureTag.exploration,
             FeatureTag.utility,
           ]));
       expect(derived.abilityScores?['strength'], 10);
@@ -494,9 +495,18 @@ void main() {
 
       final resaved = await endpoints.characterData.saveCharacter(
         ownerSession,
-        loaded.copyWith(equipment: 'Manual equipment text'),
+        loaded.copyWith(
+          equipment: [
+            CharacterInventoryItemData(
+              name: 'Manual equipment text',
+              quantity: 1,
+              type: CharacterInventoryItemType.custom,
+            ),
+          ],
+        ),
       );
-      expect(resaved.equipment, 'Manual equipment text');
+      expect(resaved.equipment, hasLength(1));
+      expect(resaved.equipment?.single.name, 'Manual equipment text');
       expect(resaved.attacks, hasLength(3));
     });
 
@@ -577,6 +587,111 @@ void main() {
       expect(saved.customAbilityBonuses, {'strength': 2});
       expect(saved.manualSkillProficiencies, hasLength(2));
       expect(saved.manualSavingThrowProficiencies, [Ability.dexterity]);
+    });
+
+    test(
+        'racial ability choices stack with fixed race ability bonuses in racial mode',
+        () async {
+      final ownerSession = authenticatedSession(314);
+      final fixture = await _seedMixedAbilityBonusRace(
+        sessionBuilder,
+        endpoints,
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Mixed racial bonuses',
+          race: fixture.race,
+          baseAbilityScores: const {
+            'strength': 10,
+            'dexterity': 10,
+            'constitution': 10,
+            'intelligence': 10,
+            'wisdom': 10,
+            'charisma': 10,
+          },
+          useFlexibleAbilityBonuses: false,
+          choices: [
+            CharacterChoiceData(
+              sourceType: ChoiceSourceType.race,
+              sourceId: fixture.race.id,
+              groupKey: fixture.anyBonusGroupKey,
+              optionKey: Ability.dexterity.name,
+              selectedAbility: Ability.dexterity,
+              selectedCount: 1,
+            ),
+          ],
+        ),
+      );
+
+      final scores = saved.derived!.abilityScores!;
+      expect(scores['charisma'], 12);
+      expect(scores['dexterity'], 11);
+    });
+
+    test('flexible ability bonus mode replaces fixed race ability bonuses',
+        () async {
+      final ownerSession = authenticatedSession(315);
+      final fixture = await _seedMixedAbilityBonusRace(
+        sessionBuilder,
+        endpoints,
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Flexible mixed racial bonuses',
+          race: fixture.race,
+          baseAbilityScores: const {
+            'strength': 10,
+            'dexterity': 10,
+            'constitution': 10,
+            'intelligence': 10,
+            'wisdom': 10,
+            'charisma': 10,
+          },
+          useFlexibleAbilityBonuses: true,
+          choices: [
+            CharacterChoiceData(
+              sourceType: ChoiceSourceType.race,
+              sourceId: fixture.race.id,
+              groupKey: 'race_bonus_mode',
+              selectedText: 'flexiblePlusTwoOne',
+            ),
+            CharacterChoiceData(
+              sourceType: ChoiceSourceType.race,
+              sourceId: fixture.race.id,
+              groupKey: 'race_flexible_bonus_plus2',
+              optionKey: Ability.strength.name,
+              selectedAbility: Ability.strength,
+              selectedCount: 2,
+            ),
+            CharacterChoiceData(
+              sourceType: ChoiceSourceType.race,
+              sourceId: fixture.race.id,
+              groupKey: 'race_flexible_bonus_plus1',
+              optionKey: Ability.dexterity.name,
+              selectedAbility: Ability.dexterity,
+              selectedCount: 1,
+            ),
+            CharacterChoiceData(
+              sourceType: ChoiceSourceType.race,
+              sourceId: fixture.race.id,
+              groupKey: fixture.anyBonusGroupKey,
+              optionKey: Ability.wisdom.name,
+              selectedAbility: Ability.wisdom,
+              selectedCount: 1,
+            ),
+          ],
+        ),
+      );
+
+      final scores = saved.derived!.abilityScores!;
+      expect(scores['charisma'], 10);
+      expect(scores['strength'], 12);
+      expect(scores['dexterity'], 11);
+      expect(scores['wisdom'], 10);
     });
 
     test(
@@ -850,6 +965,72 @@ class _CreationFixture {
   final RaceFeatureData subraceFeature;
   final RaceChoiceSetData raceChoiceSet;
   final FeatData feat;
+}
+
+class _MixedAbilityBonusRaceFixture {
+  const _MixedAbilityBonusRaceFixture({
+    required this.race,
+    required this.anyBonusChoiceSet,
+  });
+
+  final RaceData race;
+  final RaceChoiceSetData anyBonusChoiceSet;
+
+  String get anyBonusGroupKey => 'race_choice_${anyBonusChoiceSet.id}_bonus_1';
+}
+
+Future<_MixedAbilityBonusRaceFixture> _seedMixedAbilityBonusRace(
+  TestSessionBuilder sessionBuilder,
+  TestEndpoints endpoints,
+) async {
+  final race = await endpoints.raceData.upsert(
+    sessionBuilder,
+    RaceData(
+      name: 'Fixture Charisma Plus Any Race',
+      charismaBonus: 2,
+    ),
+  );
+  final feature = await endpoints.raceFeature.upsert(
+    sessionBuilder,
+    RaceFeatureData(
+      raceId: race.id,
+      name: 'Flexible Aptitude',
+      level: 1,
+    ),
+  );
+  final choiceSet = await endpoints.raceChoiceSetData.upsert(
+    sessionBuilder,
+    RaceChoiceSetData(
+      featureId: feature.id!,
+      kind: RaceChoiceKind.abilityBonusChoice,
+      pickCount: 1,
+      mustBeDistinct: true,
+      description: 'Choose one ability score to increase by 1.',
+    ),
+  );
+
+  for (final ability in Ability.values) {
+    await endpoints.raceChoiceOptionData.upsert(
+      sessionBuilder,
+      RaceChoiceOptionData(
+        choiceSetId: choiceSet.id!,
+        optionKey: ability.name,
+        name: ability.name,
+        ability: ability,
+        bonusValue: 1,
+      ),
+    );
+  }
+
+  final hydratedRace = await endpoints.raceData.getStepView(
+    sessionBuilder,
+    race.id!,
+  );
+
+  return _MixedAbilityBonusRaceFixture(
+    race: hydratedRace.race!,
+    anyBonusChoiceSet: choiceSet,
+  );
 }
 
 Future<_CreationFixture> _seedCreationFixture(
@@ -1393,6 +1574,7 @@ Future<_CreationFixture> _seedCreationFixture(
       optionKey: 'skilled_feat',
       name: 'Skilled',
       featId: feat.id!,
+      grantedFeatureTags: const [FeatureTag.exploration],
     ),
   );
 

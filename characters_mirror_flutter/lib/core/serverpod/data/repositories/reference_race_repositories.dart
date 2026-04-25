@@ -1,10 +1,18 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/repositories/repository_base.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 
 class RaceRepository implements Repository<RaceData> {
   @override
-  Future<List<RaceData>> getAll() => client.raceData.getAll();
+  Future<List<RaceData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'race',
+        loadRemote: client.raceData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: RaceData.fromJson,
+      );
 
   @override
   Future<RaceData?> getById(int id) async {
@@ -16,8 +24,14 @@ class RaceRepository implements Repository<RaceData> {
     }
   }
 
-  Future<RaceStepView> getStepView(int raceId) =>
-      client.raceData.getStepView(raceId);
+  Future<RaceStepView> getStepView(int raceId) => cachedValueFallback(
+        cache: offlineCacheDatabase,
+        kind: offlineRaceStepKind,
+        key: offlineRaceStepKey(raceId),
+        loadRemote: () => client.raceData.getStepView(raceId),
+        toJson: (value) => value.toJson(),
+        fromJson: RaceStepView.fromJson,
+      );
 
   @override
   Future<RaceData> upsert(RaceData entity) => client.raceData.upsert(entity);
@@ -28,7 +42,13 @@ class RaceRepository implements Repository<RaceData> {
 
 class SubraceRepository implements Repository<SubraceData> {
   @override
-  Future<List<SubraceData>> getAll() => client.subraceData.getAll();
+  Future<List<SubraceData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'subrace',
+        loadRemote: client.subraceData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: SubraceData.fromJson,
+      );
 
   @override
   Future<SubraceData?> getById(int id) async {
@@ -55,7 +75,13 @@ class SubraceRepository implements Repository<SubraceData> {
 
 class RaceFeatureRepository implements Repository<RaceFeatureData> {
   @override
-  Future<List<RaceFeatureData>> getAll() => client.raceFeature.getAll();
+  Future<List<RaceFeatureData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'race_feature',
+        loadRemote: client.raceFeature.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: RaceFeatureData.fromJson,
+      );
 
   @override
   Future<RaceFeatureData?> getById(int id) async {
@@ -77,7 +103,13 @@ class RaceFeatureRepository implements Repository<RaceFeatureData> {
 
 class RaceChoiceSetRepository implements Repository<RaceChoiceSetData> {
   @override
-  Future<List<RaceChoiceSetData>> getAll() => client.raceChoiceSetData.getAll();
+  Future<List<RaceChoiceSetData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'race_choice_set',
+        loadRemote: client.raceChoiceSetData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: RaceChoiceSetData.fromJson,
+      );
 
   @override
   Future<RaceChoiceSetData?> getById(int id) async {
@@ -99,8 +131,13 @@ class RaceChoiceSetRepository implements Repository<RaceChoiceSetData> {
 
 class RaceChoiceOptionRepository implements Repository<RaceChoiceOptionData> {
   @override
-  Future<List<RaceChoiceOptionData>> getAll() =>
-      client.raceChoiceOptionData.getAll();
+  Future<List<RaceChoiceOptionData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'race_choice_option',
+        loadRemote: client.raceChoiceOptionData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: RaceChoiceOptionData.fromJson,
+      );
 
   @override
   Future<RaceChoiceOptionData?> getById(int id) async {
@@ -123,8 +160,13 @@ class RaceChoiceOptionRepository implements Repository<RaceChoiceOptionData> {
 class RaceFeatureSpellGrantRepository
     implements Repository<RaceFeatureSpellGrantData> {
   @override
-  Future<List<RaceFeatureSpellGrantData>> getAll() =>
-      client.raceFeatureSpellGrantData.getAll();
+  Future<List<RaceFeatureSpellGrantData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'race_feature_spell_grant',
+        loadRemote: client.raceFeatureSpellGrantData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: RaceFeatureSpellGrantData.fromJson,
+      );
 
   @override
   Future<RaceFeatureSpellGrantData?> getById(int id) async {
@@ -148,7 +190,13 @@ class RaceFeatureSpellGrantRepository
 
 class BackgroundRepository implements Repository<BackgroundData> {
   @override
-  Future<List<BackgroundData>> getAll() => client.backgroundData.getAll();
+  Future<List<BackgroundData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'background',
+        loadRemote: client.backgroundData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: BackgroundData.fromJson,
+      );
 
   @override
   Future<BackgroundData?> getById(int id) async {
@@ -165,7 +213,14 @@ class BackgroundRepository implements Repository<BackgroundData> {
       client.backgroundData.upsert(entity);
 
   Future<BackgroundStepView> getStepView(int backgroundId) =>
-      client.backgroundData.getStepView(backgroundId);
+      cachedValueFallback(
+        cache: offlineCacheDatabase,
+        kind: offlineBackgroundStepKind,
+        key: offlineBackgroundStepKey(backgroundId),
+        loadRemote: () => client.backgroundData.getStepView(backgroundId),
+        toJson: (value) => value.toJson(),
+        fromJson: BackgroundStepView.fromJson,
+      );
 
   @override
   Future<void> delete(int id) => client.backgroundData.delete(id);

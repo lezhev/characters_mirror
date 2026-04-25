@@ -157,12 +157,18 @@ class Button extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (leading != null) ...[leading!, const SizedBox(width: 24)],
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: txtColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                              color: txtColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ),
                   ),
                   if (trailing != null) ...[
                     const SizedBox(width: 24),

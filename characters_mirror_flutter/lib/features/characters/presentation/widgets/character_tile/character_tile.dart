@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/features/characters/presentation/widgets/character_tile/character_meta_chip.dart';
 import 'package:characters_mirror_flutter/features/characters/presentation/widgets/character_tile/character_tile_menu_button.dart';
@@ -10,6 +11,7 @@ import 'package:gap/gap.dart';
 class CharacterTile extends StatelessWidget {
   const CharacterTile({
     required this.character,
+    required this.offlineRecord,
     required this.isDeleteArmed,
     required this.isDeleting,
     super.key,
@@ -20,6 +22,7 @@ class CharacterTile extends StatelessWidget {
   });
 
   final CharacterData character;
+  final OfflineCharacterRecord? offlineRecord;
   final bool isDeleteArmed;
   final bool isDeleting;
   final VoidCallback? onTap;
@@ -136,7 +139,8 @@ class CharacterTileCard extends HookWidget {
             padding: EdgeInsets.zero,
             backgroundColor: colorScheme.surfaceContainerHighest,
             border: Border.all(
-              color: isHovered.value ? colorScheme.primary : colorScheme.outline,
+              color:
+                  isHovered.value ? colorScheme.primary : colorScheme.outline,
               width: 1,
             ),
             child: AnimatedContainer(
