@@ -56,6 +56,12 @@ CharacterData stampCharacterMutation({
     previousId: (item) => item.id,
     withUpdatedAt: (item, updatedAt) => item.copyWith(updatedAt: updatedAt),
   );
+  final stampedSkillSelections = _stampCollection<CharacterSkillSelectionData>(
+    previous: normalizedPrevious.skillSelections,
+    next: normalizedNext.skillSelections,
+    previousId: (item) => item.id,
+    withUpdatedAt: (item, updatedAt) => item.copyWith(updatedAt: updatedAt),
+  );
   final stampedSpellSelections = _stampCollection<CharacterSpellSelectionData>(
     previous: normalizedPrevious.spellSelections,
     next: normalizedNext.spellSelections,
@@ -96,6 +102,7 @@ CharacterData stampCharacterMutation({
     featureOverrides: stampedOverrides,
     classEntries: stampedEntries,
     choices: stampedChoices,
+    skillSelections: stampedSkillSelections,
     spellSelections: stampedSpellSelections,
     startingEquipmentSelections: stampedSelections,
   );
@@ -142,6 +149,12 @@ CharacterData stampCharacterMutation({
       (item, updatedAt) =>
           item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
     ),
+    skillSelections: _applyFallbackUpdatedAt(
+      stamped.skillSelections,
+      nextUpdatedAt,
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+    ),
     spellSelections: _applyFallbackUpdatedAt(
       stamped.spellSelections,
       nextUpdatedAt,
@@ -182,6 +195,10 @@ CharacterData normalizeCharacterForPersistence(
     ),
     classEntries: _normalizedClassEntries(character.classEntries, updatedAt),
     choices: _normalizedChoices(character.choices, updatedAt),
+    skillSelections: _normalizedSkillSelections(
+      character.skillSelections,
+      updatedAt,
+    ),
     spellSelections: _normalizedSpellSelections(
       character.spellSelections,
       updatedAt,
@@ -239,6 +256,7 @@ DateTime? _tryReadUpdatedAt(Object? value) {
   if (value is CharacterFeatureOverrideData) return value.updatedAt;
   if (value is CharacterClassEntryData) return value.updatedAt;
   if (value is CharacterChoiceData) return value.updatedAt;
+  if (value is CharacterSkillSelectionData) return value.updatedAt;
   if (value is CharacterSpellSelectionData) return value.updatedAt;
   if (value is CharacterStartingEquipmentSelectionData) return value.updatedAt;
   if (value is CharacterStartingEquipmentResolutionData) return value.updatedAt;
@@ -421,6 +439,23 @@ List<CharacterSpellSelectionData>? _normalizedSpellSelections(
           spellKey: _normalizedText(selection.spellKey) ??
               _normalizedText(selection.spell?.referenceKey) ??
               _normalizedText(selection.spell?.name),
+          updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
+        ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterSkillSelectionData>? _normalizedSkillSelections(
+  List<CharacterSkillSelectionData>? selections,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final selection in selections ?? const <CharacterSkillSelectionData>[])
+      if (selection.skill != null)
+        selection.copyWith(
+          id: selection.id ?? _generateSyncId(),
+          classDataId:
+              selection.classDataId ?? selection.classEntry?.classData?.id,
           updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
         ),
   ];

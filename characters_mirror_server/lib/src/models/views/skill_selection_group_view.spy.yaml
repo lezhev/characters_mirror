@@ -1,0 +1,7 @@
+class: SkillSelectionGroupView
+fields:
+  kind: CharacterSkillSelectionKind?
+  selectionCount: int?
+  classDataId: int?
+  backgroundDataId: int?
+  options: List<Skill>?

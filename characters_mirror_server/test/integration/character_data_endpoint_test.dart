@@ -209,22 +209,6 @@ void main() {
           choices: [
             CharacterChoiceData(
               classEntry: primaryEntry,
-              sourceType: ChoiceSourceType.classData,
-              sourceId: fixture.classData.id,
-              groupKey: 'class_skill_pick',
-              optionKey: 'acrobatics_pick',
-              selectionIndex: 0,
-            ),
-            CharacterChoiceData(
-              classEntry: primaryEntry,
-              sourceType: ChoiceSourceType.classData,
-              sourceId: fixture.classData.id,
-              groupKey: 'class_skill_pick',
-              optionKey: 'athletics_pick',
-              selectionIndex: 1,
-            ),
-            CharacterChoiceData(
-              classEntry: primaryEntry,
               sourceType: ChoiceSourceType.subclassFeature,
               sourceId: fixture.subclassFeature.id,
               groupKey: 'subclass_tool_pick',
@@ -245,6 +229,28 @@ void main() {
               optionKey: 'skilled_feat',
               selectionIndex: 0,
               selectedFeatId: fixture.feat.id,
+            ),
+          ],
+          skillSelections: [
+            CharacterSkillSelectionData(
+              classEntry: primaryEntry,
+              classDataId: fixture.classData.id,
+              skill: Skill.acrobatics,
+              kind: CharacterSkillSelectionKind.classSkill,
+              selectionIndex: 0,
+            ),
+            CharacterSkillSelectionData(
+              classEntry: primaryEntry,
+              classDataId: fixture.classData.id,
+              skill: Skill.athletics,
+              kind: CharacterSkillSelectionKind.classSkill,
+              selectionIndex: 1,
+            ),
+            CharacterSkillSelectionData(
+              backgroundDataId: fixture.background.id,
+              skill: Skill.survival,
+              kind: CharacterSkillSelectionKind.backgroundSkill,
+              selectionIndex: 0,
             ),
           ],
           spellSelections: [
@@ -325,19 +331,35 @@ void main() {
       expect(loadedEntry.classData?.id, fixture.classData.id);
       expect(loadedEntry.subclass?.id, fixture.subclass.id);
 
-      final classChoices = loaded.choices!
-          .where((choice) => choice.groupKey == 'class_skill_pick')
+      final classSkillSelections = loaded.skillSelections!
+          .where(
+            (selection) =>
+                selection.kind == CharacterSkillSelectionKind.classSkill,
+          )
           .toList()
         ..sort(
             (a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
-      expect(classChoices, hasLength(2));
-      expect(classChoices.map((choice) => choice.optionKey), [
-        'acrobatics_pick',
-        'athletics_pick',
+      expect(classSkillSelections, hasLength(2));
+      expect(classSkillSelections.map((selection) => selection.skill), [
+        Skill.acrobatics,
+        Skill.athletics,
       ]);
       expect(
-        classChoices.every((choice) => choice.classEntry?.id == loadedEntry.id),
+        classSkillSelections
+            .every((selection) => selection.classEntry?.id == loadedEntry.id),
         isTrue,
+      );
+      final backgroundSkillSelections = loaded.skillSelections!
+          .where(
+            (selection) =>
+                selection.kind == CharacterSkillSelectionKind.backgroundSkill,
+          )
+          .toList();
+      expect(backgroundSkillSelections, hasLength(1));
+      expect(backgroundSkillSelections.single.skill, Skill.survival);
+      expect(
+        backgroundSkillSelections.single.backgroundDataId,
+        fixture.background.id,
       );
       final spellSelections = loaded.spellSelections ?? const [];
       expect(spellSelections, hasLength(1));
@@ -412,6 +434,7 @@ void main() {
       expect(derived.skillBonuses?['athletics'], 2);
       expect(derived.skillBonuses?['insight'], 2);
       expect(derived.skillBonuses?['religion'], 2);
+      expect(derived.skillBonuses?['survival'], 2);
       expect(derived.savingThrowProficiencies, contains(Ability.strength));
       expect(derived.savingThrowProficiencies, contains(Ability.constitution));
       final acrobaticsLevel = derived.skillProficiencyLevels!.singleWhere(
@@ -729,9 +752,20 @@ void main() {
             .whereType<String>()
             .toSet(),
         containsAll({
-          'class_skill_pick',
           'subclass_tool_pick',
         }),
+      );
+      final classSkillGroup = stepView.skillSelectionGroups!.singleWhere(
+        (group) => group.kind == CharacterSkillSelectionKind.classSkill,
+      );
+      expect(classSkillGroup.selectionCount, 2);
+      expect(
+        classSkillGroup.options,
+        containsAll([
+          Skill.acrobatics,
+          Skill.athletics,
+          Skill.perception,
+        ]),
       );
       final cantripGroup = stepView.spellSelectionGroups!.singleWhere(
         (group) => group.kind == CharacterSpellSelectionKind.knownCantrip,
@@ -837,6 +871,14 @@ void main() {
             .whereType<String>()
             .toSet(),
         contains('background_language_pick'),
+      );
+      final backgroundSkillGroup = stepView.skillSelectionGroups!.singleWhere(
+        (group) => group.kind == CharacterSkillSelectionKind.backgroundSkill,
+      );
+      expect(backgroundSkillGroup.selectionCount, 1);
+      expect(
+        backgroundSkillGroup.options,
+        containsAll([Skill.survival, Skill.history]),
       );
       expect(
         stepView.startingEquipmentBlocks
@@ -1188,45 +1230,6 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
-  final classSkillGroup = await endpoints.classChoiceGroupData.upsert(
-    sessionBuilder,
-    ClassChoiceGroupData(
-      name: 'Class skills',
-      sourceClassId: classData.id,
-      type: ClassChoiceType.skill,
-      selectionCount: 2,
-      allowDuplicates: false,
-      exclusiveKey: 'class_skill_pick',
-    ),
-  );
-  await endpoints.classChoiceOptionData.upsert(
-    sessionBuilder,
-    ClassChoiceOptionData(
-      choiceGroupId: classSkillGroup.id!,
-      optionKey: 'acrobatics_pick',
-      name: 'Acrobatics',
-      grantedSkills: const [Skill.acrobatics],
-    ),
-  );
-  await endpoints.classChoiceOptionData.upsert(
-    sessionBuilder,
-    ClassChoiceOptionData(
-      choiceGroupId: classSkillGroup.id!,
-      optionKey: 'athletics_pick',
-      name: 'Athletics',
-      grantedSkills: const [Skill.athletics],
-    ),
-  );
-  await endpoints.classChoiceOptionData.upsert(
-    sessionBuilder,
-    ClassChoiceOptionData(
-      choiceGroupId: classSkillGroup.id!,
-      optionKey: 'perception_pick',
-      name: 'Perception',
-      grantedSkills: const [Skill.perception],
-    ),
-  );
-
   final subclassToolGroup = await endpoints.classChoiceGroupData.upsert(
     sessionBuilder,
     ClassChoiceGroupData(
@@ -1253,6 +1256,8 @@ Future<_CreationFixture> _seedCreationFixture(
     BackgroundData(
       name: 'Fixture Acolyte',
       skillProficiencies: const ['insight', 'religion'],
+      availableSkills: const [Skill.survival, Skill.history],
+      skillCount: 1,
       feature: 'Shelter of the Faithful',
     ),
   );

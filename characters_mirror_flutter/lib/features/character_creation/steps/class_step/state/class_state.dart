@@ -18,6 +18,7 @@ sealed class ClassStateModel with _$ClassStateModel {
     ClassStepView? stepView,
     SubclassData? selectedSubclass,
     @Default({}) Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    @Default([]) List<CharacterSkillSelectionData> selectedSkillSelections,
     @Default([]) List<CharacterSpellSelectionData> selectedSpellSelections,
     @Default([])
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
@@ -63,6 +64,8 @@ class ClassState extends _$ClassState {
       selectedLevel: entry?.level ?? 1,
       savedChoices:
           characterCreation.character.choices ?? const <CharacterChoiceData>[],
+      savedSkillSelections: characterCreation.character.skillSelections ??
+          const <CharacterSkillSelectionData>[],
       savedSpellSelections: characterCreation.character.spellSelections ??
           const <CharacterSpellSelectionData>[],
       savedEquipmentSelections:
@@ -108,6 +111,10 @@ class ClassState extends _$ClassState {
         ),
         selectedOptions: _normalizeSelectedOptions(
             current.selectedOptions, stepView.choiceGroups),
+        selectedSkillSelections: _normalizeSkillSelections(
+          current.selectedSkillSelections,
+          stepView.skillSelectionGroups,
+        ),
         selectedSpellSelections: _normalizeSpellSelections(
           current.selectedSpellSelections,
           stepView.spellSelectionGroups,
@@ -143,6 +150,10 @@ class ClassState extends _$ClassState {
         selectedSubclass: null,
         selectedOptions: _normalizeSelectedOptions(
             current.selectedOptions, stepView.choiceGroups),
+        selectedSkillSelections: _normalizeSkillSelections(
+          current.selectedSkillSelections,
+          stepView.skillSelectionGroups,
+        ),
         selectedSpellSelections: _normalizeSpellSelections(
           current.selectedSpellSelections,
           stepView.spellSelectionGroups,
@@ -268,6 +279,7 @@ class ClassState extends _$ClassState {
         stepView: null,
         selectedSubclass: null,
         selectedOptions: {},
+        selectedSkillSelections: const [],
         selectedSpellSelections: const [],
         startingEquipmentSelections: const [],
         selectedLevel: 1,
@@ -414,6 +426,77 @@ class ClassState extends _$ClassState {
     );
   }
 
+  void toggleSkillSelection(
+    SkillSelectionGroupView group,
+    Skill skill,
+  ) {
+    final currentState = state.value;
+    final classId = currentState?.selectedClass?.id;
+    final kind = group.kind;
+    if (currentState == null || classId == null || kind == null) {
+      return;
+    }
+
+    final selected = [
+      for (final selection in currentState.selectedSkillSelections)
+        if (selection.classDataId == classId && selection.kind == kind)
+          selection,
+    ];
+    final existingIndex = selected.indexWhere(
+      (selection) => selection.skill == skill,
+    );
+    if (existingIndex != -1) {
+      selected.removeAt(existingIndex);
+    } else if (selected.length < (group.selectionCount ?? 1)) {
+      selected.add(
+        CharacterSkillSelectionData(
+          classDataId: classId,
+          skill: skill,
+          kind: kind,
+          selectionIndex: selected.length,
+        ),
+      );
+    } else {
+      return;
+    }
+
+    final nextSelections = [
+      for (final selection in currentState.selectedSkillSelections)
+        if (!(selection.classDataId == classId && selection.kind == kind))
+          selection,
+      for (var index = 0; index < selected.length; index++)
+        selected[index].copyWith(selectionIndex: index),
+    ];
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        selectedSkillSelections: _normalizeSkillSelections(
+          nextSelections,
+          currentState.stepView?.skillSelectionGroups,
+        ),
+      ),
+    );
+  }
+
+  void clearSkillSelectionGroup(SkillSelectionGroupView group) {
+    final currentState = state.value;
+    final classId = currentState?.selectedClass?.id;
+    final kind = group.kind;
+    if (currentState == null || classId == null || kind == null) {
+      return;
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        selectedSkillSelections: [
+          for (final selection in currentState.selectedSkillSelections)
+            if (!(selection.classDataId == classId && selection.kind == kind))
+              selection,
+        ],
+      ),
+    );
+  }
+
   void clearSpellSelectionGroup(ClassSpellSelectionGroupView group) {
     final currentState = state.value;
     final classId = currentState?.selectedClass?.id;
@@ -514,6 +597,7 @@ class ClassState extends _$ClassState {
     int? selectedSubclassId,
     int selectedLevel = 1,
     List<CharacterChoiceData> savedChoices = const [],
+    List<CharacterSkillSelectionData> savedSkillSelections = const [],
     List<CharacterSpellSelectionData> savedSpellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> savedEquipmentSelections =
         const [],
@@ -525,6 +609,7 @@ class ClassState extends _$ClassState {
         stepView: null,
         selectedSubclass: null,
         selectedOptions: const {},
+        selectedSkillSelections: const [],
         selectedSpellSelections: const [],
         startingEquipmentSelections: const [],
         selectedLevel: selectedLevel,
@@ -551,6 +636,10 @@ class ClassState extends _$ClassState {
       selectedOptions: _restoreSelectedOptions(
         stepView.choiceGroups,
         savedChoices,
+      ),
+      selectedSkillSelections: _normalizeSkillSelections(
+        savedSkillSelections,
+        stepView.skillSelectionGroups,
       ),
       selectedSpellSelections: _normalizeSpellSelections(
         savedSpellSelections,
@@ -617,6 +706,54 @@ class ClassState extends _$ClassState {
     }
 
     return _normalizeSelectedOptions(restored, groups);
+  }
+
+  List<CharacterSkillSelectionData> _normalizeSkillSelections(
+    List<CharacterSkillSelectionData> selections,
+    List<SkillSelectionGroupView>? groups,
+  ) {
+    final groupMap = {
+      for (final group in groups ?? const <SkillSelectionGroupView>[])
+        if (group.kind != null && group.classDataId != null)
+          '${group.classDataId}:${group.kind!.name}': group,
+    };
+    final normalized = <CharacterSkillSelectionData>[];
+
+    for (final entry in groupMap.entries) {
+      final group = entry.value;
+      final available = {
+        for (final skill in group.options ?? const <Skill>[]) skill: skill,
+      };
+      final selected = [
+        for (final selection in selections)
+          if ('${selection.classDataId}:${selection.kind?.name}' == entry.key &&
+              selection.skill != null &&
+              available.containsKey(selection.skill))
+            selection,
+      ]..sort(
+          (left, right) =>
+              (left.selectionIndex ?? 0).compareTo(right.selectionIndex ?? 0),
+        );
+
+      final limit = group.selectionCount ?? 1;
+      final seen = <Skill>{};
+      for (final selection in selected) {
+        if (seen.length >= limit) break;
+        final skill = selection.skill;
+        if (skill == null || seen.contains(skill)) continue;
+        seen.add(skill);
+        normalized.add(
+          selection.copyWith(
+            classDataId: group.classDataId,
+            skill: available[skill],
+            kind: group.kind,
+            selectionIndex: seen.length - 1,
+          ),
+        );
+      }
+    }
+
+    return normalized;
   }
 
   List<CharacterSpellSelectionData> _normalizeSpellSelections(

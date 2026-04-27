@@ -88,6 +88,7 @@ sealed class CharacterCreationState with _$CharacterCreationState {
         character: CharacterData(
           classEntries: const [],
           choices: const [],
+          skillSelections: const [],
           startingEquipmentSelections: const [],
           useFlexibleAbilityBonuses: false,
         ),
@@ -158,6 +159,7 @@ class CharacterCreation extends _$CharacterCreation {
     required BackgroundData? selectedBackground,
     List<ClassChoiceGroupView> choiceGroups = const [],
     Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+    List<CharacterSkillSelectionData> skillSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
   }) {
@@ -170,6 +172,8 @@ class CharacterCreation extends _$CharacterCreation {
     final currentEquipmentSelections =
         state.character.startingEquipmentSelections ??
             const <CharacterStartingEquipmentSelectionData>[];
+    final currentSkillSelections = state.character.skillSelections ??
+        const <CharacterSkillSelectionData>[];
     final backgroundChoices = buildBackgroundChoices(
       selectedOptions: selectedOptions,
       groups: choiceGroups,
@@ -188,6 +192,18 @@ class CharacterCreation extends _$CharacterCreation {
       state.character.copyWith(
         background: selectedBackground,
         choices: [...preservedChoices, ...backgroundChoices],
+        skillSelections: [
+          for (final selection in currentSkillSelections)
+            if (selection.kind != CharacterSkillSelectionKind.backgroundSkill)
+              selection,
+          for (final selection in skillSelections)
+            selection.copyWith(
+              backgroundDataId:
+                  selection.backgroundDataId ?? selectedBackground.id,
+              kind:
+                  selection.kind ?? CharacterSkillSelectionKind.backgroundSkill,
+            ),
+        ],
         startingEquipmentSelections: replaceEquipmentSelectionsForSource(
           existingSelections: backgroundChanged
               ? currentEquipmentSelections
@@ -228,6 +244,7 @@ class CharacterCreation extends _$CharacterCreation {
     SubclassData? subclass,
     List<ClassChoiceGroupView> choiceGroups = const [],
     Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+    List<CharacterSkillSelectionData> skillSelections = const [],
     List<CharacterSpellSelectionData> spellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
@@ -243,6 +260,7 @@ class CharacterCreation extends _$CharacterCreation {
         selectedOptions: selectedOptions,
         groups: choiceGroups,
       ),
+      skillSelections: skillSelections,
       spellSelections: spellSelections,
       startingEquipmentSelections: startingEquipmentSelections,
     );
@@ -407,6 +425,7 @@ class CharacterCreation extends _$CharacterCreation {
     SubclassData? subclass,
     int level = 1,
     List<CharacterChoiceData> choices = const [],
+    List<CharacterSkillSelectionData> skillSelections = const [],
     List<CharacterSpellSelectionData> spellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
@@ -434,6 +453,19 @@ class CharacterCreation extends _$CharacterCreation {
         .map(
             (choice) => choice.copyWith(classEntry: choice.classEntry ?? entry))
         .toList();
+    final preservedSkillSelections = [
+      for (final selection in state.character.skillSelections ??
+          const <CharacterSkillSelectionData>[])
+        if (selection.kind != CharacterSkillSelectionKind.classSkill) selection,
+    ];
+    final linkedSkillSelections = [
+      for (final selection in skillSelections)
+        selection.copyWith(
+          classEntry: selection.classEntry ?? entry,
+          classDataId: selection.classDataId ?? classData.id,
+          kind: selection.kind ?? CharacterSkillSelectionKind.classSkill,
+        ),
+    ];
     final preservedSpellSelections = [
       for (final selection in state.character.spellSelections ??
           const <CharacterSpellSelectionData>[])
@@ -451,6 +483,10 @@ class CharacterCreation extends _$CharacterCreation {
       state.character.copyWith(
         classEntries: [entry],
         choices: [...preserved, ...linkedChoices],
+        skillSelections: [
+          ...preservedSkillSelections,
+          ...linkedSkillSelections,
+        ],
         spellSelections: [
           ...preservedSpellSelections,
           ...linkedSpellSelections,

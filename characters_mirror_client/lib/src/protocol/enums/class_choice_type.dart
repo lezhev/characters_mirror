@@ -12,7 +12,6 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
 enum ClassChoiceType implements _i1.SerializableModel {
-  skill,
   tool,
   language,
   fightingStyle,
@@ -26,8 +25,6 @@ enum ClassChoiceType implements _i1.SerializableModel {
 
   static ClassChoiceType fromJson(String name) {
     switch (name) {
-      case 'skill':
-        return ClassChoiceType.skill;
       case 'tool':
         return ClassChoiceType.tool;
       case 'language':

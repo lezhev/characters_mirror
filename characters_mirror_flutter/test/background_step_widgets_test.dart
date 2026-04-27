@@ -56,15 +56,6 @@ void main() {
         'Я всегда сначала смеюсь. Потом задаю вопросы.',
       ],
     );
-    final skillGroup = ClassChoiceGroupData(
-      id: 41,
-      sourceBackgroundId: background.id,
-      type: ClassChoiceType.skill,
-      name: 'Навыки',
-      selectionCount: 1,
-      exclusiveKey: 'background_skill_pick',
-      allowDuplicates: false,
-    );
     final languageGroup = ClassChoiceGroupData(
       id: 42,
       sourceBackgroundId: background.id,
@@ -76,17 +67,15 @@ void main() {
     );
     final stepView = BackgroundStepView(
       background: background,
-      choiceGroups: [
-        ClassChoiceGroupView(
-          group: skillGroup,
-          options: [
-            ClassChoiceOptionData(
-              choiceGroupId: 41,
-              optionKey: 'survival',
-              name: 'Выживание',
-            ),
-          ],
+      skillSelectionGroups: [
+        SkillSelectionGroupView(
+          kind: CharacterSkillSelectionKind.backgroundSkill,
+          selectionCount: 1,
+          backgroundDataId: background.id,
+          options: const [Skill.survival],
         ),
+      ],
+      choiceGroups: [
         ClassChoiceGroupView(
           group: languageGroup,
           options: [
@@ -130,7 +119,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Владения предыстории'), findsOneWidget);
+    expect(find.text('Владения предыстории'), findsNothing);
     expect(find.text('Владения и языки'), findsOneWidget);
     expect(find.text('Навыки'), findsOneWidget);
     expect(find.text('Языки'), findsOneWidget);

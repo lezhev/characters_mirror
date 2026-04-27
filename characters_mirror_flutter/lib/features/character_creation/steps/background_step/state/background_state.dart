@@ -15,6 +15,7 @@ abstract class BackgroundStateModel with _$BackgroundStateModel {
     BackgroundData? selectedBackground,
     BackgroundStepView? stepView,
     @Default({}) Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    @Default([]) List<CharacterSkillSelectionData> selectedSkillSelections,
     @Default([])
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
   }) = _BackgroundStateModel;
@@ -46,6 +47,8 @@ class BackgroundState extends _$BackgroundState {
       background: selectedBackground,
       savedChoices:
           characterCreation.character.choices ?? const <CharacterChoiceData>[],
+      savedSkillSelections: characterCreation.character.skillSelections ??
+          const <CharacterSkillSelectionData>[],
       savedEquipmentSelections:
           characterCreation.character.startingEquipmentSelections ??
               const <CharacterStartingEquipmentSelectionData>[],
@@ -70,6 +73,7 @@ class BackgroundState extends _$BackgroundState {
         selectedBackground: null,
         stepView: null,
         selectedOptions: const {},
+        selectedSkillSelections: const [],
         startingEquipmentSelections: const [],
       ),
     );
@@ -175,6 +179,80 @@ class BackgroundState extends _$BackgroundState {
 
     state = AsyncValue.data(
       state.value!.copyWith(selectedOptions: current),
+    );
+  }
+
+  void toggleSkillSelection(
+    SkillSelectionGroupView group,
+    Skill skill,
+  ) {
+    final currentState = state.value;
+    final backgroundId = currentState?.selectedBackground?.id;
+    final kind = group.kind;
+    if (currentState == null || backgroundId == null || kind == null) {
+      return;
+    }
+
+    final selected = [
+      for (final selection in currentState.selectedSkillSelections)
+        if (selection.backgroundDataId == backgroundId &&
+            selection.kind == kind)
+          selection,
+    ];
+    final existingIndex = selected.indexWhere(
+      (selection) => selection.skill == skill,
+    );
+    if (existingIndex != -1) {
+      selected.removeAt(existingIndex);
+    } else if (selected.length < (group.selectionCount ?? 1)) {
+      selected.add(
+        CharacterSkillSelectionData(
+          backgroundDataId: backgroundId,
+          skill: skill,
+          kind: kind,
+          selectionIndex: selected.length,
+        ),
+      );
+    } else {
+      return;
+    }
+
+    final nextSelections = [
+      for (final selection in currentState.selectedSkillSelections)
+        if (!(selection.backgroundDataId == backgroundId &&
+            selection.kind == kind))
+          selection,
+      for (var index = 0; index < selected.length; index++)
+        selected[index].copyWith(selectionIndex: index),
+    ];
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        selectedSkillSelections: _normalizeSkillSelections(
+          nextSelections,
+          currentState.stepView?.skillSelectionGroups,
+        ),
+      ),
+    );
+  }
+
+  void clearSkillSelectionGroup(SkillSelectionGroupView group) {
+    final currentState = state.value;
+    final backgroundId = currentState?.selectedBackground?.id;
+    final kind = group.kind;
+    if (currentState == null || backgroundId == null || kind == null) {
+      return;
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        selectedSkillSelections: [
+          for (final selection in currentState.selectedSkillSelections)
+            if (!(selection.backgroundDataId == backgroundId &&
+                selection.kind == kind))
+              selection,
+        ],
+      ),
     );
   }
 
@@ -338,6 +416,7 @@ class BackgroundState extends _$BackgroundState {
     required BackgroundStateModel current,
     required BackgroundData background,
     List<CharacterChoiceData> savedChoices = const [],
+    List<CharacterSkillSelectionData> savedSkillSelections = const [],
     List<CharacterStartingEquipmentSelectionData> savedEquipmentSelections =
         const [],
   }) async {
@@ -347,6 +426,7 @@ class BackgroundState extends _$BackgroundState {
         selectedBackground: background,
         stepView: null,
         selectedOptions: const {},
+        selectedSkillSelections: const [],
         startingEquipmentSelections: const [],
       );
     }
@@ -359,6 +439,10 @@ class BackgroundState extends _$BackgroundState {
       selectedOptions: _restoreSelectedOptions(
         stepView.choiceGroups,
         savedChoices,
+      ),
+      selectedSkillSelections: _normalizeSkillSelections(
+        savedSkillSelections,
+        stepView.skillSelectionGroups,
       ),
       startingEquipmentSelections: normalizeStartingEquipmentSelections(
         blocks: stepView.startingEquipmentBlocks ??
@@ -395,6 +479,55 @@ class BackgroundState extends _$BackgroundState {
     }
 
     return _normalizeSelectedOptions(restored, groups);
+  }
+
+  List<CharacterSkillSelectionData> _normalizeSkillSelections(
+    List<CharacterSkillSelectionData> selections,
+    List<SkillSelectionGroupView>? groups,
+  ) {
+    final groupMap = {
+      for (final group in groups ?? const <SkillSelectionGroupView>[])
+        if (group.kind != null && group.backgroundDataId != null)
+          '${group.backgroundDataId}:${group.kind!.name}': group,
+    };
+    final normalized = <CharacterSkillSelectionData>[];
+
+    for (final entry in groupMap.entries) {
+      final group = entry.value;
+      final available = {
+        for (final skill in group.options ?? const <Skill>[]) skill: skill,
+      };
+      final selected = [
+        for (final selection in selections)
+          if ('${selection.backgroundDataId}:${selection.kind?.name}' ==
+                  entry.key &&
+              selection.skill != null &&
+              available.containsKey(selection.skill))
+            selection,
+      ]..sort(
+          (left, right) =>
+              (left.selectionIndex ?? 0).compareTo(right.selectionIndex ?? 0),
+        );
+
+      final limit = group.selectionCount ?? 1;
+      final seen = <Skill>{};
+      for (final selection in selected) {
+        if (seen.length >= limit) break;
+        final skill = selection.skill;
+        if (skill == null || seen.contains(skill)) continue;
+        seen.add(skill);
+        normalized.add(
+          selection.copyWith(
+            backgroundDataId: group.backgroundDataId,
+            skill: available[skill],
+            kind: group.kind,
+            selectionIndex: seen.length - 1,
+          ),
+        );
+      }
+    }
+
+    return normalized;
   }
 
   Map<String, List<ClassChoiceOptionData>> _normalizeSelectedOptions(

@@ -125,7 +125,6 @@ String _choiceOptionTitle(
 
 bool _shouldDisableChoiceAutoScroll(ClassChoiceType? type) {
   switch (type) {
-    case ClassChoiceType.skill:
     case ClassChoiceType.language:
       return true;
     case ClassChoiceType.tool:
