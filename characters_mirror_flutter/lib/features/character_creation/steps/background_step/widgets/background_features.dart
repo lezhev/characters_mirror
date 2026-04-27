@@ -6,6 +6,7 @@ import 'package:characters_mirror_flutter/features/character_creation/state/char
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_group_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/skill_selection_section.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_section.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -49,11 +50,14 @@ class BackgroundFeatures extends ConsumerWidget {
     );
     final startingEquipmentBlocks = stepView?.startingEquipmentBlocks ??
         const <StartingEquipmentBlockView>[];
+    final skillSelectionGroups =
+        stepView?.skillSelectionGroups ?? const <SkillSelectionGroupView>[];
     final hasStructuredEquipment = startingEquipmentBlocks.isNotEmpty;
     final hasProficienciesOrLanguages = _hasAnyValues([
           selectedBackground.skillProficiencies,
           selectedBackground.toolProficiencies,
         ]) ||
+        skillSelectionGroups.isNotEmpty ||
         languageChoiceGroups.isNotEmpty ||
         (!hasLanguageChoiceGroup &&
             _hasPositiveCount(selectedBackground.languageCount));
@@ -131,6 +135,23 @@ class BackgroundFeatures extends ConsumerWidget {
             label: 'Владение навыками',
             values: selectedBackground.skillProficiencies,
           ),
+          if (skillSelectionGroups.isNotEmpty) ...[
+            const Gap(8),
+            SkillSelectionSection(
+              groups: skillSelectionGroups,
+              selections: ref
+                      .watch(backgroundStateProvider)
+                      .valueOrNull
+                      ?.selectedSkillSelections ??
+                  const <CharacterSkillSelectionData>[],
+              onToggleSkill: ref
+                  .read(backgroundStateProvider.notifier)
+                  .toggleSkillSelection,
+              onClearGroup: ref
+                  .read(backgroundStateProvider.notifier)
+                  .clearSkillSelectionGroup,
+            ),
+          ],
           BackgroundChoiceGroupCards(choiceGroups: languageChoiceGroups),
           BackgroundValueGroup(
             label: 'Владение инструментами',

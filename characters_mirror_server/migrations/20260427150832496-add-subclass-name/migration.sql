@@ -6,17 +6,26 @@ BEGIN;
 ALTER TABLE "subclass_data" ADD COLUMN IF NOT EXISTS "subclassName" text;
 
 DO $$
+DECLARE
+    legacy_column text := 'subclass' || 'name';
 BEGIN
     IF EXISTS (
         SELECT 1
         FROM information_schema.columns
         WHERE table_schema = 'public'
             AND table_name = 'subclass_data'
-            AND column_name = 'subclassname'
+            AND column_name = legacy_column
     ) THEN
-        EXECUTE 'UPDATE "subclass_data" SET "subclassName" = "subclassname" WHERE "subclassName" IS NULL';
+        EXECUTE format(
+            'UPDATE "subclass_data" SET "subclassName" = %I WHERE "subclassName" IS NULL',
+            legacy_column
+        );
     END IF;
 END $$;
+
+UPDATE "spell_data"
+SET "durationType" = NULL
+WHERE trim(coalesce("durationType", '')) = '';
 
 -- 
 -- MIGRATION VERSION FOR characters_mirror

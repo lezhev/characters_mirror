@@ -1,0 +1,10 @@
+class: CharacterSkillSelectionData
+fields:
+  id: String?
+  classEntry: CharacterClassEntryData?
+  classDataId: int?
+  backgroundDataId: int?
+  skill: Skill?
+  kind: CharacterSkillSelectionKind?
+  selectionIndex: int?
+  updatedAt: DateTime?

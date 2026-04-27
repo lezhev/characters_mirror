@@ -1,0 +1,13 @@
+class: CharacterSkillSelectionRecord
+serverOnly: true
+table: character_skill_selection_data
+fields:
+  syncId: String?
+  character: CharacterRecord?, relation
+  classEntry: CharacterClassEntryRecord?, relation(optional)
+  classData: ClassData?, relation(optional)
+  backgroundData: BackgroundData?, relation(optional)
+  skill: Skill?
+  kind: CharacterSkillSelectionKind?
+  selectionIndex: int?
+  updatedAt: DateTime?

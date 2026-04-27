@@ -28,6 +28,9 @@ class BackgroundDataEndpoint extends Endpoint {
     );
     final choiceGroups = <ClassChoiceGroupView>[];
     for (final group in groups) {
+      if (_isMigratedSkillGroup(group)) {
+        continue;
+      }
       final options = await ClassChoiceOptionData.db.find(
         session,
         where: (t) => t.choiceGroupId.equals(group.id),
@@ -39,10 +42,8 @@ class BackgroundDataEndpoint extends Endpoint {
         ),
       );
     }
-    final languageChoiceGroup =
-        _buildLanguageChoiceGroup(backgrounds.first);
-    if (languageChoiceGroup != null &&
-        !_hasLanguageChoiceGroup(choiceGroups)) {
+    final languageChoiceGroup = _buildLanguageChoiceGroup(backgrounds.first);
+    if (languageChoiceGroup != null && !_hasLanguageChoiceGroup(choiceGroups)) {
       choiceGroups.add(languageChoiceGroup);
     }
 
@@ -54,6 +55,9 @@ class BackgroundDataEndpoint extends Endpoint {
     return BackgroundStepView(
       background: backgrounds.first,
       choiceGroups: choiceGroups,
+      skillSelectionGroups: _buildBackgroundSkillSelectionGroups(
+        backgrounds.first,
+      ),
       startingEquipmentBlocks: startingEquipmentBlocks,
     );
   }
@@ -82,6 +86,44 @@ class BackgroundDataEndpoint extends Endpoint {
   Future<void> delete(Session session, int id) async {
     await BackgroundData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
+}
+
+bool _isMigratedSkillGroup(ClassChoiceGroupData group) {
+  return group.type == null &&
+      group.sourceBackgroundId != null &&
+      (group.exclusiveKey?.contains('skill') == true ||
+          group.name?.toLowerCase().contains('skill') == true);
+}
+
+List<SkillSelectionGroupView> _buildBackgroundSkillSelectionGroups(
+  BackgroundData background,
+) {
+  final backgroundId = background.id;
+  final skillCount = background.skillCount ?? 0;
+  final options = _uniqueSkills(background.availableSkills);
+  if (backgroundId == null || skillCount <= 0 || options.isEmpty) {
+    return const <SkillSelectionGroupView>[];
+  }
+
+  return [
+    SkillSelectionGroupView(
+      kind: CharacterSkillSelectionKind.backgroundSkill,
+      selectionCount: skillCount,
+      backgroundDataId: backgroundId,
+      options: options,
+    ),
+  ];
+}
+
+List<Skill> _uniqueSkills(List<Skill>? skills) {
+  final result = <Skill>[];
+  final seen = <Skill>{};
+  for (final skill in skills ?? const <Skill>[]) {
+    if (seen.add(skill)) {
+      result.add(skill);
+    }
+  }
+  return result;
 }
 
 bool _hasLanguageChoiceGroup(List<ClassChoiceGroupView> groups) {

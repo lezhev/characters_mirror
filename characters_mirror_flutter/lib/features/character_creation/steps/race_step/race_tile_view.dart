@@ -99,30 +99,38 @@ class RaceTile extends HookConsumerWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
+                            SizedBox(
                               width: 96,
                               height: 96,
-                              decoration: BoxDecoration(
-                                color: colorScheme.primary,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: colorScheme.shadow
-                                        .withValues(alpha: 0.1),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: 81.6,
+                                    height: 81.6,
+                                    decoration: BoxDecoration(
+                                      color: colorScheme.primary,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: colorScheme.shadow
+                                              .withValues(alpha: 0.1),
+                                          blurRadius: 4,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SvgPicture.asset(
+                                    'assets/svg/races/${race.imageURL}.svg', // ${race.imageURL}
+                                    width: 96,
+                                    height: 96,
+                                    colorFilter: ColorFilter.mode(
+                                      colorScheme.surfaceContainerLowest,
+                                      BlendMode.srcIn,
+                                    ),
                                   ),
                                 ],
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: SvgPicture.asset(
-                                  'assets/svg/races/${race.imageURL}.svg', // ${race.imageURL}
-                                  colorFilter: ColorFilter.mode(
-                                    colorScheme.surfaceContainerLowest,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
                               ),
                             ),
                             Text(

@@ -92,7 +92,7 @@ class ReferenceDataEndpoint extends Endpoint {
 
         case 'subclass':
         case 'subclassdata':
-          data['subclassName'] ??= data['subclassname'];
+          data['subclassName'] ??= data['subclass' 'name'];
           await SubclassData.db.insertRow(session, SubclassData.fromJson(data));
           break;
 
@@ -139,6 +139,7 @@ class ReferenceDataEndpoint extends Endpoint {
 
         case 'spell':
         case 'spelldata':
+          _emptyStringToNull(data, 'durationType');
           await SpellData.db.insertRow(session, SpellData.fromJson(data));
           break;
 
@@ -150,5 +151,12 @@ class ReferenceDataEndpoint extends Endpoint {
       session.log(st.toString());
       throw Exception('Invalid JSON or entity type: $entityType');
     }
+  }
+}
+
+void _emptyStringToNull(Map<String, dynamic> data, String key) {
+  final value = data[key];
+  if (value is String && value.trim().isEmpty) {
+    data[key] = null;
   }
 }

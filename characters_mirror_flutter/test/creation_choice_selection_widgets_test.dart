@@ -145,8 +145,8 @@ void main() {
               child: _ChoiceGroupHarness(
                 group: ClassChoiceGroupData(
                   id: 2,
-                  name: 'Навыки',
-                  type: ClassChoiceType.skill,
+                  name: 'Инструменты',
+                  type: ClassChoiceType.tool,
                   selectionCount: 2,
                   allowDuplicates: false,
                   exclusiveKey: 'skills_multi',

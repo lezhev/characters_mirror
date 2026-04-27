@@ -20,15 +20,33 @@ class SummaryStep extends HookConsumerWidget {
     final classEntries =
         state.character.classEntries ?? const <CharacterClassEntryData>[];
     final choices = state.character.choices ?? const <CharacterChoiceData>[];
+    final skillSelections = state.character.skillSelections ??
+        const <CharacterSkillSelectionData>[];
     final spellSelections = state.character.spellSelections ??
         const <CharacterSpellSelectionData>[];
     final classEntry = classEntries.isNotEmpty ? classEntries.first : null;
     final classChoiceSummary =
         formatChoiceSummary(choices.where(isClassChoice).toList());
     final classSpellSummary = formatSpellSelectionSummary(spellSelections);
+    final classSkillSummary = formatSkillSelectionSummary(
+      skillSelections
+          .where(
+            (selection) =>
+                selection.kind == CharacterSkillSelectionKind.classSkill,
+          )
+          .toList(),
+    );
     final backgroundChoiceSummary = formatChoiceSummary(
       choices
           .where((choice) => choice.sourceType == ChoiceSourceType.background)
+          .toList(),
+    );
+    final backgroundSkillSummary = formatSkillSelectionSummary(
+      skillSelections
+          .where(
+            (selection) =>
+                selection.kind == CharacterSkillSelectionKind.backgroundSkill,
+          )
           .toList(),
     );
     final raceChoiceSummary = formatChoiceSummary(
@@ -69,8 +87,10 @@ class SummaryStep extends HookConsumerWidget {
           SummaryChoicesSection(
             raceChoiceSummary: raceChoiceSummary,
             classChoiceSummary: classChoiceSummary,
+            classSkillSummary: classSkillSummary,
             classSpellSummary: classSpellSummary,
             backgroundChoiceSummary: backgroundChoiceSummary,
+            backgroundSkillSummary: backgroundSkillSummary,
           ),
           const Gap(24),
           SummaryAbilitiesSection(

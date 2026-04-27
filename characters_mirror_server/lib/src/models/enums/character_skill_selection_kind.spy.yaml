@@ -1,0 +1,5 @@
+enum: CharacterSkillSelectionKind
+serialized: byName
+values:
+  - classSkill
+  - backgroundSkill

@@ -8,6 +8,7 @@ fields:
   futureSubclassFeatures: List<SubclassFeatureData>?
   subclassChoice: ClassStepSubclassChoiceView?
   choiceGroups: List<ClassChoiceGroupView>?
+  skillSelectionGroups: List<SkillSelectionGroupView>?
   spellSelectionGroups: List<ClassSpellSelectionGroupView>?
   startingEquipmentBlocks: List<StartingEquipmentBlockView>?
   startingProficiencies: ProficiencyBundleView?

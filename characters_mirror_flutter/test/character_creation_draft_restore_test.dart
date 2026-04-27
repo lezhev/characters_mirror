@@ -69,14 +69,6 @@ void main() {
       ],
       skillCount: 2,
     );
-    final classSkillGroup = ClassChoiceGroupData(
-      id: 31,
-      sourceClassId: classData.id,
-      type: ClassChoiceType.skill,
-      selectionCount: 2,
-      exclusiveKey: 'class_skill_pick',
-      allowDuplicates: false,
-    );
     final subclassToolGroup = ClassChoiceGroupData(
       id: 32,
       sourceSubclassFeatureId: subclassFeature.id,
@@ -93,27 +85,19 @@ void main() {
         subclasses: [subclass],
       ),
       currentSubclassFeatures: [subclassFeature],
-      choiceGroups: [
-        ClassChoiceGroupView(
-          group: classSkillGroup,
-          options: [
-            ClassChoiceOptionData(
-              choiceGroupId: 31,
-              optionKey: 'acrobatics_pick',
-              name: 'Acrobatics',
-            ),
-            ClassChoiceOptionData(
-              choiceGroupId: 31,
-              optionKey: 'athletics_pick',
-              name: 'Athletics',
-            ),
-            ClassChoiceOptionData(
-              choiceGroupId: 31,
-              optionKey: 'perception_pick',
-              name: 'Perception',
-            ),
+      skillSelectionGroups: [
+        SkillSelectionGroupView(
+          kind: CharacterSkillSelectionKind.classSkill,
+          selectionCount: 2,
+          classDataId: classData.id,
+          options: const [
+            Skill.acrobatics,
+            Skill.athletics,
+            Skill.perception,
           ],
         ),
+      ],
+      choiceGroups: [
         ClassChoiceGroupView(
           group: subclassToolGroup,
           options: [
@@ -161,14 +145,18 @@ void main() {
         raceRepositoryProvider.overrideWithValue(
           _FakeRaceRepository(
             races: [race],
-            stepViews: {race.id!: RaceStepView(race: race, features: [raceFeature])},
+            stepViews: {
+              race.id!: RaceStepView(race: race, features: [raceFeature])
+            },
           ),
         ),
         classRepositoryProvider.overrideWithValue(
           _FakeClassRepository(
             classes: [classData],
             stepViews: {'${classData.id}:none': classStepView},
-            subclassStepViews: {'${classData.id}:${subclass.id}': classStepView},
+            subclassStepViews: {
+              '${classData.id}:${subclass.id}': classStepView
+            },
           ),
         ),
         backgroundRepositoryProvider.overrideWithValue(
@@ -199,21 +187,21 @@ void main() {
       classData: classData,
       subclass: subclass,
       level: 1,
-      choices: [
-        CharacterChoiceData(
-          sourceType: ChoiceSourceType.classData,
-          sourceId: 2,
-          groupKey: 'class_skill_pick',
-          optionKey: 'acrobatics_pick',
+      skillSelections: [
+        CharacterSkillSelectionData(
+          classDataId: classData.id,
+          skill: Skill.acrobatics,
+          kind: CharacterSkillSelectionKind.classSkill,
           selectionIndex: 0,
         ),
-        CharacterChoiceData(
-          sourceType: ChoiceSourceType.classData,
-          sourceId: 2,
-          groupKey: 'class_skill_pick',
-          optionKey: 'athletics_pick',
+        CharacterSkillSelectionData(
+          classDataId: classData.id,
+          skill: Skill.athletics,
+          kind: CharacterSkillSelectionKind.classSkill,
           selectionIndex: 1,
         ),
+      ],
+      choices: [
         CharacterChoiceData(
           sourceType: ChoiceSourceType.subclassFeature,
           sourceId: 22,
@@ -239,35 +227,31 @@ void main() {
 
     final raceState = await container.read(raceStateProvider.future);
     final classState = await container.read(classStateProvider.future);
-    final backgroundState = await container.read(backgroundStateProvider.future);
+    final backgroundState =
+        await container.read(backgroundStateProvider.future);
 
     expect(raceState.selectedRace?.id, race.id);
     expect(
       raceState.selectedChoiceOptionsByGroup['race_choice_${raceChoiceSet.id}']
-          ?.single
-          .optionKey,
+          ?.single.optionKey,
       'skilled_feat',
     );
 
     expect(classState.selectedClass?.id, classData.id);
     expect(classState.selectedSubclass?.id, subclass.id);
     expect(
-      classState.selectedOptions['class_skill_pick']
-          ?.map((option) => option.optionKey),
-      ['acrobatics_pick', 'athletics_pick'],
+      classState.selectedSkillSelections.map((selection) => selection.skill),
+      [Skill.acrobatics, Skill.athletics],
     );
     expect(
-      classState.selectedOptions['subclass_tool_pick']
-          ?.single
-          .optionKey,
+      classState.selectedOptions['subclass_tool_pick']?.single.optionKey,
       'smith_tools',
     );
 
     expect(backgroundState.selectedBackground?.id, background.id);
     expect(
-      backgroundState.selectedOptions['background_language_pick']
-          ?.single
-          .optionKey,
+      backgroundState
+          .selectedOptions['background_language_pick']?.single.optionKey,
       'celestial_language',
     );
   });

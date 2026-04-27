@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../enums/skill.dart' as _i2;
 
 abstract class BackgroundData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -22,6 +23,8 @@ abstract class BackgroundData
     this.createdAt,
     this.updatedAt,
     this.skillProficiencies,
+    this.availableSkills,
+    this.skillCount,
     this.toolProficiencies,
     this.languageCount,
     this.items,
@@ -42,6 +45,8 @@ abstract class BackgroundData
     DateTime? createdAt,
     DateTime? updatedAt,
     List<String>? skillProficiencies,
+    List<_i2.Skill>? availableSkills,
+    int? skillCount,
     List<String>? toolProficiencies,
     int? languageCount,
     List<String>? items,
@@ -69,6 +74,10 @@ abstract class BackgroundData
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
+      availableSkills: (jsonSerialization['availableSkills'] as List?)
+          ?.map((e) => _i2.Skill.fromJson((e as String)))
+          .toList(),
+      skillCount: jsonSerialization['skillCount'] as int?,
       toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -114,6 +123,10 @@ abstract class BackgroundData
 
   List<String>? skillProficiencies;
 
+  List<_i2.Skill>? availableSkills;
+
+  int? skillCount;
+
   List<String>? toolProficiencies;
 
   int? languageCount;
@@ -147,6 +160,8 @@ abstract class BackgroundData
     DateTime? createdAt,
     DateTime? updatedAt,
     List<String>? skillProficiencies,
+    List<_i2.Skill>? availableSkills,
+    int? skillCount,
     List<String>? toolProficiencies,
     int? languageCount,
     List<String>? items,
@@ -169,6 +184,10 @@ abstract class BackgroundData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
+      if (availableSkills != null)
+        'availableSkills':
+            availableSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (skillCount != null) 'skillCount': skillCount,
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
       if (languageCount != null) 'languageCount': languageCount,
@@ -195,6 +214,10 @@ abstract class BackgroundData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (skillProficiencies != null)
         'skillProficiencies': skillProficiencies?.toJson(),
+      if (availableSkills != null)
+        'availableSkills':
+            availableSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (skillCount != null) 'skillCount': skillCount,
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
       if (languageCount != null) 'languageCount': languageCount,
@@ -251,6 +274,8 @@ class _BackgroundDataImpl extends BackgroundData {
     DateTime? createdAt,
     DateTime? updatedAt,
     List<String>? skillProficiencies,
+    List<_i2.Skill>? availableSkills,
+    int? skillCount,
     List<String>? toolProficiencies,
     int? languageCount,
     List<String>? items,
@@ -269,6 +294,8 @@ class _BackgroundDataImpl extends BackgroundData {
           createdAt: createdAt,
           updatedAt: updatedAt,
           skillProficiencies: skillProficiencies,
+          availableSkills: availableSkills,
+          skillCount: skillCount,
           toolProficiencies: toolProficiencies,
           languageCount: languageCount,
           items: items,
@@ -293,6 +320,8 @@ class _BackgroundDataImpl extends BackgroundData {
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
     Object? skillProficiencies = _Undefined,
+    Object? availableSkills = _Undefined,
+    Object? skillCount = _Undefined,
     Object? toolProficiencies = _Undefined,
     Object? languageCount = _Undefined,
     Object? items = _Undefined,
@@ -314,6 +343,10 @@ class _BackgroundDataImpl extends BackgroundData {
       skillProficiencies: skillProficiencies is List<String>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
+      availableSkills: availableSkills is List<_i2.Skill>?
+          ? availableSkills
+          : this.availableSkills?.map((e0) => e0).toList(),
+      skillCount: skillCount is int? ? skillCount : this.skillCount,
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
@@ -369,6 +402,14 @@ class BackgroundDataTable extends _i1.Table<int?> {
       'skillProficiencies',
       this,
     );
+    availableSkills = _i1.ColumnSerializable(
+      'availableSkills',
+      this,
+    );
+    skillCount = _i1.ColumnInt(
+      'skillCount',
+      this,
+    );
     toolProficiencies = _i1.ColumnSerializable(
       'toolProficiencies',
       this,
@@ -421,6 +462,10 @@ class BackgroundDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable skillProficiencies;
 
+  late final _i1.ColumnSerializable availableSkills;
+
+  late final _i1.ColumnInt skillCount;
+
   late final _i1.ColumnSerializable toolProficiencies;
 
   late final _i1.ColumnInt languageCount;
@@ -449,6 +494,8 @@ class BackgroundDataTable extends _i1.Table<int?> {
         createdAt,
         updatedAt,
         skillProficiencies,
+        availableSkills,
+        skillCount,
         toolProficiencies,
         languageCount,
         items,

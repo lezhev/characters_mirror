@@ -3,6 +3,7 @@ import 'package:characters_mirror_flutter/core/ui/language_labels.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/widgets/summary_line.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -55,15 +56,19 @@ class SummaryChoicesSection extends StatelessWidget {
   const SummaryChoicesSection({
     required this.raceChoiceSummary,
     required this.classChoiceSummary,
+    required this.classSkillSummary,
     required this.classSpellSummary,
     required this.backgroundChoiceSummary,
+    required this.backgroundSkillSummary,
     super.key,
   });
 
   final String raceChoiceSummary;
   final String classChoiceSummary;
+  final String classSkillSummary;
   final String classSpellSummary;
   final String backgroundChoiceSummary;
+  final String backgroundSkillSummary;
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +78,15 @@ class SummaryChoicesSection extends StatelessWidget {
         children: [
           SummaryLine(label: 'Выборы расы', value: raceChoiceSummary),
           SummaryLine(label: 'Выборы класса', value: classChoiceSummary),
+          SummaryLine(label: 'Навыки класса', value: classSkillSummary),
           SummaryLine(label: 'Заклинания класса', value: classSpellSummary),
           SummaryLine(
             label: 'Выборы предыстории',
             value: backgroundChoiceSummary,
+          ),
+          SummaryLine(
+            label: 'Навыки предыстории',
+            value: backgroundSkillSummary,
           ),
         ],
       ),
@@ -177,6 +187,27 @@ String formatSpellSelectionSummary(
             selection.spell?.referenceKey,
       )
       .whereType<String>()
+      .where((value) => value.trim().isNotEmpty)
+      .toList();
+
+  if (labels.isEmpty) {
+    return '${selections.length} выбрано';
+  }
+
+  return labels.join(', ');
+}
+
+String formatSkillSelectionSummary(
+  List<CharacterSkillSelectionData> selections,
+) {
+  if (selections.isEmpty) {
+    return 'Нет';
+  }
+
+  final labels = selections
+      .map((selection) => selection.skill)
+      .whereType<Skill>()
+      .map(skillLabel)
       .where((value) => value.trim().isNotEmpty)
       .toList();
 

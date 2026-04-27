@@ -46,6 +46,7 @@ class BackgroundStep extends HookConsumerWidget {
               selectedBackground: data.selectedBackground,
               choiceGroups: data.stepView?.choiceGroups ?? const [],
               selectedOptions: data.selectedOptions,
+              skillSelections: data.selectedSkillSelections,
               startingEquipmentSelections: data.startingEquipmentSelections,
             );
             notifier.nextStep(context);
@@ -90,6 +91,7 @@ void _syncAndGo({
     selectedBackground: data.selectedBackground,
     choiceGroups: data.stepView?.choiceGroups ?? const [],
     selectedOptions: data.selectedOptions,
+    skillSelections: data.selectedSkillSelections,
     startingEquipmentSelections: data.startingEquipmentSelections,
   );
   notifier.goToStep(context, target);

@@ -2,4 +2,5 @@ class: BackgroundStepView
 fields:
   background: BackgroundData?
   choiceGroups: List<ClassChoiceGroupView>?
+  skillSelectionGroups: List<SkillSelectionGroupView>?
   startingEquipmentBlocks: List<StartingEquipmentBlockView>?

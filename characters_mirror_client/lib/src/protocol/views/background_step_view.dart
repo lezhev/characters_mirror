@@ -12,19 +12,22 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../data/background_data.dart' as _i2;
 import '../views/class_choice_group_view.dart' as _i3;
-import '../views/starting_equipment_block_view.dart' as _i4;
+import '../views/skill_selection_group_view.dart' as _i4;
+import '../views/starting_equipment_block_view.dart' as _i5;
 
 abstract class BackgroundStepView implements _i1.SerializableModel {
   BackgroundStepView._({
     this.background,
     this.choiceGroups,
+    this.skillSelectionGroups,
     this.startingEquipmentBlocks,
   });
 
   factory BackgroundStepView({
     _i2.BackgroundData? background,
     List<_i3.ClassChoiceGroupView>? choiceGroups,
-    List<_i4.StartingEquipmentBlockView>? startingEquipmentBlocks,
+    List<_i4.SkillSelectionGroupView>? skillSelectionGroups,
+    List<_i5.StartingEquipmentBlockView>? startingEquipmentBlocks,
   }) = _BackgroundStepViewImpl;
 
   factory BackgroundStepView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -37,9 +40,13 @@ abstract class BackgroundStepView implements _i1.SerializableModel {
           ?.map((e) =>
               _i3.ClassChoiceGroupView.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      skillSelectionGroups: (jsonSerialization['skillSelectionGroups'] as List?)
+          ?.map((e) =>
+              _i4.SkillSelectionGroupView.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       startingEquipmentBlocks:
           (jsonSerialization['startingEquipmentBlocks'] as List?)
-              ?.map((e) => _i4.StartingEquipmentBlockView.fromJson(
+              ?.map((e) => _i5.StartingEquipmentBlockView.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
     );
@@ -49,7 +56,9 @@ abstract class BackgroundStepView implements _i1.SerializableModel {
 
   List<_i3.ClassChoiceGroupView>? choiceGroups;
 
-  List<_i4.StartingEquipmentBlockView>? startingEquipmentBlocks;
+  List<_i4.SkillSelectionGroupView>? skillSelectionGroups;
+
+  List<_i5.StartingEquipmentBlockView>? startingEquipmentBlocks;
 
   /// Returns a shallow copy of this [BackgroundStepView]
   /// with some or all fields replaced by the given arguments.
@@ -57,7 +66,8 @@ abstract class BackgroundStepView implements _i1.SerializableModel {
   BackgroundStepView copyWith({
     _i2.BackgroundData? background,
     List<_i3.ClassChoiceGroupView>? choiceGroups,
-    List<_i4.StartingEquipmentBlockView>? startingEquipmentBlocks,
+    List<_i4.SkillSelectionGroupView>? skillSelectionGroups,
+    List<_i5.StartingEquipmentBlockView>? startingEquipmentBlocks,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -65,6 +75,9 @@ abstract class BackgroundStepView implements _i1.SerializableModel {
       if (background != null) 'background': background?.toJson(),
       if (choiceGroups != null)
         'choiceGroups': choiceGroups?.toJson(valueToJson: (v) => v.toJson()),
+      if (skillSelectionGroups != null)
+        'skillSelectionGroups':
+            skillSelectionGroups?.toJson(valueToJson: (v) => v.toJson()),
       if (startingEquipmentBlocks != null)
         'startingEquipmentBlocks':
             startingEquipmentBlocks?.toJson(valueToJson: (v) => v.toJson()),
@@ -83,10 +96,12 @@ class _BackgroundStepViewImpl extends BackgroundStepView {
   _BackgroundStepViewImpl({
     _i2.BackgroundData? background,
     List<_i3.ClassChoiceGroupView>? choiceGroups,
-    List<_i4.StartingEquipmentBlockView>? startingEquipmentBlocks,
+    List<_i4.SkillSelectionGroupView>? skillSelectionGroups,
+    List<_i5.StartingEquipmentBlockView>? startingEquipmentBlocks,
   }) : super._(
           background: background,
           choiceGroups: choiceGroups,
+          skillSelectionGroups: skillSelectionGroups,
           startingEquipmentBlocks: startingEquipmentBlocks,
         );
 
@@ -97,6 +112,7 @@ class _BackgroundStepViewImpl extends BackgroundStepView {
   BackgroundStepView copyWith({
     Object? background = _Undefined,
     Object? choiceGroups = _Undefined,
+    Object? skillSelectionGroups = _Undefined,
     Object? startingEquipmentBlocks = _Undefined,
   }) {
     return BackgroundStepView(
@@ -106,8 +122,12 @@ class _BackgroundStepViewImpl extends BackgroundStepView {
       choiceGroups: choiceGroups is List<_i3.ClassChoiceGroupView>?
           ? choiceGroups
           : this.choiceGroups?.map((e0) => e0.copyWith()).toList(),
+      skillSelectionGroups:
+          skillSelectionGroups is List<_i4.SkillSelectionGroupView>?
+              ? skillSelectionGroups
+              : this.skillSelectionGroups?.map((e0) => e0.copyWith()).toList(),
       startingEquipmentBlocks: startingEquipmentBlocks
-              is List<_i4.StartingEquipmentBlockView>?
+              is List<_i5.StartingEquipmentBlockView>?
           ? startingEquipmentBlocks
           : this.startingEquipmentBlocks?.map((e0) => e0.copyWith()).toList(),
     );

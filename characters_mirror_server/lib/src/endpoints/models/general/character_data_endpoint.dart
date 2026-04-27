@@ -573,6 +573,12 @@ Future<void> _upsertCharacterRelations(
     entryResult.savedEntries,
     character.choices ?? const <CharacterChoiceData>[],
   );
+  await _upsertSkillSelectionRecords(
+    session,
+    characterRecord,
+    entryResult.savedEntries,
+    character.skillSelections ?? const <CharacterSkillSelectionData>[],
+  );
   await _upsertSpellSelectionRecords(
     session,
     characterRecord,
@@ -713,6 +719,68 @@ Future<void> _upsertChoiceRecords(
   }
 
   await _deleteMissingChoiceRecords(session, characterRecord.id!, keepRowIds);
+}
+
+Future<void> _upsertSkillSelectionRecords(
+  Session session,
+  CharacterRecord characterRecord,
+  List<CharacterClassEntryRecord> savedEntries,
+  List<CharacterSkillSelectionData> selections,
+) async {
+  final existingSelections = await CharacterSkillSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterRecord.id),
+  );
+  final existingBySyncId = {
+    for (final record in existingSelections)
+      if (record.syncId != null) record.syncId!: record,
+  };
+  final savedEntriesBySyncId = {
+    for (final entry in savedEntries)
+      if (entry.syncId != null) entry.syncId!: entry,
+  };
+
+  final keepRowIds = <int>{};
+  for (final selection in selections) {
+    final skill = selection.skill;
+    if (skill == null) {
+      continue;
+    }
+
+    final syncId = selection.id ?? _generateSyncId();
+    final existingRecord = existingBySyncId[syncId];
+    final matchedEntry = _matchSavedEntryRecord(
+      selection.classEntry,
+      savedEntriesBySyncId,
+      savedEntries,
+    );
+    final nextRecord = CharacterSkillSelectionRecord(
+      id: existingRecord?.id,
+      syncId: syncId,
+      characterId: characterRecord.id!,
+      character: characterRecord,
+      classEntryId: matchedEntry?.id,
+      classEntry: matchedEntry,
+      classDataId: selection.classDataId ?? matchedEntry?.classDataId,
+      backgroundDataId: selection.backgroundDataId,
+      skill: skill,
+      kind: selection.kind,
+      selectionIndex: selection.selectionIndex,
+      updatedAt: selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
+    );
+    final saved = existingRecord == null
+        ? await CharacterSkillSelectionRecord.db.insertRow(session, nextRecord)
+        : await CharacterSkillSelectionRecord.db.updateRow(session, nextRecord);
+    if (saved.id != null) {
+      keepRowIds.add(saved.id!);
+    }
+  }
+
+  await _deleteMissingSkillSelectionRecords(
+    session,
+    characterRecord.id!,
+    keepRowIds,
+  );
 }
 
 Future<void> _upsertSpellSelectionRecords(
@@ -978,6 +1046,29 @@ Future<void> _deleteMissingChoiceRecords(
   );
 }
 
+Future<void> _deleteMissingSkillSelectionRecords(
+  Session session,
+  int characterId,
+  Set<int> keepRowIds,
+) async {
+  final existingSelections = await CharacterSkillSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterId),
+  );
+  final removableIds = [
+    for (final selection in existingSelections)
+      if (selection.id != null && !keepRowIds.contains(selection.id))
+        selection.id!,
+  ];
+  if (removableIds.isEmpty) {
+    return;
+  }
+  await CharacterSkillSelectionRecord.db.deleteWhere(
+    session,
+    where: (t) => t.id.inSet(removableIds.toSet()),
+  );
+}
+
 Future<void> _deleteMissingSpellSelectionRecords(
   Session session,
   int characterId,
@@ -1069,6 +1160,10 @@ CharacterData _normalizeIncomingCharacter(
         character.featureOverrides, updatedAt),
     classEntries: _normalizedClassEntries(character.classEntries, updatedAt),
     choices: _normalizedChoices(character.choices, updatedAt),
+    skillSelections: _normalizedSkillSelections(
+      character.skillSelections,
+      updatedAt,
+    ),
     spellSelections: _normalizedSpellSelections(
       character.spellSelections,
       updatedAt,
@@ -1199,6 +1294,23 @@ List<CharacterSpellSelectionData>? _normalizedSpellSelections(
           spellKey: _normalizedTextOrNull(selection.spellKey) ??
               _normalizedTextOrNull(selection.spell?.referenceKey) ??
               _normalizedTextOrNull(selection.spell?.name),
+          updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
+        ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterSkillSelectionData>? _normalizedSkillSelections(
+  List<CharacterSkillSelectionData>? selections,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final selection in selections ?? const <CharacterSkillSelectionData>[])
+      if (selection.skill != null)
+        selection.copyWith(
+          id: selection.id ?? _generateSyncId(),
+          classDataId:
+              selection.classDataId ?? selection.classEntry?.classData?.id,
           updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
         ),
   ];
@@ -1428,6 +1540,23 @@ Future<CharacterData> _buildCharacterAggregate(
       .map((record) => _toCharacterChoiceData(record, entriesById))
       .toList()
     ..sort(_compareCharacterChoices);
+  final skillSelectionRecords = await CharacterSkillSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(record.id),
+    orderBy: (t) => t.selectionIndex,
+    include: CharacterSkillSelectionRecord.include(
+      classEntry: CharacterClassEntryRecord.include(
+        classData: ClassData.include(),
+        subclass: SubclassData.include(),
+      ),
+      classData: ClassData.include(),
+      backgroundData: BackgroundData.include(),
+    ),
+  );
+  final skillSelections = skillSelectionRecords
+      .map((record) => _toCharacterSkillSelectionData(record, entriesById))
+      .toList()
+    ..sort(_compareSkillSelections);
   final spellSelectionRecords = await CharacterSpellSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(record.id),
@@ -1484,6 +1613,7 @@ Future<CharacterData> _buildCharacterAggregate(
   final character = _toCharacterData(record).copyWith(
     classEntries: entries,
     choices: choices,
+    skillSelections: skillSelections,
     spellSelections: spellSelections,
     startingEquipmentSelections: startingEquipmentSelections,
   );
@@ -1569,6 +1699,24 @@ CharacterChoiceData _toCharacterChoiceData(
     selectedFeatId: record.selectedFeatId,
     selectedText: record.selectedText,
     selectedCount: record.selectedCount,
+    updatedAt: record.updatedAt,
+  );
+}
+
+CharacterSkillSelectionData _toCharacterSkillSelectionData(
+  CharacterSkillSelectionRecord record,
+  Map<String, CharacterClassEntryData> entriesById,
+) {
+  return CharacterSkillSelectionData(
+    id: record.syncId,
+    classEntry: record.classEntry?.syncId == null
+        ? null
+        : entriesById[record.classEntry!.syncId!],
+    classDataId: record.classDataId,
+    backgroundDataId: record.backgroundDataId,
+    skill: record.skill,
+    kind: record.kind,
+    selectionIndex: record.selectionIndex,
     updatedAt: record.updatedAt,
   );
 }
@@ -1662,7 +1810,7 @@ Future<CharacterDerivedData> _buildDerivedData(
 
   final skillProficiencies = _collectSkillProficiencies(
     character,
-    choices,
+    character.skillSelections ?? const <CharacterSkillSelectionData>[],
     resolvedSources.classBackgroundOptions,
     resolvedSources.raceOptions,
   );
@@ -1941,7 +2089,7 @@ String? _normalizeAbilityKey(String raw) {
 
 Set<Skill> _collectSkillProficiencies(
   CharacterData character,
-  List<CharacterChoiceData> choices,
+  List<CharacterSkillSelectionData> skillSelections,
   List<ClassChoiceOptionData> classBackgroundOptions,
   List<RaceChoiceOptionData> raceOptions,
 ) {
@@ -1950,6 +2098,13 @@ Set<Skill> _collectSkillProficiencies(
   _addSkillNames(skills, character.subrace?.skillProficiencies);
   _addSkillNames(skills, character.background?.skillProficiencies);
 
+  for (final selection in skillSelections) {
+    final skill = selection.skill;
+    if (skill != null) {
+      skills.add(skill);
+    }
+  }
+
   for (final option in classBackgroundOptions) {
     skills.addAll(option.grantedSkills ?? const <Skill>[]);
   }
@@ -1957,13 +2112,6 @@ Set<Skill> _collectSkillProficiencies(
   for (final option in raceOptions) {
     if (option.skill != null) {
       skills.add(option.skill!);
-    }
-  }
-
-  for (final choice in choices) {
-    final skill = _skillFromName(choice.selectedText ?? '');
-    if (skill != null) {
-      skills.add(skill);
     }
   }
 
@@ -3545,6 +3693,30 @@ int _compareCharacterChoices(CharacterChoiceData a, CharacterChoiceData b) {
   final selectionCompare =
       (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0);
   if (selectionCompare != 0) return selectionCompare;
+
+  return (a.id ?? '').compareTo(b.id ?? '');
+}
+
+int _compareSkillSelections(
+  CharacterSkillSelectionData a,
+  CharacterSkillSelectionData b,
+) {
+  final kindCompare = (a.kind?.name ?? '').compareTo(b.kind?.name ?? '');
+  if (kindCompare != 0) return kindCompare;
+
+  final classCompare = (a.classDataId ?? 0).compareTo(b.classDataId ?? 0);
+  if (classCompare != 0) return classCompare;
+
+  final backgroundCompare =
+      (a.backgroundDataId ?? 0).compareTo(b.backgroundDataId ?? 0);
+  if (backgroundCompare != 0) return backgroundCompare;
+
+  final selectionCompare =
+      (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0);
+  if (selectionCompare != 0) return selectionCompare;
+
+  final skillCompare = (a.skill?.name ?? '').compareTo(b.skill?.name ?? '');
+  if (skillCompare != 0) return skillCompare;
 
   return (a.id ?? '').compareTo(b.id ?? '');
 }

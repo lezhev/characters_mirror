@@ -91,6 +91,9 @@ class ClassDataEndpoint extends Endpoint {
 
     final currentGroups = <ClassChoiceGroupView>[];
     for (final group in groups.where((group) {
+      if (_isMigratedSkillGroup(group)) {
+        return false;
+      }
       final byClass = group.sourceClassId == classId;
       final byFeature = group.sourceFeatureId != null &&
           currentFeatureIds.contains(group.sourceFeatureId);
@@ -119,6 +122,9 @@ class ClassDataEndpoint extends Endpoint {
             sourceClassId: classId,
           )
         : const <StartingEquipmentBlockView>[];
+    final skillSelectionGroups = isStartingClass
+        ? _buildClassSkillSelectionGroups(classData)
+        : const <SkillSelectionGroupView>[];
     final spellSelectionGroups = isStartingClass && selectedClassLevel != null
         ? await _buildSpellSelectionGroups(
             session,
@@ -159,6 +165,7 @@ class ClassDataEndpoint extends Endpoint {
         subclasses: subclasses,
       ),
       choiceGroups: currentGroups,
+      skillSelectionGroups: skillSelectionGroups,
       spellSelectionGroups: spellSelectionGroups,
       startingEquipmentBlocks: startingEquipmentBlocks,
       startingProficiencies: ProficiencyBundleView(
@@ -182,6 +189,44 @@ class ClassDataEndpoint extends Endpoint {
   Future<void> delete(Session session, int id) async {
     await ClassData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
+}
+
+bool _isMigratedSkillGroup(ClassChoiceGroupData group) {
+  return group.type == null &&
+      (group.sourceClassId != null || group.sourceBackgroundId != null) &&
+      (group.exclusiveKey?.contains('skill') == true ||
+          group.name?.toLowerCase().contains('skill') == true);
+}
+
+List<SkillSelectionGroupView> _buildClassSkillSelectionGroups(
+  ClassData classData,
+) {
+  final classId = classData.id;
+  final skillCount = classData.skillCount ?? 0;
+  final options = _uniqueSkills(classData.availableSkills);
+  if (classId == null || skillCount <= 0 || options.isEmpty) {
+    return const <SkillSelectionGroupView>[];
+  }
+
+  return [
+    SkillSelectionGroupView(
+      kind: CharacterSkillSelectionKind.classSkill,
+      selectionCount: skillCount,
+      classDataId: classId,
+      options: options,
+    ),
+  ];
+}
+
+List<Skill> _uniqueSkills(List<Skill>? skills) {
+  final result = <Skill>[];
+  final seen = <Skill>{};
+  for (final skill in skills ?? const <Skill>[]) {
+    if (seen.add(skill)) {
+      result.add(skill);
+    }
+  }
+  return result;
 }
 
 ClassLevelData? _classLevelForSelection(

@@ -340,8 +340,16 @@ Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
   for (final name in [
     ...?character.race?.skillProficiencies,
     ...?character.subrace?.skillProficiencies,
+    ...?character.background?.skillProficiencies,
   ]) {
     final skill = _skillFromName(name);
+    if (skill != null) {
+      result[skill] = CharacterSkillProficiencyLevel.proficient;
+    }
+  }
+  for (final selection
+      in character.skillSelections ?? const <CharacterSkillSelectionData>[]) {
+    final skill = selection.skill;
     if (skill != null) {
       result[skill] = CharacterSkillProficiencyLevel.proficient;
     }
