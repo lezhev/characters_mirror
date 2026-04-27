@@ -6,8 +6,6 @@ values:
   - language
   - fightingStyle
   - expertise
-  - spell
-  - cantrip
   - subclassFeature
   - featureOption
   - invocation

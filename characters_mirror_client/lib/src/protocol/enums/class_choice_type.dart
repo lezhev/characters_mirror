@@ -17,8 +17,6 @@ enum ClassChoiceType implements _i1.SerializableModel {
   language,
   fightingStyle,
   expertise,
-  spell,
-  cantrip,
   subclassFeature,
   featureOption,
   invocation,
@@ -38,10 +36,6 @@ enum ClassChoiceType implements _i1.SerializableModel {
         return ClassChoiceType.fightingStyle;
       case 'expertise':
         return ClassChoiceType.expertise;
-      case 'spell':
-        return ClassChoiceType.spell;
-      case 'cantrip':
-        return ClassChoiceType.cantrip;
       case 'subclassFeature':
         return ClassChoiceType.subclassFeature;
       case 'featureOption':

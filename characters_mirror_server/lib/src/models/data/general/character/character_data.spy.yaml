@@ -38,5 +38,6 @@ fields:
   featureOverrides: List<CharacterFeatureOverrideData>?
   classEntries: List<CharacterClassEntryData>?
   choices: List<CharacterChoiceData>?
+  spellSelections: List<CharacterSpellSelectionData>?
   startingEquipmentSelections: List<CharacterStartingEquipmentSelectionData>?
   derived: CharacterDerivedData?

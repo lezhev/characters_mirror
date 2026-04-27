@@ -228,6 +228,7 @@ class CharacterCreation extends _$CharacterCreation {
     SubclassData? subclass,
     List<ClassChoiceGroupView> choiceGroups = const [],
     Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+    List<CharacterSpellSelectionData> spellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
     int level = 1,
@@ -242,6 +243,7 @@ class CharacterCreation extends _$CharacterCreation {
         selectedOptions: selectedOptions,
         groups: choiceGroups,
       ),
+      spellSelections: spellSelections,
       startingEquipmentSelections: startingEquipmentSelections,
     );
   }
@@ -405,6 +407,7 @@ class CharacterCreation extends _$CharacterCreation {
     SubclassData? subclass,
     int level = 1,
     List<CharacterChoiceData> choices = const [],
+    List<CharacterSpellSelectionData> spellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
   }) {
@@ -431,6 +434,15 @@ class CharacterCreation extends _$CharacterCreation {
         .map(
             (choice) => choice.copyWith(classEntry: choice.classEntry ?? entry))
         .toList();
+    final preservedSpellSelections = [
+      for (final selection in state.character.spellSelections ??
+          const <CharacterSpellSelectionData>[])
+        if (selection.classDataId != classData.id) selection,
+    ];
+    final linkedSpellSelections = [
+      for (final selection in spellSelections)
+        selection.copyWith(classEntry: selection.classEntry ?? entry),
+    ];
     final currentEquipmentSelections =
         state.character.startingEquipmentSelections ??
             const <CharacterStartingEquipmentSelectionData>[];
@@ -439,6 +451,10 @@ class CharacterCreation extends _$CharacterCreation {
       state.character.copyWith(
         classEntries: [entry],
         choices: [...preserved, ...linkedChoices],
+        spellSelections: [
+          ...preservedSpellSelections,
+          ...linkedSpellSelections,
+        ],
         startingEquipmentSelections: replaceEquipmentSelectionsForSource(
           existingSelections: currentEquipmentSelections,
           sourceType: ChoiceSourceType.classData,

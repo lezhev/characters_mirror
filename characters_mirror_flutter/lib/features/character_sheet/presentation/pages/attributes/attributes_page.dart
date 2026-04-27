@@ -3,12 +3,12 @@ import 'dart:math' as math;
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/roll_value_button.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/widgets/expertise_flag_preview.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/widgets/saving_throw_proficiency_toggle.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/compact_value_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -265,11 +265,12 @@ class _AttributeCard extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: centerGroupSpacing),
-                            CompactValueButton(
+                            RollValueButton(
                               key: ValueKey(
                                 'attribute-modifier-${ability.name}',
                               ),
                               label: signedBonus(modifier),
+                              mode: RollValueMode.modifier,
                               width: modifierButtonWidth,
                             ),
                           ],
@@ -311,11 +312,12 @@ class _AttributeCard extends StatelessWidget {
                               ),
                               Positioned(
                                 right: 0,
-                                child: CompactValueButton(
+                                child: RollValueButton(
                                   key: ValueKey(
                                     'attribute-saving-${ability.name}',
                                   ),
                                   label: signedBonus(savingThrowBonus),
+                                  mode: RollValueMode.modifier,
                                   width: savingThrowButtonWidth,
                                 ),
                               ),
@@ -415,9 +417,10 @@ class _SkillRow extends StatelessWidget {
                 width: trailingWidth,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: CompactValueButton(
+                  child: RollValueButton(
                     key: ValueKey('skill-bonus-${skill.name}'),
                     label: signedBonus(bonus),
+                    mode: RollValueMode.modifier,
                     width: skillButtonWidth,
                   ),
                 ),

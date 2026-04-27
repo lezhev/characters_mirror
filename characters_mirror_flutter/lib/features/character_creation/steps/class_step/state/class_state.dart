@@ -18,6 +18,7 @@ sealed class ClassStateModel with _$ClassStateModel {
     ClassStepView? stepView,
     SubclassData? selectedSubclass,
     @Default({}) Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    @Default([]) List<CharacterSpellSelectionData> selectedSpellSelections,
     @Default([])
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
     @Default(1) int selectedLevel,
@@ -62,6 +63,8 @@ class ClassState extends _$ClassState {
       selectedLevel: entry?.level ?? 1,
       savedChoices:
           characterCreation.character.choices ?? const <CharacterChoiceData>[],
+      savedSpellSelections: characterCreation.character.spellSelections ??
+          const <CharacterSpellSelectionData>[],
       savedEquipmentSelections:
           characterCreation.character.startingEquipmentSelections ??
               const <CharacterStartingEquipmentSelectionData>[],
@@ -105,6 +108,10 @@ class ClassState extends _$ClassState {
         ),
         selectedOptions: _normalizeSelectedOptions(
             current.selectedOptions, stepView.choiceGroups),
+        selectedSpellSelections: _normalizeSpellSelections(
+          current.selectedSpellSelections,
+          stepView.spellSelectionGroups,
+        ),
         startingEquipmentSelections: normalizeStartingEquipmentSelections(
           blocks: stepView.startingEquipmentBlocks ??
               const <StartingEquipmentBlockView>[],
@@ -136,6 +143,10 @@ class ClassState extends _$ClassState {
         selectedSubclass: null,
         selectedOptions: _normalizeSelectedOptions(
             current.selectedOptions, stepView.choiceGroups),
+        selectedSpellSelections: _normalizeSpellSelections(
+          current.selectedSpellSelections,
+          stepView.spellSelectionGroups,
+        ),
         startingEquipmentSelections: normalizeStartingEquipmentSelections(
           blocks: stepView.startingEquipmentBlocks ??
               const <StartingEquipmentBlockView>[],
@@ -257,6 +268,7 @@ class ClassState extends _$ClassState {
         stepView: null,
         selectedSubclass: null,
         selectedOptions: {},
+        selectedSpellSelections: const [],
         startingEquipmentSelections: const [],
         selectedLevel: 1,
       ),
@@ -344,6 +356,83 @@ class ClassState extends _$ClassState {
     );
   }
 
+  void toggleSpellSelection(
+    ClassSpellSelectionGroupView group,
+    SpellData spell,
+  ) {
+    final currentState = state.value;
+    final classId = currentState?.selectedClass?.id;
+    final kind = group.kind;
+    final spellKey = _spellKey(spell);
+    if (currentState == null ||
+        classId == null ||
+        kind == null ||
+        spellKey == null) {
+      return;
+    }
+
+    final selected = [
+      for (final selection in currentState.selectedSpellSelections)
+        if (selection.classDataId == classId && selection.kind == kind)
+          selection,
+    ];
+    final existingIndex = selected.indexWhere(
+      (selection) => _selectionSpellKey(selection) == spellKey,
+    );
+    if (existingIndex != -1) {
+      selected.removeAt(existingIndex);
+    } else if (selected.length < (group.selectionCount ?? 1)) {
+      selected.add(
+        CharacterSpellSelectionData(
+          classDataId: classId,
+          spell: spell,
+          spellId: spell.id,
+          spellKey: spellKey,
+          kind: kind,
+          selectionIndex: selected.length,
+        ),
+      );
+    } else {
+      return;
+    }
+
+    final nextSelections = [
+      for (final selection in currentState.selectedSpellSelections)
+        if (!(selection.classDataId == classId && selection.kind == kind))
+          selection,
+      for (var index = 0; index < selected.length; index++)
+        selected[index].copyWith(selectionIndex: index),
+    ];
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        selectedSpellSelections: _normalizeSpellSelections(
+          nextSelections,
+          currentState.stepView?.spellSelectionGroups,
+        ),
+      ),
+    );
+  }
+
+  void clearSpellSelectionGroup(ClassSpellSelectionGroupView group) {
+    final currentState = state.value;
+    final classId = currentState?.selectedClass?.id;
+    final kind = group.kind;
+    if (currentState == null || classId == null || kind == null) {
+      return;
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        selectedSpellSelections: [
+          for (final selection in currentState.selectedSpellSelections)
+            if (!(selection.classDataId == classId && selection.kind == kind))
+              selection,
+        ],
+      ),
+    );
+  }
+
   void setStartingEquipmentResolution({
     required StartingEquipmentBlockView blockView,
     required StartingEquipmentLineData line,
@@ -425,6 +514,7 @@ class ClassState extends _$ClassState {
     int? selectedSubclassId,
     int selectedLevel = 1,
     List<CharacterChoiceData> savedChoices = const [],
+    List<CharacterSpellSelectionData> savedSpellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> savedEquipmentSelections =
         const [],
   }) async {
@@ -435,6 +525,7 @@ class ClassState extends _$ClassState {
         stepView: null,
         selectedSubclass: null,
         selectedOptions: const {},
+        selectedSpellSelections: const [],
         startingEquipmentSelections: const [],
         selectedLevel: selectedLevel,
       );
@@ -460,6 +551,10 @@ class ClassState extends _$ClassState {
       selectedOptions: _restoreSelectedOptions(
         stepView.choiceGroups,
         savedChoices,
+      ),
+      selectedSpellSelections: _normalizeSpellSelections(
+        savedSpellSelections,
+        stepView.spellSelectionGroups,
       ),
       startingEquipmentSelections: normalizeStartingEquipmentSelections(
         blocks: stepView.startingEquipmentBlocks ??
@@ -522,6 +617,67 @@ class ClassState extends _$ClassState {
     }
 
     return _normalizeSelectedOptions(restored, groups);
+  }
+
+  List<CharacterSpellSelectionData> _normalizeSpellSelections(
+    List<CharacterSpellSelectionData> selections,
+    List<ClassSpellSelectionGroupView>? groups,
+  ) {
+    final groupMap = {
+      for (final group in groups ?? const <ClassSpellSelectionGroupView>[])
+        if (group.kind != null && group.classDataId != null)
+          '${group.classDataId}:${group.kind!.name}': group,
+    };
+    final normalized = <CharacterSpellSelectionData>[];
+
+    for (final entry in groupMap.entries) {
+      final group = entry.value;
+      final available = {
+        for (final spell in group.options ?? const <SpellData>[])
+          if (_spellKey(spell) != null) _spellKey(spell)!: spell,
+      };
+      final selected = [
+        for (final selection in selections)
+          if ('${selection.classDataId}:${selection.kind?.name}' == entry.key &&
+              _selectionSpellKey(selection) != null &&
+              available.containsKey(_selectionSpellKey(selection)))
+            selection,
+      ]..sort(
+          (left, right) =>
+              (left.selectionIndex ?? 0).compareTo(right.selectionIndex ?? 0),
+        );
+
+      final limit = group.selectionCount ?? 1;
+      for (var index = 0; index < selected.length && index < limit; index++) {
+        final spell = available[_selectionSpellKey(selected[index])]!;
+        normalized.add(
+          selected[index].copyWith(
+            spell: spell,
+            spellId: spell.id,
+            spellKey: _spellKey(spell),
+            selectionIndex: index,
+          ),
+        );
+      }
+    }
+
+    return normalized;
+  }
+
+  String? _selectionSpellKey(CharacterSpellSelectionData selection) {
+    return _normalizedText(
+          selection.spellKey,
+        ) ??
+        _spellKey(selection.spell);
+  }
+
+  String? _spellKey(SpellData? spell) {
+    return _normalizedText(spell?.referenceKey) ?? _normalizedText(spell?.name);
+  }
+
+  String? _normalizedText(String? value) {
+    final trimmed = value?.trim();
+    return trimmed == null || trimmed.isEmpty ? null : trimmed;
   }
 
   Map<String, List<ClassChoiceOptionData>> _normalizeSelectedOptions(

@@ -92,6 +92,7 @@ class ReferenceDataEndpoint extends Endpoint {
 
         case 'subclass':
         case 'subclassdata':
+          data['subclassName'] ??= data['subclassname'];
           await SubclassData.db.insertRow(session, SubclassData.fromJson(data));
           break;
 

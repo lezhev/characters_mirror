@@ -21,6 +21,7 @@ abstract class SubclassData implements _i1.SerializableModel {
     this.version,
     this.createdAt,
     this.updatedAt,
+    this.subclassName,
     required this.parentClassId,
     this.parentClass,
     this.levelRequired,
@@ -34,6 +35,7 @@ abstract class SubclassData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? subclassName,
     required int parentClassId,
     _i2.ClassData? parentClass,
     int? levelRequired,
@@ -52,6 +54,7 @@ abstract class SubclassData implements _i1.SerializableModel {
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      subclassName: jsonSerialization['subclassName'] as String?,
       parentClassId: jsonSerialization['parentClassId'] as int,
       parentClass: jsonSerialization['parentClass'] == null
           ? null
@@ -78,6 +81,8 @@ abstract class SubclassData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
+  String? subclassName;
+
   int parentClassId;
 
   _i2.ClassData? parentClass;
@@ -95,6 +100,7 @@ abstract class SubclassData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? subclassName,
     int? parentClassId,
     _i2.ClassData? parentClass,
     int? levelRequired,
@@ -109,6 +115,7 @@ abstract class SubclassData implements _i1.SerializableModel {
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (subclassName != null) 'subclassName': subclassName,
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
       if (levelRequired != null) 'levelRequired': levelRequired,
@@ -132,6 +139,7 @@ class _SubclassDataImpl extends SubclassData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? subclassName,
     required int parentClassId,
     _i2.ClassData? parentClass,
     int? levelRequired,
@@ -143,6 +151,7 @@ class _SubclassDataImpl extends SubclassData {
           version: version,
           createdAt: createdAt,
           updatedAt: updatedAt,
+          subclassName: subclassName,
           parentClassId: parentClassId,
           parentClass: parentClass,
           levelRequired: levelRequired,
@@ -160,6 +169,7 @@ class _SubclassDataImpl extends SubclassData {
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
+    Object? subclassName = _Undefined,
     int? parentClassId,
     Object? parentClass = _Undefined,
     Object? levelRequired = _Undefined,
@@ -172,6 +182,7 @@ class _SubclassDataImpl extends SubclassData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
+      subclassName: subclassName is String? ? subclassName : this.subclassName,
       parentClassId: parentClassId ?? this.parentClassId,
       parentClass: parentClass is _i2.ClassData?
           ? parentClass

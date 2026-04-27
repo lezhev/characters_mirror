@@ -1,0 +1,11 @@
+class: CharacterSpellSelectionData
+fields:
+  id: String?
+  classEntry: CharacterClassEntryData?
+  classDataId: int?
+  spell: SpellData?
+  spellId: int?
+  spellKey: String?
+  kind: CharacterSpellSelectionKind?
+  selectionIndex: int?
+  updatedAt: DateTime?

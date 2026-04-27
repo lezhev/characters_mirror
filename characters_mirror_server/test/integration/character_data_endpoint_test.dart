@@ -232,14 +232,6 @@ void main() {
               selectionIndex: 0,
             ),
             CharacterChoiceData(
-              classEntry: primaryEntry,
-              sourceType: ChoiceSourceType.subclassFeature,
-              sourceId: fixture.subclassFeature.id,
-              groupKey: 'subclass_spell_pick',
-              optionKey: 'light_cantrip',
-              selectionIndex: 0,
-            ),
-            CharacterChoiceData(
               sourceType: ChoiceSourceType.background,
               sourceId: fixture.background.id,
               groupKey: 'background_language_pick',
@@ -253,6 +245,17 @@ void main() {
               optionKey: 'skilled_feat',
               selectionIndex: 0,
               selectedFeatId: fixture.feat.id,
+            ),
+          ],
+          spellSelections: [
+            CharacterSpellSelectionData(
+              classEntry: primaryEntry,
+              classDataId: fixture.classData.id,
+              spell: fixture.lightSpell,
+              spellId: fixture.lightSpell.id,
+              spellKey: fixture.lightSpell.referenceKey,
+              kind: CharacterSpellSelectionKind.knownCantrip,
+              selectionIndex: 0,
             ),
           ],
           startingEquipmentSelections: [
@@ -335,6 +338,15 @@ void main() {
       expect(
         classChoices.every((choice) => choice.classEntry?.id == loadedEntry.id),
         isTrue,
+      );
+      final spellSelections = loaded.spellSelections ?? const [];
+      expect(spellSelections, hasLength(1));
+      expect(spellSelections.single.classDataId, fixture.classData.id);
+      expect(spellSelections.single.spell?.id, fixture.lightSpell.id);
+      expect(spellSelections.single.spellKey, 'light');
+      expect(
+        spellSelections.single.kind,
+        CharacterSpellSelectionKind.knownCantrip,
       );
 
       final backgroundChoices = loaded.choices!
@@ -719,8 +731,27 @@ void main() {
         containsAll({
           'class_skill_pick',
           'subclass_tool_pick',
-          'subclass_spell_pick',
         }),
+      );
+      final cantripGroup = stepView.spellSelectionGroups!.singleWhere(
+        (group) => group.kind == CharacterSpellSelectionKind.knownCantrip,
+      );
+      expect(cantripGroup.selectionCount, 1);
+      expect(
+        cantripGroup.options?.map((spell) => spell.referenceKey),
+        contains('light'),
+      );
+      final spellGroup = stepView.spellSelectionGroups!.singleWhere(
+        (group) => group.kind == CharacterSpellSelectionKind.knownSpell,
+      );
+      expect(spellGroup.selectionCount, 1);
+      expect(
+        spellGroup.options?.map((spell) => spell.referenceKey),
+        contains('magic_missile'),
+      );
+      expect(
+        spellGroup.options?.map((spell) => spell.referenceKey),
+        isNot(contains('shield')),
       );
       expect(
         stepView.startingEquipmentBlocks
@@ -952,6 +983,8 @@ class _CreationFixture {
     required this.subraceFeature,
     required this.raceChoiceSet,
     required this.feat,
+    required this.lightSpell,
+    required this.magicMissileSpell,
   });
 
   final ClassData classData;
@@ -965,6 +998,8 @@ class _CreationFixture {
   final RaceFeatureData subraceFeature;
   final RaceChoiceSetData raceChoiceSet;
   final FeatData feat;
+  final SpellData lightSpell;
+  final SpellData magicMissileSpell;
 }
 
 class _MixedAbilityBonusRaceFixture {
@@ -1066,6 +1101,62 @@ Future<_CreationFixture> _seedCreationFixture(
       imageURL: 'fighter',
     ),
   );
+  await endpoints.classLevelData.upsert(
+    sessionBuilder,
+    ClassLevelData(
+      classDataId: classData.id!,
+      level: 1,
+      knownCantrips: 1,
+      knownSpells: 1,
+      spellSlots: const {1: 2},
+    ),
+  );
+  final lightSpell = await endpoints.spellData.add(
+    sessionBuilder,
+    SpellData(
+      referenceKey: 'light',
+      name: 'Light',
+      level: 0,
+      schoolValue: SpellSchool.evocation,
+    ),
+  );
+  final magicMissileSpell = await endpoints.spellData.add(
+    sessionBuilder,
+    SpellData(
+      referenceKey: 'magic_missile',
+      name: 'Magic Missile',
+      level: 1,
+      schoolValue: SpellSchool.evocation,
+    ),
+  );
+  await endpoints.spellData.add(
+    sessionBuilder,
+    SpellData(
+      referenceKey: 'shield',
+      name: 'Shield',
+      level: 1,
+      schoolValue: SpellSchool.abjuration,
+    ),
+  );
+  final session = sessionBuilder.build();
+  try {
+    await SpellClassAvailabilityData.db.insertRow(
+      session,
+      SpellClassAvailabilityData(
+        spellId: lightSpell.id!,
+        classDataId: classData.id!,
+      ),
+    );
+    await SpellClassAvailabilityData.db.insertRow(
+      session,
+      SpellClassAvailabilityData(
+        spellId: magicMissileSpell.id!,
+        classDataId: classData.id!,
+      ),
+    );
+  } finally {
+    await session.close();
+  }
 
   final classFeature = await endpoints.classFeatureData.upsert(
     sessionBuilder,
@@ -1154,27 +1245,6 @@ Future<_CreationFixture> _seedCreationFixture(
       optionKey: 'smith_tools',
       name: 'Smith tools',
       grantedToolKeys: const ['smith_tools'],
-    ),
-  );
-
-  final subclassSpellGroup = await endpoints.classChoiceGroupData.upsert(
-    sessionBuilder,
-    ClassChoiceGroupData(
-      name: 'Subclass spell',
-      sourceSubclassFeatureId: subclassFeature.id,
-      type: ClassChoiceType.spell,
-      selectionCount: 1,
-      allowDuplicates: false,
-      exclusiveKey: 'subclass_spell_pick',
-    ),
-  );
-  await endpoints.classChoiceOptionData.upsert(
-    sessionBuilder,
-    ClassChoiceOptionData(
-      choiceGroupId: subclassSpellGroup.id!,
-      optionKey: 'light_cantrip',
-      name: 'Light',
-      grantedSpellKeys: const ['light'],
     ),
   );
 
@@ -1595,5 +1665,7 @@ Future<_CreationFixture> _seedCreationFixture(
     subraceFeature: subraceFeature,
     raceChoiceSet: raceChoiceSet,
     feat: feat,
+    lightSpell: lightSpell,
+    magicMissileSpell: magicMissileSpell,
   );
 }

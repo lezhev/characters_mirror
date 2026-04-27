@@ -20,9 +20,12 @@ class SummaryStep extends HookConsumerWidget {
     final classEntries =
         state.character.classEntries ?? const <CharacterClassEntryData>[];
     final choices = state.character.choices ?? const <CharacterChoiceData>[];
+    final spellSelections = state.character.spellSelections ??
+        const <CharacterSpellSelectionData>[];
     final classEntry = classEntries.isNotEmpty ? classEntries.first : null;
     final classChoiceSummary =
         formatChoiceSummary(choices.where(isClassChoice).toList());
+    final classSpellSummary = formatSpellSelectionSummary(spellSelections);
     final backgroundChoiceSummary = formatChoiceSummary(
       choices
           .where((choice) => choice.sourceType == ChoiceSourceType.background)
@@ -66,6 +69,7 @@ class SummaryStep extends HookConsumerWidget {
           SummaryChoicesSection(
             raceChoiceSummary: raceChoiceSummary,
             classChoiceSummary: classChoiceSummary,
+            classSpellSummary: classSpellSummary,
             backgroundChoiceSummary: backgroundChoiceSummary,
           ),
           const Gap(24),

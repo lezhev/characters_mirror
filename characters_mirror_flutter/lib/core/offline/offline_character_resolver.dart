@@ -50,6 +50,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       _maxHp(entries, abilityModifiers[Ability.constitution.name] ?? 0);
   final dexterityModifier = abilityModifiers[Ability.dexterity.name] ?? 0;
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
+  final grantedSpellKeys = _collectGrantedSpellKeys(character);
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
@@ -94,6 +95,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
         ...?entry.classData?.weaponTraining?.map((item) => item.name),
     ]),
     featureTags: _featureTags(activeFeatures),
+    grantedSpellKeys: grantedSpellKeys,
     grantedEquipment: grantedEquipment,
     senses: _uniqueStrings([
       if (character.race?.visionType != null)
@@ -108,6 +110,20 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     ]),
     rebuiltAt: DateTime.now().toUtc(),
   );
+}
+
+List<String> _collectGrantedSpellKeys(CharacterData character) {
+  return _uniqueStrings([
+    for (final selection
+        in character.spellSelections ?? const <CharacterSpellSelectionData>[])
+      if (_spellSelectionKey(selection) != null) _spellSelectionKey(selection)!,
+  ]);
+}
+
+String? _spellSelectionKey(CharacterSpellSelectionData selection) {
+  return _normalizedTextOrNull(selection.spellKey) ??
+      _normalizedTextOrNull(selection.spell?.referenceKey) ??
+      _normalizedTextOrNull(selection.spell?.name);
 }
 
 Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(

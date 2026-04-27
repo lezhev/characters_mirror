@@ -12,19 +12,19 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
 enum SpellDurationType implements _i1.SerializableModel {
-  instant,
+  instantaneous,
   timed,
-  permanent,
+  untilDispelled,
   special;
 
   static SpellDurationType fromJson(String name) {
     switch (name) {
-      case 'instant':
-        return SpellDurationType.instant;
+      case 'instantaneous':
+        return SpellDurationType.instantaneous;
       case 'timed':
         return SpellDurationType.timed;
-      case 'permanent':
-        return SpellDurationType.permanent;
+      case 'untilDispelled':
+        return SpellDurationType.untilDispelled;
       case 'special':
         return SpellDurationType.special;
       default:

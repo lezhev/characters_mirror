@@ -6,7 +6,7 @@ part of 'class_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$classStateHash() => r'f732272eb12f02a7c542c5713aa990552cc18a3e';
+String _$classStateHash() => r'f9365b65575939a26743c278f816305d8a5b0ac2';
 
 /// See also [ClassState].
 @ProviderFor(ClassState)

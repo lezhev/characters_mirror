@@ -1,7 +1,7 @@
 enum: SpellDurationType
 serialized: byName
 values:
-  - instant
+  - instantaneous
   - timed
-  - permanent
+  - untilDispelled
   - special

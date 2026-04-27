@@ -1,5 +1,6 @@
 import 'package:characters_mirror_flutter/core/router/app_router.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
 import 'package:characters_mirror_flutter/features/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,9 @@ class CharactersMirrorApp extends ConsumerWidget {
 
         return Theme(
           data: adaptiveTheme,
-          child: child ?? const SizedBox.shrink(),
+          child: RollResultsOverlay(
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
       },
     );

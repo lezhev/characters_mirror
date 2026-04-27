@@ -26,6 +26,7 @@ abstract class SpellData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SpellData._({
     this.id,
+    this.referenceKey,
     this.name,
     this.description,
     this.source,
@@ -68,6 +69,7 @@ abstract class SpellData
 
   factory SpellData({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -111,6 +113,7 @@ abstract class SpellData
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
     return SpellData(
       id: jsonSerialization['id'] as int?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -189,6 +192,8 @@ abstract class SpellData
 
   @override
   int? id;
+
+  String? referenceKey;
 
   String? name;
 
@@ -274,6 +279,7 @@ abstract class SpellData
   @_i1.useResult
   SpellData copyWith({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -317,6 +323,7 @@ abstract class SpellData
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -370,6 +377,7 @@ abstract class SpellData
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -456,6 +464,7 @@ class _Undefined {}
 class _SpellDataImpl extends SpellData {
   _SpellDataImpl({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -496,6 +505,7 @@ class _SpellDataImpl extends SpellData {
     List<_i10.SpellClassAvailabilityData>? classAvailability,
   }) : super._(
           id: id,
+          referenceKey: referenceKey,
           name: name,
           description: description,
           source: source,
@@ -542,6 +552,7 @@ class _SpellDataImpl extends SpellData {
   @override
   SpellData copyWith({
     Object? id = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
@@ -583,6 +594,7 @@ class _SpellDataImpl extends SpellData {
   }) {
     return SpellData(
       id: id is int? ? id : this.id,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,
@@ -661,6 +673,10 @@ class _SpellDataImpl extends SpellData {
 
 class SpellDataTable extends _i1.Table<int?> {
   SpellDataTable({super.tableRelation}) : super(tableName: 'spell_data') {
+    referenceKey = _i1.ColumnString(
+      'referenceKey',
+      this,
+    );
     name = _i1.ColumnString(
       'name',
       this,
@@ -817,6 +833,8 @@ class SpellDataTable extends _i1.Table<int?> {
     );
   }
 
+  late final _i1.ColumnString referenceKey;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString description;
@@ -931,6 +949,7 @@ class SpellDataTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        referenceKey,
         name,
         description,
         source,
