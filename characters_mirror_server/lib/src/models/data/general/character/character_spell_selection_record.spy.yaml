@@ -1,0 +1,13 @@
+class: CharacterSpellSelectionRecord
+serverOnly: true
+table: character_spell_selection_data
+fields:
+  syncId: String?
+  character: CharacterRecord?, relation
+  classEntry: CharacterClassEntryRecord?, relation(optional)
+  classData: ClassData?, relation(optional)
+  spell: SpellData?, relation(optional)
+  spellKey: String?
+  kind: CharacterSpellSelectionKind?
+  selectionIndex: int?
+  updatedAt: DateTime?

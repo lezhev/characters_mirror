@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/compact_value_button.dart';
+import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/roll_value_button.dart';
 import 'package:flutter/material.dart';
 
 class AttackCard extends StatelessWidget {
@@ -9,12 +10,14 @@ class AttackCard extends StatelessWidget {
     required this.damageLabel,
     required this.onNamePressed,
     super.key,
+    this.diceRoller,
   });
 
   final CharacterAttackData attack;
   final String attackBonusLabel;
   final String damageLabel;
   final VoidCallback onNamePressed;
+  final DiceRoller? diceRoller;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +28,10 @@ class AttackCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Row(
           children: [
-            _AttackValueButton(
+            RollValueButton(
               label: attackBonusLabel,
-              onPressed: () {},
+              mode: RollValueMode.modifier,
+              diceRoller: diceRoller,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -49,32 +53,16 @@ class AttackCard extends StatelessWidget {
             const SizedBox(width: 12),
             Align(
               alignment: Alignment.centerRight,
-              child: _AttackValueButton(
+              child: RollValueButton(
                 label: damageLabel,
-                onPressed: () {},
+                value: attack.damage ?? '',
+                mode: RollValueMode.formula,
+                diceRoller: diceRoller,
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _AttackValueButton extends StatelessWidget {
-  const _AttackValueButton({
-    required this.label,
-    required this.onPressed,
-  });
-
-  final String label;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return CompactValueButton(
-      label: label,
-      onPressed: onPressed,
     );
   }
 }

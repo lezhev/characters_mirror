@@ -35,6 +35,18 @@ void main() {
         imageURL: 'wizard',
       ),
       level: 3,
+      spellSelections: [
+        CharacterSpellSelectionData(
+          classDataId: 3,
+          spell: SpellData(
+            referenceKey: 'magic_missile',
+            name: 'Magic Missile',
+          ),
+          spellKey: 'magic_missile',
+          kind: CharacterSpellSelectionKind.knownSpell,
+          selectionIndex: 0,
+        ),
+      ],
     );
     notifier.syncAttributesDraft(const {
       'strength': 10,
@@ -72,5 +84,6 @@ void main() {
     expect(find.text('Человек'), findsOneWidget);
     expect(find.text('Wizard'), findsOneWidget);
     expect(find.text('Драконий'), findsOneWidget);
+    expect(find.text('Magic Missile'), findsOneWidget);
   });
 }

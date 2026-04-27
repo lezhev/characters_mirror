@@ -56,8 +56,14 @@ CharacterData stampCharacterMutation({
     previousId: (item) => item.id,
     withUpdatedAt: (item, updatedAt) => item.copyWith(updatedAt: updatedAt),
   );
-  final stampedSelections = _stampCollection<
-      CharacterStartingEquipmentSelectionData>(
+  final stampedSpellSelections = _stampCollection<CharacterSpellSelectionData>(
+    previous: normalizedPrevious.spellSelections,
+    next: normalizedNext.spellSelections,
+    previousId: (item) => item.id,
+    withUpdatedAt: (item, updatedAt) => item.copyWith(updatedAt: updatedAt),
+  );
+  final stampedSelections =
+      _stampCollection<CharacterStartingEquipmentSelectionData>(
     previous: normalizedPrevious.startingEquipmentSelections,
     next: normalizedNext.startingEquipmentSelections,
     previousId: (item) => item.id,
@@ -90,6 +96,7 @@ CharacterData stampCharacterMutation({
     featureOverrides: stampedOverrides,
     classEntries: stampedEntries,
     choices: stampedChoices,
+    spellSelections: stampedSpellSelections,
     startingEquipmentSelections: stampedSelections,
   );
 
@@ -102,32 +109,44 @@ CharacterData stampCharacterMutation({
     equipment: _applyFallbackUpdatedAt(
       stamped.equipment,
       nextUpdatedAt,
-      (item, updatedAt) => item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
     ),
     notes: _applyFallbackUpdatedAt(
       stamped.notes,
       nextUpdatedAt,
-      (item, updatedAt) => item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
     ),
     attacks: _applyFallbackUpdatedAt(
       stamped.attacks,
       nextUpdatedAt,
-      (item, updatedAt) => item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
     ),
     featureOverrides: _applyFallbackUpdatedAt(
       stamped.featureOverrides,
       nextUpdatedAt,
-      (item, updatedAt) => item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
     ),
     classEntries: _applyFallbackUpdatedAt(
       stamped.classEntries,
       nextUpdatedAt,
-      (item, updatedAt) => item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
     ),
     choices: _applyFallbackUpdatedAt(
       stamped.choices,
       nextUpdatedAt,
-      (item, updatedAt) => item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
+    ),
+    spellSelections: _applyFallbackUpdatedAt(
+      stamped.spellSelections,
+      nextUpdatedAt,
+      (item, updatedAt) =>
+          item.copyWith(updatedAt: item.updatedAt ?? updatedAt),
     ),
     startingEquipmentSelections: _applyFallbackUpdatedAt(
       stamped.startingEquipmentSelections,
@@ -163,6 +182,10 @@ CharacterData normalizeCharacterForPersistence(
     ),
     classEntries: _normalizedClassEntries(character.classEntries, updatedAt),
     choices: _normalizedChoices(character.choices, updatedAt),
+    spellSelections: _normalizedSpellSelections(
+      character.spellSelections,
+      updatedAt,
+    ),
     startingEquipmentSelections: _normalizedSelections(
       character.startingEquipmentSelections,
       updatedAt,
@@ -186,10 +209,11 @@ List<T>? _stampCollection<T>({
     final previousItem = id == null ? null : previousById[id];
     final previousUpdatedAt =
         _tryReadUpdatedAt(previousItem)?.toUtc() ?? _tryReadUpdatedAt(item);
-    final changed =
-        previousItem == null || !_jsonEqualsIgnoringUpdatedAt(previousItem, item);
-    final updatedAt =
-        changed ? DateTime.now().toUtc() : previousUpdatedAt?.toUtc() ?? DateTime.now().toUtc();
+    final changed = previousItem == null ||
+        !_jsonEqualsIgnoringUpdatedAt(previousItem, item);
+    final updatedAt = changed
+        ? DateTime.now().toUtc()
+        : previousUpdatedAt?.toUtc() ?? DateTime.now().toUtc();
     stamped.add(withUpdatedAt(item, updatedAt));
   }
   return stamped.isEmpty ? null : stamped;
@@ -215,6 +239,7 @@ DateTime? _tryReadUpdatedAt(Object? value) {
   if (value is CharacterFeatureOverrideData) return value.updatedAt;
   if (value is CharacterClassEntryData) return value.updatedAt;
   if (value is CharacterChoiceData) return value.updatedAt;
+  if (value is CharacterSpellSelectionData) return value.updatedAt;
   if (value is CharacterStartingEquipmentSelectionData) return value.updatedAt;
   if (value is CharacterStartingEquipmentResolutionData) return value.updatedAt;
   return null;
@@ -372,10 +397,32 @@ List<CharacterChoiceData>? _normalizedChoices(
       choice.copyWith(
         id: choice.id ?? _generateSyncId(),
         selectedToolKey: _normalizedText(choice.selectedToolKey),
-        selectedSpellKey: _normalizedText(choice.selectedSpellKey),
         selectedText: _normalizedText(choice.selectedText),
         updatedAt: choice.updatedAt?.toUtc() ?? updatedAt,
       ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterSpellSelectionData>? _normalizedSpellSelections(
+  List<CharacterSpellSelectionData>? selections,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final selection in selections ?? const <CharacterSpellSelectionData>[])
+      if (_normalizedText(selection.spellKey) != null ||
+          selection.spellId != null ||
+          selection.spell?.id != null)
+        selection.copyWith(
+          id: selection.id ?? _generateSyncId(),
+          classDataId:
+              selection.classDataId ?? selection.classEntry?.classData?.id,
+          spellId: selection.spellId ?? selection.spell?.id,
+          spellKey: _normalizedText(selection.spellKey) ??
+              _normalizedText(selection.spell?.referenceKey) ??
+              _normalizedText(selection.spell?.name),
+          updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
+        ),
   ];
   return normalized.isEmpty ? null : normalized;
 }

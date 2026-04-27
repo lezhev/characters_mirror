@@ -2,6 +2,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart'
     as protocol;
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/attributes_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/widgets/expertise_flag_preview.dart';
@@ -165,6 +166,59 @@ void main() {
       expect(
         repository.charactersById[1]?.manualSavingThrowProficiencies,
         const [protocol.Ability.strength],
+      );
+    });
+
+    testWidgets('modifier button shows a d20 roll result', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            derived: protocol.CharacterDerivedData(
+              abilityScores: const {
+                'strength': 16,
+                'dexterity': 10,
+                'constitution': 10,
+                'intelligence': 10,
+                'wisdom': 10,
+                'charisma': 10,
+              },
+              abilityModifiers: const {
+                'strength': 3,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              savingThrowBonuses: const {
+                'strength': 3,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+            ),
+          ),
+        },
+      );
+
+      await _pumpAttributesPage(tester, repository);
+
+      await tester.tap(
+        find.byKey(const ValueKey('attribute-modifier-strength')),
+      );
+      await tester.pump();
+
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Text &&
+              (widget.data?.startsWith('d20 + 3 = ') ?? false),
+        ),
+        findsOneWidget,
       );
     });
 
@@ -815,10 +869,12 @@ Future<void> _pumpAttributesPage(
       ],
       child: MaterialApp(
         theme: darkTheme,
-        home: Scaffold(
-          body: AttributesPage(
-            characterId: 1,
-            onClose: _noop,
+        home: RollResultsOverlay(
+          child: Scaffold(
+            body: AttributesPage(
+              characterId: 1,
+              onClose: _noop,
+            ),
           ),
         ),
       ),

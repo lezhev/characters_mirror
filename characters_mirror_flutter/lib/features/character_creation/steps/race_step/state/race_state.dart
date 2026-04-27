@@ -208,7 +208,6 @@ class RaceState extends _$RaceState {
               selectedLanguage: option.language,
               selectedToolKey: option.toolKey,
               selectedText: _choiceOptionLabel(option),
-              selectedSpellKey: option.spell?.name,
               selectedFeatId: option.featId,
               selectedCount: option.bonusValue,
             ),

@@ -1,0 +1,321 @@
+import 'dart:math' as math;
+
+class DiceRollResult {
+  const DiceRollResult({
+    required this.formula,
+    required this.total,
+    this.expandedFormula,
+  });
+
+  final String formula;
+  final String? expandedFormula;
+  final int total;
+
+  String get displayText {
+    final expanded = expandedFormula;
+    if (expanded == null) {
+      return '$formula = $total';
+    }
+    return '$formula = $expanded = $total';
+  }
+}
+
+class DiceRollException implements Exception {
+  const DiceRollException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
+}
+
+typedef RollDie = int Function(int sides);
+
+const _maxFormulaLength = 256;
+const _maxDicePerTerm = 100;
+const _maxTotalDice = 500;
+const _maxDiceSides = 1000000;
+const _maxAbsoluteValue = 1000000000;
+const _maxExpandedFormulaLength = 240;
+
+class DiceRoller {
+  DiceRoller({
+    RollDie? rollDie,
+  }) : _rollDie = rollDie ?? _defaultRollDie;
+
+  static final math.Random _random = math.Random();
+
+  final RollDie _rollDie;
+
+  DiceRollResult roll(String formula) {
+    final trimmed = formula.trim();
+    if (trimmed.isEmpty) {
+      throw const DiceRollException('Введите формулу броска');
+    }
+    if (trimmed.length > _maxFormulaLength) {
+      throw const DiceRollException('Формула слишком длинная');
+    }
+
+    final parser = _DiceParser(trimmed, _rollDie);
+    final total = parser.parse();
+    return DiceRollResult(
+      formula: trimmed,
+      expandedFormula: parser.expandedFormula,
+      total: total,
+    );
+  }
+
+  DiceRollResult rollModifier(String value) {
+    final modifier = _parseModifier(value);
+    if (modifier < 0) {
+      return roll('d20 - ${modifier.abs()}');
+    }
+    return roll('d20 + $modifier');
+  }
+
+  static int _defaultRollDie(int sides) => _random.nextInt(sides) + 1;
+}
+
+int _parseModifier(String value) {
+  final normalized = value.trim().replaceAll(' ', '');
+  if (normalized.isEmpty) {
+    throw const DiceRollException('Введите модификатор');
+  }
+
+  final modifier = int.tryParse(normalized);
+  if (modifier == null) {
+    throw const DiceRollException('Модификатор должен быть целым числом');
+  }
+
+  return modifier;
+}
+
+class _DiceParser {
+  _DiceParser(this._source, this._rollDie);
+
+  final String _source;
+  final RollDie _rollDie;
+  final List<_DiceReplacement> _replacements = [];
+  var _totalDiceCount = 0;
+  var _index = 0;
+
+  String? get expandedFormula {
+    if (_replacements.isEmpty) {
+      return null;
+    }
+
+    final buffer = StringBuffer();
+    var sourceIndex = 0;
+    for (final replacement in _replacements) {
+      buffer
+        ..write(_source.substring(sourceIndex, replacement.start))
+        ..write(replacement.text);
+      sourceIndex = replacement.end;
+    }
+    buffer.write(_source.substring(sourceIndex));
+    final expanded = buffer.toString();
+    if (expanded.length <= _maxExpandedFormulaLength) {
+      return expanded;
+    }
+    return '${expanded.substring(0, _maxExpandedFormulaLength - 3)}...';
+  }
+
+  int parse() {
+    final result = _parseExpression();
+    _skipWhitespace();
+
+    if (!_isAtEnd) {
+      if (_current == '/') {
+        throw const DiceRollException('Оператор / не поддерживается');
+      }
+      throw DiceRollException('Неожиданный символ "$_current"');
+    }
+
+    return result;
+  }
+
+  int _parseExpression() {
+    var value = _parseTerm();
+
+    while (true) {
+      _skipWhitespace();
+      if (_match('+')) {
+        value = _checkedValue(value + _parseTerm());
+      } else if (_match('-')) {
+        value = _checkedValue(value - _parseTerm());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  int _parseTerm() {
+    var value = _parseFactor();
+
+    while (true) {
+      _skipWhitespace();
+      if (_match('*')) {
+        value = _checkedValue(value * _parseFactor());
+      } else if (_match('/')) {
+        value = _divideFloor(value, _parseFactor());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  int _parseFactor() {
+    _skipWhitespace();
+
+    if (_isAtEnd) {
+      throw const DiceRollException('Ожидалось значение');
+    }
+
+    if (_match('+')) {
+      return _parseFactor();
+    }
+    if (_match('-')) {
+      return _checkedValue(-_parseFactor());
+    }
+    if (_match('(')) {
+      final value = _parseExpression();
+      _skipWhitespace();
+      if (!_match(')')) {
+        throw const DiceRollException('Не закрыта скобка');
+      }
+      return value;
+    }
+    if (_isDiceSeparator(_current)) {
+      final start = _index;
+      _index++;
+      final sides = _parseRequiredNumber('Ожидалось число граней');
+      return _rollDice(1, sides, start, _index);
+    }
+    if (_isDigit(_current)) {
+      final start = _index;
+      final number = _parseNumber();
+      _skipWhitespace();
+      if (!_isAtEnd && _isDiceSeparator(_current)) {
+        _index++;
+        final sides = _parseRequiredNumber('Ожидалось число граней');
+        return _rollDice(
+          number,
+          sides,
+          start,
+          _index,
+        );
+      }
+      return number;
+    }
+    throw DiceRollException('Неожиданный символ "$_current"');
+  }
+
+  int _rollDice(int count, int sides, int start, int end) {
+    if (count <= 0) {
+      throw const DiceRollException('Количество кубиков должно быть больше 0');
+    }
+    if (count > _maxDicePerTerm) {
+      throw const DiceRollException('Слишком много кубиков в одном броске');
+    }
+    if (sides <= 0) {
+      throw const DiceRollException('Количество граней должно быть больше 0');
+    }
+    if (sides > _maxDiceSides) {
+      throw const DiceRollException('Слишком много граней у кубика');
+    }
+    if (_totalDiceCount + count > _maxTotalDice) {
+      throw const DiceRollException('Слишком много кубиков в формуле');
+    }
+    _totalDiceCount += count;
+
+    var total = 0;
+    final rolls = <int>[];
+    for (var index = 0; index < count; index++) {
+      final roll = _rollDie(sides);
+      rolls.add(roll);
+      total = _checkedValue(total + roll);
+    }
+    _replacements.add(
+      _DiceReplacement(
+        start: start,
+        end: end,
+        text: rolls.length == 1 ? '${rolls.single}' : '(${rolls.join(' + ')})',
+      ),
+    );
+    return total;
+  }
+
+  int _parseRequiredNumber(String message) {
+    _skipWhitespace();
+    if (_isAtEnd || !_isDigit(_current)) {
+      throw DiceRollException(message);
+    }
+    return _parseNumber();
+  }
+
+  int _parseNumber() {
+    final start = _index;
+    while (!_isAtEnd && _isDigit(_current)) {
+      _index++;
+    }
+
+    final value = int.tryParse(_source.substring(start, _index));
+    if (value == null) {
+      throw const DiceRollException('Число слишком большое');
+    }
+    return _checkedValue(value);
+  }
+
+  void _skipWhitespace() {
+    while (!_isAtEnd && _source[_index].trim().isEmpty) {
+      _index++;
+    }
+  }
+
+  bool _match(String value) {
+    if (_isAtEnd || _source[_index] != value) {
+      return false;
+    }
+    _index++;
+    return true;
+  }
+
+  bool get _isAtEnd => _index >= _source.length;
+
+  String get _current => _source[_index];
+}
+
+int _checkedValue(int value) {
+  if (value.abs() > _maxAbsoluteValue) {
+    throw const DiceRollException('Результат слишком большой');
+  }
+  return value;
+}
+
+int _divideFloor(int left, int right) {
+  if (right == 0) {
+    throw const DiceRollException('Деление на 0 невозможно');
+  }
+  return _checkedValue((left / right).floor());
+}
+
+bool _isDigit(String value) {
+  final code = value.codeUnitAt(0);
+  return code >= 48 && code <= 57;
+}
+
+bool _isDiceSeparator(String value) {
+  return value == 'd' || value == 'D' || value == 'к' || value == 'К';
+}
+
+class _DiceReplacement {
+  const _DiceReplacement({
+    required this.start,
+    required this.end,
+    required this.text,
+  });
+
+  final int start;
+  final int end;
+  final String text;
+}

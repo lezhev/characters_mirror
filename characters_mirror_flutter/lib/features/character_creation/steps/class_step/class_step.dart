@@ -45,6 +45,7 @@ class ClassStep extends HookConsumerWidget {
               subclass: data.selectedSubclass,
               choiceGroups: data.stepView?.choiceGroups ?? const [],
               selectedOptions: data.selectedOptions,
+              spellSelections: data.selectedSpellSelections,
               startingEquipmentSelections: data.startingEquipmentSelections,
               level: data.selectedLevel,
             );
@@ -96,6 +97,7 @@ void _syncAndGo({
         subclass: data.selectedSubclass,
         choiceGroups: data.stepView?.choiceGroups ?? const [],
         selectedOptions: data.selectedOptions,
+        spellSelections: data.selectedSpellSelections,
         startingEquipmentSelections: data.startingEquipmentSelections,
         level: data.selectedLevel,
       );

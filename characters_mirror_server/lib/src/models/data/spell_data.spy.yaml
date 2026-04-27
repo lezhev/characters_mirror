@@ -4,6 +4,7 @@
 class: SpellData
 table: spell_data
 fields:
+  referenceKey: String?
   name: String?
   description: String?
   source: String?

@@ -73,6 +73,10 @@ class ClassDataEndpoint extends Endpoint {
       where: (t) => t.classDataId.equals(classId),
       orderBy: (t) => t.level,
     );
+    final selectedClassLevel = _classLevelForSelection(
+      progression,
+      selectedLevel,
+    );
     final groups = await ClassChoiceGroupData.db.find(session);
     final currentFeatureIds = features
         .where((feature) => feature.level <= selectedLevel)
@@ -115,6 +119,14 @@ class ClassDataEndpoint extends Endpoint {
             sourceClassId: classId,
           )
         : const <StartingEquipmentBlockView>[];
+    final spellSelectionGroups = isStartingClass && selectedClassLevel != null
+        ? await _buildSpellSelectionGroups(
+            session,
+            classId: classId,
+            selectedLevel: selectedLevel,
+            classLevel: selectedClassLevel,
+          )
+        : const <ClassSpellSelectionGroupView>[];
 
     final warnings = <String>[];
     if (!isStartingClass) {
@@ -147,6 +159,7 @@ class ClassDataEndpoint extends Endpoint {
         subclasses: subclasses,
       ),
       choiceGroups: currentGroups,
+      spellSelectionGroups: spellSelectionGroups,
       startingEquipmentBlocks: startingEquipmentBlocks,
       startingProficiencies: ProficiencyBundleView(
         savingThrows: classData.savingThrowProficiencies,
@@ -169,6 +182,102 @@ class ClassDataEndpoint extends Endpoint {
   Future<void> delete(Session session, int id) async {
     await ClassData.db.deleteWhere(session, where: (t) => t.id.equals(id));
   }
+}
+
+ClassLevelData? _classLevelForSelection(
+  List<ClassLevelData> progression,
+  int selectedLevel,
+) {
+  ClassLevelData? best;
+  for (final row in progression) {
+    if (row.level == selectedLevel) {
+      return row;
+    }
+    if (row.level <= selectedLevel &&
+        (best == null || row.level > best.level)) {
+      best = row;
+    }
+  }
+  return best;
+}
+
+Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
+  Session session, {
+  required int classId,
+  required int selectedLevel,
+  required ClassLevelData classLevel,
+}) async {
+  final availability = await SpellClassAvailabilityData.db.find(
+    session,
+    where: (t) => t.classDataId.equals(classId),
+    include: SpellClassAvailabilityData.include(
+      spell: SpellData.include(),
+    ),
+  );
+  final spells = [
+    for (final row in availability)
+      if (row.spell != null) row.spell!,
+  ]..sort(_compareSpells);
+
+  final groups = <ClassSpellSelectionGroupView>[];
+  final knownCantrips = classLevel.knownCantrips ?? 0;
+  if (knownCantrips > 0) {
+    final cantrips = [
+      for (final spell in spells)
+        if ((spell.level ?? -1) == 0) spell,
+    ];
+    if (cantrips.isNotEmpty) {
+      groups.add(
+        ClassSpellSelectionGroupView(
+          kind: CharacterSpellSelectionKind.knownCantrip,
+          selectionCount: knownCantrips,
+          classDataId: classId,
+          classLevel: selectedLevel,
+          options: cantrips,
+        ),
+      );
+    }
+  }
+
+  final knownSpells = classLevel.knownSpells ?? 0;
+  final maxSpellLevel = _maxKnownSpellLevel(classLevel.spellSlots);
+  if (knownSpells > 0 && maxSpellLevel > 0) {
+    final knownSpellOptions = [
+      for (final spell in spells)
+        if ((spell.level ?? 0) > 0 && spell.level! <= maxSpellLevel) spell,
+    ];
+    if (knownSpellOptions.isNotEmpty) {
+      groups.add(
+        ClassSpellSelectionGroupView(
+          kind: CharacterSpellSelectionKind.knownSpell,
+          selectionCount: knownSpells,
+          classDataId: classId,
+          classLevel: selectedLevel,
+          options: knownSpellOptions,
+        ),
+      );
+    }
+  }
+
+  return groups;
+}
+
+int _maxKnownSpellLevel(Map<int, int>? spellSlots) {
+  var maxLevel = 0;
+  for (final entry in spellSlots?.entries ?? const Iterable.empty()) {
+    if (entry.value > 0 && entry.key > maxLevel) {
+      maxLevel = entry.key;
+    }
+  }
+  return maxLevel;
+}
+
+int _compareSpells(SpellData left, SpellData right) {
+  final levelCompare = (left.level ?? 0).compareTo(right.level ?? 0);
+  if (levelCompare != 0) {
+    return levelCompare;
+  }
+  return (left.name ?? '').compareTo(right.name ?? '');
 }
 
 class ClassFeatureDataEndpoint extends Endpoint {

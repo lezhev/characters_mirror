@@ -55,12 +55,14 @@ class SummaryChoicesSection extends StatelessWidget {
   const SummaryChoicesSection({
     required this.raceChoiceSummary,
     required this.classChoiceSummary,
+    required this.classSpellSummary,
     required this.backgroundChoiceSummary,
     super.key,
   });
 
   final String raceChoiceSummary;
   final String classChoiceSummary;
+  final String classSpellSummary;
   final String backgroundChoiceSummary;
 
   @override
@@ -71,6 +73,7 @@ class SummaryChoicesSection extends StatelessWidget {
         children: [
           SummaryLine(label: 'Выборы расы', value: raceChoiceSummary),
           SummaryLine(label: 'Выборы класса', value: classChoiceSummary),
+          SummaryLine(label: 'Заклинания класса', value: classSpellSummary),
           SummaryLine(
             label: 'Выборы предыстории',
             value: backgroundChoiceSummary,
@@ -146,7 +149,6 @@ String formatChoiceSummary(List<CharacterChoiceData> choices) {
             choice.selectedText ??
             choice.optionKey ??
             choice.selectedToolKey ??
-            choice.selectedSpellKey ??
             choice.selectedAbility?.name,
       )
       .whereType<String>()
@@ -155,6 +157,31 @@ String formatChoiceSummary(List<CharacterChoiceData> choices) {
 
   if (labels.isEmpty) {
     return '${choices.length} выбрано';
+  }
+
+  return labels.join(', ');
+}
+
+String formatSpellSelectionSummary(
+  List<CharacterSpellSelectionData> selections,
+) {
+  if (selections.isEmpty) {
+    return 'Нет';
+  }
+
+  final labels = selections
+      .map(
+        (selection) =>
+            selection.spell?.name ??
+            selection.spellKey ??
+            selection.spell?.referenceKey,
+      )
+      .whereType<String>()
+      .where((value) => value.trim().isNotEmpty)
+      .toList();
+
+  if (labels.isEmpty) {
+    return '${selections.length} выбрано';
   }
 
   return labels.join(', ');

@@ -573,6 +573,12 @@ Future<void> _upsertCharacterRelations(
     entryResult.savedEntries,
     character.choices ?? const <CharacterChoiceData>[],
   );
+  await _upsertSpellSelectionRecords(
+    session,
+    characterRecord,
+    entryResult.savedEntries,
+    character.spellSelections ?? const <CharacterSpellSelectionData>[],
+  );
   await _deleteMissingClassEntryRecords(
     session,
     characterRecord.id!,
@@ -676,6 +682,7 @@ Future<void> _upsertChoiceRecords(
     final matchedEntry = _matchSavedEntryRecord(
       choice.classEntry,
       savedEntriesBySyncId,
+      savedEntries,
     );
     final nextRecord = CharacterChoiceRecord(
       id: existingRecord?.id,
@@ -692,7 +699,6 @@ Future<void> _upsertChoiceRecords(
       selectedAbility: choice.selectedAbility,
       selectedLanguage: choice.selectedLanguage,
       selectedToolKey: choice.selectedToolKey,
-      selectedSpellKey: choice.selectedSpellKey,
       selectedFeatId: choice.selectedFeatId,
       selectedText: choice.selectedText,
       selectedCount: choice.selectedCount,
@@ -707,6 +713,72 @@ Future<void> _upsertChoiceRecords(
   }
 
   await _deleteMissingChoiceRecords(session, characterRecord.id!, keepRowIds);
+}
+
+Future<void> _upsertSpellSelectionRecords(
+  Session session,
+  CharacterRecord characterRecord,
+  List<CharacterClassEntryRecord> savedEntries,
+  List<CharacterSpellSelectionData> selections,
+) async {
+  final existingSelections = await CharacterSpellSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterRecord.id),
+  );
+  final existingBySyncId = {
+    for (final record in existingSelections)
+      if (record.syncId != null) record.syncId!: record,
+  };
+  final savedEntriesBySyncId = {
+    for (final entry in savedEntries)
+      if (entry.syncId != null) entry.syncId!: entry,
+  };
+
+  final keepRowIds = <int>{};
+  for (final selection in selections) {
+    final syncId = selection.id ?? _generateSyncId();
+    final existingRecord = existingBySyncId[syncId];
+    final matchedEntry = _matchSavedEntryRecord(
+      selection.classEntry,
+      savedEntriesBySyncId,
+      savedEntries,
+    );
+    final spellId = selection.spellId ?? selection.spell?.id;
+    final spellKey = _normalizedTextOrNull(selection.spellKey) ??
+        _normalizedTextOrNull(selection.spell?.referenceKey) ??
+        _normalizedTextOrNull(selection.spell?.name);
+    if (spellId == null && spellKey == null) {
+      continue;
+    }
+
+    final nextRecord = CharacterSpellSelectionRecord(
+      id: existingRecord?.id,
+      syncId: syncId,
+      characterId: characterRecord.id!,
+      character: characterRecord,
+      classEntryId: matchedEntry?.id,
+      classEntry: matchedEntry,
+      classDataId: selection.classDataId ?? matchedEntry?.classDataId,
+      spellId: spellId,
+      spell: selection.spell,
+      spellKey: spellKey,
+      kind: selection.kind,
+      selectionIndex: selection.selectionIndex,
+      updatedAt: selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
+    );
+    final saved = existingRecord == null
+        ? await CharacterSpellSelectionRecord.db.insertRow(session, nextRecord)
+        : await CharacterSpellSelectionRecord.db.updateRow(session, nextRecord);
+    if (saved.id != null) {
+      keepRowIds.add(saved.id!);
+    }
+  }
+
+  await _deleteMissingSpellSelectionRecords(
+    session,
+    characterRecord.id!,
+    keepRowIds,
+  );
 }
 
 Future<void> _deleteStartingEquipmentRecords(
@@ -842,11 +914,24 @@ Future<void> _upsertStartingEquipmentResolutionRecords(
 CharacterClassEntryRecord? _matchSavedEntryRecord(
   CharacterClassEntryData? draftEntry,
   Map<String, CharacterClassEntryRecord> savedEntriesBySyncId,
+  List<CharacterClassEntryRecord> savedEntries,
 ) {
   if (draftEntry == null) return null;
   final syncId = draftEntry.id;
-  if (syncId == null) return null;
-  return savedEntriesBySyncId[syncId];
+  if (syncId != null) {
+    final matchedBySyncId = savedEntriesBySyncId[syncId];
+    if (matchedBySyncId != null) return matchedBySyncId;
+  }
+
+  final classDataId = draftEntry.classData?.id;
+  if (classDataId == null) return null;
+  final subclassId = draftEntry.subclass?.id;
+  for (final entry in savedEntries) {
+    if (entry.classDataId == classDataId && entry.subclassId == subclassId) {
+      return entry;
+    }
+  }
+  return null;
 }
 
 Future<void> _deleteMissingClassEntryRecords(
@@ -888,6 +973,29 @@ Future<void> _deleteMissingChoiceRecords(
     return;
   }
   await CharacterChoiceRecord.db.deleteWhere(
+    session,
+    where: (t) => t.id.inSet(removableIds.toSet()),
+  );
+}
+
+Future<void> _deleteMissingSpellSelectionRecords(
+  Session session,
+  int characterId,
+  Set<int> keepRowIds,
+) async {
+  final existingSelections = await CharacterSpellSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterId),
+  );
+  final removableIds = [
+    for (final selection in existingSelections)
+      if (selection.id != null && !keepRowIds.contains(selection.id))
+        selection.id!,
+  ];
+  if (removableIds.isEmpty) {
+    return;
+  }
+  await CharacterSpellSelectionRecord.db.deleteWhere(
     session,
     where: (t) => t.id.inSet(removableIds.toSet()),
   );
@@ -961,6 +1069,10 @@ CharacterData _normalizeIncomingCharacter(
         character.featureOverrides, updatedAt),
     classEntries: _normalizedClassEntries(character.classEntries, updatedAt),
     choices: _normalizedChoices(character.choices, updatedAt),
+    spellSelections: _normalizedSpellSelections(
+      character.spellSelections,
+      updatedAt,
+    ),
     startingEquipmentSelections: _normalizedStartingEquipmentSelections(
       character.startingEquipmentSelections,
       updatedAt,
@@ -1061,10 +1173,34 @@ List<CharacterChoiceData>? _normalizedChoices(
       choice.copyWith(
         id: choice.id ?? _generateSyncId(),
         selectedToolKey: _normalizedTextOrNull(choice.selectedToolKey),
-        selectedSpellKey: _normalizedTextOrNull(choice.selectedSpellKey),
         selectedText: _normalizedTextOrNull(choice.selectedText),
         updatedAt: choice.updatedAt?.toUtc() ?? updatedAt,
       ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterSpellSelectionData>? _normalizedSpellSelections(
+  List<CharacterSpellSelectionData>? selections,
+  DateTime? updatedAt,
+) {
+  final normalized = [
+    for (final selection in selections ?? const <CharacterSpellSelectionData>[])
+      if (selection.spellId != null ||
+          selection.spell?.id != null ||
+          _normalizedTextOrNull(selection.spellKey) != null ||
+          _normalizedTextOrNull(selection.spell?.referenceKey) != null ||
+          _normalizedTextOrNull(selection.spell?.name) != null)
+        selection.copyWith(
+          id: selection.id ?? _generateSyncId(),
+          classDataId:
+              selection.classDataId ?? selection.classEntry?.classData?.id,
+          spellId: selection.spellId ?? selection.spell?.id,
+          spellKey: _normalizedTextOrNull(selection.spellKey) ??
+              _normalizedTextOrNull(selection.spell?.referenceKey) ??
+              _normalizedTextOrNull(selection.spell?.name),
+          updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
+        ),
   ];
   return normalized.isEmpty ? null : normalized;
 }
@@ -1281,11 +1417,34 @@ Future<CharacterData> _buildCharacterAggregate(
   final choiceRecords = await CharacterChoiceRecord.db.find(
     session,
     where: (t) => t.characterId.equals(record.id),
+    include: CharacterChoiceRecord.include(
+      classEntry: CharacterClassEntryRecord.include(
+        classData: ClassData.include(),
+        subclass: SubclassData.include(),
+      ),
+    ),
   );
   final choices = choiceRecords
       .map((record) => _toCharacterChoiceData(record, entriesById))
       .toList()
     ..sort(_compareCharacterChoices);
+  final spellSelectionRecords = await CharacterSpellSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(record.id),
+    orderBy: (t) => t.selectionIndex,
+    include: CharacterSpellSelectionRecord.include(
+      classEntry: CharacterClassEntryRecord.include(
+        classData: ClassData.include(),
+        subclass: SubclassData.include(),
+      ),
+      classData: ClassData.include(),
+      spell: SpellData.include(),
+    ),
+  );
+  final spellSelections = spellSelectionRecords
+      .map((record) => _toCharacterSpellSelectionData(record, entriesById))
+      .toList()
+    ..sort(_compareSpellSelections);
   final startingEquipmentSelectionRecords =
       await CharacterStartingEquipmentSelectionRecord.db.find(
     session,
@@ -1325,6 +1484,7 @@ Future<CharacterData> _buildCharacterAggregate(
   final character = _toCharacterData(record).copyWith(
     classEntries: entries,
     choices: choices,
+    spellSelections: spellSelections,
     startingEquipmentSelections: startingEquipmentSelections,
   );
   final derived = await _buildDerivedData(session, character);
@@ -1406,10 +1566,28 @@ CharacterChoiceData _toCharacterChoiceData(
     selectedAbility: record.selectedAbility,
     selectedLanguage: record.selectedLanguage,
     selectedToolKey: record.selectedToolKey,
-    selectedSpellKey: record.selectedSpellKey,
     selectedFeatId: record.selectedFeatId,
     selectedText: record.selectedText,
     selectedCount: record.selectedCount,
+    updatedAt: record.updatedAt,
+  );
+}
+
+CharacterSpellSelectionData _toCharacterSpellSelectionData(
+  CharacterSpellSelectionRecord record,
+  Map<String, CharacterClassEntryData> entriesById,
+) {
+  return CharacterSpellSelectionData(
+    id: record.syncId,
+    classEntry: record.classEntry?.syncId == null
+        ? null
+        : entriesById[record.classEntry!.syncId!],
+    classDataId: record.classDataId,
+    spell: record.spell,
+    spellId: record.spellId,
+    spellKey: record.spellKey,
+    kind: record.kind,
+    selectionIndex: record.selectionIndex,
     updatedAt: record.updatedAt,
   );
 }
@@ -1550,7 +1728,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     currentRaceFeatures: currentRaceFeatures,
   );
   final grantedSpellKeys = _collectGrantedSpellKeys(
-    choices,
+    character.spellSelections ?? const <CharacterSpellSelectionData>[],
     resolvedSources.classBackgroundOptions,
     resolvedSources.raceOptions,
     currentRaceFeatures,
@@ -2304,12 +2482,20 @@ List<FeatureTag> _collectFeatureTags({
 }
 
 List<String> _collectGrantedSpellKeys(
-  List<CharacterChoiceData> choices,
+  List<CharacterSpellSelectionData> spellSelections,
   List<ClassChoiceOptionData> classBackgroundOptions,
   List<RaceChoiceOptionData> raceOptions,
   _CurrentRaceFeatures currentRaceFeatures,
 ) {
   final values = <String>{};
+  for (final selection in spellSelections) {
+    final spellKey = _normalizedTextOrNull(selection.spellKey) ??
+        _normalizedTextOrNull(selection.spell?.referenceKey) ??
+        _normalizedTextOrNull(selection.spell?.name);
+    if (spellKey != null) {
+      values.add(spellKey);
+    }
+  }
   for (final option in classBackgroundOptions) {
     values.addAll(_normalizedTexts(option.grantedSpellKeys));
   }
@@ -2329,12 +2515,6 @@ List<String> _collectGrantedSpellKeys(
       if (spellName != null) {
         values.add(spellName);
       }
-    }
-  }
-  for (final choice in choices) {
-    final spellKey = _normalizedTextOrNull(choice.selectedSpellKey);
-    if (spellKey != null) {
-      values.add(spellKey);
     }
   }
   return values.toList()..sort();
@@ -3365,6 +3545,30 @@ int _compareCharacterChoices(CharacterChoiceData a, CharacterChoiceData b) {
   final selectionCompare =
       (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0);
   if (selectionCompare != 0) return selectionCompare;
+
+  return (a.id ?? '').compareTo(b.id ?? '');
+}
+
+int _compareSpellSelections(
+  CharacterSpellSelectionData a,
+  CharacterSpellSelectionData b,
+) {
+  final classCompare = (a.classDataId ?? 0).compareTo(b.classDataId ?? 0);
+  if (classCompare != 0) return classCompare;
+
+  final kindCompare = (a.kind?.name ?? '').compareTo(b.kind?.name ?? '');
+  if (kindCompare != 0) return kindCompare;
+
+  final selectionCompare =
+      (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0);
+  if (selectionCompare != 0) return selectionCompare;
+
+  final spellCompare = (a.spellKey ??
+          a.spell?.referenceKey ??
+          a.spell?.name ??
+          '')
+      .compareTo(b.spellKey ?? b.spell?.referenceKey ?? b.spell?.name ?? '');
+  if (spellCompare != 0) return spellCompare;
 
   return (a.id ?? '').compareTo(b.id ?? '');
 }

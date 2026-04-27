@@ -26,9 +26,11 @@ import '../../../data/general/character/character_feature_override_data.dart'
 import '../../../data/general/character/character_class_entry_data.dart'
     as _i12;
 import '../../../data/general/character/character_choice_data.dart' as _i13;
-import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+import '../../../data/general/character/character_spell_selection_data.dart'
     as _i14;
-import '../../../data/general/character/character_derived_data.dart' as _i15;
+import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+    as _i15;
+import '../../../data/general/character/character_derived_data.dart' as _i16;
 
 abstract class CharacterData implements _i1.SerializableModel {
   CharacterData._({
@@ -70,6 +72,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     this.featureOverrides,
     this.classEntries,
     this.choices,
+    this.spellSelections,
     this.startingEquipmentSelections,
     this.derived,
   });
@@ -113,9 +116,10 @@ abstract class CharacterData implements _i1.SerializableModel {
     List<_i11.CharacterFeatureOverrideData>? featureOverrides,
     List<_i12.CharacterClassEntryData>? classEntries,
     List<_i13.CharacterChoiceData>? choices,
-    List<_i14.CharacterStartingEquipmentSelectionData>?
+    List<_i14.CharacterSpellSelectionData>? spellSelections,
+    List<_i15.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i15.CharacterDerivedData? derived,
+    _i16.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -208,15 +212,19 @@ abstract class CharacterData implements _i1.SerializableModel {
           ?.map((e) =>
               _i13.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      spellSelections: (jsonSerialization['spellSelections'] as List?)
+          ?.map((e) => _i14.CharacterSpellSelectionData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       startingEquipmentSelections:
           (jsonSerialization['startingEquipmentSelections'] as List?)
               ?.map((e) =>
-                  _i14.CharacterStartingEquipmentSelectionData.fromJson(
+                  _i15.CharacterStartingEquipmentSelectionData.fromJson(
                       (e as Map<String, dynamic>)))
               .toList(),
       derived: jsonSerialization['derived'] == null
           ? null
-          : _i15.CharacterDerivedData.fromJson(
+          : _i16.CharacterDerivedData.fromJson(
               (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
@@ -297,10 +305,12 @@ abstract class CharacterData implements _i1.SerializableModel {
 
   List<_i13.CharacterChoiceData>? choices;
 
-  List<_i14.CharacterStartingEquipmentSelectionData>?
+  List<_i14.CharacterSpellSelectionData>? spellSelections;
+
+  List<_i15.CharacterStartingEquipmentSelectionData>?
       startingEquipmentSelections;
 
-  _i15.CharacterDerivedData? derived;
+  _i16.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
@@ -344,9 +354,10 @@ abstract class CharacterData implements _i1.SerializableModel {
     List<_i11.CharacterFeatureOverrideData>? featureOverrides,
     List<_i12.CharacterClassEntryData>? classEntries,
     List<_i13.CharacterChoiceData>? choices,
-    List<_i14.CharacterStartingEquipmentSelectionData>?
+    List<_i14.CharacterSpellSelectionData>? spellSelections,
+    List<_i15.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i15.CharacterDerivedData? derived,
+    _i16.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -403,6 +414,9 @@ abstract class CharacterData implements _i1.SerializableModel {
         'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
       if (choices != null)
         'choices': choices?.toJson(valueToJson: (v) => v.toJson()),
+      if (spellSelections != null)
+        'spellSelections':
+            spellSelections?.toJson(valueToJson: (v) => v.toJson()),
       if (startingEquipmentSelections != null)
         'startingEquipmentSelections':
             startingEquipmentSelections?.toJson(valueToJson: (v) => v.toJson()),
@@ -458,9 +472,10 @@ class _CharacterDataImpl extends CharacterData {
     List<_i11.CharacterFeatureOverrideData>? featureOverrides,
     List<_i12.CharacterClassEntryData>? classEntries,
     List<_i13.CharacterChoiceData>? choices,
-    List<_i14.CharacterStartingEquipmentSelectionData>?
+    List<_i14.CharacterSpellSelectionData>? spellSelections,
+    List<_i15.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i15.CharacterDerivedData? derived,
+    _i16.CharacterDerivedData? derived,
   }) : super._(
           id: id,
           name: name,
@@ -500,6 +515,7 @@ class _CharacterDataImpl extends CharacterData {
           featureOverrides: featureOverrides,
           classEntries: classEntries,
           choices: choices,
+          spellSelections: spellSelections,
           startingEquipmentSelections: startingEquipmentSelections,
           derived: derived,
         );
@@ -547,6 +563,7 @@ class _CharacterDataImpl extends CharacterData {
     Object? featureOverrides = _Undefined,
     Object? classEntries = _Undefined,
     Object? choices = _Undefined,
+    Object? spellSelections = _Undefined,
     Object? startingEquipmentSelections = _Undefined,
     Object? derived = _Undefined,
   }) {
@@ -636,14 +653,18 @@ class _CharacterDataImpl extends CharacterData {
       choices: choices is List<_i13.CharacterChoiceData>?
           ? choices
           : this.choices?.map((e0) => e0.copyWith()).toList(),
+      spellSelections:
+          spellSelections is List<_i14.CharacterSpellSelectionData>?
+              ? spellSelections
+              : this.spellSelections?.map((e0) => e0.copyWith()).toList(),
       startingEquipmentSelections: startingEquipmentSelections
-              is List<_i14.CharacterStartingEquipmentSelectionData>?
+              is List<_i15.CharacterStartingEquipmentSelectionData>?
           ? startingEquipmentSelections
           : this
               .startingEquipmentSelections
               ?.map((e0) => e0.copyWith())
               .toList(),
-      derived: derived is _i15.CharacterDerivedData?
+      derived: derived is _i16.CharacterDerivedData?
           ? derived
           : this.derived?.copyWith(),
     );
