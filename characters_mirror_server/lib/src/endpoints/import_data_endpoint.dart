@@ -23,7 +23,8 @@ class ReferenceDataEndpoint extends Endpoint {
 
         case 'classlevel':
         case 'class_level':
-          await ClassLevelData.db.insertRow(session, ClassLevelData.fromJson(data));
+          await ClassLevelData.db
+              .insertRow(session, ClassLevelData.fromJson(data));
           break;
 
         case 'classchoicegroup':
@@ -36,24 +37,6 @@ class ReferenceDataEndpoint extends Endpoint {
         case 'class_choice_option':
           await ClassChoiceOptionData.db
               .insertRow(session, ClassChoiceOptionData.fromJson(data));
-          break;
-
-        case 'startingequipmentblock':
-        case 'starting_equipment_block':
-          await StartingEquipmentBlockData.db
-              .insertRow(session, StartingEquipmentBlockData.fromJson(data));
-          break;
-
-        case 'startingequipmentoption':
-        case 'starting_equipment_option':
-          await StartingEquipmentOptionData.db
-              .insertRow(session, StartingEquipmentOptionData.fromJson(data));
-          break;
-
-        case 'startingequipmentline':
-        case 'starting_equipment_line':
-          await StartingEquipmentLineData.db
-              .insertRow(session, StartingEquipmentLineData.fromJson(data));
           break;
 
         case 'race':

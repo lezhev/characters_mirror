@@ -136,22 +136,16 @@ import 'package:characters_mirror_client/src/protocol/data/general/race/race_cho
     as _i108;
 import 'package:characters_mirror_client/src/protocol/data/general/race/race_feature_spell_grant_data.dart'
     as _i109;
-import 'package:characters_mirror_client/src/protocol/data/general/class/starting_equipment_block_data.dart'
-    as _i110;
-import 'package:characters_mirror_client/src/protocol/data/general/class/starting_equipment_option_data.dart'
-    as _i111;
-import 'package:characters_mirror_client/src/protocol/data/general/class/starting_equipment_line_data.dart'
-    as _i112;
 import 'package:characters_mirror_client/src/protocol/data/items/armor_data.dart'
-    as _i113;
+    as _i110;
 import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
-    as _i114;
+    as _i111;
 import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
-    as _i115;
+    as _i112;
 import 'package:characters_mirror_client/src/protocol/data/items/weapon_data.dart'
-    as _i116;
+    as _i113;
 import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
-    as _i117;
+    as _i114;
 export 'auth/auth_action_result.dart';
 export 'data/background_data.dart';
 export 'data/feat_data.dart';
@@ -878,6 +872,13 @@ class Protocol extends _i1.SerializationManager {
       return (data != null ? _i92.EquipmentCatalogType.fromJson(data) : null)
           as T;
     }
+    if (t == _i1.getType<List<_i31.StartingEquipmentLineData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i31.StartingEquipmentLineData>(e))
+              .toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<String>(e)).toList()
@@ -886,6 +887,13 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<List<_i69.Skill>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<_i69.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i30.StartingEquipmentBlockData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i30.StartingEquipmentBlockData>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -1291,6 +1299,13 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<_i69.Skill>(e)).toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<_i30.StartingEquipmentBlockData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i30.StartingEquipmentBlockData>(e))
+              .toList()
+          : null) as T;
+    }
     if (t == _i1.getType<Map<String, int>?>()) {
       return (data != null
           ? (data as Map).map(
@@ -1335,6 +1350,20 @@ class Protocol extends _i1.SerializationManager {
       return (data != null
           ? Map.fromEntries((data as List).map((e) =>
               MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i31.StartingEquipmentLineData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i31.StartingEquipmentLineData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i2.StartingEquipmentOptionData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i2.StartingEquipmentOptionData>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i80.WeaponCategory>?>()) {
@@ -1780,41 +1809,26 @@ class Protocol extends _i1.SerializationManager {
           .map((e) => deserialize<_i109.RaceFeatureSpellGrantData>(e))
           .toList() as T;
     }
-    if (t == List<_i110.StartingEquipmentBlockData>) {
-      return (data as List)
-          .map((e) => deserialize<_i110.StartingEquipmentBlockData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i111.StartingEquipmentOptionData>) {
-      return (data as List)
-          .map((e) => deserialize<_i111.StartingEquipmentOptionData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i112.StartingEquipmentLineData>) {
-      return (data as List)
-          .map((e) => deserialize<_i112.StartingEquipmentLineData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i113.ArmorData>) {
-      return (data as List).map((e) => deserialize<_i113.ArmorData>(e)).toList()
+    if (t == List<_i110.ArmorData>) {
+      return (data as List).map((e) => deserialize<_i110.ArmorData>(e)).toList()
           as T;
     }
-    if (t == List<_i114.ItemData>) {
-      return (data as List).map((e) => deserialize<_i114.ItemData>(e)).toList()
+    if (t == List<_i111.ItemData>) {
+      return (data as List).map((e) => deserialize<_i111.ItemData>(e)).toList()
           as T;
     }
-    if (t == List<_i115.MagicItemData>) {
+    if (t == List<_i112.MagicItemData>) {
       return (data as List)
-          .map((e) => deserialize<_i115.MagicItemData>(e))
+          .map((e) => deserialize<_i112.MagicItemData>(e))
           .toList() as T;
     }
-    if (t == List<_i116.WeaponData>) {
+    if (t == List<_i113.WeaponData>) {
       return (data as List)
-          .map((e) => deserialize<_i116.WeaponData>(e))
+          .map((e) => deserialize<_i113.WeaponData>(e))
           .toList() as T;
     }
-    if (t == List<_i117.SpellData>) {
-      return (data as List).map((e) => deserialize<_i117.SpellData>(e)).toList()
+    if (t == List<_i114.SpellData>) {
+      return (data as List).map((e) => deserialize<_i114.SpellData>(e)).toList()
           as T;
     }
     try {

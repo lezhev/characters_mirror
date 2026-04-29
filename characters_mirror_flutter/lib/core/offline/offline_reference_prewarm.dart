@@ -23,9 +23,6 @@ class OfflineReferencePrewarmer {
     ClassChoiceGroupRepository? classChoiceGroupRepository,
     ClassChoiceOptionRepository? classChoiceOptionRepository,
     SubclassFeatureRepository? subclassFeatureRepository,
-    StartingEquipmentBlockRepository? startingEquipmentBlockRepository,
-    StartingEquipmentOptionRepository? startingEquipmentOptionRepository,
-    StartingEquipmentLineRepository? startingEquipmentLineRepository,
   })  : _raceRepository = raceRepository ?? RaceRepository(),
         _classRepository = classRepository ?? ClassRepository(),
         _backgroundRepository = backgroundRepository ?? BackgroundRepository(),
@@ -52,14 +49,7 @@ class OfflineReferencePrewarmer {
         _classChoiceOptionRepository =
             classChoiceOptionRepository ?? ClassChoiceOptionRepository(),
         _subclassFeatureRepository =
-            subclassFeatureRepository ?? SubclassFeatureRepository(),
-        _startingEquipmentBlockRepository = startingEquipmentBlockRepository ??
-            StartingEquipmentBlockRepository(),
-        _startingEquipmentOptionRepository =
-            startingEquipmentOptionRepository ??
-                StartingEquipmentOptionRepository(),
-        _startingEquipmentLineRepository = startingEquipmentLineRepository ??
-            StartingEquipmentLineRepository();
+            subclassFeatureRepository ?? SubclassFeatureRepository();
 
   final RaceRepository _raceRepository;
   final ClassRepository _classRepository;
@@ -80,9 +70,6 @@ class OfflineReferencePrewarmer {
   final ClassChoiceGroupRepository _classChoiceGroupRepository;
   final ClassChoiceOptionRepository _classChoiceOptionRepository;
   final SubclassFeatureRepository _subclassFeatureRepository;
-  final StartingEquipmentBlockRepository _startingEquipmentBlockRepository;
-  final StartingEquipmentOptionRepository _startingEquipmentOptionRepository;
-  final StartingEquipmentLineRepository _startingEquipmentLineRepository;
 
   bool _isRunning = false;
 
@@ -110,9 +97,6 @@ class OfflineReferencePrewarmer {
         _classChoiceGroupRepository.getAll(),
         _classChoiceOptionRepository.getAll(),
         _subclassFeatureRepository.getAll(),
-        _startingEquipmentBlockRepository.getAll(),
-        _startingEquipmentOptionRepository.getAll(),
-        _startingEquipmentLineRepository.getAll(),
       ]);
 
       await Future.wait([

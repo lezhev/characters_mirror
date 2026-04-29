@@ -10,17 +10,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/class/starting_equipment_block_data.dart' as _i2;
+import '../../../data/general/class/starting_equipment_line_data.dart' as _i2;
 
 abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
   StartingEquipmentOptionData._({
-    this.id,
-    required this.blockId,
-    this.block,
     this.optionKey,
     this.orderIndex,
     this.name,
     this.description,
+    this.lines,
     this.source,
     this.version,
     this.createdAt,
@@ -28,13 +26,11 @@ abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
   });
 
   factory StartingEquipmentOptionData({
-    int? id,
-    required int blockId,
-    _i2.StartingEquipmentBlockData? block,
     String? optionKey,
     int? orderIndex,
     String? name,
     String? description,
+    List<_i2.StartingEquipmentLineData>? lines,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -44,16 +40,14 @@ abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
   factory StartingEquipmentOptionData.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return StartingEquipmentOptionData(
-      id: jsonSerialization['id'] as int?,
-      blockId: jsonSerialization['blockId'] as int,
-      block: jsonSerialization['block'] == null
-          ? null
-          : _i2.StartingEquipmentBlockData.fromJson(
-              (jsonSerialization['block'] as Map<String, dynamic>)),
       optionKey: jsonSerialization['optionKey'] as String?,
       orderIndex: jsonSerialization['orderIndex'] as int?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
+      lines: (jsonSerialization['lines'] as List?)
+          ?.map((e) => _i2.StartingEquipmentLineData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
@@ -65,15 +59,6 @@ abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
     );
   }
 
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
-  int? id;
-
-  int blockId;
-
-  _i2.StartingEquipmentBlockData? block;
-
   String? optionKey;
 
   int? orderIndex;
@@ -81,6 +66,8 @@ abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
   String? name;
 
   String? description;
+
+  List<_i2.StartingEquipmentLineData>? lines;
 
   String? source;
 
@@ -94,13 +81,11 @@ abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   StartingEquipmentOptionData copyWith({
-    int? id,
-    int? blockId,
-    _i2.StartingEquipmentBlockData? block,
     String? optionKey,
     int? orderIndex,
     String? name,
     String? description,
+    List<_i2.StartingEquipmentLineData>? lines,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -109,13 +94,11 @@ abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
-      'blockId': blockId,
-      if (block != null) 'block': block?.toJson(),
       if (optionKey != null) 'optionKey': optionKey,
       if (orderIndex != null) 'orderIndex': orderIndex,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (lines != null) 'lines': lines?.toJson(valueToJson: (v) => v.toJson()),
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -133,25 +116,21 @@ class _Undefined {}
 
 class _StartingEquipmentOptionDataImpl extends StartingEquipmentOptionData {
   _StartingEquipmentOptionDataImpl({
-    int? id,
-    required int blockId,
-    _i2.StartingEquipmentBlockData? block,
     String? optionKey,
     int? orderIndex,
     String? name,
     String? description,
+    List<_i2.StartingEquipmentLineData>? lines,
     String? source,
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          blockId: blockId,
-          block: block,
           optionKey: optionKey,
           orderIndex: orderIndex,
           name: name,
           description: description,
+          lines: lines,
           source: source,
           version: version,
           createdAt: createdAt,
@@ -163,28 +142,24 @@ class _StartingEquipmentOptionDataImpl extends StartingEquipmentOptionData {
   @_i1.useResult
   @override
   StartingEquipmentOptionData copyWith({
-    Object? id = _Undefined,
-    int? blockId,
-    Object? block = _Undefined,
     Object? optionKey = _Undefined,
     Object? orderIndex = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
+    Object? lines = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
   }) {
     return StartingEquipmentOptionData(
-      id: id is int? ? id : this.id,
-      blockId: blockId ?? this.blockId,
-      block: block is _i2.StartingEquipmentBlockData?
-          ? block
-          : this.block?.copyWith(),
       optionKey: optionKey is String? ? optionKey : this.optionKey,
       orderIndex: orderIndex is int? ? orderIndex : this.orderIndex,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
+      lines: lines is List<_i2.StartingEquipmentLineData>?
+          ? lines
+          : this.lines?.map((e0) => e0.copyWith()).toList(),
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,

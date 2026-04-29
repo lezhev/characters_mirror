@@ -47,6 +47,8 @@ class CreationChoiceSelector extends StatefulWidget {
     this.selectionLimit,
     this.onClear,
     this.autoScrollOnExpand = true,
+    this.surface = true,
+    this.adaptivePairLayout = false,
   }) : _mode = mode;
 
   factory CreationChoiceSelector.single({
@@ -57,6 +59,8 @@ class CreationChoiceSelector extends StatefulWidget {
     String? description,
     VoidCallback? onClear,
     bool autoScrollOnExpand = true,
+    bool surface = true,
+    bool adaptivePairLayout = false,
   }) {
     return CreationChoiceSelector._(
       key: key,
@@ -68,6 +72,8 @@ class CreationChoiceSelector extends StatefulWidget {
       selectionLimit: 1,
       onClear: onClear,
       autoScrollOnExpand: autoScrollOnExpand,
+      surface: surface,
+      adaptivePairLayout: adaptivePairLayout,
     );
   }
 
@@ -80,6 +86,7 @@ class CreationChoiceSelector extends StatefulWidget {
     String? description,
     VoidCallback? onClear,
     bool autoScrollOnExpand = true,
+    bool surface = true,
   }) {
     return CreationChoiceSelector._(
       key: key,
@@ -91,6 +98,7 @@ class CreationChoiceSelector extends StatefulWidget {
       selectionLimit: selectionLimit,
       onClear: onClear,
       autoScrollOnExpand: autoScrollOnExpand,
+      surface: surface,
     );
   }
 
@@ -100,6 +108,7 @@ class CreationChoiceSelector extends StatefulWidget {
     Object? switchKey,
     String? title,
     String? description,
+    bool surface = true,
   }) {
     return CreationChoiceSelector._(
       key: key,
@@ -108,6 +117,7 @@ class CreationChoiceSelector extends StatefulWidget {
       items: items,
       mode: _CreationChoiceSelectorMode.fixed,
       switchKey: switchKey ?? title ?? 'fixed_choices',
+      surface: surface,
     );
   }
 
@@ -140,6 +150,8 @@ class CreationChoiceSelector extends StatefulWidget {
   final int? selectionLimit;
   final VoidCallback? onClear;
   final bool autoScrollOnExpand;
+  final bool surface;
+  final bool adaptivePairLayout;
 
   @override
   State<CreationChoiceSelector> createState() => _CreationChoiceSelectorState();
@@ -160,7 +172,30 @@ class _CreationChoiceSelectorState extends State<CreationChoiceSelector> {
   }
 
   Widget _buildExpandableCards(BuildContext context) {
-    return _SelectorSurface(
+    final cards = Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: SmoothSwitcher(
+        switchKey: widget.switchKey,
+        autoScrollOnTransition: widget.autoScrollOnExpand,
+        child: _ChoiceCardList(
+          key: ValueKey<Object>(widget.switchKey),
+          items: widget.items,
+          adaptivePairLayout: widget.adaptivePairLayout,
+          isCardEnabled: _isCardEnabled,
+        ),
+      ),
+    );
+
+    if (!widget.surface) {
+      return _InlineSelector(
+        title: widget.title,
+        description: widget.description,
+        onClear: widget.onClear,
+        child: cards,
+      );
+    }
+
+    return CreationChoiceSelectorSurface(
       title: widget.title,
       description: widget.description,
       onClear: widget.onClear,
@@ -178,26 +213,7 @@ class _CreationChoiceSelectorState extends State<CreationChoiceSelector> {
         expand: _isExpanded,
         extraOffset: 64,
         autoScrollOnExpand: widget.autoScrollOnExpand,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: SmoothSwitcher(
-            switchKey: widget.switchKey,
-            autoScrollOnTransition: widget.autoScrollOnExpand,
-            child: Column(
-              key: ValueKey<Object>(widget.switchKey),
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (var index = 0; index < widget.items.length; index++) ...[
-                  _SelectorChoiceCard(
-                    item: widget.items[index],
-                    enabled: _isCardEnabled(widget.items[index]),
-                  ),
-                  if (index < widget.items.length - 1) const Gap(8),
-                ],
-              ],
-            ),
-          ),
-        ),
+        child: cards,
       ),
     );
   }
@@ -222,7 +238,18 @@ class _CreationChoiceSelectorState extends State<CreationChoiceSelector> {
       return cards;
     }
 
-    return _SelectorSurface(
+    if (!widget.surface) {
+      return _InlineSelector(
+        title: widget.title,
+        description: widget.description,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: cards,
+        ),
+      );
+    }
+
+    return CreationChoiceSelectorSurface(
       title: widget.title,
       description: widget.description,
       child: Padding(
@@ -239,7 +266,7 @@ class _CreationChoiceSelectorState extends State<CreationChoiceSelector> {
     );
     final selectionLimit = widget.selectionLimit ?? 1;
 
-    return _SelectorSurface(
+    return CreationChoiceSelectorSurface(
       title: widget.title,
       description: widget.description,
       onClear: widget.onClear,
@@ -283,9 +310,10 @@ class _CreationChoiceSelectorState extends State<CreationChoiceSelector> {
   }
 }
 
-class _SelectorSurface extends StatelessWidget {
-  const _SelectorSurface({
+class CreationChoiceSelectorSurface extends StatelessWidget {
+  const CreationChoiceSelectorSurface({
     required this.child,
+    super.key,
     this.title,
     this.description,
     this.onClear,
@@ -360,6 +388,187 @@ class _SelectorSurface extends StatelessWidget {
             ),
           child,
         ],
+      ),
+    );
+  }
+}
+
+class _InlineSelector extends StatelessWidget {
+  const _InlineSelector({
+    required this.child,
+    this.title,
+    this.description,
+    this.onClear,
+  });
+
+  final String? title;
+  final String? description;
+  final VoidCallback? onClear;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final hasHeader = title != null ||
+        (description ?? '').trim().isNotEmpty ||
+        onClear != null;
+
+    if (!hasHeader) {
+      return child;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (title != null) Text(title!, style: textTheme.titleMedium),
+                  if ((description ?? '').trim().isNotEmpty) ...[
+                    const Gap(4),
+                    Text(description!, style: textTheme.bodyMedium),
+                  ],
+                ],
+              ),
+            ),
+            if (onClear != null)
+              TextButton(
+                onPressed: onClear,
+                child: const Text('Сбросить'),
+              ),
+          ],
+        ),
+        child,
+      ],
+    );
+  }
+}
+
+class _ChoiceCardList extends StatelessWidget {
+  const _ChoiceCardList({
+    required this.items,
+    required this.adaptivePairLayout,
+    required this.isCardEnabled,
+    super.key,
+  });
+
+  final List<CreationChoiceSelectorItem> items;
+  final bool adaptivePairLayout;
+  final bool Function(CreationChoiceSelectorItem item) isCardEnabled;
+
+  @override
+  Widget build(BuildContext context) {
+    if (adaptivePairLayout && items.length == 2) {
+      return _AdaptiveOrChoicePair(
+        first: items[0],
+        second: items[1],
+        isCardEnabled: isCardEnabled,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var index = 0; index < items.length; index++) ...[
+          _SelectorChoiceCard(
+            item: items[index],
+            enabled: isCardEnabled(items[index]),
+          ),
+          if (index < items.length - 1) const Gap(8),
+        ],
+      ],
+    );
+  }
+}
+
+class _AdaptiveOrChoicePair extends StatelessWidget {
+  const _AdaptiveOrChoicePair({
+    required this.first,
+    required this.second,
+    required this.isCardEnabled,
+  });
+
+  final CreationChoiceSelectorItem first;
+  final CreationChoiceSelectorItem second;
+  final bool Function(CreationChoiceSelectorItem item) isCardEnabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const minCardWidth = 220.0;
+        const gap = 8.0;
+        final canFitRow = constraints.maxWidth >= minCardWidth * 2 + gap;
+        if (canFitRow) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _SelectorChoiceCard(
+                  item: first,
+                  enabled: isCardEnabled(first),
+                ),
+              ),
+              const Gap(gap),
+              Expanded(
+                child: _SelectorChoiceCard(
+                  item: second,
+                  enabled: isCardEnabled(second),
+                ),
+              ),
+            ],
+          );
+        }
+
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _SelectorChoiceCard(
+                  item: first,
+                  enabled: isCardEnabled(first),
+                ),
+                const Gap(gap),
+                _SelectorChoiceCard(
+                  item: second,
+                  enabled: isCardEnabled(second),
+                ),
+              ],
+            ),
+            const IgnorePointer(child: _OrPill()),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _OrPill extends StatelessWidget {
+  const _OrPill();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+        child: Text(
+          'или',
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
       ),
     );
   }

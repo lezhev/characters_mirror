@@ -1,11 +1,10 @@
 class: StartingEquipmentOptionData
-table: starting_equipment_option_data
 fields:
-  block: StartingEquipmentBlockData?, relation
   optionKey: String?
   orderIndex: int?
   name: String?
   description: String?
+  lines: List<StartingEquipmentLineData>?
   source: String?
   version: int?
   createdAt: DateTime?

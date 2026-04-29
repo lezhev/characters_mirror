@@ -16,6 +16,7 @@ class RollValueButton extends StatelessWidget {
     this.value,
     this.width,
     this.diceRoller,
+    this.variables = const {},
   });
 
   final String label;
@@ -23,6 +24,7 @@ class RollValueButton extends StatelessWidget {
   final RollValueMode mode;
   final double? width;
   final DiceRoller? diceRoller;
+  final Map<String, int> variables;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class RollValueButton extends StatelessWidget {
       onPressed: rollValue.trim().isEmpty
           ? null
           : () {
-              final roller = diceRoller ?? DiceRoller();
+              final roller = diceRoller ?? DiceRoller(variables: variables);
               try {
                 final result = switch (mode) {
                   RollValueMode.modifier => roller.rollModifier(rollValue),

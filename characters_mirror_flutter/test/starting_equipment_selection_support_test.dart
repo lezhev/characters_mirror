@@ -73,7 +73,6 @@ void main() {
           options: [
             StartingEquipmentOptionView(
               option: StartingEquipmentOptionData(
-                blockId: 1,
                 optionKey: 'crossbow_option',
               ),
               lines: [
@@ -102,6 +101,57 @@ void main() {
       );
 
       expect(normalized, isEmpty);
+    });
+
+    test('keeps armor category resolutions as armor catalog entries', () {
+      final blocks = [
+        StartingEquipmentBlockView(
+          block: StartingEquipmentBlockData(
+            blockKey: 'armor_block',
+            kind: StartingEquipmentBlockKind.fixedGrant,
+          ),
+          fixedLines: [
+            StartingEquipmentLineData(
+              lineKey: 'armor_choice',
+              kind: StartingEquipmentLineKind.itemCategory,
+              catalogType: EquipmentCatalogType.armor,
+              quantity: 1,
+            ),
+          ],
+        ),
+      ];
+
+      final normalized = normalizeStartingEquipmentSelections(
+        blocks: blocks,
+        selections: [
+          CharacterStartingEquipmentSelectionData(
+            sourceType: ChoiceSourceType.classData,
+            sourceId: 7,
+            blockKey: 'armor_block',
+            resolutions: [
+              CharacterStartingEquipmentResolutionData(
+                lineKey: 'armor_choice',
+                catalogType: EquipmentCatalogType.armor,
+                referenceKey: 'leather_armor',
+                quantity: 1,
+              ),
+            ],
+          ),
+        ],
+        sourceType: ChoiceSourceType.classData,
+        sourceId: 7,
+      );
+
+      expect(normalized, hasLength(1));
+      expect(normalized.single.resolutions, hasLength(1));
+      expect(
+        normalized.single.resolutions!.single.catalogType,
+        EquipmentCatalogType.armor,
+      );
+      expect(
+        normalized.single.resolutions!.single.referenceKey,
+        'leather_armor',
+      );
     });
   });
 }

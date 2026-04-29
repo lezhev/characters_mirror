@@ -95,3 +95,5 @@
 20260427150832496-add-subclass-name
 20260427160756561-clean-empty-spell-duration-type
 20260427211234016-extract-skill-selections
+20260428195026924-repair-spell-selections
+20260428202654703-collapse-starting-equipment-storage

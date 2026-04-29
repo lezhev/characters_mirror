@@ -225,7 +225,8 @@ List<CharacterStartingEquipmentResolutionData> _normalizeResolutions({
 
     final expectedType = switch (line.kind) {
       StartingEquipmentLineKind.weaponCategory => EquipmentCatalogType.weapon,
-      StartingEquipmentLineKind.itemCategory => EquipmentCatalogType.item,
+      StartingEquipmentLineKind.itemCategory =>
+        line.catalogType ?? EquipmentCatalogType.item,
       StartingEquipmentLineKind.catalogRef || null => line.catalogType,
     };
     if (expectedType == null || resolution.catalogType != expectedType) {

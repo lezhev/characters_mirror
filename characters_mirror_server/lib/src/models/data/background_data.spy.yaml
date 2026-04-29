@@ -11,6 +11,7 @@ fields:
   skillProficiencies: List<String>?
   availableSkills: List<Skill>?
   skillCount: int?
+  startingEquipmentBlocks: List<StartingEquipmentBlockData>?
   toolProficiencies: List<String>?
   languageCount: int?
   items: List<String>?

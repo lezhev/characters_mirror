@@ -9,4 +9,5 @@ fields:
   blockKey: String?
   optionKey: String?
   selectionIndex: int?
+  resolutions: List<CharacterStartingEquipmentResolutionData>?
   updatedAt: DateTime?

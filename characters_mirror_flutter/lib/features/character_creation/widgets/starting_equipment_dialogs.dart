@@ -54,6 +54,38 @@ Future<StartingEquipmentCatalogDialogEntry?>
         entries: entries,
       );
     case StartingEquipmentLineKind.itemCategory:
+      if (line.catalogType == EquipmentCatalogType.armor) {
+        final armor = await ref.read(armorCatalogProvider.future);
+        if (!context.mounted) {
+          return null;
+        }
+        final allowedCategories = {
+          for (final category in line.allowedItemCategories ?? const <String>[])
+            if (normalizeStartingEquipmentText(category) != null)
+              normalizeStartingEquipmentText(category)!,
+        };
+        final entries = [
+          for (final armorItem in armor)
+            if (normalizeStartingEquipmentText(armorItem.referenceKey) !=
+                    null &&
+                normalizeStartingEquipmentText(armorItem.name) != null &&
+                (allowedCategories.isEmpty ||
+                    allowedCategories.contains(armorItem.categoryValue?.name)))
+              StartingEquipmentCatalogDialogEntry(
+                referenceKey:
+                    normalizeStartingEquipmentText(armorItem.referenceKey)!,
+                label: normalizeStartingEquipmentText(armorItem.name)!,
+                catalogType: EquipmentCatalogType.armor,
+              ),
+        ]..sort((left, right) => left.label.compareTo(right.label));
+        return _showStartingEquipmentCatalogDialog(
+          context: context,
+          title: startingEquipmentLineTitle(line),
+          selectedReferenceKey: selectedReferenceKey,
+          entries: entries,
+        );
+      }
+
       final items = await ref.read(itemCatalogProvider.future);
       if (!context.mounted) {
         return null;

@@ -1,0 +1,204 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "starting_equipment_option_data"
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "starting_equipment_line_data"
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "starting_equipment_block_data"
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "character_starting_equipment_resolution_data"
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "background_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "startingEquipmentBlocks",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:StartingEquipmentBlockData>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_option_data\" will be dropped.",
+            "table": "starting_equipment_option_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_line_data\" will be dropped.",
+            "table": "starting_equipment_line_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_block_data\" will be dropped.",
+            "table": "starting_equipment_block_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"character_starting_equipment_resolution_data\" will be dropped.",
+            "table": "character_starting_equipment_resolution_data",
+            "columns": [],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "character_starting_equipment_selection_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "resolutions",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:CharacterStartingEquipmentResolutionData>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_option_data\" will be dropped.",
+            "table": "starting_equipment_option_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_line_data\" will be dropped.",
+            "table": "starting_equipment_line_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_block_data\" will be dropped.",
+            "table": "starting_equipment_block_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"character_starting_equipment_resolution_data\" will be dropped.",
+            "table": "character_starting_equipment_resolution_data",
+            "columns": [],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "startingEquipmentBlocks",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:StartingEquipmentBlockData>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_option_data\" will be dropped.",
+            "table": "starting_equipment_option_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_line_data\" will be dropped.",
+            "table": "starting_equipment_line_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"starting_equipment_block_data\" will be dropped.",
+            "table": "starting_equipment_block_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "tableDropped",
+            "message": "Table \"character_starting_equipment_resolution_data\" will be dropped.",
+            "table": "character_starting_equipment_resolution_data",
+            "columns": [],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"starting_equipment_option_data\" will be dropped.",
+      "table": "starting_equipment_option_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "Table \"starting_equipment_line_data\" will be dropped.",
+      "table": "starting_equipment_line_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "Table \"starting_equipment_block_data\" will be dropped.",
+      "table": "starting_equipment_block_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "Table \"character_starting_equipment_resolution_data\" will be dropped.",
+      "table": "character_starting_equipment_resolution_data",
+      "columns": [],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

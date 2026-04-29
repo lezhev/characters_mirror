@@ -14,6 +14,8 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/character/character_record.dart' as _i2;
 import '../../../enums/choice_source_type.dart' as _i3;
+import '../../../data/general/character/character_starting_equipment_resolution_data.dart'
+    as _i4;
 
 abstract class CharacterStartingEquipmentSelectionRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -27,6 +29,7 @@ abstract class CharacterStartingEquipmentSelectionRecord
     this.blockKey,
     this.optionKey,
     this.selectionIndex,
+    this.resolutions,
     this.updatedAt,
   });
 
@@ -40,6 +43,7 @@ abstract class CharacterStartingEquipmentSelectionRecord
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
+    List<_i4.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
   }) = _CharacterStartingEquipmentSelectionRecordImpl;
 
@@ -61,6 +65,10 @@ abstract class CharacterStartingEquipmentSelectionRecord
       blockKey: jsonSerialization['blockKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
+      resolutions: (jsonSerialization['resolutions'] as List?)
+          ?.map((e) => _i4.CharacterStartingEquipmentResolutionData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
@@ -90,6 +98,8 @@ abstract class CharacterStartingEquipmentSelectionRecord
 
   int? selectionIndex;
 
+  List<_i4.CharacterStartingEquipmentResolutionData>? resolutions;
+
   DateTime? updatedAt;
 
   @override
@@ -108,6 +118,7 @@ abstract class CharacterStartingEquipmentSelectionRecord
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
+    List<_i4.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
   });
   @override
@@ -122,6 +133,8 @@ abstract class CharacterStartingEquipmentSelectionRecord
       if (blockKey != null) 'blockKey': blockKey,
       if (optionKey != null) 'optionKey': optionKey,
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
+      if (resolutions != null)
+        'resolutions': resolutions?.toJson(valueToJson: (v) => v.toJson()),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
@@ -180,6 +193,7 @@ class _CharacterStartingEquipmentSelectionRecordImpl
     String? blockKey,
     String? optionKey,
     int? selectionIndex,
+    List<_i4.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
   }) : super._(
           id: id,
@@ -191,6 +205,7 @@ class _CharacterStartingEquipmentSelectionRecordImpl
           blockKey: blockKey,
           optionKey: optionKey,
           selectionIndex: selectionIndex,
+          resolutions: resolutions,
           updatedAt: updatedAt,
         );
 
@@ -208,6 +223,7 @@ class _CharacterStartingEquipmentSelectionRecordImpl
     Object? blockKey = _Undefined,
     Object? optionKey = _Undefined,
     Object? selectionIndex = _Undefined,
+    Object? resolutions = _Undefined,
     Object? updatedAt = _Undefined,
   }) {
     return CharacterStartingEquipmentSelectionRecord(
@@ -224,6 +240,10 @@ class _CharacterStartingEquipmentSelectionRecordImpl
       optionKey: optionKey is String? ? optionKey : this.optionKey,
       selectionIndex:
           selectionIndex is int? ? selectionIndex : this.selectionIndex,
+      resolutions:
+          resolutions is List<_i4.CharacterStartingEquipmentResolutionData>?
+              ? resolutions
+              : this.resolutions?.map((e0) => e0.copyWith()).toList(),
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
@@ -261,6 +281,10 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
       'selectionIndex',
       this,
     );
+    resolutions = _i1.ColumnSerializable(
+      'resolutions',
+      this,
+    );
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
@@ -282,6 +306,8 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnString optionKey;
 
   late final _i1.ColumnInt selectionIndex;
+
+  late final _i1.ColumnSerializable resolutions;
 
   late final _i1.ColumnDateTime updatedAt;
 
@@ -308,6 +334,7 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
         blockKey,
         optionKey,
         selectionIndex,
+        resolutions,
         updatedAt,
       ];
 
