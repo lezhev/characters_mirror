@@ -31,8 +31,7 @@ class StartingEquipmentBlockCards extends StatelessWidget {
     final selection =
         selectionForStartingEquipmentBlock(blockView, selections: selections);
     if (block.kind == StartingEquipmentBlockKind.choice) {
-      final options =
-          blockView.options ?? const <StartingEquipmentOptionView>[];
+      final options = _equipmentOptionViews(blockView);
       if (options.isEmpty) {
         return const SizedBox.shrink();
       }
@@ -57,11 +56,13 @@ class StartingEquipmentBlockCards extends StatelessWidget {
           title:
               normalizeStartingEquipmentText(block.name) ?? 'Выбор снаряжения',
           description: block.description,
-          switchKey: block.blockKey ?? block.id ?? 'equipment_choice',
+          switchKey: block.blockKey ?? 'equipment_choice',
           onClear: normalizeStartingEquipmentText(selection?.optionKey) != null
               ? () => onClearBlock(blockView)
               : null,
           autoScrollOnExpand: false,
+          surface: false,
+          adaptivePairLayout: options.length == 2,
           items: items,
         );
       }
@@ -69,18 +70,18 @@ class StartingEquipmentBlockCards extends StatelessWidget {
       return CreationChoiceSelector.multi(
         title: normalizeStartingEquipmentText(block.name) ?? 'Выбор снаряжения',
         description: block.description,
-        switchKey: block.blockKey ?? block.id ?? 'equipment_choice',
+        switchKey: block.blockKey ?? 'equipment_choice',
         selectionLimit: selectionCount,
         onClear: normalizeStartingEquipmentText(selection?.optionKey) != null
             ? () => onClearBlock(blockView)
             : null,
         autoScrollOnExpand: false,
+        surface: false,
         items: items,
       );
     }
 
-    final fixedLines =
-        blockView.fixedLines ?? const <StartingEquipmentLineData>[];
+    final fixedLines = _equipmentFixedLines(blockView);
     if (fixedLines.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -91,7 +92,8 @@ class StartingEquipmentBlockCards extends StatelessWidget {
     return CreationChoiceSelector.fixed(
       title: normalizeStartingEquipmentText(block.name),
       description: block.description,
-      switchKey: block.blockKey ?? block.id ?? 'equipment_fixed',
+      switchKey: block.blockKey ?? 'equipment_fixed',
+      surface: false,
       items: [
         for (final line in fixedLines)
           CreationChoiceSelectorItem(
@@ -113,4 +115,30 @@ class StartingEquipmentBlockCards extends StatelessWidget {
       ],
     );
   }
+}
+
+List<StartingEquipmentLineData> _equipmentFixedLines(
+  StartingEquipmentBlockView blockView,
+) {
+  final lines = blockView.block?.fixedLines;
+  if (lines != null && lines.isNotEmpty) {
+    return lines;
+  }
+  return blockView.fixedLines ?? const <StartingEquipmentLineData>[];
+}
+
+List<StartingEquipmentOptionView> _equipmentOptionViews(
+  StartingEquipmentBlockView blockView,
+) {
+  final options = blockView.block?.options;
+  if (options != null && options.isNotEmpty) {
+    return [
+      for (final option in options)
+        StartingEquipmentOptionView(
+          option: option,
+          lines: option.lines ?? const <StartingEquipmentLineData>[],
+        ),
+    ];
+  }
+  return blockView.options ?? const <StartingEquipmentOptionView>[];
 }

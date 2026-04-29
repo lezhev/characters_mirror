@@ -42,8 +42,6 @@ class CharacterSheetAppBar extends StatelessWidget {
                     style: theme.textTheme.titleLarge,
                   ),
                 ),
-                const SizedBox(width: 8),
-                const SheetAppBarAction(icon: Icons.auto_awesome),
                 SheetAppBarAction(
                   icon: Icons.settings,
                   tooltip: 'Настройки персонажа',

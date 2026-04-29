@@ -39,6 +39,26 @@ void main() {
       expect(roller.roll('d6 / 2'), _hasRoll('d6 / 2', 1, '3 / 2'));
     });
 
+    test('supports formula variables in any case', () {
+      final roller = DiceRoller(
+        rollDie: (_) => 4,
+        variables: const {
+          'сил': 3,
+          'dex': -1,
+          'pb': 2,
+        },
+      );
+
+      expect(
+        roller.roll('d6 + СИЛ + PB'),
+        _hasRoll('d6 + СИЛ + PB', 9, '4 + 3 + 2'),
+      );
+      expect(
+        roller.roll('d6 + DEX'),
+        _hasRoll('d6 + DEX', 3, '4 - 1'),
+      );
+    });
+
     test('truncates long expanded formulas for display', () {
       final result = DiceRoller(rollDie: (_) => 1).roll('100d6');
 
@@ -73,6 +93,7 @@ void main() {
       expect(() => roller.roll('2d0'), throwsA(isA<DiceRollException>()));
       expect(() => roller.roll('1 / 0'), throwsA(isA<DiceRollException>()));
       expect(() => roller.roll('(1d4'), throwsA(isA<DiceRollException>()));
+      expect(() => roller.roll('str'), throwsA(isA<DiceRollException>()));
     });
 
     test('rejects expensive formulas before rolling dice', () {

@@ -11,6 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../enums/skill.dart' as _i2;
+import '../data/general/class/starting_equipment_block_data.dart' as _i3;
 
 abstract class BackgroundData implements _i1.SerializableModel {
   BackgroundData._({
@@ -24,6 +25,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     this.skillProficiencies,
     this.availableSkills,
     this.skillCount,
+    this.startingEquipmentBlocks,
     this.toolProficiencies,
     this.languageCount,
     this.items,
@@ -46,6 +48,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     List<String>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
+    List<_i3.StartingEquipmentBlockData>? startingEquipmentBlocks,
     List<String>? toolProficiencies,
     int? languageCount,
     List<String>? items,
@@ -77,6 +80,11 @@ abstract class BackgroundData implements _i1.SerializableModel {
           ?.map((e) => _i2.Skill.fromJson((e as String)))
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
+      startingEquipmentBlocks:
+          (jsonSerialization['startingEquipmentBlocks'] as List?)
+              ?.map((e) => _i3.StartingEquipmentBlockData.fromJson(
+                  (e as Map<String, dynamic>)))
+              .toList(),
       toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -124,6 +132,8 @@ abstract class BackgroundData implements _i1.SerializableModel {
 
   int? skillCount;
 
+  List<_i3.StartingEquipmentBlockData>? startingEquipmentBlocks;
+
   List<String>? toolProficiencies;
 
   int? languageCount;
@@ -156,6 +166,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     List<String>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
+    List<_i3.StartingEquipmentBlockData>? startingEquipmentBlocks,
     List<String>? toolProficiencies,
     int? languageCount,
     List<String>? items,
@@ -182,6 +193,9 @@ abstract class BackgroundData implements _i1.SerializableModel {
         'availableSkills':
             availableSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (skillCount != null) 'skillCount': skillCount,
+      if (startingEquipmentBlocks != null)
+        'startingEquipmentBlocks':
+            startingEquipmentBlocks?.toJson(valueToJson: (v) => v.toJson()),
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
       if (languageCount != null) 'languageCount': languageCount,
@@ -216,6 +230,7 @@ class _BackgroundDataImpl extends BackgroundData {
     List<String>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
+    List<_i3.StartingEquipmentBlockData>? startingEquipmentBlocks,
     List<String>? toolProficiencies,
     int? languageCount,
     List<String>? items,
@@ -236,6 +251,7 @@ class _BackgroundDataImpl extends BackgroundData {
           skillProficiencies: skillProficiencies,
           availableSkills: availableSkills,
           skillCount: skillCount,
+          startingEquipmentBlocks: startingEquipmentBlocks,
           toolProficiencies: toolProficiencies,
           languageCount: languageCount,
           items: items,
@@ -262,6 +278,7 @@ class _BackgroundDataImpl extends BackgroundData {
     Object? skillProficiencies = _Undefined,
     Object? availableSkills = _Undefined,
     Object? skillCount = _Undefined,
+    Object? startingEquipmentBlocks = _Undefined,
     Object? toolProficiencies = _Undefined,
     Object? languageCount = _Undefined,
     Object? items = _Undefined,
@@ -287,6 +304,10 @@ class _BackgroundDataImpl extends BackgroundData {
           ? availableSkills
           : this.availableSkills?.map((e0) => e0).toList(),
       skillCount: skillCount is int? ? skillCount : this.skillCount,
+      startingEquipmentBlocks: startingEquipmentBlocks
+              is List<_i3.StartingEquipmentBlockData>?
+          ? startingEquipmentBlocks
+          : this.startingEquipmentBlocks?.map((e0) => e0.copyWith()).toList(),
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),

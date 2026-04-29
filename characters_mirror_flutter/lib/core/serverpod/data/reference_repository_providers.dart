@@ -22,10 +22,18 @@ final weaponRepositoryProvider = Provider<WeaponRepository>((ref) {
   return WeaponRepository();
 });
 
+final armorRepositoryProvider = Provider<ArmorRepository>((ref) {
+  return ArmorRepository();
+});
+
 final itemCatalogProvider = FutureProvider<List<ItemData>>((ref) {
   return ref.watch(itemRepositoryProvider).getAll();
 });
 
 final weaponCatalogProvider = FutureProvider<List<WeaponData>>((ref) {
   return ref.watch(weaponRepositoryProvider).getAll();
+});
+
+final armorCatalogProvider = FutureProvider<List<ArmorData>>((ref) {
+  return ref.watch(armorRepositoryProvider).getAll();
 });

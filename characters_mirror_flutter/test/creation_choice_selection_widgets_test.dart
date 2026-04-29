@@ -309,7 +309,6 @@ void main() {
         ),
       );
 
-      await _expandSelector(tester);
       await tester.tap(find.byKey(const ValueKey('choice-card-pack_a')));
       await tester.pump();
 
@@ -326,21 +325,18 @@ void main() {
             body: StartingEquipmentBlockCards(
               blockView: StartingEquipmentBlockView(
                 block: StartingEquipmentBlockData(
-                  id: 2,
                   blockKey: 'fixed_block',
                   kind: StartingEquipmentBlockKind.fixedGrant,
                   name: 'Фиксированное снаряжение',
                 ),
                 fixedLines: [
                   StartingEquipmentLineData(
-                    blockId: 2,
                     lineKey: 'pack',
                     kind: StartingEquipmentLineKind.catalogRef,
                     displayText: 'Набор путешественника',
                     quantity: 1,
                   ),
                   StartingEquipmentLineData(
-                    blockId: 2,
                     lineKey: 'weapon',
                     kind: StartingEquipmentLineKind.weaponCategory,
                     displayText: 'Простое оружие',
@@ -586,7 +582,6 @@ class _EquipmentChoiceHarnessState extends State<_EquipmentChoiceHarness> {
         StartingEquipmentBlockCards(
           blockView: StartingEquipmentBlockView(
             block: StartingEquipmentBlockData(
-              id: 1,
               blockKey: 'choice_block',
               kind: StartingEquipmentBlockKind.choice,
               name: 'Снаряжение',
@@ -595,14 +590,12 @@ class _EquipmentChoiceHarnessState extends State<_EquipmentChoiceHarness> {
             options: [
               StartingEquipmentOptionView(
                 option: StartingEquipmentOptionData(
-                  blockId: 1,
                   optionKey: 'pack_a',
                   name: 'Набор A',
                 ),
               ),
               StartingEquipmentOptionView(
                 option: StartingEquipmentOptionData(
-                  blockId: 1,
                   optionKey: 'pack_b',
                   name: 'Набор B',
                 ),

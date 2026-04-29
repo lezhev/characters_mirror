@@ -11,6 +11,7 @@ class AttackCard extends StatelessWidget {
     required this.onNamePressed,
     super.key,
     this.diceRoller,
+    this.rollVariables = const {},
   });
 
   final CharacterAttackData attack;
@@ -18,6 +19,7 @@ class AttackCard extends StatelessWidget {
   final String damageLabel;
   final VoidCallback onNamePressed;
   final DiceRoller? diceRoller;
+  final Map<String, int> rollVariables;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class AttackCard extends StatelessWidget {
               label: attackBonusLabel,
               mode: RollValueMode.modifier,
               diceRoller: diceRoller,
+              variables: rollVariables,
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -58,6 +61,7 @@ class AttackCard extends StatelessWidget {
                 value: attack.damage ?? '',
                 mode: RollValueMode.formula,
                 diceRoller: diceRoller,
+                variables: rollVariables,
               ),
             ),
           ],

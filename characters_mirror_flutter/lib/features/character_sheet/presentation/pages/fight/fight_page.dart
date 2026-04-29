@@ -1,6 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/application/character_roll_variables.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/abilities_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/attack_dialog_controller.dart';
@@ -92,6 +93,7 @@ class FightPage extends ConsumerWidget {
                   attackBonusLabelBuilder: (attack) =>
                       formatAttackBonus(character, attack),
                   damageLabelBuilder: formatDamageLabel,
+                  rollVariables: characterRollVariables(character),
                   onAttackPressed: (index, attack) {
                     final isPlaceholder = attacks.isEmpty;
                     if (isPlaceholder) {

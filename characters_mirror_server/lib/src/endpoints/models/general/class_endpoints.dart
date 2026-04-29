@@ -2,7 +2,6 @@ import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
 import 'starting_equipment_endpoints.dart';
-import 'warlock_starting_equipment_bootstrap.dart';
 
 class ClassDataEndpoint extends Endpoint {
   Future<List<ClassData>> getAll(Session session) async {
@@ -47,10 +46,6 @@ class ClassDataEndpoint extends Endpoint {
       'ClassData',
       classId,
     );
-    if (isStartingClass) {
-      await ensureWarlockStartingEquipmentData(session, classData);
-    }
-
     final features = await ClassFeatureData.db.find(
       session,
       where: (t) => t.parentClassId.equals(classId),
@@ -117,10 +112,7 @@ class ClassDataEndpoint extends Endpoint {
       );
     }
     final startingEquipmentBlocks = isStartingClass
-        ? await loadStartingEquipmentBlockViews(
-            session,
-            sourceClassId: classId,
-          )
+        ? startingEquipmentBlockViews(classData.startingEquipmentBlocks)
         : const <StartingEquipmentBlockView>[];
     final skillSelectionGroups = isStartingClass
         ? _buildClassSkillSelectionGroups(classData)

@@ -11,6 +11,7 @@ class AttackListSection extends StatelessWidget {
     required this.damageLabelBuilder,
     required this.onAttackPressed,
     super.key,
+    this.rollVariables = const {},
   });
 
   final List<CharacterAttackData> attacks;
@@ -18,6 +19,7 @@ class AttackListSection extends StatelessWidget {
   final String Function(CharacterAttackData attack) attackBonusLabelBuilder;
   final String Function(CharacterAttackData attack) damageLabelBuilder;
   final void Function(int index, CharacterAttackData attack) onAttackPressed;
+  final Map<String, int> rollVariables;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class AttackListSection extends StatelessWidget {
             attackBonusLabel: attackBonusLabelBuilder(attacks[index]),
             damageLabel: damageLabelBuilder(attacks[index]),
             onNamePressed: () => onAttackPressed(index, attacks[index]),
+            rollVariables: rollVariables,
           ),
           if (index < attacks.length - 1) const SizedBox(height: 4),
         ],

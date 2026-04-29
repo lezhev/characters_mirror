@@ -18,12 +18,18 @@ void main() {
                 child: AttackCard(
                   attack: CharacterAttackData(
                     name: 'Меч',
-                    damage: '2d6 + 1',
+                    damage: '2d6 + СИЛ + pb',
                   ),
                   attackBonusLabel: '+5',
-                  damageLabel: '2d6 + 1',
+                  damageLabel: '2d6 + СИЛ + pb',
                   onNamePressed: () {},
-                  diceRoller: _rollerWithValues([10, 2, 3]),
+                  diceRoller: _rollerWithValues(
+                    [10, 2, 3],
+                    variables: const {
+                      'сил': 3,
+                      'pb': 2,
+                    },
+                  ),
                 ),
               ),
             ),
@@ -36,17 +42,24 @@ void main() {
 
       expect(find.text('d20 + 5 = 10 + 5 = 15'), findsOneWidget);
 
-      await tester.tap(find.text('2d6 + 1'));
+      await tester.tap(find.text('2d6 + СИЛ + pb'));
       await tester.pump();
 
-      expect(find.text('2d6 + 1 = (2 + 3) + 1 = 6'), findsOneWidget);
+      expect(
+        find.text('2d6 + СИЛ + pb = (2 + 3) + 3 + 2 = 10'),
+        findsOneWidget,
+      );
     });
   });
 }
 
-DiceRoller _rollerWithValues(List<int> values) {
+DiceRoller _rollerWithValues(
+  List<int> values, {
+  Map<String, int> variables = const {},
+}) {
   final queue = Queue<int>.from(values);
   return DiceRoller(
+    variables: variables,
     rollDie: (sides) {
       final value = queue.removeFirst();
       expect(value, inInclusiveRange(1, sides));

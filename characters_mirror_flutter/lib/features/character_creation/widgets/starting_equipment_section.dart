@@ -1,5 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_cards.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_dialogs.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_helpers.dart';
@@ -42,74 +42,89 @@ class StartingEquipmentSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(title: title, showDivider: false),
-        const Gap(8),
-        for (var index = 0; index < blocks.length; index++) ...[
-          StartingEquipmentBlockCards(
-            blockView: blocks[index],
-            selections: selections,
-            onClearBlock: onClearBlock,
-            onShowChoiceDialog: (optionView) async {
-              final selection = selectionForStartingEquipmentBlock(
-                blocks[index],
-                selections: selections,
-              );
-              final isOptionSelected =
-                  isStartingEquipmentOptionSelected(optionView, selection);
-              if (!isOptionSelected) {
-                onSelectOption(blocks[index], optionView);
-              }
+        CreationChoiceSelectorSurface(
+          title: title,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var index = 0; index < blocks.length; index++) ...[
+                  StartingEquipmentBlockCards(
+                    blockView: blocks[index],
+                    selections: selections,
+                    onClearBlock: onClearBlock,
+                    onShowChoiceDialog: (optionView) async {
+                      final selection = selectionForStartingEquipmentBlock(
+                        blocks[index],
+                        selections: selections,
+                      );
+                      final isOptionSelected =
+                          isStartingEquipmentOptionSelected(
+                        optionView,
+                        selection,
+                      );
+                      if (!isOptionSelected) {
+                        onSelectOption(blocks[index], optionView);
+                      }
 
-              if (!context.mounted) {
-                return;
-              }
+                      if (!context.mounted) {
+                        return;
+                      }
 
-              await _showRequiredResolutionDialogs(
-                context: context,
-                ref: ref,
-                blockView: blocks[index],
-                lines: optionView.lines ?? const <StartingEquipmentLineData>[],
-                selectedReferenceKeysByLine:
-                    startingEquipmentResolutionReferenceKeys(
-                  selectionForStartingEquipmentOption(
-                    selection: isOptionSelected ? selection : null,
-                    optionView: optionView,
+                      await _showRequiredResolutionDialogs(
+                        context: context,
+                        ref: ref,
+                        blockView: blocks[index],
+                        lines: optionView.lines ??
+                            const <StartingEquipmentLineData>[],
+                        selectedReferenceKeysByLine:
+                            startingEquipmentResolutionReferenceKeys(
+                          selectionForStartingEquipmentOption(
+                            selection: isOptionSelected ? selection : null,
+                            optionView: optionView,
+                          ),
+                          optionView.lines ??
+                              const <StartingEquipmentLineData>[],
+                        ),
+                        onSetResolution: onSetResolution,
+                      );
+                    },
+                    onShowFixedLineDialog: (line) async {
+                      if (!startingEquipmentLineRequiresResolution(line)) {
+                        return;
+                      }
+
+                      final choice =
+                          await showStartingEquipmentResolutionDialog(
+                        context: context,
+                        ref: ref,
+                        line: line,
+                        selectedReferenceKey:
+                            selectedStartingEquipmentReferenceKeyForLine(
+                          blocks[index],
+                          selections: selections,
+                          line: line,
+                        ),
+                      );
+                      if (choice == null) {
+                        return;
+                      }
+
+                      onSetResolution(
+                        blockView: blocks[index],
+                        line: line,
+                        catalogType: choice.catalogType,
+                        referenceKey: choice.referenceKey,
+                      );
+                    },
                   ),
-                  optionView.lines ?? const <StartingEquipmentLineData>[],
-                ),
-                onSetResolution: onSetResolution,
-              );
-            },
-            onShowFixedLineDialog: (line) async {
-              if (!startingEquipmentLineRequiresResolution(line)) {
-                return;
-              }
-
-              final choice = await showStartingEquipmentResolutionDialog(
-                context: context,
-                ref: ref,
-                line: line,
-                selectedReferenceKey:
-                    selectedStartingEquipmentReferenceKeyForLine(
-                  blocks[index],
-                  selections: selections,
-                  line: line,
-                ),
-              );
-              if (choice == null) {
-                return;
-              }
-
-              onSetResolution(
-                blockView: blocks[index],
-                line: line,
-                catalogType: choice.catalogType,
-                referenceKey: choice.referenceKey,
-              );
-            },
+                  if (index < blocks.length - 1) const Gap(12),
+                ],
+              ],
+            ),
           ),
-          if (index < blocks.length - 1) const Gap(10),
-        ],
+        ),
       ],
     );
   }

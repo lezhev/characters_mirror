@@ -41,11 +41,14 @@ const _maxExpandedFormulaLength = 240;
 class DiceRoller {
   DiceRoller({
     RollDie? rollDie,
-  }) : _rollDie = rollDie ?? _defaultRollDie;
+    Map<String, int>? variables,
+  })  : _rollDie = rollDie ?? _defaultRollDie,
+        _variables = _normalizedVariables(variables ?? const {});
 
   static final math.Random _random = math.Random();
 
   final RollDie _rollDie;
+  final Map<String, int> _variables;
 
   DiceRollResult roll(String formula) {
     final trimmed = formula.trim();
@@ -56,7 +59,7 @@ class DiceRoller {
       throw const DiceRollException('Формула слишком длинная');
     }
 
-    final parser = _DiceParser(trimmed, _rollDie);
+    final parser = _DiceParser(trimmed, _rollDie, _variables);
     final total = parser.parse();
     return DiceRollResult(
       formula: trimmed,
@@ -91,29 +94,33 @@ int _parseModifier(String value) {
 }
 
 class _DiceParser {
-  _DiceParser(this._source, this._rollDie);
+  _DiceParser(this._source, this._rollDie, this._variables);
 
   final String _source;
   final RollDie _rollDie;
+  final Map<String, int> _variables;
   final List<_DiceReplacement> _replacements = [];
   var _totalDiceCount = 0;
+  var _hasDiceRoll = false;
   var _index = 0;
 
   String? get expandedFormula {
-    if (_replacements.isEmpty) {
+    if (!_hasDiceRoll) {
       return null;
     }
 
     final buffer = StringBuffer();
     var sourceIndex = 0;
-    for (final replacement in _replacements) {
+    final sortedReplacements = [..._replacements]
+      ..sort((left, right) => left.start.compareTo(right.start));
+    for (final replacement in sortedReplacements) {
       buffer
         ..write(_source.substring(sourceIndex, replacement.start))
         ..write(replacement.text);
       sourceIndex = replacement.end;
     }
     buffer.write(_source.substring(sourceIndex));
-    final expanded = buffer.toString();
+    final expanded = _normalizeExpandedOperators(buffer.toString());
     if (expanded.length <= _maxExpandedFormulaLength) {
       return expanded;
     }
@@ -185,7 +192,7 @@ class _DiceParser {
       }
       return value;
     }
-    if (_isDiceSeparator(_current)) {
+    if (_isDiceStart(_index)) {
       final start = _index;
       _index++;
       final sides = _parseRequiredNumber('Ожидалось число граней');
@@ -195,7 +202,7 @@ class _DiceParser {
       final start = _index;
       final number = _parseNumber();
       _skipWhitespace();
-      if (!_isAtEnd && _isDiceSeparator(_current)) {
+      if (!_isAtEnd && _isDiceStart(_index)) {
         _index++;
         final sides = _parseRequiredNumber('Ожидалось число граней');
         return _rollDice(
@@ -206,6 +213,9 @@ class _DiceParser {
         );
       }
       return number;
+    }
+    if (_isIdentifierStart(_current)) {
+      return _parseVariable();
     }
     throw DiceRollException('Неожиданный символ "$_current"');
   }
@@ -227,6 +237,7 @@ class _DiceParser {
       throw const DiceRollException('Слишком много кубиков в формуле');
     }
     _totalDiceCount += count;
+    _hasDiceRoll = true;
 
     var total = 0;
     final rolls = <int>[];
@@ -266,6 +277,28 @@ class _DiceParser {
     return _checkedValue(value);
   }
 
+  int _parseVariable() {
+    final start = _index;
+    while (!_isAtEnd && _isIdentifierPart(_current)) {
+      _index++;
+    }
+
+    final rawName = _source.substring(start, _index);
+    final value = _variables[_normalizeVariableName(rawName)];
+    if (value == null) {
+      throw DiceRollException('Неизвестная переменная "$rawName"');
+    }
+
+    _replacements.add(
+      _DiceReplacement(
+        start: start,
+        end: _index,
+        text: '$value',
+      ),
+    );
+    return _checkedValue(value);
+  }
+
   void _skipWhitespace() {
     while (!_isAtEnd && _source[_index].trim().isEmpty) {
       _index++;
@@ -283,6 +316,18 @@ class _DiceParser {
   bool get _isAtEnd => _index >= _source.length;
 
   String get _current => _source[_index];
+
+  bool _isDiceStart(int index) {
+    if (!_isDiceSeparator(_source[index])) {
+      return false;
+    }
+
+    var nextIndex = index + 1;
+    while (nextIndex < _source.length && _source[nextIndex].trim().isEmpty) {
+      nextIndex++;
+    }
+    return nextIndex < _source.length && _isDigit(_source[nextIndex]);
+  }
 }
 
 int _checkedValue(int value) {
@@ -307,6 +352,32 @@ bool _isDigit(String value) {
 bool _isDiceSeparator(String value) {
   return value == 'd' || value == 'D' || value == 'к' || value == 'К';
 }
+
+bool _isIdentifierStart(String value) {
+  return _identifierStartPattern.hasMatch(value);
+}
+
+bool _isIdentifierPart(String value) {
+  return _identifierPartPattern.hasMatch(value);
+}
+
+Map<String, int> _normalizedVariables(Map<String, int> variables) {
+  return {
+    for (final entry in variables.entries)
+      _normalizeVariableName(entry.key): _checkedValue(entry.value),
+  };
+}
+
+String _normalizeVariableName(String value) => value.trim().toLowerCase();
+
+String _normalizeExpandedOperators(String value) {
+  return value
+      .replaceAll(RegExp(r'\+\s*-'), '- ')
+      .replaceAll(RegExp(r'-\s*-'), '+ ');
+}
+
+final _identifierStartPattern = RegExp(r'^[A-Za-zА-Яа-яЁё_]$');
+final _identifierPartPattern = RegExp(r'^[A-Za-zА-Яа-яЁё_]$');
 
 class _DiceReplacement {
   const _DiceReplacement({

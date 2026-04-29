@@ -888,127 +888,6 @@ void main() {
         contains('background_item_pick'),
       );
     });
-
-    test('warlock step view bootstraps canonical starting equipment', () async {
-      final warlock = await endpoints.classData.upsert(
-        sessionBuilder,
-        ClassData(
-          name: 'Warlock',
-          hitDieValue: 8,
-          primaryAbilities: const [Ability.charisma],
-          savingThrowProficiencies: const [Ability.wisdom, Ability.charisma],
-          armorTraining: const [ArmorCategory.light],
-          weaponTraining: const [
-            WeaponCategory.simpleMelee,
-            WeaponCategory.simpleRanged,
-          ],
-          availableSkills: const [Skill.arcana, Skill.deception],
-          skillCount: 2,
-          subclassChoiceLevel: 1,
-          imageURL: 'warlock',
-        ),
-      );
-
-      final stepView = await endpoints.classData.getStepView(
-        sessionBuilder,
-        warlock.id!,
-        selectedLevel: 1,
-        isStartingClass: true,
-      );
-
-      final blockKeys = stepView.startingEquipmentBlocks
-              ?.map((blockView) => blockView.block?.blockKey)
-              .whereType<String>()
-              .toList() ??
-          const <String>[];
-      expect(
-        blockKeys,
-        orderedEquals([
-          'warlock_weapon_choice',
-          'warlock_focus_choice',
-          'warlock_pack_choice',
-          'warlock_fixed_equipment',
-        ]),
-      );
-
-      final weaponBlock = stepView.startingEquipmentBlocks!.firstWhere(
-        (blockView) => blockView.block?.blockKey == 'warlock_weapon_choice',
-      );
-      expect(
-        weaponBlock.options
-            ?.map((optionView) => optionView.option?.optionKey)
-            .whereType<String>(),
-        containsAll(
-            ['warlock_crossbow_option', 'warlock_simple_weapon_option']),
-      );
-
-      final packBlock = stepView.startingEquipmentBlocks!.firstWhere(
-        (blockView) => blockView.block?.blockKey == 'warlock_pack_choice',
-      );
-      expect(
-        packBlock.options
-            ?.map((optionView) => optionView.option?.optionKey)
-            .whereType<String>(),
-        containsAll([
-          'warlock_scholar_pack_option',
-          'warlock_dungeoneer_pack_option',
-        ]),
-      );
-
-      final fixedBlock = stepView.startingEquipmentBlocks!.firstWhere(
-        (blockView) => blockView.block?.blockKey == 'warlock_fixed_equipment',
-      );
-      expect(
-        fixedBlock.fixedLines
-            ?.map((line) => line.lineKey)
-            .whereType<String>()
-            .toList(),
-        orderedEquals([
-          'warlock_fixed_leather_armor',
-          'warlock_fixed_simple_weapon',
-          'warlock_fixed_daggers',
-        ]),
-      );
-
-      final items = await endpoints.itemData.getAll(sessionBuilder);
-      final itemKeys =
-          items.map((item) => item.referenceKey).whereType<String>().toSet();
-      expect(
-        itemKeys,
-        containsAll([
-          'component_pouch',
-          'scholar_pack',
-          'dungeoneer_pack',
-          'bolts',
-          'crystal_focus',
-        ]),
-      );
-
-      final weapons = await endpoints.weaponData.getAll(sessionBuilder);
-      final weaponKeys = weapons
-          .map((weapon) => weapon.referenceKey)
-          .whereType<String>()
-          .toSet();
-      expect(
-        weaponKeys,
-        containsAll([
-          'club',
-          'dagger',
-          'greatclub',
-          'handaxe',
-          'javelin',
-          'light_hammer',
-          'mace',
-          'quarterstaff',
-          'sickle',
-          'spear',
-          'light_crossbow',
-          'dart',
-          'shortbow',
-          'sling',
-        ]),
-      );
-    });
   });
 }
 
@@ -1365,219 +1244,169 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
-  final backgroundItemBlock = await endpoints.startingEquipmentBlockData.upsert(
-    sessionBuilder,
+  background.startingEquipmentBlocks = [
     StartingEquipmentBlockData(
-      sourceBackgroundId: background.id,
       blockKey: 'background_item_pick',
       orderIndex: 0,
       kind: StartingEquipmentBlockKind.choice,
       selectionCount: 1,
       name: 'Background item',
+      options: [
+        StartingEquipmentOptionData(
+          optionKey: 'holy_symbol_pack',
+          orderIndex: 0,
+          name: 'Holy symbol',
+          lines: [
+            StartingEquipmentLineData(
+              lineKey: 'background_holy_symbol',
+              orderIndex: 0,
+              kind: StartingEquipmentLineKind.catalogRef,
+              catalogType: EquipmentCatalogType.item,
+              referenceKey: 'holy_symbol',
+              displayText: 'Holy symbol',
+              quantity: 1,
+            ),
+          ],
+        ),
+      ],
     ),
-  );
-  final holySymbolOption = await endpoints.startingEquipmentOptionData.upsert(
-    sessionBuilder,
-    StartingEquipmentOptionData(
-      blockId: backgroundItemBlock.id!,
-      optionKey: 'holy_symbol_pack',
-      orderIndex: 0,
-      name: 'Holy symbol',
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      optionId: holySymbolOption.id!,
-      lineKey: 'background_holy_symbol',
-      orderIndex: 0,
-      kind: StartingEquipmentLineKind.catalogRef,
-      catalogType: EquipmentCatalogType.item,
-      referenceKey: 'holy_symbol',
-      displayText: 'Holy symbol',
-      quantity: 1,
-    ),
-  );
+  ];
+  await endpoints.backgroundData.upsert(sessionBuilder, background);
 
-  final classFixedBlock = await endpoints.startingEquipmentBlockData.upsert(
-    sessionBuilder,
+  classData.startingEquipmentBlocks = [
     StartingEquipmentBlockData(
-      sourceClassId: classData.id,
       blockKey: 'class_fixed_pack',
       orderIndex: 0,
       kind: StartingEquipmentBlockKind.fixedGrant,
       selectionCount: 1,
       name: 'Warlock fixed equipment',
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      blockId: classFixedBlock.id!,
-      lineKey: 'class_fixed_leather',
-      orderIndex: 0,
-      kind: StartingEquipmentLineKind.catalogRef,
-      catalogType: EquipmentCatalogType.armor,
-      referenceKey: 'leather_armor',
-      displayText: 'Leather Armor',
-      quantity: 1,
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      blockId: classFixedBlock.id!,
-      lineKey: 'class_fixed_any_simple',
-      orderIndex: 1,
-      kind: StartingEquipmentLineKind.weaponCategory,
-      displayText: 'Any simple weapon',
-      quantity: 1,
-      allowedWeaponCategories: const [
-        WeaponCategory.simpleMelee,
-        WeaponCategory.simpleRanged,
+      fixedLines: [
+        StartingEquipmentLineData(
+          lineKey: 'class_fixed_leather',
+          orderIndex: 0,
+          kind: StartingEquipmentLineKind.catalogRef,
+          catalogType: EquipmentCatalogType.armor,
+          referenceKey: 'leather_armor',
+          displayText: 'Leather Armor',
+          quantity: 1,
+        ),
+        StartingEquipmentLineData(
+          lineKey: 'class_fixed_any_simple',
+          orderIndex: 1,
+          kind: StartingEquipmentLineKind.weaponCategory,
+          displayText: 'Any simple weapon',
+          quantity: 1,
+          allowedWeaponCategories: const [
+            WeaponCategory.simpleMelee,
+            WeaponCategory.simpleRanged,
+          ],
+        ),
+        StartingEquipmentLineData(
+          lineKey: 'class_fixed_daggers',
+          orderIndex: 2,
+          kind: StartingEquipmentLineKind.catalogRef,
+          catalogType: EquipmentCatalogType.weapon,
+          referenceKey: 'dagger',
+          displayText: 'Dagger',
+          quantity: 2,
+        ),
       ],
     ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      blockId: classFixedBlock.id!,
-      lineKey: 'class_fixed_daggers',
-      orderIndex: 2,
-      kind: StartingEquipmentLineKind.catalogRef,
-      catalogType: EquipmentCatalogType.weapon,
-      referenceKey: 'dagger',
-      displayText: 'Dagger',
-      quantity: 2,
-    ),
-  );
-
-  final classWeaponBlock = await endpoints.startingEquipmentBlockData.upsert(
-    sessionBuilder,
     StartingEquipmentBlockData(
-      sourceClassId: classData.id,
       blockKey: 'class_weapon_pick',
       orderIndex: 1,
       kind: StartingEquipmentBlockKind.choice,
       selectionCount: 1,
       name: 'Weapon choice',
-    ),
-  );
-  final crossbowOption = await endpoints.startingEquipmentOptionData.upsert(
-    sessionBuilder,
-    StartingEquipmentOptionData(
-      blockId: classWeaponBlock.id!,
-      optionKey: 'crossbow_pack',
-      orderIndex: 0,
-      name: 'Light crossbow and 20 bolts',
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      optionId: crossbowOption.id!,
-      lineKey: 'class_weapon_crossbow',
-      orderIndex: 0,
-      kind: StartingEquipmentLineKind.catalogRef,
-      catalogType: EquipmentCatalogType.weapon,
-      referenceKey: 'light_crossbow',
-      displayText: 'Light Crossbow',
-      quantity: 1,
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      optionId: crossbowOption.id!,
-      lineKey: 'class_weapon_bolts',
-      orderIndex: 1,
-      kind: StartingEquipmentLineKind.catalogRef,
-      catalogType: EquipmentCatalogType.item,
-      referenceKey: 'bolts',
-      displayText: 'Crossbow Bolts',
-      quantity: 20,
-    ),
-  );
-  final simpleWeaponOption = await endpoints.startingEquipmentOptionData.upsert(
-    sessionBuilder,
-    StartingEquipmentOptionData(
-      blockId: classWeaponBlock.id!,
-      optionKey: 'simple_weapon_option',
-      orderIndex: 1,
-      name: 'Any simple weapon',
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      optionId: simpleWeaponOption.id!,
-      lineKey: 'class_weapon_any_simple',
-      orderIndex: 0,
-      kind: StartingEquipmentLineKind.weaponCategory,
-      displayText: 'Any simple weapon',
-      quantity: 1,
-      allowedWeaponCategories: const [
-        WeaponCategory.simpleMelee,
-        WeaponCategory.simpleRanged,
+      options: [
+        StartingEquipmentOptionData(
+          optionKey: 'crossbow_pack',
+          orderIndex: 0,
+          name: 'Light crossbow and 20 bolts',
+          lines: [
+            StartingEquipmentLineData(
+              lineKey: 'class_weapon_crossbow',
+              orderIndex: 0,
+              kind: StartingEquipmentLineKind.catalogRef,
+              catalogType: EquipmentCatalogType.weapon,
+              referenceKey: 'light_crossbow',
+              displayText: 'Light Crossbow',
+              quantity: 1,
+            ),
+            StartingEquipmentLineData(
+              lineKey: 'class_weapon_bolts',
+              orderIndex: 1,
+              kind: StartingEquipmentLineKind.catalogRef,
+              catalogType: EquipmentCatalogType.item,
+              referenceKey: 'bolts',
+              displayText: 'Crossbow Bolts',
+              quantity: 20,
+            ),
+          ],
+        ),
+        StartingEquipmentOptionData(
+          optionKey: 'simple_weapon_option',
+          orderIndex: 1,
+          name: 'Any simple weapon',
+          lines: [
+            StartingEquipmentLineData(
+              lineKey: 'class_weapon_any_simple',
+              orderIndex: 0,
+              kind: StartingEquipmentLineKind.weaponCategory,
+              displayText: 'Any simple weapon',
+              quantity: 1,
+              allowedWeaponCategories: const [
+                WeaponCategory.simpleMelee,
+                WeaponCategory.simpleRanged,
+              ],
+            ),
+          ],
+        ),
       ],
     ),
-  );
-
-  final classFocusBlock = await endpoints.startingEquipmentBlockData.upsert(
-    sessionBuilder,
     StartingEquipmentBlockData(
-      sourceClassId: classData.id,
       blockKey: 'class_focus_pick',
       orderIndex: 2,
       kind: StartingEquipmentBlockKind.choice,
       selectionCount: 1,
       name: 'Focus choice',
+      options: [
+        StartingEquipmentOptionData(
+          optionKey: 'component_pouch_option',
+          orderIndex: 0,
+          name: 'Component pouch',
+          lines: [
+            StartingEquipmentLineData(
+              lineKey: 'class_focus_component_pouch',
+              orderIndex: 0,
+              kind: StartingEquipmentLineKind.catalogRef,
+              catalogType: EquipmentCatalogType.item,
+              referenceKey: 'component_pouch',
+              displayText: 'Component Pouch',
+              quantity: 1,
+            ),
+          ],
+        ),
+        StartingEquipmentOptionData(
+          optionKey: 'focus_option',
+          orderIndex: 1,
+          name: 'Arcane focus',
+          lines: [
+            StartingEquipmentLineData(
+              lineKey: 'class_focus_any_focus',
+              orderIndex: 0,
+              kind: StartingEquipmentLineKind.itemCategory,
+              catalogType: EquipmentCatalogType.item,
+              displayText: 'Arcane focus',
+              quantity: 1,
+              allowedItemCategories: const ['Focus'],
+            ),
+          ],
+        ),
+      ],
     ),
-  );
-  final componentPouchOption =
-      await endpoints.startingEquipmentOptionData.upsert(
-    sessionBuilder,
-    StartingEquipmentOptionData(
-      blockId: classFocusBlock.id!,
-      optionKey: 'component_pouch_option',
-      orderIndex: 0,
-      name: 'Component pouch',
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      optionId: componentPouchOption.id!,
-      lineKey: 'class_focus_component_pouch',
-      orderIndex: 0,
-      kind: StartingEquipmentLineKind.catalogRef,
-      catalogType: EquipmentCatalogType.item,
-      referenceKey: 'component_pouch',
-      displayText: 'Component Pouch',
-      quantity: 1,
-    ),
-  );
-  final focusOption = await endpoints.startingEquipmentOptionData.upsert(
-    sessionBuilder,
-    StartingEquipmentOptionData(
-      blockId: classFocusBlock.id!,
-      optionKey: 'focus_option',
-      orderIndex: 1,
-      name: 'Arcane focus',
-    ),
-  );
-  await endpoints.startingEquipmentLineData.upsert(
-    sessionBuilder,
-    StartingEquipmentLineData(
-      optionId: focusOption.id!,
-      lineKey: 'class_focus_any_focus',
-      orderIndex: 0,
-      kind: StartingEquipmentLineKind.itemCategory,
-      displayText: 'Arcane focus',
-      quantity: 1,
-      allowedItemCategories: const ['Focus'],
-    ),
-  );
+  ];
+  await endpoints.classData.upsert(sessionBuilder, classData);
 
   final feat = await endpoints.featData.upsert(
     sessionBuilder,

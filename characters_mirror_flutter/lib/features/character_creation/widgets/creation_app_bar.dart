@@ -7,7 +7,7 @@ import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  static const double height = 156;
+  static const double height = 168;
 
   final String title;
   final VoidCallback? onBack;
