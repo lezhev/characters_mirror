@@ -471,7 +471,6 @@ List<CharacterStartingEquipmentSelectionData>? _normalizedSelections(
         in selections ?? const <CharacterStartingEquipmentSelectionData>[])
       selection.copyWith(
         id: selection.id ?? _generateSyncId(),
-        optionKey: _normalizedText(selection.optionKey),
         resolutions: _normalizedResolutions(selection.resolutions, updatedAt),
         updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
       ),
@@ -488,7 +487,7 @@ List<CharacterStartingEquipmentResolutionData>? _normalizedResolutions(
         in resolutions ?? const <CharacterStartingEquipmentResolutionData>[])
       CharacterStartingEquipmentResolutionData(
         id: resolution.id ?? _generateSyncId(),
-        lineKey: _normalizedText(resolution.lineKey),
+        sourceLineEntryId: resolution.sourceLineEntryId,
         catalogType: resolution.catalogType,
         referenceKey: _normalizedText(resolution.referenceKey),
         quantity: _normalizeQuantity(resolution.quantity),

@@ -15,7 +15,6 @@ fields:
   toolTraining: List<String>?
   availableSkills: List<Skill>?
   skillCount: int?
-  startingEquipmentBlocks: List<StartingEquipmentBlockData>?
 
   subclassChoiceLevel: int?
   spellcastingProgression: SpellcastingProgression?

@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_cards.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_dialogs.dart';
@@ -12,6 +13,7 @@ class StartingEquipmentSection extends ConsumerWidget {
     required this.blocks,
     required this.selections,
     required this.onSelectOption,
+    required this.onSelectFixedBlock,
     required this.onClearBlock,
     required this.onSetResolution,
     super.key,
@@ -25,6 +27,7 @@ class StartingEquipmentSection extends ConsumerWidget {
     StartingEquipmentBlockView blockView,
     StartingEquipmentOptionView optionView,
   ) onSelectOption;
+  final void Function(StartingEquipmentBlockView blockView) onSelectFixedBlock;
   final void Function(StartingEquipmentBlockView blockView) onClearBlock;
   final void Function({
     required StartingEquipmentBlockView blockView,
@@ -38,6 +41,18 @@ class StartingEquipmentSection extends ConsumerWidget {
     if (blocks.isEmpty) {
       return const SizedBox.shrink();
     }
+    final catalogLabels = <EquipmentCatalogType, Map<String, String>>{
+      EquipmentCatalogType.weapon: buildStartingEquipmentWeaponLabels(
+        ref.watch(weaponCatalogProvider).valueOrNull ?? const <WeaponData>[],
+      ),
+      EquipmentCatalogType.armor: buildStartingEquipmentArmorLabels(
+        ref.watch(armorCatalogProvider).valueOrNull ?? const <ArmorData>[],
+      ),
+      EquipmentCatalogType.item: buildStartingEquipmentItemLabels(
+        ref.watch(itemCatalogProvider).valueOrNull ?? const <ItemData>[],
+      ),
+    };
+    final orderedBlocks = _orderedStartingEquipmentBlocks(blocks);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,14 +64,16 @@ class StartingEquipmentSection extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                for (var index = 0; index < blocks.length; index++) ...[
+                for (var index = 0; index < orderedBlocks.length; index++) ...[
                   StartingEquipmentBlockCards(
-                    blockView: blocks[index],
+                    blockView: orderedBlocks[index],
+                    catalogLabels: catalogLabels,
                     selections: selections,
                     onClearBlock: onClearBlock,
+                    onSelectFixedBlock: onSelectFixedBlock,
                     onShowChoiceDialog: (optionView) async {
                       final selection = selectionForStartingEquipmentBlock(
-                        blocks[index],
+                        orderedBlocks[index],
                         selections: selections,
                       );
                       final isOptionSelected =
@@ -64,8 +81,11 @@ class StartingEquipmentSection extends ConsumerWidget {
                         optionView,
                         selection,
                       );
-                      if (!isOptionSelected) {
-                        onSelectOption(blocks[index], optionView);
+                      if (isOptionSelected) {
+                        onClearBlock(orderedBlocks[index]);
+                        return;
+                      } else {
+                        onSelectOption(orderedBlocks[index], optionView);
                       }
 
                       if (!context.mounted) {
@@ -75,7 +95,7 @@ class StartingEquipmentSection extends ConsumerWidget {
                       await _showRequiredResolutionDialogs(
                         context: context,
                         ref: ref,
-                        blockView: blocks[index],
+                        blockView: orderedBlocks[index],
                         lines: optionView.lines ??
                             const <StartingEquipmentLineData>[],
                         selectedReferenceKeysByLine:
@@ -102,7 +122,7 @@ class StartingEquipmentSection extends ConsumerWidget {
                         line: line,
                         selectedReferenceKey:
                             selectedStartingEquipmentReferenceKeyForLine(
-                          blocks[index],
+                          orderedBlocks[index],
                           selections: selections,
                           line: line,
                         ),
@@ -112,14 +132,14 @@ class StartingEquipmentSection extends ConsumerWidget {
                       }
 
                       onSetResolution(
-                        blockView: blocks[index],
+                        blockView: orderedBlocks[index],
                         line: line,
                         catalogType: choice.catalogType,
                         referenceKey: choice.referenceKey,
                       );
                     },
                   ),
-                  if (index < blocks.length - 1) const Gap(12),
+                  if (index < orderedBlocks.length - 1) const Gap(8),
                 ],
               ],
             ),
@@ -130,12 +150,32 @@ class StartingEquipmentSection extends ConsumerWidget {
   }
 }
 
+List<StartingEquipmentBlockView> _orderedStartingEquipmentBlocks(
+  List<StartingEquipmentBlockView> blocks,
+) {
+  final ordered = [...blocks];
+  ordered.sort((left, right) {
+    final leftIsChoice =
+        left.block?.kind == StartingEquipmentBlockKind.choice ? 0 : 1;
+    final rightIsChoice =
+        right.block?.kind == StartingEquipmentBlockKind.choice ? 0 : 1;
+    final kindCompare = leftIsChoice.compareTo(rightIsChoice);
+    if (kindCompare != 0) {
+      return kindCompare;
+    }
+    return (left.block?.orderIndex ?? 0).compareTo(
+      right.block?.orderIndex ?? 0,
+    );
+  });
+  return ordered;
+}
+
 Future<void> _showRequiredResolutionDialogs({
   required BuildContext context,
   required WidgetRef ref,
   required StartingEquipmentBlockView blockView,
   required List<StartingEquipmentLineData> lines,
-  required Map<String, String> selectedReferenceKeysByLine,
+  required Map<int, String> selectedReferenceKeysByLine,
   required void Function({
     required StartingEquipmentBlockView blockView,
     required StartingEquipmentLineData line,
@@ -152,7 +192,7 @@ Future<void> _showRequiredResolutionDialogs({
       ref: ref,
       line: line,
       selectedReferenceKey: selectedReferenceKeysByLine[
-          normalizeStartingEquipmentText(line.lineKey)],
+          line.entryId],
     );
     if (choice == null) {
       return;

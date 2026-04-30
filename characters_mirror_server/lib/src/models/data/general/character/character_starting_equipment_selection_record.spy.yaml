@@ -6,8 +6,8 @@ fields:
   character: CharacterRecord?, relation
   sourceType: ChoiceSourceType?
   sourceId: int?
-  blockKey: String?
-  optionKey: String?
+  sourceEntry: StartingEquipmentEntryData?, relation(optional)
+  choiceOptionEntry: StartingEquipmentEntryData?, relation(optional)
+  isSelected: bool?
   selectionIndex: int?
-  resolutions: List<CharacterStartingEquipmentResolutionData>?
   updatedAt: DateTime?

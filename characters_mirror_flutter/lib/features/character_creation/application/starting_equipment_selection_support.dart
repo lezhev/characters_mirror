@@ -5,24 +5,6 @@ bool startingEquipmentLineRequiresResolution(StartingEquipmentLineData line) {
       line.kind == StartingEquipmentLineKind.itemCategory;
 }
 
-List<CharacterStartingEquipmentSelectionData> selectionsForEquipmentSource({
-  required List<CharacterStartingEquipmentSelectionData> selections,
-  required ChoiceSourceType sourceType,
-  required int sourceId,
-}) {
-  return selections
-      .where(
-        (selection) =>
-            selection.sourceType == sourceType &&
-            selection.sourceId == sourceId,
-      )
-      .toList()
-    ..sort(
-      (left, right) =>
-          (left.selectionIndex ?? 0).compareTo(right.selectionIndex ?? 0),
-    );
-}
-
 List<CharacterStartingEquipmentSelectionData>
     normalizeStartingEquipmentSelections({
   required List<StartingEquipmentBlockView> blocks,
@@ -39,14 +21,13 @@ List<CharacterStartingEquipmentSelectionData>
 
   for (final blockView in blocks) {
     final block = blockView.block;
-    final blockKey = normalizedEquipmentKey(block?.blockKey);
-    if (block == null || blockKey == null) {
+    final sourceEntryId = block?.entryId;
+    if (block == null || sourceEntryId == null) {
       continue;
     }
 
     final blockSelections = sourceSelections
-        .where((selection) =>
-            normalizedEquipmentKey(selection.blockKey) == blockKey)
+        .where((selection) => selection.sourceEntryId == sourceEntryId)
         .toList();
     switch (block.kind) {
       case StartingEquipmentBlockKind.fixedGrant:
@@ -78,6 +59,23 @@ List<CharacterStartingEquipmentSelectionData>
   return normalized;
 }
 
+List<CharacterStartingEquipmentSelectionData> selectionsForEquipmentSource({
+  required List<CharacterStartingEquipmentSelectionData> selections,
+  required ChoiceSourceType sourceType,
+  required int sourceId,
+}) {
+  return selections
+      .where(
+        (selection) =>
+            selection.sourceType == sourceType && selection.sourceId == sourceId,
+      )
+      .toList()
+    ..sort(
+      (left, right) =>
+          (left.selectionIndex ?? 0).compareTo(right.selectionIndex ?? 0),
+    );
+}
+
 List<CharacterStartingEquipmentSelectionData>
     replaceEquipmentSelectionsForSource({
   required List<CharacterStartingEquipmentSelectionData> existingSelections,
@@ -90,14 +88,6 @@ List<CharacterStartingEquipmentSelectionData>
   return [...preserved, ...replacementSelections];
 }
 
-String? normalizedEquipmentKey(String? value) {
-  final trimmed = value?.trim();
-  if (trimmed == null || trimmed.isEmpty) {
-    return null;
-  }
-  return trimmed;
-}
-
 CharacterStartingEquipmentSelectionData? _normalizeFixedBlockSelection({
   required StartingEquipmentBlockData block,
   required List<StartingEquipmentLineData> lines,
@@ -105,30 +95,41 @@ CharacterStartingEquipmentSelectionData? _normalizeFixedBlockSelection({
   required ChoiceSourceType sourceType,
   required int sourceId,
 }) {
-  final resolvableLines = {
+  final resolvableLineIds = {
     for (final line in lines)
-      if (startingEquipmentLineRequiresResolution(line) &&
-          normalizedEquipmentKey(line.lineKey) != null)
-        normalizedEquipmentKey(line.lineKey)!: line,
+      if (startingEquipmentLineRequiresResolution(line) && line.entryId != null)
+        line.entryId!: line,
   };
-  if (resolvableLines.isEmpty) {
-    return null;
+  CharacterStartingEquipmentSelectionData? existingSelection;
+  for (final selection in selections) {
+    existingSelection = selection;
+    break;
+  }
+  final currentSelection = existingSelection;
+  if (currentSelection?.isSelected == false) {
+    return currentSelection!.copyWith(
+      sourceType: sourceType,
+      sourceId: sourceId,
+      sourceEntryId: block.entryId,
+      choiceOptionEntryId: null,
+      isSelected: false,
+      selectionIndex: 0,
+      resolutions: const [],
+    );
   }
 
   final resolutions = _normalizeResolutions(
-    linesByKey: resolvableLines,
+    linesById: resolvableLineIds,
     resolutions: [
       for (final selection in selections) ...?selection.resolutions,
     ],
   );
-  if (resolutions.isEmpty) {
-    return null;
-  }
 
   return CharacterStartingEquipmentSelectionData(
     sourceType: sourceType,
     sourceId: sourceId,
-    blockKey: block.blockKey,
+    sourceEntryId: block.entryId,
+    isSelected: true,
     selectionIndex: 0,
     resolutions: resolutions,
   );
@@ -141,12 +142,12 @@ List<CharacterStartingEquipmentSelectionData> _normalizeChoiceBlockSelections({
   required ChoiceSourceType sourceType,
   required int sourceId,
 }) {
-  final optionsByKey = {
+  final optionsById = {
     for (final optionView in options)
-      if (normalizedEquipmentKey(optionView.option?.optionKey) != null)
-        normalizedEquipmentKey(optionView.option!.optionKey)!: optionView,
+      if (optionView.option?.entryId != null)
+        optionView.option!.entryId!: optionView,
   };
-  if (optionsByKey.isEmpty) {
+  if (optionsById.isEmpty) {
     return const <CharacterStartingEquipmentSelectionData>[];
   }
 
@@ -154,8 +155,8 @@ List<CharacterStartingEquipmentSelectionData> _normalizeChoiceBlockSelections({
   final selectionLimit = block.selectionCount ?? 1;
   final candidateSelections = [
     for (final selection in selections)
-      if (normalizedEquipmentKey(selection.optionKey) != null &&
-          optionsByKey.containsKey(normalizedEquipmentKey(selection.optionKey)))
+      if (selection.choiceOptionEntryId != null &&
+          optionsById.containsKey(selection.choiceOptionEntryId))
         selection,
   ]..sort(
       (left, right) =>
@@ -166,11 +167,7 @@ List<CharacterStartingEquipmentSelectionData> _normalizeChoiceBlockSelections({
       index < candidateSelections.length && normalized.length < selectionLimit;
       index++) {
     final selection = candidateSelections[index];
-    final optionKey = normalizedEquipmentKey(selection.optionKey);
-    if (optionKey == null) {
-      continue;
-    }
-    final optionView = optionsByKey[optionKey];
+    final optionView = optionsById[selection.choiceOptionEntryId];
     if (optionView == null) {
       continue;
     }
@@ -179,11 +176,11 @@ List<CharacterStartingEquipmentSelectionData> _normalizeChoiceBlockSelections({
       for (final line
           in optionView.lines ?? const <StartingEquipmentLineData>[])
         if (startingEquipmentLineRequiresResolution(line) &&
-            normalizedEquipmentKey(line.lineKey) != null)
-          normalizedEquipmentKey(line.lineKey)!: line,
+            line.entryId != null)
+          line.entryId!: line,
     };
     final normalizedResolutions = _normalizeResolutions(
-      linesByKey: resolvableLines,
+      linesById: resolvableLines,
       resolutions: selection.resolutions ?? const [],
     );
 
@@ -191,8 +188,9 @@ List<CharacterStartingEquipmentSelectionData> _normalizeChoiceBlockSelections({
       CharacterStartingEquipmentSelectionData(
         sourceType: sourceType,
         sourceId: sourceId,
-        blockKey: block.blockKey,
-        optionKey: optionView.option?.optionKey,
+        sourceEntryId: block.entryId,
+        choiceOptionEntryId: optionView.option?.entryId,
+        isSelected: selection.isSelected ?? true,
         selectionIndex: normalized.length,
         resolutions: normalizedResolutions,
       ),
@@ -203,22 +201,22 @@ List<CharacterStartingEquipmentSelectionData> _normalizeChoiceBlockSelections({
 }
 
 List<CharacterStartingEquipmentResolutionData> _normalizeResolutions({
-  required Map<String, StartingEquipmentLineData> linesByKey,
+  required Map<int, StartingEquipmentLineData> linesById,
   required List<CharacterStartingEquipmentResolutionData> resolutions,
 }) {
-  if (linesByKey.isEmpty || resolutions.isEmpty) {
+  if (linesById.isEmpty || resolutions.isEmpty) {
     return const <CharacterStartingEquipmentResolutionData>[];
   }
 
   final normalized = <CharacterStartingEquipmentResolutionData>[];
-  final seenLineKeys = <String>{};
+  final seenLineIds = <int>{};
   for (final resolution in resolutions) {
-    final lineKey = normalizedEquipmentKey(resolution.lineKey);
-    if (lineKey == null || seenLineKeys.contains(lineKey)) {
+    final lineId = resolution.sourceLineEntryId;
+    if (lineId == null || seenLineIds.contains(lineId)) {
       continue;
     }
-    final line = linesByKey[lineKey];
-    final referenceKey = normalizedEquipmentKey(resolution.referenceKey);
+    final line = linesById[lineId];
+    final referenceKey = normalizedEquipmentText(resolution.referenceKey);
     if (line == null || referenceKey == null) {
       continue;
     }
@@ -235,14 +233,22 @@ List<CharacterStartingEquipmentResolutionData> _normalizeResolutions({
 
     normalized.add(
       CharacterStartingEquipmentResolutionData(
-        lineKey: line.lineKey,
+        sourceLineEntryId: line.entryId,
         catalogType: expectedType,
         referenceKey: referenceKey,
         quantity: resolution.quantity ?? line.quantity,
       ),
     );
-    seenLineKeys.add(lineKey);
+    seenLineIds.add(lineId);
   }
 
   return normalized;
+}
+
+String? normalizedEquipmentText(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
+  }
+  return trimmed;
 }

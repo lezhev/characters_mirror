@@ -176,6 +176,9 @@ class BackgroundFeatures extends ConsumerWidget {
             onSelectOption: ref
                 .read(backgroundStateProvider.notifier)
                 .selectStartingEquipmentOption,
+            onSelectFixedBlock: ref
+                .read(backgroundStateProvider.notifier)
+                .selectStartingEquipmentFixedBlock,
             onClearBlock: ref
                 .read(backgroundStateProvider.notifier)
                 .clearStartingEquipmentBlock,

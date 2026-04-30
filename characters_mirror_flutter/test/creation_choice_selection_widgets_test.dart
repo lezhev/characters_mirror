@@ -309,10 +309,10 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byKey(const ValueKey('choice-card-pack_a')));
+      await tester.tap(find.byKey(const ValueKey('choice-card-21')));
       await tester.pump();
 
-      expect(find.text('selected: pack_a'), findsOneWidget);
+      expect(find.text('selected: 21'), findsOneWidget);
     });
 
     testWidgets('adapts fixed equipment blocks and keeps resolutions clickable',
@@ -323,29 +323,34 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: StartingEquipmentBlockCards(
+              catalogLabels: const {
+                EquipmentCatalogType.item: {
+                  'traveler_pack': 'Набор путешественника',
+                },
+              },
               blockView: StartingEquipmentBlockView(
                 block: StartingEquipmentBlockData(
-                  blockKey: 'fixed_block',
+                  entryId: 10,
                   kind: StartingEquipmentBlockKind.fixedGrant,
-                  name: 'Фиксированное снаряжение',
                 ),
                 fixedLines: [
                   StartingEquipmentLineData(
-                    lineKey: 'pack',
+                    entryId: 11,
                     kind: StartingEquipmentLineKind.catalogRef,
-                    displayText: 'Набор путешественника',
+                    referenceKey: 'traveler_pack',
+                    catalogType: EquipmentCatalogType.item,
                     quantity: 1,
                   ),
                   StartingEquipmentLineData(
-                    lineKey: 'weapon',
+                    entryId: 12,
                     kind: StartingEquipmentLineKind.weaponCategory,
-                    displayText: 'Простое оружие',
                     quantity: 1,
                   ),
                 ],
               ),
               selections: const [],
               onClearBlock: (_) {},
+              onSelectFixedBlock: (_) {},
               onShowChoiceDialog: (_) async {},
               onShowFixedLineDialog: (_) async {
                 fixedTapCount++;
@@ -355,11 +360,74 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byKey(const ValueKey('choice-card-pack')));
+      await tester.tap(find.byKey(const ValueKey('choice-card-11')));
       await tester.pump();
       expect(fixedTapCount, 0);
 
-      await tester.tap(find.byKey(const ValueKey('choice-card-weapon')));
+      await tester.tap(find.byKey(const ValueKey('choice-card-12')));
+      await tester.pump();
+      expect(fixedTapCount, 1);
+    });
+
+    testWidgets('shows resolved weapon category by name and keeps it editable',
+        (tester) async {
+      var fixedTapCount = 0;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StartingEquipmentBlockCards(
+              catalogLabels: const {
+                EquipmentCatalogType.weapon: {
+                  'dagger': 'Кинжал',
+                },
+              },
+              blockView: StartingEquipmentBlockView(
+                block: StartingEquipmentBlockData(
+                  entryId: 10,
+                  kind: StartingEquipmentBlockKind.fixedGrant,
+                ),
+                fixedLines: [
+                  StartingEquipmentLineData(
+                    entryId: 12,
+                    kind: StartingEquipmentLineKind.weaponCategory,
+                    quantity: 2,
+                    allowedWeaponCategories: [
+                      WeaponCategory.simpleMelee,
+                      WeaponCategory.simpleRanged,
+                    ],
+                  ),
+                ],
+              ),
+              selections: [
+                CharacterStartingEquipmentSelectionData(
+                  sourceEntryId: 10,
+                  isSelected: true,
+                  resolutions: [
+                    CharacterStartingEquipmentResolutionData(
+                      sourceLineEntryId: 12,
+                      catalogType: EquipmentCatalogType.weapon,
+                      referenceKey: 'dagger',
+                      quantity: 2,
+                    ),
+                  ],
+                ),
+              ],
+              onClearBlock: (_) {},
+              onSelectFixedBlock: (_) {},
+              onShowChoiceDialog: (_) async {},
+              onShowFixedLineDialog: (_) async {
+                fixedTapCount++;
+              },
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Кинжал x2'), findsOneWidget);
+      expect(find.text('Любое простое оружие'), findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('choice-card-12')));
       await tester.pump();
       expect(fixedTapCount, 1);
     });
@@ -580,25 +648,60 @@ class _EquipmentChoiceHarnessState extends State<_EquipmentChoiceHarness> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StartingEquipmentBlockCards(
+          catalogLabels: const {
+            EquipmentCatalogType.item: {
+              'pack_a': 'Набор A',
+              'pack_b': 'Набор B',
+            },
+          },
           blockView: StartingEquipmentBlockView(
             block: StartingEquipmentBlockData(
-              blockKey: 'choice_block',
+              entryId: 20,
               kind: StartingEquipmentBlockKind.choice,
-              name: 'Снаряжение',
               selectionCount: 1,
             ),
             options: [
               StartingEquipmentOptionView(
                 option: StartingEquipmentOptionData(
-                  optionKey: 'pack_a',
-                  name: 'Набор A',
+                  entryId: 21,
+                  lines: [
+                    StartingEquipmentLineData(
+                      entryId: 31,
+                      kind: StartingEquipmentLineKind.catalogRef,
+                      catalogType: EquipmentCatalogType.item,
+                      referenceKey: 'pack_a',
+                    ),
+                  ],
                 ),
+                lines: [
+                  StartingEquipmentLineData(
+                    entryId: 31,
+                    kind: StartingEquipmentLineKind.catalogRef,
+                    catalogType: EquipmentCatalogType.item,
+                    referenceKey: 'pack_a',
+                  ),
+                ],
               ),
               StartingEquipmentOptionView(
                 option: StartingEquipmentOptionData(
-                  optionKey: 'pack_b',
-                  name: 'Набор B',
+                  entryId: 22,
+                  lines: [
+                    StartingEquipmentLineData(
+                      entryId: 32,
+                      kind: StartingEquipmentLineKind.catalogRef,
+                      catalogType: EquipmentCatalogType.item,
+                      referenceKey: 'pack_b',
+                    ),
+                  ],
                 ),
+                lines: [
+                  StartingEquipmentLineData(
+                    entryId: 32,
+                    kind: StartingEquipmentLineKind.catalogRef,
+                    catalogType: EquipmentCatalogType.item,
+                    referenceKey: 'pack_b',
+                  ),
+                ],
               ),
             ],
           ),
@@ -608,14 +711,16 @@ class _EquipmentChoiceHarnessState extends State<_EquipmentChoiceHarness> {
               _selections = const [];
             });
           },
+          onSelectFixedBlock: (_) {},
           onShowChoiceDialog: (optionView) async {
             setState(() {
               _selections = [
                 CharacterStartingEquipmentSelectionData(
                   sourceType: ChoiceSourceType.classData,
                   sourceId: 1,
-                  blockKey: 'choice_block',
-                  optionKey: optionView.option?.optionKey,
+                  sourceEntryId: 20,
+                  choiceOptionEntryId: optionView.option?.entryId,
+                  isSelected: true,
                   selectionIndex: 0,
                 ),
               ];
@@ -625,7 +730,7 @@ class _EquipmentChoiceHarnessState extends State<_EquipmentChoiceHarness> {
         ),
         const SizedBox(height: 12),
         Text(
-          'selected: ${_selections.isEmpty ? '-' : _selections.single.optionKey}',
+          'selected: ${_selections.isEmpty ? '-' : _selections.single.choiceOptionEntryId}',
         ),
       ],
     );

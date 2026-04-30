@@ -1,11 +1,6 @@
 class: StartingEquipmentOptionData
 fields:
-  optionKey: String?
+  entryId: int?
+  parentEntryId: int?
   orderIndex: int?
-  name: String?
-  description: String?
   lines: List<StartingEquipmentLineData>?
-  source: String?
-  version: int?
-  createdAt: DateTime?
-  updatedAt: DateTime?

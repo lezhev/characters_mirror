@@ -47,8 +47,9 @@ class BackgroundDataEndpoint extends Endpoint {
       choiceGroups.add(languageChoiceGroup);
     }
 
-    final startingEquipmentBlocks = startingEquipmentBlockViews(
-      backgrounds.first.startingEquipmentBlocks,
+    final startingEquipmentBlocks = await startingEquipmentBlockViews(
+      session,
+      sourceBackgroundId: backgroundId,
     );
 
     return BackgroundStepView(

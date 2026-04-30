@@ -1,15 +1,11 @@
 class: StartingEquipmentLineData
 fields:
-  lineKey: String?
+  entryId: int?
+  parentEntryId: int?
   orderIndex: int?
   kind: StartingEquipmentLineKind?
-  displayText: String?
   quantity: int?
   catalogType: EquipmentCatalogType?
   referenceKey: String?
   allowedWeaponCategories: List<WeaponCategory>?
   allowedItemCategories: List<String>?
-  source: String?
-  version: int?
-  createdAt: DateTime?
-  updatedAt: DateTime?

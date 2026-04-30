@@ -1,0 +1,579 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "background_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "startingEquipmentBlocks"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipmentBlocks\" of table \"background_data\" will be dropped.",
+            "table": "background_data",
+            "columns": [
+              "startingEquipmentBlocks"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"blockKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "blockKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "optionKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resolutions\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "resolutions"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipmentBlocks\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipmentBlocks"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "character_starting_equipment_resolution_data",
+        "dartName": "CharacterStartingEquipmentResolutionRecord",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('character_starting_equipment_resolution_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "syncId",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "selectionId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "sourceLineEntryId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "catalogType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:EquipmentCatalogType?"
+          },
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "quantity",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "character_starting_equipment_resolution_data_fk_0",
+            "columns": [
+              "selectionId"
+            ],
+            "referenceTable": "character_starting_equipment_selection_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "character_starting_equipment_resolution_data_fk_1",
+            "columns": [
+              "sourceLineEntryId"
+            ],
+            "referenceTable": "starting_equipment_entry_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "character_starting_equipment_resolution_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "character_starting_equipment_selection_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "sourceEntryId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "choiceOptionEntryId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [
+          "blockKey",
+          "optionKey",
+          "resolutions"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "character_starting_equipment_selection_data_fk_1",
+            "columns": [
+              "sourceEntryId"
+            ],
+            "referenceTable": "starting_equipment_entry_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "character_starting_equipment_selection_data_fk_2",
+            "columns": [
+              "choiceOptionEntryId"
+            ],
+            "referenceTable": "starting_equipment_entry_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipmentBlocks\" of table \"background_data\" will be dropped.",
+            "table": "background_data",
+            "columns": [
+              "startingEquipmentBlocks"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"blockKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "blockKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "optionKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resolutions\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "resolutions"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipmentBlocks\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipmentBlocks"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "startingEquipmentBlocks"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipmentBlocks\" of table \"background_data\" will be dropped.",
+            "table": "background_data",
+            "columns": [
+              "startingEquipmentBlocks"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"blockKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "blockKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"optionKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "optionKey"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resolutions\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+            "table": "character_starting_equipment_selection_data",
+            "columns": [
+              "resolutions"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"startingEquipmentBlocks\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "startingEquipmentBlocks"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "starting_equipment_entry_data",
+        "dartName": "StartingEquipmentEntryData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('starting_equipment_entry_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceClassId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceBackgroundId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "parentEntryId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "kind",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:StartingEquipmentEntryKind?"
+          },
+          {
+            "name": "orderIndex",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "selectionCount",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "lineKind",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:StartingEquipmentLineKind?"
+          },
+          {
+            "name": "quantity",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "catalogType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:EquipmentCatalogType?"
+          },
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "allowedWeaponCategories",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:WeaponCategory>?"
+          },
+          {
+            "name": "allowedItemCategories",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "starting_equipment_entry_data_fk_0",
+            "columns": [
+              "sourceClassId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "starting_equipment_entry_data_fk_1",
+            "columns": [
+              "sourceBackgroundId"
+            ],
+            "referenceTable": "background_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "starting_equipment_entry_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "starting_equipment_entry_class_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "sourceClassId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "indexName": "starting_equipment_entry_background_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "sourceBackgroundId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "indexName": "starting_equipment_entry_parent_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "parentEntryId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"startingEquipmentBlocks\" of table \"background_data\" will be dropped.",
+      "table": "background_data",
+      "columns": [
+        "startingEquipmentBlocks"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"blockKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+      "table": "character_starting_equipment_selection_data",
+      "columns": [
+        "blockKey"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"optionKey\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+      "table": "character_starting_equipment_selection_data",
+      "columns": [
+        "optionKey"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resolutions\" of table \"character_starting_equipment_selection_data\" will be dropped.",
+      "table": "character_starting_equipment_selection_data",
+      "columns": [
+        "resolutions"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"startingEquipmentBlocks\" of table \"class_data\" will be dropped.",
+      "table": "class_data",
+      "columns": [
+        "startingEquipmentBlocks"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

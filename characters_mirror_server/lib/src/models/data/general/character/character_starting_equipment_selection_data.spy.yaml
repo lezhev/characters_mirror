@@ -3,8 +3,9 @@ fields:
   id: String?
   sourceType: ChoiceSourceType?
   sourceId: int?
-  blockKey: String?
-  optionKey: String?
+  sourceEntryId: int?
+  choiceOptionEntryId: int?
+  isSelected: bool?
   selectionIndex: int?
   resolutions: List<CharacterStartingEquipmentResolutionData>?
   updatedAt: DateTime?
