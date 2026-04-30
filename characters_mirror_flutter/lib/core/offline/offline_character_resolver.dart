@@ -50,7 +50,11 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       _maxHp(entries, abilityModifiers[Ability.constitution.name] ?? 0);
   final dexterityModifier = abilityModifiers[Ability.dexterity.name] ?? 0;
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
-  final grantedSpellKeys = _collectGrantedSpellKeys(character);
+  final alwaysPreparedSpellKeys = _collectAlwaysPreparedSpellKeys(character);
+  final grantedSpellKeys = _collectGrantedSpellKeys(
+    character,
+    alwaysPreparedSpellKeys,
+  );
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
@@ -96,6 +100,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     ]),
     featureTags: _featureTags(activeFeatures),
     grantedSpellKeys: grantedSpellKeys,
+    alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
     senses: _uniqueStrings([
       if (character.race?.visionType != null)
@@ -112,8 +117,16 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   );
 }
 
-List<String> _collectGrantedSpellKeys(CharacterData character) {
+List<String> _collectAlwaysPreparedSpellKeys(CharacterData character) {
+  return _uniqueStrings(character.derived?.alwaysPreparedSpellKeys ?? const []);
+}
+
+List<String> _collectGrantedSpellKeys(
+  CharacterData character,
+  List<String> alwaysPreparedSpellKeys,
+) {
   return _uniqueStrings([
+    ...alwaysPreparedSpellKeys,
     for (final selection
         in character.spellSelections ?? const <CharacterSpellSelectionData>[])
       if (_spellSelectionKey(selection) != null) _spellSelectionKey(selection)!,

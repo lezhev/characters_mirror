@@ -8,6 +8,7 @@ class AttackCard extends StatelessWidget {
     required this.attack,
     required this.attackBonusLabel,
     required this.damageLabel,
+    required this.damageRollValue,
     required this.onNamePressed,
     super.key,
     this.diceRoller,
@@ -17,6 +18,7 @@ class AttackCard extends StatelessWidget {
   final CharacterAttackData attack;
   final String attackBonusLabel;
   final String damageLabel;
+  final String damageRollValue;
   final VoidCallback onNamePressed;
   final DiceRoller? diceRoller;
   final Map<String, int> rollVariables;
@@ -58,7 +60,7 @@ class AttackCard extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: RollValueButton(
                 label: damageLabel,
-                value: attack.damage ?? '',
+                value: damageRollValue,
                 mode: RollValueMode.formula,
                 diceRoller: diceRoller,
                 variables: rollVariables,

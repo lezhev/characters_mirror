@@ -1,0 +1,6 @@
+class: DamagePartData
+fields:
+  formula: String?
+  damageType: DamageType?
+  scaling: SpellScalingData?
+  notes: String?

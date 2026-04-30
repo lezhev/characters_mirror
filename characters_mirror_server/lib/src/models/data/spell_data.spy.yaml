@@ -27,6 +27,7 @@ fields:
   damageType: DamageType? # Основной тип урона, если он есть
   damageDice: String? # Базовая формула урона, например "8d6"
   damageScaling: SpellScalingData? # Скейлинг урона при апкасте или росте уровня
+  damageParts: List<DamagePartData>? # Компоненты урона для эффектов с несколькими типами урона
   conditions: List<ConditionType>? # Состояния, которые может накладывать заклинание
   targetType: SpellTargetType?
   areaOfEffectType: AreaOfEffectType? # Форма области действия: sphere, cone, line и т.д.

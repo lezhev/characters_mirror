@@ -22,6 +22,7 @@ void main() {
                   ),
                   attackBonusLabel: '+5',
                   damageLabel: '2d6 + СИЛ + pb',
+                  damageRollValue: '2d6 + СИЛ + pb',
                   onNamePressed: () {},
                   diceRoller: _rollerWithValues(
                     [10, 2, 3],

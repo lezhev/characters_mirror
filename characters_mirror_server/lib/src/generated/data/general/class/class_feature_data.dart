@@ -14,6 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
+import '../../../data/class_spell_grant_data.dart' as _i4;
 
 abstract class ClassFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -30,6 +31,7 @@ abstract class ClassFeatureData
     this.updatedAt,
     this.tags,
     this.choiceGroupKey,
+    this.spellGrants,
   });
 
   factory ClassFeatureData({
@@ -45,6 +47,7 @@ abstract class ClassFeatureData
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   }) = _ClassFeatureDataImpl;
 
   factory ClassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -70,6 +73,10 @@ abstract class ClassFeatureData
           ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
+      spellGrants: (jsonSerialization['spellGrants'] as List?)
+          ?.map((e) =>
+              _i4.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -102,6 +109,8 @@ abstract class ClassFeatureData
 
   String? choiceGroupKey;
 
+  List<_i4.ClassSpellGrantData>? spellGrants;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -121,6 +130,7 @@ abstract class ClassFeatureData
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -137,6 +147,8 @@ abstract class ClassFeatureData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (spellGrants != null)
+        'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -155,11 +167,20 @@ abstract class ClassFeatureData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (spellGrants != null)
+        'spellGrants':
+            spellGrants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static ClassFeatureDataInclude include({_i2.ClassDataInclude? parentClass}) {
-    return ClassFeatureDataInclude._(parentClass: parentClass);
+  static ClassFeatureDataInclude include({
+    _i2.ClassDataInclude? parentClass,
+    _i4.ClassSpellGrantDataIncludeList? spellGrants,
+  }) {
+    return ClassFeatureDataInclude._(
+      parentClass: parentClass,
+      spellGrants: spellGrants,
+    );
   }
 
   static ClassFeatureDataIncludeList includeList({
@@ -204,6 +225,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   }) : super._(
           id: id,
           parentClassId: parentClassId,
@@ -217,6 +239,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           updatedAt: updatedAt,
           tags: tags,
           choiceGroupKey: choiceGroupKey,
+          spellGrants: spellGrants,
         );
 
   /// Returns a shallow copy of this [ClassFeatureData]
@@ -236,6 +259,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     Object? updatedAt = _Undefined,
     Object? tags = _Undefined,
     Object? choiceGroupKey = _Undefined,
+    Object? spellGrants = _Undefined,
   }) {
     return ClassFeatureData(
       id: id is int? ? id : this.id,
@@ -255,6 +279,9 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           : this.tags?.map((e0) => e0).toList(),
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      spellGrants: spellGrants is List<_i4.ClassSpellGrantData>?
+          ? spellGrants
+          : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -326,6 +353,10 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString choiceGroupKey;
 
+  _i4.ClassSpellGrantDataTable? ___spellGrants;
+
+  _i1.ManyRelation<_i4.ClassSpellGrantDataTable>? _spellGrants;
+
   _i2.ClassDataTable get parentClass {
     if (_parentClass != null) return _parentClass!;
     _parentClass = _i1.createRelationTable(
@@ -337,6 +368,37 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
           _i2.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _parentClass!;
+  }
+
+  _i4.ClassSpellGrantDataTable get __spellGrants {
+    if (___spellGrants != null) return ___spellGrants!;
+    ___spellGrants = _i1.createRelationTable(
+      relationFieldName: '__spellGrants',
+      field: ClassFeatureData.t.id,
+      foreignField: _i4.ClassSpellGrantData.t.sourceFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+    );
+    return ___spellGrants!;
+  }
+
+  _i1.ManyRelation<_i4.ClassSpellGrantDataTable> get spellGrants {
+    if (_spellGrants != null) return _spellGrants!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'spellGrants',
+      field: ClassFeatureData.t.id,
+      foreignField: _i4.ClassSpellGrantData.t.sourceFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+    );
+    _spellGrants = _i1.ManyRelation<_i4.ClassSpellGrantDataTable>(
+      tableWithRelations: relationTable,
+      table: _i4.ClassSpellGrantDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _spellGrants!;
   }
 
   @override
@@ -359,19 +421,31 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
     if (relationField == 'parentClass') {
       return parentClass;
     }
+    if (relationField == 'spellGrants') {
+      return __spellGrants;
+    }
     return null;
   }
 }
 
 class ClassFeatureDataInclude extends _i1.IncludeObject {
-  ClassFeatureDataInclude._({_i2.ClassDataInclude? parentClass}) {
+  ClassFeatureDataInclude._({
+    _i2.ClassDataInclude? parentClass,
+    _i4.ClassSpellGrantDataIncludeList? spellGrants,
+  }) {
     _parentClass = parentClass;
+    _spellGrants = spellGrants;
   }
 
   _i2.ClassDataInclude? _parentClass;
 
+  _i4.ClassSpellGrantDataIncludeList? _spellGrants;
+
   @override
-  Map<String, _i1.Include?> get includes => {'parentClass': _parentClass};
+  Map<String, _i1.Include?> get includes => {
+        'parentClass': _parentClass,
+        'spellGrants': _spellGrants,
+      };
 
   @override
   _i1.Table<int?> get table => ClassFeatureData.t;
@@ -400,7 +474,13 @@ class ClassFeatureDataIncludeList extends _i1.IncludeList {
 class ClassFeatureDataRepository {
   const ClassFeatureDataRepository._();
 
+  final attach = const ClassFeatureDataAttachRepository._();
+
   final attachRow = const ClassFeatureDataAttachRowRepository._();
+
+  final detach = const ClassFeatureDataDetachRepository._();
+
+  final detachRow = const ClassFeatureDataDetachRowRepository._();
 
   /// Returns a list of [ClassFeatureData]s matching the given query parameters.
   ///
@@ -618,6 +698,35 @@ class ClassFeatureDataRepository {
   }
 }
 
+class ClassFeatureDataAttachRepository {
+  const ClassFeatureDataAttachRepository._();
+
+  /// Creates a relation between this [ClassFeatureData] and the given [ClassSpellGrantData]s
+  /// by setting each [ClassSpellGrantData]'s foreign key `sourceFeatureId` to refer to this [ClassFeatureData].
+  Future<void> spellGrants(
+    _i1.Session session,
+    ClassFeatureData classFeatureData,
+    List<_i4.ClassSpellGrantData> classSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classSpellGrantData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
+    }
+    if (classFeatureData.id == null) {
+      throw ArgumentError.notNull('classFeatureData.id');
+    }
+
+    var $classSpellGrantData = classSpellGrantData
+        .map((e) => e.copyWith(sourceFeatureId: classFeatureData.id))
+        .toList();
+    await session.db.update<_i4.ClassSpellGrantData>(
+      $classSpellGrantData,
+      columns: [_i4.ClassSpellGrantData.t.sourceFeatureId],
+      transaction: transaction,
+    );
+  }
+}
+
 class ClassFeatureDataAttachRowRepository {
   const ClassFeatureDataAttachRowRepository._();
 
@@ -641,6 +750,85 @@ class ClassFeatureDataAttachRowRepository {
     await session.db.updateRow<ClassFeatureData>(
       $classFeatureData,
       columns: [ClassFeatureData.t.parentClassId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [ClassFeatureData] and the given [ClassSpellGrantData]
+  /// by setting the [ClassSpellGrantData]'s foreign key `sourceFeatureId` to refer to this [ClassFeatureData].
+  Future<void> spellGrants(
+    _i1.Session session,
+    ClassFeatureData classFeatureData,
+    _i4.ClassSpellGrantData classSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
+    }
+    if (classFeatureData.id == null) {
+      throw ArgumentError.notNull('classFeatureData.id');
+    }
+
+    var $classSpellGrantData =
+        classSpellGrantData.copyWith(sourceFeatureId: classFeatureData.id);
+    await session.db.updateRow<_i4.ClassSpellGrantData>(
+      $classSpellGrantData,
+      columns: [_i4.ClassSpellGrantData.t.sourceFeatureId],
+      transaction: transaction,
+    );
+  }
+}
+
+class ClassFeatureDataDetachRepository {
+  const ClassFeatureDataDetachRepository._();
+
+  /// Detaches the relation between this [ClassFeatureData] and the given [ClassSpellGrantData]
+  /// by setting the [ClassSpellGrantData]'s foreign key `sourceFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> spellGrants(
+    _i1.Session session,
+    List<_i4.ClassSpellGrantData> classSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classSpellGrantData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
+    }
+
+    var $classSpellGrantData = classSpellGrantData
+        .map((e) => e.copyWith(sourceFeatureId: null))
+        .toList();
+    await session.db.update<_i4.ClassSpellGrantData>(
+      $classSpellGrantData,
+      columns: [_i4.ClassSpellGrantData.t.sourceFeatureId],
+      transaction: transaction,
+    );
+  }
+}
+
+class ClassFeatureDataDetachRowRepository {
+  const ClassFeatureDataDetachRowRepository._();
+
+  /// Detaches the relation between this [ClassFeatureData] and the given [ClassSpellGrantData]
+  /// by setting the [ClassSpellGrantData]'s foreign key `sourceFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> spellGrants(
+    _i1.Session session,
+    _i4.ClassSpellGrantData classSpellGrantData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
+    }
+
+    var $classSpellGrantData =
+        classSpellGrantData.copyWith(sourceFeatureId: null);
+    await session.db.updateRow<_i4.ClassSpellGrantData>(
+      $classSpellGrantData,
+      columns: [_i4.ClassSpellGrantData.t.sourceFeatureId],
       transaction: transaction,
     );
   }

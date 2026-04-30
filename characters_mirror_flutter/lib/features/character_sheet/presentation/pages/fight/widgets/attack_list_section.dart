@@ -9,6 +9,7 @@ class AttackListSection extends StatelessWidget {
     required this.onAddAttack,
     required this.attackBonusLabelBuilder,
     required this.damageLabelBuilder,
+    required this.damageRollValueBuilder,
     required this.onAttackPressed,
     super.key,
     this.rollVariables = const {},
@@ -18,6 +19,7 @@ class AttackListSection extends StatelessWidget {
   final VoidCallback onAddAttack;
   final String Function(CharacterAttackData attack) attackBonusLabelBuilder;
   final String Function(CharacterAttackData attack) damageLabelBuilder;
+  final String Function(CharacterAttackData attack) damageRollValueBuilder;
   final void Function(int index, CharacterAttackData attack) onAttackPressed;
   final Map<String, int> rollVariables;
 
@@ -40,6 +42,7 @@ class AttackListSection extends StatelessWidget {
             attack: attacks[index],
             attackBonusLabel: attackBonusLabelBuilder(attacks[index]),
             damageLabel: damageLabelBuilder(attacks[index]),
+            damageRollValue: damageRollValueBuilder(attacks[index]),
             onNamePressed: () => onAttackPressed(index, attacks[index]),
             rollVariables: rollVariables,
           ),

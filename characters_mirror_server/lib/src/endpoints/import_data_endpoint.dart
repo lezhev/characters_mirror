@@ -39,6 +39,13 @@ class ReferenceDataEndpoint extends Endpoint {
               .insertRow(session, ClassChoiceOptionData.fromJson(data));
           break;
 
+        case 'classspellgrant':
+        case 'class_spell_grant':
+          final item = ClassSpellGrantData.fromJson(data);
+          await _prepareClassSpellGrantForImport(session, item);
+          await ClassSpellGrantData.db.insertRow(session, item);
+          break;
+
         case 'race':
         case 'racedata':
           await RaceData.db.insertRow(session, RaceData.fromJson(data));
@@ -141,5 +148,33 @@ void _emptyStringToNull(Map<String, dynamic> data, String key) {
   final value = data[key];
   if (value is String && value.trim().isEmpty) {
     data[key] = null;
+  }
+}
+
+Future<void> _prepareClassSpellGrantForImport(
+  Session session,
+  ClassSpellGrantData item,
+) async {
+  final spellReferenceKey = item.spellReferenceKey?.trim();
+  if ((item.spellId == null || item.spellId! <= 0) &&
+      spellReferenceKey != null &&
+      spellReferenceKey.isNotEmpty) {
+    final spells = await SpellData.db.find(
+      session,
+      where: (t) => t.referenceKey.equals(spellReferenceKey),
+      limit: 1,
+    );
+    if (spells.isEmpty || spells.first.id == null) {
+      throw Exception(
+        'SpellData with referenceKey="$spellReferenceKey" was not found.',
+      );
+    }
+    item.spellId = spells.first.id;
+  }
+
+  if (item.spellId == null || item.spellId! <= 0) {
+    throw Exception(
+      'ClassSpellGrantData must reference a spell by spellId or spellReferenceKey.',
+    );
   }
 }

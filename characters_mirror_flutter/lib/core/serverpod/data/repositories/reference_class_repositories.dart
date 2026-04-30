@@ -216,6 +216,34 @@ class ClassChoiceOptionRepository implements Repository<ClassChoiceOptionData> {
   Future<void> delete(int id) => client.classChoiceOptionData.delete(id);
 }
 
+class ClassSpellGrantRepository implements Repository<ClassSpellGrantData> {
+  @override
+  Future<List<ClassSpellGrantData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'class_spell_grant',
+        loadRemote: client.classSpellGrantData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: ClassSpellGrantData.fromJson,
+      );
+
+  @override
+  Future<ClassSpellGrantData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<ClassSpellGrantData> upsert(ClassSpellGrantData entity) =>
+      client.classSpellGrantData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.classSpellGrantData.delete(id);
+}
+
 class SubclassFeatureRepository implements Repository<SubclassFeatureData> {
   @override
   Future<List<SubclassFeatureData>> getAll() => cachedListFallback(

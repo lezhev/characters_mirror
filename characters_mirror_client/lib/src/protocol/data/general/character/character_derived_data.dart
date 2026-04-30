@@ -47,6 +47,7 @@ abstract class CharacterDerivedData implements _i1.SerializableModel {
     this.featureTags,
     this.featIds,
     this.grantedSpellKeys,
+    this.alwaysPreparedSpellKeys,
     this.grantedEquipment,
     this.senses,
     this.resistances,
@@ -80,6 +81,7 @@ abstract class CharacterDerivedData implements _i1.SerializableModel {
     List<_i5.FeatureTag>? featureTags,
     List<int>? featIds,
     List<String>? grantedSpellKeys,
+    List<String>? alwaysPreparedSpellKeys,
     List<_i6.CharacterEquipmentEntryView>? grantedEquipment,
     List<String>? senses,
     List<_i7.DamageType>? resistances,
@@ -162,6 +164,10 @@ abstract class CharacterDerivedData implements _i1.SerializableModel {
       grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
+      alwaysPreparedSpellKeys:
+          (jsonSerialization['alwaysPreparedSpellKeys'] as List?)
+              ?.map((e) => e as String)
+              .toList(),
       grantedEquipment: (jsonSerialization['grantedEquipment'] as List?)
           ?.map((e) => _i6.CharacterEquipmentEntryView.fromJson(
               (e as Map<String, dynamic>)))
@@ -230,6 +236,8 @@ abstract class CharacterDerivedData implements _i1.SerializableModel {
 
   List<String>? grantedSpellKeys;
 
+  List<String>? alwaysPreparedSpellKeys;
+
   List<_i6.CharacterEquipmentEntryView>? grantedEquipment;
 
   List<String>? senses;
@@ -268,6 +276,7 @@ abstract class CharacterDerivedData implements _i1.SerializableModel {
     List<_i5.FeatureTag>? featureTags,
     List<int>? featIds,
     List<String>? grantedSpellKeys,
+    List<String>? alwaysPreparedSpellKeys,
     List<_i6.CharacterEquipmentEntryView>? grantedEquipment,
     List<String>? senses,
     List<_i7.DamageType>? resistances,
@@ -314,6 +323,8 @@ abstract class CharacterDerivedData implements _i1.SerializableModel {
       if (featIds != null) 'featIds': featIds?.toJson(),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
+      if (alwaysPreparedSpellKeys != null)
+        'alwaysPreparedSpellKeys': alwaysPreparedSpellKeys?.toJson(),
       if (grantedEquipment != null)
         'grantedEquipment':
             grantedEquipment?.toJson(valueToJson: (v) => v.toJson()),
@@ -360,6 +371,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     List<_i5.FeatureTag>? featureTags,
     List<int>? featIds,
     List<String>? grantedSpellKeys,
+    List<String>? alwaysPreparedSpellKeys,
     List<_i6.CharacterEquipmentEntryView>? grantedEquipment,
     List<String>? senses,
     List<_i7.DamageType>? resistances,
@@ -391,6 +403,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           featureTags: featureTags,
           featIds: featIds,
           grantedSpellKeys: grantedSpellKeys,
+          alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
           grantedEquipment: grantedEquipment,
           senses: senses,
           resistances: resistances,
@@ -428,6 +441,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Object? featureTags = _Undefined,
     Object? featIds = _Undefined,
     Object? grantedSpellKeys = _Undefined,
+    Object? alwaysPreparedSpellKeys = _Undefined,
     Object? grantedEquipment = _Undefined,
     Object? senses = _Undefined,
     Object? resistances = _Undefined,
@@ -550,6 +564,9 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
+      alwaysPreparedSpellKeys: alwaysPreparedSpellKeys is List<String>?
+          ? alwaysPreparedSpellKeys
+          : this.alwaysPreparedSpellKeys?.map((e0) => e0).toList(),
       grantedEquipment:
           grantedEquipment is List<_i6.CharacterEquipmentEntryView>?
               ? grantedEquipment

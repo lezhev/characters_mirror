@@ -11,3 +11,4 @@ fields:
   updatedAt: DateTime?
   tags: List<FeatureTag>?
   choiceGroupKey: String?
+  spellGrants: List<ClassSpellGrantData>?, relation(name=class_feature_spell_grants)

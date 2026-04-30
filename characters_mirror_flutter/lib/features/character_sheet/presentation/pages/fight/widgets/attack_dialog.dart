@@ -44,13 +44,12 @@ class AttackDialog extends StatefulWidget {
 
 class _AttackDialogState extends State<AttackDialog> {
   late final TextEditingController _nameController;
-  late final TextEditingController _damageController;
   late final TextEditingController _bonusController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _tagController;
 
   late Ability? _leadingAbility;
-  late DamageType? _damageType;
+  late List<_DamagePartDraft> _damageParts;
   late List<String> _selectedTags;
 
   CharacterAttackData? _lastSavedDraft;
@@ -62,7 +61,6 @@ class _AttackDialogState extends State<AttackDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.attack.name ?? '');
-    _damageController = TextEditingController(text: widget.attack.damage ?? '');
     _bonusController = TextEditingController(
       text: (widget.attack.customAttackBonus ?? 0).toString(),
     );
@@ -70,7 +68,7 @@ class _AttackDialogState extends State<AttackDialog> {
         TextEditingController(text: widget.attack.description ?? '');
     _tagController = TextEditingController();
     _leadingAbility = widget.attack.leadingAbility ?? Ability.strength;
-    _damageType = widget.attack.damageType;
+    _damageParts = _initialDamageParts(widget.attack);
     _selectedTags = [...?widget.attack.tags];
     _lastSavedDraft = widget.isCreating ? null : widget.attack;
   }
@@ -78,10 +76,12 @@ class _AttackDialogState extends State<AttackDialog> {
   @override
   void dispose() {
     _nameController.dispose();
-    _damageController.dispose();
     _bonusController.dispose();
     _descriptionController.dispose();
     _tagController.dispose();
+    for (final part in _damageParts) {
+      part.dispose();
+    }
     super.dispose();
   }
 
@@ -163,39 +163,7 @@ class _AttackDialogState extends State<AttackDialog> {
                 onChanged: (_) => _queueSave(),
               ),
               const SizedBox(height: 12),
-              TextFormField(
-                controller: _damageController,
-                decoration: const InputDecoration(
-                  labelText: 'Урон',
-                  hintText: 'Например, 1d8 + 3',
-                ),
-                onChanged: (_) => _queueSave(),
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<DamageType?>(
-                initialValue: _damageType,
-                decoration: const InputDecoration(
-                  labelText: 'Тип урона',
-                ),
-                items: [
-                  const DropdownMenuItem<DamageType?>(
-                    value: null,
-                    child: Text('Не указан'),
-                  ),
-                  for (final value in DamageType.values)
-                    DropdownMenuItem<DamageType?>(
-                      value: value,
-                      child: Text(damageTypeLabel(value)),
-                    ),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _damageType = value;
-                    _confirmDelete = false;
-                  });
-                  _queueSave();
-                },
-              ),
+              _buildDamagePartsSection(context),
               const SizedBox(height: 16),
               Text(
                 'Теги',
@@ -284,13 +252,16 @@ class _AttackDialogState extends State<AttackDialog> {
   }
 
   CharacterAttackData _buildDraft() {
+    final damageParts = _buildDamageParts();
+    final firstDamagePart = damageParts.isEmpty ? null : damageParts.first;
     return CharacterAttackData(
       id: widget.attack.id,
       name: normalizedAttackText(_nameController.text),
       leadingAbility: _leadingAbility,
-      damage: normalizedAttackText(_damageController.text),
+      damage: firstDamagePart?.formula,
       customAttackBonus: int.tryParse(_bonusController.text.trim()) ?? 0,
-      damageType: _damageType,
+      damageType: firstDamagePart?.damageType,
+      damageParts: damageParts.isEmpty ? null : damageParts,
       tags: _selectedTags,
       description: normalizedAttackText(_descriptionController.text),
       updatedAt: widget.attack.updatedAt,
@@ -329,6 +300,120 @@ class _AttackDialogState extends State<AttackDialog> {
       return;
     }
     _flushPendingSaves();
+  }
+
+  Widget _buildDamagePartsSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Урон',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            IconButton(
+              onPressed: _addDamagePart,
+              icon: const Icon(Icons.add),
+              tooltip: 'Добавить урон',
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        for (var index = 0; index < _damageParts.length; index++) ...[
+          _buildDamagePartRow(index),
+          if (index < _damageParts.length - 1) const SizedBox(height: 8),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildDamagePartRow(int index) {
+    final part = _damageParts[index];
+    return Row(
+      key: ValueKey<Object>(part.key),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 3,
+          child: TextFormField(
+            controller: part.formulaController,
+            decoration: const InputDecoration(
+              labelText: 'Формула',
+              hintText: 'Например, 1d8 + 3',
+            ),
+            onChanged: (_) => _queueSave(),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          flex: 2,
+          child: DropdownButtonFormField<DamageType?>(
+            initialValue: part.damageType,
+            isExpanded: true,
+            decoration: const InputDecoration(
+              labelText: 'Тип',
+            ),
+            items: [
+              const DropdownMenuItem<DamageType?>(
+                value: null,
+                child: Text('Не указан'),
+              ),
+              for (final value in DamageType.values)
+                DropdownMenuItem<DamageType?>(
+                  value: value,
+                  child: Text(damageTypeLabel(value)),
+                ),
+            ],
+            onChanged: (value) {
+              setState(() {
+                part.damageType = value;
+                _confirmDelete = false;
+              });
+              _queueSave();
+            },
+          ),
+        ),
+        const SizedBox(width: 4),
+        IconButton(
+          onPressed:
+              _damageParts.length <= 1 ? null : () => _removeDamagePart(index),
+          icon: const Icon(Icons.delete_outline),
+          tooltip: 'Удалить урон',
+        ),
+      ],
+    );
+  }
+
+  void _addDamagePart() {
+    setState(() {
+      _damageParts.add(_DamagePartDraft());
+      _confirmDelete = false;
+    });
+    _queueSave();
+  }
+
+  void _removeDamagePart(int index) {
+    final removed = _damageParts.removeAt(index);
+    removed.dispose();
+    setState(() {
+      _confirmDelete = false;
+    });
+    _queueSave();
+  }
+
+  List<DamagePartData> _buildDamageParts() {
+    return [
+      for (final part in _damageParts)
+        if (normalizedAttackText(part.formulaController.text) != null ||
+            part.damageType != null)
+          DamagePartData(
+            formula: normalizedAttackText(part.formulaController.text),
+            damageType: part.damageType,
+          ),
+    ];
   }
 
   Future<void> _flushPendingSaves() async {
@@ -404,5 +489,35 @@ class _AttackDialogState extends State<AttackDialog> {
         ),
       );
     }
+  }
+}
+
+List<_DamagePartDraft> _initialDamageParts(CharacterAttackData attack) {
+  final parts = effectiveAttackDamageParts(attack);
+  if (parts.isEmpty) {
+    return [_DamagePartDraft()];
+  }
+  return [
+    for (final part in parts)
+      _DamagePartDraft(
+        formula: part.formula,
+        damageType: part.damageType,
+      ),
+  ];
+}
+
+class _DamagePartDraft {
+  _DamagePartDraft({
+    String? formula,
+    this.damageType,
+  })  : key = Object(),
+        formulaController = TextEditingController(text: formula ?? '');
+
+  final Object key;
+  final TextEditingController formulaController;
+  DamageType? damageType;
+
+  void dispose() {
+    formulaController.dispose();
   }
 }

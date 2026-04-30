@@ -14,11 +14,12 @@ import '../enums/spell/spell_school.dart' as _i2;
 import '../enums/spell/spell_attack_type.dart' as _i3;
 import '../enums/damage_type.dart' as _i4;
 import '../data/spell_scaling_data.dart' as _i5;
-import '../enums/spell/condition_type.dart' as _i6;
-import '../enums/spell/spell_target_type.dart' as _i7;
-import '../enums/spell/area_of_effect_type.dart' as _i8;
-import '../enums/spell/spell_duration_type.dart' as _i9;
-import '../data/spell_class_availability_data.dart' as _i10;
+import '../data/damage_part_data.dart' as _i6;
+import '../enums/spell/condition_type.dart' as _i7;
+import '../enums/spell/spell_target_type.dart' as _i8;
+import '../enums/spell/area_of_effect_type.dart' as _i9;
+import '../enums/spell/spell_duration_type.dart' as _i10;
+import '../data/spell_class_availability_data.dart' as _i11;
 
 abstract class SpellData implements _i1.SerializableModel {
   SpellData._({
@@ -45,6 +46,7 @@ abstract class SpellData implements _i1.SerializableModel {
     this.damageType,
     this.damageDice,
     this.damageScaling,
+    this.damageParts,
     this.conditions,
     this.targetType,
     this.areaOfEffectType,
@@ -88,23 +90,24 @@ abstract class SpellData implements _i1.SerializableModel {
     _i4.DamageType? damageType,
     String? damageDice,
     _i5.SpellScalingData? damageScaling,
-    List<_i6.ConditionType>? conditions,
-    _i7.SpellTargetType? targetType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    List<_i6.DamagePartData>? damageParts,
+    List<_i7.ConditionType>? conditions,
+    _i8.SpellTargetType? targetType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i9.SpellDurationType? durationType,
+    _i10.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i10.SpellClassAvailabilityData>? classAvailability,
+    List<_i11.SpellClassAvailabilityData>? classAvailability,
   }) = _SpellDataImpl;
 
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -148,16 +151,19 @@ abstract class SpellData implements _i1.SerializableModel {
           ? null
           : _i5.SpellScalingData.fromJson(
               (jsonSerialization['damageScaling'] as Map<String, dynamic>)),
+      damageParts: (jsonSerialization['damageParts'] as List?)
+          ?.map((e) => _i6.DamagePartData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       conditions: (jsonSerialization['conditions'] as List?)
-          ?.map((e) => _i6.ConditionType.fromJson((e as String)))
+          ?.map((e) => _i7.ConditionType.fromJson((e as String)))
           .toList(),
       targetType: jsonSerialization['targetType'] == null
           ? null
-          : _i7.SpellTargetType.fromJson(
+          : _i8.SpellTargetType.fromJson(
               (jsonSerialization['targetType'] as String)),
       areaOfEffectType: jsonSerialization['areaOfEffectType'] == null
           ? null
-          : _i8.AreaOfEffectType.fromJson(
+          : _i9.AreaOfEffectType.fromJson(
               (jsonSerialization['areaOfEffectType'] as String)),
       areaOfEffectSize: jsonSerialization['areaOfEffectSize'] as int?,
       areaOfEffectSecondarySize:
@@ -168,7 +174,7 @@ abstract class SpellData implements _i1.SerializableModel {
       materialConsumed: jsonSerialization['materialConsumed'] as bool?,
       durationType: jsonSerialization['durationType'] == null
           ? null
-          : _i9.SpellDurationType.fromJson(
+          : _i10.SpellDurationType.fromJson(
               (jsonSerialization['durationType'] as String)),
       isHealing: jsonSerialization['isHealing'] as bool?,
       healingDice: jsonSerialization['healingDice'] as String?,
@@ -177,7 +183,7 @@ abstract class SpellData implements _i1.SerializableModel {
       requiresSomatic: jsonSerialization['requiresSomatic'] as bool?,
       requiresMaterial: jsonSerialization['requiresMaterial'] as bool?,
       classAvailability: (jsonSerialization['classAvailability'] as List?)
-          ?.map((e) => _i10.SpellClassAvailabilityData.fromJson(
+          ?.map((e) => _i11.SpellClassAvailabilityData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
     );
@@ -232,11 +238,13 @@ abstract class SpellData implements _i1.SerializableModel {
 
   _i5.SpellScalingData? damageScaling;
 
-  List<_i6.ConditionType>? conditions;
+  List<_i6.DamagePartData>? damageParts;
 
-  _i7.SpellTargetType? targetType;
+  List<_i7.ConditionType>? conditions;
 
-  _i8.AreaOfEffectType? areaOfEffectType;
+  _i8.SpellTargetType? targetType;
+
+  _i9.AreaOfEffectType? areaOfEffectType;
 
   int? areaOfEffectSize;
 
@@ -250,7 +258,7 @@ abstract class SpellData implements _i1.SerializableModel {
 
   bool? materialConsumed;
 
-  _i9.SpellDurationType? durationType;
+  _i10.SpellDurationType? durationType;
 
   bool? isHealing;
 
@@ -264,7 +272,7 @@ abstract class SpellData implements _i1.SerializableModel {
 
   bool? requiresMaterial;
 
-  List<_i10.SpellClassAvailabilityData>? classAvailability;
+  List<_i11.SpellClassAvailabilityData>? classAvailability;
 
   /// Returns a shallow copy of this [SpellData]
   /// with some or all fields replaced by the given arguments.
@@ -293,23 +301,24 @@ abstract class SpellData implements _i1.SerializableModel {
     _i4.DamageType? damageType,
     String? damageDice,
     _i5.SpellScalingData? damageScaling,
-    List<_i6.ConditionType>? conditions,
-    _i7.SpellTargetType? targetType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    List<_i6.DamagePartData>? damageParts,
+    List<_i7.ConditionType>? conditions,
+    _i8.SpellTargetType? targetType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i9.SpellDurationType? durationType,
+    _i10.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i10.SpellClassAvailabilityData>? classAvailability,
+    List<_i11.SpellClassAvailabilityData>? classAvailability,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -338,6 +347,8 @@ abstract class SpellData implements _i1.SerializableModel {
       if (damageType != null) 'damageType': damageType?.toJson(),
       if (damageDice != null) 'damageDice': damageDice,
       if (damageScaling != null) 'damageScaling': damageScaling?.toJson(),
+      if (damageParts != null)
+        'damageParts': damageParts?.toJson(valueToJson: (v) => v.toJson()),
       if (conditions != null)
         'conditions': conditions?.toJson(valueToJson: (v) => v.toJson()),
       if (targetType != null) 'targetType': targetType?.toJson(),
@@ -398,23 +409,24 @@ class _SpellDataImpl extends SpellData {
     _i4.DamageType? damageType,
     String? damageDice,
     _i5.SpellScalingData? damageScaling,
-    List<_i6.ConditionType>? conditions,
-    _i7.SpellTargetType? targetType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    List<_i6.DamagePartData>? damageParts,
+    List<_i7.ConditionType>? conditions,
+    _i8.SpellTargetType? targetType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i9.SpellDurationType? durationType,
+    _i10.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i10.SpellClassAvailabilityData>? classAvailability,
+    List<_i11.SpellClassAvailabilityData>? classAvailability,
   }) : super._(
           id: id,
           referenceKey: referenceKey,
@@ -439,6 +451,7 @@ class _SpellDataImpl extends SpellData {
           damageType: damageType,
           damageDice: damageDice,
           damageScaling: damageScaling,
+          damageParts: damageParts,
           conditions: conditions,
           targetType: targetType,
           areaOfEffectType: areaOfEffectType,
@@ -486,6 +499,7 @@ class _SpellDataImpl extends SpellData {
     Object? damageType = _Undefined,
     Object? damageDice = _Undefined,
     Object? damageScaling = _Undefined,
+    Object? damageParts = _Undefined,
     Object? conditions = _Undefined,
     Object? targetType = _Undefined,
     Object? areaOfEffectType = _Undefined,
@@ -539,12 +553,15 @@ class _SpellDataImpl extends SpellData {
       damageScaling: damageScaling is _i5.SpellScalingData?
           ? damageScaling
           : this.damageScaling?.copyWith(),
-      conditions: conditions is List<_i6.ConditionType>?
+      damageParts: damageParts is List<_i6.DamagePartData>?
+          ? damageParts
+          : this.damageParts?.map((e0) => e0.copyWith()).toList(),
+      conditions: conditions is List<_i7.ConditionType>?
           ? conditions
           : this.conditions?.map((e0) => e0).toList(),
       targetType:
-          targetType is _i7.SpellTargetType? ? targetType : this.targetType,
-      areaOfEffectType: areaOfEffectType is _i8.AreaOfEffectType?
+          targetType is _i8.SpellTargetType? ? targetType : this.targetType,
+      areaOfEffectType: areaOfEffectType is _i9.AreaOfEffectType?
           ? areaOfEffectType
           : this.areaOfEffectType,
       areaOfEffectSize:
@@ -561,7 +578,7 @@ class _SpellDataImpl extends SpellData {
       materialCost: materialCost is int? ? materialCost : this.materialCost,
       materialConsumed:
           materialConsumed is bool? ? materialConsumed : this.materialConsumed,
-      durationType: durationType is _i9.SpellDurationType?
+      durationType: durationType is _i10.SpellDurationType?
           ? durationType
           : this.durationType,
       isHealing: isHealing is bool? ? isHealing : this.isHealing,
@@ -576,7 +593,7 @@ class _SpellDataImpl extends SpellData {
       requiresMaterial:
           requiresMaterial is bool? ? requiresMaterial : this.requiresMaterial,
       classAvailability:
-          classAvailability is List<_i10.SpellClassAvailabilityData>?
+          classAvailability is List<_i11.SpellClassAvailabilityData>?
               ? classAvailability
               : this.classAvailability?.map((e0) => e0.copyWith()).toList(),
     );

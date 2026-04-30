@@ -1,0 +1,16 @@
+class: ClassSpellGrantData
+table: class_spell_grant_data
+fields:
+  spell: SpellData?, relation(optional)
+  spellReferenceKey: String?, !persist
+  sourceClass: ClassData?, relation(optional)
+  sourceSubclass: SubclassData?, relation(optional)
+  sourceFeature: ClassFeatureData?, relation(optional, name=class_feature_spell_grants)
+  sourceSubclassFeature: SubclassFeatureData?, relation(optional, name=subclass_feature_spell_grants)
+  grantedAtLevel: int?
+  alwaysPrepared: bool?
+  notes: String?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?

@@ -921,9 +921,10 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
         session,
         savedSelection,
         _normalizedStartingEquipmentResolutions(
-          selection.resolutions,
-          selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
-        ) ?? const <CharacterStartingEquipmentResolutionData>[],
+              selection.resolutions,
+              selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
+            ) ??
+            const <CharacterStartingEquipmentResolutionData>[],
       );
     }
   }
@@ -1201,19 +1202,50 @@ List<CharacterAttackData>? _normalizedAttacks(
 ) {
   final normalized = [
     for (final attack in attacks ?? const <CharacterAttackData>[])
-      CharacterAttackData(
-        id: attack.id ?? _generateSyncId(),
-        name: _normalizedTextOrNull(attack.name),
-        leadingAbility: attack.leadingAbility,
-        damage: _normalizedTextOrNull(attack.damage),
-        customAttackBonus: attack.customAttackBonus ?? 0,
-        damageType: attack.damageType,
-        tags: _normalizedAttackTagsFromStrings(attack.tags),
-        description: _normalizedTextOrNull(attack.description),
-        updatedAt: attack.updatedAt?.toUtc() ?? updatedAt,
-      ),
+      _normalizedAttack(attack, updatedAt),
   ];
   return normalized.isEmpty ? null : normalized;
+}
+
+CharacterAttackData _normalizedAttack(
+  CharacterAttackData attack,
+  DateTime? updatedAt,
+) {
+  final damageParts = _normalizedDamageParts(attack.damageParts);
+  final firstDamagePart = damageParts?.first;
+  return CharacterAttackData(
+    id: attack.id ?? _generateSyncId(),
+    name: _normalizedTextOrNull(attack.name),
+    leadingAbility: attack.leadingAbility,
+    damage: firstDamagePart?.formula ?? _normalizedTextOrNull(attack.damage),
+    customAttackBonus: attack.customAttackBonus ?? 0,
+    damageType: firstDamagePart?.damageType ?? attack.damageType,
+    damageParts: damageParts,
+    tags: _normalizedAttackTagsFromStrings(attack.tags),
+    description: _normalizedTextOrNull(attack.description),
+    updatedAt: attack.updatedAt?.toUtc() ?? updatedAt,
+  );
+}
+
+List<DamagePartData>? _normalizedDamageParts(List<DamagePartData>? parts) {
+  final normalized = [
+    for (final part in parts ?? const <DamagePartData>[])
+      if (_hasDamagePartData(part))
+        DamagePartData(
+          formula: _normalizedTextOrNull(part.formula),
+          damageType: part.damageType,
+          scaling: part.scaling,
+          notes: _normalizedTextOrNull(part.notes),
+        ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+bool _hasDamagePartData(DamagePartData part) {
+  return _normalizedTextOrNull(part.formula) != null ||
+      part.damageType != null ||
+      part.scaling != null ||
+      _normalizedTextOrNull(part.notes) != null;
 }
 
 List<CharacterFeatureOverrideData> _normalizedFeatureOverridesWithSync(
@@ -1566,7 +1598,8 @@ Future<CharacterData> _buildCharacterAggregate(
     where: (t) => t.characterId.equals(record.id),
     orderBy: (t) => t.selectionIndex,
   );
-  final startingEquipmentSelections = <CharacterStartingEquipmentSelectionData>[];
+  final startingEquipmentSelections =
+      <CharacterStartingEquipmentSelectionData>[];
   for (final selection in startingEquipmentSelectionRecords) {
     final resolutionRecords =
         await CharacterStartingEquipmentResolutionRecord.db.find(
@@ -1721,8 +1754,7 @@ CharacterStartingEquipmentSelectionData
   final resolutions = [
     for (final resolution in resolutionRecords)
       _toCharacterStartingEquipmentResolutionData(resolution),
-  ]
-    ..sort(_compareStartingEquipmentResolutions);
+  ]..sort(_compareStartingEquipmentResolutions);
 
   return CharacterStartingEquipmentSelectionData(
     id: record.syncId,
@@ -1862,6 +1894,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.classBackgroundOptions,
     resolvedSources.raceOptions,
     currentRaceFeatures,
+    resolvedSources.alwaysPreparedSpellKeys,
   );
   final grantedEquipment = await _collectGrantedEquipment(session, character);
   final hitDiceSummary = <String, int>{};
@@ -1906,6 +1939,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     featureTags: featureTags,
     featIds: featIds,
     grantedSpellKeys: grantedSpellKeys,
+    alwaysPreparedSpellKeys: resolvedSources.alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
     senses: senses,
     resistances: resistances,
@@ -2249,12 +2283,14 @@ class _ResolvedDerivedSources {
   final List<RaceChoiceOptionData> raceOptions;
   final List<ClassFeatureData> currentClassFeatures;
   final List<SubclassFeatureData> currentSubclassFeatures;
+  final List<String> alwaysPreparedSpellKeys;
 
   const _ResolvedDerivedSources({
     required this.classBackgroundOptions,
     required this.raceOptions,
     required this.currentClassFeatures,
     required this.currentSubclassFeatures,
+    required this.alwaysPreparedSpellKeys,
   });
 }
 
@@ -2341,10 +2377,36 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     for (final feature in currentClassFeatures)
       if (feature.id != null) feature.id!,
   };
+  final currentClassFeatureLevels = {
+    for (final feature in currentClassFeatures)
+      if (feature.id != null)
+        feature.id!: classLevels[feature.parentClassId] ?? feature.level,
+  };
   final currentSubclassFeatureIds = {
     for (final feature in currentSubclassFeatures)
       if (feature.id != null) feature.id!,
   };
+  final currentSubclassFeatureLevels = {
+    for (final feature in currentSubclassFeatures)
+      if (feature.id != null)
+        feature.id!: subclassLevels[feature.parentSubclassId] ?? feature.level,
+  };
+  final classSpellGrants = await ClassSpellGrantData.db.find(
+    session,
+    include: ClassSpellGrantData.include(
+      spell: SpellData.include(),
+    ),
+    orderBy: (t) => t.grantedAtLevel,
+  );
+  final alwaysPreparedSpellKeys = _collectAlwaysPreparedSpellKeys(
+    classSpellGrants,
+    classLevels: classLevels,
+    subclassLevels: subclassLevels,
+    currentClassFeatureIds: currentClassFeatureIds,
+    currentSubclassFeatureIds: currentSubclassFeatureIds,
+    currentClassFeatureLevels: currentClassFeatureLevels,
+    currentSubclassFeatureLevels: currentSubclassFeatureLevels,
+  );
 
   final allGroups = await ClassChoiceGroupData.db.find(
     session,
@@ -2403,7 +2465,86 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     raceOptions: _selectedRaceChoiceOptions(character, choices),
     currentClassFeatures: currentClassFeatures,
     currentSubclassFeatures: currentSubclassFeatures,
+    alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
   );
+}
+
+List<String> _collectAlwaysPreparedSpellKeys(
+  List<ClassSpellGrantData> grants, {
+  required Map<int, int> classLevels,
+  required Map<int, int> subclassLevels,
+  required Set<int> currentClassFeatureIds,
+  required Set<int> currentSubclassFeatureIds,
+  required Map<int, int> currentClassFeatureLevels,
+  required Map<int, int> currentSubclassFeatureLevels,
+}) {
+  final values = <String>{};
+  for (final grant in grants) {
+    if (grant.alwaysPrepared == false ||
+        !_isClassSpellGrantActive(
+          grant,
+          classLevels: classLevels,
+          subclassLevels: subclassLevels,
+          currentClassFeatureIds: currentClassFeatureIds,
+          currentSubclassFeatureIds: currentSubclassFeatureIds,
+          currentClassFeatureLevels: currentClassFeatureLevels,
+          currentSubclassFeatureLevels: currentSubclassFeatureLevels,
+        )) {
+      continue;
+    }
+
+    final spellKey = _normalizedTextOrNull(grant.spell?.referenceKey) ??
+        _normalizedTextOrNull(grant.spell?.name);
+    if (spellKey != null) {
+      values.add(spellKey);
+    }
+  }
+  return values.toList()..sort();
+}
+
+bool _isClassSpellGrantActive(
+  ClassSpellGrantData grant, {
+  required Map<int, int> classLevels,
+  required Map<int, int> subclassLevels,
+  required Set<int> currentClassFeatureIds,
+  required Set<int> currentSubclassFeatureIds,
+  required Map<int, int> currentClassFeatureLevels,
+  required Map<int, int> currentSubclassFeatureLevels,
+}) {
+  final requiredLevel = grant.grantedAtLevel ?? 1;
+  var hasSource = false;
+  var active = false;
+
+  final sourceClassId = grant.sourceClassId;
+  if (sourceClassId != null) {
+    hasSource = true;
+    active = active || (classLevels[sourceClassId] ?? 0) >= requiredLevel;
+  }
+
+  final sourceSubclassId = grant.sourceSubclassId;
+  if (sourceSubclassId != null) {
+    hasSource = true;
+    active = active || (subclassLevels[sourceSubclassId] ?? 0) >= requiredLevel;
+  }
+
+  final sourceFeatureId = grant.sourceFeatureId;
+  if (sourceFeatureId != null) {
+    hasSource = true;
+    active = active ||
+        (currentClassFeatureIds.contains(sourceFeatureId) &&
+            (currentClassFeatureLevels[sourceFeatureId] ?? 0) >= requiredLevel);
+  }
+
+  final sourceSubclassFeatureId = grant.sourceSubclassFeatureId;
+  if (sourceSubclassFeatureId != null) {
+    hasSource = true;
+    active = active ||
+        (currentSubclassFeatureIds.contains(sourceSubclassFeatureId) &&
+            (currentSubclassFeatureLevels[sourceSubclassFeatureId] ?? 0) >=
+                requiredLevel);
+  }
+
+  return hasSource && active;
 }
 
 void _addSkillNames(Set<Skill> target, List<String>? names) {
@@ -2618,8 +2759,10 @@ List<String> _collectGrantedSpellKeys(
   List<ClassChoiceOptionData> classBackgroundOptions,
   List<RaceChoiceOptionData> raceOptions,
   _CurrentRaceFeatures currentRaceFeatures,
+  List<String> alwaysPreparedSpellKeys,
 ) {
   final values = <String>{};
+  values.addAll(alwaysPreparedSpellKeys);
   for (final selection in spellSelections) {
     final spellKey = _normalizedTextOrNull(selection.spellKey) ??
         _normalizedTextOrNull(selection.spell?.referenceKey) ??
@@ -2825,8 +2968,7 @@ List<CharacterStartingEquipmentSelectionData>
 
   return [
     for (final selection in selections)
-      if (selection.sourceEntryId == sourceEntryId)
-        selection,
+      if (selection.sourceEntryId == sourceEntryId) selection,
   ]..sort(_compareStartingEquipmentSelections);
 }
 
