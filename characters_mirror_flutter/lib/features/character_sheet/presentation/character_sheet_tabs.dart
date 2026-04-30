@@ -45,14 +45,12 @@ List<CharacterSheetTab> buildCharacterSheetTabs(int characterId) {
         label: 'Заметки',
       ),
     ),
-    const CharacterSheetTab(
-      builder: _buildSpellPage,
-      destination: NavigationDestination(
+    CharacterSheetTab(
+      builder: () => SpellPage(characterId: characterId),
+      destination: const NavigationDestination(
         icon: Icon(Icons.auto_fix_high),
         label: 'Заклинания',
       ),
     ),
   ];
 }
-
-Widget _buildSpellPage() => const SpellPage();

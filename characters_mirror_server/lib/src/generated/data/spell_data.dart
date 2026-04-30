@@ -16,11 +16,12 @@ import '../enums/spell/spell_school.dart' as _i2;
 import '../enums/spell/spell_attack_type.dart' as _i3;
 import '../enums/damage_type.dart' as _i4;
 import '../data/spell_scaling_data.dart' as _i5;
-import '../enums/spell/condition_type.dart' as _i6;
-import '../enums/spell/spell_target_type.dart' as _i7;
-import '../enums/spell/area_of_effect_type.dart' as _i8;
-import '../enums/spell/spell_duration_type.dart' as _i9;
-import '../data/spell_class_availability_data.dart' as _i10;
+import '../data/damage_part_data.dart' as _i6;
+import '../enums/spell/condition_type.dart' as _i7;
+import '../enums/spell/spell_target_type.dart' as _i8;
+import '../enums/spell/area_of_effect_type.dart' as _i9;
+import '../enums/spell/spell_duration_type.dart' as _i10;
+import '../data/spell_class_availability_data.dart' as _i11;
 
 abstract class SpellData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -48,6 +49,7 @@ abstract class SpellData
     this.damageType,
     this.damageDice,
     this.damageScaling,
+    this.damageParts,
     this.conditions,
     this.targetType,
     this.areaOfEffectType,
@@ -91,23 +93,24 @@ abstract class SpellData
     _i4.DamageType? damageType,
     String? damageDice,
     _i5.SpellScalingData? damageScaling,
-    List<_i6.ConditionType>? conditions,
-    _i7.SpellTargetType? targetType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    List<_i6.DamagePartData>? damageParts,
+    List<_i7.ConditionType>? conditions,
+    _i8.SpellTargetType? targetType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i9.SpellDurationType? durationType,
+    _i10.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i10.SpellClassAvailabilityData>? classAvailability,
+    List<_i11.SpellClassAvailabilityData>? classAvailability,
   }) = _SpellDataImpl;
 
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -151,16 +154,19 @@ abstract class SpellData
           ? null
           : _i5.SpellScalingData.fromJson(
               (jsonSerialization['damageScaling'] as Map<String, dynamic>)),
+      damageParts: (jsonSerialization['damageParts'] as List?)
+          ?.map((e) => _i6.DamagePartData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       conditions: (jsonSerialization['conditions'] as List?)
-          ?.map((e) => _i6.ConditionType.fromJson((e as String)))
+          ?.map((e) => _i7.ConditionType.fromJson((e as String)))
           .toList(),
       targetType: jsonSerialization['targetType'] == null
           ? null
-          : _i7.SpellTargetType.fromJson(
+          : _i8.SpellTargetType.fromJson(
               (jsonSerialization['targetType'] as String)),
       areaOfEffectType: jsonSerialization['areaOfEffectType'] == null
           ? null
-          : _i8.AreaOfEffectType.fromJson(
+          : _i9.AreaOfEffectType.fromJson(
               (jsonSerialization['areaOfEffectType'] as String)),
       areaOfEffectSize: jsonSerialization['areaOfEffectSize'] as int?,
       areaOfEffectSecondarySize:
@@ -171,7 +177,7 @@ abstract class SpellData
       materialConsumed: jsonSerialization['materialConsumed'] as bool?,
       durationType: jsonSerialization['durationType'] == null
           ? null
-          : _i9.SpellDurationType.fromJson(
+          : _i10.SpellDurationType.fromJson(
               (jsonSerialization['durationType'] as String)),
       isHealing: jsonSerialization['isHealing'] as bool?,
       healingDice: jsonSerialization['healingDice'] as String?,
@@ -180,7 +186,7 @@ abstract class SpellData
       requiresSomatic: jsonSerialization['requiresSomatic'] as bool?,
       requiresMaterial: jsonSerialization['requiresMaterial'] as bool?,
       classAvailability: (jsonSerialization['classAvailability'] as List?)
-          ?.map((e) => _i10.SpellClassAvailabilityData.fromJson(
+          ?.map((e) => _i11.SpellClassAvailabilityData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
     );
@@ -237,11 +243,13 @@ abstract class SpellData
 
   _i5.SpellScalingData? damageScaling;
 
-  List<_i6.ConditionType>? conditions;
+  List<_i6.DamagePartData>? damageParts;
 
-  _i7.SpellTargetType? targetType;
+  List<_i7.ConditionType>? conditions;
 
-  _i8.AreaOfEffectType? areaOfEffectType;
+  _i8.SpellTargetType? targetType;
+
+  _i9.AreaOfEffectType? areaOfEffectType;
 
   int? areaOfEffectSize;
 
@@ -255,7 +263,7 @@ abstract class SpellData
 
   bool? materialConsumed;
 
-  _i9.SpellDurationType? durationType;
+  _i10.SpellDurationType? durationType;
 
   bool? isHealing;
 
@@ -269,7 +277,7 @@ abstract class SpellData
 
   bool? requiresMaterial;
 
-  List<_i10.SpellClassAvailabilityData>? classAvailability;
+  List<_i11.SpellClassAvailabilityData>? classAvailability;
 
   @override
   _i1.Table<int?> get table => t;
@@ -301,23 +309,24 @@ abstract class SpellData
     _i4.DamageType? damageType,
     String? damageDice,
     _i5.SpellScalingData? damageScaling,
-    List<_i6.ConditionType>? conditions,
-    _i7.SpellTargetType? targetType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    List<_i6.DamagePartData>? damageParts,
+    List<_i7.ConditionType>? conditions,
+    _i8.SpellTargetType? targetType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i9.SpellDurationType? durationType,
+    _i10.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i10.SpellClassAvailabilityData>? classAvailability,
+    List<_i11.SpellClassAvailabilityData>? classAvailability,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -346,6 +355,8 @@ abstract class SpellData
       if (damageType != null) 'damageType': damageType?.toJson(),
       if (damageDice != null) 'damageDice': damageDice,
       if (damageScaling != null) 'damageScaling': damageScaling?.toJson(),
+      if (damageParts != null)
+        'damageParts': damageParts?.toJson(valueToJson: (v) => v.toJson()),
       if (conditions != null)
         'conditions': conditions?.toJson(valueToJson: (v) => v.toJson()),
       if (targetType != null) 'targetType': targetType?.toJson(),
@@ -401,6 +412,9 @@ abstract class SpellData
       if (damageDice != null) 'damageDice': damageDice,
       if (damageScaling != null)
         'damageScaling': damageScaling?.toJsonForProtocol(),
+      if (damageParts != null)
+        'damageParts':
+            damageParts?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (conditions != null)
         'conditions': conditions?.toJson(valueToJson: (v) => v.toJson()),
       if (targetType != null) 'targetType': targetType?.toJson(),
@@ -429,7 +443,7 @@ abstract class SpellData
   }
 
   static SpellDataInclude include(
-      {_i10.SpellClassAvailabilityDataIncludeList? classAvailability}) {
+      {_i11.SpellClassAvailabilityDataIncludeList? classAvailability}) {
     return SpellDataInclude._(classAvailability: classAvailability);
   }
 
@@ -486,23 +500,24 @@ class _SpellDataImpl extends SpellData {
     _i4.DamageType? damageType,
     String? damageDice,
     _i5.SpellScalingData? damageScaling,
-    List<_i6.ConditionType>? conditions,
-    _i7.SpellTargetType? targetType,
-    _i8.AreaOfEffectType? areaOfEffectType,
+    List<_i6.DamagePartData>? damageParts,
+    List<_i7.ConditionType>? conditions,
+    _i8.SpellTargetType? targetType,
+    _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i9.SpellDurationType? durationType,
+    _i10.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i10.SpellClassAvailabilityData>? classAvailability,
+    List<_i11.SpellClassAvailabilityData>? classAvailability,
   }) : super._(
           id: id,
           referenceKey: referenceKey,
@@ -527,6 +542,7 @@ class _SpellDataImpl extends SpellData {
           damageType: damageType,
           damageDice: damageDice,
           damageScaling: damageScaling,
+          damageParts: damageParts,
           conditions: conditions,
           targetType: targetType,
           areaOfEffectType: areaOfEffectType,
@@ -574,6 +590,7 @@ class _SpellDataImpl extends SpellData {
     Object? damageType = _Undefined,
     Object? damageDice = _Undefined,
     Object? damageScaling = _Undefined,
+    Object? damageParts = _Undefined,
     Object? conditions = _Undefined,
     Object? targetType = _Undefined,
     Object? areaOfEffectType = _Undefined,
@@ -627,12 +644,15 @@ class _SpellDataImpl extends SpellData {
       damageScaling: damageScaling is _i5.SpellScalingData?
           ? damageScaling
           : this.damageScaling?.copyWith(),
-      conditions: conditions is List<_i6.ConditionType>?
+      damageParts: damageParts is List<_i6.DamagePartData>?
+          ? damageParts
+          : this.damageParts?.map((e0) => e0.copyWith()).toList(),
+      conditions: conditions is List<_i7.ConditionType>?
           ? conditions
           : this.conditions?.map((e0) => e0).toList(),
       targetType:
-          targetType is _i7.SpellTargetType? ? targetType : this.targetType,
-      areaOfEffectType: areaOfEffectType is _i8.AreaOfEffectType?
+          targetType is _i8.SpellTargetType? ? targetType : this.targetType,
+      areaOfEffectType: areaOfEffectType is _i9.AreaOfEffectType?
           ? areaOfEffectType
           : this.areaOfEffectType,
       areaOfEffectSize:
@@ -649,7 +669,7 @@ class _SpellDataImpl extends SpellData {
       materialCost: materialCost is int? ? materialCost : this.materialCost,
       materialConsumed:
           materialConsumed is bool? ? materialConsumed : this.materialConsumed,
-      durationType: durationType is _i9.SpellDurationType?
+      durationType: durationType is _i10.SpellDurationType?
           ? durationType
           : this.durationType,
       isHealing: isHealing is bool? ? isHealing : this.isHealing,
@@ -664,7 +684,7 @@ class _SpellDataImpl extends SpellData {
       requiresMaterial:
           requiresMaterial is bool? ? requiresMaterial : this.requiresMaterial,
       classAvailability:
-          classAvailability is List<_i10.SpellClassAvailabilityData>?
+          classAvailability is List<_i11.SpellClassAvailabilityData>?
               ? classAvailability
               : this.classAvailability?.map((e0) => e0.copyWith()).toList(),
     );
@@ -762,6 +782,10 @@ class SpellDataTable extends _i1.Table<int?> {
     );
     damageScaling = _i1.ColumnSerializable(
       'damageScaling',
+      this,
+    );
+    damageParts = _i1.ColumnSerializable(
+      'damageParts',
       this,
     );
     conditions = _i1.ColumnSerializable(
@@ -877,11 +901,13 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable damageScaling;
 
+  late final _i1.ColumnSerializable damageParts;
+
   late final _i1.ColumnSerializable conditions;
 
-  late final _i1.ColumnEnum<_i7.SpellTargetType> targetType;
+  late final _i1.ColumnEnum<_i8.SpellTargetType> targetType;
 
-  late final _i1.ColumnEnum<_i8.AreaOfEffectType> areaOfEffectType;
+  late final _i1.ColumnEnum<_i9.AreaOfEffectType> areaOfEffectType;
 
   late final _i1.ColumnInt areaOfEffectSize;
 
@@ -895,7 +921,7 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool materialConsumed;
 
-  late final _i1.ColumnEnum<_i9.SpellDurationType> durationType;
+  late final _i1.ColumnEnum<_i10.SpellDurationType> durationType;
 
   late final _i1.ColumnBool isHealing;
 
@@ -909,38 +935,38 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool requiresMaterial;
 
-  _i10.SpellClassAvailabilityDataTable? ___classAvailability;
+  _i11.SpellClassAvailabilityDataTable? ___classAvailability;
 
-  _i1.ManyRelation<_i10.SpellClassAvailabilityDataTable>? _classAvailability;
+  _i1.ManyRelation<_i11.SpellClassAvailabilityDataTable>? _classAvailability;
 
-  _i10.SpellClassAvailabilityDataTable get __classAvailability {
+  _i11.SpellClassAvailabilityDataTable get __classAvailability {
     if (___classAvailability != null) return ___classAvailability!;
     ___classAvailability = _i1.createRelationTable(
       relationFieldName: '__classAvailability',
       field: SpellData.t.id,
-      foreignField: _i10.SpellClassAvailabilityData.t.spellId,
+      foreignField: _i11.SpellClassAvailabilityData.t.spellId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i10.SpellClassAvailabilityDataTable(
+          _i11.SpellClassAvailabilityDataTable(
               tableRelation: foreignTableRelation),
     );
     return ___classAvailability!;
   }
 
-  _i1.ManyRelation<_i10.SpellClassAvailabilityDataTable> get classAvailability {
+  _i1.ManyRelation<_i11.SpellClassAvailabilityDataTable> get classAvailability {
     if (_classAvailability != null) return _classAvailability!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'classAvailability',
       field: SpellData.t.id,
-      foreignField: _i10.SpellClassAvailabilityData.t.spellId,
+      foreignField: _i11.SpellClassAvailabilityData.t.spellId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i10.SpellClassAvailabilityDataTable(
+          _i11.SpellClassAvailabilityDataTable(
               tableRelation: foreignTableRelation),
     );
-    _classAvailability = _i1.ManyRelation<_i10.SpellClassAvailabilityDataTable>(
+    _classAvailability = _i1.ManyRelation<_i11.SpellClassAvailabilityDataTable>(
       tableWithRelations: relationTable,
-      table: _i10.SpellClassAvailabilityDataTable(
+      table: _i11.SpellClassAvailabilityDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _classAvailability!;
@@ -971,6 +997,7 @@ class SpellDataTable extends _i1.Table<int?> {
         damageType,
         damageDice,
         damageScaling,
+        damageParts,
         conditions,
         targetType,
         areaOfEffectType,
@@ -1000,11 +1027,11 @@ class SpellDataTable extends _i1.Table<int?> {
 
 class SpellDataInclude extends _i1.IncludeObject {
   SpellDataInclude._(
-      {_i10.SpellClassAvailabilityDataIncludeList? classAvailability}) {
+      {_i11.SpellClassAvailabilityDataIncludeList? classAvailability}) {
     _classAvailability = classAvailability;
   }
 
-  _i10.SpellClassAvailabilityDataIncludeList? _classAvailability;
+  _i11.SpellClassAvailabilityDataIncludeList? _classAvailability;
 
   @override
   Map<String, _i1.Include?> get includes =>
@@ -1265,7 +1292,7 @@ class SpellDataAttachRepository {
   Future<void> classAvailability(
     _i1.Session session,
     SpellData spellData,
-    List<_i10.SpellClassAvailabilityData> spellClassAvailabilityData, {
+    List<_i11.SpellClassAvailabilityData> spellClassAvailabilityData, {
     _i1.Transaction? transaction,
   }) async {
     if (spellClassAvailabilityData.any((e) => e.id == null)) {
@@ -1278,9 +1305,9 @@ class SpellDataAttachRepository {
     var $spellClassAvailabilityData = spellClassAvailabilityData
         .map((e) => e.copyWith(spellId: spellData.id))
         .toList();
-    await session.db.update<_i10.SpellClassAvailabilityData>(
+    await session.db.update<_i11.SpellClassAvailabilityData>(
       $spellClassAvailabilityData,
-      columns: [_i10.SpellClassAvailabilityData.t.spellId],
+      columns: [_i11.SpellClassAvailabilityData.t.spellId],
       transaction: transaction,
     );
   }
@@ -1294,7 +1321,7 @@ class SpellDataAttachRowRepository {
   Future<void> classAvailability(
     _i1.Session session,
     SpellData spellData,
-    _i10.SpellClassAvailabilityData spellClassAvailabilityData, {
+    _i11.SpellClassAvailabilityData spellClassAvailabilityData, {
     _i1.Transaction? transaction,
   }) async {
     if (spellClassAvailabilityData.id == null) {
@@ -1306,9 +1333,9 @@ class SpellDataAttachRowRepository {
 
     var $spellClassAvailabilityData =
         spellClassAvailabilityData.copyWith(spellId: spellData.id);
-    await session.db.updateRow<_i10.SpellClassAvailabilityData>(
+    await session.db.updateRow<_i11.SpellClassAvailabilityData>(
       $spellClassAvailabilityData,
-      columns: [_i10.SpellClassAvailabilityData.t.spellId],
+      columns: [_i11.SpellClassAvailabilityData.t.spellId],
       transaction: transaction,
     );
   }

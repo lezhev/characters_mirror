@@ -359,19 +359,50 @@ List<CharacterAttackData>? _normalizedAttacks(
 ) {
   final normalized = [
     for (final attack in attacks ?? const <CharacterAttackData>[])
-      CharacterAttackData(
-        id: attack.id ?? _generateSyncId(),
-        name: _normalizedText(attack.name),
-        leadingAbility: attack.leadingAbility,
-        damage: _normalizedText(attack.damage),
-        customAttackBonus: attack.customAttackBonus ?? 0,
-        damageType: attack.damageType,
-        tags: _normalizedStringList(attack.tags),
-        description: _normalizedText(attack.description),
-        updatedAt: attack.updatedAt?.toUtc() ?? updatedAt,
-      ),
+      _normalizedAttack(attack, updatedAt),
   ];
   return normalized.isEmpty ? null : normalized;
+}
+
+CharacterAttackData _normalizedAttack(
+  CharacterAttackData attack,
+  DateTime? updatedAt,
+) {
+  final damageParts = _normalizedDamageParts(attack.damageParts);
+  final firstDamagePart = damageParts?.first;
+  return CharacterAttackData(
+    id: attack.id ?? _generateSyncId(),
+    name: _normalizedText(attack.name),
+    leadingAbility: attack.leadingAbility,
+    damage: firstDamagePart?.formula ?? _normalizedText(attack.damage),
+    customAttackBonus: attack.customAttackBonus ?? 0,
+    damageType: firstDamagePart?.damageType ?? attack.damageType,
+    damageParts: damageParts,
+    tags: _normalizedStringList(attack.tags),
+    description: _normalizedText(attack.description),
+    updatedAt: attack.updatedAt?.toUtc() ?? updatedAt,
+  );
+}
+
+List<DamagePartData>? _normalizedDamageParts(List<DamagePartData>? parts) {
+  final normalized = [
+    for (final part in parts ?? const <DamagePartData>[])
+      if (_hasDamagePartData(part))
+        DamagePartData(
+          formula: _normalizedText(part.formula),
+          damageType: part.damageType,
+          scaling: part.scaling,
+          notes: _normalizedText(part.notes),
+        ),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+bool _hasDamagePartData(DamagePartData part) {
+  return _normalizedText(part.formula) != null ||
+      part.damageType != null ||
+      part.scaling != null ||
+      _normalizedText(part.notes) != null;
 }
 
 List<CharacterFeatureOverrideData>? _normalizedFeatureOverrides(

@@ -35,6 +35,11 @@ classFeatureData:
   - add:
   - upsert:
   - delete:
+classSpellGrantData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
 classLevelData:
   - getAll:
   - add:

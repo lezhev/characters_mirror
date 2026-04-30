@@ -85,6 +85,7 @@ void main() {
       expect(attack.name, 'Dagger');
       expect(attack.damage, '1d4');
       expect(attack.damageType, DamageType.piercing);
+      expect(attack.damageParts, isNull);
       expect(attack.tags, ['finesse', 'light']);
       expect(attack.description, 'Small blade.');
     });

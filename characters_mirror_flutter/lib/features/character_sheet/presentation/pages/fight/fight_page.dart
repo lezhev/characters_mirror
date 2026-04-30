@@ -93,6 +93,7 @@ class FightPage extends ConsumerWidget {
                   attackBonusLabelBuilder: (attack) =>
                       formatAttackBonus(character, attack),
                   damageLabelBuilder: formatDamageLabel,
+                  damageRollValueBuilder: formatDamageRollValue,
                   rollVariables: characterRollVariables(character),
                   onAttackPressed: (index, attack) {
                     final isPlaceholder = attacks.isEmpty;

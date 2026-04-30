@@ -26,6 +26,7 @@ class _AdminPageState extends State<AdminPage> {
     'classlevel': ClassLevelRepository(),
     'classchoicegroup': ClassChoiceGroupRepository(),
     'classchoiceoption': ClassChoiceOptionRepository(),
+    'classspellgrant': ClassSpellGrantRepository(),
     'race': RaceRepository(),
     'subrace': SubraceRepository(),
     'subclass': SubclassRepository(),
@@ -49,6 +50,7 @@ class _AdminPageState extends State<AdminPage> {
     'classlevel',
     'classchoicegroup',
     'classchoiceoption',
+    'classspellgrant',
     'subclass',
     'subclassfeature',
     'race',
@@ -129,6 +131,9 @@ class _AdminPageState extends State<AdminPage> {
             break;
           case 'classchoiceoption':
             entity = ClassChoiceOptionData.fromJson(dataMap);
+            break;
+          case 'classspellgrant':
+            entity = ClassSpellGrantData.fromJson(dataMap);
             break;
           case 'race':
             entity = RaceData.fromJson(dataMap);

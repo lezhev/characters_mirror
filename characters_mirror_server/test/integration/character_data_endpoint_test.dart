@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
@@ -143,6 +145,90 @@ void main() {
     });
 
     test(
+        'save/get preserves attack damage parts and syncs legacy damage fields',
+        () async {
+      final ownerSession = authenticatedSession(306);
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Multi Damage Fighter',
+          attacks: [
+            CharacterAttackData(
+              name: 'Flame Strike',
+              leadingAbility: Ability.charisma,
+              damage: 'legacy',
+              damageType: DamageType.force,
+              damageParts: [
+                DamagePartData(
+                  formula: '4d6',
+                  damageType: DamageType.fire,
+                ),
+                DamagePartData(
+                  formula: '4d6',
+                  damageType: DamageType.radiant,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      final loaded = await endpoints.characterData.getCharacter(
+        ownerSession,
+        saved.id!,
+      );
+      final attack = loaded.attacks!.single;
+
+      expect(attack.damage, '4d6');
+      expect(attack.damageType, DamageType.fire);
+      expect(attack.damageParts, hasLength(2));
+      expect(attack.damageParts?.first.formula, '4d6');
+      expect(attack.damageParts?.first.damageType, DamageType.fire);
+      expect(attack.damageParts?.last.damageType, DamageType.radiant);
+    });
+
+    test('spell data preserves multiple damage parts in order', () async {
+      final saved = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'multi_damage_spell',
+          name: 'Multi Damage Spell',
+          damageDice: 'legacy',
+          damageType: DamageType.force,
+          damageParts: [
+            DamagePartData(
+              formula: '4d6',
+              damageType: DamageType.fire,
+              scaling: SpellScalingData(
+                mode: SpellScalingMode.slotLevel,
+                scalingBySlotLevel: const {6: '5d6'},
+              ),
+            ),
+            DamagePartData(
+              formula: '4d6',
+              damageType: DamageType.radiant,
+            ),
+          ],
+        ),
+      );
+
+      final session = sessionBuilder.build();
+      final loaded = await SpellData.db.findById(session, saved.id!);
+      await session.close();
+
+      expect(loaded?.damageDice, 'legacy');
+      expect(loaded?.damageType, DamageType.force);
+      expect(loaded?.damageParts, hasLength(2));
+      expect(loaded?.damageParts?.first.damageType, DamageType.fire);
+      expect(
+        loaded?.damageParts?.first.scaling?.scalingBySlotLevel,
+        const {6: '5d6'},
+      );
+      expect(loaded?.damageParts?.last.damageType, DamageType.radiant);
+    });
+
+    test(
         'save/get roundtrip preserves class and background choices and rebuilds derived data from canonical options',
         () async {
       final ownerSession = authenticatedSession(303);
@@ -277,13 +363,11 @@ void main() {
               sourceType: ChoiceSourceType.classData,
               sourceId: fixture.classData.id,
               sourceEntryId: fixture.equipment.classWeaponPick.id,
-              choiceOptionEntryId:
-                  fixture.equipment.classSimpleWeaponOption.id,
+              choiceOptionEntryId: fixture.equipment.classSimpleWeaponOption.id,
               selectionIndex: 0,
               resolutions: [
                 CharacterStartingEquipmentResolutionData(
-                  sourceLineEntryId:
-                      fixture.equipment.classWeaponAnySimple.id,
+                  sourceLineEntryId: fixture.equipment.classWeaponAnySimple.id,
                   catalogType: EquipmentCatalogType.weapon,
                   referenceKey: 'club',
                   quantity: 1,
@@ -817,6 +901,355 @@ void main() {
       expect(
         simpleWeaponOption.lines?.single.kind,
         StartingEquipmentLineKind.weaponCategory,
+      );
+    });
+
+    test(
+        'class feature upsert stores nested spell grants by spell reference key',
+        () async {
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Grant Authoring Class',
+          hitDieValue: 8,
+        ),
+      );
+      final spell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'grant_authoring_bless',
+          name: 'Grant Authoring Bless',
+          level: 1,
+          schoolValue: SpellSchool.enchantment,
+        ),
+      );
+
+      final feature = await endpoints.classFeatureData.upsert(
+        sessionBuilder,
+        ClassFeatureData(
+          parentClassId: classData.id!,
+          name: 'Prepared Feature Spells',
+          level: 2,
+          spellGrants: [
+            ClassSpellGrantData(
+              spellReferenceKey: 'grant_authoring_bless',
+              grantedAtLevel: 2,
+              alwaysPrepared: true,
+              notes: 'Feature spell.',
+            ),
+          ],
+        ),
+      );
+
+      expect(feature.spellGrants, hasLength(1));
+      expect(feature.spellGrants?.single.spellId, spell.id);
+      expect(feature.spellGrants?.single.spell?.referenceKey,
+          'grant_authoring_bless');
+
+      final allGrants = await endpoints.classSpellGrantData.getAll(
+        sessionBuilder,
+      );
+      final storedGrant = allGrants.singleWhere(
+        (grant) => grant.sourceFeatureId == feature.id,
+      );
+      expect(storedGrant.spellId, spell.id);
+      expect(storedGrant.alwaysPrepared, isTrue);
+    });
+
+    test('reference import stores class spell grant by spell reference key',
+        () async {
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Grant Import Class',
+          hitDieValue: 8,
+        ),
+      );
+      final feature = await endpoints.classFeatureData.upsert(
+        sessionBuilder,
+        ClassFeatureData(
+          parentClassId: classData.id!,
+          name: 'Imported Feature Spells',
+          level: 1,
+        ),
+      );
+      final spell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'grant_import_bless',
+          name: 'Grant Import Bless',
+          level: 1,
+          schoolValue: SpellSchool.enchantment,
+        ),
+      );
+
+      await endpoints.referenceData.insertJson(
+        sessionBuilder,
+        'classspellgrant',
+        jsonEncode({
+          'sourceFeatureId': feature.id,
+          'spellReferenceKey': 'grant_import_bless',
+          'grantedAtLevel': 1,
+          'alwaysPrepared': true,
+        }),
+      );
+
+      final allGrants = await endpoints.classSpellGrantData.getAll(
+        sessionBuilder,
+      );
+      final storedGrant = allGrants.singleWhere(
+        (grant) => grant.sourceFeatureId == feature.id,
+      );
+      expect(storedGrant.spellId, spell.id);
+      expect(storedGrant.spell?.referenceKey, 'grant_import_bless');
+    });
+
+    test(
+        'class step view includes class and subclass feature spell grants with nested spells',
+        () async {
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Grant View Class',
+          hitDieValue: 8,
+          subclassChoiceLevel: 1,
+        ),
+      );
+      final subclass = await endpoints.subclassData.upsert(
+        sessionBuilder,
+        SubclassData(
+          parentClassId: classData.id!,
+          name: 'Grant View Subclass',
+          levelRequired: 1,
+        ),
+      );
+      final classFeature = await endpoints.classFeatureData.upsert(
+        sessionBuilder,
+        ClassFeatureData(
+          parentClassId: classData.id!,
+          name: 'Class Grant Feature',
+          level: 2,
+        ),
+      );
+      final subclassFeature = await endpoints.subclassFeatureData.upsert(
+        sessionBuilder,
+        SubclassFeatureData(
+          parentSubclassId: subclass.id!,
+          name: 'Subclass Grant Feature',
+          level: 3,
+        ),
+      );
+      final bless = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'grant_view_bless',
+          name: 'Grant View Bless',
+          level: 1,
+          schoolValue: SpellSchool.enchantment,
+        ),
+      );
+      final shield = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'grant_view_shield',
+          name: 'Grant View Shield',
+          level: 1,
+          schoolValue: SpellSchool.abjuration,
+        ),
+      );
+
+      await endpoints.classSpellGrantData.upsert(
+        sessionBuilder,
+        ClassSpellGrantData(
+          sourceFeatureId: classFeature.id!,
+          spellReferenceKey: 'grant_view_bless',
+          grantedAtLevel: 2,
+          alwaysPrepared: true,
+        ),
+      );
+      await endpoints.classSpellGrantData.upsert(
+        sessionBuilder,
+        ClassSpellGrantData(
+          sourceSubclassFeatureId: subclassFeature.id!,
+          spellId: shield.id!,
+          grantedAtLevel: 3,
+          alwaysPrepared: true,
+        ),
+      );
+
+      final stepView = await endpoints.classData.getStepView(
+        sessionBuilder,
+        classData.id!,
+        selectedLevel: 3,
+        isStartingClass: true,
+        selectedSubclassId: subclass.id,
+      );
+
+      final nestedClassFeature = stepView.currentLevelFeatures!.singleWhere(
+        (feature) => feature.id == classFeature.id,
+      );
+      expect(nestedClassFeature.spellGrants, hasLength(1));
+      expect(nestedClassFeature.spellGrants?.single.spellId, bless.id);
+      expect(nestedClassFeature.spellGrants?.single.spell?.referenceKey,
+          'grant_view_bless');
+
+      final nestedSubclassFeature =
+          stepView.currentSubclassFeatures!.singleWhere(
+        (feature) => feature.id == subclassFeature.id,
+      );
+      expect(nestedSubclassFeature.spellGrants, hasLength(1));
+      expect(nestedSubclassFeature.spellGrants?.single.spell?.referenceKey,
+          'grant_view_shield');
+    });
+
+    test(
+        'derived data includes active always prepared class spell grants without saving them as selections',
+        () async {
+      final ownerSession = authenticatedSession(405);
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Fixture Cleric',
+          hitDieValue: 8,
+          subclassChoiceLevel: 1,
+        ),
+      );
+      final firstSubclass = await endpoints.subclassData.upsert(
+        sessionBuilder,
+        SubclassData(
+          parentClassId: classData.id!,
+          name: 'Fixture Life Domain',
+          levelRequired: 1,
+        ),
+      );
+      final secondSubclass = await endpoints.subclassData.upsert(
+        sessionBuilder,
+        SubclassData(
+          parentClassId: classData.id!,
+          name: 'Fixture War Domain',
+          levelRequired: 1,
+        ),
+      );
+      final domainFeature = await endpoints.subclassFeatureData.upsert(
+        sessionBuilder,
+        SubclassFeatureData(
+          parentSubclassId: firstSubclass.id!,
+          name: 'Domain Spells',
+          level: 3,
+          tags: const [FeatureTag.spellcasting],
+        ),
+      );
+      final otherDomainFeature = await endpoints.subclassFeatureData.upsert(
+        sessionBuilder,
+        SubclassFeatureData(
+          parentSubclassId: secondSubclass.id!,
+          name: 'Other Domain Spells',
+          level: 3,
+          tags: const [FeatureTag.spellcasting],
+        ),
+      );
+      final lesserRestoration = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'lesser_restoration',
+          name: 'Lesser Restoration',
+          level: 2,
+          schoolValue: SpellSchool.abjuration,
+        ),
+      );
+      final spiritualWeapon = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'spiritual_weapon',
+          name: 'Spiritual Weapon',
+          level: 2,
+          schoolValue: SpellSchool.evocation,
+        ),
+      );
+
+      final session = sessionBuilder.build();
+      try {
+        await ClassSpellGrantData.db.insertRow(
+          session,
+          ClassSpellGrantData(
+            spellId: lesserRestoration.id!,
+            sourceSubclassFeatureId: domainFeature.id!,
+            grantedAtLevel: 3,
+            alwaysPrepared: true,
+          ),
+        );
+        await ClassSpellGrantData.db.insertRow(
+          session,
+          ClassSpellGrantData(
+            spellId: spiritualWeapon.id!,
+            sourceSubclassFeatureId: otherDomainFeature.id!,
+            grantedAtLevel: 3,
+            alwaysPrepared: true,
+          ),
+        );
+        await ClassSpellGrantData.db.insertRow(
+          session,
+          ClassSpellGrantData(
+            spellId: spiritualWeapon.id!,
+            sourceClassId: classData.id!,
+            grantedAtLevel: 1,
+            alwaysPrepared: false,
+          ),
+        );
+      } finally {
+        await session.close();
+      }
+
+      Future<CharacterData> saveAndLoad(
+          SubclassData subclass, int level) async {
+        final classEntry = CharacterClassEntryData(
+          classData: classData,
+          subclass: subclass,
+          level: level,
+          isStartingClass: true,
+          classOrder: 0,
+          hpMode: HitPointMode.fixed,
+        );
+        final saved = await endpoints.characterData.saveCharacter(
+          ownerSession,
+          CharacterData(
+            name: 'Prepared Spell Fixture',
+            classEntries: [classEntry],
+            spellSelections: const [],
+          ),
+        );
+        return endpoints.characterData.getCharacter(ownerSession, saved.id!);
+      }
+
+      final beforeRequiredLevel = await saveAndLoad(firstSubclass, 2);
+      expect(
+        beforeRequiredLevel.derived?.alwaysPreparedSpellKeys,
+        isNot(contains('lesser_restoration')),
+      );
+
+      final matchingSubclass = await saveAndLoad(firstSubclass, 3);
+      expect(
+        matchingSubclass.derived?.alwaysPreparedSpellKeys,
+        contains('lesser_restoration'),
+      );
+      expect(
+        matchingSubclass.derived?.grantedSpellKeys,
+        contains('lesser_restoration'),
+      );
+      expect(
+        matchingSubclass.derived?.alwaysPreparedSpellKeys,
+        isNot(contains('spiritual_weapon')),
+      );
+      expect(matchingSubclass.spellSelections, isEmpty);
+
+      final changedSubclass = await saveAndLoad(secondSubclass, 3);
+      expect(
+        changedSubclass.derived?.alwaysPreparedSpellKeys,
+        isNot(contains('lesser_restoration')),
+      );
+      expect(
+        changedSubclass.derived?.alwaysPreparedSpellKeys,
+        contains('spiritual_weapon'),
       );
     });
 

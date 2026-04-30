@@ -6,6 +6,7 @@ fields:
   damage: String?
   customAttackBonus: int?
   damageType: DamageType?
+  damageParts: List<DamagePartData>?
   tags: List<String>?
   description: String?
   updatedAt: DateTime?

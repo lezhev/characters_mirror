@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../enums/ability.dart' as _i2;
 import '../../../enums/damage_type.dart' as _i3;
+import '../../../data/damage_part_data.dart' as _i4;
 
 abstract class CharacterAttackData implements _i1.SerializableModel {
   CharacterAttackData._({
@@ -21,6 +22,7 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
     this.damage,
     this.customAttackBonus,
     this.damageType,
+    this.damageParts,
     this.tags,
     this.description,
     this.updatedAt,
@@ -33,6 +35,7 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
     String? damage,
     int? customAttackBonus,
     _i3.DamageType? damageType,
+    List<_i4.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -52,6 +55,9 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
           ? null
           : _i3.DamageType.fromJson(
               (jsonSerialization['damageType'] as String)),
+      damageParts: (jsonSerialization['damageParts'] as List?)
+          ?.map((e) => _i4.DamagePartData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       tags: (jsonSerialization['tags'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -74,6 +80,8 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
 
   _i3.DamageType? damageType;
 
+  List<_i4.DamagePartData>? damageParts;
+
   List<String>? tags;
 
   String? description;
@@ -90,6 +98,7 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
     String? damage,
     int? customAttackBonus,
     _i3.DamageType? damageType,
+    List<_i4.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -103,6 +112,8 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
       if (damage != null) 'damage': damage,
       if (customAttackBonus != null) 'customAttackBonus': customAttackBonus,
       if (damageType != null) 'damageType': damageType?.toJson(),
+      if (damageParts != null)
+        'damageParts': damageParts?.toJson(valueToJson: (v) => v.toJson()),
       if (tags != null) 'tags': tags?.toJson(),
       if (description != null) 'description': description,
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
@@ -125,6 +136,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
     String? damage,
     int? customAttackBonus,
     _i3.DamageType? damageType,
+    List<_i4.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -135,6 +147,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
           damage: damage,
           customAttackBonus: customAttackBonus,
           damageType: damageType,
+          damageParts: damageParts,
           tags: tags,
           description: description,
           updatedAt: updatedAt,
@@ -151,6 +164,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
     Object? damage = _Undefined,
     Object? customAttackBonus = _Undefined,
     Object? damageType = _Undefined,
+    Object? damageParts = _Undefined,
     Object? tags = _Undefined,
     Object? description = _Undefined,
     Object? updatedAt = _Undefined,
@@ -165,6 +179,9 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
           ? customAttackBonus
           : this.customAttackBonus,
       damageType: damageType is _i3.DamageType? ? damageType : this.damageType,
+      damageParts: damageParts is List<_i4.DamagePartData>?
+          ? damageParts
+          : this.damageParts?.map((e0) => e0.copyWith()).toList(),
       tags: tags is List<String>? ? tags : this.tags?.map((e0) => e0).toList(),
       description: description is String? ? description : this.description,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,

@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
+import '../../../data/class_spell_grant_data.dart' as _i4;
 
 abstract class ClassFeatureData implements _i1.SerializableModel {
   ClassFeatureData._({
@@ -27,6 +28,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     this.updatedAt,
     this.tags,
     this.choiceGroupKey,
+    this.spellGrants,
   });
 
   factory ClassFeatureData({
@@ -42,6 +44,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   }) = _ClassFeatureDataImpl;
 
   factory ClassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -67,6 +70,10 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
           ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
+      spellGrants: (jsonSerialization['spellGrants'] as List?)
+          ?.map((e) =>
+              _i4.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -97,6 +104,8 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
 
   String? choiceGroupKey;
 
+  List<_i4.ClassSpellGrantData>? spellGrants;
+
   /// Returns a shallow copy of this [ClassFeatureData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -113,6 +122,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -129,6 +139,8 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (spellGrants != null)
+        'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -154,6 +166,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   }) : super._(
           id: id,
           parentClassId: parentClassId,
@@ -167,6 +180,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           updatedAt: updatedAt,
           tags: tags,
           choiceGroupKey: choiceGroupKey,
+          spellGrants: spellGrants,
         );
 
   /// Returns a shallow copy of this [ClassFeatureData]
@@ -186,6 +200,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     Object? updatedAt = _Undefined,
     Object? tags = _Undefined,
     Object? choiceGroupKey = _Undefined,
+    Object? spellGrants = _Undefined,
   }) {
     return ClassFeatureData(
       id: id is int? ? id : this.id,
@@ -205,6 +220,9 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           : this.tags?.map((e0) => e0).toList(),
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      spellGrants: spellGrants is List<_i4.ClassSpellGrantData>?
+          ? spellGrants
+          : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

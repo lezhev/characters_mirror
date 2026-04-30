@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/class/subclass_data.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
+import '../../../data/class_spell_grant_data.dart' as _i4;
 
 abstract class SubclassFeatureData implements _i1.SerializableModel {
   SubclassFeatureData._({
@@ -27,6 +28,8 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     this.updatedAt,
     this.tags,
     this.choiceGroupKey,
+    this.relatedTable,
+    this.spellGrants,
   });
 
   factory SubclassFeatureData({
@@ -42,6 +45,8 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    String? relatedTable,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   }) = _SubclassFeatureDataImpl;
 
   factory SubclassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -67,6 +72,11 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
           ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
+      relatedTable: jsonSerialization['relatedTable'] as String?,
+      spellGrants: (jsonSerialization['spellGrants'] as List?)
+          ?.map((e) =>
+              _i4.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -97,6 +107,10 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
 
   String? choiceGroupKey;
 
+  String? relatedTable;
+
+  List<_i4.ClassSpellGrantData>? spellGrants;
+
   /// Returns a shallow copy of this [SubclassFeatureData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -113,6 +127,8 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    String? relatedTable,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -129,6 +145,9 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (relatedTable != null) 'relatedTable': relatedTable,
+      if (spellGrants != null)
+        'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -154,6 +173,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    String? relatedTable,
+    List<_i4.ClassSpellGrantData>? spellGrants,
   }) : super._(
           id: id,
           parentSubclassId: parentSubclassId,
@@ -167,6 +188,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           updatedAt: updatedAt,
           tags: tags,
           choiceGroupKey: choiceGroupKey,
+          relatedTable: relatedTable,
+          spellGrants: spellGrants,
         );
 
   /// Returns a shallow copy of this [SubclassFeatureData]
@@ -186,6 +209,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     Object? updatedAt = _Undefined,
     Object? tags = _Undefined,
     Object? choiceGroupKey = _Undefined,
+    Object? relatedTable = _Undefined,
+    Object? spellGrants = _Undefined,
   }) {
     return SubclassFeatureData(
       id: id is int? ? id : this.id,
@@ -205,6 +230,10 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           : this.tags?.map((e0) => e0).toList(),
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      relatedTable: relatedTable is String? ? relatedTable : this.relatedTable,
+      spellGrants: spellGrants is List<_i4.ClassSpellGrantData>?
+          ? spellGrants
+          : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

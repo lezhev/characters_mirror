@@ -50,6 +50,7 @@ class ClassDataEndpoint extends Endpoint {
       session,
       where: (t) => t.parentClassId.equals(classId),
       orderBy: (t) => t.level,
+      include: _classFeatureInclude(),
     );
     final subclasses = await SubclassData.db.find(
       session,
@@ -62,6 +63,7 @@ class ClassDataEndpoint extends Endpoint {
             session,
             where: (t) => t.parentSubclassId.equals(selectedSubclassId),
             orderBy: (t) => t.level,
+            include: _subclassFeatureInclude(),
           );
     final progression = await ClassLevelData.db.find(
       session,
@@ -142,15 +144,21 @@ class ClassDataEndpoint extends Endpoint {
     return ClassStepView(
       classData: classData,
       selectedLevel: selectedLevel,
-      currentLevelFeatures:
-          features.where((feature) => feature.level <= selectedLevel).toList(),
-      futureLevelFeatures:
-          features.where((feature) => feature.level > selectedLevel).toList(),
+      currentLevelFeatures: features
+          .where((feature) => feature.level <= selectedLevel)
+          .map(_normalizeClassFeature)
+          .toList(),
+      futureLevelFeatures: features
+          .where((feature) => feature.level > selectedLevel)
+          .map(_normalizeClassFeature)
+          .toList(),
       currentSubclassFeatures: subclassFeatures
           .where((feature) => feature.level <= selectedLevel)
+          .map(_normalizeSubclassFeature)
           .toList(),
       futureSubclassFeatures: subclassFeatures
           .where((feature) => feature.level > selectedLevel)
+          .map(_normalizeSubclassFeature)
           .toList(),
       subclassChoice: ClassStepSubclassChoiceView(
         requiredLevel: classData.subclassChoiceLevel,
@@ -319,37 +327,95 @@ int _compareSpells(SpellData left, SpellData right) {
 
 class ClassFeatureDataEndpoint extends Endpoint {
   Future<List<ClassFeatureData>> getAll(Session session) async {
-    return ClassFeatureData.db.find(session);
+    final rows = await ClassFeatureData.db.find(
+      session,
+      include: _classFeatureInclude(),
+    );
+    return rows.map(_normalizeClassFeature).toList();
   }
 
   Future<ClassFeatureData> add(Session session, ClassFeatureData item) async {
-    _stampForInsert(item);
-    return ClassFeatureData.db.insertRow(session, item);
+    final spellGrants = item.spellGrants;
+    final row = item.copyWith(spellGrants: null);
+    _stampForInsert(row);
+    final saved = await ClassFeatureData.db.insertRow(session, row);
+    await _upsertClassFeatureSpellGrants(
+      session,
+      saved.id!,
+      spellGrants,
+    );
+    return _loadClassFeature(session, saved.id!);
   }
 
   Future<ClassFeatureData> upsert(
     Session session,
     ClassFeatureData feature,
   ) async {
-    return _upsertById(
+    final spellGrants = feature.spellGrants;
+    final row = feature.copyWith(spellGrants: null);
+    final saved = await _upsertById(
       session,
-      feature,
+      row,
       findExisting: () => ClassFeatureData.db.find(
         session,
-        where: (t) => t.id.equals(feature.id),
+        where: (t) => t.id.equals(row.id),
         limit: 1,
       ),
-      insert: () => ClassFeatureData.db.insertRow(session, feature),
+      insert: () => ClassFeatureData.db.insertRow(session, row),
       update: () async {
-        await ClassFeatureData.db.updateRow(session, feature);
-        return feature;
+        await ClassFeatureData.db.updateRow(session, row);
+        return row;
       },
     );
+    await _upsertClassFeatureSpellGrants(
+      session,
+      saved.id!,
+      spellGrants,
+    );
+    return _loadClassFeature(session, saved.id!);
   }
 
   Future<void> delete(Session session, int id) async {
     await ClassFeatureData.db
         .deleteWhere(session, where: (t) => t.id.equals(id));
+  }
+}
+
+class ClassSpellGrantDataEndpoint extends Endpoint {
+  Future<List<ClassSpellGrantData>> getAll(Session session) async {
+    return ClassSpellGrantData.db.find(
+      session,
+      include: ClassSpellGrantData.include(
+        spell: SpellData.include(),
+        sourceClass: ClassData.include(),
+        sourceSubclass: SubclassData.include(),
+        sourceFeature: ClassFeatureData.include(),
+        sourceSubclassFeature: SubclassFeatureData.include(),
+      ),
+    );
+  }
+
+  Future<ClassSpellGrantData> add(
+    Session session,
+    ClassSpellGrantData item,
+  ) async {
+    await _prepareClassSpellGrantForWrite(session, item);
+    _stampForInsert(item);
+    return ClassSpellGrantData.db.insertRow(session, item);
+  }
+
+  Future<ClassSpellGrantData> upsert(
+    Session session,
+    ClassSpellGrantData item,
+  ) async {
+    return _upsertClassSpellGrant(session, item);
+  }
+
+  Future<void> delete(Session session, int id) async {
+    await ClassSpellGrantData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
   }
 }
 
@@ -501,35 +567,55 @@ class ClassChoiceOptionDataEndpoint extends Endpoint {
 
 class SubclassFeatureDataEndpoint extends Endpoint {
   Future<List<SubclassFeatureData>> getAll(Session session) async {
-    return SubclassFeatureData.db.find(session);
+    final rows = await SubclassFeatureData.db.find(
+      session,
+      include: _subclassFeatureInclude(),
+    );
+    return rows.map(_normalizeSubclassFeature).toList();
   }
 
   Future<SubclassFeatureData> add(
     Session session,
     SubclassFeatureData item,
   ) async {
-    _stampForInsert(item);
-    return SubclassFeatureData.db.insertRow(session, item);
+    final spellGrants = item.spellGrants;
+    final row = item.copyWith(spellGrants: null);
+    _stampForInsert(row);
+    final saved = await SubclassFeatureData.db.insertRow(session, row);
+    await _upsertSubclassFeatureSpellGrants(
+      session,
+      saved.id!,
+      spellGrants,
+    );
+    return _loadSubclassFeature(session, saved.id!);
   }
 
   Future<SubclassFeatureData> upsert(
     Session session,
     SubclassFeatureData subclassFeature,
   ) async {
-    return _upsertById(
+    final spellGrants = subclassFeature.spellGrants;
+    final row = subclassFeature.copyWith(spellGrants: null);
+    final saved = await _upsertById(
       session,
-      subclassFeature,
+      row,
       findExisting: () => SubclassFeatureData.db.find(
         session,
-        where: (t) => t.id.equals(subclassFeature.id),
+        where: (t) => t.id.equals(row.id),
         limit: 1,
       ),
-      insert: () => SubclassFeatureData.db.insertRow(session, subclassFeature),
+      insert: () => SubclassFeatureData.db.insertRow(session, row),
       update: () async {
-        await SubclassFeatureData.db.updateRow(session, subclassFeature);
-        return subclassFeature;
+        await SubclassFeatureData.db.updateRow(session, row);
+        return row;
       },
     );
+    await _upsertSubclassFeatureSpellGrants(
+      session,
+      saved.id!,
+      spellGrants,
+    );
+    return _loadSubclassFeature(session, saved.id!);
   }
 
   Future<void> delete(Session session, int id) async {
@@ -582,4 +668,196 @@ Future<T> _requireById<T>(
     throw Exception('$entityName with id=$id was not found.');
   }
   return rows.first;
+}
+
+void _validateClassSpellGrant(ClassSpellGrantData item) {
+  if (item.spellId == null || item.spellId! <= 0) {
+    throw Exception(
+      'ClassSpellGrantData must reference a spell by spellId or spellReferenceKey.',
+    );
+  }
+
+  final hasSource = item.sourceClassId != null ||
+      item.sourceSubclassId != null ||
+      item.sourceFeatureId != null ||
+      item.sourceSubclassFeatureId != null;
+  if (!hasSource) {
+    throw Exception(
+      'ClassSpellGrantData must reference a class, subclass, class feature, or subclass feature.',
+    );
+  }
+}
+
+ClassFeatureDataInclude _classFeatureInclude() {
+  return ClassFeatureData.include(
+    spellGrants: ClassSpellGrantData.includeList(
+      include: ClassSpellGrantData.include(
+        spell: SpellData.include(),
+      ),
+    ),
+  );
+}
+
+SubclassFeatureDataInclude _subclassFeatureInclude() {
+  return SubclassFeatureData.include(
+    spellGrants: ClassSpellGrantData.includeList(
+      include: ClassSpellGrantData.include(
+        spell: SpellData.include(),
+      ),
+    ),
+  );
+}
+
+ClassFeatureData _normalizeClassFeature(ClassFeatureData feature) {
+  final spellGrants = [
+    ...?feature.spellGrants,
+  ]..sort(_compareClassSpellGrants);
+  return feature.copyWith(spellGrants: spellGrants);
+}
+
+SubclassFeatureData _normalizeSubclassFeature(SubclassFeatureData feature) {
+  final spellGrants = [
+    ...?feature.spellGrants,
+  ]..sort(_compareClassSpellGrants);
+  return feature.copyWith(spellGrants: spellGrants);
+}
+
+Future<ClassFeatureData> _loadClassFeature(Session session, int id) async {
+  final row = await ClassFeatureData.db.findById(
+    session,
+    id,
+    include: _classFeatureInclude(),
+  );
+  if (row == null) {
+    throw Exception('ClassFeatureData with id=$id was not found.');
+  }
+  return _normalizeClassFeature(row);
+}
+
+Future<SubclassFeatureData> _loadSubclassFeature(
+    Session session, int id) async {
+  final row = await SubclassFeatureData.db.findById(
+    session,
+    id,
+    include: _subclassFeatureInclude(),
+  );
+  if (row == null) {
+    throw Exception('SubclassFeatureData with id=$id was not found.');
+  }
+  return _normalizeSubclassFeature(row);
+}
+
+Future<void> _upsertClassFeatureSpellGrants(
+  Session session,
+  int featureId,
+  List<ClassSpellGrantData>? spellGrants,
+) async {
+  if (spellGrants == null) {
+    return;
+  }
+
+  for (final grant in spellGrants) {
+    await _upsertClassSpellGrant(
+      session,
+      grant.copyWith(
+        sourceClassId: null,
+        sourceSubclassId: null,
+        sourceFeatureId: featureId,
+        sourceSubclassFeatureId: null,
+      ),
+      findByNaturalKey: true,
+    );
+  }
+}
+
+Future<void> _upsertSubclassFeatureSpellGrants(
+  Session session,
+  int featureId,
+  List<ClassSpellGrantData>? spellGrants,
+) async {
+  if (spellGrants == null) {
+    return;
+  }
+
+  for (final grant in spellGrants) {
+    await _upsertClassSpellGrant(
+      session,
+      grant.copyWith(
+        sourceClassId: null,
+        sourceSubclassId: null,
+        sourceFeatureId: null,
+        sourceSubclassFeatureId: featureId,
+      ),
+      findByNaturalKey: true,
+    );
+  }
+}
+
+Future<ClassSpellGrantData> _upsertClassSpellGrant(
+  Session session,
+  ClassSpellGrantData item, {
+  bool findByNaturalKey = false,
+}) async {
+  await _prepareClassSpellGrantForWrite(session, item);
+  return _upsertById(
+    session,
+    item,
+    findExisting: () {
+      if (item.id != null || !findByNaturalKey) {
+        return ClassSpellGrantData.db.find(
+          session,
+          where: (t) => t.id.equals(item.id),
+          limit: 1,
+        );
+      }
+      return ClassSpellGrantData.db.find(
+        session,
+        where: (t) =>
+            t.spellId.equals(item.spellId) &
+            t.sourceClassId.equals(item.sourceClassId) &
+            t.sourceSubclassId.equals(item.sourceSubclassId) &
+            t.sourceFeatureId.equals(item.sourceFeatureId) &
+            t.sourceSubclassFeatureId.equals(item.sourceSubclassFeatureId) &
+            t.grantedAtLevel.equals(item.grantedAtLevel),
+        limit: 1,
+      );
+    },
+    insert: () => ClassSpellGrantData.db.insertRow(session, item),
+    update: () async {
+      await ClassSpellGrantData.db.updateRow(session, item);
+      return item;
+    },
+  );
+}
+
+Future<void> _prepareClassSpellGrantForWrite(
+  Session session,
+  ClassSpellGrantData item,
+) async {
+  final spellReferenceKey = item.spellReferenceKey?.trim();
+  if ((item.spellId == null || item.spellId! <= 0) &&
+      spellReferenceKey != null &&
+      spellReferenceKey.isNotEmpty) {
+    final spells = await SpellData.db.find(
+      session,
+      where: (t) => t.referenceKey.equals(spellReferenceKey),
+      limit: 1,
+    );
+    if (spells.isEmpty || spells.first.id == null) {
+      throw Exception(
+        'SpellData with referenceKey="$spellReferenceKey" was not found.',
+      );
+    }
+    item.spellId = spells.first.id;
+  }
+  _validateClassSpellGrant(item);
+}
+
+int _compareClassSpellGrants(
+  ClassSpellGrantData a,
+  ClassSpellGrantData b,
+) {
+  final levelCompare = (a.grantedAtLevel ?? 1).compareTo(b.grantedAtLevel ?? 1);
+  if (levelCompare != 0) return levelCompare;
+  return (a.spell?.name ?? '').compareTo(b.spell?.name ?? '');
 }
