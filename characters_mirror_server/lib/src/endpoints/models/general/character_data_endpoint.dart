@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 
+import 'starting_equipment_endpoints.dart';
+
 class CharacterDataEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
@@ -853,6 +855,20 @@ Future<void> _deleteStartingEquipmentRecords(
   Session session,
   int characterId,
 ) async {
+  final selections = await CharacterStartingEquipmentSelectionRecord.db.find(
+    session,
+    where: (t) => t.characterId.equals(characterId),
+  );
+  final selectionIds = {
+    for (final selection in selections)
+      if (selection.id != null) selection.id!,
+  };
+  if (selectionIds.isNotEmpty) {
+    await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
+      session,
+      where: (t) => t.selectionId.inSet(selectionIds),
+    );
+  }
   await CharacterStartingEquipmentSelectionRecord.db.deleteWhere(
     session,
     where: (t) => t.characterId.equals(characterId),
@@ -884,13 +900,10 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
       character: characterRecord,
       sourceType: selection.sourceType,
       sourceId: selection.sourceId,
-      blockKey: selection.blockKey,
-      optionKey: selection.optionKey,
+      sourceEntryId: selection.sourceEntryId,
+      choiceOptionEntryId: selection.choiceOptionEntryId,
+      isSelected: selection.isSelected,
       selectionIndex: selection.selectionIndex,
-      resolutions: _normalizedStartingEquipmentResolutions(
-        selection.resolutions,
-        selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
-      ),
       updatedAt: selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
     final savedSelection = existingSelection == null
@@ -904,6 +917,14 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
           );
     if (savedSelection.id != null) {
       keepSelectionRowIds.add(savedSelection.id!);
+      await _upsertStartingEquipmentResolutionRecords(
+        session,
+        savedSelection,
+        _normalizedStartingEquipmentResolutions(
+          selection.resolutions,
+          selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
+        ) ?? const <CharacterStartingEquipmentResolutionData>[],
+      );
     }
   }
   await _deleteMissingStartingEquipmentSelections(
@@ -911,6 +932,61 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
     characterRecord.id!,
     keepSelectionRowIds,
   );
+}
+
+Future<void> _upsertStartingEquipmentResolutionRecords(
+  Session session,
+  CharacterStartingEquipmentSelectionRecord selectionRecord,
+  List<CharacterStartingEquipmentResolutionData> resolutions,
+) async {
+  final existingResolutions =
+      await CharacterStartingEquipmentResolutionRecord.db.find(
+    session,
+    where: (t) => t.selectionId.equals(selectionRecord.id),
+  );
+  final existingBySyncId = {
+    for (final record in existingResolutions)
+      if (record.syncId != null) record.syncId!: record,
+  };
+  final keepRowIds = <int>{};
+  for (final resolution in resolutions) {
+    final syncId = resolution.id ?? _generateSyncId();
+    final existingRecord = existingBySyncId[syncId];
+    final nextRecord = CharacterStartingEquipmentResolutionRecord(
+      id: existingRecord?.id,
+      syncId: syncId,
+      selectionId: selectionRecord.id!,
+      selection: selectionRecord,
+      sourceLineEntryId: resolution.sourceLineEntryId,
+      catalogType: resolution.catalogType,
+      referenceKey: resolution.referenceKey,
+      quantity: resolution.quantity,
+      updatedAt: resolution.updatedAt?.toUtc() ?? selectionRecord.updatedAt,
+    );
+    final saved = existingRecord == null
+        ? await CharacterStartingEquipmentResolutionRecord.db.insertRow(
+            session,
+            nextRecord,
+          )
+        : await CharacterStartingEquipmentResolutionRecord.db.updateRow(
+            session,
+            nextRecord,
+          );
+    if (saved.id != null) {
+      keepRowIds.add(saved.id!);
+    }
+  }
+
+  final removableIds = [
+    for (final record in existingResolutions)
+      if (record.id != null && !keepRowIds.contains(record.id)) record.id!,
+  ];
+  if (removableIds.isNotEmpty) {
+    await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
+      session,
+      where: (t) => t.id.inSet(removableIds.toSet()),
+    );
+  }
 }
 
 CharacterClassEntryRecord? _matchSavedEntryRecord(
@@ -1044,6 +1120,10 @@ Future<void> _deleteMissingStartingEquipmentSelections(
   if (removableSelectionIds.isEmpty) {
     return;
   }
+  await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
+    session,
+    where: (t) => t.selectionId.inSet(removableSelectionIds.toSet()),
+  );
   await CharacterStartingEquipmentSelectionRecord.db.deleteWhere(
     session,
     where: (t) => t.id.inSet(removableSelectionIds.toSet()),
@@ -1233,7 +1313,7 @@ List<CharacterStartingEquipmentSelectionData>?
         in selections ?? const <CharacterStartingEquipmentSelectionData>[])
       selection.copyWith(
         id: selection.id ?? _generateSyncId(),
-        optionKey: _normalizedTextOrNull(selection.optionKey),
+        isSelected: selection.isSelected,
         resolutions: _normalizedStartingEquipmentResolutions(
           selection.resolutions,
           updatedAt,
@@ -1254,7 +1334,7 @@ List<CharacterStartingEquipmentResolutionData>?
         in resolutions ?? const <CharacterStartingEquipmentResolutionData>[])
       CharacterStartingEquipmentResolutionData(
         id: resolution.id ?? _generateSyncId(),
-        lineKey: _normalizedTextOrNull(resolution.lineKey),
+        sourceLineEntryId: resolution.sourceLineEntryId,
         catalogType: resolution.catalogType,
         referenceKey: _normalizedTextOrNull(resolution.referenceKey),
         quantity: _normalizedPositiveQuantity(resolution.quantity),
@@ -1486,10 +1566,22 @@ Future<CharacterData> _buildCharacterAggregate(
     where: (t) => t.characterId.equals(record.id),
     orderBy: (t) => t.selectionIndex,
   );
-  final startingEquipmentSelections = [
-    for (final selection in startingEquipmentSelectionRecords)
-      _toCharacterStartingEquipmentSelectionData(selection),
-  ]..sort(_compareStartingEquipmentSelections);
+  final startingEquipmentSelections = <CharacterStartingEquipmentSelectionData>[];
+  for (final selection in startingEquipmentSelectionRecords) {
+    final resolutionRecords =
+        await CharacterStartingEquipmentResolutionRecord.db.find(
+      session,
+      where: (t) => t.selectionId.equals(selection.id),
+      orderBy: (t) => t.id,
+    );
+    startingEquipmentSelections.add(
+      _toCharacterStartingEquipmentSelectionData(
+        selection,
+        resolutionRecords,
+      ),
+    );
+  }
+  startingEquipmentSelections.sort(_compareStartingEquipmentSelections);
 
   final character = _toCharacterData(record).copyWith(
     classEntries: entries,
@@ -1624,18 +1716,37 @@ CharacterSpellSelectionData _toCharacterSpellSelectionData(
 CharacterStartingEquipmentSelectionData
     _toCharacterStartingEquipmentSelectionData(
   CharacterStartingEquipmentSelectionRecord record,
+  List<CharacterStartingEquipmentResolutionRecord> resolutionRecords,
 ) {
-  final resolutions = [...?record.resolutions]
+  final resolutions = [
+    for (final resolution in resolutionRecords)
+      _toCharacterStartingEquipmentResolutionData(resolution),
+  ]
     ..sort(_compareStartingEquipmentResolutions);
 
   return CharacterStartingEquipmentSelectionData(
     id: record.syncId,
     sourceType: record.sourceType,
     sourceId: record.sourceId,
-    blockKey: record.blockKey,
-    optionKey: record.optionKey,
+    sourceEntryId: record.sourceEntryId,
+    choiceOptionEntryId: record.choiceOptionEntryId,
+    isSelected: record.isSelected,
     selectionIndex: record.selectionIndex,
     resolutions: resolutions,
+    updatedAt: record.updatedAt,
+  );
+}
+
+CharacterStartingEquipmentResolutionData
+    _toCharacterStartingEquipmentResolutionData(
+  CharacterStartingEquipmentResolutionRecord record,
+) {
+  return CharacterStartingEquipmentResolutionData(
+    id: record.syncId,
+    sourceLineEntryId: record.sourceLineEntryId,
+    catalogType: record.catalogType,
+    referenceKey: record.referenceKey,
+    quantity: record.quantity,
     updatedAt: record.updatedAt,
   );
 }
@@ -2167,14 +2278,10 @@ class _ResolvedStartingEquipmentSources {
 
 class _StartingEquipmentSourceBlock {
   const _StartingEquipmentSourceBlock({
-    required this.sourceType,
-    required this.sourceId,
-    required this.block,
+    required this.blockView,
   });
 
-  final ChoiceSourceType sourceType;
-  final int sourceId;
-  final StartingEquipmentBlockData block;
+  final StartingEquipmentBlockView blockView;
 }
 
 class _GrantedEquipmentAccumulator {
@@ -2560,14 +2667,18 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
   final accumulated = <String, _GrantedEquipmentAccumulator>{};
 
   for (final sourceBlock in resolvedSources.blocks) {
-    final block = sourceBlock.block;
+    final blockView = sourceBlock.blockView;
+    final block = blockView.block;
+    if (block == null) {
+      continue;
+    }
     final sourceSelections = _matchingStartingEquipmentSelections(
       selections,
-      sourceType: sourceBlock.sourceType,
-      sourceId: sourceBlock.sourceId,
       block: block,
     );
-    final blockLines = _sortedStartingEquipmentLines(block.fixedLines);
+    final blockLines = _sortedStartingEquipmentLines(
+      block.fixedLines ?? blockView.fixedLines,
+    );
 
     if (block.kind == StartingEquipmentBlockKind.choice) {
       await _applyStartingEquipmentLines(
@@ -2578,27 +2689,30 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
       );
 
       for (final selection in sourceSelections) {
-        final optionKey = _normalizedTextOrNull(selection.optionKey);
-        if (optionKey == null) {
+        if (selection.isSelected == false) {
           continue;
         }
-
-        final option = _startingEquipmentOptionForKey(
-          block.options,
-          optionKey,
+        final optionView = _startingEquipmentOptionForEntryId(
+          blockView.options,
+          selection.choiceOptionEntryId,
         );
-        if (option == null) {
+        if (optionView == null) {
           continue;
         }
 
         await _applyStartingEquipmentLines(
           session,
-          _sortedStartingEquipmentLines(option.lines),
+          _sortedStartingEquipmentLines(
+            optionView.option?.lines ?? optionView.lines,
+          ),
           selection.resolutions ??
               const <CharacterStartingEquipmentResolutionData>[],
           accumulated,
         );
       }
+      continue;
+    }
+    if (sourceSelections.any((selection) => selection.isSelected == false)) {
       continue;
     }
 
@@ -2649,9 +2763,10 @@ Future<_ResolvedStartingEquipmentSources> _resolveStartingEquipmentSources(
   if (startingClassId != null) {
     sourceBlocks.addAll(
       _sourceBlocksFor(
-        sourceType: ChoiceSourceType.classData,
-        sourceId: startingClassId,
-        blocks: startingClass?.startingEquipmentBlocks,
+        await startingEquipmentBlockViews(
+          session,
+          sourceClassId: startingClassId,
+        ),
       ),
     );
   }
@@ -2661,44 +2776,39 @@ Future<_ResolvedStartingEquipmentSources> _resolveStartingEquipmentSources(
   if (backgroundId != null) {
     sourceBlocks.addAll(
       _sourceBlocksFor(
-        sourceType: ChoiceSourceType.background,
-        sourceId: backgroundId,
-        blocks: background?.startingEquipmentBlocks,
+        await startingEquipmentBlockViews(
+          session,
+          sourceBackgroundId: backgroundId,
+        ),
       ),
     );
   }
 
   sourceBlocks.sort((a, b) {
-    final sourceCompare = a.sourceType.name.compareTo(b.sourceType.name);
-    if (sourceCompare != 0) return sourceCompare;
-    final idCompare = a.sourceId.compareTo(b.sourceId);
-    if (idCompare != 0) return idCompare;
-    return (a.block.orderIndex ?? 0).compareTo(b.block.orderIndex ?? 0);
+    return (a.blockView.block?.orderIndex ?? 0)
+        .compareTo(b.blockView.block?.orderIndex ?? 0);
   });
 
   return _ResolvedStartingEquipmentSources(blocks: sourceBlocks);
 }
 
-List<_StartingEquipmentSourceBlock> _sourceBlocksFor({
-  required ChoiceSourceType sourceType,
-  required int sourceId,
-  required List<StartingEquipmentBlockData>? blocks,
-}) {
+List<_StartingEquipmentSourceBlock> _sourceBlocksFor(
+  List<StartingEquipmentBlockView> blockViews,
+) {
   final result = <_StartingEquipmentSourceBlock>[];
-  for (final block in blocks ?? const <StartingEquipmentBlockData>[]) {
-    if (_normalizedTextOrNull(block.blockKey) == null) {
+  for (final blockView in blockViews) {
+    if (blockView.block?.entryId == null) {
       continue;
     }
     result.add(
       _StartingEquipmentSourceBlock(
-        sourceType: sourceType,
-        sourceId: sourceId,
-        block: block,
+        blockView: blockView,
       ),
     );
   }
   result.sort(
-    (a, b) => (a.block.orderIndex ?? 0).compareTo(b.block.orderIndex ?? 0),
+    (a, b) => (a.blockView.block?.orderIndex ?? 0)
+        .compareTo(b.blockView.block?.orderIndex ?? 0),
   );
   return result;
 }
@@ -2706,30 +2816,29 @@ List<_StartingEquipmentSourceBlock> _sourceBlocksFor({
 List<CharacterStartingEquipmentSelectionData>
     _matchingStartingEquipmentSelections(
   List<CharacterStartingEquipmentSelectionData> selections, {
-  required ChoiceSourceType sourceType,
-  required int sourceId,
   required StartingEquipmentBlockData block,
 }) {
-  final blockKey = _normalizedTextOrNull(block.blockKey);
-  if (blockKey == null) {
+  final sourceEntryId = block.entryId;
+  if (sourceEntryId == null) {
     return const <CharacterStartingEquipmentSelectionData>[];
   }
 
   return [
     for (final selection in selections)
-      if (selection.sourceType == sourceType &&
-          selection.sourceId == sourceId &&
-          _normalizedTextOrNull(selection.blockKey) == blockKey)
+      if (selection.sourceEntryId == sourceEntryId)
         selection,
   ]..sort(_compareStartingEquipmentSelections);
 }
 
-StartingEquipmentOptionData? _startingEquipmentOptionForKey(
-  List<StartingEquipmentOptionData>? options,
-  String optionKey,
+StartingEquipmentOptionView? _startingEquipmentOptionForEntryId(
+  List<StartingEquipmentOptionView>? options,
+  int? entryId,
 ) {
-  for (final option in options ?? const <StartingEquipmentOptionData>[]) {
-    if (_normalizedTextOrNull(option.optionKey) == optionKey) {
+  if (entryId == null) {
+    return null;
+  }
+  for (final option in options ?? const <StartingEquipmentOptionView>[]) {
+    if (option.option?.entryId == entryId) {
       return option;
     }
   }
@@ -2748,7 +2857,7 @@ List<CharacterStartingEquipmentResolutionData> _collectBlockLevelResolutions(
 ) {
   final resolutions = <CharacterStartingEquipmentResolutionData>[];
   for (final selection in selections) {
-    if (_normalizedTextOrNull(selection.optionKey) != null) {
+    if (selection.choiceOptionEntryId != null) {
       continue;
     }
     resolutions.addAll(
@@ -2767,13 +2876,13 @@ Future<void> _applyStartingEquipmentLines(
   Map<String, _GrantedEquipmentAccumulator> accumulated,
 ) async {
   final resolutionsByLineKey =
-      <String, CharacterStartingEquipmentResolutionData>{};
+      <int, CharacterStartingEquipmentResolutionData>{};
   for (final resolution in resolutions) {
-    final lineKey = _normalizedTextOrNull(resolution.lineKey);
-    if (lineKey == null) {
+    final lineEntryId = resolution.sourceLineEntryId;
+    if (lineEntryId == null) {
       continue;
     }
-    resolutionsByLineKey[lineKey] = resolution;
+    resolutionsByLineKey[lineEntryId] = resolution;
   }
 
   for (final line in lines) {
@@ -2788,16 +2897,20 @@ Future<void> _applyStartingEquipmentLines(
           accumulated,
           catalogType: catalogType,
           referenceKey: referenceKey,
-          displayText: _normalizedTextOrNull(line.displayText) ?? referenceKey,
+          displayText: await _catalogRefDisplayText(
+            session,
+            catalogType,
+            referenceKey,
+          ),
           quantity: _normalizedPositiveQuantity(line.quantity),
         );
         break;
       case StartingEquipmentLineKind.weaponCategory:
-        final lineKey = _normalizedTextOrNull(line.lineKey);
-        if (lineKey == null) {
+        final lineEntryId = line.entryId;
+        if (lineEntryId == null) {
           continue;
         }
-        final resolution = resolutionsByLineKey[lineKey];
+        final resolution = resolutionsByLineKey[lineEntryId];
         if (resolution == null) {
           continue;
         }
@@ -2815,11 +2928,11 @@ Future<void> _applyStartingEquipmentLines(
         );
         break;
       case StartingEquipmentLineKind.itemCategory:
-        final lineKey = _normalizedTextOrNull(line.lineKey);
-        if (lineKey == null) {
+        final lineEntryId = line.entryId;
+        if (lineEntryId == null) {
           continue;
         }
-        final resolution = resolutionsByLineKey[lineKey];
+        final resolution = resolutionsByLineKey[lineEntryId];
         if (resolution == null) {
           continue;
         }
@@ -2839,6 +2952,43 @@ Future<void> _applyStartingEquipmentLines(
       case null:
         continue;
     }
+  }
+}
+
+Future<String> _catalogRefDisplayText(
+  Session session,
+  EquipmentCatalogType catalogType,
+  String referenceKey,
+) async {
+  switch (catalogType) {
+    case EquipmentCatalogType.weapon:
+      final rows = await WeaponData.db.find(
+        session,
+        where: (t) => t.referenceKey.equals(referenceKey),
+        limit: 1,
+      );
+      return rows.isEmpty
+          ? referenceKey
+          : _normalizedTextOrNull(rows.first.name) ?? referenceKey;
+    case EquipmentCatalogType.armor:
+      final rows = await ArmorData.db.find(
+        session,
+        where: (t) => t.referenceKey.equals(referenceKey),
+        limit: 1,
+      );
+      return rows.isEmpty
+          ? referenceKey
+          : _normalizedTextOrNull(rows.first.name) ?? referenceKey;
+    case EquipmentCatalogType.item:
+    case EquipmentCatalogType.magicItem:
+      final rows = await ItemData.db.find(
+        session,
+        where: (t) => t.referenceKey.equals(referenceKey),
+        limit: 1,
+      );
+      return rows.isEmpty
+          ? referenceKey
+          : _normalizedTextOrNull(rows.first.name) ?? referenceKey;
   }
 }
 
@@ -2874,14 +3024,14 @@ Future<_GrantedEquipmentAccumulator> _resolveWeaponCategorySelection(
 ) async {
   if (resolution.catalogType != EquipmentCatalogType.weapon) {
     throw Exception(
-      'Starting equipment line "${line.lineKey}" requires a weapon resolution.',
+      'Starting equipment line "${line.entryId}" requires a weapon resolution.',
     );
   }
 
   final referenceKey = _normalizedTextOrNull(resolution.referenceKey);
   if (referenceKey == null) {
     throw Exception(
-      'Starting equipment line "${line.lineKey}" requires weapon referenceKey.',
+      'Starting equipment line "${line.entryId}" requires weapon referenceKey.',
     );
   }
 
@@ -2900,7 +3050,7 @@ Future<_GrantedEquipmentAccumulator> _resolveWeaponCategorySelection(
   final allowed = line.allowedWeaponCategories ?? const <WeaponCategory>[];
   if (allowed.isNotEmpty && !allowed.contains(weapon.category)) {
     throw Exception(
-      'Weapon "$referenceKey" is not allowed for starting equipment line "${line.lineKey}".',
+      'Weapon "$referenceKey" is not allowed for starting equipment line "${line.entryId}".',
     );
   }
 
@@ -2921,7 +3071,7 @@ Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
   final expectedType = line.catalogType ?? EquipmentCatalogType.item;
   if (resolution.catalogType != expectedType) {
     throw Exception(
-      'Starting equipment line "${line.lineKey}" requires a ${expectedType.name} resolution.',
+      'Starting equipment line "${line.entryId}" requires a ${expectedType.name} resolution.',
     );
   }
 
@@ -2934,14 +3084,14 @@ Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
     case EquipmentCatalogType.magicItem:
     case null:
       throw Exception(
-        'Starting equipment line "${line.lineKey}" requires a ${expectedType.name} resolution.',
+        'Starting equipment line "${line.entryId}" requires a ${expectedType.name} resolution.',
       );
   }
 
   final referenceKey = _normalizedTextOrNull(resolution.referenceKey);
   if (referenceKey == null) {
     throw Exception(
-      'Starting equipment line "${line.lineKey}" requires item referenceKey.',
+      'Starting equipment line "${line.entryId}" requires item referenceKey.',
     );
   }
 
@@ -2966,7 +3116,7 @@ Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
   if (allowedCategories.isNotEmpty &&
       (itemCategory == null || !allowedCategories.contains(itemCategory))) {
     throw Exception(
-      'Item "$referenceKey" is not allowed for starting equipment line "${line.lineKey}".',
+      'Item "$referenceKey" is not allowed for starting equipment line "${line.entryId}".',
     );
   }
 
@@ -2987,7 +3137,7 @@ Future<_GrantedEquipmentAccumulator> _resolveArmorCategorySelection(
   final referenceKey = _normalizedTextOrNull(resolution.referenceKey);
   if (referenceKey == null) {
     throw Exception(
-      'Starting equipment line "${line.lineKey}" requires armor referenceKey.',
+      'Starting equipment line "${line.entryId}" requires armor referenceKey.',
     );
   }
 
@@ -3011,7 +3161,7 @@ Future<_GrantedEquipmentAccumulator> _resolveArmorCategorySelection(
   if (allowedCategories.isNotEmpty &&
       !allowedCategories.contains(armor.categoryValue?.name)) {
     throw Exception(
-      'Armor "$referenceKey" is not allowed for starting equipment line "${line.lineKey}".',
+      'Armor "$referenceKey" is not allowed for starting equipment line "${line.entryId}".',
     );
   }
 
@@ -3580,20 +3730,10 @@ int _compareStartingEquipmentSelections(
   CharacterStartingEquipmentSelectionData a,
   CharacterStartingEquipmentSelectionData b,
 ) {
-  final sourceCompare =
-      (a.sourceType?.name ?? '').compareTo(b.sourceType?.name ?? '');
-  if (sourceCompare != 0) {
-    return sourceCompare;
-  }
-
-  final sourceIdCompare = (a.sourceId ?? 0).compareTo(b.sourceId ?? 0);
-  if (sourceIdCompare != 0) {
-    return sourceIdCompare;
-  }
-
-  final blockCompare = (a.blockKey ?? '').compareTo(b.blockKey ?? '');
-  if (blockCompare != 0) {
-    return blockCompare;
+  final sourceEntryCompare =
+      (a.sourceEntryId ?? 0).compareTo(b.sourceEntryId ?? 0);
+  if (sourceEntryCompare != 0) {
+    return sourceEntryCompare;
   }
 
   final selectionCompare =
@@ -3602,7 +3742,8 @@ int _compareStartingEquipmentSelections(
     return selectionCompare;
   }
 
-  final optionCompare = (a.optionKey ?? '').compareTo(b.optionKey ?? '');
+  final optionCompare =
+      (a.choiceOptionEntryId ?? 0).compareTo(b.choiceOptionEntryId ?? 0);
   if (optionCompare != 0) {
     return optionCompare;
   }
@@ -3614,7 +3755,8 @@ int _compareStartingEquipmentResolutions(
   CharacterStartingEquipmentResolutionData a,
   CharacterStartingEquipmentResolutionData b,
 ) {
-  final lineCompare = (a.lineKey ?? '').compareTo(b.lineKey ?? '');
+  final lineCompare =
+      (a.sourceLineEntryId ?? 0).compareTo(b.sourceLineEntryId ?? 0);
   if (lineCompare != 0) {
     return lineCompare;
   }

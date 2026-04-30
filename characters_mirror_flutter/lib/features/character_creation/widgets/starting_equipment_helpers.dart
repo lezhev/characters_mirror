@@ -22,16 +22,29 @@ Map<String, String> buildStartingEquipmentWeaponLabels(
   };
 }
 
+Map<String, String> buildStartingEquipmentArmorLabels(List<ArmorData> armor) {
+  return {
+    for (final item in armor)
+      if (normalizeStartingEquipmentText(item.referenceKey) != null)
+        normalizeStartingEquipmentText(item.referenceKey)!:
+            normalizeStartingEquipmentText(item.name) ??
+                normalizeStartingEquipmentText(item.referenceKey)!,
+  };
+}
+
+typedef StartingEquipmentCatalogLabels
+    = Map<EquipmentCatalogType, Map<String, String>>;
+
 CharacterStartingEquipmentSelectionData? selectionForStartingEquipmentBlock(
   StartingEquipmentBlockView blockView, {
   required List<CharacterStartingEquipmentSelectionData> selections,
 }) {
-  final blockKey = normalizeStartingEquipmentText(blockView.block?.blockKey);
-  if (blockKey == null) {
+  final sourceEntryId = blockView.block?.entryId;
+  if (sourceEntryId == null) {
     return null;
   }
   for (final selection in selections) {
-    if (normalizeStartingEquipmentText(selection.blockKey) == blockKey) {
+    if (selection.sourceEntryId == sourceEntryId) {
       return selection;
     }
   }
@@ -42,27 +55,23 @@ CharacterStartingEquipmentSelectionData? selectionForStartingEquipmentOption({
   required CharacterStartingEquipmentSelectionData? selection,
   required StartingEquipmentOptionView optionView,
 }) {
-  final optionKey =
-      normalizeStartingEquipmentText(optionView.option?.optionKey);
-  if (selection == null || optionKey == null) {
+  final optionEntryId = optionView.option?.entryId;
+  if (selection == null || optionEntryId == null) {
     return null;
   }
-  return normalizeStartingEquipmentText(selection.optionKey) == optionKey
-      ? selection
-      : null;
+  return selection.choiceOptionEntryId == optionEntryId ? selection : null;
 }
 
 bool isStartingEquipmentOptionSelected(
   StartingEquipmentOptionView optionView,
   CharacterStartingEquipmentSelectionData? selection,
 ) {
-  final optionKey =
-      normalizeStartingEquipmentText(optionView.option?.optionKey);
-  return optionKey != null &&
-      normalizeStartingEquipmentText(selection?.optionKey) == optionKey;
+  final optionEntryId = optionView.option?.entryId;
+  return optionEntryId != null &&
+      selection?.choiceOptionEntryId == optionEntryId;
 }
 
-Map<String, String> startingEquipmentResolutionReferenceKeys(
+Map<int, String> startingEquipmentResolutionReferenceKeys(
   CharacterStartingEquipmentSelectionData? selection,
   List<StartingEquipmentLineData> lines,
 ) {
@@ -70,23 +79,20 @@ Map<String, String> startingEquipmentResolutionReferenceKeys(
     return const {};
   }
 
-  final lineKeys = {
+  final lineIds = {
     for (final line in lines)
-      if (normalizeStartingEquipmentText(line.lineKey) != null)
-        normalizeStartingEquipmentText(line.lineKey)!,
+      if (line.entryId != null) line.entryId!,
   };
-  final values = <String, String>{};
+  final values = <int, String>{};
   for (final resolution in selection.resolutions ??
       const <CharacterStartingEquipmentResolutionData>[]) {
-    final lineKey = normalizeStartingEquipmentText(resolution.lineKey);
+    final lineId = resolution.sourceLineEntryId;
     final referenceKey =
         normalizeStartingEquipmentText(resolution.referenceKey);
-    if (lineKey == null ||
-        referenceKey == null ||
-        !lineKeys.contains(lineKey)) {
+    if (lineId == null || referenceKey == null || !lineIds.contains(lineId)) {
       continue;
     }
-    values[lineKey] = referenceKey;
+    values[lineId] = referenceKey;
   }
   return values;
 }
@@ -98,13 +104,13 @@ String? selectedStartingEquipmentReferenceKeyForLine(
 }) {
   final selection =
       selectionForStartingEquipmentBlock(blockView, selections: selections);
-  final lineKey = normalizeStartingEquipmentText(line.lineKey);
-  if (selection == null || lineKey == null) {
+  final lineId = line.entryId;
+  if (selection == null || lineId == null) {
     return null;
   }
   for (final resolution in selection.resolutions ??
       const <CharacterStartingEquipmentResolutionData>[]) {
-    if (normalizeStartingEquipmentText(resolution.lineKey) == lineKey) {
+    if (resolution.sourceLineEntryId == lineId) {
       return normalizeStartingEquipmentText(resolution.referenceKey);
     }
   }
@@ -113,43 +119,135 @@ String? selectedStartingEquipmentReferenceKeyForLine(
 
 String startingEquipmentOptionTitle({
   required StartingEquipmentOptionView optionView,
+  StartingEquipmentCatalogLabels catalogLabels = const {},
 }) {
-  return normalizeStartingEquipmentText(optionView.option?.name) ?? 'Вариант';
-}
-
-String startingEquipmentLineTitle(StartingEquipmentLineData line) {
-  final displayText =
-      normalizeStartingEquipmentText(line.displayText) ?? 'Предмет';
-  final quantity = line.quantity ?? 1;
-  return quantity > 1 ? '$quantity $displayText' : displayText;
-}
-
-String startingEquipmentLineDescription(StartingEquipmentLineData line) {
-  if (startingEquipmentLineRequiresResolution(line)) {
-    final selectedHint = line.kind == StartingEquipmentLineKind.weaponCategory
-        ? 'Выберите конкретное оружие из списка.'
-        : 'Выберите конкретный предмет из списка.';
-    return '${startingEquipmentLineTitle(line)}\n\n$selectedHint';
+  final lines = optionView.lines ?? optionView.option?.lines ?? const [];
+  if (lines.isEmpty) {
+    return 'Вариант';
   }
-  return startingEquipmentLineTitle(line);
+  return lines
+      .map((line) => startingEquipmentLineTitle(
+            line,
+            catalogLabels: catalogLabels,
+          ))
+      .join(' + ');
+}
+
+String startingEquipmentLineTitle(
+  StartingEquipmentLineData line, {
+  StartingEquipmentCatalogLabels catalogLabels = const {},
+  String? selectedReferenceKey,
+}) {
+  final selected = normalizeStartingEquipmentText(selectedReferenceKey);
+  final base = switch (line.kind) {
+    StartingEquipmentLineKind.catalogRef =>
+      _catalogReferenceLabel(line, catalogLabels) ?? 'Предмет',
+    StartingEquipmentLineKind.weaponCategory =>
+      _resolutionReferenceLabel(line, selected, catalogLabels) ??
+          _weaponCategoryTitle(line.allowedWeaponCategories),
+    StartingEquipmentLineKind.itemCategory =>
+      _resolutionReferenceLabel(line, selected, catalogLabels) ??
+          _itemCategoryTitle(line),
+    null => 'Предмет',
+  };
+  final quantity = line.quantity ?? 1;
+  return quantity > 1 ? '$base x$quantity' : base;
+}
+
+String? _catalogReferenceLabel(
+  StartingEquipmentLineData line,
+  StartingEquipmentCatalogLabels catalogLabels,
+) {
+  final catalogType = line.catalogType;
+  final referenceKey = normalizeStartingEquipmentText(line.referenceKey);
+  if (catalogType == null || referenceKey == null) {
+    return referenceKey;
+  }
+  return catalogLabels[catalogType]?[referenceKey] ?? referenceKey;
+}
+
+String _weaponCategoryTitle(List<WeaponCategory>? categories) {
+  final values = categories ?? const <WeaponCategory>[];
+  if (values.isEmpty) {
+    return 'Любое оружие';
+  }
+  if (values.length == 1) {
+    return switch (values.single) {
+      WeaponCategory.simpleMelee => 'Любое простое рукопашное оружие',
+      WeaponCategory.simpleRanged => 'Любое простое дальнобойное оружие',
+      WeaponCategory.martialMelee => 'Любое воинское рукопашное оружие',
+      WeaponCategory.martialRanged => 'Любое воинское дальнобойное оружие',
+    };
+  }
+  if (values.every(
+    (value) =>
+        value == WeaponCategory.simpleMelee ||
+        value == WeaponCategory.simpleRanged,
+  )) {
+    return 'Любое простое оружие';
+  }
+  if (values.every(
+    (value) =>
+        value == WeaponCategory.martialMelee ||
+        value == WeaponCategory.martialRanged,
+  )) {
+    return 'Любое воинское оружие';
+  }
+  return 'Любое оружие';
+}
+
+String _itemCategoryTitle(StartingEquipmentLineData line) {
+  if (line.catalogType == EquipmentCatalogType.armor) {
+    final categories = line.allowedItemCategories ?? const <String>[];
+    if (categories.length == 1) {
+      return 'Любой доспех: ${categories.single}';
+    }
+    return 'Любой доспех';
+  }
+  final categories = line.allowedItemCategories ?? const <String>[];
+  if (categories.length == 1) {
+    return 'Любой предмет: ${categories.single}';
+  }
+  return 'Любой предмет';
 }
 
 String startingEquipmentDialogLineLabel(
   StartingEquipmentLineData line, {
   required String? selectedReferenceKey,
   required bool enabled,
+  StartingEquipmentCatalogLabels catalogLabels = const {},
 }) {
   if (!startingEquipmentLineRequiresResolution(line)) {
-    return startingEquipmentLineTitle(line);
+    return startingEquipmentLineTitle(line, catalogLabels: catalogLabels);
   }
   final selected = normalizeStartingEquipmentText(selectedReferenceKey);
+  final title = startingEquipmentLineTitle(line, catalogLabels: catalogLabels);
+  final selectedLabel = _resolutionReferenceLabel(
+    line,
+    selected,
+    catalogLabels,
+  );
   if (selected != null) {
-    return '${startingEquipmentLineTitle(line)}\nВыбрано: $selected';
+    return '$title\nВыбрано: ${selectedLabel ?? selected}';
   }
   if (!enabled) {
-    return '${startingEquipmentLineTitle(line)}\nСначала выберите этот вариант.';
+    return '$title\nСначала выберите этот вариант.';
   }
-  return '${startingEquipmentLineTitle(line)}\nНажмите, чтобы выбрать предмет.';
+  return '$title\nНажмите, чтобы выбрать предмет.';
+}
+
+String? _resolutionReferenceLabel(
+  StartingEquipmentLineData line,
+  String? referenceKey,
+  StartingEquipmentCatalogLabels catalogLabels,
+) {
+  if (referenceKey == null) {
+    return null;
+  }
+  final catalogType = line.kind == StartingEquipmentLineKind.weaponCategory
+      ? EquipmentCatalogType.weapon
+      : line.catalogType ?? EquipmentCatalogType.item;
+  return catalogLabels[catalogType]?[referenceKey] ?? referenceKey;
 }
 
 bool startingEquipmentLineRequiresResolution(StartingEquipmentLineData line) {

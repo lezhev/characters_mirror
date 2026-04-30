@@ -73,6 +73,9 @@ class ClassFeatures extends HookConsumerWidget {
                     onSelectOption: ref
                         .read(classStateProvider.notifier)
                         .selectStartingEquipmentOption,
+                    onSelectFixedBlock: ref
+                        .read(classStateProvider.notifier)
+                        .selectStartingEquipmentFixedBlock,
                     onClearBlock: ref
                         .read(classStateProvider.notifier)
                         .clearStartingEquipmentBlock,

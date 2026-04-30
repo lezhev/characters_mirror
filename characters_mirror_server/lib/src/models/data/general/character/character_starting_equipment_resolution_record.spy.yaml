@@ -1,0 +1,11 @@
+class: CharacterStartingEquipmentResolutionRecord
+serverOnly: true
+table: character_starting_equipment_resolution_data
+fields:
+  syncId: String?
+  selection: CharacterStartingEquipmentSelectionRecord?, relation
+  sourceLineEntry: StartingEquipmentEntryData?, relation(optional)
+  catalogType: EquipmentCatalogType?
+  referenceKey: String?
+  quantity: int?
+  updatedAt: DateTime?

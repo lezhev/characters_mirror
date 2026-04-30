@@ -155,25 +155,44 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
   final startingClass = startingEntry?.classData;
   final startingClassId = startingClass?.id;
   final backgroundId = character.background?.id;
+  final classStepView = startingClassId == null
+      ? null
+      : await cache.getReference<ClassStepView>(
+          offlineClassStepKind,
+          offlineClassStepKey(
+            startingClassId,
+            selectedLevel: startingEntry?.level ?? 1,
+            selectedSubclassId: startingEntry?.subclass?.id,
+          ),
+          ClassStepView.fromJson,
+        );
+  final backgroundStepView = backgroundId == null
+      ? null
+      : await cache.getReference<BackgroundStepView>(
+          offlineBackgroundStepKind,
+          offlineBackgroundStepKey(backgroundId),
+          BackgroundStepView.fromJson,
+        );
   final relevantBlocks = <_StartingEquipmentSourceBlock>[
     if (startingClassId != null)
       ..._sourceBlocksFor(
         sourceType: ChoiceSourceType.classData,
         sourceId: startingClassId,
-        blocks: startingClass?.startingEquipmentBlocks,
+        blocks: classStepView?.startingEquipmentBlocks,
       ),
     if (backgroundId != null)
       ..._sourceBlocksFor(
         sourceType: ChoiceSourceType.background,
         sourceId: backgroundId,
-        blocks: character.background?.startingEquipmentBlocks,
+        blocks: backgroundStepView?.startingEquipmentBlocks,
       ),
   ]..sort((a, b) {
       final sourceCompare = a.sourceType.name.compareTo(b.sourceType.name);
       if (sourceCompare != 0) return sourceCompare;
       final idCompare = a.sourceId.compareTo(b.sourceId);
       if (idCompare != 0) return idCompare;
-      return (a.block.orderIndex ?? 0).compareTo(b.block.orderIndex ?? 0);
+      return (a.blockView.block?.orderIndex ?? 0)
+          .compareTo(b.blockView.block?.orderIndex ?? 0);
     });
   if (relevantBlocks.isEmpty) {
     return const <CharacterEquipmentEntryView>[];
@@ -183,14 +202,18 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
       const <CharacterStartingEquipmentSelectionData>[];
   final accumulated = <String, _GrantedEquipmentAccumulator>{};
   for (final sourceBlock in relevantBlocks) {
-    final block = sourceBlock.block;
+    final blockView = sourceBlock.blockView;
+    final block = blockView.block;
+    if (block == null) continue;
     final sourceSelections = _matchingStartingEquipmentSelections(
       selections,
       sourceType: sourceBlock.sourceType,
       sourceId: sourceBlock.sourceId,
       block: block,
     );
-    final blockLines = _sortedStartingEquipmentLines(block.fixedLines);
+    final blockLines = _sortedStartingEquipmentLines(
+      block.fixedLines ?? blockView.fixedLines,
+    );
     if (block.kind == StartingEquipmentBlockKind.choice) {
       _applyStartingEquipmentLines(
         blockLines,
@@ -201,12 +224,14 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
         accumulated,
       );
       for (final selection in sourceSelections) {
-        final optionKey = _normalizedTextOrNull(selection.optionKey);
-        if (optionKey == null) continue;
-        final option = _startingEquipmentOptionForKey(block.options, optionKey);
+        if (selection.isSelected == false) continue;
+        final option = _startingEquipmentOptionForEntryId(
+          blockView.options,
+          selection.choiceOptionEntryId,
+        );
         if (option == null) continue;
         _applyStartingEquipmentLines(
-          _sortedStartingEquipmentLines(option.lines),
+          _sortedStartingEquipmentLines(option.option?.lines ?? option.lines),
           selection.resolutions ??
               const <CharacterStartingEquipmentResolutionData>[],
           weapons,
@@ -215,6 +240,9 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
           accumulated,
         );
       }
+      continue;
+    }
+    if (sourceSelections.any((selection) => selection.isSelected == false)) {
       continue;
     }
 
@@ -516,22 +544,22 @@ CharacterClassEntryData? _startingClassEntry(
 List<_StartingEquipmentSourceBlock> _sourceBlocksFor({
   required ChoiceSourceType sourceType,
   required int sourceId,
-  required List<StartingEquipmentBlockData>? blocks,
+  required List<StartingEquipmentBlockView>? blocks,
 }) {
   final result = <_StartingEquipmentSourceBlock>[];
-  for (final block in blocks ?? const <StartingEquipmentBlockData>[]) {
-    if (_normalizedTextOrNull(block.blockKey) == null) continue;
+  for (final blockView in blocks ?? const <StartingEquipmentBlockView>[]) {
+    if (blockView.block?.entryId == null) continue;
     result.add(
       _StartingEquipmentSourceBlock(
         sourceType: sourceType,
         sourceId: sourceId,
-        block: block,
+        blockView: blockView,
       ),
     );
   }
   return result
-    ..sort(
-        (a, b) => (a.block.orderIndex ?? 0).compareTo(b.block.orderIndex ?? 0));
+    ..sort((a, b) => (a.blockView.block?.orderIndex ?? 0)
+        .compareTo(b.blockView.block?.orderIndex ?? 0));
 }
 
 List<CharacterStartingEquipmentSelectionData>
@@ -541,8 +569,8 @@ List<CharacterStartingEquipmentSelectionData>
   required int sourceId,
   required StartingEquipmentBlockData block,
 }) {
-  final blockKey = _normalizedTextOrNull(block.blockKey);
-  if (blockKey == null) {
+  final sourceEntryId = block.entryId;
+  if (sourceEntryId == null) {
     return const <CharacterStartingEquipmentSelectionData>[];
   }
 
@@ -550,17 +578,18 @@ List<CharacterStartingEquipmentSelectionData>
     for (final selection in selections)
       if (selection.sourceType == sourceType &&
           selection.sourceId == sourceId &&
-          _normalizedTextOrNull(selection.blockKey) == blockKey)
+          selection.sourceEntryId == sourceEntryId)
         selection,
   ]..sort((a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
 }
 
-StartingEquipmentOptionData? _startingEquipmentOptionForKey(
-  List<StartingEquipmentOptionData>? options,
-  String optionKey,
+StartingEquipmentOptionView? _startingEquipmentOptionForEntryId(
+  List<StartingEquipmentOptionView>? options,
+  int? entryId,
 ) {
-  for (final option in options ?? const <StartingEquipmentOptionData>[]) {
-    if (_normalizedTextOrNull(option.optionKey) == optionKey) {
+  if (entryId == null) return null;
+  for (final option in options ?? const <StartingEquipmentOptionView>[]) {
+    if (option.option?.entryId == entryId) {
       return option;
     }
   }
@@ -579,15 +608,15 @@ List<CharacterStartingEquipmentResolutionData> _collectBlockLevelResolutions(
 ) {
   final resolutions = <CharacterStartingEquipmentResolutionData>[];
   for (final selection in selections) {
-    if (_normalizedTextOrNull(selection.optionKey) != null) continue;
+    if (selection.choiceOptionEntryId != null) continue;
     resolutions.addAll(
       selection.resolutions ??
           const <CharacterStartingEquipmentResolutionData>[],
     );
   }
   return resolutions
-    ..sort((a, b) => (_normalizedTextOrNull(a.lineKey) ?? '')
-        .compareTo(_normalizedTextOrNull(b.lineKey) ?? ''));
+    ..sort((a, b) =>
+        (a.sourceLineEntryId ?? 0).compareTo(b.sourceLineEntryId ?? 0));
 }
 
 void _applyStartingEquipmentLines(
@@ -598,10 +627,10 @@ void _applyStartingEquipmentLines(
   List<ArmorData> armor,
   Map<String, _GrantedEquipmentAccumulator> accumulated,
 ) {
-  final resolutionsByLineKey = {
+  final resolutionsByLineEntryId = {
     for (final resolution in resolutions)
-      if (_normalizedTextOrNull(resolution.lineKey) != null)
-        _normalizedTextOrNull(resolution.lineKey)!: resolution,
+      if (resolution.sourceLineEntryId != null)
+        resolution.sourceLineEntryId!: resolution,
   };
 
   for (final line in lines) {
@@ -614,14 +643,20 @@ void _applyStartingEquipmentLines(
           accumulated,
           catalogType: catalogType,
           referenceKey: referenceKey,
-          displayText: _normalizedTextOrNull(line.displayText) ?? referenceKey,
+          displayText: _catalogRefDisplayText(
+            catalogType,
+            referenceKey,
+            weapons,
+            items,
+            armor,
+          ),
           quantity: _positiveQuantity(line.quantity),
         );
         break;
       case StartingEquipmentLineKind.weaponCategory:
-        final lineKey = _normalizedTextOrNull(line.lineKey);
-        if (lineKey == null) continue;
-        final resolution = resolutionsByLineKey[lineKey];
+        final lineEntryId = line.entryId;
+        if (lineEntryId == null) continue;
+        final resolution = resolutionsByLineEntryId[lineEntryId];
         final referenceKey = _normalizedTextOrNull(resolution?.referenceKey);
         if (resolution?.catalogType != EquipmentCatalogType.weapon ||
             referenceKey == null) {
@@ -649,9 +684,9 @@ void _applyStartingEquipmentLines(
         );
         break;
       case StartingEquipmentLineKind.itemCategory:
-        final lineKey = _normalizedTextOrNull(line.lineKey);
-        if (lineKey == null) continue;
-        final resolution = resolutionsByLineKey[lineKey];
+        final lineEntryId = line.entryId;
+        if (lineEntryId == null) continue;
+        final resolution = resolutionsByLineEntryId[lineEntryId];
         final referenceKey = _normalizedTextOrNull(resolution?.referenceKey);
         if (referenceKey == null) {
           continue;
@@ -749,6 +784,39 @@ void _accumulateGrantedEquipment(
   }
 }
 
+String _catalogRefDisplayText(
+  EquipmentCatalogType catalogType,
+  String referenceKey,
+  List<WeaponData> weapons,
+  List<ItemData> items,
+  List<ArmorData> armor,
+) {
+  switch (catalogType) {
+    case EquipmentCatalogType.weapon:
+      final weapon = weapons
+          .where(
+            (item) => _normalizedTextOrNull(item.referenceKey) == referenceKey,
+          )
+          .firstOrNull;
+      return _normalizedTextOrNull(weapon?.name) ?? referenceKey;
+    case EquipmentCatalogType.armor:
+      final armorItem = armor
+          .where(
+            (item) => _normalizedTextOrNull(item.referenceKey) == referenceKey,
+          )
+          .firstOrNull;
+      return _normalizedTextOrNull(armorItem?.name) ?? referenceKey;
+    case EquipmentCatalogType.item:
+    case EquipmentCatalogType.magicItem:
+      final item = items
+          .where(
+            (item) => _normalizedTextOrNull(item.referenceKey) == referenceKey,
+          )
+          .firstOrNull;
+      return _normalizedTextOrNull(item?.name) ?? referenceKey;
+  }
+}
+
 int _positiveQuantity(int? value, {int? fallback}) {
   final candidate = value ?? fallback ?? 1;
   return candidate > 0 ? candidate : 1;
@@ -777,12 +845,12 @@ class _StartingEquipmentSourceBlock {
   const _StartingEquipmentSourceBlock({
     required this.sourceType,
     required this.sourceId,
-    required this.block,
+    required this.blockView,
   });
 
   final ChoiceSourceType sourceType;
   final int sourceId;
-  final StartingEquipmentBlockData block;
+  final StartingEquipmentBlockView blockView;
 }
 
 const offlineClassStepKind = 'class_step';

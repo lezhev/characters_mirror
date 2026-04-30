@@ -6,16 +6,20 @@ import 'package:flutter/material.dart';
 class StartingEquipmentBlockCards extends StatelessWidget {
   const StartingEquipmentBlockCards({
     required this.blockView,
+    required this.catalogLabels,
     required this.selections,
     required this.onClearBlock,
+    required this.onSelectFixedBlock,
     required this.onShowChoiceDialog,
     required this.onShowFixedLineDialog,
     super.key,
   });
 
   final StartingEquipmentBlockView blockView;
+  final StartingEquipmentCatalogLabels catalogLabels;
   final List<CharacterStartingEquipmentSelectionData> selections;
   final void Function(StartingEquipmentBlockView blockView) onClearBlock;
+  final void Function(StartingEquipmentBlockView blockView) onSelectFixedBlock;
   final Future<void> Function(StartingEquipmentOptionView optionView)
       onShowChoiceDialog;
   final Future<void> Function(StartingEquipmentLineData line)
@@ -38,14 +42,13 @@ class StartingEquipmentBlockCards extends StatelessWidget {
 
       final selectionCount = block.selectionCount ?? 1;
       final items = options.map((optionView) {
-        final title = startingEquipmentOptionTitle(optionView: optionView);
-        final optionKey = normalizeStartingEquipmentText(
-          optionView.option?.optionKey,
+        final title = startingEquipmentOptionTitle(
+          optionView: optionView,
+          catalogLabels: catalogLabels,
         );
         return CreationChoiceSelectorItem(
-          id: optionKey ?? title,
+          id: '${optionView.option?.entryId ?? title}',
           title: title,
-          subtitle: optionView.option?.description,
           isSelected: isStartingEquipmentOptionSelected(optionView, selection),
           onTap: () => onShowChoiceDialog(optionView),
         );
@@ -53,13 +56,8 @@ class StartingEquipmentBlockCards extends StatelessWidget {
 
       if (selectionCount <= 1) {
         return CreationChoiceSelector.single(
-          title:
-              normalizeStartingEquipmentText(block.name) ?? 'Выбор снаряжения',
-          description: block.description,
-          switchKey: block.blockKey ?? 'equipment_choice',
-          onClear: normalizeStartingEquipmentText(selection?.optionKey) != null
-              ? () => onClearBlock(blockView)
-              : null,
+          title: null,
+          switchKey: '${block.entryId ?? 'equipment_choice'}',
           autoScrollOnExpand: false,
           surface: false,
           adaptivePairLayout: options.length == 2,
@@ -68,13 +66,9 @@ class StartingEquipmentBlockCards extends StatelessWidget {
       }
 
       return CreationChoiceSelector.multi(
-        title: normalizeStartingEquipmentText(block.name) ?? 'Выбор снаряжения',
-        description: block.description,
-        switchKey: block.blockKey ?? 'equipment_choice',
+        title: null,
+        switchKey: '${block.entryId ?? 'equipment_choice'}',
         selectionLimit: selectionCount,
-        onClear: normalizeStartingEquipmentText(selection?.optionKey) != null
-            ? () => onClearBlock(blockView)
-            : null,
         autoScrollOnExpand: false,
         surface: false,
         items: items,
@@ -88,31 +82,46 @@ class StartingEquipmentBlockCards extends StatelessWidget {
 
     final resolvedByLine =
         startingEquipmentResolutionReferenceKeys(selection, fixedLines);
+    final isSelected = selection?.isSelected != false;
 
     return CreationChoiceSelector.fixed(
-      title: normalizeStartingEquipmentText(block.name),
-      description: block.description,
-      switchKey: block.blockKey ?? 'equipment_fixed',
+      title: null,
+      switchKey: '${block.entryId ?? 'equipment_fixed'}',
       surface: false,
       items: [
         for (final line in fixedLines)
-          CreationChoiceSelectorItem(
-            id: normalizeStartingEquipmentText(line.lineKey) ??
-                startingEquipmentLineTitle(line),
-            title: startingEquipmentLineTitle(line),
-            subtitle: startingEquipmentLineRequiresResolution(line)
-                ? startingEquipmentLineDescription(line)
-                : null,
-            isSelected: !startingEquipmentLineRequiresResolution(line) ||
-                resolvedByLine.containsKey(
-                  normalizeStartingEquipmentText(line.lineKey),
-                ),
-            isEnabled: startingEquipmentLineRequiresResolution(line),
-            onTap: startingEquipmentLineRequiresResolution(line)
-                ? () => onShowFixedLineDialog(line)
-                : null,
+          _fixedLineItem(
+            line,
+            isBlockSelected: isSelected,
+            selectedReferenceKey: resolvedByLine[line.entryId],
           ),
       ],
+    );
+  }
+
+  CreationChoiceSelectorItem _fixedLineItem(
+    StartingEquipmentLineData line, {
+    required bool isBlockSelected,
+    required String? selectedReferenceKey,
+  }) {
+    final requiresResolution = startingEquipmentLineRequiresResolution(line);
+    final isLineResolved = selectedReferenceKey != null;
+    final lineTitle = startingEquipmentLineTitle(
+      line,
+      catalogLabels: catalogLabels,
+      selectedReferenceKey: selectedReferenceKey,
+    );
+    final isLineSelected =
+        isBlockSelected && (!requiresResolution || isLineResolved);
+    return CreationChoiceSelectorItem(
+      id: '${line.entryId ?? lineTitle}',
+      title: lineTitle,
+      isSelected: isLineSelected,
+      onTap: requiresResolution
+          ? () => onShowFixedLineDialog(line)
+          : isLineSelected
+              ? () => onClearBlock(blockView)
+              : () => onSelectFixedBlock(blockView),
     );
   }
 }

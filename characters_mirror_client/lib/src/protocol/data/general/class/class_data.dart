@@ -14,8 +14,7 @@ import '../../../enums/ability.dart' as _i2;
 import '../../../enums/armor_category.dart' as _i3;
 import '../../../enums/weapon_category.dart' as _i4;
 import '../../../enums/skill.dart' as _i5;
-import '../../../data/general/class/starting_equipment_block_data.dart' as _i6;
-import '../../../enums/spellcasting_progression.dart' as _i7;
+import '../../../enums/spellcasting_progression.dart' as _i6;
 
 abstract class ClassData implements _i1.SerializableModel {
   ClassData._({
@@ -34,7 +33,6 @@ abstract class ClassData implements _i1.SerializableModel {
     this.toolTraining,
     this.availableSkills,
     this.skillCount,
-    this.startingEquipmentBlocks,
     this.subclassChoiceLevel,
     this.spellcastingProgression,
     this.spellcastingAbilityValue,
@@ -61,9 +59,8 @@ abstract class ClassData implements _i1.SerializableModel {
     List<String>? toolTraining,
     List<_i5.Skill>? availableSkills,
     int? skillCount,
-    List<_i6.StartingEquipmentBlockData>? startingEquipmentBlocks,
     int? subclassChoiceLevel,
-    _i7.SpellcastingProgression? spellcastingProgression,
+    _i6.SpellcastingProgression? spellcastingProgression,
     _i2.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
@@ -106,16 +103,11 @@ abstract class ClassData implements _i1.SerializableModel {
           ?.map((e) => _i5.Skill.fromJson((e as String)))
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
-      startingEquipmentBlocks:
-          (jsonSerialization['startingEquipmentBlocks'] as List?)
-              ?.map((e) => _i6.StartingEquipmentBlockData.fromJson(
-                  (e as Map<String, dynamic>)))
-              .toList(),
       subclassChoiceLevel: jsonSerialization['subclassChoiceLevel'] as int?,
       spellcastingProgression:
           jsonSerialization['spellcastingProgression'] == null
               ? null
-              : _i7.SpellcastingProgression.fromJson(
+              : _i6.SpellcastingProgression.fromJson(
                   (jsonSerialization['spellcastingProgression'] as String)),
       spellcastingAbilityValue:
           jsonSerialization['spellcastingAbilityValue'] == null
@@ -177,11 +169,9 @@ abstract class ClassData implements _i1.SerializableModel {
 
   int? skillCount;
 
-  List<_i6.StartingEquipmentBlockData>? startingEquipmentBlocks;
-
   int? subclassChoiceLevel;
 
-  _i7.SpellcastingProgression? spellcastingProgression;
+  _i6.SpellcastingProgression? spellcastingProgression;
 
   _i2.Ability? spellcastingAbilityValue;
 
@@ -214,9 +204,8 @@ abstract class ClassData implements _i1.SerializableModel {
     List<String>? toolTraining,
     List<_i5.Skill>? availableSkills,
     int? skillCount,
-    List<_i6.StartingEquipmentBlockData>? startingEquipmentBlocks,
     int? subclassChoiceLevel,
-    _i7.SpellcastingProgression? spellcastingProgression,
+    _i6.SpellcastingProgression? spellcastingProgression,
     _i2.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
@@ -251,9 +240,6 @@ abstract class ClassData implements _i1.SerializableModel {
         'availableSkills':
             availableSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (skillCount != null) 'skillCount': skillCount,
-      if (startingEquipmentBlocks != null)
-        'startingEquipmentBlocks':
-            startingEquipmentBlocks?.toJson(valueToJson: (v) => v.toJson()),
       if (subclassChoiceLevel != null)
         'subclassChoiceLevel': subclassChoiceLevel,
       if (spellcastingProgression != null)
@@ -299,9 +285,8 @@ class _ClassDataImpl extends ClassData {
     List<String>? toolTraining,
     List<_i5.Skill>? availableSkills,
     int? skillCount,
-    List<_i6.StartingEquipmentBlockData>? startingEquipmentBlocks,
     int? subclassChoiceLevel,
-    _i7.SpellcastingProgression? spellcastingProgression,
+    _i6.SpellcastingProgression? spellcastingProgression,
     _i2.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
@@ -324,7 +309,6 @@ class _ClassDataImpl extends ClassData {
           toolTraining: toolTraining,
           availableSkills: availableSkills,
           skillCount: skillCount,
-          startingEquipmentBlocks: startingEquipmentBlocks,
           subclassChoiceLevel: subclassChoiceLevel,
           spellcastingProgression: spellcastingProgression,
           spellcastingAbilityValue: spellcastingAbilityValue,
@@ -355,7 +339,6 @@ class _ClassDataImpl extends ClassData {
     Object? toolTraining = _Undefined,
     Object? availableSkills = _Undefined,
     Object? skillCount = _Undefined,
-    Object? startingEquipmentBlocks = _Undefined,
     Object? subclassChoiceLevel = _Undefined,
     Object? spellcastingProgression = _Undefined,
     Object? spellcastingAbilityValue = _Undefined,
@@ -393,15 +376,11 @@ class _ClassDataImpl extends ClassData {
           ? availableSkills
           : this.availableSkills?.map((e0) => e0).toList(),
       skillCount: skillCount is int? ? skillCount : this.skillCount,
-      startingEquipmentBlocks: startingEquipmentBlocks
-              is List<_i6.StartingEquipmentBlockData>?
-          ? startingEquipmentBlocks
-          : this.startingEquipmentBlocks?.map((e0) => e0.copyWith()).toList(),
       subclassChoiceLevel: subclassChoiceLevel is int?
           ? subclassChoiceLevel
           : this.subclassChoiceLevel,
       spellcastingProgression:
-          spellcastingProgression is _i7.SpellcastingProgression?
+          spellcastingProgression is _i6.SpellcastingProgression?
               ? spellcastingProgression
               : this.spellcastingProgression,
       spellcastingAbilityValue: spellcastingAbilityValue is _i2.Ability?

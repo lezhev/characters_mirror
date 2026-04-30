@@ -52,7 +52,7 @@ class CreationChoiceSelector extends StatefulWidget {
   }) : _mode = mode;
 
   factory CreationChoiceSelector.single({
-    required String title,
+    String? title,
     required List<CreationChoiceSelectorItem> items,
     required Object switchKey,
     Key? key,
@@ -78,7 +78,7 @@ class CreationChoiceSelector extends StatefulWidget {
   }
 
   factory CreationChoiceSelector.multi({
-    required String title,
+    String? title,
     required List<CreationChoiceSelectorItem> items,
     required Object switchKey,
     required int selectionLimit,
@@ -504,45 +504,50 @@ class _AdaptiveOrChoicePair extends StatelessWidget {
         const gap = 8.0;
         final canFitRow = constraints.maxWidth >= minCardWidth * 2 + gap;
         if (canFitRow) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _SelectorChoiceCard(
-                  item: first,
-                  enabled: isCardEnabled(first),
-                ),
-              ),
-              const Gap(gap),
-              Expanded(
-                child: _SelectorChoiceCard(
-                  item: second,
-                  enabled: isCardEnabled(second),
-                ),
-              ),
-            ],
-          );
-        }
-
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            Column(
+          return IntrinsicHeight(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _SelectorChoiceCard(
-                  item: first,
-                  enabled: isCardEnabled(first),
+                Expanded(
+                  child: _SelectorChoiceCard(
+                    item: first,
+                    enabled: isCardEnabled(first),
+                  ),
                 ),
                 const Gap(gap),
-                _SelectorChoiceCard(
-                  item: second,
-                  enabled: isCardEnabled(second),
+                Expanded(
+                  child: _SelectorChoiceCard(
+                    item: second,
+                    enabled: isCardEnabled(second),
+                  ),
                 ),
               ],
             ),
-            const IgnorePointer(child: _OrPill()),
-          ],
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _SelectorChoiceCard(
+                    item: first,
+                    enabled: isCardEnabled(first),
+                  ),
+                  const Gap(gap),
+                  _SelectorChoiceCard(
+                    item: second,
+                    enabled: isCardEnabled(second),
+                  ),
+                ],
+              ),
+              const IgnorePointer(child: _OrPill()),
+            ],
+          ),
         );
       },
     );
@@ -619,9 +624,7 @@ class _SelectorChoiceCard extends StatelessWidget {
                       Text(
                         item.title,
                         style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: item.isSelected
-                              ? FontWeight.w600
-                              : FontWeight.w500,
+                          fontWeight: FontWeight.w500,
                           color: item.isEnabled
                               ? null
                               : colorScheme.onSurfaceVariant,
@@ -694,7 +697,7 @@ class _CounterChoiceCard extends StatelessWidget {
               child: Text(
                 item.title,
                 style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),

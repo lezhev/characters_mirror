@@ -262,37 +262,37 @@ class BackgroundState extends _$BackgroundState {
   ) {
     final currentState = state.value;
     final backgroundId = currentState?.selectedBackground?.id;
-    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
-    final optionKey = normalizedEquipmentKey(optionView.option?.optionKey);
+    final sourceEntryId = blockView.block?.entryId;
+    final optionEntryId = optionView.option?.entryId;
     if (currentState == null ||
         backgroundId == null ||
-        blockKey == null ||
-        optionKey == null) {
+        sourceEntryId == null ||
+        optionEntryId == null) {
       return;
     }
 
     final selections = [
       for (final selection in currentState.startingEquipmentSelections)
-        if (normalizedEquipmentKey(selection.blockKey) != blockKey) selection,
+        if (selection.sourceEntryId != sourceEntryId) selection,
     ];
     final existing = currentState.startingEquipmentSelections.firstWhere(
-      (selection) => normalizedEquipmentKey(selection.blockKey) == blockKey,
+      (selection) => selection.sourceEntryId == sourceEntryId,
       orElse: () => CharacterStartingEquipmentSelectionData(
         sourceType: ChoiceSourceType.background,
         sourceId: backgroundId,
-        blockKey: blockKey,
+        sourceEntryId: sourceEntryId,
       ),
     );
-    final isSameOption =
-        normalizedEquipmentKey(existing.optionKey) == optionKey;
+    final isSameOption = existing.choiceOptionEntryId == optionEntryId;
 
     if (!isSameOption) {
       selections.add(
         CharacterStartingEquipmentSelectionData(
           sourceType: ChoiceSourceType.background,
           sourceId: backgroundId,
-          blockKey: blockKey,
-          optionKey: optionView.option?.optionKey,
+          sourceEntryId: sourceEntryId,
+          choiceOptionEntryId: optionEntryId,
+          isSelected: true,
           selectionIndex: 0,
           resolutions: const [],
         ),
@@ -312,11 +312,11 @@ class BackgroundState extends _$BackgroundState {
     );
   }
 
-  void clearStartingEquipmentBlock(StartingEquipmentBlockView blockView) {
+  void selectStartingEquipmentFixedBlock(StartingEquipmentBlockView blockView) {
     final currentState = state.value;
     final backgroundId = currentState?.selectedBackground?.id;
-    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
-    if (currentState == null || backgroundId == null || blockKey == null) {
+    final sourceEntryId = blockView.block?.entryId;
+    if (currentState == null || backgroundId == null || sourceEntryId == null) {
       return;
     }
 
@@ -327,8 +327,48 @@ class BackgroundState extends _$BackgroundState {
               const <StartingEquipmentBlockView>[],
           selections: [
             for (final selection in currentState.startingEquipmentSelections)
-              if (normalizedEquipmentKey(selection.blockKey) != blockKey)
-                selection,
+              if (selection.sourceEntryId != sourceEntryId) selection,
+            CharacterStartingEquipmentSelectionData(
+              sourceType: ChoiceSourceType.background,
+              sourceId: backgroundId,
+              sourceEntryId: sourceEntryId,
+              isSelected: true,
+              selectionIndex: 0,
+              resolutions: const [],
+            ),
+          ],
+          sourceType: ChoiceSourceType.background,
+          sourceId: backgroundId,
+        ),
+      ),
+    );
+  }
+
+  void clearStartingEquipmentBlock(StartingEquipmentBlockView blockView) {
+    final currentState = state.value;
+    final backgroundId = currentState?.selectedBackground?.id;
+    final sourceEntryId = blockView.block?.entryId;
+    if (currentState == null || backgroundId == null || sourceEntryId == null) {
+      return;
+    }
+
+    state = AsyncValue.data(
+      currentState.copyWith(
+        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+          blocks: currentState.stepView?.startingEquipmentBlocks ??
+              const <StartingEquipmentBlockView>[],
+          selections: [
+            for (final selection in currentState.startingEquipmentSelections)
+              if (selection.sourceEntryId != sourceEntryId) selection,
+            if (blockView.block?.kind == StartingEquipmentBlockKind.fixedGrant)
+              CharacterStartingEquipmentSelectionData(
+                sourceType: ChoiceSourceType.background,
+                sourceId: backgroundId,
+                sourceEntryId: sourceEntryId,
+                isSelected: false,
+                selectionIndex: 0,
+                resolutions: const [],
+              ),
           ],
           sourceType: ChoiceSourceType.background,
           sourceId: backgroundId,
@@ -345,13 +385,13 @@ class BackgroundState extends _$BackgroundState {
   }) {
     final currentState = state.value;
     final backgroundId = currentState?.selectedBackground?.id;
-    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
-    final lineKey = normalizedEquipmentKey(line.lineKey);
+    final sourceEntryId = blockView.block?.entryId;
+    final lineEntryId = line.entryId;
     if (currentState == null ||
         backgroundId == null ||
-        blockKey == null ||
-        lineKey == null ||
-        normalizedEquipmentKey(referenceKey) == null) {
+        sourceEntryId == null ||
+        lineEntryId == null ||
+        normalizedEquipmentText(referenceKey) == null) {
       return;
     }
 
@@ -359,17 +399,17 @@ class BackgroundState extends _$BackgroundState {
       blockView: blockView,
       selections: currentState.startingEquipmentSelections,
     );
-    final optionKey = normalizedEquipmentKey(selectedOption?.option?.optionKey);
+    final optionEntryId = selectedOption?.option?.entryId;
     final existingSelection =
         currentState.startingEquipmentSelections.firstWhere(
       (selection) =>
-          normalizedEquipmentKey(selection.blockKey) == blockKey &&
-          normalizedEquipmentKey(selection.optionKey) == optionKey,
+          selection.sourceEntryId == sourceEntryId &&
+          selection.choiceOptionEntryId == optionEntryId,
       orElse: () => CharacterStartingEquipmentSelectionData(
         sourceType: ChoiceSourceType.background,
         sourceId: backgroundId,
-        blockKey: blockKey,
-        optionKey: selectedOption?.option?.optionKey,
+        sourceEntryId: sourceEntryId,
+        choiceOptionEntryId: optionEntryId,
         selectionIndex: 0,
       ),
     );
@@ -377,24 +417,25 @@ class BackgroundState extends _$BackgroundState {
     final updatedResolutions = [
       for (final resolution in existingSelection.resolutions ??
           const <CharacterStartingEquipmentResolutionData>[])
-        if (normalizedEquipmentKey(resolution.lineKey) != lineKey) resolution,
+        if (resolution.sourceLineEntryId != lineEntryId) resolution,
       CharacterStartingEquipmentResolutionData(
-        lineKey: line.lineKey,
+        sourceLineEntryId: lineEntryId,
         catalogType: catalogType,
-        referenceKey: normalizedEquipmentKey(referenceKey),
+        referenceKey: normalizedEquipmentText(referenceKey),
         quantity: line.quantity,
       ),
     ];
     final nextSelections = [
       for (final selection in currentState.startingEquipmentSelections)
-        if (!(normalizedEquipmentKey(selection.blockKey) == blockKey &&
-            normalizedEquipmentKey(selection.optionKey) == optionKey))
+        if (!(selection.sourceEntryId == sourceEntryId &&
+            selection.choiceOptionEntryId == optionEntryId))
           selection,
       existingSelection.copyWith(
         sourceType: ChoiceSourceType.background,
         sourceId: backgroundId,
-        blockKey: blockView.block?.blockKey,
-        optionKey: selectedOption?.option?.optionKey,
+        sourceEntryId: sourceEntryId,
+        choiceOptionEntryId: optionEntryId,
+        isSelected: true,
         resolutions: updatedResolutions,
       ),
     ];
@@ -600,21 +641,21 @@ class BackgroundState extends _$BackgroundState {
     required StartingEquipmentBlockView blockView,
     required List<CharacterStartingEquipmentSelectionData> selections,
   }) {
-    final blockKey = normalizedEquipmentKey(blockView.block?.blockKey);
-    if (blockKey == null) {
+    final sourceEntryId = blockView.block?.entryId;
+    if (sourceEntryId == null) {
       return null;
     }
     final selection = selections.firstWhere(
-      (item) => normalizedEquipmentKey(item.blockKey) == blockKey,
+      (item) => item.sourceEntryId == sourceEntryId,
       orElse: () => CharacterStartingEquipmentSelectionData(),
     );
-    final optionKey = normalizedEquipmentKey(selection.optionKey);
-    if (optionKey == null) {
+    final optionEntryId = selection.choiceOptionEntryId;
+    if (optionEntryId == null) {
       return null;
     }
     for (final optionView
         in blockView.options ?? const <StartingEquipmentOptionView>[]) {
-      if (normalizedEquipmentKey(optionView.option?.optionKey) == optionKey) {
+      if (optionView.option?.entryId == optionEntryId) {
         return optionView;
       }
     }

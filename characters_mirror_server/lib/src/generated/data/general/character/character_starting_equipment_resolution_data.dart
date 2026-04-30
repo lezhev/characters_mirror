@@ -16,7 +16,7 @@ abstract class CharacterStartingEquipmentResolutionData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   CharacterStartingEquipmentResolutionData._({
     this.id,
-    this.lineKey,
+    this.sourceLineEntryId,
     this.catalogType,
     this.referenceKey,
     this.quantity,
@@ -25,7 +25,7 @@ abstract class CharacterStartingEquipmentResolutionData
 
   factory CharacterStartingEquipmentResolutionData({
     String? id,
-    String? lineKey,
+    int? sourceLineEntryId,
     _i2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
@@ -36,7 +36,7 @@ abstract class CharacterStartingEquipmentResolutionData
       Map<String, dynamic> jsonSerialization) {
     return CharacterStartingEquipmentResolutionData(
       id: jsonSerialization['id'] as String?,
-      lineKey: jsonSerialization['lineKey'] as String?,
+      sourceLineEntryId: jsonSerialization['sourceLineEntryId'] as int?,
       catalogType: jsonSerialization['catalogType'] == null
           ? null
           : _i2.EquipmentCatalogType.fromJson(
@@ -51,7 +51,7 @@ abstract class CharacterStartingEquipmentResolutionData
 
   String? id;
 
-  String? lineKey;
+  int? sourceLineEntryId;
 
   _i2.EquipmentCatalogType? catalogType;
 
@@ -66,7 +66,7 @@ abstract class CharacterStartingEquipmentResolutionData
   @_i1.useResult
   CharacterStartingEquipmentResolutionData copyWith({
     String? id,
-    String? lineKey,
+    int? sourceLineEntryId,
     _i2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
@@ -76,7 +76,7 @@ abstract class CharacterStartingEquipmentResolutionData
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (lineKey != null) 'lineKey': lineKey,
+      if (sourceLineEntryId != null) 'sourceLineEntryId': sourceLineEntryId,
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (quantity != null) 'quantity': quantity,
@@ -88,7 +88,7 @@ abstract class CharacterStartingEquipmentResolutionData
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      if (lineKey != null) 'lineKey': lineKey,
+      if (sourceLineEntryId != null) 'sourceLineEntryId': sourceLineEntryId,
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (quantity != null) 'quantity': quantity,
@@ -108,14 +108,14 @@ class _CharacterStartingEquipmentResolutionDataImpl
     extends CharacterStartingEquipmentResolutionData {
   _CharacterStartingEquipmentResolutionDataImpl({
     String? id,
-    String? lineKey,
+    int? sourceLineEntryId,
     _i2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
     DateTime? updatedAt,
   }) : super._(
           id: id,
-          lineKey: lineKey,
+          sourceLineEntryId: sourceLineEntryId,
           catalogType: catalogType,
           referenceKey: referenceKey,
           quantity: quantity,
@@ -128,7 +128,7 @@ class _CharacterStartingEquipmentResolutionDataImpl
   @override
   CharacterStartingEquipmentResolutionData copyWith({
     Object? id = _Undefined,
-    Object? lineKey = _Undefined,
+    Object? sourceLineEntryId = _Undefined,
     Object? catalogType = _Undefined,
     Object? referenceKey = _Undefined,
     Object? quantity = _Undefined,
@@ -136,7 +136,9 @@ class _CharacterStartingEquipmentResolutionDataImpl
   }) {
     return CharacterStartingEquipmentResolutionData(
       id: id is String? ? id : this.id,
-      lineKey: lineKey is String? ? lineKey : this.lineKey,
+      sourceLineEntryId: sourceLineEntryId is int?
+          ? sourceLineEntryId
+          : this.sourceLineEntryId,
       catalogType: catalogType is _i2.EquipmentCatalogType?
           ? catalogType
           : this.catalogType,

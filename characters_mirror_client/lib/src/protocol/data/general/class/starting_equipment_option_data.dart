@@ -14,95 +14,56 @@ import '../../../data/general/class/starting_equipment_line_data.dart' as _i2;
 
 abstract class StartingEquipmentOptionData implements _i1.SerializableModel {
   StartingEquipmentOptionData._({
-    this.optionKey,
+    this.entryId,
+    this.parentEntryId,
     this.orderIndex,
-    this.name,
-    this.description,
     this.lines,
-    this.source,
-    this.version,
-    this.createdAt,
-    this.updatedAt,
   });
 
   factory StartingEquipmentOptionData({
-    String? optionKey,
+    int? entryId,
+    int? parentEntryId,
     int? orderIndex,
-    String? name,
-    String? description,
     List<_i2.StartingEquipmentLineData>? lines,
-    String? source,
-    int? version,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   }) = _StartingEquipmentOptionDataImpl;
 
   factory StartingEquipmentOptionData.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return StartingEquipmentOptionData(
-      optionKey: jsonSerialization['optionKey'] as String?,
+      entryId: jsonSerialization['entryId'] as int?,
+      parentEntryId: jsonSerialization['parentEntryId'] as int?,
       orderIndex: jsonSerialization['orderIndex'] as int?,
-      name: jsonSerialization['name'] as String?,
-      description: jsonSerialization['description'] as String?,
       lines: (jsonSerialization['lines'] as List?)
           ?.map((e) => _i2.StartingEquipmentLineData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
-      source: jsonSerialization['source'] as String?,
-      version: jsonSerialization['version'] as int?,
-      createdAt: jsonSerialization['createdAt'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
-      updatedAt: jsonSerialization['updatedAt'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
-  String? optionKey;
+  int? entryId;
+
+  int? parentEntryId;
 
   int? orderIndex;
 
-  String? name;
-
-  String? description;
-
   List<_i2.StartingEquipmentLineData>? lines;
-
-  String? source;
-
-  int? version;
-
-  DateTime? createdAt;
-
-  DateTime? updatedAt;
 
   /// Returns a shallow copy of this [StartingEquipmentOptionData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   StartingEquipmentOptionData copyWith({
-    String? optionKey,
+    int? entryId,
+    int? parentEntryId,
     int? orderIndex,
-    String? name,
-    String? description,
     List<_i2.StartingEquipmentLineData>? lines,
-    String? source,
-    int? version,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
-      if (optionKey != null) 'optionKey': optionKey,
+      if (entryId != null) 'entryId': entryId,
+      if (parentEntryId != null) 'parentEntryId': parentEntryId,
       if (orderIndex != null) 'orderIndex': orderIndex,
-      if (name != null) 'name': name,
-      if (description != null) 'description': description,
       if (lines != null) 'lines': lines?.toJson(valueToJson: (v) => v.toJson()),
-      if (source != null) 'source': source,
-      if (version != null) 'version': version,
-      if (createdAt != null) 'createdAt': createdAt?.toJson(),
-      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
@@ -116,25 +77,15 @@ class _Undefined {}
 
 class _StartingEquipmentOptionDataImpl extends StartingEquipmentOptionData {
   _StartingEquipmentOptionDataImpl({
-    String? optionKey,
+    int? entryId,
+    int? parentEntryId,
     int? orderIndex,
-    String? name,
-    String? description,
     List<_i2.StartingEquipmentLineData>? lines,
-    String? source,
-    int? version,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   }) : super._(
-          optionKey: optionKey,
+          entryId: entryId,
+          parentEntryId: parentEntryId,
           orderIndex: orderIndex,
-          name: name,
-          description: description,
           lines: lines,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
         );
 
   /// Returns a shallow copy of this [StartingEquipmentOptionData]
@@ -142,28 +93,18 @@ class _StartingEquipmentOptionDataImpl extends StartingEquipmentOptionData {
   @_i1.useResult
   @override
   StartingEquipmentOptionData copyWith({
-    Object? optionKey = _Undefined,
+    Object? entryId = _Undefined,
+    Object? parentEntryId = _Undefined,
     Object? orderIndex = _Undefined,
-    Object? name = _Undefined,
-    Object? description = _Undefined,
     Object? lines = _Undefined,
-    Object? source = _Undefined,
-    Object? version = _Undefined,
-    Object? createdAt = _Undefined,
-    Object? updatedAt = _Undefined,
   }) {
     return StartingEquipmentOptionData(
-      optionKey: optionKey is String? ? optionKey : this.optionKey,
+      entryId: entryId is int? ? entryId : this.entryId,
+      parentEntryId: parentEntryId is int? ? parentEntryId : this.parentEntryId,
       orderIndex: orderIndex is int? ? orderIndex : this.orderIndex,
-      name: name is String? ? name : this.name,
-      description: description is String? ? description : this.description,
       lines: lines is List<_i2.StartingEquipmentLineData>?
           ? lines
           : this.lines?.map((e0) => e0.copyWith()).toList(),
-      source: source is String? ? source : this.source,
-      version: version is int? ? version : this.version,
-      createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
-      updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
 }

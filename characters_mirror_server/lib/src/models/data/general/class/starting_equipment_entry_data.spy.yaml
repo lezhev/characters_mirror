@@ -1,0 +1,26 @@
+class: StartingEquipmentEntryData
+table: starting_equipment_entry_data
+fields:
+  sourceClass: ClassData?, relation(optional)
+  sourceBackground: BackgroundData?, relation(optional)
+  parentEntryId: int?
+  kind: StartingEquipmentEntryKind?
+  orderIndex: int?
+  selectionCount: int?
+  lineKind: StartingEquipmentLineKind?
+  quantity: int?
+  catalogType: EquipmentCatalogType?
+  referenceKey: String?
+  allowedWeaponCategories: List<WeaponCategory>?
+  allowedItemCategories: List<String>?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+indexes:
+  starting_equipment_entry_class_idx:
+    fields: sourceClassId
+  starting_equipment_entry_background_idx:
+    fields: sourceBackgroundId
+  starting_equipment_entry_parent_idx:
+    fields: parentEntryId

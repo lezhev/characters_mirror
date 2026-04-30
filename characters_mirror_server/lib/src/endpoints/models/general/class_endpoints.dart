@@ -112,7 +112,7 @@ class ClassDataEndpoint extends Endpoint {
       );
     }
     final startingEquipmentBlocks = isStartingClass
-        ? startingEquipmentBlockViews(classData.startingEquipmentBlocks)
+        ? await startingEquipmentBlockViews(session, sourceClassId: classId)
         : const <StartingEquipmentBlockView>[];
     final skillSelectionGroups = isStartingClass
         ? _buildClassSkillSelectionGroups(classData)

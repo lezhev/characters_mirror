@@ -14,8 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/character/character_record.dart' as _i2;
 import '../../../enums/choice_source_type.dart' as _i3;
-import '../../../data/general/character/character_starting_equipment_resolution_data.dart'
-    as _i4;
+import '../../../data/general/class/starting_equipment_entry_data.dart' as _i4;
 
 abstract class CharacterStartingEquipmentSelectionRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -26,10 +25,12 @@ abstract class CharacterStartingEquipmentSelectionRecord
     this.character,
     this.sourceType,
     this.sourceId,
-    this.blockKey,
-    this.optionKey,
+    this.sourceEntryId,
+    this.sourceEntry,
+    this.choiceOptionEntryId,
+    this.choiceOptionEntry,
+    this.isSelected,
     this.selectionIndex,
-    this.resolutions,
     this.updatedAt,
   });
 
@@ -40,10 +41,12 @@ abstract class CharacterStartingEquipmentSelectionRecord
     _i2.CharacterRecord? character,
     _i3.ChoiceSourceType? sourceType,
     int? sourceId,
-    String? blockKey,
-    String? optionKey,
+    int? sourceEntryId,
+    _i4.StartingEquipmentEntryData? sourceEntry,
+    int? choiceOptionEntryId,
+    _i4.StartingEquipmentEntryData? choiceOptionEntry,
+    bool? isSelected,
     int? selectionIndex,
-    List<_i4.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
   }) = _CharacterStartingEquipmentSelectionRecordImpl;
 
@@ -62,13 +65,18 @@ abstract class CharacterStartingEquipmentSelectionRecord
           : _i3.ChoiceSourceType.fromJson(
               (jsonSerialization['sourceType'] as String)),
       sourceId: jsonSerialization['sourceId'] as int?,
-      blockKey: jsonSerialization['blockKey'] as String?,
-      optionKey: jsonSerialization['optionKey'] as String?,
+      sourceEntryId: jsonSerialization['sourceEntryId'] as int?,
+      sourceEntry: jsonSerialization['sourceEntry'] == null
+          ? null
+          : _i4.StartingEquipmentEntryData.fromJson(
+              (jsonSerialization['sourceEntry'] as Map<String, dynamic>)),
+      choiceOptionEntryId: jsonSerialization['choiceOptionEntryId'] as int?,
+      choiceOptionEntry: jsonSerialization['choiceOptionEntry'] == null
+          ? null
+          : _i4.StartingEquipmentEntryData.fromJson(
+              (jsonSerialization['choiceOptionEntry'] as Map<String, dynamic>)),
+      isSelected: jsonSerialization['isSelected'] as bool?,
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
-      resolutions: (jsonSerialization['resolutions'] as List?)
-          ?.map((e) => _i4.CharacterStartingEquipmentResolutionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
@@ -92,13 +100,17 @@ abstract class CharacterStartingEquipmentSelectionRecord
 
   int? sourceId;
 
-  String? blockKey;
+  int? sourceEntryId;
 
-  String? optionKey;
+  _i4.StartingEquipmentEntryData? sourceEntry;
+
+  int? choiceOptionEntryId;
+
+  _i4.StartingEquipmentEntryData? choiceOptionEntry;
+
+  bool? isSelected;
 
   int? selectionIndex;
-
-  List<_i4.CharacterStartingEquipmentResolutionData>? resolutions;
 
   DateTime? updatedAt;
 
@@ -115,10 +127,12 @@ abstract class CharacterStartingEquipmentSelectionRecord
     _i2.CharacterRecord? character,
     _i3.ChoiceSourceType? sourceType,
     int? sourceId,
-    String? blockKey,
-    String? optionKey,
+    int? sourceEntryId,
+    _i4.StartingEquipmentEntryData? sourceEntry,
+    int? choiceOptionEntryId,
+    _i4.StartingEquipmentEntryData? choiceOptionEntry,
+    bool? isSelected,
     int? selectionIndex,
-    List<_i4.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
   });
   @override
@@ -130,11 +144,14 @@ abstract class CharacterStartingEquipmentSelectionRecord
       if (character != null) 'character': character?.toJson(),
       if (sourceType != null) 'sourceType': sourceType?.toJson(),
       if (sourceId != null) 'sourceId': sourceId,
-      if (blockKey != null) 'blockKey': blockKey,
-      if (optionKey != null) 'optionKey': optionKey,
+      if (sourceEntryId != null) 'sourceEntryId': sourceEntryId,
+      if (sourceEntry != null) 'sourceEntry': sourceEntry?.toJson(),
+      if (choiceOptionEntryId != null)
+        'choiceOptionEntryId': choiceOptionEntryId,
+      if (choiceOptionEntry != null)
+        'choiceOptionEntry': choiceOptionEntry?.toJson(),
+      if (isSelected != null) 'isSelected': isSelected,
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
-      if (resolutions != null)
-        'resolutions': resolutions?.toJson(valueToJson: (v) => v.toJson()),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
@@ -144,10 +161,16 @@ abstract class CharacterStartingEquipmentSelectionRecord
     return {if (id != null) 'id': id};
   }
 
-  static CharacterStartingEquipmentSelectionRecordInclude include(
-      {_i2.CharacterRecordInclude? character}) {
+  static CharacterStartingEquipmentSelectionRecordInclude include({
+    _i2.CharacterRecordInclude? character,
+    _i4.StartingEquipmentEntryDataInclude? sourceEntry,
+    _i4.StartingEquipmentEntryDataInclude? choiceOptionEntry,
+  }) {
     return CharacterStartingEquipmentSelectionRecordInclude._(
-        character: character);
+      character: character,
+      sourceEntry: sourceEntry,
+      choiceOptionEntry: choiceOptionEntry,
+    );
   }
 
   static CharacterStartingEquipmentSelectionRecordIncludeList includeList({
@@ -190,10 +213,12 @@ class _CharacterStartingEquipmentSelectionRecordImpl
     _i2.CharacterRecord? character,
     _i3.ChoiceSourceType? sourceType,
     int? sourceId,
-    String? blockKey,
-    String? optionKey,
+    int? sourceEntryId,
+    _i4.StartingEquipmentEntryData? sourceEntry,
+    int? choiceOptionEntryId,
+    _i4.StartingEquipmentEntryData? choiceOptionEntry,
+    bool? isSelected,
     int? selectionIndex,
-    List<_i4.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
   }) : super._(
           id: id,
@@ -202,10 +227,12 @@ class _CharacterStartingEquipmentSelectionRecordImpl
           character: character,
           sourceType: sourceType,
           sourceId: sourceId,
-          blockKey: blockKey,
-          optionKey: optionKey,
+          sourceEntryId: sourceEntryId,
+          sourceEntry: sourceEntry,
+          choiceOptionEntryId: choiceOptionEntryId,
+          choiceOptionEntry: choiceOptionEntry,
+          isSelected: isSelected,
           selectionIndex: selectionIndex,
-          resolutions: resolutions,
           updatedAt: updatedAt,
         );
 
@@ -220,10 +247,12 @@ class _CharacterStartingEquipmentSelectionRecordImpl
     Object? character = _Undefined,
     Object? sourceType = _Undefined,
     Object? sourceId = _Undefined,
-    Object? blockKey = _Undefined,
-    Object? optionKey = _Undefined,
+    Object? sourceEntryId = _Undefined,
+    Object? sourceEntry = _Undefined,
+    Object? choiceOptionEntryId = _Undefined,
+    Object? choiceOptionEntry = _Undefined,
+    Object? isSelected = _Undefined,
     Object? selectionIndex = _Undefined,
-    Object? resolutions = _Undefined,
     Object? updatedAt = _Undefined,
   }) {
     return CharacterStartingEquipmentSelectionRecord(
@@ -236,14 +265,19 @@ class _CharacterStartingEquipmentSelectionRecordImpl
       sourceType:
           sourceType is _i3.ChoiceSourceType? ? sourceType : this.sourceType,
       sourceId: sourceId is int? ? sourceId : this.sourceId,
-      blockKey: blockKey is String? ? blockKey : this.blockKey,
-      optionKey: optionKey is String? ? optionKey : this.optionKey,
+      sourceEntryId: sourceEntryId is int? ? sourceEntryId : this.sourceEntryId,
+      sourceEntry: sourceEntry is _i4.StartingEquipmentEntryData?
+          ? sourceEntry
+          : this.sourceEntry?.copyWith(),
+      choiceOptionEntryId: choiceOptionEntryId is int?
+          ? choiceOptionEntryId
+          : this.choiceOptionEntryId,
+      choiceOptionEntry: choiceOptionEntry is _i4.StartingEquipmentEntryData?
+          ? choiceOptionEntry
+          : this.choiceOptionEntry?.copyWith(),
+      isSelected: isSelected is bool? ? isSelected : this.isSelected,
       selectionIndex:
           selectionIndex is int? ? selectionIndex : this.selectionIndex,
-      resolutions:
-          resolutions is List<_i4.CharacterStartingEquipmentResolutionData>?
-              ? resolutions
-              : this.resolutions?.map((e0) => e0.copyWith()).toList(),
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
@@ -269,20 +303,20 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
       'sourceId',
       this,
     );
-    blockKey = _i1.ColumnString(
-      'blockKey',
+    sourceEntryId = _i1.ColumnInt(
+      'sourceEntryId',
       this,
     );
-    optionKey = _i1.ColumnString(
-      'optionKey',
+    choiceOptionEntryId = _i1.ColumnInt(
+      'choiceOptionEntryId',
+      this,
+    );
+    isSelected = _i1.ColumnBool(
+      'isSelected',
       this,
     );
     selectionIndex = _i1.ColumnInt(
       'selectionIndex',
-      this,
-    );
-    resolutions = _i1.ColumnSerializable(
-      'resolutions',
       this,
     );
     updatedAt = _i1.ColumnDateTime(
@@ -301,13 +335,17 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt sourceId;
 
-  late final _i1.ColumnString blockKey;
+  late final _i1.ColumnInt sourceEntryId;
 
-  late final _i1.ColumnString optionKey;
+  _i4.StartingEquipmentEntryDataTable? _sourceEntry;
+
+  late final _i1.ColumnInt choiceOptionEntryId;
+
+  _i4.StartingEquipmentEntryDataTable? _choiceOptionEntry;
+
+  late final _i1.ColumnBool isSelected;
 
   late final _i1.ColumnInt selectionIndex;
-
-  late final _i1.ColumnSerializable resolutions;
 
   late final _i1.ColumnDateTime updatedAt;
 
@@ -324,6 +362,34 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
     return _character!;
   }
 
+  _i4.StartingEquipmentEntryDataTable get sourceEntry {
+    if (_sourceEntry != null) return _sourceEntry!;
+    _sourceEntry = _i1.createRelationTable(
+      relationFieldName: 'sourceEntry',
+      field: CharacterStartingEquipmentSelectionRecord.t.sourceEntryId,
+      foreignField: _i4.StartingEquipmentEntryData.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.StartingEquipmentEntryDataTable(
+              tableRelation: foreignTableRelation),
+    );
+    return _sourceEntry!;
+  }
+
+  _i4.StartingEquipmentEntryDataTable get choiceOptionEntry {
+    if (_choiceOptionEntry != null) return _choiceOptionEntry!;
+    _choiceOptionEntry = _i1.createRelationTable(
+      relationFieldName: 'choiceOptionEntry',
+      field: CharacterStartingEquipmentSelectionRecord.t.choiceOptionEntryId,
+      foreignField: _i4.StartingEquipmentEntryData.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.StartingEquipmentEntryDataTable(
+              tableRelation: foreignTableRelation),
+    );
+    return _choiceOptionEntry!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -331,10 +397,10 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
         characterId,
         sourceType,
         sourceId,
-        blockKey,
-        optionKey,
+        sourceEntryId,
+        choiceOptionEntryId,
+        isSelected,
         selectionIndex,
-        resolutions,
         updatedAt,
       ];
 
@@ -343,21 +409,40 @@ class CharacterStartingEquipmentSelectionRecordTable extends _i1.Table<int?> {
     if (relationField == 'character') {
       return character;
     }
+    if (relationField == 'sourceEntry') {
+      return sourceEntry;
+    }
+    if (relationField == 'choiceOptionEntry') {
+      return choiceOptionEntry;
+    }
     return null;
   }
 }
 
 class CharacterStartingEquipmentSelectionRecordInclude
     extends _i1.IncludeObject {
-  CharacterStartingEquipmentSelectionRecordInclude._(
-      {_i2.CharacterRecordInclude? character}) {
+  CharacterStartingEquipmentSelectionRecordInclude._({
+    _i2.CharacterRecordInclude? character,
+    _i4.StartingEquipmentEntryDataInclude? sourceEntry,
+    _i4.StartingEquipmentEntryDataInclude? choiceOptionEntry,
+  }) {
     _character = character;
+    _sourceEntry = sourceEntry;
+    _choiceOptionEntry = choiceOptionEntry;
   }
 
   _i2.CharacterRecordInclude? _character;
 
+  _i4.StartingEquipmentEntryDataInclude? _sourceEntry;
+
+  _i4.StartingEquipmentEntryDataInclude? _choiceOptionEntry;
+
   @override
-  Map<String, _i1.Include?> get includes => {'character': _character};
+  Map<String, _i1.Include?> get includes => {
+        'character': _character,
+        'sourceEntry': _sourceEntry,
+        'choiceOptionEntry': _choiceOptionEntry,
+      };
 
   @override
   _i1.Table<int?> get table => CharacterStartingEquipmentSelectionRecord.t;
@@ -390,6 +475,9 @@ class CharacterStartingEquipmentSelectionRecordRepository {
 
   final attachRow =
       const CharacterStartingEquipmentSelectionRecordAttachRowRepository._();
+
+  final detachRow =
+      const CharacterStartingEquipmentSelectionRecordDetachRowRepository._();
 
   /// Returns a list of [CharacterStartingEquipmentSelectionRecord]s matching the given query parameters.
   ///
@@ -644,6 +732,119 @@ class CharacterStartingEquipmentSelectionRecordAttachRowRepository {
     await session.db.updateRow<CharacterStartingEquipmentSelectionRecord>(
       $characterStartingEquipmentSelectionRecord,
       columns: [CharacterStartingEquipmentSelectionRecord.t.characterId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [CharacterStartingEquipmentSelectionRecord] and [StartingEquipmentEntryData]
+  /// by setting the [CharacterStartingEquipmentSelectionRecord]'s foreign key `sourceEntryId` to refer to the [StartingEquipmentEntryData].
+  Future<void> sourceEntry(
+    _i1.Session session,
+    CharacterStartingEquipmentSelectionRecord
+        characterStartingEquipmentSelectionRecord,
+    _i4.StartingEquipmentEntryData sourceEntry, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (characterStartingEquipmentSelectionRecord.id == null) {
+      throw ArgumentError.notNull(
+          'characterStartingEquipmentSelectionRecord.id');
+    }
+    if (sourceEntry.id == null) {
+      throw ArgumentError.notNull('sourceEntry.id');
+    }
+
+    var $characterStartingEquipmentSelectionRecord =
+        characterStartingEquipmentSelectionRecord.copyWith(
+            sourceEntryId: sourceEntry.id);
+    await session.db.updateRow<CharacterStartingEquipmentSelectionRecord>(
+      $characterStartingEquipmentSelectionRecord,
+      columns: [CharacterStartingEquipmentSelectionRecord.t.sourceEntryId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [CharacterStartingEquipmentSelectionRecord] and [StartingEquipmentEntryData]
+  /// by setting the [CharacterStartingEquipmentSelectionRecord]'s foreign key `choiceOptionEntryId` to refer to the [StartingEquipmentEntryData].
+  Future<void> choiceOptionEntry(
+    _i1.Session session,
+    CharacterStartingEquipmentSelectionRecord
+        characterStartingEquipmentSelectionRecord,
+    _i4.StartingEquipmentEntryData choiceOptionEntry, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (characterStartingEquipmentSelectionRecord.id == null) {
+      throw ArgumentError.notNull(
+          'characterStartingEquipmentSelectionRecord.id');
+    }
+    if (choiceOptionEntry.id == null) {
+      throw ArgumentError.notNull('choiceOptionEntry.id');
+    }
+
+    var $characterStartingEquipmentSelectionRecord =
+        characterStartingEquipmentSelectionRecord.copyWith(
+            choiceOptionEntryId: choiceOptionEntry.id);
+    await session.db.updateRow<CharacterStartingEquipmentSelectionRecord>(
+      $characterStartingEquipmentSelectionRecord,
+      columns: [
+        CharacterStartingEquipmentSelectionRecord.t.choiceOptionEntryId
+      ],
+      transaction: transaction,
+    );
+  }
+}
+
+class CharacterStartingEquipmentSelectionRecordDetachRowRepository {
+  const CharacterStartingEquipmentSelectionRecordDetachRowRepository._();
+
+  /// Detaches the relation between this [CharacterStartingEquipmentSelectionRecord] and the [StartingEquipmentEntryData] set in `sourceEntry`
+  /// by setting the [CharacterStartingEquipmentSelectionRecord]'s foreign key `sourceEntryId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> sourceEntry(
+    _i1.Session session,
+    CharacterStartingEquipmentSelectionRecord
+        characterstartingequipmentselectionrecord, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (characterstartingequipmentselectionrecord.id == null) {
+      throw ArgumentError.notNull(
+          'characterstartingequipmentselectionrecord.id');
+    }
+
+    var $characterstartingequipmentselectionrecord =
+        characterstartingequipmentselectionrecord.copyWith(sourceEntryId: null);
+    await session.db.updateRow<CharacterStartingEquipmentSelectionRecord>(
+      $characterstartingequipmentselectionrecord,
+      columns: [CharacterStartingEquipmentSelectionRecord.t.sourceEntryId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [CharacterStartingEquipmentSelectionRecord] and the [StartingEquipmentEntryData] set in `choiceOptionEntry`
+  /// by setting the [CharacterStartingEquipmentSelectionRecord]'s foreign key `choiceOptionEntryId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceOptionEntry(
+    _i1.Session session,
+    CharacterStartingEquipmentSelectionRecord
+        characterstartingequipmentselectionrecord, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (characterstartingequipmentselectionrecord.id == null) {
+      throw ArgumentError.notNull(
+          'characterstartingequipmentselectionrecord.id');
+    }
+
+    var $characterstartingequipmentselectionrecord =
+        characterstartingequipmentselectionrecord.copyWith(
+            choiceOptionEntryId: null);
+    await session.db.updateRow<CharacterStartingEquipmentSelectionRecord>(
+      $characterstartingequipmentselectionrecord,
+      columns: [
+        CharacterStartingEquipmentSelectionRecord.t.choiceOptionEntryId
+      ],
       transaction: transaction,
     );
   }

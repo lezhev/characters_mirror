@@ -20,8 +20,9 @@ abstract class CharacterStartingEquipmentSelectionData
     this.id,
     this.sourceType,
     this.sourceId,
-    this.blockKey,
-    this.optionKey,
+    this.sourceEntryId,
+    this.choiceOptionEntryId,
+    this.isSelected,
     this.selectionIndex,
     this.resolutions,
     this.updatedAt,
@@ -31,8 +32,9 @@ abstract class CharacterStartingEquipmentSelectionData
     String? id,
     _i2.ChoiceSourceType? sourceType,
     int? sourceId,
-    String? blockKey,
-    String? optionKey,
+    int? sourceEntryId,
+    int? choiceOptionEntryId,
+    bool? isSelected,
     int? selectionIndex,
     List<_i3.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
@@ -47,8 +49,9 @@ abstract class CharacterStartingEquipmentSelectionData
           : _i2.ChoiceSourceType.fromJson(
               (jsonSerialization['sourceType'] as String)),
       sourceId: jsonSerialization['sourceId'] as int?,
-      blockKey: jsonSerialization['blockKey'] as String?,
-      optionKey: jsonSerialization['optionKey'] as String?,
+      sourceEntryId: jsonSerialization['sourceEntryId'] as int?,
+      choiceOptionEntryId: jsonSerialization['choiceOptionEntryId'] as int?,
+      isSelected: jsonSerialization['isSelected'] as bool?,
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
       resolutions: (jsonSerialization['resolutions'] as List?)
           ?.map((e) => _i3.CharacterStartingEquipmentResolutionData.fromJson(
@@ -66,9 +69,11 @@ abstract class CharacterStartingEquipmentSelectionData
 
   int? sourceId;
 
-  String? blockKey;
+  int? sourceEntryId;
 
-  String? optionKey;
+  int? choiceOptionEntryId;
+
+  bool? isSelected;
 
   int? selectionIndex;
 
@@ -83,8 +88,9 @@ abstract class CharacterStartingEquipmentSelectionData
     String? id,
     _i2.ChoiceSourceType? sourceType,
     int? sourceId,
-    String? blockKey,
-    String? optionKey,
+    int? sourceEntryId,
+    int? choiceOptionEntryId,
+    bool? isSelected,
     int? selectionIndex,
     List<_i3.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
@@ -95,8 +101,10 @@ abstract class CharacterStartingEquipmentSelectionData
       if (id != null) 'id': id,
       if (sourceType != null) 'sourceType': sourceType?.toJson(),
       if (sourceId != null) 'sourceId': sourceId,
-      if (blockKey != null) 'blockKey': blockKey,
-      if (optionKey != null) 'optionKey': optionKey,
+      if (sourceEntryId != null) 'sourceEntryId': sourceEntryId,
+      if (choiceOptionEntryId != null)
+        'choiceOptionEntryId': choiceOptionEntryId,
+      if (isSelected != null) 'isSelected': isSelected,
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
       if (resolutions != null)
         'resolutions': resolutions?.toJson(valueToJson: (v) => v.toJson()),
@@ -110,8 +118,10 @@ abstract class CharacterStartingEquipmentSelectionData
       if (id != null) 'id': id,
       if (sourceType != null) 'sourceType': sourceType?.toJson(),
       if (sourceId != null) 'sourceId': sourceId,
-      if (blockKey != null) 'blockKey': blockKey,
-      if (optionKey != null) 'optionKey': optionKey,
+      if (sourceEntryId != null) 'sourceEntryId': sourceEntryId,
+      if (choiceOptionEntryId != null)
+        'choiceOptionEntryId': choiceOptionEntryId,
+      if (isSelected != null) 'isSelected': isSelected,
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
       if (resolutions != null)
         'resolutions':
@@ -134,8 +144,9 @@ class _CharacterStartingEquipmentSelectionDataImpl
     String? id,
     _i2.ChoiceSourceType? sourceType,
     int? sourceId,
-    String? blockKey,
-    String? optionKey,
+    int? sourceEntryId,
+    int? choiceOptionEntryId,
+    bool? isSelected,
     int? selectionIndex,
     List<_i3.CharacterStartingEquipmentResolutionData>? resolutions,
     DateTime? updatedAt,
@@ -143,8 +154,9 @@ class _CharacterStartingEquipmentSelectionDataImpl
           id: id,
           sourceType: sourceType,
           sourceId: sourceId,
-          blockKey: blockKey,
-          optionKey: optionKey,
+          sourceEntryId: sourceEntryId,
+          choiceOptionEntryId: choiceOptionEntryId,
+          isSelected: isSelected,
           selectionIndex: selectionIndex,
           resolutions: resolutions,
           updatedAt: updatedAt,
@@ -158,8 +170,9 @@ class _CharacterStartingEquipmentSelectionDataImpl
     Object? id = _Undefined,
     Object? sourceType = _Undefined,
     Object? sourceId = _Undefined,
-    Object? blockKey = _Undefined,
-    Object? optionKey = _Undefined,
+    Object? sourceEntryId = _Undefined,
+    Object? choiceOptionEntryId = _Undefined,
+    Object? isSelected = _Undefined,
     Object? selectionIndex = _Undefined,
     Object? resolutions = _Undefined,
     Object? updatedAt = _Undefined,
@@ -169,8 +182,11 @@ class _CharacterStartingEquipmentSelectionDataImpl
       sourceType:
           sourceType is _i2.ChoiceSourceType? ? sourceType : this.sourceType,
       sourceId: sourceId is int? ? sourceId : this.sourceId,
-      blockKey: blockKey is String? ? blockKey : this.blockKey,
-      optionKey: optionKey is String? ? optionKey : this.optionKey,
+      sourceEntryId: sourceEntryId is int? ? sourceEntryId : this.sourceEntryId,
+      choiceOptionEntryId: choiceOptionEntryId is int?
+          ? choiceOptionEntryId
+          : this.choiceOptionEntryId,
+      isSelected: isSelected is bool? ? isSelected : this.isSelected,
       selectionIndex:
           selectionIndex is int? ? selectionIndex : this.selectionIndex,
       resolutions:

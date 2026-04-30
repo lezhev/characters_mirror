@@ -1,0 +1,7 @@
+enum: StartingEquipmentEntryKind
+serialized: byName
+values:
+  - fixedLine
+  - choiceGroup
+  - choiceOption
+  - optionLine
