@@ -430,7 +430,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
       sourceName: character.race?.name,
       level: feature.level,
       name: feature.name,
-      description: feature.description,
+      description: feature.shortDescription ?? feature.description,
       tags: feature.tags,
     );
   }
@@ -442,7 +442,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
       sourceName: character.subrace?.name,
       level: feature.level,
       name: feature.name,
-      description: feature.description,
+      description: feature.shortDescription ?? feature.description,
       tags: feature.tags,
     );
   }
@@ -467,7 +467,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         sourceName: entry.classData?.name,
         level: feature.level,
         name: feature.name,
-        description: feature.description,
+        description: feature.shortDescription ?? feature.description,
         tags: feature.tags,
       );
     }
@@ -479,7 +479,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         sourceName: entry.subclass?.name,
         level: feature.level,
         name: feature.name,
-        description: feature.description,
+        description: feature.shortDescription ?? feature.description,
         tags: feature.tags,
       );
     }

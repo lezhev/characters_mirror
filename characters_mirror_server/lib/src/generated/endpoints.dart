@@ -40,37 +40,39 @@ import 'package:characters_mirror_server/src/generated/data/class_spell_grant_da
     as _i22;
 import 'package:characters_mirror_server/src/generated/data/general/class/class_level_data.dart'
     as _i23;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/spell_slot_progression_data.dart'
     as _i24;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_choice_group_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
     as _i25;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_choice_option_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_choice_group_data.dart'
     as _i26;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_choice_option_data.dart'
     as _i27;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
     as _i28;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
     as _i29;
-import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
     as _i30;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_choice_set_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
     as _i31;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_choice_option_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_choice_set_data.dart'
     as _i32;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_choice_option_data.dart'
     as _i33;
-import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
     as _i34;
-import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
     as _i35;
-import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
     as _i36;
-import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
     as _i37;
-import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
     as _i38;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i39;
+import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+    as _i39;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i40;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -134,6 +136,12 @@ class Endpoints extends _i1.EndpointDispatch {
         ..initialize(
           server,
           'classLevelData',
+          null,
+        ),
+      'spellSlotProgressionData': _i8.SpellSlotProgressionDataEndpoint()
+        ..initialize(
+          server,
+          'spellSlotProgressionData',
           null,
         ),
       'subclassData': _i8.SubclassDataEndpoint()
@@ -967,6 +975,83 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['spellSlotProgressionData'] = _i1.EndpointConnector(
+      name: 'spellSlotProgressionData',
+      endpoint: endpoints['spellSlotProgressionData']!,
+      methodConnectors: {
+        'getAll': _i1.MethodConnector(
+          name: 'getAll',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['spellSlotProgressionData']
+                      as _i8.SpellSlotProgressionDataEndpoint)
+                  .getAll(session),
+        ),
+        'add': _i1.MethodConnector(
+          name: 'add',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i24.SpellSlotProgressionData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['spellSlotProgressionData']
+                      as _i8.SpellSlotProgressionDataEndpoint)
+                  .add(
+            session,
+            params['item'],
+          ),
+        ),
+        'upsert': _i1.MethodConnector(
+          name: 'upsert',
+          params: {
+            'item': _i1.ParameterDescription(
+              name: 'item',
+              type: _i1.getType<_i24.SpellSlotProgressionData>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['spellSlotProgressionData']
+                      as _i8.SpellSlotProgressionDataEndpoint)
+                  .upsert(
+            session,
+            params['item'],
+          ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['spellSlotProgressionData']
+                      as _i8.SpellSlotProgressionDataEndpoint)
+                  .delete(
+            session,
+            params['id'],
+          ),
+        ),
+      },
+    );
     connectors['subclassData'] = _i1.EndpointConnector(
       name: 'subclassData',
       endpoint: endpoints['subclassData']!,
@@ -986,7 +1071,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i24.SubclassData>(),
+              type: _i1.getType<_i25.SubclassData>(),
               nullable: false,
             )
           },
@@ -1004,7 +1089,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subclass': _i1.ParameterDescription(
               name: 'subclass',
-              type: _i1.getType<_i24.SubclassData>(),
+              type: _i1.getType<_i25.SubclassData>(),
               nullable: false,
             )
           },
@@ -1057,7 +1142,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i25.ClassChoiceGroupData>(),
+              type: _i1.getType<_i26.ClassChoiceGroupData>(),
               nullable: false,
             )
           },
@@ -1077,7 +1162,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i25.ClassChoiceGroupData>(),
+              type: _i1.getType<_i26.ClassChoiceGroupData>(),
               nullable: false,
             )
           },
@@ -1134,7 +1219,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i26.ClassChoiceOptionData>(),
+              type: _i1.getType<_i27.ClassChoiceOptionData>(),
               nullable: false,
             )
           },
@@ -1154,7 +1239,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i26.ClassChoiceOptionData>(),
+              type: _i1.getType<_i27.ClassChoiceOptionData>(),
               nullable: false,
             )
           },
@@ -1211,7 +1296,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i27.SubclassFeatureData>(),
+              type: _i1.getType<_i28.SubclassFeatureData>(),
               nullable: false,
             )
           },
@@ -1231,7 +1316,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subclassFeature': _i1.ParameterDescription(
               name: 'subclassFeature',
-              type: _i1.getType<_i27.SubclassFeatureData>(),
+              type: _i1.getType<_i28.SubclassFeatureData>(),
               nullable: false,
             )
           },
@@ -1286,7 +1371,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'race': _i1.ParameterDescription(
               name: 'race',
-              type: _i1.getType<_i28.RaceData>(),
+              type: _i1.getType<_i29.RaceData>(),
               nullable: false,
             )
           },
@@ -1304,7 +1389,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'race': _i1.ParameterDescription(
               name: 'race',
-              type: _i1.getType<_i28.RaceData>(),
+              type: _i1.getType<_i29.RaceData>(),
               nullable: false,
             )
           },
@@ -1374,7 +1459,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'raceFeature': _i1.ParameterDescription(
               name: 'raceFeature',
-              type: _i1.getType<_i29.RaceFeatureData>(),
+              type: _i1.getType<_i30.RaceFeatureData>(),
               nullable: false,
             )
           },
@@ -1392,7 +1477,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'raceFeature': _i1.ParameterDescription(
               name: 'raceFeature',
-              type: _i1.getType<_i29.RaceFeatureData>(),
+              type: _i1.getType<_i30.RaceFeatureData>(),
               nullable: false,
             )
           },
@@ -1444,7 +1529,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subrace': _i1.ParameterDescription(
               name: 'subrace',
-              type: _i1.getType<_i30.SubraceData>(),
+              type: _i1.getType<_i31.SubraceData>(),
               nullable: false,
             )
           },
@@ -1462,7 +1547,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subrace': _i1.ParameterDescription(
               name: 'subrace',
-              type: _i1.getType<_i30.SubraceData>(),
+              type: _i1.getType<_i31.SubraceData>(),
               nullable: false,
             )
           },
@@ -1514,7 +1599,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i31.RaceChoiceSetData>(),
+              type: _i1.getType<_i32.RaceChoiceSetData>(),
               nullable: false,
             )
           },
@@ -1533,7 +1618,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i31.RaceChoiceSetData>(),
+              type: _i1.getType<_i32.RaceChoiceSetData>(),
               nullable: false,
             )
           },
@@ -1588,7 +1673,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i32.RaceChoiceOptionData>(),
+              type: _i1.getType<_i33.RaceChoiceOptionData>(),
               nullable: false,
             )
           },
@@ -1608,7 +1693,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i32.RaceChoiceOptionData>(),
+              type: _i1.getType<_i33.RaceChoiceOptionData>(),
               nullable: false,
             )
           },
@@ -1665,7 +1750,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i33.RaceFeatureSpellGrantData>(),
+              type: _i1.getType<_i34.RaceFeatureSpellGrantData>(),
               nullable: false,
             )
           },
@@ -1685,7 +1770,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i33.RaceFeatureSpellGrantData>(),
+              type: _i1.getType<_i34.RaceFeatureSpellGrantData>(),
               nullable: false,
             )
           },
@@ -1741,7 +1826,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'armor': _i1.ParameterDescription(
               name: 'armor',
-              type: _i1.getType<_i34.ArmorData>(),
+              type: _i1.getType<_i35.ArmorData>(),
               nullable: false,
             )
           },
@@ -1759,7 +1844,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'armor': _i1.ParameterDescription(
               name: 'armor',
-              type: _i1.getType<_i34.ArmorData>(),
+              type: _i1.getType<_i35.ArmorData>(),
               nullable: false,
             )
           },
@@ -1810,7 +1895,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i35.ItemData>(),
+              type: _i1.getType<_i36.ItemData>(),
               nullable: false,
             )
           },
@@ -1828,7 +1913,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i35.ItemData>(),
+              type: _i1.getType<_i36.ItemData>(),
               nullable: false,
             )
           },
@@ -1880,7 +1965,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i36.MagicItemData>(),
+              type: _i1.getType<_i37.MagicItemData>(),
               nullable: false,
             )
           },
@@ -1898,7 +1983,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'magicItem': _i1.ParameterDescription(
               name: 'magicItem',
-              type: _i1.getType<_i36.MagicItemData>(),
+              type: _i1.getType<_i37.MagicItemData>(),
               nullable: false,
             )
           },
@@ -1950,7 +2035,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'weapon': _i1.ParameterDescription(
               name: 'weapon',
-              type: _i1.getType<_i37.WeaponData>(),
+              type: _i1.getType<_i38.WeaponData>(),
               nullable: false,
             )
           },
@@ -1968,7 +2053,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'weapon': _i1.ParameterDescription(
               name: 'weapon',
-              type: _i1.getType<_i37.WeaponData>(),
+              type: _i1.getType<_i38.WeaponData>(),
               nullable: false,
             )
           },
@@ -2020,7 +2105,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'spell': _i1.ParameterDescription(
               name: 'spell',
-              type: _i1.getType<_i38.SpellData>(),
+              type: _i1.getType<_i39.SpellData>(),
               nullable: false,
             )
           },
@@ -2038,7 +2123,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'spell': _i1.ParameterDescription(
               name: 'spell',
-              type: _i1.getType<_i38.SpellData>(),
+              type: _i1.getType<_i39.SpellData>(),
               nullable: false,
             )
           },
@@ -2086,6 +2171,6 @@ class Endpoints extends _i1.EndpointDispatch {
         )
       },
     );
-    modules['serverpod_auth'] = _i39.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i40.Endpoints()..initializeEndpoints(server);
   }
 }

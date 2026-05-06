@@ -9,7 +9,6 @@ fields:
   knownSpells: int?
   preparedSpellFormula: String?
   resourceSummary: String?
-  spellSlots: Map<int, int>?
   notes: String?
   source: String?
   version: int?

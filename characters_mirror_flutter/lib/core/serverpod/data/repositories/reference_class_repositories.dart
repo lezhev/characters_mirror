@@ -122,6 +122,37 @@ class ClassLevelRepository implements Repository<ClassLevelData> {
   Future<void> delete(int id) => client.classLevelData.delete(id);
 }
 
+class SpellSlotProgressionRepository
+    implements Repository<SpellSlotProgressionData> {
+  @override
+  Future<List<SpellSlotProgressionData>> getAll() => cachedListFallback(
+        cache: offlineCacheDatabase,
+        kind: 'spell_slot_progression',
+        loadRemote: client.spellSlotProgressionData.getAll,
+        toJson: (value) => value.toJson(),
+        fromJson: SpellSlotProgressionData.fromJson,
+      );
+
+  @override
+  Future<SpellSlotProgressionData?> getById(int id) async {
+    final all = await getAll();
+    try {
+      return all.firstWhere((e) => e.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<SpellSlotProgressionData> upsert(
+    SpellSlotProgressionData entity,
+  ) =>
+      client.spellSlotProgressionData.upsert(entity);
+
+  @override
+  Future<void> delete(int id) => client.spellSlotProgressionData.delete(id);
+}
+
 class SubclassRepository implements Repository<SubclassData> {
   @override
   Future<List<SubclassData>> getAll() => cachedListFallback(

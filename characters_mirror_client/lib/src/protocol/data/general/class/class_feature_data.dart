@@ -21,6 +21,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     this.parentClass,
     this.name,
     this.description,
+    this.shortDescription,
     required this.level,
     this.source,
     this.version,
@@ -28,6 +29,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     this.updatedAt,
     this.tags,
     this.choiceGroupKey,
+    this.relatedTable,
     this.spellGrants,
   });
 
@@ -37,6 +39,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     _i2.ClassData? parentClass,
     String? name,
     String? description,
+    String? shortDescription,
     required int level,
     String? source,
     int? version,
@@ -44,6 +47,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    String? relatedTable,
     List<_i4.ClassSpellGrantData>? spellGrants,
   }) = _ClassFeatureDataImpl;
 
@@ -57,6 +61,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
               (jsonSerialization['parentClass'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
+      shortDescription: jsonSerialization['shortDescription'] as String?,
       level: jsonSerialization['level'] as int,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
@@ -70,6 +75,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
           ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
+      relatedTable: jsonSerialization['relatedTable'] as String?,
       spellGrants: (jsonSerialization['spellGrants'] as List?)
           ?.map((e) =>
               _i4.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
@@ -90,6 +96,8 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
 
   String? description;
 
+  String? shortDescription;
+
   int level;
 
   String? source;
@@ -104,6 +112,8 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
 
   String? choiceGroupKey;
 
+  String? relatedTable;
+
   List<_i4.ClassSpellGrantData>? spellGrants;
 
   /// Returns a shallow copy of this [ClassFeatureData]
@@ -115,6 +125,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     _i2.ClassData? parentClass,
     String? name,
     String? description,
+    String? shortDescription,
     int? level,
     String? source,
     int? version,
@@ -122,6 +133,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    String? relatedTable,
     List<_i4.ClassSpellGrantData>? spellGrants,
   });
   @override
@@ -132,6 +144,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -139,6 +152,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (relatedTable != null) 'relatedTable': relatedTable,
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -159,6 +173,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     _i2.ClassData? parentClass,
     String? name,
     String? description,
+    String? shortDescription,
     required int level,
     String? source,
     int? version,
@@ -166,6 +181,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    String? relatedTable,
     List<_i4.ClassSpellGrantData>? spellGrants,
   }) : super._(
           id: id,
@@ -173,6 +189,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           parentClass: parentClass,
           name: name,
           description: description,
+          shortDescription: shortDescription,
           level: level,
           source: source,
           version: version,
@@ -180,6 +197,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           updatedAt: updatedAt,
           tags: tags,
           choiceGroupKey: choiceGroupKey,
+          relatedTable: relatedTable,
           spellGrants: spellGrants,
         );
 
@@ -193,6 +211,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     Object? parentClass = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
+    Object? shortDescription = _Undefined,
     int? level,
     Object? source = _Undefined,
     Object? version = _Undefined,
@@ -200,6 +219,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     Object? updatedAt = _Undefined,
     Object? tags = _Undefined,
     Object? choiceGroupKey = _Undefined,
+    Object? relatedTable = _Undefined,
     Object? spellGrants = _Undefined,
   }) {
     return ClassFeatureData(
@@ -210,6 +230,9 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           : this.parentClass?.copyWith(),
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
+      shortDescription: shortDescription is String?
+          ? shortDescription
+          : this.shortDescription,
       level: level ?? this.level,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
@@ -220,6 +243,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           : this.tags?.map((e0) => e0).toList(),
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      relatedTable: relatedTable is String? ? relatedTable : this.relatedTable,
       spellGrants: spellGrants is List<_i4.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),

@@ -96,12 +96,6 @@ class ClassFeatures extends HookConsumerWidget {
                     },
                   ),
                 ],
-                if (subclassChoice != null &&
-                    (subclassChoice.requiredLevel ?? 99) <= selectedLevel &&
-                    (subclassChoice.subclasses?.isNotEmpty ?? false)) ...[
-                  const Gap(12),
-                  const SubclassChoiceSection(),
-                ],
                 if ((currentStepView.skillSelectionGroups?.isNotEmpty ??
                     false)) ...[
                   const Gap(12),
@@ -135,6 +129,12 @@ class ClassFeatures extends HookConsumerWidget {
                 if (choiceGroups.isNotEmpty) ...[
                   const Gap(12),
                   ClassChoiceGroupsSection(choiceGroups: choiceGroups),
+                ],
+                if (subclassChoice != null &&
+                    (subclassChoice.requiredLevel ?? 99) <= selectedLevel &&
+                    (subclassChoice.subclasses?.isNotEmpty ?? false)) ...[
+                  const Gap(12),
+                  const SubclassChoiceSection(),
                 ],
                 if (currentLevelEntries.isNotEmpty ||
                     futureProgressionEntries.isNotEmpty) ...[

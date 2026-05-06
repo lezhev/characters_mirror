@@ -27,6 +27,12 @@ class ReferenceDataEndpoint extends Endpoint {
               .insertRow(session, ClassLevelData.fromJson(data));
           break;
 
+        case 'spellslotprogression':
+        case 'spell_slot_progression':
+          await SpellSlotProgressionData.db
+              .insertRow(session, SpellSlotProgressionData.fromJson(data));
+          break;
+
         case 'classchoicegroup':
         case 'class_choice_group':
           await ClassChoiceGroupData.db

@@ -24,6 +24,7 @@ class _AdminPageState extends State<AdminPage> {
     'class': ClassRepository(),
     'classfeature': ClassFeatureRepository(),
     'classlevel': ClassLevelRepository(),
+    'spellslotprogression': SpellSlotProgressionRepository(),
     'classchoicegroup': ClassChoiceGroupRepository(),
     'classchoiceoption': ClassChoiceOptionRepository(),
     'classspellgrant': ClassSpellGrantRepository(),
@@ -48,6 +49,7 @@ class _AdminPageState extends State<AdminPage> {
     'class',
     'classfeature',
     'classlevel',
+    'spellslotprogression',
     'classchoicegroup',
     'classchoiceoption',
     'classspellgrant',
@@ -125,6 +127,9 @@ class _AdminPageState extends State<AdminPage> {
             break;
           case 'classlevel':
             entity = ClassLevelData.fromJson(dataMap);
+            break;
+          case 'spellslotprogression':
+            entity = SpellSlotProgressionData.fromJson(dataMap);
             break;
           case 'classchoicegroup':
             entity = ClassChoiceGroupData.fromJson(dataMap);
