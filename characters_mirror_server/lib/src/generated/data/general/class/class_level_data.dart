@@ -27,7 +27,6 @@ abstract class ClassLevelData
     this.knownSpells,
     this.preparedSpellFormula,
     this.resourceSummary,
-    this.spellSlots,
     this.notes,
     this.source,
     this.version,
@@ -46,7 +45,6 @@ abstract class ClassLevelData
     int? knownSpells,
     String? preparedSpellFormula,
     String? resourceSummary,
-    Map<int, int>? spellSlots,
     String? notes,
     String? source,
     int? version,
@@ -74,9 +72,6 @@ abstract class ClassLevelData
       preparedSpellFormula:
           jsonSerialization['preparedSpellFormula'] as String?,
       resourceSummary: jsonSerialization['resourceSummary'] as String?,
-      spellSlots: (jsonSerialization['spellSlots'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
       notes: jsonSerialization['notes'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
@@ -114,8 +109,6 @@ abstract class ClassLevelData
 
   String? resourceSummary;
 
-  Map<int, int>? spellSlots;
-
   String? notes;
 
   String? source;
@@ -143,7 +136,6 @@ abstract class ClassLevelData
     int? knownSpells,
     String? preparedSpellFormula,
     String? resourceSummary,
-    Map<int, int>? spellSlots,
     String? notes,
     String? source,
     int? version,
@@ -165,7 +157,6 @@ abstract class ClassLevelData
       if (preparedSpellFormula != null)
         'preparedSpellFormula': preparedSpellFormula,
       if (resourceSummary != null) 'resourceSummary': resourceSummary,
-      if (spellSlots != null) 'spellSlots': spellSlots?.toJson(),
       if (notes != null) 'notes': notes,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -189,7 +180,6 @@ abstract class ClassLevelData
       if (preparedSpellFormula != null)
         'preparedSpellFormula': preparedSpellFormula,
       if (resourceSummary != null) 'resourceSummary': resourceSummary,
-      if (spellSlots != null) 'spellSlots': spellSlots?.toJson(),
       if (notes != null) 'notes': notes,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -242,7 +232,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
     int? knownSpells,
     String? preparedSpellFormula,
     String? resourceSummary,
-    Map<int, int>? spellSlots,
     String? notes,
     String? source,
     int? version,
@@ -259,7 +248,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
           knownSpells: knownSpells,
           preparedSpellFormula: preparedSpellFormula,
           resourceSummary: resourceSummary,
-          spellSlots: spellSlots,
           notes: notes,
           source: source,
           version: version,
@@ -282,7 +270,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
     Object? knownSpells = _Undefined,
     Object? preparedSpellFormula = _Undefined,
     Object? resourceSummary = _Undefined,
-    Object? spellSlots = _Undefined,
     Object? notes = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
@@ -308,16 +295,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
           : this.preparedSpellFormula,
       resourceSummary:
           resourceSummary is String? ? resourceSummary : this.resourceSummary,
-      spellSlots: spellSlots is Map<int, int>?
-          ? spellSlots
-          : this.spellSlots?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
       notes: notes is String? ? notes : this.notes,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
@@ -362,10 +339,6 @@ class ClassLevelDataTable extends _i1.Table<int?> {
       'resourceSummary',
       this,
     );
-    spellSlots = _i1.ColumnSerializable(
-      'spellSlots',
-      this,
-    );
     notes = _i1.ColumnString(
       'notes',
       this,
@@ -406,8 +379,6 @@ class ClassLevelDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString resourceSummary;
 
-  late final _i1.ColumnSerializable spellSlots;
-
   late final _i1.ColumnString notes;
 
   late final _i1.ColumnString source;
@@ -442,7 +413,6 @@ class ClassLevelDataTable extends _i1.Table<int?> {
         knownSpells,
         preparedSpellFormula,
         resourceSummary,
-        spellSlots,
         notes,
         source,
         version,

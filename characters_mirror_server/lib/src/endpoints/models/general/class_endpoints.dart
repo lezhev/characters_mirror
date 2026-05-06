@@ -123,6 +123,7 @@ class ClassDataEndpoint extends Endpoint {
         ? await _buildSpellSelectionGroups(
             session,
             classId: classId,
+            classData: classData,
             selectedLevel: selectedLevel,
             classLevel: selectedClassLevel,
           )
@@ -198,6 +199,9 @@ bool _isMigratedSkillGroup(ClassChoiceGroupData group) {
           group.name?.toLowerCase().contains('skill') == true);
 }
 
+const _standardSpellSlotTableKey = 'standard';
+const _pactMagicSpellSlotTableKey = 'pact_magic';
+
 List<SkillSelectionGroupView> _buildClassSkillSelectionGroups(
   ClassData classData,
 ) {
@@ -249,6 +253,7 @@ ClassLevelData? _classLevelForSelection(
 Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
   Session session, {
   required int classId,
+  required ClassData classData,
   required int selectedLevel,
   required ClassLevelData classLevel,
 }) async {
@@ -285,7 +290,12 @@ Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
   }
 
   final knownSpells = classLevel.knownSpells ?? 0;
-  final maxSpellLevel = _maxKnownSpellLevel(classLevel.spellSlots);
+  final spellSlots = await _spellSlotsForClassStep(
+    session,
+    classData.spellcastingProgression,
+    selectedLevel,
+  );
+  final maxSpellLevel = _maxKnownSpellLevel(spellSlots);
   if (knownSpells > 0 && maxSpellLevel > 0) {
     final knownSpellOptions = [
       for (final spell in spells)
@@ -305,6 +315,79 @@ Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
   }
 
   return groups;
+}
+
+Future<Map<int, int>?> _spellSlotsForClassStep(
+  Session session,
+  SpellcastingProgression? progression,
+  int classLevel,
+) async {
+  if (classLevel <= 0 || progression == null) {
+    return null;
+  }
+
+  final tableKey = progression == SpellcastingProgression.pactMagic
+      ? _pactMagicSpellSlotTableKey
+      : _standardSpellSlotTableKey;
+  final progressionLevel = _classStepProgressionLevel(
+    progression,
+    classLevel,
+  );
+  if (progressionLevel <= 0) {
+    return null;
+  }
+
+  return _spellSlotsForProgressionLevel(
+    session,
+    tableKey,
+    progressionLevel,
+  );
+}
+
+int _classStepProgressionLevel(
+  SpellcastingProgression progression,
+  int classLevel,
+) {
+  switch (progression) {
+    case SpellcastingProgression.full:
+    case SpellcastingProgression.pactMagic:
+      return classLevel;
+    case SpellcastingProgression.half:
+      return (classLevel + 1) ~/ 2;
+    case SpellcastingProgression.third:
+      return (classLevel + 2) ~/ 3;
+    case SpellcastingProgression.none:
+      return 0;
+  }
+}
+
+Future<Map<int, int>?> _spellSlotsForProgressionLevel(
+  Session session,
+  String tableKey,
+  int level,
+) async {
+  if (level <= 0) {
+    return null;
+  }
+  final rows = await SpellSlotProgressionData.db.find(
+    session,
+    where: (t) => t.tableKey.equals(tableKey) & t.level.equals(level),
+    limit: 1,
+  );
+  if (rows.isEmpty) {
+    return null;
+  }
+  return _nonZeroSpellSlots(rows.first.spellSlots);
+}
+
+Map<int, int>? _nonZeroSpellSlots(Map<int, int>? slots) {
+  final result = <int, int>{};
+  for (final entry in slots?.entries ?? const Iterable.empty()) {
+    if (entry.key > 0 && entry.value > 0) {
+      result[entry.key] = entry.value;
+    }
+  }
+  return result.isEmpty ? null : result;
 }
 
 int _maxKnownSpellLevel(Map<int, int>? spellSlots) {
@@ -448,6 +531,63 @@ class ClassLevelDataEndpoint extends Endpoint {
 
   Future<void> delete(Session session, int id) async {
     await ClassLevelData.db.deleteWhere(session, where: (t) => t.id.equals(id));
+  }
+}
+
+class SpellSlotProgressionDataEndpoint extends Endpoint {
+  Future<List<SpellSlotProgressionData>> getAll(Session session) async {
+    final rows = await SpellSlotProgressionData.db.find(session);
+    rows.sort((a, b) {
+      final tableCompare = (a.tableKey ?? '').compareTo(b.tableKey ?? '');
+      if (tableCompare != 0) return tableCompare;
+      return a.level.compareTo(b.level);
+    });
+    return rows;
+  }
+
+  Future<SpellSlotProgressionData> add(
+    Session session,
+    SpellSlotProgressionData item,
+  ) async {
+    _stampForInsert(item);
+    return SpellSlotProgressionData.db.insertRow(session, item);
+  }
+
+  Future<SpellSlotProgressionData> upsert(
+    Session session,
+    SpellSlotProgressionData item,
+  ) async {
+    return _upsertById(
+      session,
+      item,
+      findExisting: () {
+        if (item.id != null) {
+          return SpellSlotProgressionData.db.find(
+            session,
+            where: (t) => t.id.equals(item.id),
+            limit: 1,
+          );
+        }
+        return SpellSlotProgressionData.db.find(
+          session,
+          where: (t) =>
+              t.tableKey.equals(item.tableKey) & t.level.equals(item.level),
+          limit: 1,
+        );
+      },
+      insert: () => SpellSlotProgressionData.db.insertRow(session, item),
+      update: () async {
+        await SpellSlotProgressionData.db.updateRow(session, item);
+        return item;
+      },
+    );
+  }
+
+  Future<void> delete(Session session, int id) async {
+    await SpellSlotProgressionData.db.deleteWhere(
+      session,
+      where: (t) => t.id.equals(id),
+    );
   }
 }
 

@@ -10,7 +10,7 @@ fields:
   speed: int?
   maxHp: int?
   passivePerception: int?
-  passiveInvestigation: int?
+  passiveInvestigation: int? 
   passiveInsight: int?
   savingThrowBonuses: Map<String, int>?
   skillBonuses: Map<String, int>?

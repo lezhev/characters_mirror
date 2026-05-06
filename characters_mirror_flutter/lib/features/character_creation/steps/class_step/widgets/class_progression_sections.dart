@@ -198,7 +198,7 @@ class ClassProgressionSection extends StatelessWidget {
                 ),
           ),
           const Gap(8),
-          ...currentLevelEntries.map((entry) => entry.buildCard()),
+          ..._buildFeatureLevelGroups(context, currentLevelEntries),
         ],
         if (futureProgressionEntries.isNotEmpty) ...[
           if (currentLevelEntries.isNotEmpty) const Gap(12),
@@ -209,10 +209,13 @@ class ClassProgressionSection extends StatelessWidget {
               children: [
                 Text(
                   'Будущая прогрессия',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 ),
                 Icon(
                   isFutureExpanded ? Icons.expand_less : Icons.expand_more,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ],
             ),
@@ -222,13 +225,46 @@ class ClassProgressionSection extends StatelessWidget {
             extraOffset: 64,
             expand: isFutureExpanded,
             child: Column(
-              children: futureProgressionEntries
-                  .map((entry) => entry.buildCard())
-                  .toList(),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:
+                  _buildFeatureLevelGroups(context, futureProgressionEntries),
             ),
           ),
         ],
       ],
     );
   }
+}
+
+List<Widget> _buildFeatureLevelGroups(
+  BuildContext context,
+  List<ClassFeatureEntry> entries,
+) {
+  final textTheme = Theme.of(context).textTheme;
+  final colorScheme = Theme.of(context).colorScheme;
+  final widgets = <Widget>[];
+  int? currentLevel;
+
+  for (final entry in entries) {
+    if (entry.level != currentLevel) {
+      currentLevel = entry.level;
+      if (widgets.isNotEmpty) {
+        widgets.add(const Gap(10));
+      }
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 2, bottom: 2),
+          child: Text(
+            'Уровень $currentLevel',
+            style: textTheme.titleMedium?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+      );
+    }
+    widgets.add(entry.buildCard());
+  }
+
+  return widgets;
 }

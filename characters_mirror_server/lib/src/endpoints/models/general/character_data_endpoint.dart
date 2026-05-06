@@ -5,6 +5,9 @@ import 'package:serverpod/serverpod.dart';
 
 import 'starting_equipment_endpoints.dart';
 
+const _standardSpellSlotTableKey = 'standard';
+const _pactMagicSpellSlotTableKey = 'pact_magic';
+
 class CharacterDataEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
@@ -2226,44 +2229,94 @@ Future<_SpellSlotData> _resolveSpellSlots(
   Session session,
   List<CharacterClassEntryData> entries,
 ) async {
-  Map<int, int>? spellSlots;
-  Map<int, int>? pactSlots;
+  var standardCasterLevel = 0;
+  var highestPactLevel = 0;
+  final standardEntries = [
+    for (final entry in entries)
+      if (_isStandardCasterProgression(
+          entry.classData?.spellcastingProgression))
+        entry,
+  ];
+  final useSingleClassRounding = standardEntries.length == 1;
 
   for (final entry in entries) {
     final classData = entry.classData;
-    final level = entry.level;
-    if (classData == null ||
-        classData.spellcastingProgression == null ||
-        classData.id == null ||
-        level == null) {
+    final level = entry.level ?? 0;
+    final progression = classData?.spellcastingProgression;
+    if (progression == null || level <= 0) {
       continue;
     }
 
-    final rows = await ClassLevelData.db.find(
-      session,
-      where: (t) => t.classDataId.equals(classData.id),
-    );
-    ClassLevelData? match;
-    for (final row in rows) {
-      if (row.level == level) {
-        match = row;
+    switch (progression) {
+      case SpellcastingProgression.full:
+        standardCasterLevel += level;
         break;
-      }
-    }
-    if (match == null) continue;
-
-    if (classData.spellcastingProgression ==
-        SpellcastingProgression.pactMagic) {
-      pactSlots = match.spellSlots;
-    } else {
-      spellSlots ??= match.spellSlots;
+      case SpellcastingProgression.half:
+        standardCasterLevel +=
+            useSingleClassRounding ? ((level + 1) ~/ 2) : (level ~/ 2);
+        break;
+      case SpellcastingProgression.third:
+        standardCasterLevel +=
+            useSingleClassRounding ? ((level + 2) ~/ 3) : (level ~/ 3);
+        break;
+      case SpellcastingProgression.pactMagic:
+        highestPactLevel = max(highestPactLevel, level);
+        break;
+      case SpellcastingProgression.none:
+        break;
     }
   }
+
+  final spellSlots = await _spellSlotsForProgressionLevel(
+    session,
+    _standardSpellSlotTableKey,
+    min(20, standardCasterLevel),
+  );
+  final pactSlots = await _spellSlotsForProgressionLevel(
+    session,
+    _pactMagicSpellSlotTableKey,
+    min(20, highestPactLevel),
+  );
 
   return _SpellSlotData(
     spellSlots: spellSlots,
     pactSlots: pactSlots,
   );
+}
+
+bool _isStandardCasterProgression(SpellcastingProgression? progression) {
+  return progression == SpellcastingProgression.full ||
+      progression == SpellcastingProgression.half ||
+      progression == SpellcastingProgression.third;
+}
+
+Future<Map<int, int>?> _spellSlotsForProgressionLevel(
+  Session session,
+  String tableKey,
+  int level,
+) async {
+  if (level <= 0) {
+    return null;
+  }
+  final rows = await SpellSlotProgressionData.db.find(
+    session,
+    where: (t) => t.tableKey.equals(tableKey) & t.level.equals(level),
+    limit: 1,
+  );
+  if (rows.isEmpty) {
+    return null;
+  }
+  return _nonZeroSpellSlots(rows.first.spellSlots);
+}
+
+Map<int, int>? _nonZeroSpellSlots(Map<int, int>? slots) {
+  final result = <int, int>{};
+  for (final entry in slots?.entries ?? const Iterable.empty()) {
+    if (entry.key > 0 && entry.value > 0) {
+      result[entry.key] = entry.value;
+    }
+  }
+  return result.isEmpty ? null : result;
 }
 
 class _SpellSlotData {
@@ -3485,7 +3538,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
           ?.name,
       level: feature.level,
       defaultName: feature.name,
-      defaultDescription: feature.description,
+      defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
     );
   }
@@ -3502,7 +3555,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
           ?.name,
       level: feature.level,
       defaultName: feature.name,
-      defaultDescription: feature.description,
+      defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
     );
   }
@@ -3513,7 +3566,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       sourceName: character.race?.name,
       level: feature.level,
       defaultName: feature.name,
-      defaultDescription: feature.description,
+      defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
     );
   }
@@ -3524,7 +3577,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       sourceName: character.subrace?.name,
       level: feature.level,
       defaultName: feature.name,
-      defaultDescription: feature.description,
+      defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
     );
   }

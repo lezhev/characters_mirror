@@ -24,6 +24,7 @@ abstract class SubclassFeatureData
     this.parentSubclass,
     this.name,
     this.description,
+    this.shortDescription,
     required this.level,
     this.source,
     this.version,
@@ -41,6 +42,7 @@ abstract class SubclassFeatureData
     _i2.SubclassData? parentSubclass,
     String? name,
     String? description,
+    String? shortDescription,
     required int level,
     String? source,
     int? version,
@@ -62,6 +64,7 @@ abstract class SubclassFeatureData
               (jsonSerialization['parentSubclass'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
+      shortDescription: jsonSerialization['shortDescription'] as String?,
       level: jsonSerialization['level'] as int,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
@@ -98,6 +101,8 @@ abstract class SubclassFeatureData
 
   String? description;
 
+  String? shortDescription;
+
   int level;
 
   String? source;
@@ -128,6 +133,7 @@ abstract class SubclassFeatureData
     _i2.SubclassData? parentSubclass,
     String? name,
     String? description,
+    String? shortDescription,
     int? level,
     String? source,
     int? version,
@@ -146,6 +152,7 @@ abstract class SubclassFeatureData
       if (parentSubclass != null) 'parentSubclass': parentSubclass?.toJson(),
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -168,6 +175,7 @@ abstract class SubclassFeatureData
         'parentSubclass': parentSubclass?.toJsonForProtocol(),
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -227,6 +235,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     _i2.SubclassData? parentSubclass,
     String? name,
     String? description,
+    String? shortDescription,
     required int level,
     String? source,
     int? version,
@@ -242,6 +251,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           parentSubclass: parentSubclass,
           name: name,
           description: description,
+          shortDescription: shortDescription,
           level: level,
           source: source,
           version: version,
@@ -263,6 +273,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     Object? parentSubclass = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
+    Object? shortDescription = _Undefined,
     int? level,
     Object? source = _Undefined,
     Object? version = _Undefined,
@@ -281,6 +292,9 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           : this.parentSubclass?.copyWith(),
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
+      shortDescription: shortDescription is String?
+          ? shortDescription
+          : this.shortDescription,
       level: level ?? this.level,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
@@ -312,6 +326,10 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
     );
     description = _i1.ColumnString(
       'description',
+      this,
+    );
+    shortDescription = _i1.ColumnString(
+      'shortDescription',
       this,
     );
     level = _i1.ColumnInt(
@@ -355,6 +373,8 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString description;
+
+  late final _i1.ColumnString shortDescription;
 
   late final _i1.ColumnInt level;
 
@@ -426,6 +446,7 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
         parentSubclassId,
         name,
         description,
+        shortDescription,
         level,
         source,
         version,

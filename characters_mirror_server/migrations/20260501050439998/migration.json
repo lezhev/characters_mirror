@@ -1,0 +1,135 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_level_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "spellSlots"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"spellSlots\" of table \"class_level_data\" will be dropped.",
+            "table": "class_level_data",
+            "columns": [
+              "spellSlots"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "spell_slot_progression_data",
+        "dartName": "SpellSlotProgressionData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('spell_slot_progression_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "tableKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "level",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "spellSlots",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<int,int>?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "spell_slot_progression_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "spell_slot_progression_table_level_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "tableKey"
+              },
+              {
+                "type": 0,
+                "definition": "level"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"spellSlots\" of table \"class_level_data\" will be dropped.",
+      "table": "class_level_data",
+      "columns": [
+        "spellSlots"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

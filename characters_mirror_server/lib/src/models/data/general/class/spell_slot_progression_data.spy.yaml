@@ -1,0 +1,14 @@
+class: SpellSlotProgressionData
+table: spell_slot_progression_data
+fields:
+  tableKey: String?
+  level: int
+  spellSlots: Map<int, int>?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+indexes:
+  spell_slot_progression_table_level_idx:
+    fields: tableKey, level
+    unique: true

@@ -54,9 +54,11 @@ class RaceFeatureCard extends HookConsumerWidget {
 
     return ref.watch(raceStateProvider).when(
           data: (data) {
-            final choiceSets = feature.choiceSets ?? const <RaceChoiceSetData>[];
+            final choiceSets =
+                feature.choiceSets ?? const <RaceChoiceSetData>[];
             final spellGrants =
                 feature.spellGrants ?? const <RaceFeatureSpellGrantData>[];
+            final description = feature.shortDescription ?? feature.description;
 
             return AppSurfaceCard(
               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
@@ -88,11 +90,11 @@ class RaceFeatureCard extends HookConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if ((feature.description ?? '').trim().isNotEmpty)
+                        if ((description ?? '').trim().isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(top: 2.0),
                             child: Text(
-                              feature.description!,
+                              description!,
                               style: textTheme.bodyMedium,
                               textAlign: TextAlign.justify,
                             ),
@@ -120,9 +122,11 @@ class RaceFeatureCard extends HookConsumerWidget {
                               padding: const EdgeInsets.only(bottom: 10),
                               child: RaceChoiceSetCard(
                                 choiceSet: choiceSet,
-                                selectedOptions: data.selectedChoiceOptionsByGroup[
-                                        choiceSetGroupKey(choiceSet.id) ?? ''] ??
-                                    const <RaceChoiceOptionData>[],
+                                selectedOptions:
+                                    data.selectedChoiceOptionsByGroup[
+                                            choiceSetGroupKey(choiceSet.id) ??
+                                                ''] ??
+                                        const <RaceChoiceOptionData>[],
                               ),
                             ),
                           ),

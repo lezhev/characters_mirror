@@ -45,6 +45,11 @@ classLevelData:
   - add:
   - upsert:
   - delete:
+spellSlotProgressionData:
+  - getAll:
+  - add:
+  - upsert:
+  - delete:
 subclassData:
   - getAll:
   - add:

@@ -17,6 +17,34 @@ void main() {
       );
     }
 
+    Future<void> seedCoreSpellSlotTables() async {
+      const standardRows = <int, Map<int, int>>{
+        1: {1: 2},
+        2: {1: 3},
+        3: {1: 4, 2: 2},
+        4: {1: 4, 2: 3},
+        5: {1: 4, 2: 3, 3: 2},
+      };
+      for (final entry in standardRows.entries) {
+        await endpoints.spellSlotProgressionData.upsert(
+          sessionBuilder,
+          SpellSlotProgressionData(
+            tableKey: 'standard',
+            level: entry.key,
+            spellSlots: entry.value,
+          ),
+        );
+      }
+      await endpoints.spellSlotProgressionData.upsert(
+        sessionBuilder,
+        SpellSlotProgressionData(
+          tableKey: 'pact_magic',
+          level: 5,
+          spellSlots: const {3: 2},
+        ),
+      );
+    }
+
     test('saveCharacter assigns ownership to authenticated user', () async {
       final ownerSession = authenticatedSession(101);
 
@@ -1253,6 +1281,253 @@ void main() {
       );
     });
 
+    test('derived spell slots use standard progression for full casters',
+        () async {
+      await seedCoreSpellSlotTables();
+      final ownerSession = authenticatedSession(406);
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Slot Full Caster',
+          hitDieValue: 6,
+          spellcastingProgression: SpellcastingProgression.full,
+        ),
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Full Slot Fixture',
+          classEntries: [
+            CharacterClassEntryData(
+              classData: classData,
+              level: 5,
+              isStartingClass: true,
+              classOrder: 0,
+            ),
+          ],
+        ),
+      );
+
+      expect(saved.derived?.spellSlots, const {1: 4, 2: 3, 3: 2});
+      expect(saved.derived?.pactSlots, isNull);
+    });
+
+    test('derived spell slots round single half and third casters by class',
+        () async {
+      await seedCoreSpellSlotTables();
+      final ownerSession = authenticatedSession(407);
+      final halfCaster = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Slot Half Caster',
+          hitDieValue: 10,
+          spellcastingProgression: SpellcastingProgression.half,
+        ),
+      );
+      final thirdCaster = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Slot Third Caster',
+          hitDieValue: 8,
+          spellcastingProgression: SpellcastingProgression.third,
+        ),
+      );
+
+      final halfSaved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Half Slot Fixture',
+          classEntries: [
+            CharacterClassEntryData(
+              classData: halfCaster,
+              level: 5,
+              isStartingClass: true,
+              classOrder: 0,
+            ),
+          ],
+        ),
+      );
+      final thirdSaved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Third Slot Fixture',
+          classEntries: [
+            CharacterClassEntryData(
+              classData: thirdCaster,
+              level: 7,
+              isStartingClass: true,
+              classOrder: 0,
+            ),
+          ],
+        ),
+      );
+
+      expect(halfSaved.derived?.spellSlots, const {1: 4, 2: 2});
+      expect(thirdSaved.derived?.spellSlots, const {1: 4, 2: 2});
+    });
+
+    test('derived spell slots sum multiclass standard caster levels', () async {
+      await seedCoreSpellSlotTables();
+      final ownerSession = authenticatedSession(408);
+      final fullCaster = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Slot Wizard',
+          hitDieValue: 6,
+          spellcastingProgression: SpellcastingProgression.full,
+        ),
+      );
+      final halfCaster = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Slot Paladin',
+          hitDieValue: 10,
+          spellcastingProgression: SpellcastingProgression.half,
+        ),
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Multiclass Slot Fixture',
+          classEntries: [
+            CharacterClassEntryData(
+              classData: fullCaster,
+              level: 3,
+              isStartingClass: true,
+              classOrder: 0,
+            ),
+            CharacterClassEntryData(
+              classData: halfCaster,
+              level: 4,
+              isStartingClass: false,
+              classOrder: 1,
+            ),
+          ],
+        ),
+      );
+
+      expect(saved.derived?.spellSlots, const {1: 4, 2: 3, 3: 2});
+    });
+
+    test('derived pact magic slots stay separate from standard slots',
+        () async {
+      await seedCoreSpellSlotTables();
+      final ownerSession = authenticatedSession(409);
+      final pactCaster = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Slot Warlock',
+          hitDieValue: 8,
+          spellcastingProgression: SpellcastingProgression.pactMagic,
+        ),
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Pact Slot Fixture',
+          classEntries: [
+            CharacterClassEntryData(
+              classData: pactCaster,
+              level: 5,
+              isStartingClass: true,
+              classOrder: 0,
+            ),
+          ],
+        ),
+      );
+
+      expect(saved.derived?.spellSlots, isNull);
+      expect(saved.derived?.pactSlots, const {3: 2});
+    });
+
+    test('class step known spell max level uses slot progression table',
+        () async {
+      await seedCoreSpellSlotTables();
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Slot Step Wizard',
+          hitDieValue: 6,
+          spellcastingProgression: SpellcastingProgression.full,
+        ),
+      );
+      await endpoints.classLevelData.upsert(
+        sessionBuilder,
+        ClassLevelData(
+          classDataId: classData.id!,
+          level: 3,
+          knownSpells: 2,
+        ),
+      );
+      final firstLevelSpell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'slot_step_magic_missile',
+          name: 'Slot Step Magic Missile',
+          level: 1,
+          schoolValue: SpellSchool.evocation,
+        ),
+      );
+      final secondLevelSpell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'slot_step_misty_step',
+          name: 'Slot Step Misty Step',
+          level: 2,
+          schoolValue: SpellSchool.conjuration,
+        ),
+      );
+      final thirdLevelSpell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'slot_step_fireball',
+          name: 'Slot Step Fireball',
+          level: 3,
+          schoolValue: SpellSchool.evocation,
+        ),
+      );
+      final session = sessionBuilder.build();
+      try {
+        for (final spell in [
+          firstLevelSpell,
+          secondLevelSpell,
+          thirdLevelSpell,
+        ]) {
+          await SpellClassAvailabilityData.db.insertRow(
+            session,
+            SpellClassAvailabilityData(
+              spellId: spell.id!,
+              classDataId: classData.id!,
+            ),
+          );
+        }
+      } finally {
+        await session.close();
+      }
+
+      final stepView = await endpoints.classData.getStepView(
+        sessionBuilder,
+        classData.id!,
+        selectedLevel: 3,
+        isStartingClass: true,
+      );
+      final knownSpellGroup = stepView.spellSelectionGroups!.singleWhere(
+        (group) => group.kind == CharacterSpellSelectionKind.knownSpell,
+      );
+
+      expect(
+        knownSpellGroup.options?.map((spell) => spell.referenceKey),
+        containsAll(['slot_step_magic_missile', 'slot_step_misty_step']),
+      );
+      expect(
+        knownSpellGroup.options?.map((spell) => spell.referenceKey),
+        isNot(contains('slot_step_fireball')),
+      );
+    });
+
     test('feature override reset returns canonical feature text', () async {
       final ownerSession = authenticatedSession(404);
       final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
@@ -1697,6 +1972,7 @@ Future<_CreationFixture> _seedCreationFixture(
       ],
       skillCount: 2,
       subclassChoiceLevel: 1,
+      spellcastingProgression: SpellcastingProgression.full,
       imageURL: 'fighter',
     ),
   );
@@ -1707,6 +1983,13 @@ Future<_CreationFixture> _seedCreationFixture(
       level: 1,
       knownCantrips: 1,
       knownSpells: 1,
+    ),
+  );
+  await endpoints.spellSlotProgressionData.upsert(
+    sessionBuilder,
+    SpellSlotProgressionData(
+      tableKey: 'standard',
+      level: 1,
       spellSlots: const {1: 2},
     ),
   );

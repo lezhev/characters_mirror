@@ -29,6 +29,7 @@ abstract class RaceFeatureData
     this.subrace,
     this.name,
     this.description,
+    this.shortDescription,
     this.source,
     this.version,
     this.createdAt,
@@ -49,6 +50,7 @@ abstract class RaceFeatureData
     _i3.SubraceData? subrace,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -76,6 +78,7 @@ abstract class RaceFeatureData
               (jsonSerialization['subrace'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
+      shortDescription: jsonSerialization['shortDescription'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
@@ -122,6 +125,8 @@ abstract class RaceFeatureData
 
   String? description;
 
+  String? shortDescription;
+
   String? source;
 
   int? version;
@@ -156,6 +161,7 @@ abstract class RaceFeatureData
     _i3.SubraceData? subrace,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -177,6 +183,7 @@ abstract class RaceFeatureData
       if (subrace != null) 'subrace': subrace?.toJson(),
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -202,6 +209,7 @@ abstract class RaceFeatureData
       if (subrace != null) 'subrace': subrace?.toJsonForProtocol(),
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -270,6 +278,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     _i3.SubraceData? subrace,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -288,6 +297,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           subrace: subrace,
           name: name,
           description: description,
+          shortDescription: shortDescription,
           source: source,
           version: version,
           createdAt: createdAt,
@@ -312,6 +322,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? subrace = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
+    Object? shortDescription = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
@@ -331,6 +342,9 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       subrace: subrace is _i3.SubraceData? ? subrace : this.subrace?.copyWith(),
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
+      shortDescription: shortDescription is String?
+          ? shortDescription
+          : this.shortDescription,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
@@ -369,6 +383,10 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
     );
     description = _i1.ColumnString(
       'description',
+      this,
+    );
+    shortDescription = _i1.ColumnString(
+      'shortDescription',
       this,
     );
     source = _i1.ColumnString(
@@ -417,6 +435,8 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString description;
+
+  late final _i1.ColumnString shortDescription;
 
   late final _i1.ColumnString source;
 
@@ -537,6 +557,7 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
         subraceId,
         name,
         description,
+        shortDescription,
         source,
         version,
         createdAt,

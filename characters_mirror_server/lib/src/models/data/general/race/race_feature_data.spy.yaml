@@ -5,6 +5,7 @@ fields:
   subrace: SubraceData?, relation(name=subrace_features, optional)
   name: String?
   description: String?
+  shortDescription: String?
   source: String?
   version: int?
   createdAt: DateTime?
