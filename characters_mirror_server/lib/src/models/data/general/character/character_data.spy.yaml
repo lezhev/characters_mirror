@@ -29,6 +29,7 @@ fields:
   useFlexibleAbilityBonuses: bool?
   temporaryHp: int?
   currentHp: int?
+  currentSpellSlots: Map<int, int>?
   inspiration: bool?
   equipment: List<CharacterInventoryItemData>?
   manualSkillProficiencies: List<CharacterSkillProficiencyState>?

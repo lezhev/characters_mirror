@@ -86,4 +86,62 @@ void main() {
     expect(find.text('Драконий'), findsOneWidget);
     expect(find.text('Magic Missile'), findsOneWidget);
   });
+
+  testWidgets('summary step includes racial ability bonuses', (tester) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final notifier = container.read(characterCreationProvider.notifier);
+    notifier.syncRaceDraft(
+      selectedRace: RaceData(
+        id: 1,
+        name: 'Человек',
+        size: CreatureSize.medium,
+        speed: 30,
+        strengthBonus: 2,
+      ),
+      selectedSubrace: SubraceData(
+        id: 2,
+        parentRaceId: 1,
+        name: 'Вариант',
+        dexterityBonus: 1,
+      ),
+    );
+    notifier.syncAttributesDraft(const {
+      'strength': 10,
+      'dexterity': 14,
+      'wisdom': 12,
+    });
+    notifier.syncRacialAttributeChoicesDraft([
+      CharacterChoiceData(
+        sourceType: ChoiceSourceType.race,
+        sourceId: 1,
+        groupKey: 'race_choice_10_bonus_1',
+        selectedAbility: Ability.wisdom,
+        selectedCount: 1,
+      ),
+    ]);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/create/summary',
+            routes: [
+              GoRoute(
+                path: '/create/summary',
+                builder: (_, __) => const SummaryStep(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('12'), findsOneWidget);
+    expect(find.text('13'), findsOneWidget);
+    expect(find.text('15'), findsOneWidget);
+  });
 }

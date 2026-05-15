@@ -95,7 +95,7 @@ class SummaryStep extends HookConsumerWidget {
           const Gap(24),
           SummaryAbilitiesSection(
             baseAbilityScores:
-                state.character.baseAbilityScores ?? const <String, int>{},
+                buildSummaryAbilityScores(state.character, choices),
           ),
         ],
       ),

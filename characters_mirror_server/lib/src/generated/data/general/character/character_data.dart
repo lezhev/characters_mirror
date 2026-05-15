@@ -66,6 +66,7 @@ abstract class CharacterData
     this.useFlexibleAbilityBonuses,
     this.temporaryHp,
     this.currentHp,
+    this.currentSpellSlots,
     this.inspiration,
     this.equipment,
     this.manualSkillProficiencies,
@@ -111,6 +112,7 @@ abstract class CharacterData
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    Map<int, int>? currentSpellSlots,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -183,6 +185,9 @@ abstract class CharacterData
           jsonSerialization['useFlexibleAbilityBonuses'] as bool?,
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
+      currentSpellSlots: (jsonSerialization['currentSpellSlots'] as List?)
+          ?.fold<Map<int, int>>(
+              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
       inspiration: jsonSerialization['inspiration'] as bool?,
       equipment: (jsonSerialization['equipment'] as List?)
           ?.map((e) => _i6.CharacterInventoryItemData.fromJson(
@@ -296,6 +301,8 @@ abstract class CharacterData
 
   int? currentHp;
 
+  Map<int, int>? currentSpellSlots;
+
   bool? inspiration;
 
   List<_i6.CharacterInventoryItemData>? equipment;
@@ -356,6 +363,7 @@ abstract class CharacterData
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    Map<int, int>? currentSpellSlots,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -407,6 +415,8 @@ abstract class CharacterData
         'useFlexibleAbilityBonuses': useFlexibleAbilityBonuses,
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
+      if (currentSpellSlots != null)
+        'currentSpellSlots': currentSpellSlots?.toJson(),
       if (inspiration != null) 'inspiration': inspiration,
       if (equipment != null)
         'equipment': equipment?.toJson(valueToJson: (v) => v.toJson()),
@@ -475,6 +485,8 @@ abstract class CharacterData
         'useFlexibleAbilityBonuses': useFlexibleAbilityBonuses,
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
+      if (currentSpellSlots != null)
+        'currentSpellSlots': currentSpellSlots?.toJson(),
       if (inspiration != null) 'inspiration': inspiration,
       if (equipment != null)
         'equipment':
@@ -549,6 +561,7 @@ class _CharacterDataImpl extends CharacterData {
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    Map<int, int>? currentSpellSlots,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -593,6 +606,7 @@ class _CharacterDataImpl extends CharacterData {
           useFlexibleAbilityBonuses: useFlexibleAbilityBonuses,
           temporaryHp: temporaryHp,
           currentHp: currentHp,
+          currentSpellSlots: currentSpellSlots,
           inspiration: inspiration,
           equipment: equipment,
           manualSkillProficiencies: manualSkillProficiencies,
@@ -642,6 +656,7 @@ class _CharacterDataImpl extends CharacterData {
     Object? useFlexibleAbilityBonuses = _Undefined,
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
+    Object? currentSpellSlots = _Undefined,
     Object? inspiration = _Undefined,
     Object? equipment = _Undefined,
     Object? manualSkillProficiencies = _Undefined,
@@ -714,6 +729,16 @@ class _CharacterDataImpl extends CharacterData {
           : this.useFlexibleAbilityBonuses,
       temporaryHp: temporaryHp is int? ? temporaryHp : this.temporaryHp,
       currentHp: currentHp is int? ? currentHp : this.currentHp,
+      currentSpellSlots: currentSpellSlots is Map<int, int>?
+          ? currentSpellSlots
+          : this.currentSpellSlots?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
       equipment: equipment is List<_i6.CharacterInventoryItemData>?
           ? equipment

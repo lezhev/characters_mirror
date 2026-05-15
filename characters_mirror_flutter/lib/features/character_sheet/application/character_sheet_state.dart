@@ -122,6 +122,39 @@ class CharacterSheetController
     );
   }
 
+  Future<void> setCurrentSpellSlotsForLevel(int level, int available) async {
+    final current = _requireCharacter();
+    final maxSlots = _spellSlotCount(current, level);
+    final normalizedAvailable = available.clamp(0, maxSlots).toInt();
+    final currentSpellSlots = <int, int>{...?current.currentSpellSlots};
+    if (maxSlots <= 0 || normalizedAvailable == maxSlots) {
+      currentSpellSlots.remove(level);
+    } else {
+      currentSpellSlots[level] = normalizedAvailable;
+    }
+
+    await _saveCharacter(
+      current.copyWith(
+        currentSpellSlots: currentSpellSlots.isEmpty ? null : currentSpellSlots,
+      ),
+    );
+  }
+
+  Future<void> spendSpellSlot(int level) async {
+    if (level <= 0) {
+      return;
+    }
+
+    final current = _requireCharacter();
+    final maxSlots = _spellSlotCount(current, level);
+    final available = _currentSpellSlotCount(current, level);
+    if (maxSlots <= 0 || available <= 0) {
+      return;
+    }
+
+    await setCurrentSpellSlotsForLevel(level, available - 1);
+  }
+
   Future<void> savePersonalInfo({
     String? name,
     String? age,
@@ -504,4 +537,16 @@ String? _normalizedText(String? value) {
     return null;
   }
   return trimmed;
+}
+
+int _spellSlotCount(CharacterData character, int level) {
+  return (character.derived?.spellSlots?[level] ?? 0) +
+      (character.derived?.pactSlots?[level] ?? 0);
+}
+
+int _currentSpellSlotCount(CharacterData character, int level) {
+  final maxSlots = _spellSlotCount(character, level);
+  return (character.currentSpellSlots?[level] ?? maxSlots)
+      .clamp(0, maxSlots)
+      .toInt();
 }

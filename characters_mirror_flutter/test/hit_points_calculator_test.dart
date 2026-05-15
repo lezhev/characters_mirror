@@ -3,6 +3,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart'
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stats_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,6 +73,28 @@ void main() {
     });
   });
 
+  test('hp label hides zero temporary hp', () {
+    expect(
+      formatHpLabel(
+        protocol.CharacterData(
+          temporaryHp: 0,
+          derived: protocol.CharacterDerivedData(maxHp: 20),
+        ),
+      ),
+      '20 / 20',
+    );
+    expect(
+      formatHpLabel(
+        protocol.CharacterData(
+          currentHp: 12,
+          temporaryHp: 4,
+          derived: protocol.CharacterDerivedData(maxHp: 20),
+        ),
+      ),
+      '12 / 20 (4)',
+    );
+  });
+
   testWidgets('CombatStatsRow calls hp callback only for hp button',
       (tester) async {
     var hpTapCount = 0;
@@ -85,6 +108,7 @@ void main() {
                 maxHp: 20,
                 initiative: 2,
                 armorClass: 15,
+                speed: 30,
               ),
             ),
             onHpPressed: () {
@@ -101,8 +125,11 @@ void main() {
     await tester.pump();
     await tester.tap(find.byIcon(Icons.shield_outlined));
     await tester.pump();
+    await tester.tap(find.byIcon(Icons.directions_run));
+    await tester.pump();
 
     expect(hpTapCount, 1);
+    expect(find.text('30'), findsOneWidget);
   });
 
   test('CharacterSheetController saves normalized hp values', () async {

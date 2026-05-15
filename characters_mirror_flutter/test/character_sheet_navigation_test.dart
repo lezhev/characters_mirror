@@ -74,7 +74,7 @@ void main() {
       await tester.tap(find.byIcon(Icons.auto_fix_high));
       await tester.pumpAndSettle();
 
-      expect(find.text('Страница заклинаний'), findsOneWidget);
+      expect(find.text('Спасбросок'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.sports_martial_arts));
       await tester.pumpAndSettle();
@@ -125,7 +125,7 @@ void main() {
       await tester.drag(find.byType(PageView), const Offset(700, 0));
       await tester.pumpAndSettle();
 
-      expect(find.text('Страница заклинаний'), findsOneWidget);
+      expect(find.text('Спасбросок'), findsOneWidget);
 
       await tester.drag(find.byType(PageView), const Offset(-700, 0));
       await tester.pumpAndSettle();
@@ -155,7 +155,7 @@ void main() {
       );
 
       expect(find.text('Атаки'), findsOneWidget);
-      expect(find.text('Страница заклинаний'), findsNothing);
+      expect(find.text('Спасбросок'), findsNothing);
     });
 
     testWidgets('character tab opens class and race details', (tester) async {

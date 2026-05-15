@@ -27,6 +27,7 @@ abstract class SpellData implements _i1.SerializableModel {
     this.referenceKey,
     this.name,
     this.description,
+    this.shortDescription,
     this.source,
     this.version,
     this.createdAt,
@@ -71,6 +72,7 @@ abstract class SpellData implements _i1.SerializableModel {
     String? referenceKey,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -116,6 +118,7 @@ abstract class SpellData implements _i1.SerializableModel {
       referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
+      shortDescription: jsonSerialization['shortDescription'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
@@ -200,6 +203,8 @@ abstract class SpellData implements _i1.SerializableModel {
 
   String? description;
 
+  String? shortDescription;
+
   String? source;
 
   int? version;
@@ -282,6 +287,7 @@ abstract class SpellData implements _i1.SerializableModel {
     String? referenceKey,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -327,6 +333,7 @@ abstract class SpellData implements _i1.SerializableModel {
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -390,6 +397,7 @@ class _SpellDataImpl extends SpellData {
     String? referenceKey,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -432,6 +440,7 @@ class _SpellDataImpl extends SpellData {
           referenceKey: referenceKey,
           name: name,
           description: description,
+          shortDescription: shortDescription,
           source: source,
           version: version,
           createdAt: createdAt,
@@ -480,6 +489,7 @@ class _SpellDataImpl extends SpellData {
     Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
+    Object? shortDescription = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
@@ -523,6 +533,9 @@ class _SpellDataImpl extends SpellData {
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
+      shortDescription: shortDescription is String?
+          ? shortDescription
+          : this.shortDescription,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,

@@ -32,9 +32,10 @@ class FeatureListSection extends StatelessWidget {
         AppSectionHeader(
           title: 'Способности',
           showDivider: false,
-          trailing: TextButton(
+          trailing: IconButton(
             onPressed: onOpenAllAbilities,
-            child: const Text('Все'),
+            icon: Icon(Icons.tune,
+                size: 20, color: Theme.of(context).colorScheme.primary),
           ),
         ),
         const SizedBox(height: 12),
