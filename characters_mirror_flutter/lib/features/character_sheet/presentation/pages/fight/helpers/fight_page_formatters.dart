@@ -103,6 +103,9 @@ String formatHpLabel(CharacterData character) {
   final maxHp = character.derived?.maxHp ?? 0;
   final currentHp = character.currentHp ?? maxHp;
   final temporaryHp = character.temporaryHp ?? 0;
+  if (temporaryHp <= 0) {
+    return '$currentHp / $maxHp';
+  }
   return '$currentHp / $maxHp ($temporaryHp)';
 }
 
@@ -113,6 +116,10 @@ String formatInitiativeLabel(CharacterData character) {
 
 String formatArmorClassLabel(CharacterData character) {
   return '${character.derived?.armorClass ?? 0}';
+}
+
+String formatSpeedLabel(CharacterData character) {
+  return '${character.derived?.speed ?? 0}';
 }
 
 String abilityLabel(Ability ability) {
