@@ -2,6 +2,7 @@ import 'package:characters_mirror_flutter/core/ui/pointer_swipe_policy.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet_tabs.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/attributes_page.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/active_concentration_overlay.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_sheet_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -24,12 +25,23 @@ class CharacterSheet extends HookConsumerWidget {
     final edgeSwipeStartPage = useState<int?>(null);
     final isAttributesOpen = useState(false);
     final returnPageIndex = useState(0);
-    final characterName = ref
-        .watch(characterSheetControllerProvider(characterId))
-        .valueOrNull
-        ?.name
-        ?.trim();
+    final character = ref.watch(characterSheetControllerProvider(characterId));
+    final characterData = character.valueOrNull;
+    final characterName = characterData?.name?.trim();
+    final activeConcentrationSpell =
+        _normalizedText(characterData?.activeConcentrationSpellName);
+    final isConcentrationExpanded = useState(false);
     final tabs = buildCharacterSheetTabs(characterId);
+
+    useEffect(
+      () {
+        if (activeConcentrationSpell == null) {
+          isConcentrationExpanded.value = false;
+        }
+        return null;
+      },
+      [activeConcentrationSpell],
+    );
 
     void closeAttributes() {
       final targetPage = returnPageIndex.value;
@@ -95,42 +107,84 @@ class CharacterSheet extends HookConsumerWidget {
                 },
               ),
             ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: isAttributesOpen.value
-                ? KeyedSubtree(
-                    key: const ValueKey('attributes'),
-                    child: AttributesPage(
-                      characterId: characterId,
-                      onClose: closeAttributes,
-                    ),
-                  )
-                : Listener(
-                    behavior: HitTestBehavior.translucent,
-                    onPointerDown: (event) {
-                      if (!allowsSwipeNavigationForPointer(event.kind)) {
-                        edgeSwipeStart.value = null;
-                        edgeSwipeStartPage.value = null;
-                        return;
-                      }
-                      edgeSwipeStart.value = event.position;
-                      edgeSwipeStartPage.value = pageIndex.value;
-                    },
-                    onPointerUp: handleEdgePointerUp,
-                    onPointerCancel: (_) {
-                      edgeSwipeStart.value = null;
-                      edgeSwipeStartPage.value = null;
-                    },
-                    child: PageView(
-                      controller: pageController,
-                      onPageChanged: (index) => pageIndex.value = index,
-                      children: [
-                        for (final tab in tabs) tab.builder(),
-                      ],
-                    ),
-                  ),
+          Column(
+            children: [
+              Expanded(
+                child: isAttributesOpen.value
+                    ? KeyedSubtree(
+                        key: const ValueKey('attributes'),
+                        child: AttributesPage(
+                          characterId: characterId,
+                          onClose: closeAttributes,
+                        ),
+                      )
+                    : Listener(
+                        behavior: HitTestBehavior.translucent,
+                        onPointerDown: (event) {
+                          if (!allowsSwipeNavigationForPointer(event.kind)) {
+                            edgeSwipeStart.value = null;
+                            edgeSwipeStartPage.value = null;
+                            return;
+                          }
+                          edgeSwipeStart.value = event.position;
+                          edgeSwipeStartPage.value = pageIndex.value;
+                        },
+                        onPointerUp: handleEdgePointerUp,
+                        onPointerCancel: (_) {
+                          edgeSwipeStart.value = null;
+                          edgeSwipeStartPage.value = null;
+                        },
+                        child: PageView(
+                          controller: pageController,
+                          onPageChanged: (index) => pageIndex.value = index,
+                          children: [
+                            for (final tab in tabs) tab.builder(),
+                          ],
+                        ),
+                      ),
+              ),
+            ],
           ),
+          if (!isAttributesOpen.value && activeConcentrationSpell != null) ...[
+            if (isConcentrationExpanded.value)
+              Positioned.fill(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    isConcentrationExpanded.value = false;
+                  },
+                ),
+              ),
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: SafeArea(
+                minimum: const EdgeInsets.only(left: 16, bottom: 12),
+                child: ActiveConcentrationOverlay(
+                  spellName: activeConcentrationSpell,
+                  expanded: isConcentrationExpanded.value,
+                  onToggle: () {
+                    isConcentrationExpanded.value =
+                        !isConcentrationExpanded.value;
+                  },
+                  onCollapse: () {
+                    isConcentrationExpanded.value = false;
+                  },
+                  onCancel: () async {
+                    await ref
+                        .read(
+                          characterSheetControllerProvider(characterId)
+                              .notifier,
+                        )
+                        .cancelConcentration();
+                    isConcentrationExpanded.value = false;
+                  },
+                ),
+              ),
+            ),
+          ],
         ],
       ),
       bottomNavigationBar: isAttributesOpen.value
@@ -145,4 +199,12 @@ class CharacterSheet extends HookConsumerWidget {
             ),
     );
   }
+}
+
+String? _normalizedText(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
+  }
+  return trimmed;
 }

@@ -66,6 +66,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     this.temporaryHp,
     this.currentHp,
     this.currentSpellSlots,
+    this.activeConcentrationSpellName,
     this.inspiration,
     this.equipment,
     this.manualSkillProficiencies,
@@ -112,6 +113,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     int? temporaryHp,
     int? currentHp,
     Map<int, int>? currentSpellSlots,
+    String? activeConcentrationSpellName,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -187,6 +189,8 @@ abstract class CharacterData implements _i1.SerializableModel {
       currentSpellSlots: (jsonSerialization['currentSpellSlots'] as List?)
           ?.fold<Map<int, int>>(
               {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      activeConcentrationSpellName:
+          jsonSerialization['activeConcentrationSpellName'] as String?,
       inspiration: jsonSerialization['inspiration'] as bool?,
       equipment: (jsonSerialization['equipment'] as List?)
           ?.map((e) => _i6.CharacterInventoryItemData.fromJson(
@@ -302,6 +306,8 @@ abstract class CharacterData implements _i1.SerializableModel {
 
   Map<int, int>? currentSpellSlots;
 
+  String? activeConcentrationSpellName;
+
   bool? inspiration;
 
   List<_i6.CharacterInventoryItemData>? equipment;
@@ -363,6 +369,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     int? temporaryHp,
     int? currentHp,
     Map<int, int>? currentSpellSlots,
+    String? activeConcentrationSpellName,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -416,6 +423,8 @@ abstract class CharacterData implements _i1.SerializableModel {
       if (currentHp != null) 'currentHp': currentHp,
       if (currentSpellSlots != null)
         'currentSpellSlots': currentSpellSlots?.toJson(),
+      if (activeConcentrationSpellName != null)
+        'activeConcentrationSpellName': activeConcentrationSpellName,
       if (inspiration != null) 'inspiration': inspiration,
       if (equipment != null)
         'equipment': equipment?.toJson(valueToJson: (v) => v.toJson()),
@@ -488,6 +497,7 @@ class _CharacterDataImpl extends CharacterData {
     int? temporaryHp,
     int? currentHp,
     Map<int, int>? currentSpellSlots,
+    String? activeConcentrationSpellName,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -533,6 +543,7 @@ class _CharacterDataImpl extends CharacterData {
           temporaryHp: temporaryHp,
           currentHp: currentHp,
           currentSpellSlots: currentSpellSlots,
+          activeConcentrationSpellName: activeConcentrationSpellName,
           inspiration: inspiration,
           equipment: equipment,
           manualSkillProficiencies: manualSkillProficiencies,
@@ -583,6 +594,7 @@ class _CharacterDataImpl extends CharacterData {
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
     Object? currentSpellSlots = _Undefined,
+    Object? activeConcentrationSpellName = _Undefined,
     Object? inspiration = _Undefined,
     Object? equipment = _Undefined,
     Object? manualSkillProficiencies = _Undefined,
@@ -665,6 +677,9 @@ class _CharacterDataImpl extends CharacterData {
                     key0,
                     value0,
                   )),
+      activeConcentrationSpellName: activeConcentrationSpellName is String?
+          ? activeConcentrationSpellName
+          : this.activeConcentrationSpellName,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
       equipment: equipment is List<_i6.CharacterInventoryItemData>?
           ? equipment

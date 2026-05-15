@@ -14,7 +14,7 @@ void main() {
         home: RollResultsOverlay(
           child: Scaffold(
             body: SpellPageContent(
-              onSpellCast: (level) async => castLevels.add(level),
+              onSpellCast: (spell) async => castLevels.add(spell.level ?? 0),
               onSlotCountChanged: (level, available) async {
                 slotUpdates[level] = available;
               },
@@ -209,5 +209,70 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('spell-slot-Уровень 1-4')));
     await tester.pump();
     expect(availableSlots, 4);
+  });
+
+  testWidgets('casting concentration spell reports the cast spell',
+      (tester) async {
+    String? castSpellName;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: StatefulBuilder(
+            builder: (context, setState) {
+              return SpellPageContent(
+                onSpellCast: (spell) async {
+                  setState(() => castSpellName = spell.name);
+                },
+                character: CharacterData(
+                  classEntries: [
+                    CharacterClassEntryData(
+                      classOrder: 0,
+                      classData: ClassData(
+                        spellcastingAbilityValue: Ability.wisdom,
+                      ),
+                    ),
+                  ],
+                  derived: CharacterDerivedData(
+                    proficiencyBonus: 2,
+                    abilityModifiers: const {'wisdom': 3},
+                    spellSlots: const {1: 2},
+                  ),
+                  spellSelections: [
+                    CharacterSpellSelectionData(
+                      selectionIndex: 0,
+                      spell: SpellData(
+                        referenceKey: 'bless',
+                        name: 'Bless',
+                        level: 1,
+                        concentration: true,
+                      ),
+                    ),
+                    CharacterSpellSelectionData(
+                      selectionIndex: 1,
+                      spell: SpellData(
+                        referenceKey: 'fog_cloud',
+                        name: 'Fog Cloud',
+                        level: 1,
+                        concentration: true,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const ValueKey('cast-spell-bless')));
+    await tester.pump();
+
+    expect(castSpellName, 'Bless');
+    expect(
+      find.byKey(const ValueKey('active-concentration-icon')),
+      findsNothing,
+    );
   });
 }

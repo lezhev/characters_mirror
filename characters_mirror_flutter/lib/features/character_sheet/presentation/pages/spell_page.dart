@@ -1,7 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/compact_value_button.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
@@ -37,7 +38,7 @@ class SpellPage extends ConsumerWidget {
                 .setCurrentSpellSlotsForLevel,
             onSpellCast: ref
                 .read(characterSheetControllerProvider(characterId).notifier)
-                .spendSpellSlot,
+                .castSpell,
           ),
         ),
       ),
@@ -56,7 +57,7 @@ class SpellPageContent extends StatelessWidget {
 
   final CharacterData character;
   final Future<void> Function(int level, int available)? onSlotCountChanged;
-  final Future<void> Function(int level)? onSpellCast;
+  final Future<void> Function(SpellData spell)? onSpellCast;
   final DiceRoller? diceRoller;
 
   @override
@@ -65,6 +66,10 @@ class SpellPageContent extends StatelessWidget {
     final spellsByLevel = _spellsByLevel(character);
     final cantrips = spellsByLevel[0] ?? const <SpellData>[];
     final spellLevels = _spellLevels(character, spellsByLevel);
+    final castButtonWidth = _spellCastButtonWidth(
+      context,
+      spellStats.attackBonusLabel,
+    );
 
     return ListView(
       children: [
@@ -94,17 +99,19 @@ class SpellPageContent extends StatelessWidget {
           title: 'Заговоры',
           spells: cantrips,
           spellStats: spellStats,
+          castButtonWidth: castButtonWidth,
           onSpellCast: onSpellCast,
           diceRoller: diceRoller,
         ),
         for (final level in spellLevels) ...[
           const SizedBox(height: 20),
           _SpellLevelSection(
-            title: 'Уровень $level',
+            title: 'Круг $level',
             spells: spellsByLevel[level] ?? const <SpellData>[],
             slots: _slotCount(character, level),
             currentSlots: _currentSlotCount(character, level),
             spellStats: spellStats,
+            castButtonWidth: castButtonWidth,
             onSlotCountChanged: onSlotCountChanged == null
                 ? null
                 : (available) {
@@ -114,6 +121,8 @@ class SpellPageContent extends StatelessWidget {
             diceRoller: diceRoller,
           ),
         ],
+        const SizedBox(height: 24),
+        const _SpellIconLegend(),
       ],
     );
   }
@@ -124,6 +133,7 @@ class _SpellLevelSection extends StatelessWidget {
     required this.title,
     required this.spells,
     required this.spellStats,
+    required this.castButtonWidth,
     this.slots,
     this.currentSlots,
     this.onSlotCountChanged,
@@ -134,10 +144,11 @@ class _SpellLevelSection extends StatelessWidget {
   final String title;
   final List<SpellData> spells;
   final _SpellStats spellStats;
+  final double castButtonWidth;
   final int? slots;
   final int? currentSlots;
   final ValueChanged<int>? onSlotCountChanged;
-  final Future<void> Function(int level)? onSpellCast;
+  final Future<void> Function(SpellData spell)? onSpellCast;
   final DiceRoller? diceRoller;
 
   @override
@@ -156,6 +167,7 @@ class _SpellLevelSection extends StatelessWidget {
           _SpellCard(
             spell: spells[index],
             spellStats: spellStats,
+            castButtonWidth: castButtonWidth,
             availableSlots:
                 (spells[index].level ?? 0) <= 0 ? null : currentSlots,
             onSpellCast: onSpellCast,
@@ -283,6 +295,7 @@ class _SpellCard extends StatelessWidget {
   const _SpellCard({
     required this.spell,
     required this.spellStats,
+    required this.castButtonWidth,
     required this.availableSlots,
     this.onSpellCast,
     this.diceRoller,
@@ -290,8 +303,9 @@ class _SpellCard extends StatelessWidget {
 
   final SpellData spell;
   final _SpellStats spellStats;
+  final double castButtonWidth;
   final int? availableSlots;
-  final Future<void> Function(int level)? onSpellCast;
+  final Future<void> Function(SpellData spell)? onSpellCast;
   final DiceRoller? diceRoller;
 
   @override
@@ -307,7 +321,7 @@ class _SpellCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 10, 8, 12),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
@@ -319,6 +333,8 @@ class _SpellCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   _SpellPrimaryMetadata(spell: spell),
+                  const SizedBox(height: 8),
+                  _SpellDetailsRow(spell: spell),
                 ],
               ),
             ),
@@ -329,6 +345,7 @@ class _SpellCard extends StatelessWidget {
               child: _SpellCastButton(
                 spell: spell,
                 spellStats: spellStats,
+                width: castButtonWidth,
                 enabled: canCast,
                 onPressed: () => _castSpell(context),
               ),
@@ -340,7 +357,7 @@ class _SpellCard extends StatelessWidget {
   }
 
   Future<void> _castSpell(BuildContext context) async {
-    await onSpellCast?.call(spell.level ?? 0);
+    await onSpellCast?.call(spell);
     if (!context.mounted) {
       return;
     }
@@ -369,38 +386,103 @@ class _SpellCastButton extends StatelessWidget {
   const _SpellCastButton({
     required this.spell,
     required this.spellStats,
+    required this.width,
     required this.enabled,
     required this.onPressed,
   });
 
   final SpellData spell;
   final _SpellStats spellStats;
+  final double width;
   final bool enabled;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     if (spell.requiresAttackRoll == true) {
-      return CompactValueButton(
-        label: spellStats.attackBonusLabel,
-        width: 54,
-        onPressed: enabled ? onPressed : null,
+      return SizedBox(
+        width: width,
+        child: OutlinedButton(
+          onPressed: enabled ? onPressed : null,
+          style: _spellCastButtonStyle(
+            horizontalPadding: 8,
+            verticalPadding: 10,
+          ),
+          child: Text(
+            spellStats.attackBonusLabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+          ),
+        ),
       );
     }
 
-    return OutlinedButton(
-      onPressed: enabled ? onPressed : null,
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.all(10),
-        minimumSize: const Size(0, 0),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
+    return SizedBox(
+      width: width,
+      child: OutlinedButton(
+        onPressed: enabled ? onPressed : null,
+        style: _spellCastButtonStyle(
+          horizontalPadding: 10,
+          verticalPadding: 10,
         ),
+        child: const Icon(Icons.auto_awesome, size: 18),
       ),
-      child: const Icon(Icons.auto_awesome, size: 18),
     );
   }
+}
+
+class _SpellDetailsRow extends StatelessWidget {
+  const _SpellDetailsRow({
+    required this.spell,
+  });
+
+  final SpellData spell;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolutionLabel = _spellResolutionLabel(spell);
+    if (resolutionLabel == null) {
+      return const SizedBox.shrink();
+    }
+
+    return _SpellResolutionText(label: resolutionLabel);
+  }
+}
+
+ButtonStyle _spellCastButtonStyle({
+  required double horizontalPadding,
+  required double verticalPadding,
+}) {
+  return OutlinedButton.styleFrom(
+    padding: EdgeInsets.symmetric(
+      horizontal: horizontalPadding,
+      vertical: verticalPadding,
+    ),
+    minimumSize: const Size(0, 0),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4),
+    ),
+  );
+}
+
+double _spellCastButtonWidth(BuildContext context, String attackBonusLabel) {
+  final textStyle =
+      Theme.of(context).textTheme.labelLarge ?? const TextStyle(fontSize: 14);
+  final textPainter = TextPainter(
+    text: TextSpan(text: attackBonusLabel, style: textStyle),
+    maxLines: 1,
+    textDirection: Directionality.of(context),
+  )..layout();
+
+  const attackHorizontalPadding = 16.0;
+  const iconHorizontalPadding = 20.0;
+  const iconSize = 18.0;
+  return math.max(
+    textPainter.width + attackHorizontalPadding,
+    iconSize + iconHorizontalPadding,
+  );
 }
 
 class _SpellPrimaryMetadata extends StatelessWidget {
@@ -428,6 +510,18 @@ class _SpellPrimaryMetadata extends StatelessWidget {
           icon: Icons.hourglass_empty,
           label: spell.duration!.trim(),
         ),
+      if (spell.concentration == true)
+        const _SpellMetadataItem(
+          icon: Icons.blur_on,
+          label: 'Концентрация',
+          showLabel: false,
+        ),
+      if (spell.ritual == true)
+        const _SpellMetadataItem(
+          customIcon: _RitualIcon(),
+          label: 'Ритуал',
+          showLabel: false,
+        ),
     ];
     if (items.isEmpty) {
       return const SizedBox.shrink();
@@ -443,12 +537,16 @@ class _SpellPrimaryMetadata extends StatelessWidget {
 
 class _SpellMetadataItem extends StatelessWidget {
   const _SpellMetadataItem({
-    required this.icon,
     required this.label,
+    this.icon,
+    this.customIcon,
+    this.showLabel = true,
   });
 
-  final IconData icon;
+  final IconData? icon;
+  final Widget? customIcon;
   final String label;
+  final bool showLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -458,15 +556,118 @@ class _SpellMetadataItem extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: colorScheme.primary),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
+        customIcon ?? Icon(icon, size: 16, color: colorScheme.primary),
+        if (showLabel) ...[
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
+        ],
+      ],
+    );
+  }
+}
+
+class _SpellIconLegend extends StatelessWidget {
+  const _SpellIconLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 14,
+      runSpacing: 8,
+      children: const [
+        _SpellMetadataItem(
+          icon: Icons.bolt,
+          label: 'Время накладывания',
+        ),
+        _SpellMetadataItem(
+          icon: Icons.swap_horiz,
+          label: 'Дистанция',
+        ),
+        _SpellMetadataItem(
+          icon: Icons.hourglass_empty,
+          label: 'Длительность',
+        ),
+        _SpellMetadataItem(
+          icon: Icons.blur_on,
+          label: 'Концентрация',
+        ),
+        _SpellMetadataItem(
+          customIcon: _RitualIcon(),
+          label: 'Ритуал',
         ),
       ],
+    );
+  }
+}
+
+class _RitualIcon extends StatelessWidget {
+  const _RitualIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: const Size.square(16),
+      painter: _RitualIconPainter(
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
+  }
+}
+
+class _RitualIconPainter extends CustomPainter {
+  const _RitualIconPainter({
+    required this.color,
+  });
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final strokeWidth = size.width / 9;
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - strokeWidth / 2;
+
+    canvas.drawCircle(center, radius, paint);
+
+    final triangle = Path()
+      ..moveTo(center.dx, size.height * 0.28)
+      ..lineTo(size.width * 0.72, size.height * 0.68)
+      ..lineTo(size.width * 0.28, size.height * 0.68)
+      ..close();
+    canvas.drawPath(triangle, paint);
+  }
+
+  @override
+  bool shouldRepaint(_RitualIconPainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
+}
+
+class _SpellResolutionText extends StatelessWidget {
+  const _SpellResolutionText({
+    required this.label,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
     );
   }
 }
@@ -479,11 +680,52 @@ String _spellCastingTimeLabel(String value) {
   return trimmed;
 }
 
+String? _spellResolutionLabel(SpellData spell) {
+  if (spell.requiresAttackRoll == true) {
+    return 'Атака';
+  }
+  if (spell.requiresSavingThrow == true) {
+    final ability = _savingThrowAbilityLabel(spell.savingThrowAbility);
+    return ability == null ? 'Спасбросок' : '$ability спасбросок';
+  }
+  return null;
+}
+
 String _spellSavingThrowMessage(SpellData spell, _SpellStats spellStats) {
   final ability = _savingThrowAbilityGenitiveLabel(spell.savingThrowAbility) ??
       'характеристики';
   return 'Цель должна пройти спасбросок $ability '
       'со сложностью ${spellStats.saveDcLabel}';
+}
+
+String? _savingThrowAbilityLabel(String? value) {
+  switch (_normalizedText(value)?.toLowerCase()) {
+    case 'strength':
+    case 'str':
+    case 'сила':
+      return 'STR';
+    case 'dexterity':
+    case 'dex':
+    case 'ловкость':
+      return 'DEX';
+    case 'constitution':
+    case 'con':
+    case 'телосложение':
+      return 'CON';
+    case 'intelligence':
+    case 'int':
+    case 'интеллект':
+      return 'INT';
+    case 'wisdom':
+    case 'wis':
+    case 'мудрость':
+      return 'WIS';
+    case 'charisma':
+    case 'cha':
+    case 'харизма':
+      return 'CHA';
+  }
+  return _normalizedText(value);
 }
 
 String? _savingThrowAbilityGenitiveLabel(String? value) {

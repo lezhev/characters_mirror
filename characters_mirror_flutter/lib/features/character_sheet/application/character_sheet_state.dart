@@ -155,6 +155,45 @@ class CharacterSheetController
     await setCurrentSpellSlotsForLevel(level, available - 1);
   }
 
+  Future<void> castSpell(SpellData spell) async {
+    final current = _requireCharacter();
+    final level = spell.level ?? 0;
+    final currentSpellSlots = <int, int>{...?current.currentSpellSlots};
+
+    if (level > 0) {
+      final maxSlots = _spellSlotCount(current, level);
+      final available = _currentSpellSlotCount(current, level);
+      if (maxSlots <= 0 || available <= 0) {
+        return;
+      }
+
+      final nextAvailable = available - 1;
+      if (nextAvailable == maxSlots) {
+        currentSpellSlots.remove(level);
+      } else {
+        currentSpellSlots[level] = nextAvailable;
+      }
+    }
+
+    await _saveCharacter(
+      current.copyWith(
+        currentSpellSlots: currentSpellSlots.isEmpty ? null : currentSpellSlots,
+        activeConcentrationSpellName: spell.concentration == true
+            ? _spellName(spell)
+            : current.activeConcentrationSpellName,
+      ),
+    );
+  }
+
+  Future<void> cancelConcentration() async {
+    final current = _requireCharacter();
+    if (_normalizedText(current.activeConcentrationSpellName) == null) {
+      return;
+    }
+
+    await _saveCharacter(current.copyWith(activeConcentrationSpellName: null));
+  }
+
   Future<void> savePersonalInfo({
     String? name,
     String? age,
@@ -537,6 +576,12 @@ String? _normalizedText(String? value) {
     return null;
   }
   return trimmed;
+}
+
+String _spellName(SpellData spell) {
+  return _normalizedText(spell.name) ??
+      _normalizedText(spell.referenceKey) ??
+      'Заклинание';
 }
 
 int _spellSlotCount(CharacterData character, int level) {
