@@ -83,6 +83,129 @@ void main() {
       expect(repository.getCharacterCallCount, 1);
     });
 
+    testWidgets('shows active concentration overlay across sheet tabs',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            activeConcentrationSpellName: 'Bless',
+            derived: protocol.CharacterDerivedData(
+              abilityScores: const {
+                'strength': 10,
+                'dexterity': 10,
+                'constitution': 10,
+                'intelligence': 10,
+                'wisdom': 10,
+                'charisma': 10,
+              },
+              abilityModifiers: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              savingThrowBonuses: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              skillBonuses: const {},
+              savingThrowProficiencies: const [],
+            ),
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      expect(find.text('Атаки'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('active-concentration-icon')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const ValueKey('active-concentration-icon')));
+      await tester.pump();
+
+      expect(
+        find.text('Концентрация на заклинании Bless'),
+        findsOneWidget,
+      );
+
+      await tester.tapAt(const Offset(900, 300));
+      await tester.pump();
+
+      expect(
+        find.byKey(const ValueKey('active-concentration-panel')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('active-concentration-icon')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byIcon(Icons.person));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Описание персонажа'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('active-concentration-icon')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byKey(const ValueKey('active-concentration-icon')));
+      await tester.pump();
+      await tester.tap(
+        find.byKey(const ValueKey('active-concentration-cancel')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('active-concentration-icon')),
+        findsNothing,
+      );
+      expect(
+        repository.charactersById[1]?.activeConcentrationSpellName,
+        isNull,
+      );
+    });
+
+    testWidgets('hides active concentration overlay on attributes page',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            activeConcentrationSpellName: 'Bless',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      expect(
+        find.byKey(const ValueKey('active-concentration-icon')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Характеристики'), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('active-concentration-icon')),
+        findsNothing,
+      );
+    });
+
     testWidgets('switches tabs with horizontal swipes', (tester) async {
       final repository = _FakeCharacterRepository(
         charactersById: {

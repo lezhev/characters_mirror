@@ -30,6 +30,7 @@ fields:
   temporaryHp: int?
   currentHp: int?
   currentSpellSlots: Map<int, int>?
+  activeConcentrationSpellName: String?
   inspiration: bool?
   equipment: List<CharacterInventoryItemData>?
   manualSkillProficiencies: List<CharacterSkillProficiencyState>?

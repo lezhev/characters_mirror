@@ -63,6 +63,7 @@ abstract class CharacterRecord
     this.temporaryHp,
     this.currentHp,
     this.currentSpellSlots,
+    this.activeConcentrationSpellName,
     this.inspiration,
     this.equipment,
     this.manualSkillProficiencies,
@@ -107,6 +108,7 @@ abstract class CharacterRecord
     int? temporaryHp,
     int? currentHp,
     Map<int, int>? currentSpellSlots,
+    String? activeConcentrationSpellName,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -179,6 +181,8 @@ abstract class CharacterRecord
       currentSpellSlots: (jsonSerialization['currentSpellSlots'] as List?)
           ?.fold<Map<int, int>>(
               {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      activeConcentrationSpellName:
+          jsonSerialization['activeConcentrationSpellName'] as String?,
       inspiration: jsonSerialization['inspiration'] as bool?,
       equipment: (jsonSerialization['equipment'] as List?)
           ?.map((e) => _i6.CharacterInventoryItemData.fromJson(
@@ -281,6 +285,8 @@ abstract class CharacterRecord
 
   Map<int, int>? currentSpellSlots;
 
+  String? activeConcentrationSpellName;
+
   bool? inspiration;
 
   List<_i6.CharacterInventoryItemData>? equipment;
@@ -336,6 +342,7 @@ abstract class CharacterRecord
     int? temporaryHp,
     int? currentHp,
     Map<int, int>? currentSpellSlots,
+    String? activeConcentrationSpellName,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -386,6 +393,8 @@ abstract class CharacterRecord
       if (currentHp != null) 'currentHp': currentHp,
       if (currentSpellSlots != null)
         'currentSpellSlots': currentSpellSlots?.toJson(),
+      if (activeConcentrationSpellName != null)
+        'activeConcentrationSpellName': activeConcentrationSpellName,
       if (inspiration != null) 'inspiration': inspiration,
       if (equipment != null)
         'equipment': equipment?.toJson(valueToJson: (v) => v.toJson()),
@@ -485,6 +494,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     int? temporaryHp,
     int? currentHp,
     Map<int, int>? currentSpellSlots,
+    String? activeConcentrationSpellName,
     bool? inspiration,
     List<_i6.CharacterInventoryItemData>? equipment,
     List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
@@ -527,6 +537,7 @@ class _CharacterRecordImpl extends CharacterRecord {
           temporaryHp: temporaryHp,
           currentHp: currentHp,
           currentSpellSlots: currentSpellSlots,
+          activeConcentrationSpellName: activeConcentrationSpellName,
           inspiration: inspiration,
           equipment: equipment,
           manualSkillProficiencies: manualSkillProficiencies,
@@ -575,6 +586,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
     Object? currentSpellSlots = _Undefined,
+    Object? activeConcentrationSpellName = _Undefined,
     Object? inspiration = _Undefined,
     Object? equipment = _Undefined,
     Object? manualSkillProficiencies = _Undefined,
@@ -655,6 +667,9 @@ class _CharacterRecordImpl extends CharacterRecord {
                     key0,
                     value0,
                   )),
+      activeConcentrationSpellName: activeConcentrationSpellName is String?
+          ? activeConcentrationSpellName
+          : this.activeConcentrationSpellName,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
       equipment: equipment is List<_i6.CharacterInventoryItemData>?
           ? equipment
@@ -804,6 +819,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'currentSpellSlots',
       this,
     );
+    activeConcentrationSpellName = _i1.ColumnString(
+      'activeConcentrationSpellName',
+      this,
+    );
     inspiration = _i1.ColumnBool(
       'inspiration',
       this,
@@ -900,6 +919,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable currentSpellSlots;
 
+  late final _i1.ColumnString activeConcentrationSpellName;
+
   late final _i1.ColumnBool inspiration;
 
   late final _i1.ColumnSerializable equipment;
@@ -986,6 +1007,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
         temporaryHp,
         currentHp,
         currentSpellSlots,
+        activeConcentrationSpellName,
         inspiration,
         equipment,
         manualSkillProficiencies,

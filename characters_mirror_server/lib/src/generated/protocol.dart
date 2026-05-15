@@ -1489,6 +1489,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'Map<int,int>?',
         ),
         _i2.ColumnDefinition(
+          name: 'activeConcentrationSpellName',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
           name: 'inspiration',
           columnType: _i2.ColumnType.boolean,
           isNullable: true,
