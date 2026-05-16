@@ -1,0 +1,18 @@
+class: FeatureResourceDefinitionData
+table: feature_resource_definition_data
+fields:
+  classFeature: ClassFeatureData?, relation(name=class_feature_resource_definitions, optional)
+  subclassFeature: SubclassFeatureData?, relation(name=subclass_feature_resource_definitions, optional)
+  raceFeature: RaceFeatureData?, relation(name=race_feature_resource_definitions, optional)
+  key: String
+  name: String?
+  kind: FeatureResourceKind
+  maxRule: FeatureResourceMaxRule
+  maxValue: int?
+  maxAbility: Ability?
+  resetOn: RestType?
+  activationTrigger: FeatureResourceTrigger?
+  usageResetOn: RestType?
+  progressionKey: FeatureResourceProgressionKey?
+  becomesUnlimitedAtLevel: int?
+  progressionValues: List<FeatureResourceProgressionValueData>?, relation(name=feature_resource_progression_values)

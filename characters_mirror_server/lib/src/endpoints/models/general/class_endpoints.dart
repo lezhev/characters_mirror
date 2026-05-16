@@ -830,6 +830,10 @@ void _validateClassSpellGrant(ClassSpellGrantData item) {
 
 ClassFeatureDataInclude _classFeatureInclude() {
   return ClassFeatureData.include(
+    resources: FeatureResourceDefinitionData.includeList(
+      include: _featureResourceDefinitionInclude(),
+    ),
+    resourceEffects: FeatureResourceEffectData.includeList(),
     spellGrants: ClassSpellGrantData.includeList(
       include: ClassSpellGrantData.include(
         spell: SpellData.include(),
@@ -840,6 +844,10 @@ ClassFeatureDataInclude _classFeatureInclude() {
 
 SubclassFeatureDataInclude _subclassFeatureInclude() {
   return SubclassFeatureData.include(
+    resources: FeatureResourceDefinitionData.includeList(
+      include: _featureResourceDefinitionInclude(),
+    ),
+    resourceEffects: FeatureResourceEffectData.includeList(),
     spellGrants: ClassSpellGrantData.includeList(
       include: ClassSpellGrantData.include(
         spell: SpellData.include(),
@@ -849,17 +857,93 @@ SubclassFeatureDataInclude _subclassFeatureInclude() {
 }
 
 ClassFeatureData _normalizeClassFeature(ClassFeatureData feature) {
+  final resources = _normalizedFeatureResources(feature.resources);
+  final resourceEffects = _normalizedFeatureResourceEffects(
+    feature.resourceEffects,
+  );
   final spellGrants = [
     ...?feature.spellGrants,
   ]..sort(_compareClassSpellGrants);
-  return feature.copyWith(spellGrants: spellGrants);
+  return feature.copyWith(
+    resources: resources,
+    resourceEffects: resourceEffects,
+    spellGrants: spellGrants,
+  );
 }
 
 SubclassFeatureData _normalizeSubclassFeature(SubclassFeatureData feature) {
+  final resources = _normalizedFeatureResources(feature.resources);
+  final resourceEffects = _normalizedFeatureResourceEffects(
+    feature.resourceEffects,
+  );
   final spellGrants = [
     ...?feature.spellGrants,
   ]..sort(_compareClassSpellGrants);
-  return feature.copyWith(spellGrants: spellGrants);
+  return feature.copyWith(
+    resources: resources,
+    resourceEffects: resourceEffects,
+    spellGrants: spellGrants,
+  );
+}
+
+FeatureResourceDefinitionDataInclude _featureResourceDefinitionInclude() {
+  return FeatureResourceDefinitionData.include(
+    progressionValues: FeatureResourceProgressionValueData.includeList(),
+  );
+}
+
+List<FeatureResourceDefinitionData>? _normalizedFeatureResources(
+  List<FeatureResourceDefinitionData>? resources,
+) {
+  final normalized = [
+    for (final resource in resources ?? const <FeatureResourceDefinitionData>[])
+      resource.copyWith(
+        progressionValues: _normalizedFeatureResourceProgressionValues(
+          resource.progressionValues,
+        ),
+      ),
+  ]..sort(_compareFeatureResources);
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<FeatureResourceProgressionValueData>?
+    _normalizedFeatureResourceProgressionValues(
+  List<FeatureResourceProgressionValueData>? values,
+) {
+  final normalized = [...?values]..sort(_compareFeatureResourceProgression);
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<FeatureResourceEffectData>? _normalizedFeatureResourceEffects(
+  List<FeatureResourceEffectData>? effects,
+) {
+  final normalized = [...?effects]..sort(_compareFeatureResourceEffects);
+  return normalized.isEmpty ? null : normalized;
+}
+
+int _compareFeatureResources(
+  FeatureResourceDefinitionData a,
+  FeatureResourceDefinitionData b,
+) {
+  return a.key.compareTo(b.key);
+}
+
+int _compareFeatureResourceProgression(
+  FeatureResourceProgressionValueData a,
+  FeatureResourceProgressionValueData b,
+) {
+  final levelCompare = a.level.compareTo(b.level);
+  if (levelCompare != 0) return levelCompare;
+  return a.value.compareTo(b.value);
+}
+
+int _compareFeatureResourceEffects(
+  FeatureResourceEffectData a,
+  FeatureResourceEffectData b,
+) {
+  final typeCompare = a.type.name.compareTo(b.type.name);
+  if (typeCompare != 0) return typeCompare;
+  return (a.targetResourceKey ?? '').compareTo(b.targetResourceKey ?? '');
 }
 
 Future<ClassFeatureData> _loadClassFeature(Session session, int id) async {

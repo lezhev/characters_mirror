@@ -14,7 +14,9 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/class/subclass_data.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
-import '../../../data/class_spell_grant_data.dart' as _i4;
+import '../../../data/general/feature_resource_definition_data.dart' as _i4;
+import '../../../data/general/feature_resource_effect_data.dart' as _i5;
+import '../../../data/class_spell_grant_data.dart' as _i6;
 
 abstract class SubclassFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -33,6 +35,8 @@ abstract class SubclassFeatureData
     this.tags,
     this.choiceGroupKey,
     this.relatedTable,
+    this.resources,
+    this.resourceEffects,
     this.spellGrants,
   });
 
@@ -51,7 +55,9 @@ abstract class SubclassFeatureData
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
     String? relatedTable,
-    List<_i4.ClassSpellGrantData>? spellGrants,
+    List<_i4.FeatureResourceDefinitionData>? resources,
+    List<_i5.FeatureResourceEffectData>? resourceEffects,
+    List<_i6.ClassSpellGrantData>? spellGrants,
   }) = _SubclassFeatureDataImpl;
 
   factory SubclassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -79,9 +85,17 @@ abstract class SubclassFeatureData
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
       relatedTable: jsonSerialization['relatedTable'] as String?,
+      resources: (jsonSerialization['resources'] as List?)
+          ?.map((e) => _i4.FeatureResourceDefinitionData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
+      resourceEffects: (jsonSerialization['resourceEffects'] as List?)
+          ?.map((e) => _i5.FeatureResourceEffectData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       spellGrants: (jsonSerialization['spellGrants'] as List?)
           ?.map((e) =>
-              _i4.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
+              _i6.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -119,7 +133,11 @@ abstract class SubclassFeatureData
 
   String? relatedTable;
 
-  List<_i4.ClassSpellGrantData>? spellGrants;
+  List<_i4.FeatureResourceDefinitionData>? resources;
+
+  List<_i5.FeatureResourceEffectData>? resourceEffects;
+
+  List<_i6.ClassSpellGrantData>? spellGrants;
 
   @override
   _i1.Table<int?> get table => t;
@@ -142,7 +160,9 @@ abstract class SubclassFeatureData
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
     String? relatedTable,
-    List<_i4.ClassSpellGrantData>? spellGrants,
+    List<_i4.FeatureResourceDefinitionData>? resources,
+    List<_i5.FeatureResourceEffectData>? resourceEffects,
+    List<_i6.ClassSpellGrantData>? spellGrants,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -161,6 +181,11 @@ abstract class SubclassFeatureData
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
       if (relatedTable != null) 'relatedTable': relatedTable,
+      if (resources != null)
+        'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
+      if (resourceEffects != null)
+        'resourceEffects':
+            resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -184,6 +209,12 @@ abstract class SubclassFeatureData
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
       if (relatedTable != null) 'relatedTable': relatedTable,
+      if (resources != null)
+        'resources':
+            resources?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (resourceEffects != null)
+        'resourceEffects':
+            resourceEffects?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (spellGrants != null)
         'spellGrants':
             spellGrants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -192,10 +223,14 @@ abstract class SubclassFeatureData
 
   static SubclassFeatureDataInclude include({
     _i2.SubclassDataInclude? parentSubclass,
-    _i4.ClassSpellGrantDataIncludeList? spellGrants,
+    _i4.FeatureResourceDefinitionDataIncludeList? resources,
+    _i5.FeatureResourceEffectDataIncludeList? resourceEffects,
+    _i6.ClassSpellGrantDataIncludeList? spellGrants,
   }) {
     return SubclassFeatureDataInclude._(
       parentSubclass: parentSubclass,
+      resources: resources,
+      resourceEffects: resourceEffects,
       spellGrants: spellGrants,
     );
   }
@@ -244,7 +279,9 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
     String? relatedTable,
-    List<_i4.ClassSpellGrantData>? spellGrants,
+    List<_i4.FeatureResourceDefinitionData>? resources,
+    List<_i5.FeatureResourceEffectData>? resourceEffects,
+    List<_i6.ClassSpellGrantData>? spellGrants,
   }) : super._(
           id: id,
           parentSubclassId: parentSubclassId,
@@ -260,6 +297,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           tags: tags,
           choiceGroupKey: choiceGroupKey,
           relatedTable: relatedTable,
+          resources: resources,
+          resourceEffects: resourceEffects,
           spellGrants: spellGrants,
         );
 
@@ -282,6 +321,8 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     Object? tags = _Undefined,
     Object? choiceGroupKey = _Undefined,
     Object? relatedTable = _Undefined,
+    Object? resources = _Undefined,
+    Object? resourceEffects = _Undefined,
     Object? spellGrants = _Undefined,
   }) {
     return SubclassFeatureData(
@@ -306,7 +347,13 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
       relatedTable: relatedTable is String? ? relatedTable : this.relatedTable,
-      spellGrants: spellGrants is List<_i4.ClassSpellGrantData>?
+      resources: resources is List<_i4.FeatureResourceDefinitionData>?
+          ? resources
+          : this.resources?.map((e0) => e0.copyWith()).toList(),
+      resourceEffects: resourceEffects is List<_i5.FeatureResourceEffectData>?
+          ? resourceEffects
+          : this.resourceEffects?.map((e0) => e0.copyWith()).toList(),
+      spellGrants: spellGrants is List<_i6.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
     );
@@ -392,9 +439,17 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString relatedTable;
 
-  _i4.ClassSpellGrantDataTable? ___spellGrants;
+  _i4.FeatureResourceDefinitionDataTable? ___resources;
 
-  _i1.ManyRelation<_i4.ClassSpellGrantDataTable>? _spellGrants;
+  _i1.ManyRelation<_i4.FeatureResourceDefinitionDataTable>? _resources;
+
+  _i5.FeatureResourceEffectDataTable? ___resourceEffects;
+
+  _i1.ManyRelation<_i5.FeatureResourceEffectDataTable>? _resourceEffects;
+
+  _i6.ClassSpellGrantDataTable? ___spellGrants;
+
+  _i1.ManyRelation<_i6.ClassSpellGrantDataTable>? _spellGrants;
 
   _i2.SubclassDataTable get parentSubclass {
     if (_parentSubclass != null) return _parentSubclass!;
@@ -409,32 +464,96 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
     return _parentSubclass!;
   }
 
-  _i4.ClassSpellGrantDataTable get __spellGrants {
+  _i4.FeatureResourceDefinitionDataTable get __resources {
+    if (___resources != null) return ___resources!;
+    ___resources = _i1.createRelationTable(
+      relationFieldName: '__resources',
+      field: SubclassFeatureData.t.id,
+      foreignField: _i4.FeatureResourceDefinitionData.t.subclassFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.FeatureResourceDefinitionDataTable(
+              tableRelation: foreignTableRelation),
+    );
+    return ___resources!;
+  }
+
+  _i5.FeatureResourceEffectDataTable get __resourceEffects {
+    if (___resourceEffects != null) return ___resourceEffects!;
+    ___resourceEffects = _i1.createRelationTable(
+      relationFieldName: '__resourceEffects',
+      field: SubclassFeatureData.t.id,
+      foreignField: _i5.FeatureResourceEffectData.t.subclassFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _i5.FeatureResourceEffectDataTable(
+          tableRelation: foreignTableRelation),
+    );
+    return ___resourceEffects!;
+  }
+
+  _i6.ClassSpellGrantDataTable get __spellGrants {
     if (___spellGrants != null) return ___spellGrants!;
     ___spellGrants = _i1.createRelationTable(
       relationFieldName: '__spellGrants',
       field: SubclassFeatureData.t.id,
-      foreignField: _i4.ClassSpellGrantData.t.sourceSubclassFeatureId,
+      foreignField: _i6.ClassSpellGrantData.t.sourceSubclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+          _i6.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
     );
     return ___spellGrants!;
   }
 
-  _i1.ManyRelation<_i4.ClassSpellGrantDataTable> get spellGrants {
+  _i1.ManyRelation<_i4.FeatureResourceDefinitionDataTable> get resources {
+    if (_resources != null) return _resources!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'resources',
+      field: SubclassFeatureData.t.id,
+      foreignField: _i4.FeatureResourceDefinitionData.t.subclassFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i4.FeatureResourceDefinitionDataTable(
+              tableRelation: foreignTableRelation),
+    );
+    _resources = _i1.ManyRelation<_i4.FeatureResourceDefinitionDataTable>(
+      tableWithRelations: relationTable,
+      table: _i4.FeatureResourceDefinitionDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _resources!;
+  }
+
+  _i1.ManyRelation<_i5.FeatureResourceEffectDataTable> get resourceEffects {
+    if (_resourceEffects != null) return _resourceEffects!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'resourceEffects',
+      field: SubclassFeatureData.t.id,
+      foreignField: _i5.FeatureResourceEffectData.t.subclassFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _i5.FeatureResourceEffectDataTable(
+          tableRelation: foreignTableRelation),
+    );
+    _resourceEffects = _i1.ManyRelation<_i5.FeatureResourceEffectDataTable>(
+      tableWithRelations: relationTable,
+      table: _i5.FeatureResourceEffectDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _resourceEffects!;
+  }
+
+  _i1.ManyRelation<_i6.ClassSpellGrantDataTable> get spellGrants {
     if (_spellGrants != null) return _spellGrants!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'spellGrants',
       field: SubclassFeatureData.t.id,
-      foreignField: _i4.ClassSpellGrantData.t.sourceSubclassFeatureId,
+      foreignField: _i6.ClassSpellGrantData.t.sourceSubclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+          _i6.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
     );
-    _spellGrants = _i1.ManyRelation<_i4.ClassSpellGrantDataTable>(
+    _spellGrants = _i1.ManyRelation<_i6.ClassSpellGrantDataTable>(
       tableWithRelations: relationTable,
-      table: _i4.ClassSpellGrantDataTable(
+      table: _i6.ClassSpellGrantDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _spellGrants!;
@@ -462,6 +581,12 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
     if (relationField == 'parentSubclass') {
       return parentSubclass;
     }
+    if (relationField == 'resources') {
+      return __resources;
+    }
+    if (relationField == 'resourceEffects') {
+      return __resourceEffects;
+    }
     if (relationField == 'spellGrants') {
       return __spellGrants;
     }
@@ -472,19 +597,29 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
 class SubclassFeatureDataInclude extends _i1.IncludeObject {
   SubclassFeatureDataInclude._({
     _i2.SubclassDataInclude? parentSubclass,
-    _i4.ClassSpellGrantDataIncludeList? spellGrants,
+    _i4.FeatureResourceDefinitionDataIncludeList? resources,
+    _i5.FeatureResourceEffectDataIncludeList? resourceEffects,
+    _i6.ClassSpellGrantDataIncludeList? spellGrants,
   }) {
     _parentSubclass = parentSubclass;
+    _resources = resources;
+    _resourceEffects = resourceEffects;
     _spellGrants = spellGrants;
   }
 
   _i2.SubclassDataInclude? _parentSubclass;
 
-  _i4.ClassSpellGrantDataIncludeList? _spellGrants;
+  _i4.FeatureResourceDefinitionDataIncludeList? _resources;
+
+  _i5.FeatureResourceEffectDataIncludeList? _resourceEffects;
+
+  _i6.ClassSpellGrantDataIncludeList? _spellGrants;
 
   @override
   Map<String, _i1.Include?> get includes => {
         'parentSubclass': _parentSubclass,
+        'resources': _resources,
+        'resourceEffects': _resourceEffects,
         'spellGrants': _spellGrants,
       };
 
@@ -742,12 +877,62 @@ class SubclassFeatureDataRepository {
 class SubclassFeatureDataAttachRepository {
   const SubclassFeatureDataAttachRepository._();
 
+  /// Creates a relation between this [SubclassFeatureData] and the given [FeatureResourceDefinitionData]s
+  /// by setting each [FeatureResourceDefinitionData]'s foreign key `subclassFeatureId` to refer to this [SubclassFeatureData].
+  Future<void> resources(
+    _i1.Session session,
+    SubclassFeatureData subclassFeatureData,
+    List<_i4.FeatureResourceDefinitionData> featureResourceDefinitionData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceDefinitionData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
+    }
+    if (subclassFeatureData.id == null) {
+      throw ArgumentError.notNull('subclassFeatureData.id');
+    }
+
+    var $featureResourceDefinitionData = featureResourceDefinitionData
+        .map((e) => e.copyWith(subclassFeatureId: subclassFeatureData.id))
+        .toList();
+    await session.db.update<_i4.FeatureResourceDefinitionData>(
+      $featureResourceDefinitionData,
+      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [SubclassFeatureData] and the given [FeatureResourceEffectData]s
+  /// by setting each [FeatureResourceEffectData]'s foreign key `subclassFeatureId` to refer to this [SubclassFeatureData].
+  Future<void> resourceEffects(
+    _i1.Session session,
+    SubclassFeatureData subclassFeatureData,
+    List<_i5.FeatureResourceEffectData> featureResourceEffectData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceEffectData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureResourceEffectData.id');
+    }
+    if (subclassFeatureData.id == null) {
+      throw ArgumentError.notNull('subclassFeatureData.id');
+    }
+
+    var $featureResourceEffectData = featureResourceEffectData
+        .map((e) => e.copyWith(subclassFeatureId: subclassFeatureData.id))
+        .toList();
+    await session.db.update<_i5.FeatureResourceEffectData>(
+      $featureResourceEffectData,
+      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [SubclassFeatureData] and the given [ClassSpellGrantData]s
   /// by setting each [ClassSpellGrantData]'s foreign key `sourceSubclassFeatureId` to refer to this [SubclassFeatureData].
   Future<void> spellGrants(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    List<_i4.ClassSpellGrantData> classSpellGrantData, {
+    List<_i6.ClassSpellGrantData> classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.any((e) => e.id == null)) {
@@ -760,9 +945,9 @@ class SubclassFeatureDataAttachRepository {
     var $classSpellGrantData = classSpellGrantData
         .map((e) => e.copyWith(sourceSubclassFeatureId: subclassFeatureData.id))
         .toList();
-    await session.db.update<_i4.ClassSpellGrantData>(
+    await session.db.update<_i6.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i4.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }
@@ -795,12 +980,60 @@ class SubclassFeatureDataAttachRowRepository {
     );
   }
 
+  /// Creates a relation between this [SubclassFeatureData] and the given [FeatureResourceDefinitionData]
+  /// by setting the [FeatureResourceDefinitionData]'s foreign key `subclassFeatureId` to refer to this [SubclassFeatureData].
+  Future<void> resources(
+    _i1.Session session,
+    SubclassFeatureData subclassFeatureData,
+    _i4.FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceDefinitionData.id == null) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
+    }
+    if (subclassFeatureData.id == null) {
+      throw ArgumentError.notNull('subclassFeatureData.id');
+    }
+
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+        subclassFeatureId: subclassFeatureData.id);
+    await session.db.updateRow<_i4.FeatureResourceDefinitionData>(
+      $featureResourceDefinitionData,
+      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [SubclassFeatureData] and the given [FeatureResourceEffectData]
+  /// by setting the [FeatureResourceEffectData]'s foreign key `subclassFeatureId` to refer to this [SubclassFeatureData].
+  Future<void> resourceEffects(
+    _i1.Session session,
+    SubclassFeatureData subclassFeatureData,
+    _i5.FeatureResourceEffectData featureResourceEffectData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceEffectData.id == null) {
+      throw ArgumentError.notNull('featureResourceEffectData.id');
+    }
+    if (subclassFeatureData.id == null) {
+      throw ArgumentError.notNull('subclassFeatureData.id');
+    }
+
+    var $featureResourceEffectData = featureResourceEffectData.copyWith(
+        subclassFeatureId: subclassFeatureData.id);
+    await session.db.updateRow<_i5.FeatureResourceEffectData>(
+      $featureResourceEffectData,
+      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [SubclassFeatureData] and the given [ClassSpellGrantData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceSubclassFeatureId` to refer to this [SubclassFeatureData].
   Future<void> spellGrants(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    _i4.ClassSpellGrantData classSpellGrantData, {
+    _i6.ClassSpellGrantData classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
@@ -812,9 +1045,9 @@ class SubclassFeatureDataAttachRowRepository {
 
     var $classSpellGrantData = classSpellGrantData.copyWith(
         sourceSubclassFeatureId: subclassFeatureData.id);
-    await session.db.updateRow<_i4.ClassSpellGrantData>(
+    await session.db.updateRow<_i6.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i4.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }
@@ -823,6 +1056,54 @@ class SubclassFeatureDataAttachRowRepository {
 class SubclassFeatureDataDetachRepository {
   const SubclassFeatureDataDetachRepository._();
 
+  /// Detaches the relation between this [SubclassFeatureData] and the given [FeatureResourceDefinitionData]
+  /// by setting the [FeatureResourceDefinitionData]'s foreign key `subclassFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> resources(
+    _i1.Session session,
+    List<_i4.FeatureResourceDefinitionData> featureResourceDefinitionData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceDefinitionData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
+    }
+
+    var $featureResourceDefinitionData = featureResourceDefinitionData
+        .map((e) => e.copyWith(subclassFeatureId: null))
+        .toList();
+    await session.db.update<_i4.FeatureResourceDefinitionData>(
+      $featureResourceDefinitionData,
+      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [SubclassFeatureData] and the given [FeatureResourceEffectData]
+  /// by setting the [FeatureResourceEffectData]'s foreign key `subclassFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> resourceEffects(
+    _i1.Session session,
+    List<_i5.FeatureResourceEffectData> featureResourceEffectData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceEffectData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureResourceEffectData.id');
+    }
+
+    var $featureResourceEffectData = featureResourceEffectData
+        .map((e) => e.copyWith(subclassFeatureId: null))
+        .toList();
+    await session.db.update<_i5.FeatureResourceEffectData>(
+      $featureResourceEffectData,
+      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
   /// Detaches the relation between this [SubclassFeatureData] and the given [ClassSpellGrantData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceSubclassFeatureId` to `null`.
   ///
@@ -830,7 +1111,7 @@ class SubclassFeatureDataDetachRepository {
   /// the related record.
   Future<void> spellGrants(
     _i1.Session session,
-    List<_i4.ClassSpellGrantData> classSpellGrantData, {
+    List<_i6.ClassSpellGrantData> classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.any((e) => e.id == null)) {
@@ -840,9 +1121,9 @@ class SubclassFeatureDataDetachRepository {
     var $classSpellGrantData = classSpellGrantData
         .map((e) => e.copyWith(sourceSubclassFeatureId: null))
         .toList();
-    await session.db.update<_i4.ClassSpellGrantData>(
+    await session.db.update<_i6.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i4.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }
@@ -851,6 +1132,52 @@ class SubclassFeatureDataDetachRepository {
 class SubclassFeatureDataDetachRowRepository {
   const SubclassFeatureDataDetachRowRepository._();
 
+  /// Detaches the relation between this [SubclassFeatureData] and the given [FeatureResourceDefinitionData]
+  /// by setting the [FeatureResourceDefinitionData]'s foreign key `subclassFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> resources(
+    _i1.Session session,
+    _i4.FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceDefinitionData.id == null) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
+    }
+
+    var $featureResourceDefinitionData =
+        featureResourceDefinitionData.copyWith(subclassFeatureId: null);
+    await session.db.updateRow<_i4.FeatureResourceDefinitionData>(
+      $featureResourceDefinitionData,
+      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [SubclassFeatureData] and the given [FeatureResourceEffectData]
+  /// by setting the [FeatureResourceEffectData]'s foreign key `subclassFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> resourceEffects(
+    _i1.Session session,
+    _i5.FeatureResourceEffectData featureResourceEffectData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceEffectData.id == null) {
+      throw ArgumentError.notNull('featureResourceEffectData.id');
+    }
+
+    var $featureResourceEffectData =
+        featureResourceEffectData.copyWith(subclassFeatureId: null);
+    await session.db.updateRow<_i5.FeatureResourceEffectData>(
+      $featureResourceEffectData,
+      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
   /// Detaches the relation between this [SubclassFeatureData] and the given [ClassSpellGrantData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceSubclassFeatureId` to `null`.
   ///
@@ -858,7 +1185,7 @@ class SubclassFeatureDataDetachRowRepository {
   /// the related record.
   Future<void> spellGrants(
     _i1.Session session,
-    _i4.ClassSpellGrantData classSpellGrantData, {
+    _i6.ClassSpellGrantData classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
@@ -867,9 +1194,9 @@ class SubclassFeatureDataDetachRowRepository {
 
     var $classSpellGrantData =
         classSpellGrantData.copyWith(sourceSubclassFeatureId: null);
-    await session.db.updateRow<_i4.ClassSpellGrantData>(
+    await session.db.updateRow<_i6.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i4.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }

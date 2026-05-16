@@ -193,6 +193,7 @@ CharacterData normalizeCharacterForPersistence(
       character.featureOverrides,
       updatedAt,
     ),
+    resourceStates: _normalizedResourceStates(character.resourceStates),
     classEntries: _normalizedClassEntries(character.classEntries, updatedAt),
     choices: _normalizedChoices(character.choices, updatedAt),
     skillSelections: _normalizedSkillSelections(
@@ -418,6 +419,46 @@ List<CharacterFeatureOverrideData>? _normalizedFeatureOverrides(
         updatedAt: item.updatedAt?.toUtc() ?? updatedAt,
       ),
   ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterResourceStateData>? _normalizedResourceStates(
+  List<CharacterResourceStateData>? states,
+) {
+  final normalized = <CharacterResourceStateData>[];
+  for (final state in states ?? const <CharacterResourceStateData>[]) {
+    if (state.current < 0) {
+      continue;
+    }
+    final candidate = CharacterResourceStateData(
+      sourceType: state.sourceType,
+      sourceId: state.sourceId,
+      resourceKey: _normalizedText(state.resourceKey) ?? 'main',
+      current: state.current,
+    );
+    final existingIndex = normalized.indexWhere(
+      (item) =>
+          item.sourceType == candidate.sourceType &&
+          item.sourceId == candidate.sourceId &&
+          item.resourceKey == candidate.resourceKey,
+    );
+    if (existingIndex >= 0) {
+      normalized[existingIndex] = candidate;
+    } else {
+      normalized.add(candidate);
+    }
+  }
+  normalized.sort((left, right) {
+    final sourceCompare = left.sourceType.name.compareTo(right.sourceType.name);
+    if (sourceCompare != 0) {
+      return sourceCompare;
+    }
+    final idCompare = left.sourceId.compareTo(right.sourceId);
+    if (idCompare != 0) {
+      return idCompare;
+    }
+    return left.resourceKey.compareTo(right.resourceKey);
+  });
   return normalized.isEmpty ? null : normalized;
 }
 

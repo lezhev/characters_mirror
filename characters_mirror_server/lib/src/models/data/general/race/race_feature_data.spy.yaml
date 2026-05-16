@@ -14,6 +14,8 @@ fields:
   level: int?
   usesPerRest: RestType?
   usesFormula: String?
+  resources: List<FeatureResourceDefinitionData>?, relation(name=race_feature_resource_definitions)
+  resourceEffects: List<FeatureResourceEffectData>?, relation(name=race_feature_resource_effects)
   tags: List<FeatureTag>?
   spellGrants: List<RaceFeatureSpellGrantData>?, relation(name=race_feature_spell_grants)
   choiceSets: List<RaceChoiceSetData>?, relation(name=race_feature_choice_sets)

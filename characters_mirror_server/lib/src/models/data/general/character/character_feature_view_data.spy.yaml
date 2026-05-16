@@ -11,3 +11,4 @@ fields:
   description: String?
   tags: List<FeatureTag>?
   isCustomized: bool?
+  resources: List<CharacterResourceViewData>?

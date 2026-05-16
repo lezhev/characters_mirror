@@ -1,0 +1,6 @@
+enum: FeatureResourceTargetType
+serialized: byName
+values:
+  - featureResource
+  - spellSlots
+  - pactSlots

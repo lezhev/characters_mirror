@@ -194,6 +194,43 @@ class CharacterSheetController
     await _saveCharacter(current.copyWith(activeConcentrationSpellName: null));
   }
 
+  Future<void> setInspiration(bool value) async {
+    final current = _requireCharacter();
+    await _saveCharacter(current.copyWith(inspiration: value ? true : null));
+  }
+
+  Future<void> saveConditions({
+    required List<ConditionType> activeConditions,
+    int? exhaustionLevel,
+  }) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        activeConditions: _normalizedActiveConditions(activeConditions),
+        exhaustionLevel: _normalizedExhaustionLevel(exhaustionLevel),
+      ),
+    );
+  }
+
+  Future<void> removeCondition(ConditionType condition) async {
+    final current = _requireCharacter();
+    if (condition == ConditionType.exhaustion) {
+      await _saveCharacter(current.copyWith(exhaustionLevel: null));
+      return;
+    }
+
+    final activeConditions = [
+      for (final activeCondition
+          in current.activeConditions ?? const <ConditionType>[])
+        if (activeCondition != condition) activeCondition,
+    ];
+    await _saveCharacter(
+      current.copyWith(
+        activeConditions: activeConditions.isEmpty ? null : activeConditions,
+      ),
+    );
+  }
+
   Future<void> savePersonalInfo({
     String? name,
     String? age,
@@ -478,6 +515,104 @@ class CharacterSheetController
     );
   }
 
+  Future<void> setFeatureResource(
+    CharacterFeatureViewData feature,
+    String resourceKey,
+    int current,
+  ) async {
+    final resource = _featureResource(feature, resourceKey);
+    if (resource == null) {
+      return;
+    }
+    if (resource.isUnlimited == true) {
+      return;
+    }
+
+    final character = _requireCharacter();
+    final normalizedCurrent = current.clamp(0, resource.max).toInt();
+    final resourceStates = _updatedResourceStates(
+      character.resourceStates,
+      feature.sourceType,
+      feature.sourceId,
+      resourceKey: resourceKey,
+      current: normalizedCurrent,
+      max: resource.max,
+    );
+    final updatedFeatures = _updateDerivedFeatureResource(
+      character.derived?.activeFeatures,
+      feature.sourceType,
+      feature.sourceId,
+      resourceKey: resourceKey,
+      current: normalizedCurrent,
+    );
+
+    await _saveCharacter(
+      character.copyWith(
+        resourceStates: resourceStates,
+        derived: character.derived?.copyWith(activeFeatures: updatedFeatures),
+      ),
+    );
+  }
+
+  Future<void> spendFeatureResource(CharacterFeatureViewData feature) async {
+    final resource = feature.resources?.firstOrNull;
+    if (resource == null || resource.current <= 0) {
+      return;
+    }
+
+    await setFeatureResource(feature, resource.key, resource.current - 1);
+  }
+
+  Future<void> restoreResources(RestType restType) async {
+    final character = _requireCharacter();
+    final activeFeatures =
+        character.derived?.activeFeatures ?? const <CharacterFeatureViewData>[];
+    final restoredKeys = {
+      for (final feature in activeFeatures)
+        for (final resource
+            in feature.resources ?? const <CharacterResourceViewData>[])
+          if (_resourceShouldRestore(resource, restType))
+            _featureResourceKey(
+                feature.sourceType, feature.sourceId, resource.key),
+    };
+    if (restoredKeys.isEmpty) {
+      return;
+    }
+
+    final resourceStates = [
+      for (final state
+          in character.resourceStates ?? const <CharacterResourceStateData>[])
+        if (!restoredKeys.contains(
+          _featureResourceKey(
+            state.sourceType,
+            state.sourceId,
+            state.resourceKey,
+          ),
+        ))
+          state,
+    ];
+    final updatedFeatures = [
+      for (final feature in activeFeatures)
+        feature.copyWith(
+          resources: [
+            for (final resource
+                in feature.resources ?? const <CharacterResourceViewData>[])
+              if (_resourceShouldRestore(resource, restType))
+                resource.copyWith(current: resource.max)
+              else
+                resource,
+          ],
+        ),
+    ];
+
+    await _saveCharacter(
+      character.copyWith(
+        resourceStates: resourceStates.isEmpty ? null : resourceStates,
+        derived: character.derived?.copyWith(activeFeatures: updatedFeatures),
+      ),
+    );
+  }
+
   CharacterData _requireCharacter() {
     final current = state.valueOrNull;
     if (current == null) {
@@ -529,10 +664,123 @@ List<CharacterFeatureViewData>? _updateDerivedFeatureViews(
           description: description,
           tags: tags,
           isCustomized: isCustomized,
+          resources: [
+            for (final resource
+                in feature.resources ?? const <CharacterResourceViewData>[])
+              resource.copyWith(name: resource.name ?? name),
+          ],
         )
       else
         feature,
   ];
+}
+
+List<CharacterFeatureViewData>? _updateDerivedFeatureResource(
+  List<CharacterFeatureViewData>? features,
+  CharacterFeatureSourceType sourceType,
+  int sourceId, {
+  required String resourceKey,
+  required int current,
+}) {
+  if (features == null) {
+    return null;
+  }
+
+  return [
+    for (final feature in features)
+      if (feature.sourceType == sourceType && feature.sourceId == sourceId)
+        feature.copyWith(
+          resources: [
+            for (final resource
+                in feature.resources ?? const <CharacterResourceViewData>[])
+              if (resource.key == resourceKey)
+                resource.copyWith(current: current)
+              else
+                resource,
+          ],
+        )
+      else
+        feature,
+  ];
+}
+
+List<CharacterResourceStateData>? _updatedResourceStates(
+  List<CharacterResourceStateData>? states,
+  CharacterFeatureSourceType sourceType,
+  int sourceId, {
+  required String resourceKey,
+  required int current,
+  required int max,
+}) {
+  final updatedStates = [...?states]..removeWhere(
+      (state) =>
+          state.sourceType == sourceType &&
+          state.sourceId == sourceId &&
+          state.resourceKey == resourceKey,
+    );
+  if (current != max) {
+    updatedStates.add(
+      CharacterResourceStateData(
+        sourceType: sourceType,
+        sourceId: sourceId,
+        resourceKey: resourceKey,
+        current: current,
+      ),
+    );
+  }
+  updatedStates.sort((left, right) {
+    final sourceCompare = left.sourceType.name.compareTo(right.sourceType.name);
+    if (sourceCompare != 0) {
+      return sourceCompare;
+    }
+    final idCompare = left.sourceId.compareTo(right.sourceId);
+    if (idCompare != 0) {
+      return idCompare;
+    }
+    return left.resourceKey.compareTo(right.resourceKey);
+  });
+  return updatedStates.isEmpty ? null : updatedStates;
+}
+
+bool _resourceShouldRestore(
+  CharacterResourceViewData? resource,
+  RestType restType,
+) {
+  if (resource == null) {
+    return false;
+  }
+
+  switch (restType) {
+    case RestType.shortRest:
+      return resource.resetOn == RestType.shortRest;
+    case RestType.longRest:
+      return resource.resetOn == RestType.shortRest ||
+          resource.resetOn == RestType.longRest;
+    case RestType.dawn:
+    case RestType.special:
+      return false;
+  }
+}
+
+String _featureResourceKey(
+  CharacterFeatureSourceType sourceType,
+  int sourceId,
+  String resourceKey,
+) {
+  return '${sourceType.name}:$sourceId:$resourceKey';
+}
+
+CharacterResourceViewData? _featureResource(
+  CharacterFeatureViewData feature,
+  String resourceKey,
+) {
+  for (final resource
+      in feature.resources ?? const <CharacterResourceViewData>[]) {
+    if (resource.key == resourceKey) {
+      return resource;
+    }
+  }
+  return null;
 }
 
 List<FeatureTag>? _normalizedFeatureTags(
@@ -576,6 +824,27 @@ String? _normalizedText(String? value) {
     return null;
   }
   return trimmed;
+}
+
+List<ConditionType>? _normalizedActiveConditions(
+  List<ConditionType>? conditions,
+) {
+  final normalized = <ConditionType>[];
+  for (final condition in conditions ?? const <ConditionType>[]) {
+    if (condition == ConditionType.exhaustion ||
+        normalized.contains(condition)) {
+      continue;
+    }
+    normalized.add(condition);
+  }
+  return normalized.isEmpty ? null : normalized;
+}
+
+int? _normalizedExhaustionLevel(int? value) {
+  if (value == null || value <= 0) {
+    return null;
+  }
+  return value.clamp(1, 6).toInt();
 }
 
 String _spellName(SpellData spell) {

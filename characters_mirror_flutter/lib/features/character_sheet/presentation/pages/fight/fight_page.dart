@@ -143,6 +143,12 @@ class FightPage extends ConsumerWidget {
                             .notifier)
                         .resetFeatureOverride(feature);
                   },
+                  onSetFeatureResource: (feature, resourceKey, current) {
+                    return ref
+                        .read(characterSheetControllerProvider(characterId)
+                            .notifier)
+                        .setFeatureResource(feature, resourceKey, current);
+                  },
                 ),
               ],
             ),

@@ -9,6 +9,7 @@ class CharacterFeatureCard extends StatefulWidget {
     required this.feature,
     required this.onSave,
     required this.onReset,
+    required this.onSetResource,
     super.key,
   });
 
@@ -19,6 +20,7 @@ class CharacterFeatureCard extends StatefulWidget {
     List<FeatureTag>? tags,
   }) onSave;
   final Future<void> Function() onReset;
+  final Future<void> Function(String resourceKey, int current) onSetResource;
 
   @override
   State<CharacterFeatureCard> createState() => _CharacterFeatureCardState();
@@ -103,6 +105,16 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                           child: const Text('Вернуть всё как было'),
                         ),
                       ),
+                    if (feature.resources != null &&
+                        feature.resources!.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      for (final resource in feature.resources!)
+                        _FeatureResourceCounter(
+                          resource: resource,
+                          onChanged: (current) =>
+                              widget.onSetResource(resource.key, current),
+                        ),
+                    ],
                     ExpandableSection(
                       extraOffset: 64,
                       expand: _isExpanded,
@@ -187,6 +199,66 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _FeatureResourceCounter extends StatelessWidget {
+  const _FeatureResourceCounter({
+    required this.resource,
+    required this.onChanged,
+  });
+
+  final CharacterResourceViewData resource;
+  final Future<void> Function(int current) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isUnlimited = resource.isUnlimited == true;
+    final canDecrease = resource.current > 0;
+    final canIncrease = resource.current < resource.max;
+
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 8,
+      runSpacing: 6,
+      children: [
+        IconButton.filledTonal(
+          visualDensity: VisualDensity.compact,
+          tooltip: 'Потратить ресурс',
+          onPressed: !isUnlimited && canDecrease
+              ? () => onChanged(resource.current - 1)
+              : null,
+          icon: const Icon(Icons.remove, size: 18),
+        ),
+        if (!isUnlimited && resource.max <= 6)
+          Wrap(
+            spacing: 3,
+            children: [
+              for (var index = 0; index < resource.max; index++)
+                Icon(
+                  index < resource.current
+                      ? Icons.circle
+                      : Icons.radio_button_unchecked,
+                  size: 10,
+                  color: theme.colorScheme.primary,
+                ),
+            ],
+          ),
+        Text(
+          isUnlimited ? '∞' : '${resource.current}/${resource.max}',
+          style: theme.textTheme.labelLarge,
+        ),
+        IconButton.filledTonal(
+          visualDensity: VisualDensity.compact,
+          tooltip: 'Восстановить ресурс',
+          onPressed: !isUnlimited && canIncrease
+              ? () => onChanged(resource.current + 1)
+              : null,
+          icon: const Icon(Icons.add, size: 18),
+        ),
+      ],
     );
   }
 }

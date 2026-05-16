@@ -2,8 +2,8 @@ import 'package:characters_mirror_flutter/core/ui/pointer_swipe_policy.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet_tabs.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/attributes_page.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/active_concentration_overlay.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_sheet_app_bar.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_status_stack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -28,20 +28,8 @@ class CharacterSheet extends HookConsumerWidget {
     final character = ref.watch(characterSheetControllerProvider(characterId));
     final characterData = character.valueOrNull;
     final characterName = characterData?.name?.trim();
-    final activeConcentrationSpell =
-        _normalizedText(characterData?.activeConcentrationSpellName);
-    final isConcentrationExpanded = useState(false);
+    final statusStackMode = useState(CharacterStatusStackMode.hidden);
     final tabs = buildCharacterSheetTabs(characterId);
-
-    useEffect(
-      () {
-        if (activeConcentrationSpell == null) {
-          isConcentrationExpanded.value = false;
-        }
-        return null;
-      },
-      [activeConcentrationSpell],
-    );
 
     void closeAttributes() {
       final targetPage = returnPageIndex.value;
@@ -101,6 +89,13 @@ class CharacterSheet extends HookConsumerWidget {
                 onSettingsPressed: () {
                   context.go('/characters/sheet/$characterId/settings');
                 },
+                onRestSelected: (restType) {
+                  ref
+                      .read(
+                        characterSheetControllerProvider(characterId).notifier,
+                      )
+                      .restoreResources(restType);
+                },
                 onMenuPressed: () {
                   returnPageIndex.value = pageIndex.value;
                   isAttributesOpen.value = true;
@@ -147,44 +142,66 @@ class CharacterSheet extends HookConsumerWidget {
               ),
             ],
           ),
-          if (!isAttributesOpen.value && activeConcentrationSpell != null) ...[
-            if (isConcentrationExpanded.value)
-              Positioned.fill(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    isConcentrationExpanded.value = false;
-                  },
-                ),
-              ),
+          if (!isAttributesOpen.value && characterData != null)
             Positioned(
               left: 0,
               bottom: 0,
               child: SafeArea(
                 minimum: const EdgeInsets.only(left: 16, bottom: 12),
-                child: ActiveConcentrationOverlay(
-                  spellName: activeConcentrationSpell,
-                  expanded: isConcentrationExpanded.value,
-                  onToggle: () {
-                    isConcentrationExpanded.value =
-                        !isConcentrationExpanded.value;
+                child: CharacterStatusStack(
+                  character: characterData,
+                  mode: statusStackMode.value,
+                  onModePressed: () {
+                    statusStackMode.value = switch (statusStackMode.value) {
+                      CharacterStatusStackMode.hidden =>
+                        CharacterStatusStackMode.icons,
+                      CharacterStatusStackMode.icons =>
+                        CharacterStatusStackMode.labels,
+                      CharacterStatusStackMode.labels =>
+                        CharacterStatusStackMode.hidden,
+                    };
                   },
-                  onCollapse: () {
-                    isConcentrationExpanded.value = false;
+                  onInspirationChanged: (value) {
+                    return ref
+                        .read(
+                          characterSheetControllerProvider(characterId)
+                              .notifier,
+                        )
+                        .setInspiration(value);
                   },
-                  onCancel: () async {
-                    await ref
+                  onSaveConditions: ({
+                    required activeConditions,
+                    exhaustionLevel,
+                  }) {
+                    return ref
+                        .read(
+                          characterSheetControllerProvider(characterId)
+                              .notifier,
+                        )
+                        .saveConditions(
+                          activeConditions: activeConditions,
+                          exhaustionLevel: exhaustionLevel,
+                        );
+                  },
+                  onRemoveCondition: (condition) {
+                    return ref
+                        .read(
+                          characterSheetControllerProvider(characterId)
+                              .notifier,
+                        )
+                        .removeCondition(condition);
+                  },
+                  onCancelConcentration: () {
+                    return ref
                         .read(
                           characterSheetControllerProvider(characterId)
                               .notifier,
                         )
                         .cancelConcentration();
-                    isConcentrationExpanded.value = false;
                   },
                 ),
               ),
             ),
-          ],
         ],
       ),
       bottomNavigationBar: isAttributesOpen.value
@@ -199,12 +216,4 @@ class CharacterSheet extends HookConsumerWidget {
             ),
     );
   }
-}
-
-String? _normalizedText(String? value) {
-  final trimmed = value?.trim();
-  if (trimmed == null || trimmed.isEmpty) {
-    return null;
-  }
-  return trimmed;
 }

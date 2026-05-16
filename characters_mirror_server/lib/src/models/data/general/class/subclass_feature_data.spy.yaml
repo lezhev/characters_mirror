@@ -13,5 +13,6 @@ fields:
   tags: List<FeatureTag>?
   choiceGroupKey: String?
   relatedTable: String?
+  resources: List<FeatureResourceDefinitionData>?, relation(name=subclass_feature_resource_definitions)
+  resourceEffects: List<FeatureResourceEffectData>?, relation(name=subclass_feature_resource_effects)
   spellGrants: List<ClassSpellGrantData>?, relation(name=subclass_feature_spell_grants)
-

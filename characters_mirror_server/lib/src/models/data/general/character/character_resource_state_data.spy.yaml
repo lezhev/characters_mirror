@@ -1,0 +1,6 @@
+class: CharacterResourceStateData
+fields:
+  sourceType: CharacterFeatureSourceType
+  sourceId: int
+  resourceKey: String
+  current: int

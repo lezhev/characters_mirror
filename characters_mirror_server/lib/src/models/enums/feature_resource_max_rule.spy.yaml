@@ -1,0 +1,12 @@
+enum: FeatureResourceMaxRule
+serialized: byName
+values:
+  - fixed
+  - proficiencyBonus
+  - abilityModifier
+  - abilityModifierMinOne
+  - sourceClassLevel
+  - sourceClassLevelTimesValue
+  - totalLevel
+  - totalLevelTimesValue
+  - sourceClassLevelTable

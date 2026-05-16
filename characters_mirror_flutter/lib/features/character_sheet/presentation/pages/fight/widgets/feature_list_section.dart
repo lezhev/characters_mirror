@@ -10,6 +10,7 @@ class FeatureListSection extends StatelessWidget {
     required this.onOpenAllAbilities,
     required this.onSaveFeature,
     required this.onResetFeature,
+    required this.onSetFeatureResource,
     super.key,
   });
 
@@ -23,6 +24,11 @@ class FeatureListSection extends StatelessWidget {
     List<FeatureTag>? tags,
   }) onSaveFeature;
   final Future<void> Function(CharacterFeatureViewData feature) onResetFeature;
+  final Future<void> Function(
+    CharacterFeatureViewData feature,
+    String resourceKey,
+    int current,
+  ) onSetFeatureResource;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +71,13 @@ class FeatureListSection extends StatelessWidget {
               );
             },
             onReset: () => onResetFeature(visibleFeatures[index]),
+            onSetResource: (resourceKey, current) {
+              return onSetFeatureResource(
+                visibleFeatures[index],
+                resourceKey,
+                current,
+              );
+            },
           ),
           if (index < visibleFeatures.length - 1) const SizedBox(height: 8),
         ],

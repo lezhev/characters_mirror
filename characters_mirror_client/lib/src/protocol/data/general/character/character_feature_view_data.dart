@@ -12,6 +12,8 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../enums/character_feature_source_type.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
+import '../../../data/general/character/character_resource_view_data.dart'
+    as _i4;
 
 abstract class CharacterFeatureViewData implements _i1.SerializableModel {
   CharacterFeatureViewData._({
@@ -26,6 +28,7 @@ abstract class CharacterFeatureViewData implements _i1.SerializableModel {
     this.description,
     this.tags,
     this.isCustomized,
+    this.resources,
   });
 
   factory CharacterFeatureViewData({
@@ -40,6 +43,7 @@ abstract class CharacterFeatureViewData implements _i1.SerializableModel {
     String? description,
     List<_i3.FeatureTag>? tags,
     bool? isCustomized,
+    List<_i4.CharacterResourceViewData>? resources,
   }) = _CharacterFeatureViewDataImpl;
 
   factory CharacterFeatureViewData.fromJson(
@@ -61,6 +65,10 @@ abstract class CharacterFeatureViewData implements _i1.SerializableModel {
           ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       isCustomized: jsonSerialization['isCustomized'] as bool?,
+      resources: (jsonSerialization['resources'] as List?)
+          ?.map((e) => _i4.CharacterResourceViewData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -86,6 +94,8 @@ abstract class CharacterFeatureViewData implements _i1.SerializableModel {
 
   bool? isCustomized;
 
+  List<_i4.CharacterResourceViewData>? resources;
+
   /// Returns a shallow copy of this [CharacterFeatureViewData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -101,6 +111,7 @@ abstract class CharacterFeatureViewData implements _i1.SerializableModel {
     String? description,
     List<_i3.FeatureTag>? tags,
     bool? isCustomized,
+    List<_i4.CharacterResourceViewData>? resources,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -117,6 +128,8 @@ abstract class CharacterFeatureViewData implements _i1.SerializableModel {
       if (description != null) 'description': description,
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (isCustomized != null) 'isCustomized': isCustomized,
+      if (resources != null)
+        'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -141,6 +154,7 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     String? description,
     List<_i3.FeatureTag>? tags,
     bool? isCustomized,
+    List<_i4.CharacterResourceViewData>? resources,
   }) : super._(
           sourceType: sourceType,
           sourceId: sourceId,
@@ -153,6 +167,7 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           description: description,
           tags: tags,
           isCustomized: isCustomized,
+          resources: resources,
         );
 
   /// Returns a shallow copy of this [CharacterFeatureViewData]
@@ -171,6 +186,7 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     Object? description = _Undefined,
     Object? tags = _Undefined,
     Object? isCustomized = _Undefined,
+    Object? resources = _Undefined,
   }) {
     return CharacterFeatureViewData(
       sourceType: sourceType ?? this.sourceType,
@@ -190,6 +206,9 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           ? tags
           : this.tags?.map((e0) => e0).toList(),
       isCustomized: isCustomized is bool? ? isCustomized : this.isCustomized,
+      resources: resources is List<_i4.CharacterResourceViewData>?
+          ? resources
+          : this.resources?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

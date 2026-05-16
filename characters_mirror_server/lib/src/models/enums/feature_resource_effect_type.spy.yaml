@@ -1,0 +1,6 @@
+enum: FeatureResourceEffectType
+serialized: byName
+values:
+  - restore
+  - spend
+  - modify

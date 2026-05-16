@@ -1,0 +1,6 @@
+class: FeatureResourceProgressionValueData
+table: feature_resource_progression_value_data
+fields:
+  resourceDefinition: FeatureResourceDefinitionData?, relation(name=feature_resource_progression_values, optional)
+  level: int
+  value: int
