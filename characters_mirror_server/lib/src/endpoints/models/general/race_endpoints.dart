@@ -98,7 +98,8 @@ class RaceFeatureEndpoint extends Endpoint {
     return RaceFeatureData.db.find(session);
   }
 
-  Future<RaceFeatureData> add(Session session, RaceFeatureData raceFeature) async {
+  Future<RaceFeatureData> add(
+      Session session, RaceFeatureData raceFeature) async {
     _validateRaceFeature(raceFeature);
     _stampForInsert(raceFeature);
     return RaceFeatureData.db.insertRow(session, raceFeature);
@@ -126,7 +127,8 @@ class RaceFeatureEndpoint extends Endpoint {
   }
 
   Future<void> delete(Session session, int id) async {
-    await RaceFeatureData.db.deleteWhere(session, where: (t) => t.id.equals(id));
+    await RaceFeatureData.db
+        .deleteWhere(session, where: (t) => t.id.equals(id));
   }
 }
 
@@ -302,6 +304,10 @@ Future<List<RaceFeatureData>> _findRaceFeatures(
     session,
     where: where,
     include: RaceFeatureData.include(
+      resources: FeatureResourceDefinitionData.includeList(
+        include: _featureResourceDefinitionInclude(),
+      ),
+      resourceEffects: FeatureResourceEffectData.includeList(),
       spellGrants: RaceFeatureSpellGrantData.includeList(
         include: RaceFeatureSpellGrantData.include(
           spell: SpellData.include(),
@@ -324,6 +330,10 @@ Future<List<RaceFeatureData>> _findRaceFeatures(
 }
 
 RaceFeatureData _normalizeRaceFeature(RaceFeatureData feature) {
+  final resources = _normalizedFeatureResources(feature.resources);
+  final resourceEffects = _normalizedFeatureResourceEffects(
+    feature.resourceEffects,
+  );
   final spellGrants = [
     ...?feature.spellGrants,
   ]..sort(_compareRaceFeatureSpellGrants);
@@ -331,9 +341,71 @@ RaceFeatureData _normalizeRaceFeature(RaceFeatureData feature) {
     ..sort(_compareRaceChoiceSets);
 
   return feature.copyWith(
+    resources: resources,
+    resourceEffects: resourceEffects,
     spellGrants: spellGrants,
     choiceSets: choiceSets,
   );
+}
+
+FeatureResourceDefinitionDataInclude _featureResourceDefinitionInclude() {
+  return FeatureResourceDefinitionData.include(
+    progressionValues: FeatureResourceProgressionValueData.includeList(),
+  );
+}
+
+List<FeatureResourceDefinitionData>? _normalizedFeatureResources(
+  List<FeatureResourceDefinitionData>? resources,
+) {
+  final normalized = [
+    for (final resource in resources ?? const <FeatureResourceDefinitionData>[])
+      resource.copyWith(
+        progressionValues: _normalizedFeatureResourceProgressionValues(
+          resource.progressionValues,
+        ),
+      ),
+  ]..sort(_compareFeatureResources);
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<FeatureResourceProgressionValueData>?
+    _normalizedFeatureResourceProgressionValues(
+  List<FeatureResourceProgressionValueData>? values,
+) {
+  final normalized = [...?values]..sort(_compareFeatureResourceProgression);
+  return normalized.isEmpty ? null : normalized;
+}
+
+List<FeatureResourceEffectData>? _normalizedFeatureResourceEffects(
+  List<FeatureResourceEffectData>? effects,
+) {
+  final normalized = [...?effects]..sort(_compareFeatureResourceEffects);
+  return normalized.isEmpty ? null : normalized;
+}
+
+int _compareFeatureResources(
+  FeatureResourceDefinitionData a,
+  FeatureResourceDefinitionData b,
+) {
+  return a.key.compareTo(b.key);
+}
+
+int _compareFeatureResourceProgression(
+  FeatureResourceProgressionValueData a,
+  FeatureResourceProgressionValueData b,
+) {
+  final levelCompare = a.level.compareTo(b.level);
+  if (levelCompare != 0) return levelCompare;
+  return a.value.compareTo(b.value);
+}
+
+int _compareFeatureResourceEffects(
+  FeatureResourceEffectData a,
+  FeatureResourceEffectData b,
+) {
+  final typeCompare = a.type.name.compareTo(b.type.name);
+  if (typeCompare != 0) return typeCompare;
+  return (a.targetResourceKey ?? '').compareTo(b.targetResourceKey ?? '');
 }
 
 List<RaceChoiceSetData> choiceSetsOrNormalized(

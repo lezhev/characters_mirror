@@ -15,7 +15,7 @@ import '../enums/spell/spell_attack_type.dart' as _i3;
 import '../enums/damage_type.dart' as _i4;
 import '../data/spell_scaling_data.dart' as _i5;
 import '../data/damage_part_data.dart' as _i6;
-import '../enums/spell/condition_type.dart' as _i7;
+import '../enums/condition_type.dart' as _i7;
 import '../enums/spell/spell_target_type.dart' as _i8;
 import '../enums/spell/area_of_effect_type.dart' as _i9;
 import '../enums/spell/spell_duration_type.dart' as _i10;

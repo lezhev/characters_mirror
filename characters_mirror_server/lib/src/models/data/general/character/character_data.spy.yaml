@@ -31,6 +31,8 @@ fields:
   currentHp: int?
   currentSpellSlots: Map<int, int>?
   activeConcentrationSpellName: String?
+  activeConditions: List<ConditionType>?
+  exhaustionLevel: int?
   inspiration: bool?
   equipment: List<CharacterInventoryItemData>?
   manualSkillProficiencies: List<CharacterSkillProficiencyState>?
@@ -38,6 +40,7 @@ fields:
   notes: List<CharacterNoteData>?
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?
+  resourceStates: List<CharacterResourceStateData>?
   classEntries: List<CharacterClassEntryData>?
   choices: List<CharacterChoiceData>?
   skillSelections: List<CharacterSkillSelectionData>?

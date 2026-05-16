@@ -36,6 +36,7 @@ class CharacterDataEndpoint extends Endpoint {
     // list sizes, and save rate before accepting user-controlled payloads.
     var normalizedCharacter = character.copyWith(
       featureOverrides: await _pruneFeatureOverrides(session, character),
+      resourceStates: await _pruneResourceStates(session, character),
     );
     final existingRecord = character.id == null
         ? null
@@ -262,6 +263,12 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
   final choices = character.choices ?? const <CharacterChoiceData>[];
   final totalLevel =
       entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
+  final scores = _buildAbilityScores(character, choices);
+  final abilityModifiers = {
+    for (final ability in Ability.values)
+      ability.name: _abilityModifier(scores[ability.name] ?? 10),
+  };
+  final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
   final resolvedSources =
       await _resolveDerivedSources(session, character, choices);
   final currentRaceFeatures =
@@ -272,6 +279,9 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
     ),
     resolvedSources: resolvedSources,
     currentRaceFeatures: currentRaceFeatures,
+    totalLevel: totalLevel,
+    proficiencyBonus: proficiencyBonus,
+    abilityModifiers: abilityModifiers,
   );
   final defaultByKey = {
     for (final feature in defaultFeatures)
@@ -287,6 +297,53 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
       ))
         override,
   ];
+}
+
+Future<List<CharacterResourceStateData>> _pruneResourceStates(
+  Session session,
+  CharacterData character,
+) async {
+  final normalizedStates = _normalizedResourceStates(character.resourceStates);
+  if (normalizedStates.isEmpty) {
+    return const <CharacterResourceStateData>[];
+  }
+
+  final derived = await _buildDerivedData(
+    session,
+    character.copyWith(resourceStates: normalizedStates),
+  );
+  final activeResourcesByKey = {
+    for (final feature
+        in derived.activeFeatures ?? const <CharacterFeatureViewData>[])
+      for (final resource
+          in feature.resources ?? const <CharacterResourceViewData>[])
+        _resourceStateKey(feature.sourceType, feature.sourceId, resource.key):
+            resource,
+  };
+  final pruned = <CharacterResourceStateData>[];
+  for (final state in normalizedStates) {
+    final resource = activeResourcesByKey[
+        _resourceStateKey(state.sourceType, state.sourceId, state.resourceKey)];
+    if (resource == null) {
+      continue;
+    }
+    if (resource.isUnlimited == true) {
+      continue;
+    }
+    final current = state.current.clamp(0, resource.max).toInt();
+    if (current == resource.max) {
+      continue;
+    }
+    pruned.add(
+      CharacterResourceStateData(
+        sourceType: state.sourceType,
+        sourceId: state.sourceId,
+        resourceKey: state.resourceKey,
+        current: current,
+      ),
+    );
+  }
+  return pruned;
 }
 
 Future<CharacterData> _applyInitialEquipmentSnapshot(
@@ -554,6 +611,8 @@ CharacterRecord _toCharacterRecord(
     currentHp: character.currentHp,
     currentSpellSlots: character.currentSpellSlots,
     activeConcentrationSpellName: character.activeConcentrationSpellName,
+    activeConditions: _normalizedActiveConditions(character.activeConditions),
+    exhaustionLevel: _normalizedExhaustionLevel(character.exhaustionLevel),
     inspiration: character.inspiration,
     equipment: character.equipment,
     manualSkillProficiencies: character.manualSkillProficiencies,
@@ -561,6 +620,7 @@ CharacterRecord _toCharacterRecord(
     notes: character.notes,
     attacks: character.attacks,
     featureOverrides: _normalizedFeatureOverrides(character.featureOverrides),
+    resourceStates: _normalizedResourceStates(character.resourceStates),
   );
 }
 
@@ -1150,6 +1210,7 @@ CharacterData _normalizeIncomingCharacter(
     attacks: _normalizedAttacks(character.attacks, updatedAt),
     featureOverrides: _normalizedFeatureOverridesWithSync(
         character.featureOverrides, updatedAt),
+    resourceStates: _normalizedResourceStates(character.resourceStates),
     classEntries: _normalizedClassEntries(character.classEntries, updatedAt),
     choices: _normalizedChoices(character.choices, updatedAt),
     skillSelections: _normalizedSkillSelections(
@@ -1665,6 +1726,8 @@ CharacterData _toCharacterData(CharacterRecord record) {
     currentHp: record.currentHp,
     currentSpellSlots: record.currentSpellSlots,
     activeConcentrationSpellName: record.activeConcentrationSpellName,
+    activeConditions: _normalizedActiveConditions(record.activeConditions),
+    exhaustionLevel: _normalizedExhaustionLevel(record.exhaustionLevel),
     inspiration: record.inspiration,
     equipment: record.equipment,
     manualSkillProficiencies: record.manualSkillProficiencies,
@@ -1672,6 +1735,7 @@ CharacterData _toCharacterData(CharacterRecord record) {
     notes: record.notes,
     attacks: record.attacks,
     featureOverrides: record.featureOverrides,
+    resourceStates: _normalizedResourceStates(record.resourceStates),
   );
 }
 
@@ -1895,6 +1959,9 @@ Future<CharacterDerivedData> _buildDerivedData(
     character: character,
     resolvedSources: resolvedSources,
     currentRaceFeatures: currentRaceFeatures,
+    totalLevel: totalLevel,
+    proficiencyBonus: proficiencyBonus,
+    abilityModifiers: abilityModifiers,
   );
   final grantedSpellKeys = _collectGrantedSpellKeys(
     character.spellSelections ?? const <CharacterSpellSelectionData>[],
@@ -2391,6 +2458,20 @@ class _GrantedEquipmentAccumulator {
   int quantity;
 }
 
+class _ActiveFeatureResourceEffect {
+  const _ActiveFeatureResourceEffect({
+    required this.sourceType,
+    required this.sourceId,
+    required this.sourceClassLevel,
+    required this.effect,
+  });
+
+  final CharacterFeatureSourceType sourceType;
+  final int sourceId;
+  final int sourceClassLevel;
+  final FeatureResourceEffectData effect;
+}
+
 Future<_ResolvedDerivedSources> _resolveDerivedSources(
   Session session,
   CharacterData character,
@@ -2412,6 +2493,7 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
           session,
           where: (t) => t.parentClassId.equals(classId) & (t.level <= level),
           orderBy: (t) => t.level,
+          include: _classFeatureInclude(),
         ),
       );
     }
@@ -2425,6 +2507,7 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
           where: (t) =>
               t.parentSubclassId.equals(subclassId) & (t.level <= level),
           orderBy: (t) => t.level,
+          include: _subclassFeatureInclude(),
         ),
       );
     }
@@ -3426,6 +3509,24 @@ String? _normalizedTextOrNull(String? value) {
   return trimmed == null || trimmed.isEmpty ? null : trimmed;
 }
 
+List<ConditionType>? _normalizedActiveConditions(List<ConditionType>? values) {
+  final normalized = <ConditionType>[];
+  for (final value in values ?? const <ConditionType>[]) {
+    if (value == ConditionType.exhaustion || normalized.contains(value)) {
+      continue;
+    }
+    normalized.add(value);
+  }
+  return normalized.isEmpty ? null : normalized;
+}
+
+int? _normalizedExhaustionLevel(int? value) {
+  if (value == null || value <= 0) {
+    return null;
+  }
+  return value.clamp(1, 6).toInt();
+}
+
 Iterable<String> _normalizedTexts(Iterable<String>? values) sync* {
   for (final value in values ?? const <String>[]) {
     final normalized = _normalizedTextOrNull(value);
@@ -3468,15 +3569,24 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
   required CharacterData character,
   required _ResolvedDerivedSources resolvedSources,
   required _CurrentRaceFeatures currentRaceFeatures,
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
 }) {
   final normalizedOverrides = _normalizedFeatureOverrides(
     character.featureOverrides,
   );
+  final resourceStatesByKey = {
+    for (final state in _normalizedResourceStates(character.resourceStates))
+      _resourceStateKey(state.sourceType, state.sourceId, state.resourceKey):
+          state,
+  };
   final overridesByKey = {
     for (final override in normalizedOverrides)
       _featureOverrideKey(override.sourceType, override.sourceId): override,
   };
   final activeFeatures = <CharacterFeatureViewData>[];
+  final activeEffects = <_ActiveFeatureResourceEffect>[];
 
   void addFeature({
     required CharacterFeatureSourceType sourceType,
@@ -3486,6 +3596,9 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
     required String? defaultName,
     required String? defaultDescription,
     required List<FeatureTag>? defaultTags,
+    required List<FeatureResourceDefinitionData>? resources,
+    required List<FeatureResourceEffectData>? resourceEffects,
+    required int sourceClassLevel,
   }) {
     if (sourceId == null) {
       return;
@@ -3511,6 +3624,27 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
               normalizedDefaultTags,
               preserveEmpty: false,
             ));
+    final featureResources = _buildFeatureResources(
+      defaultName: resolvedName,
+      sourceType: sourceType,
+      sourceId: sourceId,
+      resourceDefinitions: resources,
+      sourceClassLevel: sourceClassLevel,
+      totalLevel: totalLevel,
+      proficiencyBonus: proficiencyBonus,
+      abilityModifiers: abilityModifiers,
+      resourceStatesByKey: resourceStatesByKey,
+    );
+    activeEffects.addAll([
+      for (final effect
+          in resourceEffects ?? const <FeatureResourceEffectData>[])
+        _ActiveFeatureResourceEffect(
+          sourceType: sourceType,
+          sourceId: sourceId,
+          sourceClassLevel: sourceClassLevel,
+          effect: effect,
+        ),
+    ]);
 
     activeFeatures.add(
       CharacterFeatureViewData(
@@ -3525,11 +3659,19 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
         description: resolvedDescription,
         tags: resolvedTags,
         isCustomized: isCustomized,
+        resources: featureResources,
       ),
     );
   }
 
   for (final feature in resolvedSources.currentClassFeatures) {
+    final sourceClassLevel = character.classEntries
+            ?.firstWhere(
+              (entry) => entry.classData?.id == feature.parentClassId,
+              orElse: CharacterClassEntryData.new,
+            )
+            .level ??
+        feature.level;
     addFeature(
       sourceType: CharacterFeatureSourceType.classFeature,
       sourceId: feature.id,
@@ -3544,9 +3686,19 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       defaultName: feature.name,
       defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
+      resources: feature.resources,
+      resourceEffects: feature.resourceEffects,
+      sourceClassLevel: sourceClassLevel,
     );
   }
   for (final feature in resolvedSources.currentSubclassFeatures) {
+    final sourceClassLevel = character.classEntries
+            ?.firstWhere(
+              (entry) => entry.subclass?.id == feature.parentSubclassId,
+              orElse: CharacterClassEntryData.new,
+            )
+            .level ??
+        feature.level;
     addFeature(
       sourceType: CharacterFeatureSourceType.subclassFeature,
       sourceId: feature.id,
@@ -3561,6 +3713,9 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       defaultName: feature.name,
       defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
+      resources: feature.resources,
+      resourceEffects: feature.resourceEffects,
+      sourceClassLevel: sourceClassLevel,
     );
   }
   for (final feature in currentRaceFeatures.raceFeatures) {
@@ -3572,6 +3727,9 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       defaultName: feature.name,
       defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
+      resources: feature.resources,
+      resourceEffects: feature.resourceEffects,
+      sourceClassLevel: max(totalLevel, 1),
     );
   }
   for (final feature in currentRaceFeatures.subraceFeatures) {
@@ -3583,11 +3741,272 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       defaultName: feature.name,
       defaultDescription: feature.shortDescription ?? feature.description,
       defaultTags: feature.tags,
+      resources: feature.resources,
+      resourceEffects: feature.resourceEffects,
+      sourceClassLevel: max(totalLevel, 1),
     );
   }
 
-  activeFeatures.sort(_compareActiveFeatures);
-  return activeFeatures;
+  final modifiedFeatures = _applyFeatureResourceModifiers(
+    activeFeatures,
+    activeEffects,
+    totalLevel: totalLevel,
+    proficiencyBonus: proficiencyBonus,
+    abilityModifiers: abilityModifiers,
+  )..sort(_compareActiveFeatures);
+  return modifiedFeatures;
+}
+
+List<CharacterResourceViewData>? _buildFeatureResources({
+  required String? defaultName,
+  required CharacterFeatureSourceType sourceType,
+  required int sourceId,
+  required List<FeatureResourceDefinitionData>? resourceDefinitions,
+  required int sourceClassLevel,
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+  required Map<String, CharacterResourceStateData> resourceStatesByKey,
+}) {
+  if (resourceDefinitions == null || resourceDefinitions.isEmpty) {
+    return null;
+  }
+
+  final resources = <CharacterResourceViewData>[];
+  final sortedDefinitions = [...resourceDefinitions]
+    ..sort((a, b) => a.key.compareTo(b.key));
+  for (final definition in sortedDefinitions) {
+    final resource = _buildFeatureResource(
+      defaultName: defaultName,
+      sourceType: sourceType,
+      sourceId: sourceId,
+      definition: definition,
+      sourceClassLevel: sourceClassLevel,
+      totalLevel: totalLevel,
+      proficiencyBonus: proficiencyBonus,
+      abilityModifiers: abilityModifiers,
+      resourceStatesByKey: resourceStatesByKey,
+    );
+    if (resource != null) {
+      resources.add(resource);
+    }
+  }
+  return resources.isEmpty ? null : resources;
+}
+
+CharacterResourceViewData? _buildFeatureResource({
+  required String? defaultName,
+  required CharacterFeatureSourceType sourceType,
+  required int sourceId,
+  required FeatureResourceDefinitionData definition,
+  required int sourceClassLevel,
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+  required Map<String, CharacterResourceStateData> resourceStatesByKey,
+}) {
+  final isUnlimited = _isResourceUnlimited(definition, sourceClassLevel);
+  final maxValue = isUnlimited
+      ? 0
+      : _featureResourceMax(
+          rule: definition.maxRule,
+          value: definition.maxValue,
+          ability: definition.maxAbility,
+          progressionValues: definition.progressionValues,
+          sourceClassLevel: sourceClassLevel,
+          totalLevel: totalLevel,
+          proficiencyBonus: proficiencyBonus,
+          abilityModifiers: abilityModifiers,
+        );
+  if (!isUnlimited && maxValue <= 0) {
+    return null;
+  }
+
+  final state = resourceStatesByKey[
+      _resourceStateKey(sourceType, sourceId, definition.key)];
+  final current =
+      isUnlimited ? 0 : (state?.current ?? maxValue).clamp(0, maxValue).toInt();
+  return CharacterResourceViewData(
+    key: definition.key,
+    name: definition.name ?? defaultName,
+    kind: definition.kind,
+    current: current,
+    max: maxValue,
+    isUnlimited: isUnlimited ? true : null,
+    resetOn: definition.resetOn,
+    usageResetOn: definition.usageResetOn,
+    activationTrigger: definition.activationTrigger,
+  );
+}
+
+int _featureResourceMax({
+  required FeatureResourceMaxRule rule,
+  required int? value,
+  required Ability? ability,
+  required List<FeatureResourceProgressionValueData>? progressionValues,
+  required int sourceClassLevel,
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+}) {
+  final normalizedValue = max(value ?? 1, 1);
+  final additiveValue = value ?? 0;
+  switch (rule) {
+    case FeatureResourceMaxRule.fixed:
+      return normalizedValue;
+    case FeatureResourceMaxRule.proficiencyBonus:
+      return proficiencyBonus;
+    case FeatureResourceMaxRule.abilityModifier:
+      return (ability == null ? 0 : abilityModifiers[ability.name] ?? 0) +
+          additiveValue;
+    case FeatureResourceMaxRule.abilityModifierMinOne:
+      return max(
+        1,
+        (ability == null ? 0 : abilityModifiers[ability.name] ?? 0) +
+            additiveValue,
+      );
+    case FeatureResourceMaxRule.sourceClassLevel:
+      return max(sourceClassLevel, 0);
+    case FeatureResourceMaxRule.sourceClassLevelTimesValue:
+      return max(sourceClassLevel, 0) * normalizedValue;
+    case FeatureResourceMaxRule.totalLevel:
+      return max(totalLevel, 0);
+    case FeatureResourceMaxRule.totalLevelTimesValue:
+      return max(totalLevel, 0) * normalizedValue;
+    case FeatureResourceMaxRule.sourceClassLevelTable:
+      return _featureResourceTableMax(progressionValues, sourceClassLevel);
+  }
+}
+
+int _featureResourceTableMax(
+  List<FeatureResourceProgressionValueData>? values,
+  int sourceClassLevel,
+) {
+  final sortedValues = [...?values]..sort((a, b) => a.level.compareTo(b.level));
+  var resolved = 0;
+  for (final value in sortedValues) {
+    if (value.level <= sourceClassLevel) {
+      resolved = value.value;
+    }
+  }
+  return max(resolved, 0);
+}
+
+bool _isResourceUnlimited(
+  FeatureResourceDefinitionData definition,
+  int sourceClassLevel,
+) {
+  final unlimitedAtLevel = definition.becomesUnlimitedAtLevel;
+  return unlimitedAtLevel != null && sourceClassLevel >= unlimitedAtLevel;
+}
+
+List<CharacterFeatureViewData> _applyFeatureResourceModifiers(
+  List<CharacterFeatureViewData> features,
+  List<_ActiveFeatureResourceEffect> effects, {
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+}) {
+  var result = features;
+  for (final activeEffect in effects) {
+    final effect = activeEffect.effect;
+    if (effect.type != FeatureResourceEffectType.modify) {
+      continue;
+    }
+    result = [
+      for (final feature in result)
+        feature.copyWith(
+          resources: _modifiedFeatureResources(
+            feature.resources,
+            feature,
+            activeEffect,
+            totalLevel: totalLevel,
+            proficiencyBonus: proficiencyBonus,
+            abilityModifiers: abilityModifiers,
+          ),
+        ),
+    ];
+  }
+  return result;
+}
+
+List<CharacterResourceViewData>? _modifiedFeatureResources(
+  List<CharacterResourceViewData>? resources,
+  CharacterFeatureViewData targetFeature,
+  _ActiveFeatureResourceEffect activeEffect, {
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+}) {
+  if (resources == null || resources.isEmpty) {
+    return resources;
+  }
+  final effect = activeEffect.effect;
+  if (effect.targetType != null &&
+      effect.targetType != FeatureResourceTargetType.featureResource) {
+    return resources;
+  }
+  if (effect.targetSourceType != null &&
+      effect.targetSourceType != targetFeature.sourceType) {
+    return resources;
+  }
+  if (effect.targetSourceId != null &&
+      effect.targetSourceId != targetFeature.sourceId) {
+    return resources;
+  }
+
+  return [
+    for (final resource in resources)
+      if (effect.targetResourceKey == null ||
+          effect.targetResourceKey == resource.key)
+        _modifiedResource(
+          resource,
+          activeEffect,
+          totalLevel: totalLevel,
+          proficiencyBonus: proficiencyBonus,
+          abilityModifiers: abilityModifiers,
+        )
+      else
+        resource,
+  ];
+}
+
+CharacterResourceViewData _modifiedResource(
+  CharacterResourceViewData resource,
+  _ActiveFeatureResourceEffect activeEffect, {
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+}) {
+  final effect = activeEffect.effect;
+  final becomesUnlimitedAtLevel = effect.becomesUnlimitedAtLevel;
+  final isUnlimited = effect.setUnlimited == true ||
+      resource.isUnlimited == true ||
+      (becomesUnlimitedAtLevel != null &&
+          activeEffect.sourceClassLevel >= becomesUnlimitedAtLevel);
+  var maxValue = resource.max;
+  if (!isUnlimited && effect.setMaxRule != null) {
+    maxValue = _featureResourceMax(
+      rule: effect.setMaxRule!,
+      value: effect.setMaxValue,
+      ability: effect.setMaxAbility,
+      progressionValues: null,
+      sourceClassLevel: activeEffect.sourceClassLevel,
+      totalLevel: totalLevel,
+      proficiencyBonus: proficiencyBonus,
+      abilityModifiers: abilityModifiers,
+    );
+  }
+  if (!isUnlimited && effect.addMaxValue != null) {
+    maxValue += effect.addMaxValue!;
+  }
+  maxValue = max(maxValue, 0);
+  return resource.copyWith(
+    current: isUnlimited ? 0 : resource.current.clamp(0, maxValue).toInt(),
+    max: isUnlimited ? 0 : maxValue,
+    isUnlimited: isUnlimited ? true : null,
+    resetOn: effect.setResetOn ?? resource.resetOn,
+  );
 }
 
 List<CharacterFeatureOverrideData> _normalizedFeatureOverrides(
@@ -3630,6 +4049,49 @@ List<CharacterFeatureOverrideData> _normalizedFeatureOverrides(
       return sourceCompare;
     }
     return a.sourceId.compareTo(b.sourceId);
+  });
+  return normalized;
+}
+
+List<CharacterResourceStateData> _normalizedResourceStates(
+  List<CharacterResourceStateData>? states,
+) {
+  final normalized = <CharacterResourceStateData>[];
+
+  for (final state in states ?? const <CharacterResourceStateData>[]) {
+    if (state.current < 0) {
+      continue;
+    }
+    final candidate = CharacterResourceStateData(
+      sourceType: state.sourceType,
+      sourceId: state.sourceId,
+      resourceKey: _normalizedTextOrNull(state.resourceKey) ?? 'main',
+      current: state.current,
+    );
+    final existingIndex = normalized.indexWhere(
+      (item) =>
+          item.sourceType == candidate.sourceType &&
+          item.sourceId == candidate.sourceId &&
+          item.resourceKey == candidate.resourceKey,
+    );
+    if (existingIndex >= 0) {
+      normalized[existingIndex] = candidate;
+    } else {
+      normalized.add(candidate);
+    }
+  }
+
+  normalized.sort((a, b) {
+    final sourceCompare = _featureSourceOrder(a.sourceType)
+        .compareTo(_featureSourceOrder(b.sourceType));
+    if (sourceCompare != 0) {
+      return sourceCompare;
+    }
+    final idCompare = a.sourceId.compareTo(b.sourceId);
+    if (idCompare != 0) {
+      return idCompare;
+    }
+    return a.resourceKey.compareTo(b.resourceKey);
   });
   return normalized;
 }
@@ -3701,6 +4163,14 @@ String _featureOverrideKey(
   int sourceId,
 ) {
   return '${sourceType.name}:$sourceId';
+}
+
+String _resourceStateKey(
+  CharacterFeatureSourceType sourceType,
+  int sourceId,
+  String resourceKey,
+) {
+  return '${sourceType.name}:$sourceId:$resourceKey';
 }
 
 int _compareActiveFeatures(
@@ -4006,6 +4476,10 @@ SubraceDataInclude _subraceDataInclude() {
 
 RaceFeatureDataInclude _raceFeatureInclude() {
   return RaceFeatureData.include(
+    resources: FeatureResourceDefinitionData.includeList(
+      include: _featureResourceDefinitionInclude(),
+    ),
+    resourceEffects: FeatureResourceEffectData.includeList(),
     spellGrants: RaceFeatureSpellGrantData.includeList(
       include: RaceFeatureSpellGrantData.include(
         spell: SpellData.include(),
@@ -4021,5 +4495,29 @@ RaceFeatureDataInclude _raceFeatureInclude() {
         ),
       ),
     ),
+  );
+}
+
+ClassFeatureDataInclude _classFeatureInclude() {
+  return ClassFeatureData.include(
+    resources: FeatureResourceDefinitionData.includeList(
+      include: _featureResourceDefinitionInclude(),
+    ),
+    resourceEffects: FeatureResourceEffectData.includeList(),
+  );
+}
+
+SubclassFeatureDataInclude _subclassFeatureInclude() {
+  return SubclassFeatureData.include(
+    resources: FeatureResourceDefinitionData.includeList(
+      include: _featureResourceDefinitionInclude(),
+    ),
+    resourceEffects: FeatureResourceEffectData.includeList(),
+  );
+}
+
+FeatureResourceDefinitionDataInclude _featureResourceDefinitionInclude() {
+  return FeatureResourceDefinitionData.include(
+    progressionValues: FeatureResourceProgressionValueData.includeList(),
   );
 }

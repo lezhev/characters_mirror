@@ -44,7 +44,13 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       skill.name: (abilityModifiers[abilityForSkill(skill).name] ?? 0) +
           _skillMultiplier(skillLevels[skill]!) * proficiencyBonus,
   };
-  final activeFeatures = await _activeFeatures(cache, character, totalLevel);
+  final activeFeatures = await _activeFeatures(
+    cache,
+    character,
+    totalLevel,
+    proficiencyBonus,
+    abilityModifiers,
+  );
   final hitDice = _hitDiceSummary(entries);
   final maxHp =
       _maxHp(entries, abilityModifiers[Ability.constitution.name] ?? 0);
@@ -387,8 +393,16 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
   OfflineCacheDatabase cache,
   CharacterData character,
   int totalLevel,
+  int proficiencyBonus,
+  Map<String, int> abilityModifiers,
 ) async {
   final result = <CharacterFeatureViewData>[];
+  final resourceStatesByKey = {
+    for (final state
+        in character.resourceStates ?? const <CharacterResourceStateData>[])
+      _featureResourceKey(state.sourceType, state.sourceId, state.resourceKey):
+          state,
+  };
   void addFeature({
     required CharacterFeatureSourceType sourceType,
     required int? sourceId,
@@ -397,6 +411,8 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
     required String? name,
     required String? description,
     required List<FeatureTag>? tags,
+    required List<FeatureResourceDefinitionData>? resources,
+    required int sourceClassLevel,
   }) {
     if (sourceId == null || (level ?? 1) > totalLevel) return;
     final override =
@@ -406,6 +422,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
                   item.sourceType == sourceType && item.sourceId == sourceId,
             )
             .firstOrNull;
+    final resolvedName = override?.name ?? name;
     result.add(
       CharacterFeatureViewData(
         sourceType: sourceType,
@@ -415,10 +432,21 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         defaultName: name,
         defaultDescription: description,
         defaultTags: tags,
-        name: override?.name ?? name,
+        name: resolvedName,
         description: override?.description ?? description,
         tags: override?.tags ?? tags,
         isCustomized: override != null,
+        resources: _resourceViews(
+          defaultName: resolvedName,
+          sourceType: sourceType,
+          sourceId: sourceId,
+          resources: resources,
+          sourceClassLevel: sourceClassLevel,
+          totalLevel: totalLevel,
+          proficiencyBonus: proficiencyBonus,
+          abilityModifiers: abilityModifiers,
+          resourceStatesByKey: resourceStatesByKey,
+        ),
       ),
     );
   }
@@ -432,6 +460,8 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
       name: feature.name,
       description: feature.shortDescription ?? feature.description,
       tags: feature.tags,
+      resources: feature.resources,
+      sourceClassLevel: totalLevel,
     );
   }
   for (final feature
@@ -444,6 +474,8 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
       name: feature.name,
       description: feature.shortDescription ?? feature.description,
       tags: feature.tags,
+      resources: feature.resources,
+      sourceClassLevel: totalLevel,
     );
   }
   for (final entry
@@ -469,6 +501,8 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         name: feature.name,
         description: feature.shortDescription ?? feature.description,
         tags: feature.tags,
+        resources: feature.resources,
+        sourceClassLevel: entry.level ?? feature.level,
       );
     }
     for (final feature
@@ -481,6 +515,8 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         name: feature.name,
         description: feature.shortDescription ?? feature.description,
         tags: feature.tags,
+        resources: feature.resources,
+        sourceClassLevel: entry.level ?? feature.level,
       );
     }
   }
@@ -492,6 +528,120 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         .compareTo(b.name ?? b.defaultName ?? '');
   });
   return result;
+}
+
+List<CharacterResourceViewData>? _resourceViews({
+  required String? defaultName,
+  required CharacterFeatureSourceType sourceType,
+  required int sourceId,
+  required List<FeatureResourceDefinitionData>? resources,
+  required int sourceClassLevel,
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+  required Map<String, CharacterResourceStateData> resourceStatesByKey,
+}) {
+  if (resources == null || resources.isEmpty) return null;
+  final result = <CharacterResourceViewData>[];
+  final sortedResources = [...resources]
+    ..sort((a, b) => a.key.compareTo(b.key));
+  for (final resource in sortedResources) {
+    final isUnlimited = _isResourceUnlimited(resource, sourceClassLevel);
+    final maxValue = isUnlimited
+        ? 0
+        : _resourceMax(
+            rule: resource.maxRule,
+            value: resource.maxValue,
+            ability: resource.maxAbility,
+            progressionValues: resource.progressionValues,
+            sourceClassLevel: sourceClassLevel,
+            totalLevel: totalLevel,
+            proficiencyBonus: proficiencyBonus,
+            abilityModifiers: abilityModifiers,
+          );
+    if (!isUnlimited && maxValue <= 0) continue;
+    final state = resourceStatesByKey[
+        _featureResourceKey(sourceType, sourceId, resource.key)];
+    result.add(
+      CharacterResourceViewData(
+        key: resource.key,
+        name: resource.name ?? defaultName,
+        kind: resource.kind,
+        current: isUnlimited
+            ? 0
+            : (state?.current ?? maxValue).clamp(0, maxValue).toInt(),
+        max: isUnlimited ? 0 : maxValue,
+        isUnlimited: isUnlimited ? true : null,
+        resetOn: resource.resetOn,
+        usageResetOn: resource.usageResetOn,
+        activationTrigger: resource.activationTrigger,
+      ),
+    );
+  }
+  return result.isEmpty ? null : result;
+}
+
+int _resourceMax({
+  required FeatureResourceMaxRule rule,
+  required int? value,
+  required Ability? ability,
+  required List<FeatureResourceProgressionValueData>? progressionValues,
+  required int sourceClassLevel,
+  required int totalLevel,
+  required int proficiencyBonus,
+  required Map<String, int> abilityModifiers,
+}) {
+  final normalizedValue = max(value ?? 1, 1);
+  final additiveValue = value ?? 0;
+  switch (rule) {
+    case FeatureResourceMaxRule.fixed:
+      return normalizedValue;
+    case FeatureResourceMaxRule.proficiencyBonus:
+      return proficiencyBonus;
+    case FeatureResourceMaxRule.abilityModifier:
+      return (ability == null ? 0 : abilityModifiers[ability.name] ?? 0) +
+          additiveValue;
+    case FeatureResourceMaxRule.abilityModifierMinOne:
+      return max(
+        1,
+        (ability == null ? 0 : abilityModifiers[ability.name] ?? 0) +
+            additiveValue,
+      );
+    case FeatureResourceMaxRule.sourceClassLevel:
+      return max(sourceClassLevel, 0);
+    case FeatureResourceMaxRule.sourceClassLevelTimesValue:
+      return max(sourceClassLevel, 0) * normalizedValue;
+    case FeatureResourceMaxRule.totalLevel:
+      return max(totalLevel, 0);
+    case FeatureResourceMaxRule.totalLevelTimesValue:
+      return max(totalLevel, 0) * normalizedValue;
+    case FeatureResourceMaxRule.sourceClassLevelTable:
+      final sortedValues = [...?progressionValues]
+        ..sort((a, b) => a.level.compareTo(b.level));
+      var resolved = 0;
+      for (final item in sortedValues) {
+        if (item.level <= sourceClassLevel) {
+          resolved = item.value;
+        }
+      }
+      return max(resolved, 0);
+  }
+}
+
+bool _isResourceUnlimited(
+  FeatureResourceDefinitionData resource,
+  int sourceClassLevel,
+) {
+  final unlimitedAtLevel = resource.becomesUnlimitedAtLevel;
+  return unlimitedAtLevel != null && sourceClassLevel >= unlimitedAtLevel;
+}
+
+String _featureResourceKey(
+  CharacterFeatureSourceType sourceType,
+  int sourceId,
+  String resourceKey,
+) {
+  return '${sourceType.name}:$sourceId:$resourceKey';
 }
 
 Map<String, int> _hitDiceSummary(List<CharacterClassEntryData> entries) {

@@ -1,0 +1,23 @@
+class: FeatureResourceEffectData
+table: feature_resource_effect_data
+fields:
+  classFeature: ClassFeatureData?, relation(name=class_feature_resource_effects, optional)
+  subclassFeature: SubclassFeatureData?, relation(name=subclass_feature_resource_effects, optional)
+  raceFeature: RaceFeatureData?, relation(name=race_feature_resource_effects, optional)
+  type: FeatureResourceEffectType
+  targetType: FeatureResourceTargetType?
+  targetResourceKey: String?
+  targetSourceType: CharacterFeatureSourceType?
+  targetSourceId: int?
+  amountRule: FeatureResourceMaxRule?
+  amountValue: int?
+  amountAbility: Ability?
+  activationTrigger: FeatureResourceTrigger?
+  usageResetOn: RestType?
+  setResetOn: RestType?
+  setMaxRule: FeatureResourceMaxRule?
+  setMaxValue: int?
+  setMaxAbility: Ability?
+  addMaxValue: int?
+  setUnlimited: bool?
+  becomesUnlimitedAtLevel: int?

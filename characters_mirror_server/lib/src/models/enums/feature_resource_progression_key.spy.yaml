@@ -1,0 +1,9 @@
+enum: FeatureResourceProgressionKey
+serialized: byName
+values:
+  - barbarianRages
+  - clericChannelDivinityUses
+  - fighterActionSurgeUses
+  - fighterIndomitableUses
+  - battleMasterSuperiorityDice
+  - divinerPortentDice

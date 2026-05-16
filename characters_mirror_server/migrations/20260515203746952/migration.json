@@ -1,0 +1,952 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "feature_resource_level_data"
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_feature_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "resourceResetOn",
+          "resourceMaxRule",
+          "resourceMaxValue",
+          "resourceMaxAbility"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"feature_resource_level_data\" will be dropped.",
+            "table": "feature_resource_level_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "feature_resource_definition_data",
+        "dartName": "FeatureResourceDefinitionData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('feature_resource_definition_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "classFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "subclassFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "raceFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "key",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "kind",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:FeatureResourceKind"
+          },
+          {
+            "name": "maxRule",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:FeatureResourceMaxRule"
+          },
+          {
+            "name": "maxValue",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "maxAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          },
+          {
+            "name": "resetOn",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:RestType?"
+          },
+          {
+            "name": "activationTrigger",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:FeatureResourceTrigger?"
+          },
+          {
+            "name": "usageResetOn",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:RestType?"
+          },
+          {
+            "name": "progressionKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:FeatureResourceProgressionKey?"
+          },
+          {
+            "name": "becomesUnlimitedAtLevel",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "feature_resource_definition_data_fk_0",
+            "columns": [
+              "classFeatureId"
+            ],
+            "referenceTable": "class_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "feature_resource_definition_data_fk_1",
+            "columns": [
+              "subclassFeatureId"
+            ],
+            "referenceTable": "subclass_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "feature_resource_definition_data_fk_2",
+            "columns": [
+              "raceFeatureId"
+            ],
+            "referenceTable": "race_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "feature_resource_definition_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "feature_resource_effect_data",
+        "dartName": "FeatureResourceEffectData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('feature_resource_effect_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "classFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "subclassFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "raceFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "type",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:FeatureResourceEffectType"
+          },
+          {
+            "name": "targetType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:FeatureResourceTargetType?"
+          },
+          {
+            "name": "targetResourceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "targetSourceType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:CharacterFeatureSourceType?"
+          },
+          {
+            "name": "targetSourceId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "amountRule",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:FeatureResourceMaxRule?"
+          },
+          {
+            "name": "amountValue",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "amountAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          },
+          {
+            "name": "activationTrigger",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:FeatureResourceTrigger?"
+          },
+          {
+            "name": "usageResetOn",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:RestType?"
+          },
+          {
+            "name": "setResetOn",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:RestType?"
+          },
+          {
+            "name": "setMaxRule",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:FeatureResourceMaxRule?"
+          },
+          {
+            "name": "setMaxValue",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "setMaxAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          },
+          {
+            "name": "addMaxValue",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "setUnlimited",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "becomesUnlimitedAtLevel",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "feature_resource_effect_data_fk_0",
+            "columns": [
+              "classFeatureId"
+            ],
+            "referenceTable": "class_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "feature_resource_effect_data_fk_1",
+            "columns": [
+              "subclassFeatureId"
+            ],
+            "referenceTable": "subclass_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "feature_resource_effect_data_fk_2",
+            "columns": [
+              "raceFeatureId"
+            ],
+            "referenceTable": "race_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "feature_resource_effect_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "feature_resource_progression_value_data",
+        "dartName": "FeatureResourceProgressionValueData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('feature_resource_progression_value_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "resourceDefinitionId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "level",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "value",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "feature_resource_progression_value_data_fk_0",
+            "columns": [
+              "resourceDefinitionId"
+            ],
+            "referenceTable": "feature_resource_definition_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "feature_resource_progression_value_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "resourceResetOn",
+          "resourceMaxRule",
+          "resourceMaxValue",
+          "resourceMaxAbility"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"feature_resource_level_data\" will be dropped.",
+            "table": "feature_resource_level_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_feature_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "resourceResetOn",
+          "resourceMaxRule",
+          "resourceMaxValue",
+          "resourceMaxAbility"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"feature_resource_level_data\" will be dropped.",
+            "table": "feature_resource_level_data",
+            "columns": [],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"class_feature_data\" will be dropped.",
+            "table": "class_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"race_feature_data\" will be dropped.",
+            "table": "race_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceResetOn\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceResetOn"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxRule\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxRule"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxValue\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxValue"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"resourceMaxAbility\" of table \"subclass_feature_data\" will be dropped.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "resourceMaxAbility"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"feature_resource_level_data\" will be dropped.",
+      "table": "feature_resource_level_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceResetOn\" of table \"class_feature_data\" will be dropped.",
+      "table": "class_feature_data",
+      "columns": [
+        "resourceResetOn"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxRule\" of table \"class_feature_data\" will be dropped.",
+      "table": "class_feature_data",
+      "columns": [
+        "resourceMaxRule"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxValue\" of table \"class_feature_data\" will be dropped.",
+      "table": "class_feature_data",
+      "columns": [
+        "resourceMaxValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxAbility\" of table \"class_feature_data\" will be dropped.",
+      "table": "class_feature_data",
+      "columns": [
+        "resourceMaxAbility"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceResetOn\" of table \"race_feature_data\" will be dropped.",
+      "table": "race_feature_data",
+      "columns": [
+        "resourceResetOn"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxRule\" of table \"race_feature_data\" will be dropped.",
+      "table": "race_feature_data",
+      "columns": [
+        "resourceMaxRule"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxValue\" of table \"race_feature_data\" will be dropped.",
+      "table": "race_feature_data",
+      "columns": [
+        "resourceMaxValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxAbility\" of table \"race_feature_data\" will be dropped.",
+      "table": "race_feature_data",
+      "columns": [
+        "resourceMaxAbility"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceResetOn\" of table \"subclass_feature_data\" will be dropped.",
+      "table": "subclass_feature_data",
+      "columns": [
+        "resourceResetOn"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxRule\" of table \"subclass_feature_data\" will be dropped.",
+      "table": "subclass_feature_data",
+      "columns": [
+        "resourceMaxRule"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxValue\" of table \"subclass_feature_data\" will be dropped.",
+      "table": "subclass_feature_data",
+      "columns": [
+        "resourceMaxValue"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"resourceMaxAbility\" of table \"subclass_feature_data\" will be dropped.",
+      "table": "subclass_feature_data",
+      "columns": [
+        "resourceMaxAbility"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

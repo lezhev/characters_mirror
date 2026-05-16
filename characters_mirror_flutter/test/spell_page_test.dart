@@ -90,14 +90,14 @@ void main() {
     expect(find.byIcon(Icons.auto_fix_high), findsNothing);
     expect(find.text('Заговоры'), findsOneWidget);
     expect(find.text('Fire Bolt'), findsOneWidget);
-    expect(find.text('Уровень 1'), findsOneWidget);
+    expect(find.text('Круг 1'), findsOneWidget);
     expect(find.text('Burning Hands'), findsOneWidget);
     expect(find.text('Конус огня обжигает существ перед вами.'), findsNothing);
     expect(find.text('DEX спасбросок'), findsOneWidget);
     expect(find.text('V'), findsNothing);
     expect(find.text('S'), findsNothing);
     expect(find.text('M'), findsNothing);
-    expect(find.text('Уровень 2'), findsOneWidget);
+    expect(find.text('Круг 2'), findsOneWidget);
     expect(find.text('Invisibility'), findsOneWidget);
     expect(
       find.text('Существо, которого вы касаетесь, становится невидимым до...'),
@@ -123,7 +123,7 @@ void main() {
       findsNothing,
     );
 
-    await tester.tap(find.byKey(const ValueKey('spell-slot-Уровень 1-0')));
+    await tester.tap(find.byKey(const ValueKey('spell-slot-Круг 1-0')));
     await tester.pump();
 
     expect(slotUpdates[1], 1);
@@ -194,19 +194,19 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byKey(const ValueKey('spell-slot-Уровень 1-0')));
+    await tester.tap(find.byKey(const ValueKey('spell-slot-Круг 1-0')));
     await tester.pump();
     expect(availableSlots, 3);
 
-    await tester.tap(find.byKey(const ValueKey('spell-slot-Уровень 1-0')));
+    await tester.tap(find.byKey(const ValueKey('spell-slot-Круг 1-0')));
     await tester.pump();
     expect(availableSlots, 2);
 
-    await tester.tap(find.byKey(const ValueKey('spell-slot-Уровень 1-4')));
+    await tester.tap(find.byKey(const ValueKey('spell-slot-Круг 1-4')));
     await tester.pump();
     expect(availableSlots, 3);
 
-    await tester.tap(find.byKey(const ValueKey('spell-slot-Уровень 1-4')));
+    await tester.tap(find.byKey(const ValueKey('spell-slot-Круг 1-4')));
     await tester.pump();
     expect(availableSlots, 4);
   });

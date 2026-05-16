@@ -1,0 +1,11 @@
+class: CharacterResourceViewData
+fields:
+  key: String
+  name: String?
+  kind: FeatureResourceKind
+  current: int
+  max: int
+  isUnlimited: bool?
+  resetOn: RestType?
+  usageResetOn: RestType?
+  activationTrigger: FeatureResourceTrigger?

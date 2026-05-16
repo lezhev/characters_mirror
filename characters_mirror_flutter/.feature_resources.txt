@@ -1,0 +1,1188 @@
+1. shortRest у нас означает short or long rest — это ок, отдельный shortOrLongRest не нужен.
+
+2. Использование заклинаний нельзя делать одним универсальным progressionKey без учёта класса:
+   bard/cleric/druid/sorcerer/wizard = full caster,
+   paladin/ranger = half caster,
+   eldritch knight / arcane trickster = third caster,
+   multiclass spell slots = отдельная общая прогрессия.
+
+3. Божественный канал у клерика и паладина лучше различать по source feature/class.
+   Key может быть channelDivinity, но source должен отличаться.
+
+4. Божественное вмешательство — special cooldown:
+   fail -> longRest,
+   success -> 7 days.
+
+5. Arcane Ward плохо ложится в текущие maxRule:
+   максимум = sourceClassLevel * 2 + INT mod.
+   Если нет такого правила, нужен modifier/additive ability.
+
+6. Arcane Recovery — это split trigger/reset:
+   activationTrigger = shortRest,
+   usageResetOn = longRest.
+
+7. Mystic Arcanum — не spellSlots и не pactMagicSlots.
+   Лучше 4 отдельных ресурса: 6/7/8/9 круг.
+
+8. Signature Spell — не fixed=2.
+   Это 2 независимых fixed=1 ресурса.
+
+9. Overchannel — не hard limit.
+   Это safe use = 1 / longRest, после чего можно использовать повторно с уроном.
+
+10. Transmuter's Stone — special resource/entity, а не обычный use counter.
+
+11. Все Channel Divinity-варианты доменов клерика тратят cleric channelDivinity, а не создают свои ресурсы.
+
+12. Паладинский “Божественный канал” из клятв должен ссылаться на paladin channelDivinity, а не на cleric channelDivinity.
+
+13. Сдерживание стихий лучше не заносить в FeatureResourceEffect, если модель описывает только rest-resource. Reaction — это action economy, не ресурс фичи.
+
+14. Естественное восстановление — split trigger/reset:
+   activationTrigger = shortRest,
+   usageResetOn = longRest.
+
+15. Поток хаоса — special:
+   longRest по умолчанию, но DM может вернуть его через Wild Magic Surge.
+
+16. Облики круга и Улучшенная вспышка не меняют количество ресурса, только правила применения.
+
+17. Эксперт прорицания восстанавливает spell slot с ограничениями по уровню, это не fixed restore.
+
+18. Техники открытой ладони не тратят ki сами; ки тратит Flurry of Blows.
+
+# RACE / SUBRACE RESOURCES
+
+Инфернальное наследие: Тьма:
+  resource:
+    key: infernalLegacyDarkness
+    kind: uses
+    name: Darkness
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Магия дроу: Огонь фей:
+  resource:
+    key: drowMagicFaerieFire
+    kind: uses
+    name: Faerie Fire
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Магия дроу: Тьма:
+  resource:
+    key: drowMagicDarkness
+    kind: uses
+    name: Darkness
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Несгибаемая стойкость:
+  resource:
+    key: relentlessEndurance
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Оружие дыхания:
+  resource:
+    key: breathWeapon
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Инфернальное наследие: Адское возмездие:
+  resource:
+    key: infernalLegacyHellishRebuke
+    kind: uses
+    name: Hellish Rebuke
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+# CLASS RESOURCE DEFINITIONS
+
+Ярость:
+  resource:
+    key: rage
+    kind: uses
+    resetOn: longRest
+    maxRule: sourceClassLevelTable
+    progressionKey: barbarianRages
+    progression:
+      - level: 1
+        value: 2
+      - level: 3
+        value: 3
+      - level: 6
+        value: 4
+      - level: 12
+        value: 5
+      - level: 17
+        value: 6
+    becomesUnlimitedAtLevel: 20
+
+Вдохновение барда:
+  resource:
+    key: bardicInspiration
+    kind: dice
+    resetOn: longRest
+    maxRule: abilityModifierMinOne
+    maxAbility: charisma
+
+Божественный канал:
+  resource:
+    key: channelDivinity
+    kind: uses
+    resetOn: shortRest
+    maxRule: sourceClassLevelTable
+    progressionKey: clericChannelDivinityUses
+    progression:
+      - level: 2
+        value: 1
+      - level: 6
+        value: 2
+      - level: 18
+        value: 3
+
+Божественное вмешательство:
+  resource:
+    key: divineIntervention
+    kind: uses
+    resetOn: special
+    maxRule: fixed
+    maxValue: 1
+  note: >
+    При провале можно снова после longRest, при успехе — только через 7 дней.
+    Нужен special cooldown / success cooldown.
+
+Дикий облик:
+  resource:
+    key: wildShape
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 2
+
+Второе дыхание:
+  resource:
+    key: secondWind
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Всплеск действий:
+  resource:
+    key: actionSurge
+    kind: uses
+    resetOn: shortRest
+    maxRule: sourceClassLevelTable
+    progressionKey: fighterActionSurgeUses
+    progression:
+      - level: 2
+        value: 1
+      - level: 17
+        value: 2
+
+Упорный:
+  resource:
+    key: indomitable
+    kind: uses
+    resetOn: longRest
+    maxRule: sourceClassLevelTable
+    progressionKey: fighterIndomitableUses
+    progression:
+      - level: 9
+        value: 1
+      - level: 13
+        value: 2
+      - level: 17
+        value: 3
+
+Ци:
+  resource:
+    key: ki
+    kind: points
+    resetOn: shortRest
+    maxRule: sourceClassLevel
+
+Божественное чувство:
+  resource:
+    key: divineSense
+    kind: uses
+    resetOn: longRest
+    maxRule: abilityModifierPlusValue
+    maxAbility: charisma
+    maxValue: 1
+  fallbackIfNoAbilityModifierPlusValue:
+    maxRule: abilityModifier
+    maxAbility: charisma
+    maxValue: 1
+
+Наложение рук:
+  resource:
+    key: layOnHands
+    kind: points
+    resetOn: longRest
+    maxRule: sourceClassLevelTimesValue
+    maxValue: 5
+
+Священная клятва:
+  resource:
+    key: channelDivinity
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+  note: >
+    Это паладинский Channel Divinity, не клериковский.
+    Если key общий, различать по source class / source feature.
+
+Очищающее касание:
+  resource:
+    key: cleansingTouch
+    kind: uses
+    resetOn: longRest
+    maxRule: abilityModifierMinOne
+    maxAbility: charisma
+
+# MONK / PALADIN SPENDERS AND MODIFIERS
+
+Отражение снарядов:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: ki
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Ки тратится только если монах поймал снаряд и хочет сделать ответную дальнобойную атаку.
+
+Ошеломляющий удар:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: ki
+    amountRule: fixed
+    amountValue: 1
+
+Алмазная душа:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: ki
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Ки тратится на переброс проваленного спасброска.
+
+Пустое тело:
+  effects:
+    - type: spend
+      targetType: resource
+      targetResourceKey: ki
+      amountRule: fixed
+      amountValue: 4
+      note: invisibility/resistance mode
+    - type: spend
+      targetType: resource
+      targetResourceKey: ki
+      amountRule: fixed
+      amountValue: 8
+      note: Astral Projection mode
+
+Источник вдохновения:
+  effect:
+    type: modify
+    targetType: resource
+    targetResourceKey: bardicInspiration
+    setResetOn: shortRest
+
+Превосходное вдохновение:
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: bardicInspiration
+    amountRule: fixed
+    amountValue: 1
+    activationTrigger: initiative
+  condition: onlyIfCurrentResourceIsZero
+
+Архидруид:
+  effect:
+    type: modify
+    targetType: resource
+    targetResourceKey: wildShape
+    setUnlimited: true
+    becomesUnlimitedAtLevel: 20
+
+Совершенство:
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: ki
+    amountRule: fixed
+    amountValue: 4
+    activationTrigger: initiative
+  condition: onlyIfCurrentResourceIsZero
+
+# ROGUE / SPELLCASTING / SORCERER / WARLOCK / WIZARD CORE
+
+Удача:
+  resource:
+    key: strokeOfLuck
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Использование заклинаний:
+  resource:
+    key: spellSlots
+    kind: slots
+    resetOn: longRest
+    maxRule: sourceClassLevelTable
+    progressionKey: classSpellSlots
+  note: >
+    progressionKey должен быть конкретным для источника:
+    fullCasterSpellSlots / halfCasterSpellSlots / thirdCasterSpellSlots или аналог проекта.
+    Для мультикласса это может быть не sourceClassLevel, а общая multiclass spell slot progression.
+
+Магия договора:
+  resource:
+    key: pactMagicSlots
+    kind: slots
+    resetOn: shortRest
+    maxRule: sourceClassLevelTable
+    progressionKey: warlockPactMagicSlots
+  note: >
+    Нужна отдельная прогрессия не только количества слотов, но и slot level.
+    Mystic Arcanum не является pactMagicSlots.
+
+Таинственный арканум:
+  resources:
+    - key: mysticArcanum6
+      kind: uses
+      name: Mystic Arcanum 6
+      resetOn: longRest
+      maxRule: fixed
+      maxValue: 1
+    - key: mysticArcanum7
+      kind: uses
+      name: Mystic Arcanum 7
+      resetOn: longRest
+      maxRule: fixed
+      maxValue: 1
+    - key: mysticArcanum8
+      kind: uses
+      name: Mystic Arcanum 8
+      resetOn: longRest
+      maxRule: fixed
+      maxValue: 1
+    - key: mysticArcanum9
+      kind: uses
+      name: Mystic Arcanum 9
+      resetOn: longRest
+      maxRule: fixed
+      maxValue: 1
+  note: >
+    Это 4 независимых ресурса, а не общий pool.
+
+Фирменное заклинание:
+  resources:
+    - key: signatureSpell1
+      kind: uses
+      resetOn: shortRest
+      maxRule: fixed
+      maxValue: 1
+    - key: signatureSpell2
+      kind: uses
+      resetOn: shortRest
+      maxRule: fixed
+      maxValue: 1
+  note: >
+    Два независимых бесплатных применения, не общий fixed=2.
+
+Первозданная осведомлённость:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: spellSlots
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Тратит одну ячейку заклинания следопыта. Уровень ячейки может быть variable.
+
+Метамагия:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: sorceryPoints
+    amountRule: variable
+  note: >
+    Стоимость зависит от выбранной Metamagic option.
+
+Волшебное указание:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: sorceryPoints
+    amountRule: fixed
+    amountValue: 1
+
+Источник магии:
+  resource:
+    key: sorceryPoints
+    kind: points
+    resetOn: longRest
+    maxRule: sourceClassLevel
+  effects:
+    - type: convert
+      fromResourceKey: sorceryPoints
+      toResourceKey: spellSlots
+      amountRule: variable
+      note: Flexible Casting: creating spell slots
+    - type: convert
+      fromResourceKey: spellSlots
+      toResourceKey: sorceryPoints
+      amountRule: variable
+      note: Flexible Casting: converting spell slots to sorcery points
+
+Чародейское восстановление:
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: sorceryPoints
+    amountRule: fixed
+    amountValue: 4
+    activationTrigger: shortRest
+  note: >
+    Это не расходуемый ресурс, а автоматическое восстановление части sorceryPoints после shortRest.
+
+Таинственный мастер:
+  resource:
+    key: eldritchMaster
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: pactMagicSlots
+    amountRule: all
+    activationTrigger: special
+  note: >
+    Требует 1 минуту, восстанавливает только Pact Magic slots, не Mystic Arcanum.
+
+Магическое восстановление:
+  resource:
+    key: arcaneRecovery
+    kind: uses
+    resetOn: special
+    maxRule: fixed
+    maxValue: 1
+    activationTrigger: shortRest
+    usageResetOn: longRest
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: spellSlots
+    amountRule: special
+  note: >
+    Раз в день после shortRest. Восстанавливает spell slots суммарным уровнем <= ceil(wizardLevel / 2), но не 6+ уровня.
+
+Мастерство заклинателя:
+  effect:
+    type: modify
+    targetType: resource
+    targetResourceKey: spellSlots
+    spendAmountRule: fixed
+    spendAmountValue: 0
+  note: >
+    Не ресурс. Делает выбранные spell mastery spells at-will без траты spellSlots.
+
+# BARD / WIZARD / FIGHTER SUBCLASS RESOURCES AND EFFECTS
+
+Безопасное перемещение:
+  resource:
+    key: benignTransposition
+    kind: uses
+    resetOn: special
+    maxRule: fixed
+    maxValue: 1
+  specialRecovery:
+    - longRest
+    - castConjurationSpellLevel1Plus
+  note: >
+    Восстанавливается longRest или когда маг накладывает conjuration spell 1+ level.
+
+Собственная иллюзорность:
+  resource:
+    key: illusorySelf
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Магическая защита:
+  resource:
+    key: arcaneWardHp
+    kind: points
+    resetOn: special
+    maxRule: sourceClassLevelTimesValuePlusAbilityModifier
+    maxValue: 2
+    maxAbility: intelligence
+  fallbackIfNoPlusAbilityRule:
+    maxRule: sourceClassLevelTimesValue
+    maxValue: 2
+    note: add INT modifier separately
+  recharge:
+    trigger: castAbjurationSpellLevel1Plus
+    amountRule: spellLevelTimesValue
+    amountValue: 2
+  note: >
+    Максимум = wizardLevel * 2 + INT mod.
+    Ward создаётся/перезаряжается от abjuration spells, а не обычным rest reset.
+
+Камень преобразования:
+  resource:
+    key: transmutersStone
+    kind: special
+    resetOn: special
+    maxRule: fixed
+    maxValue: 1
+  note: >
+    Это не charge pool. Камень создаётся за 8 часов; можно иметь только один.
+
+Перевёртыш:
+  resource:
+    key: shapechangerPolymorph
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+  specialRecovery:
+    - revertByBonusActionBeforeDurationEnds
+  note: >
+    Бесплатный Polymorph только на себя. Можно вернуть использование особым способом при добровольном возвращении формы.
+
+Боевое вдохновение:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: bardicInspiration
+    amountRule: fixed
+    amountValue: 1
+
+Острое словцо:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: bardicInspiration
+    amountRule: fixed
+    amountValue: 1
+
+Непревзойдённый навык:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: bardicInspiration
+    amountRule: fixed
+    amountValue: 1
+
+Проекция защиты:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: arcaneWardHp
+    amountRule: variable
+  note: >
+    Тратит HP запаса Arcane Ward, не отдельное использование.
+
+Гений преобразования:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: transmutersStone
+    amountRule: fixed
+    amountValue: 1
+  additionalEffect:
+    type: modify
+    targetType: resource
+    targetResourceKey: transmutersStone
+    setUnavailableUntil: longRest
+  note: >
+    Фича уничтожает Transmuter's Stone; новый нельзя создать до longRest.
+
+Боевое превосходство:
+  resource:
+    key: superiorityDice
+    kind: dice
+    resetOn: shortRest
+    maxRule: sourceClassLevelTable
+    progressionKey: battleMasterSuperiorityDice
+    progression:
+      - level: 3
+        value: 4
+      - level: 7
+        value: 5
+      - level: 15
+        value: 6
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: superiorityDice
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Тратится обычно по 1 кости на манёвр. Размер кости — отдельная progression, не max count.
+
+Перегрузка:
+  resource:
+    key: safeOverchannel
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: safeOverchannel
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Это не полный запрет повторного использования. Первый раз безопасный; повторные использования до longRest наносят растущий некротический урон.
+
+Знамение:
+  resource:
+    key: portentDice
+    kind: dice
+    resetOn: longRest
+    maxRule: sourceClassLevelTable
+    progressionKey: divinerPortentDice
+    progression:
+      - level: 2
+        value: 2
+      - level: 14
+        value: 3
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: portentDice
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Значения самих костей генерируются после longRest и хранятся отдельно от количества uses.
+
+Улучшенное боевое превосходство:
+  effect:
+    type: modify
+    targetType: resource
+    targetResourceKey: superiorityDice
+    setDieSizeProgression:
+      - level: 3
+        die: d8
+      - level: 10
+        die: d10
+      - level: 18
+        die: d12
+  note: >
+    Меняет размер кости, не количество superiorityDice.
+
+Неослабевающий:
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: superiorityDice
+    amountRule: fixed
+    amountValue: 1
+    activationTrigger: initiative
+  condition: onlyIfCurrentResourceIsZero
+
+Волшебный рывок:
+  effect:
+    type: modify
+    targetType: feature
+    targetResourceKey: actionSurge
+  note: >
+    Не меняет количество Action Surge. Добавляет телепортацию при использовании Action Surge.
+
+Третий глаз:
+  resource:
+    key: thirdEye
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Гнев бури:
+  resource:
+    key: wrathOfTheStorm
+    kind: uses
+    resetOn: longRest
+    maxRule: abilityModifierMinOne
+    maxAbility: wisdom
+
+Боевой священник:
+  resource:
+    key: warPriest
+    kind: uses
+    resetOn: longRest
+    maxRule: abilityModifierMinOne
+    maxAbility: wisdom
+
+Видения прошлого:
+  resource:
+    key: visionsOfThePast
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Защищающая вспышка:
+  resource:
+    key: wardingFlare
+    kind: uses
+    resetOn: longRest
+    maxRule: abilityModifierMinOne
+    maxAbility: wisdom
+
+Фейское присутствие:
+  resource:
+    key: feyPresence
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Туманное исчезновение:
+  resource:
+    key: mistyEscape
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Тёмное исступление:
+  resource:
+    key: darkDelirium
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Удача Темнейшего:
+  resource:
+    key: darkOnesOwnLuck
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Бросок сквозь ад:
+  resource:
+    key: hurlThroughHell
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Стихийный дикий облик:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: wildShape
+    amountRule: fixed
+    amountValue: 2
+  note: >
+    Тратит сразу 2 использования Wild Shape.
+
+Божественный канал: Разрушительный гнев:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Божественный канал: Направленный удар:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Божественный канал: Благословение бога войны:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Божественный канал: Сохранение жизни:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+  additionalComputedPool:
+    key: preserveLifeHealingPool
+    amountRule: sourceClassLevelTimesValue
+    amountValue: 5
+  note: >
+    Сам spend — 1 Channel Divinity.
+    Объём исцеления = clericLevel * 5, это не отдельный rest-resource.
+
+Божественный канал: Знания веков:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Божественный канал: Чтение мыслей:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Есть per-target ограничение при успешном спасброске цели:
+    эту же цель нельзя выбрать снова до longRest.
+    Это не общий ресурс фичи.
+
+Божественный канал: Двуличность:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Божественный канал: Плащ теней:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Божественный канал: Очарование животных и растений:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Сдерживание стихий:
+  note: >
+    Не FeatureResourceEffect в этой модели, если она только про feature resources.
+    Тратит reaction/action economy, а не rest-resource.
+
+Божественный канал: Сияние рассвета:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: cleric
+    amountRule: fixed
+    amountValue: 1
+
+Эксперт прорицания:
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: spellSlots
+    amountRule: special
+    activationTrigger: castDivinationSpellWithSlot
+  condition: spellLevelAtLeast2
+  note: >
+    Восстанавливает одну expended spell slot ниже уровня потраченной ячейки,
+    максимум 5-го уровня. Это не fixed amount.
+
+Великое знамение:
+  effect:
+    type: modify
+    targetType: resource
+    targetResourceKey: portentDice
+    setMaxRule: sourceClassLevelTable
+    setProgressionKey: divinerPortentDice
+    setProgression:
+      - level: 2
+        value: 2
+      - level: 14
+        value: 3
+  note: >
+    Если progression уже задан на ресурсе Знамение, эту фичу можно не делать
+    отдельным modifier-effect, а просто иметь progressionKey divinerPortentDice.
+
+Естественное восстановление:
+  resource:
+    key: naturalRecovery
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+    activationTrigger: shortRest
+    usageResetOn: longRest
+  effect:
+    type: restore
+    targetType: resource
+    targetResourceKey: spellSlots
+    amountRule: special
+  note: >
+    Раз в день во время shortRest.
+    Восстанавливает spell slots суммарным уровнем <= ceil(druidLevel / 2),
+    но не 6+ уровня.
+
+Облики круга:
+  effect:
+    type: modify
+    targetType: resource
+    targetResourceKey: wildShape
+  modifiesWildShapeRules:
+    maxCrProgression:
+      - level: 2
+        value: 1
+      - level: 6
+        valueRule: sourceClassLevelDividedByValueRoundedDown
+        value: 3
+    ignoreBeastShapesMaxCrColumn: true
+  note: >
+    Не меняет количество Wild Shape uses.
+    Меняет допустимые формы/CR.
+
+Улучшенная вспышка:
+  effect:
+    type: modify
+    targetType: resource
+    targetResourceKey: wardingFlare
+  note: >
+    Не меняет max uses. Расширяет условия применения:
+    можно защищать другое существо в пределах 30 футов.
+
+Энтропическая опека:
+  resource:
+    key: entropicWard
+    kind: uses
+    resetOn: shortRest
+    maxRule: fixed
+    maxValue: 1
+
+Исцеление тела:
+  resource:
+    key: wholenessOfBody
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+  effect:
+    type: restore
+    targetType: hitPoints
+    amountRule: sourceClassLevelTimesValue
+    amountValue: 3
+  note: >
+    Даёт 1 использование; эффект лечения = monkLevel * 3.
+
+Святой нимб:
+  resource:
+    key: holyNimbus
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Бессмертный страж:
+  resource:
+    key: undyingSentinel
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Древний чемпион:
+  resource:
+    key: elderChampion
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Мстящий ангел:
+  resource:
+    key: avengingAngel
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Использование заклинаний:
+  resource:
+    key: spellSlots
+    kind: slots
+    resetOn: longRest
+    maxRule: sourceClassLevelTable
+    progressionKey: classSpellSlots
+  note: >
+    progressionKey лучше конкретизировать по классу:
+    fullCasterSpellSlots / halfCasterSpellSlots / thirdCasterSpellSlots
+    или project-specific ключи.
+
+Вор заклинаний:
+  resource:
+    key: spellThief
+    kind: uses
+    resetOn: longRest
+    maxRule: fixed
+    maxValue: 1
+
+Поток хаоса:
+  resource:
+    key: tidesOfChaos
+    kind: uses
+    resetOn: special
+    maxRule: fixed
+    maxValue: 1
+  defaultResetOn: longRest
+  specialRecovery:
+    - trigger: wildMagicSurgeAfterSorcererSpellLevel1Plus
+      controlledBy: dm
+  note: >
+    Базово возвращается после longRest, но DM может вернуть использование раньше,
+    заставив бросить Wild Magic Surge.
+
+Дрожащая ладонь:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: ki
+    amountRule: fixed
+    amountValue: 3
+  note: >
+    Также есть ограничение: одновременно может быть только одна цель под эффектом.
+
+Техника тени:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: ki
+    amountRule: fixed
+    amountValue: 2
+  note: >
+    Shadow Arts тратит 2 ki на Darkness / Darkvision / Pass without Trace / Silence.
+    Minor Illusion из этой фичи не тратит ki.
+
+Адепт стихий:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: ki
+    amountRule: variable
+  note: >
+    Стоимость зависит от выбранной elemental discipline.
+    Некоторые дисциплины имеют базовую стоимость и upcast за дополнительные ki.
+
+Божественный канал:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: channelDivinity
+    targetSourceType: class
+    targetSourceKey: paladin
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Это строка для oath Channel Divinity options паладина.
+    Не путать с cleric Channel Divinity.
+
+Родство со стихией:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: sorceryPoints
+    amountRule: fixed
+    amountValue: 1
+  note: >
+    Трата sorcery point нужна только для получения сопротивления на 1 час.
+    Бонус к урону не тратит ресурс.
+
+Образ дракона:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: sorceryPoints
+    amountRule: fixed
+    amountValue: 5
+
+Подчинение удачи:
+  effect:
+    type: spend
+    targetType: resource
+    targetResourceKey: sorceryPoints
+    amountRule: fixed
+    amountValue: 2
+
+Техники открытой ладони:
+  effect:
+    type: modify
+    targetType: feature
+    targetFeatureKey: flurryOfBlows
+  note: >
+    Сама фича не тратит ki напрямую.
+    Она добавляет эффекты к Flurry of Blows, а ki тратится базовой фичей Flurry of Blows.
+
+Исключительная дрессировка:
+  effect:
+    type: modify
+    targetType: feature
+    targetFeatureKey: rangersCompanion
+  note: >
+    Не ресурс. Меняет action economy/команды спутника.
+
+Звериная ярость:
+  effect:
+    type: modify
+    targetType: feature
+    targetFeatureKey: rangersCompanion
+  note: >
+    Не ресурс. Даёт спутнику две атаки при команде Attack.
+
+Контролируемый хаос:
+  effect:
+    type: modify
+    targetType: feature
+    targetFeatureKey: wildMagicSurge
+  note: >
+    Не ресурс. Позволяет бросать два результата Wild Magic Surge и выбирать один.

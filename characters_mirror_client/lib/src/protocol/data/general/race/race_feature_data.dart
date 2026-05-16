@@ -13,9 +13,11 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
 import '../../../data/general/race/subrace_data.dart' as _i3;
 import '../../../enums/rest_type.dart' as _i4;
-import '../../../enums/feature_tag.dart' as _i5;
-import '../../../data/general/race/race_feature_spell_grant_data.dart' as _i6;
-import '../../../data/general/race/race_choice_set_data.dart' as _i7;
+import '../../../data/general/feature_resource_definition_data.dart' as _i5;
+import '../../../data/general/feature_resource_effect_data.dart' as _i6;
+import '../../../enums/feature_tag.dart' as _i7;
+import '../../../data/general/race/race_feature_spell_grant_data.dart' as _i8;
+import '../../../data/general/race/race_choice_set_data.dart' as _i9;
 
 abstract class RaceFeatureData implements _i1.SerializableModel {
   RaceFeatureData._({
@@ -34,6 +36,8 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     this.level,
     this.usesPerRest,
     this.usesFormula,
+    this.resources,
+    this.resourceEffects,
     this.tags,
     this.spellGrants,
     this.choiceSets,
@@ -55,9 +59,11 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     int? level,
     _i4.RestType? usesPerRest,
     String? usesFormula,
-    List<_i5.FeatureTag>? tags,
-    List<_i6.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i7.RaceChoiceSetData>? choiceSets,
+    List<_i5.FeatureResourceDefinitionData>? resources,
+    List<_i6.FeatureResourceEffectData>? resourceEffects,
+    List<_i7.FeatureTag>? tags,
+    List<_i8.RaceFeatureSpellGrantData>? spellGrants,
+    List<_i9.RaceChoiceSetData>? choiceSets,
   }) = _RaceFeatureDataImpl;
 
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -89,16 +95,24 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
           ? null
           : _i4.RestType.fromJson((jsonSerialization['usesPerRest'] as String)),
       usesFormula: jsonSerialization['usesFormula'] as String?,
+      resources: (jsonSerialization['resources'] as List?)
+          ?.map((e) => _i5.FeatureResourceDefinitionData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
+      resourceEffects: (jsonSerialization['resourceEffects'] as List?)
+          ?.map((e) => _i6.FeatureResourceEffectData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i5.FeatureTag.fromJson((e as String)))
+          ?.map((e) => _i7.FeatureTag.fromJson((e as String)))
           .toList(),
       spellGrants: (jsonSerialization['spellGrants'] as List?)
-          ?.map((e) => _i6.RaceFeatureSpellGrantData.fromJson(
+          ?.map((e) => _i8.RaceFeatureSpellGrantData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       choiceSets: (jsonSerialization['choiceSets'] as List?)
           ?.map((e) =>
-              _i7.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
+              _i9.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -136,11 +150,15 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
 
   String? usesFormula;
 
-  List<_i5.FeatureTag>? tags;
+  List<_i5.FeatureResourceDefinitionData>? resources;
 
-  List<_i6.RaceFeatureSpellGrantData>? spellGrants;
+  List<_i6.FeatureResourceEffectData>? resourceEffects;
 
-  List<_i7.RaceChoiceSetData>? choiceSets;
+  List<_i7.FeatureTag>? tags;
+
+  List<_i8.RaceFeatureSpellGrantData>? spellGrants;
+
+  List<_i9.RaceChoiceSetData>? choiceSets;
 
   /// Returns a shallow copy of this [RaceFeatureData]
   /// with some or all fields replaced by the given arguments.
@@ -161,9 +179,11 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     int? level,
     _i4.RestType? usesPerRest,
     String? usesFormula,
-    List<_i5.FeatureTag>? tags,
-    List<_i6.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i7.RaceChoiceSetData>? choiceSets,
+    List<_i5.FeatureResourceDefinitionData>? resources,
+    List<_i6.FeatureResourceEffectData>? resourceEffects,
+    List<_i7.FeatureTag>? tags,
+    List<_i8.RaceFeatureSpellGrantData>? spellGrants,
+    List<_i9.RaceChoiceSetData>? choiceSets,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -183,6 +203,11 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       if (level != null) 'level': level,
       if (usesPerRest != null) 'usesPerRest': usesPerRest?.toJson(),
       if (usesFormula != null) 'usesFormula': usesFormula,
+      if (resources != null)
+        'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
+      if (resourceEffects != null)
+        'resourceEffects':
+            resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
@@ -216,9 +241,11 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     int? level,
     _i4.RestType? usesPerRest,
     String? usesFormula,
-    List<_i5.FeatureTag>? tags,
-    List<_i6.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i7.RaceChoiceSetData>? choiceSets,
+    List<_i5.FeatureResourceDefinitionData>? resources,
+    List<_i6.FeatureResourceEffectData>? resourceEffects,
+    List<_i7.FeatureTag>? tags,
+    List<_i8.RaceFeatureSpellGrantData>? spellGrants,
+    List<_i9.RaceChoiceSetData>? choiceSets,
   }) : super._(
           id: id,
           raceId: raceId,
@@ -235,6 +262,8 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           level: level,
           usesPerRest: usesPerRest,
           usesFormula: usesFormula,
+          resources: resources,
+          resourceEffects: resourceEffects,
           tags: tags,
           spellGrants: spellGrants,
           choiceSets: choiceSets,
@@ -260,6 +289,8 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? level = _Undefined,
     Object? usesPerRest = _Undefined,
     Object? usesFormula = _Undefined,
+    Object? resources = _Undefined,
+    Object? resourceEffects = _Undefined,
     Object? tags = _Undefined,
     Object? spellGrants = _Undefined,
     Object? choiceSets = _Undefined,
@@ -283,13 +314,19 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       usesPerRest:
           usesPerRest is _i4.RestType? ? usesPerRest : this.usesPerRest,
       usesFormula: usesFormula is String? ? usesFormula : this.usesFormula,
-      tags: tags is List<_i5.FeatureTag>?
+      resources: resources is List<_i5.FeatureResourceDefinitionData>?
+          ? resources
+          : this.resources?.map((e0) => e0.copyWith()).toList(),
+      resourceEffects: resourceEffects is List<_i6.FeatureResourceEffectData>?
+          ? resourceEffects
+          : this.resourceEffects?.map((e0) => e0.copyWith()).toList(),
+      tags: tags is List<_i7.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
-      spellGrants: spellGrants is List<_i6.RaceFeatureSpellGrantData>?
+      spellGrants: spellGrants is List<_i8.RaceFeatureSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
-      choiceSets: choiceSets is List<_i7.RaceChoiceSetData>?
+      choiceSets: choiceSets is List<_i9.RaceChoiceSetData>?
           ? choiceSets
           : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
     );

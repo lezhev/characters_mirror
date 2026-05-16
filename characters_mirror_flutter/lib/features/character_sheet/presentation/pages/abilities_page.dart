@@ -159,6 +159,11 @@ List<Widget> _buildFeatureCards({
               characterSheetControllerProvider(characterId).notifier,
             )
             .resetFeatureOverride(features[index]),
+        onSetResource: (resourceKey, current) => ref
+            .read(
+              characterSheetControllerProvider(characterId).notifier,
+            )
+            .setFeatureResource(features[index], resourceKey, current),
       ),
       if (index < features.length - 1) const SizedBox(height: 8),
     ],

@@ -1,0 +1,8 @@
+enum: FeatureResourceKind
+serialized: byName
+values:
+  - uses
+  - points
+  - dice
+  - slots
+  - special

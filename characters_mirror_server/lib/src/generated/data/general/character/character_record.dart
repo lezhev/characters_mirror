@@ -16,15 +16,18 @@ import '../../../enums/character_alignment.dart' as _i2;
 import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
+import '../../../enums/condition_type.dart' as _i6;
 import '../../../data/general/character/character_inventory_item_data.dart'
-    as _i6;
-import '../../../data/general/character/character_skill_proficiency_state.dart'
     as _i7;
-import '../../../enums/ability.dart' as _i8;
-import '../../../data/general/character/character_note_data.dart' as _i9;
-import '../../../data/general/character/character_attack_data.dart' as _i10;
+import '../../../data/general/character/character_skill_proficiency_state.dart'
+    as _i8;
+import '../../../enums/ability.dart' as _i9;
+import '../../../data/general/character/character_note_data.dart' as _i10;
+import '../../../data/general/character/character_attack_data.dart' as _i11;
 import '../../../data/general/character/character_feature_override_data.dart'
-    as _i11;
+    as _i12;
+import '../../../data/general/character/character_resource_state_data.dart'
+    as _i13;
 
 abstract class CharacterRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -64,6 +67,8 @@ abstract class CharacterRecord
     this.currentHp,
     this.currentSpellSlots,
     this.activeConcentrationSpellName,
+    this.activeConditions,
+    this.exhaustionLevel,
     this.inspiration,
     this.equipment,
     this.manualSkillProficiencies,
@@ -71,6 +76,7 @@ abstract class CharacterRecord
     this.notes,
     this.attacks,
     this.featureOverrides,
+    this.resourceStates,
   });
 
   factory CharacterRecord({
@@ -109,13 +115,16 @@ abstract class CharacterRecord
     int? currentHp,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
+    List<_i6.ConditionType>? activeConditions,
+    int? exhaustionLevel,
     bool? inspiration,
-    List<_i6.CharacterInventoryItemData>? equipment,
-    List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i8.Ability>? manualSavingThrowProficiencies,
-    List<_i9.CharacterNoteData>? notes,
-    List<_i10.CharacterAttackData>? attacks,
-    List<_i11.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i7.CharacterInventoryItemData>? equipment,
+    List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i9.Ability>? manualSavingThrowProficiencies,
+    List<_i10.CharacterNoteData>? notes,
+    List<_i11.CharacterAttackData>? attacks,
+    List<_i12.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i13.CharacterResourceStateData>? resourceStates,
   }) = _CharacterRecordImpl;
 
   factory CharacterRecord.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -183,30 +192,38 @@ abstract class CharacterRecord
               {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
       activeConcentrationSpellName:
           jsonSerialization['activeConcentrationSpellName'] as String?,
+      activeConditions: (jsonSerialization['activeConditions'] as List?)
+          ?.map((e) => _i6.ConditionType.fromJson((e as String)))
+          .toList(),
+      exhaustionLevel: jsonSerialization['exhaustionLevel'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
       equipment: (jsonSerialization['equipment'] as List?)
-          ?.map((e) => _i6.CharacterInventoryItemData.fromJson(
+          ?.map((e) => _i7.CharacterInventoryItemData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       manualSkillProficiencies:
           (jsonSerialization['manualSkillProficiencies'] as List?)
-              ?.map((e) => _i7.CharacterSkillProficiencyState.fromJson(
+              ?.map((e) => _i8.CharacterSkillProficiencyState.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
       manualSavingThrowProficiencies:
           (jsonSerialization['manualSavingThrowProficiencies'] as List?)
-              ?.map((e) => _i8.Ability.fromJson((e as String)))
+              ?.map((e) => _i9.Ability.fromJson((e as String)))
               .toList(),
       notes: (jsonSerialization['notes'] as List?)
           ?.map((e) =>
-              _i9.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
+              _i10.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
-              _i10.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+              _i11.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       featureOverrides: (jsonSerialization['featureOverrides'] as List?)
-          ?.map((e) => _i11.CharacterFeatureOverrideData.fromJson(
+          ?.map((e) => _i12.CharacterFeatureOverrideData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
+      resourceStates: (jsonSerialization['resourceStates'] as List?)
+          ?.map((e) => _i13.CharacterResourceStateData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
     );
@@ -287,19 +304,25 @@ abstract class CharacterRecord
 
   String? activeConcentrationSpellName;
 
+  List<_i6.ConditionType>? activeConditions;
+
+  int? exhaustionLevel;
+
   bool? inspiration;
 
-  List<_i6.CharacterInventoryItemData>? equipment;
+  List<_i7.CharacterInventoryItemData>? equipment;
 
-  List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies;
+  List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies;
 
-  List<_i8.Ability>? manualSavingThrowProficiencies;
+  List<_i9.Ability>? manualSavingThrowProficiencies;
 
-  List<_i9.CharacterNoteData>? notes;
+  List<_i10.CharacterNoteData>? notes;
 
-  List<_i10.CharacterAttackData>? attacks;
+  List<_i11.CharacterAttackData>? attacks;
 
-  List<_i11.CharacterFeatureOverrideData>? featureOverrides;
+  List<_i12.CharacterFeatureOverrideData>? featureOverrides;
+
+  List<_i13.CharacterResourceStateData>? resourceStates;
 
   @override
   _i1.Table<int?> get table => t;
@@ -343,13 +366,16 @@ abstract class CharacterRecord
     int? currentHp,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
+    List<_i6.ConditionType>? activeConditions,
+    int? exhaustionLevel,
     bool? inspiration,
-    List<_i6.CharacterInventoryItemData>? equipment,
-    List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i8.Ability>? manualSavingThrowProficiencies,
-    List<_i9.CharacterNoteData>? notes,
-    List<_i10.CharacterAttackData>? attacks,
-    List<_i11.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i7.CharacterInventoryItemData>? equipment,
+    List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i9.Ability>? manualSavingThrowProficiencies,
+    List<_i10.CharacterNoteData>? notes,
+    List<_i11.CharacterAttackData>? attacks,
+    List<_i12.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i13.CharacterResourceStateData>? resourceStates,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -395,6 +421,10 @@ abstract class CharacterRecord
         'currentSpellSlots': currentSpellSlots?.toJson(),
       if (activeConcentrationSpellName != null)
         'activeConcentrationSpellName': activeConcentrationSpellName,
+      if (activeConditions != null)
+        'activeConditions':
+            activeConditions?.toJson(valueToJson: (v) => v.toJson()),
+      if (exhaustionLevel != null) 'exhaustionLevel': exhaustionLevel,
       if (inspiration != null) 'inspiration': inspiration,
       if (equipment != null)
         'equipment': equipment?.toJson(valueToJson: (v) => v.toJson()),
@@ -410,6 +440,9 @@ abstract class CharacterRecord
       if (featureOverrides != null)
         'featureOverrides':
             featureOverrides?.toJson(valueToJson: (v) => v.toJson()),
+      if (resourceStates != null)
+        'resourceStates':
+            resourceStates?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -495,13 +528,16 @@ class _CharacterRecordImpl extends CharacterRecord {
     int? currentHp,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
+    List<_i6.ConditionType>? activeConditions,
+    int? exhaustionLevel,
     bool? inspiration,
-    List<_i6.CharacterInventoryItemData>? equipment,
-    List<_i7.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i8.Ability>? manualSavingThrowProficiencies,
-    List<_i9.CharacterNoteData>? notes,
-    List<_i10.CharacterAttackData>? attacks,
-    List<_i11.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i7.CharacterInventoryItemData>? equipment,
+    List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i9.Ability>? manualSavingThrowProficiencies,
+    List<_i10.CharacterNoteData>? notes,
+    List<_i11.CharacterAttackData>? attacks,
+    List<_i12.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i13.CharacterResourceStateData>? resourceStates,
   }) : super._(
           id: id,
           name: name,
@@ -538,6 +574,8 @@ class _CharacterRecordImpl extends CharacterRecord {
           currentHp: currentHp,
           currentSpellSlots: currentSpellSlots,
           activeConcentrationSpellName: activeConcentrationSpellName,
+          activeConditions: activeConditions,
+          exhaustionLevel: exhaustionLevel,
           inspiration: inspiration,
           equipment: equipment,
           manualSkillProficiencies: manualSkillProficiencies,
@@ -545,6 +583,7 @@ class _CharacterRecordImpl extends CharacterRecord {
           notes: notes,
           attacks: attacks,
           featureOverrides: featureOverrides,
+          resourceStates: resourceStates,
         );
 
   /// Returns a shallow copy of this [CharacterRecord]
@@ -587,6 +626,8 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? currentHp = _Undefined,
     Object? currentSpellSlots = _Undefined,
     Object? activeConcentrationSpellName = _Undefined,
+    Object? activeConditions = _Undefined,
+    Object? exhaustionLevel = _Undefined,
     Object? inspiration = _Undefined,
     Object? equipment = _Undefined,
     Object? manualSkillProficiencies = _Undefined,
@@ -594,6 +635,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
+    Object? resourceStates = _Undefined,
   }) {
     return CharacterRecord(
       id: id is int? ? id : this.id,
@@ -670,28 +712,36 @@ class _CharacterRecordImpl extends CharacterRecord {
       activeConcentrationSpellName: activeConcentrationSpellName is String?
           ? activeConcentrationSpellName
           : this.activeConcentrationSpellName,
+      activeConditions: activeConditions is List<_i6.ConditionType>?
+          ? activeConditions
+          : this.activeConditions?.map((e0) => e0).toList(),
+      exhaustionLevel:
+          exhaustionLevel is int? ? exhaustionLevel : this.exhaustionLevel,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
-      equipment: equipment is List<_i6.CharacterInventoryItemData>?
+      equipment: equipment is List<_i7.CharacterInventoryItemData>?
           ? equipment
           : this.equipment?.map((e0) => e0.copyWith()).toList(),
       manualSkillProficiencies: manualSkillProficiencies
-              is List<_i7.CharacterSkillProficiencyState>?
+              is List<_i8.CharacterSkillProficiencyState>?
           ? manualSkillProficiencies
           : this.manualSkillProficiencies?.map((e0) => e0.copyWith()).toList(),
       manualSavingThrowProficiencies:
-          manualSavingThrowProficiencies is List<_i8.Ability>?
+          manualSavingThrowProficiencies is List<_i9.Ability>?
               ? manualSavingThrowProficiencies
               : this.manualSavingThrowProficiencies?.map((e0) => e0).toList(),
-      notes: notes is List<_i9.CharacterNoteData>?
+      notes: notes is List<_i10.CharacterNoteData>?
           ? notes
           : this.notes?.map((e0) => e0.copyWith()).toList(),
-      attacks: attacks is List<_i10.CharacterAttackData>?
+      attacks: attacks is List<_i11.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
       featureOverrides:
-          featureOverrides is List<_i11.CharacterFeatureOverrideData>?
+          featureOverrides is List<_i12.CharacterFeatureOverrideData>?
               ? featureOverrides
               : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
+      resourceStates: resourceStates is List<_i13.CharacterResourceStateData>?
+          ? resourceStates
+          : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -823,6 +873,14 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'activeConcentrationSpellName',
       this,
     );
+    activeConditions = _i1.ColumnSerializable(
+      'activeConditions',
+      this,
+    );
+    exhaustionLevel = _i1.ColumnInt(
+      'exhaustionLevel',
+      this,
+    );
     inspiration = _i1.ColumnBool(
       'inspiration',
       this,
@@ -849,6 +907,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
     );
     featureOverrides = _i1.ColumnSerializable(
       'featureOverrides',
+      this,
+    );
+    resourceStates = _i1.ColumnSerializable(
+      'resourceStates',
       this,
     );
   }
@@ -921,6 +983,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString activeConcentrationSpellName;
 
+  late final _i1.ColumnSerializable activeConditions;
+
+  late final _i1.ColumnInt exhaustionLevel;
+
   late final _i1.ColumnBool inspiration;
 
   late final _i1.ColumnSerializable equipment;
@@ -934,6 +1000,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnSerializable attacks;
 
   late final _i1.ColumnSerializable featureOverrides;
+
+  late final _i1.ColumnSerializable resourceStates;
 
   _i3.RaceDataTable get race {
     if (_race != null) return _race!;
@@ -1008,6 +1076,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
         currentHp,
         currentSpellSlots,
         activeConcentrationSpellName,
+        activeConditions,
+        exhaustionLevel,
         inspiration,
         equipment,
         manualSkillProficiencies,
@@ -1015,6 +1085,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
         notes,
         attacks,
         featureOverrides,
+        resourceStates,
       ];
 
   @override

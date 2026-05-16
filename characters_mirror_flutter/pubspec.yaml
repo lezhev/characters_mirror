@@ -78,6 +78,7 @@ flutter:
     - assets/svg/
     - assets/svg/races/
     - assets/svg/classes/
+    - assets/svg/rest/
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

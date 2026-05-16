@@ -1,0 +1,8 @@
+enum: FeatureResourceTrigger
+serialized: byName
+values:
+  - shortRest
+  - longRest
+  - dawn
+  - special
+  - manual

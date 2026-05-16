@@ -83,7 +83,7 @@ void main() {
       expect(repository.getCharacterCallCount, 1);
     });
 
-    testWidgets('shows active concentration overlay across sheet tabs',
+    testWidgets('shows status stack and concentration across sheet tabs',
         (tester) async {
       final repository = _FakeCharacterRepository(
         charactersById: {
@@ -127,48 +127,33 @@ void main() {
 
       expect(find.text('Атаки'), findsOneWidget);
       expect(
-        find.byKey(const ValueKey('active-concentration-icon')),
+        find.byKey(const ValueKey('character-status-stack')),
         findsOneWidget,
       );
-
-      await tester.tap(find.byKey(const ValueKey('active-concentration-icon')));
-      await tester.pump();
+      await _showStatusLabels(tester);
 
       expect(
-        find.text('Концентрация на заклинании Bless'),
+        find.byKey(const ValueKey('active-concentration-row')),
         findsOneWidget,
       );
-
-      await tester.tapAt(const Offset(900, 300));
-      await tester.pump();
-
-      expect(
-        find.byKey(const ValueKey('active-concentration-panel')),
-        findsNothing,
-      );
-      expect(
-        find.byKey(const ValueKey('active-concentration-icon')),
-        findsOneWidget,
-      );
+      expect(find.text('Bless'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.person));
       await tester.pumpAndSettle();
 
       expect(find.text('Описание персонажа'), findsOneWidget);
       expect(
-        find.byKey(const ValueKey('active-concentration-icon')),
+        find.byKey(const ValueKey('active-concentration-row')),
         findsOneWidget,
       );
 
-      await tester.tap(find.byKey(const ValueKey('active-concentration-icon')));
-      await tester.pump();
       await tester.tap(
         find.byKey(const ValueKey('active-concentration-cancel')),
       );
       await tester.pumpAndSettle();
 
       expect(
-        find.byKey(const ValueKey('active-concentration-icon')),
+        find.byKey(const ValueKey('active-concentration-row')),
         findsNothing,
       );
       expect(
@@ -177,14 +162,12 @@ void main() {
       );
     });
 
-    testWidgets('hides active concentration overlay on attributes page',
-        (tester) async {
+    testWidgets('hides status stack on attributes page', (tester) async {
       final repository = _FakeCharacterRepository(
         charactersById: {
           1: protocol.CharacterData(
             id: 1,
             name: 'Тестовый герой',
-            activeConcentrationSpellName: 'Bless',
           ),
         },
       );
@@ -192,7 +175,7 @@ void main() {
       await _pumpCharacterSheet(tester, repository);
 
       expect(
-        find.byKey(const ValueKey('active-concentration-icon')),
+        find.byKey(const ValueKey('character-status-stack')),
         findsOneWidget,
       );
 
@@ -201,9 +184,149 @@ void main() {
 
       expect(find.text('Характеристики'), findsOneWidget);
       expect(
-        find.byKey(const ValueKey('active-concentration-icon')),
+        find.byKey(const ValueKey('character-status-stack')),
         findsNothing,
       );
+    });
+
+    testWidgets('status stack visibility toggle collapses and expands',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      expect(find.byKey(const ValueKey('status-visibility-toggle')),
+          findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('status-conditions-button')), findsNothing);
+      expect(find.byKey(const ValueKey('status-inspiration-toggle')),
+          findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('status-visibility-toggle')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('status-conditions-button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('status-inspiration-toggle')),
+          findsOneWidget);
+      expect(find.text('Состояния'), findsNothing);
+      expect(find.text('Вдохновение'), findsNothing);
+      expect(find.text('Развернуть'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('status-visibility-toggle')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('status-visibility-toggle')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('status-conditions-button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('status-inspiration-toggle')),
+          findsOneWidget);
+      expect(find.text('Состояния'), findsOneWidget);
+      expect(find.text('Вдохновение'), findsOneWidget);
+      expect(find.text('Свернуть'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('status-visibility-toggle')));
+      await tester.pumpAndSettle();
+
+      expect(
+          find.byKey(const ValueKey('status-conditions-button')), findsNothing);
+      expect(find.byKey(const ValueKey('status-inspiration-toggle')),
+          findsNothing);
+    });
+
+    testWidgets('status stack toggles inspiration', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+      await _showStatusIcons(tester);
+
+      await tester.tap(find.byKey(const ValueKey('status-inspiration-toggle')));
+      await tester.pumpAndSettle();
+
+      expect(repository.charactersById[1]?.inspiration, isTrue);
+      expect(find.byIcon(Icons.flare), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('status-inspiration-toggle')));
+      await tester.pumpAndSettle();
+
+      expect(repository.charactersById[1]?.inspiration, isNull);
+    });
+
+    testWidgets('condition dialog adds and stack removes condition',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+      await _showStatusLabels(tester);
+
+      await tester.tap(find.byKey(const ValueKey('status-conditions-button')));
+      await tester.pumpAndSettle();
+
+      final poisonedOption =
+          find.byKey(const ValueKey('condition-option-poisoned'));
+      await tester.ensureVisible(poisonedOption);
+      await tester.tap(poisonedOption);
+      await tester.tap(find.byKey(const ValueKey('save-conditions')));
+      await tester.pumpAndSettle();
+
+      expect(repository.charactersById[1]?.activeConditions,
+          contains(protocol.ConditionType.poisoned));
+      expect(find.text('Отравлен'), findsOneWidget);
+
+      await tester.tap(
+        find.byKey(const ValueKey('active-condition-remove-poisoned')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(repository.charactersById[1]?.activeConditions, isNull);
+      expect(find.text('Отравлен'), findsNothing);
+    });
+
+    testWidgets('status stack shows and removes exhaustion', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            exhaustionLevel: 2,
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+      await _showStatusLabels(tester);
+
+      expect(find.text('Истощение 2'), findsOneWidget);
+
+      await tester.tap(
+        find.byKey(const ValueKey('active-condition-remove-exhaustion')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(repository.charactersById[1]?.exhaustionLevel, isNull);
+      expect(find.text('Истощение 2'), findsNothing);
     });
 
     testWidgets('switches tabs with horizontal swipes', (tester) async {
@@ -670,6 +793,17 @@ Finder _textField(String label) {
 
 Finder _characterPageScrollable() {
   return find.byType(ListView).first;
+}
+
+Future<void> _showStatusIcons(WidgetTester tester) async {
+  await tester.tap(find.byKey(const ValueKey('status-visibility-toggle')));
+  await tester.pumpAndSettle();
+}
+
+Future<void> _showStatusLabels(WidgetTester tester) async {
+  await _showStatusIcons(tester);
+  await tester.tap(find.byKey(const ValueKey('status-visibility-toggle')));
+  await tester.pumpAndSettle();
 }
 
 Future<void> _pumpCharacterSheet(
