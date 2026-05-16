@@ -80,6 +80,40 @@ class FightPage extends ConsumerWidget {
                             temporaryHp: temporaryHp,
                           );
                     },
+                    onSaveDeathSavingThrows: ({
+                      required successes,
+                      required failures,
+                    }) {
+                      return ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .saveDeathSavingThrows(
+                            successes: successes,
+                            failures: failures,
+                          );
+                    },
+                    onSaveSettings: ({
+                      required classEntries,
+                      required hpPerLevelBonus,
+                      required hpFlatBonus,
+                      required currentHitDice,
+                      required hitDiceMaxOverrides,
+                    }) {
+                      return ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .saveHitPointSettings(
+                            classEntries: classEntries,
+                            hpPerLevelBonus: hpPerLevelBonus,
+                            hpFlatBonus: hpFlatBonus,
+                            currentHitDice: currentHitDice,
+                            hitDiceMaxOverrides: hitDiceMaxOverrides,
+                          );
+                    },
                   ),
                 ),
                 const SizedBox(height: 20),

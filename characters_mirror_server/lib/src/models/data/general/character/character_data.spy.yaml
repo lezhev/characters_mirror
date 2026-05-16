@@ -29,6 +29,12 @@ fields:
   useFlexibleAbilityBonuses: bool?
   temporaryHp: int?
   currentHp: int?
+  deathSaveSuccesses: int?
+  deathSaveFailures: int?
+  hpPerLevelBonus: int?
+  hpFlatBonus: int?
+  currentHitDice: Map<String, int>?
+  hitDiceMaxOverrides: Map<String, int>?
   currentSpellSlots: Map<int, int>?
   activeConcentrationSpellName: String?
   activeConditions: List<ConditionType>?

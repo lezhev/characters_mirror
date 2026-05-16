@@ -664,6 +664,82 @@ void main() {
       expect(resaved.attacks, hasLength(3));
     });
 
+    test('save/get roundtrip preserves hit point tuning fields', () async {
+      final ownerSession = authenticatedSession(304);
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(name: 'HP Tuning Class', hitDieValue: 10),
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'HP Tuning Hero',
+          deathSaveSuccesses: 2,
+          deathSaveFailures: 1,
+          hpPerLevelBonus: 1,
+          hpFlatBonus: 3,
+          currentHitDice: const {'d10': 1},
+          hitDiceMaxOverrides: const {'d10': 4},
+          classEntries: [
+            CharacterClassEntryData(
+              classData: classData,
+              level: 3,
+              isStartingClass: true,
+              classOrder: 0,
+              hpMode: HitPointMode.manual,
+              hpRolledValues: const [8, 7, 6],
+            ),
+          ],
+        ),
+      );
+      final loaded =
+          await endpoints.characterData.getCharacter(ownerSession, saved.id!);
+
+      expect(loaded.deathSaveSuccesses, 2);
+      expect(loaded.deathSaveFailures, 1);
+      expect(loaded.hpPerLevelBonus, 1);
+      expect(loaded.hpFlatBonus, 3);
+      expect(loaded.currentHitDice, const {'d10': 1});
+      expect(loaded.hitDiceMaxOverrides, const {'d10': 4});
+      expect(loaded.classEntries?.single.hpRolledValues, const [8, 7, 6]);
+    });
+
+    test('derived hp uses per-level gains, bonuses, and hit dice overrides',
+        () async {
+      final ownerSession = authenticatedSession(305);
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(name: 'HP Derived Class', hitDieValue: 10),
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'HP Derived Hero',
+          baseAbilityScores: const {
+            'constitution': 14,
+          },
+          hpPerLevelBonus: 1,
+          hpFlatBonus: 2,
+          hitDiceMaxOverrides: const {'d10': 5},
+          classEntries: [
+            CharacterClassEntryData(
+              classData: classData,
+              level: 3,
+              isStartingClass: true,
+              classOrder: 0,
+              hpMode: HitPointMode.manual,
+              hpRolledValues: const [8, 7, 6],
+            ),
+          ],
+        ),
+      );
+
+      expect(saved.derived?.maxHp, 32);
+      expect(saved.derived?.hitDiceSummary, const {'d10': 5});
+    });
+
     test('manual skill and saving throw proficiencies fully replace defaults',
         () async {
       final ownerSession = authenticatedSession(313);

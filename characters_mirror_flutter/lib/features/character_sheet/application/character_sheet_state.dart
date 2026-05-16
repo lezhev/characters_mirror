@@ -118,6 +118,73 @@ class CharacterSheetController
       current.copyWith(
         currentHp: hitPoints.currentHp,
         temporaryHp: hitPoints.temporaryHp,
+        deathSaveSuccesses: hitPoints.currentHp == null || currentHp > 0
+            ? null
+            : current.deathSaveSuccesses,
+        deathSaveFailures: hitPoints.currentHp == null || currentHp > 0
+            ? null
+            : current.deathSaveFailures,
+      ),
+    );
+  }
+
+  Future<void> saveDeathSavingThrows({
+    required int successes,
+    required int failures,
+  }) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        deathSaveSuccesses: normalizeDeathSaveCountForSave(successes),
+        deathSaveFailures: normalizeDeathSaveCountForSave(failures),
+      ),
+    );
+  }
+
+  Future<void> saveHitPointSettings({
+    required List<CharacterClassEntryData> classEntries,
+    required int hpPerLevelBonus,
+    required int hpFlatBonus,
+    required Map<String, int> currentHitDice,
+    required Map<String, int> hitDiceMaxOverrides,
+  }) async {
+    final current = _requireCharacter();
+    final normalizedEntries = normalizeHitPointClassEntries(classEntries);
+    final baseHitDiceMax = baseHitDiceMaxFromCharacter(
+      current.copyWith(classEntries: normalizedEntries),
+    );
+    final normalizedMaxOverrides = normalizeHitDiceMaxOverridesForSave(
+      baseHitDiceMax,
+      hitDiceMaxOverrides,
+    );
+    final effectiveMaxHitDice = effectiveHitDiceMax(
+      baseHitDiceMax,
+      normalizedMaxOverrides,
+    );
+    final normalizedCurrentHitDice = normalizeCurrentHitDiceForSave(
+      currentHitDice,
+      effectiveMaxHitDice,
+    );
+
+    final settingsCharacter = current.copyWith(
+      classEntries: normalizedEntries,
+      hpPerLevelBonus: hpPerLevelBonus == 0 ? null : hpPerLevelBonus,
+      hpFlatBonus: hpFlatBonus == 0 ? null : hpFlatBonus,
+      currentHitDice: normalizedCurrentHitDice,
+      hitDiceMaxOverrides: normalizedMaxOverrides,
+    );
+    final nextMaxHp = calculateMaxHpForCharacter(settingsCharacter);
+    final currentHp = current.currentHp ?? nextMaxHp;
+    final hitPoints = normalizeHitPointsForSave(
+      currentHp: currentHp,
+      maxHp: nextMaxHp,
+      temporaryHp: current.temporaryHp ?? 0,
+    );
+
+    await _saveCharacter(
+      settingsCharacter.copyWith(
+        currentHp: hitPoints.currentHp,
+        temporaryHp: hitPoints.temporaryHp,
       ),
     );
   }

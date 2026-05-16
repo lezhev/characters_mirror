@@ -609,6 +609,13 @@ CharacterRecord _toCharacterRecord(
     useFlexibleAbilityBonuses: character.useFlexibleAbilityBonuses,
     temporaryHp: character.temporaryHp,
     currentHp: character.currentHp,
+    deathSaveSuccesses: _normalizedDeathSaveCount(character.deathSaveSuccesses),
+    deathSaveFailures: _normalizedDeathSaveCount(character.deathSaveFailures),
+    hpPerLevelBonus: _zeroAsNull(character.hpPerLevelBonus),
+    hpFlatBonus: _zeroAsNull(character.hpFlatBonus),
+    currentHitDice: _normalizedNonNegativeIntMap(character.currentHitDice),
+    hitDiceMaxOverrides:
+        _normalizedNonNegativeIntMap(character.hitDiceMaxOverrides),
     currentSpellSlots: character.currentSpellSlots,
     activeConcentrationSpellName: character.activeConcentrationSpellName,
     activeConditions: _normalizedActiveConditions(character.activeConditions),
@@ -1724,6 +1731,13 @@ CharacterData _toCharacterData(CharacterRecord record) {
     useFlexibleAbilityBonuses: record.useFlexibleAbilityBonuses,
     temporaryHp: record.temporaryHp,
     currentHp: record.currentHp,
+    deathSaveSuccesses: _normalizedDeathSaveCount(record.deathSaveSuccesses),
+    deathSaveFailures: _normalizedDeathSaveCount(record.deathSaveFailures),
+    hpPerLevelBonus: _zeroAsNull(record.hpPerLevelBonus),
+    hpFlatBonus: _zeroAsNull(record.hpFlatBonus),
+    currentHitDice: _normalizedNonNegativeIntMap(record.currentHitDice),
+    hitDiceMaxOverrides:
+        _normalizedNonNegativeIntMap(record.hitDiceMaxOverrides),
     currentSpellSlots: record.currentSpellSlots,
     activeConcentrationSpellName: record.activeConcentrationSpellName,
     activeConditions: _normalizedActiveConditions(record.activeConditions),
@@ -1918,7 +1932,7 @@ Future<CharacterDerivedData> _buildDerivedData(
         base + (proficient ? proficiencyBonus : 0);
   }
 
-  final maxHp = _calculateMaxHp(entries, conMod);
+  final maxHp = _calculateMaxHp(character, entries, conMod);
   final passivePerception = 10 + (skillBonuses[Skill.perception.name] ?? 0);
   final passiveInvestigation =
       10 + (skillBonuses[Skill.investigation.name] ?? 0);
@@ -1971,15 +1985,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.alwaysPreparedSpellKeys,
   );
   final grantedEquipment = await _collectGrantedEquipment(session, character);
-  final hitDiceSummary = <String, int>{};
-  for (final entry in entries) {
-    final hitDie = _resolveHitDie(entry.classData);
-    final level = entry.level ?? 0;
-    if (hitDie != null && level > 0) {
-      final key = 'd$hitDie';
-      hitDiceSummary[key] = (hitDiceSummary[key] ?? 0) + level;
-    }
-  }
+  final hitDiceSummary = _hitDiceSummary(character, entries);
 
   final senses = <String>[
     if (character.race?.visionType != null) character.race!.visionType!.name,
@@ -2270,30 +2276,69 @@ CharacterClassEntryData? _resolveStartingEntry(
   return sortedEntries.first;
 }
 
-int _calculateMaxHp(List<CharacterClassEntryData> entries, int conModifier) {
+int _calculateMaxHp(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  int conModifier,
+) {
   final sortedEntries = [...entries]
     ..sort((a, b) => (a.classOrder ?? 0).compareTo(b.classOrder ?? 0));
   var total = 0;
   var consumedFirstCharacterLevel = false;
+  var totalLevel = 0;
 
   for (final entry in sortedEntries) {
-    final hitDie = _resolveHitDie(entry.classData) ?? 0;
+    final hitDie = max(1, _resolveHitDie(entry.classData) ?? 8);
     final fixedGain = max(1, (hitDie ~/ 2) + 1);
     final rolledValues = entry.hpRolledValues ?? const <int>[];
     final level = entry.level ?? 0;
 
     for (var levelIndex = 0; levelIndex < level; levelIndex++) {
       final isFirstCharacterLevel = !consumedFirstCharacterLevel;
+      final defaultGain = isFirstCharacterLevel ? hitDie : fixedGain;
       final rollValue = levelIndex < rolledValues.length
           ? rolledValues[levelIndex]
-          : fixedGain;
+          : defaultGain;
 
-      total += (isFirstCharacterLevel ? hitDie : rollValue) + conModifier;
+      total += rollValue.clamp(1, hitDie).toInt() + conModifier;
       consumedFirstCharacterLevel = true;
+      totalLevel++;
     }
   }
 
+  total += totalLevel * (character.hpPerLevelBonus ?? 0);
+  total += character.hpFlatBonus ?? 0;
+
   return max(total, 1);
+}
+
+Map<String, int> _hitDiceSummary(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+) {
+  final result = <String, int>{};
+  for (final entry in entries) {
+    final hitDie = _resolveHitDie(entry.classData);
+    final level = entry.level ?? 0;
+    if (hitDie != null && level > 0) {
+      final key = 'd$hitDie';
+      result[key] = (result[key] ?? 0) + level;
+    }
+  }
+
+  for (final override in character.hitDiceMaxOverrides?.entries ??
+      const Iterable<MapEntry<String, int>>.empty()) {
+    final key = override.key.trim();
+    if (key.isEmpty || !result.containsKey(key)) {
+      continue;
+    }
+    result[key] = max(0, override.value);
+  }
+
+  final keys = result.keys.toList()..sort();
+  return {
+    for (final key in keys) key: result[key] ?? 0,
+  };
 }
 
 Future<_SpellSlotData> _resolveSpellSlots(
@@ -3525,6 +3570,34 @@ int? _normalizedExhaustionLevel(int? value) {
     return null;
   }
   return value.clamp(1, 6).toInt();
+}
+
+int? _normalizedDeathSaveCount(int? value) {
+  final normalized = (value ?? 0).clamp(0, 3).toInt();
+  return normalized == 0 ? null : normalized;
+}
+
+int? _zeroAsNull(int? value) {
+  return value == null || value == 0 ? null : value;
+}
+
+Map<String, int>? _normalizedNonNegativeIntMap(Map<String, int>? values) {
+  final result = <String, int>{};
+  for (final entry
+      in values?.entries ?? const Iterable<MapEntry<String, int>>.empty()) {
+    final key = entry.key.trim();
+    if (key.isEmpty) {
+      continue;
+    }
+    result[key] = max(0, entry.value);
+  }
+  if (result.isEmpty) {
+    return null;
+  }
+  final keys = result.keys.toList()..sort();
+  return {
+    for (final key in keys) key: result[key] ?? 0,
+  };
 }
 
 Iterable<String> _normalizedTexts(Iterable<String>? values) sync* {

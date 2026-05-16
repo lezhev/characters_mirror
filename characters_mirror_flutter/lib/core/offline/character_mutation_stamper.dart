@@ -186,6 +186,13 @@ CharacterData normalizeCharacterForPersistence(
   return character.copyWith(
     createdAt: character.createdAt?.toUtc() ?? updatedAt,
     updatedAt: updatedAt,
+    deathSaveSuccesses: _normalizeDeathSaveCount(character.deathSaveSuccesses),
+    deathSaveFailures: _normalizeDeathSaveCount(character.deathSaveFailures),
+    hpPerLevelBonus: _zeroAsNull(character.hpPerLevelBonus),
+    hpFlatBonus: _zeroAsNull(character.hpFlatBonus),
+    currentHitDice: _normalizedNonNegativeIntMap(character.currentHitDice),
+    hitDiceMaxOverrides:
+        _normalizedNonNegativeIntMap(character.hitDiceMaxOverrides),
     equipment: _normalizedInventory(character.equipment, updatedAt),
     notes: _normalizedNotes(character.notes, updatedAt),
     attacks: _normalizedAttacks(character.attacks, updatedAt),
@@ -580,6 +587,34 @@ List<String>? _normalizedStringList(List<String>? values) {
 int _normalizeQuantity(int? quantity) {
   final value = quantity ?? 1;
   return value < 1 ? 1 : value;
+}
+
+int? _normalizeDeathSaveCount(int? value) {
+  final normalized = (value ?? 0).clamp(0, 3).toInt();
+  return normalized == 0 ? null : normalized;
+}
+
+int? _zeroAsNull(int? value) {
+  return value == null || value == 0 ? null : value;
+}
+
+Map<String, int>? _normalizedNonNegativeIntMap(Map<String, int>? values) {
+  final result = <String, int>{};
+  for (final entry
+      in values?.entries ?? const Iterable<MapEntry<String, int>>.empty()) {
+    final key = entry.key.trim();
+    if (key.isEmpty) {
+      continue;
+    }
+    result[key] = max(0, entry.value);
+  }
+  if (result.isEmpty) {
+    return null;
+  }
+  final keys = result.keys.toList()..sort();
+  return {
+    for (final key in keys) key: result[key] ?? 0,
+  };
 }
 
 String? _normalizedText(String? value) {
