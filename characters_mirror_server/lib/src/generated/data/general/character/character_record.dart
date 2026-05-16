@@ -65,6 +65,12 @@ abstract class CharacterRecord
     this.useFlexibleAbilityBonuses,
     this.temporaryHp,
     this.currentHp,
+    this.deathSaveSuccesses,
+    this.deathSaveFailures,
+    this.hpPerLevelBonus,
+    this.hpFlatBonus,
+    this.currentHitDice,
+    this.hitDiceMaxOverrides,
     this.currentSpellSlots,
     this.activeConcentrationSpellName,
     this.activeConditions,
@@ -113,6 +119,12 @@ abstract class CharacterRecord
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    int? deathSaveSuccesses,
+    int? deathSaveFailures,
+    int? hpPerLevelBonus,
+    int? hpFlatBonus,
+    Map<String, int>? currentHitDice,
+    Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
     List<_i6.ConditionType>? activeConditions,
@@ -187,6 +199,20 @@ abstract class CharacterRecord
           jsonSerialization['useFlexibleAbilityBonuses'] as bool?,
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
+      deathSaveSuccesses: jsonSerialization['deathSaveSuccesses'] as int?,
+      deathSaveFailures: jsonSerialization['deathSaveFailures'] as int?,
+      hpPerLevelBonus: jsonSerialization['hpPerLevelBonus'] as int?,
+      hpFlatBonus: jsonSerialization['hpFlatBonus'] as int?,
+      currentHitDice:
+          (jsonSerialization['currentHitDice'] as Map?)?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
+      hitDiceMaxOverrides: (jsonSerialization['hitDiceMaxOverrides'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
       currentSpellSlots: (jsonSerialization['currentSpellSlots'] as List?)
           ?.fold<Map<int, int>>(
               {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
@@ -300,6 +326,18 @@ abstract class CharacterRecord
 
   int? currentHp;
 
+  int? deathSaveSuccesses;
+
+  int? deathSaveFailures;
+
+  int? hpPerLevelBonus;
+
+  int? hpFlatBonus;
+
+  Map<String, int>? currentHitDice;
+
+  Map<String, int>? hitDiceMaxOverrides;
+
   Map<int, int>? currentSpellSlots;
 
   String? activeConcentrationSpellName;
@@ -364,6 +402,12 @@ abstract class CharacterRecord
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    int? deathSaveSuccesses,
+    int? deathSaveFailures,
+    int? hpPerLevelBonus,
+    int? hpFlatBonus,
+    Map<String, int>? currentHitDice,
+    Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
     List<_i6.ConditionType>? activeConditions,
@@ -417,6 +461,13 @@ abstract class CharacterRecord
         'useFlexibleAbilityBonuses': useFlexibleAbilityBonuses,
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
+      if (deathSaveSuccesses != null) 'deathSaveSuccesses': deathSaveSuccesses,
+      if (deathSaveFailures != null) 'deathSaveFailures': deathSaveFailures,
+      if (hpPerLevelBonus != null) 'hpPerLevelBonus': hpPerLevelBonus,
+      if (hpFlatBonus != null) 'hpFlatBonus': hpFlatBonus,
+      if (currentHitDice != null) 'currentHitDice': currentHitDice?.toJson(),
+      if (hitDiceMaxOverrides != null)
+        'hitDiceMaxOverrides': hitDiceMaxOverrides?.toJson(),
       if (currentSpellSlots != null)
         'currentSpellSlots': currentSpellSlots?.toJson(),
       if (activeConcentrationSpellName != null)
@@ -526,6 +577,12 @@ class _CharacterRecordImpl extends CharacterRecord {
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    int? deathSaveSuccesses,
+    int? deathSaveFailures,
+    int? hpPerLevelBonus,
+    int? hpFlatBonus,
+    Map<String, int>? currentHitDice,
+    Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
     List<_i6.ConditionType>? activeConditions,
@@ -572,6 +629,12 @@ class _CharacterRecordImpl extends CharacterRecord {
           useFlexibleAbilityBonuses: useFlexibleAbilityBonuses,
           temporaryHp: temporaryHp,
           currentHp: currentHp,
+          deathSaveSuccesses: deathSaveSuccesses,
+          deathSaveFailures: deathSaveFailures,
+          hpPerLevelBonus: hpPerLevelBonus,
+          hpFlatBonus: hpFlatBonus,
+          currentHitDice: currentHitDice,
+          hitDiceMaxOverrides: hitDiceMaxOverrides,
           currentSpellSlots: currentSpellSlots,
           activeConcentrationSpellName: activeConcentrationSpellName,
           activeConditions: activeConditions,
@@ -624,6 +687,12 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? useFlexibleAbilityBonuses = _Undefined,
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
+    Object? deathSaveSuccesses = _Undefined,
+    Object? deathSaveFailures = _Undefined,
+    Object? hpPerLevelBonus = _Undefined,
+    Object? hpFlatBonus = _Undefined,
+    Object? currentHitDice = _Undefined,
+    Object? hitDiceMaxOverrides = _Undefined,
     Object? currentSpellSlots = _Undefined,
     Object? activeConcentrationSpellName = _Undefined,
     Object? activeConditions = _Undefined,
@@ -699,6 +768,35 @@ class _CharacterRecordImpl extends CharacterRecord {
           : this.useFlexibleAbilityBonuses,
       temporaryHp: temporaryHp is int? ? temporaryHp : this.temporaryHp,
       currentHp: currentHp is int? ? currentHp : this.currentHp,
+      deathSaveSuccesses: deathSaveSuccesses is int?
+          ? deathSaveSuccesses
+          : this.deathSaveSuccesses,
+      deathSaveFailures: deathSaveFailures is int?
+          ? deathSaveFailures
+          : this.deathSaveFailures,
+      hpPerLevelBonus:
+          hpPerLevelBonus is int? ? hpPerLevelBonus : this.hpPerLevelBonus,
+      hpFlatBonus: hpFlatBonus is int? ? hpFlatBonus : this.hpFlatBonus,
+      currentHitDice: currentHitDice is Map<String, int>?
+          ? currentHitDice
+          : this.currentHitDice?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
+      hitDiceMaxOverrides: hitDiceMaxOverrides is Map<String, int>?
+          ? hitDiceMaxOverrides
+          : this.hitDiceMaxOverrides?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
       currentSpellSlots: currentSpellSlots is Map<int, int>?
           ? currentSpellSlots
           : this.currentSpellSlots?.map((
@@ -865,6 +963,30 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'currentHp',
       this,
     );
+    deathSaveSuccesses = _i1.ColumnInt(
+      'deathSaveSuccesses',
+      this,
+    );
+    deathSaveFailures = _i1.ColumnInt(
+      'deathSaveFailures',
+      this,
+    );
+    hpPerLevelBonus = _i1.ColumnInt(
+      'hpPerLevelBonus',
+      this,
+    );
+    hpFlatBonus = _i1.ColumnInt(
+      'hpFlatBonus',
+      this,
+    );
+    currentHitDice = _i1.ColumnSerializable(
+      'currentHitDice',
+      this,
+    );
+    hitDiceMaxOverrides = _i1.ColumnSerializable(
+      'hitDiceMaxOverrides',
+      this,
+    );
     currentSpellSlots = _i1.ColumnSerializable(
       'currentSpellSlots',
       this,
@@ -979,6 +1101,18 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt currentHp;
 
+  late final _i1.ColumnInt deathSaveSuccesses;
+
+  late final _i1.ColumnInt deathSaveFailures;
+
+  late final _i1.ColumnInt hpPerLevelBonus;
+
+  late final _i1.ColumnInt hpFlatBonus;
+
+  late final _i1.ColumnSerializable currentHitDice;
+
+  late final _i1.ColumnSerializable hitDiceMaxOverrides;
+
   late final _i1.ColumnSerializable currentSpellSlots;
 
   late final _i1.ColumnString activeConcentrationSpellName;
@@ -1074,6 +1208,12 @@ class CharacterRecordTable extends _i1.Table<int?> {
         useFlexibleAbilityBonuses,
         temporaryHp,
         currentHp,
+        deathSaveSuccesses,
+        deathSaveFailures,
+        hpPerLevelBonus,
+        hpFlatBonus,
+        currentHitDice,
+        hitDiceMaxOverrides,
         currentSpellSlots,
         activeConcentrationSpellName,
         activeConditions,

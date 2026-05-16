@@ -68,6 +68,12 @@ abstract class CharacterData implements _i1.SerializableModel {
     this.useFlexibleAbilityBonuses,
     this.temporaryHp,
     this.currentHp,
+    this.deathSaveSuccesses,
+    this.deathSaveFailures,
+    this.hpPerLevelBonus,
+    this.hpFlatBonus,
+    this.currentHitDice,
+    this.hitDiceMaxOverrides,
     this.currentSpellSlots,
     this.activeConcentrationSpellName,
     this.activeConditions,
@@ -118,6 +124,12 @@ abstract class CharacterData implements _i1.SerializableModel {
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    int? deathSaveSuccesses,
+    int? deathSaveFailures,
+    int? hpPerLevelBonus,
+    int? hpFlatBonus,
+    Map<String, int>? currentHitDice,
+    Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
     List<_i6.ConditionType>? activeConditions,
@@ -195,6 +207,20 @@ abstract class CharacterData implements _i1.SerializableModel {
           jsonSerialization['useFlexibleAbilityBonuses'] as bool?,
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
+      deathSaveSuccesses: jsonSerialization['deathSaveSuccesses'] as int?,
+      deathSaveFailures: jsonSerialization['deathSaveFailures'] as int?,
+      hpPerLevelBonus: jsonSerialization['hpPerLevelBonus'] as int?,
+      hpFlatBonus: jsonSerialization['hpFlatBonus'] as int?,
+      currentHitDice:
+          (jsonSerialization['currentHitDice'] as Map?)?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
+      hitDiceMaxOverrides: (jsonSerialization['hitDiceMaxOverrides'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
       currentSpellSlots: (jsonSerialization['currentSpellSlots'] as List?)
           ?.fold<Map<int, int>>(
               {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
@@ -321,6 +347,18 @@ abstract class CharacterData implements _i1.SerializableModel {
 
   int? currentHp;
 
+  int? deathSaveSuccesses;
+
+  int? deathSaveFailures;
+
+  int? hpPerLevelBonus;
+
+  int? hpFlatBonus;
+
+  Map<String, int>? currentHitDice;
+
+  Map<String, int>? hitDiceMaxOverrides;
+
   Map<int, int>? currentSpellSlots;
 
   String? activeConcentrationSpellName;
@@ -391,6 +429,12 @@ abstract class CharacterData implements _i1.SerializableModel {
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    int? deathSaveSuccesses,
+    int? deathSaveFailures,
+    int? hpPerLevelBonus,
+    int? hpFlatBonus,
+    Map<String, int>? currentHitDice,
+    Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
     List<_i6.ConditionType>? activeConditions,
@@ -447,6 +491,13 @@ abstract class CharacterData implements _i1.SerializableModel {
         'useFlexibleAbilityBonuses': useFlexibleAbilityBonuses,
       if (temporaryHp != null) 'temporaryHp': temporaryHp,
       if (currentHp != null) 'currentHp': currentHp,
+      if (deathSaveSuccesses != null) 'deathSaveSuccesses': deathSaveSuccesses,
+      if (deathSaveFailures != null) 'deathSaveFailures': deathSaveFailures,
+      if (hpPerLevelBonus != null) 'hpPerLevelBonus': hpPerLevelBonus,
+      if (hpFlatBonus != null) 'hpFlatBonus': hpFlatBonus,
+      if (currentHitDice != null) 'currentHitDice': currentHitDice?.toJson(),
+      if (hitDiceMaxOverrides != null)
+        'hitDiceMaxOverrides': hitDiceMaxOverrides?.toJson(),
       if (currentSpellSlots != null)
         'currentSpellSlots': currentSpellSlots?.toJson(),
       if (activeConcentrationSpellName != null)
@@ -529,6 +580,12 @@ class _CharacterDataImpl extends CharacterData {
     bool? useFlexibleAbilityBonuses,
     int? temporaryHp,
     int? currentHp,
+    int? deathSaveSuccesses,
+    int? deathSaveFailures,
+    int? hpPerLevelBonus,
+    int? hpFlatBonus,
+    Map<String, int>? currentHitDice,
+    Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
     List<_i6.ConditionType>? activeConditions,
@@ -578,6 +635,12 @@ class _CharacterDataImpl extends CharacterData {
           useFlexibleAbilityBonuses: useFlexibleAbilityBonuses,
           temporaryHp: temporaryHp,
           currentHp: currentHp,
+          deathSaveSuccesses: deathSaveSuccesses,
+          deathSaveFailures: deathSaveFailures,
+          hpPerLevelBonus: hpPerLevelBonus,
+          hpFlatBonus: hpFlatBonus,
+          currentHitDice: currentHitDice,
+          hitDiceMaxOverrides: hitDiceMaxOverrides,
           currentSpellSlots: currentSpellSlots,
           activeConcentrationSpellName: activeConcentrationSpellName,
           activeConditions: activeConditions,
@@ -632,6 +695,12 @@ class _CharacterDataImpl extends CharacterData {
     Object? useFlexibleAbilityBonuses = _Undefined,
     Object? temporaryHp = _Undefined,
     Object? currentHp = _Undefined,
+    Object? deathSaveSuccesses = _Undefined,
+    Object? deathSaveFailures = _Undefined,
+    Object? hpPerLevelBonus = _Undefined,
+    Object? hpFlatBonus = _Undefined,
+    Object? currentHitDice = _Undefined,
+    Object? hitDiceMaxOverrides = _Undefined,
     Object? currentSpellSlots = _Undefined,
     Object? activeConcentrationSpellName = _Undefined,
     Object? activeConditions = _Undefined,
@@ -709,6 +778,35 @@ class _CharacterDataImpl extends CharacterData {
           : this.useFlexibleAbilityBonuses,
       temporaryHp: temporaryHp is int? ? temporaryHp : this.temporaryHp,
       currentHp: currentHp is int? ? currentHp : this.currentHp,
+      deathSaveSuccesses: deathSaveSuccesses is int?
+          ? deathSaveSuccesses
+          : this.deathSaveSuccesses,
+      deathSaveFailures: deathSaveFailures is int?
+          ? deathSaveFailures
+          : this.deathSaveFailures,
+      hpPerLevelBonus:
+          hpPerLevelBonus is int? ? hpPerLevelBonus : this.hpPerLevelBonus,
+      hpFlatBonus: hpFlatBonus is int? ? hpFlatBonus : this.hpFlatBonus,
+      currentHitDice: currentHitDice is Map<String, int>?
+          ? currentHitDice
+          : this.currentHitDice?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
+      hitDiceMaxOverrides: hitDiceMaxOverrides is Map<String, int>?
+          ? hitDiceMaxOverrides
+          : this.hitDiceMaxOverrides?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
       currentSpellSlots: currentSpellSlots is Map<int, int>?
           ? currentSpellSlots
           : this.currentSpellSlots?.map((

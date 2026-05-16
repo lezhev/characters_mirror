@@ -9,6 +9,8 @@ class HitPointsCalculatorSheet extends StatefulWidget {
   const HitPointsCalculatorSheet({
     required this.character,
     required this.onSave,
+    required this.onSaveDeathSavingThrows,
+    required this.onSaveSettings,
     super.key,
   });
 
@@ -17,6 +19,17 @@ class HitPointsCalculatorSheet extends StatefulWidget {
     required int currentHp,
     required int temporaryHp,
   }) onSave;
+  final Future<void> Function({
+    required int successes,
+    required int failures,
+  }) onSaveDeathSavingThrows;
+  final Future<void> Function({
+    required List<CharacterClassEntryData> classEntries,
+    required int hpPerLevelBonus,
+    required int hpFlatBonus,
+    required Map<String, int> currentHitDice,
+    required Map<String, int> hitDiceMaxOverrides,
+  }) onSaveSettings;
 
   @override
   State<HitPointsCalculatorSheet> createState() =>
@@ -25,13 +38,22 @@ class HitPointsCalculatorSheet extends StatefulWidget {
 
 class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
   late HitPointTotals _totals;
+  late HitPointSettingsDraft _settings;
   late final TextEditingController _controller;
+  late int _deathSaveSuccesses;
+  late int _deathSaveFailures;
   bool _isSaving = false;
+  bool _isTuning = false;
 
   @override
   void initState() {
     super.initState();
     _totals = hitPointTotalsFromCharacter(widget.character);
+    _settings = hitPointSettingsFromCharacter(widget.character);
+    _deathSaveSuccesses =
+        normalizeDeathSaveCount(widget.character.deathSaveSuccesses);
+    _deathSaveFailures =
+        normalizeDeathSaveCount(widget.character.deathSaveFailures);
     _controller = TextEditingController();
   }
 
@@ -78,7 +100,24 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                 ],
               ),
               const SizedBox(height: 8),
-              _HitPointSummary(totals: _totals),
+              if (_totals.currentHp == 0)
+                _DeathSavingThrowsSummary(
+                  successes: _deathSaveSuccesses,
+                  failures: _deathSaveFailures,
+                  isSaving: _isSaving,
+                  onSuccessChanged: (index, value) => _setDeathSave(
+                    isSuccess: true,
+                    index: index,
+                    checked: value,
+                  ),
+                  onFailureChanged: (index, value) => _setDeathSave(
+                    isSuccess: false,
+                    index: index,
+                    checked: value,
+                  ),
+                )
+              else
+                _HitPointSummary(totals: _totals),
               const SizedBox(height: 12),
               TextField(
                 controller: _controller,
@@ -99,7 +138,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
               const SizedBox(height: 12),
               _CalculatorGrid(
                 onInput: _appendInput,
-                onClear: _clearInput,
                 isEnabled: !_isSaving,
               ),
               const SizedBox(height: 12),
@@ -107,6 +145,7 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                 spacing: 8,
                 runSpacing: 8,
                 alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   _ActionButton(
                     label: 'Временные',
@@ -126,8 +165,33 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                     isSaving: _isSaving,
                     onPressed: () => _applyAndSave(HitPointAction.damage),
                   ),
+                  IconButton.filledTonal(
+                    key: const Key('hit_points_tune_button'),
+                    tooltip: 'Настроить хиты',
+                    onPressed: _isSaving
+                        ? null
+                        : () => setState(() => _isTuning = !_isTuning),
+                    icon: const Icon(Icons.tune),
+                  ),
                 ],
               ),
+              if (_isTuning) ...[
+                const SizedBox(height: 16),
+                _HitPointTunePanel(
+                  character: widget.character,
+                  settings: _settings,
+                  isSaving: _isSaving,
+                  onHpGainChanged: _setHpGain,
+                  onHpPerLevelBonusChanged: (value) => _saveSettings(
+                    _settings.copyWith(hpPerLevelBonus: value),
+                  ),
+                  onHpFlatBonusChanged: (value) => _saveSettings(
+                    _settings.copyWith(hpFlatBonus: value),
+                  ),
+                  onHitDiceCurrentChanged: _setCurrentHitDice,
+                  onHitDiceMaxChanged: _setHitDiceMax,
+                ),
+              ],
             ],
           ),
         ),
@@ -168,10 +232,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     );
   }
 
-  void _clearInput() {
-    _controller.clear();
-  }
-
   Future<void> _applyAndSave(HitPointAction action) async {
     final value = evaluateHitPointExpression(_controller.text);
     if (value == null || value <= 0 || _isSaving) {
@@ -179,6 +239,8 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     }
 
     final previousTotals = _totals;
+    final previousSuccesses = _deathSaveSuccesses;
+    final previousFailures = _deathSaveFailures;
     final nextTotals = applyHitPointChange(
       totals: _totals,
       value: value,
@@ -187,6 +249,10 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
 
     setState(() {
       _totals = nextTotals;
+      if (nextTotals.currentHp > 0) {
+        _deathSaveSuccesses = 0;
+        _deathSaveFailures = 0;
+      }
       _isSaving = true;
     });
 
@@ -199,6 +265,154 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     } catch (error) {
       if (mounted) {
         setState(() {
+          _totals = previousTotals;
+          _deathSaveSuccesses = previousSuccesses;
+          _deathSaveFailures = previousFailures;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(humanReadableError(error))),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _setDeathSave({
+    required bool isSuccess,
+    required int index,
+    required bool checked,
+  }) async {
+    if (_isSaving) {
+      return;
+    }
+
+    final previousSuccesses = _deathSaveSuccesses;
+    final previousFailures = _deathSaveFailures;
+    final nextValue = checked ? index + 1 : index;
+    final nextSuccesses = isSuccess ? nextValue : previousSuccesses;
+    final nextFailures = isSuccess ? previousFailures : nextValue;
+
+    setState(() {
+      _deathSaveSuccesses = nextSuccesses;
+      _deathSaveFailures = nextFailures;
+      _isSaving = true;
+    });
+
+    try {
+      await widget.onSaveDeathSavingThrows(
+        successes: nextSuccesses,
+        failures: nextFailures,
+      );
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _deathSaveSuccesses = previousSuccesses;
+          _deathSaveFailures = previousFailures;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(humanReadableError(error))),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _setHpGain(int entryIndex, int levelIndex, int value) {
+    return _saveSettings(
+      _settings.copyWith(
+        classEntries: setHpGainForLevel(
+          entries: _settings.classEntries,
+          entryIndex: entryIndex,
+          levelIndex: levelIndex,
+          value: value,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _setCurrentHitDice(String key, int value) {
+    final current = {..._settings.currentHitDice};
+    current[key] = value;
+    return _saveSettings(_settings.copyWith(currentHitDice: current));
+  }
+
+  Future<void> _setHitDiceMax(String key, int value) {
+    final baseMax = baseHitDiceMaxFromCharacter(widget.character);
+    final overrides = {..._settings.hitDiceMaxOverrides};
+    if (value == baseMax[key]) {
+      overrides.remove(key);
+    } else {
+      overrides[key] = value;
+    }
+    return _saveSettings(_settings.copyWith(hitDiceMaxOverrides: overrides));
+  }
+
+  Future<void> _saveSettings(HitPointSettingsDraft nextSettings) async {
+    if (_isSaving) {
+      return;
+    }
+
+    final previousSettings = _settings;
+    final previousTotals = _totals;
+    final baseHitDiceMax = baseHitDiceMaxFromCharacter(
+      widget.character.copyWith(classEntries: nextSettings.classEntries),
+    );
+    final normalizedMaxOverrides = normalizeHitDiceMaxOverridesForSave(
+          baseHitDiceMax,
+          nextSettings.hitDiceMaxOverrides,
+        ) ??
+        const <String, int>{};
+    final effectiveMax =
+        effectiveHitDiceMax(baseHitDiceMax, normalizedMaxOverrides);
+    final normalizedSettings = nextSettings.copyWith(
+      currentHitDice: effectiveCurrentHitDice(
+        nextSettings.currentHitDice,
+        effectiveMax,
+      ),
+      hitDiceMaxOverrides: normalizedMaxOverrides,
+    );
+    final nextMaxHp = calculateMaxHpForCharacter(
+      widget.character,
+      classEntries: normalizedSettings.classEntries,
+      hpPerLevelBonus: normalizedSettings.hpPerLevelBonus,
+      hpFlatBonus: normalizedSettings.hpFlatBonus,
+    );
+    final nextCurrentHp = previousTotals.currentHp == previousTotals.maxHp
+        ? nextMaxHp
+        : previousTotals.currentHp.clamp(0, nextMaxHp).toInt();
+    final nextTotals = previousTotals.copyWith(
+      currentHp: nextCurrentHp,
+      maxHp: nextMaxHp,
+    );
+
+    setState(() {
+      _settings = normalizedSettings;
+      _totals = nextTotals;
+      _isSaving = true;
+    });
+
+    try {
+      await widget.onSaveSettings(
+        classEntries: normalizedSettings.classEntries,
+        hpPerLevelBonus: normalizedSettings.hpPerLevelBonus,
+        hpFlatBonus: normalizedSettings.hpFlatBonus,
+        currentHitDice: normalizedSettings.currentHitDice,
+        hitDiceMaxOverrides: normalizedSettings.hitDiceMaxOverrides,
+      );
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _settings = previousSettings;
           _totals = previousTotals;
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -256,6 +470,99 @@ class _HitPointSummary extends StatelessWidget {
   }
 }
 
+class _DeathSavingThrowsSummary extends StatelessWidget {
+  const _DeathSavingThrowsSummary({
+    required this.successes,
+    required this.failures,
+    required this.isSaving,
+    required this.onSuccessChanged,
+    required this.onFailureChanged,
+  });
+
+  final int successes;
+  final int failures;
+  final bool isSaving;
+  final void Function(int index, bool checked) onSuccessChanged;
+  final void Function(int index, bool checked) onFailureChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final gameColors = AppGameColors.of(context);
+
+    return Row(
+      children: [
+        Expanded(
+          child: _DeathSaveGroup(
+            label: 'Успехи',
+            color: gameColors.healingOnDark,
+            checkedCount: successes,
+            isSaving: isSaving,
+            onChanged: onSuccessChanged,
+          ),
+        ),
+        IconButton.filledTonal(
+          key: const Key('death_saves_skull_button'),
+          onPressed: null,
+          icon: const Icon(Icons.dangerous_rounded),
+          tooltip: 'Спасброски от смерти',
+        ),
+        Expanded(
+          child: _DeathSaveGroup(
+            label: 'Провалы',
+            color: gameColors.damageOnDark,
+            checkedCount: failures,
+            isSaving: isSaving,
+            onChanged: onFailureChanged,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DeathSaveGroup extends StatelessWidget {
+  const _DeathSaveGroup({
+    required this.label,
+    required this.color,
+    required this.checkedCount,
+    required this.isSaving,
+    required this.onChanged,
+  });
+
+  final String label;
+  final Color color;
+  final int checkedCount;
+  final bool isSaving;
+  final void Function(int index, bool checked) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      children: [
+        Text(label, style: textTheme.bodySmall),
+        const SizedBox(height: 4),
+        Wrap(
+          spacing: 2,
+          alignment: WrapAlignment.center,
+          children: [
+            for (var index = 0; index < 3; index++)
+              Checkbox(
+                key: Key('${label}_death_save_$index'),
+                value: checkedCount > index,
+                activeColor: color,
+                onChanged: isSaving
+                    ? null
+                    : (value) => onChanged(index, value ?? false),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class _SummaryValue extends StatelessWidget {
   const _SummaryValue({
     required this.label,
@@ -290,50 +597,316 @@ class _SummaryValue extends StatelessWidget {
 class _CalculatorGrid extends StatelessWidget {
   const _CalculatorGrid({
     required this.onInput,
-    required this.onClear,
     required this.isEnabled,
   });
 
   final ValueChanged<String> onInput;
-  final VoidCallback onClear;
   final bool isEnabled;
 
   @override
   Widget build(BuildContext context) {
     const values = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '+', '-'];
 
-    return Column(
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      childAspectRatio: 2.2,
       children: [
-        GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 2.2,
-          children: [
-            for (final value in values)
-              OutlinedButton(
-                onPressed: isEnabled ? () => onInput(value) : null,
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: Text(value),
+        for (final value in values)
+          OutlinedButton(
+            onPressed: isEnabled ? () => onInput(value) : null,
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextButton(
-            onPressed: isEnabled ? onClear : null,
-            child: const Text('Очистить'),
+            ),
+            child: Text(value),
           ),
-        ),
       ],
     );
+  }
+}
+
+class _HitPointTunePanel extends StatelessWidget {
+  const _HitPointTunePanel({
+    required this.character,
+    required this.settings,
+    required this.isSaving,
+    required this.onHpGainChanged,
+    required this.onHpPerLevelBonusChanged,
+    required this.onHpFlatBonusChanged,
+    required this.onHitDiceCurrentChanged,
+    required this.onHitDiceMaxChanged,
+  });
+
+  final CharacterData character;
+  final HitPointSettingsDraft settings;
+  final bool isSaving;
+  final void Function(int entryIndex, int levelIndex, int value)
+      onHpGainChanged;
+  final ValueChanged<int> onHpPerLevelBonusChanged;
+  final ValueChanged<int> onHpFlatBonusChanged;
+  final void Function(String key, int value) onHitDiceCurrentChanged;
+  final void Function(String key, int value) onHitDiceMaxChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final descriptors = hitPointLevelDescriptors(settings.classEntries);
+    final baseHitDiceMax = baseHitDiceMaxFromCharacter(character);
+    final hitDiceMax = effectiveHitDiceMax(
+      baseHitDiceMax,
+      settings.hitDiceMaxOverrides,
+    );
+    final currentHitDice = effectiveCurrentHitDice(
+      settings.currentHitDice,
+      hitDiceMax,
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Настройка максимума', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 12),
+            if (descriptors.isEmpty)
+              Text('Нет уровней класса', style: theme.textTheme.bodyMedium)
+            else
+              for (final entry in settings.classEntries)
+                _ClassHpGainGroup(
+                  entry: entry,
+                  descriptors: descriptors
+                      .where((item) => identical(item.entry, entry))
+                      .toList(),
+                  isSaving: isSaving,
+                  onChanged: onHpGainChanged,
+                ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _AutosaveNumberField(
+                    label: 'Бонус за уровень',
+                    value: settings.hpPerLevelBonus,
+                    signed: true,
+                    enabled: !isSaving,
+                    onSave: onHpPerLevelBonusChanged,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _AutosaveNumberField(
+                    label: 'Единоразовый бонус',
+                    value: settings.hpFlatBonus,
+                    signed: true,
+                    enabled: !isSaving,
+                    onSave: onHpFlatBonusChanged,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text('Кости хитов', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            if (hitDiceMax.isEmpty)
+              Text('Нет костей хитов', style: theme.textTheme.bodyMedium)
+            else
+              for (final key in hitDiceMax.keys)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 44, child: Text(key)),
+                      Expanded(
+                        child: _AutosaveNumberField(
+                          label: 'Текущие',
+                          value: currentHitDice[key] ?? 0,
+                          min: 0,
+                          max: hitDiceMax[key],
+                          enabled: !isSaving,
+                          onSave: (value) =>
+                              onHitDiceCurrentChanged(key, value),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _AutosaveNumberField(
+                          label: 'Максимум',
+                          value: hitDiceMax[key] ?? 0,
+                          min: 0,
+                          enabled: !isSaving,
+                          onSave: (value) => onHitDiceMaxChanged(key, value),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ClassHpGainGroup extends StatelessWidget {
+  const _ClassHpGainGroup({
+    required this.entry,
+    required this.descriptors,
+    required this.isSaving,
+    required this.onChanged,
+  });
+
+  final CharacterClassEntryData entry;
+  final List<HitPointLevelDescriptor> descriptors;
+  final bool isSaving;
+  final void Function(int entryIndex, int levelIndex, int value) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final className = entry.classData?.name ?? 'Класс';
+
+    if (descriptors.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(className, style: theme.textTheme.labelLarge),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final descriptor in descriptors)
+                SizedBox(
+                  width: 96,
+                  child: _AutosaveNumberField(
+                    label: 'Ур. ${descriptor.characterLevel}',
+                    value: descriptor.value,
+                    min: 1,
+                    max: descriptor.hitDie,
+                    enabled: !isSaving,
+                    onSave: (value) => onChanged(
+                      descriptor.entryIndex,
+                      descriptor.levelIndex,
+                      value,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AutosaveNumberField extends StatefulWidget {
+  const _AutosaveNumberField({
+    required this.label,
+    required this.value,
+    required this.onSave,
+    this.enabled = true,
+    this.signed = false,
+    this.min,
+    this.max,
+  });
+
+  final String label;
+  final int value;
+  final ValueChanged<int> onSave;
+  final bool enabled;
+  final bool signed;
+  final int? min;
+  final int? max;
+
+  @override
+  State<_AutosaveNumberField> createState() => _AutosaveNumberFieldState();
+}
+
+class _AutosaveNumberFieldState extends State<_AutosaveNumberField> {
+  late final TextEditingController _controller;
+  late final FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: '${widget.value}');
+    _focusNode = FocusNode()..addListener(_handleFocusChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant _AutosaveNumberField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_focusNode.hasFocus && widget.value != oldWidget.value) {
+      _controller.text = '${widget.value}';
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode
+      ..removeListener(_handleFocusChanged)
+      ..dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      focusNode: _focusNode,
+      enabled: widget.enabled,
+      keyboardType: TextInputType.numberWithOptions(signed: widget.signed),
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(
+          widget.signed ? RegExp(r'^-?\d*$') : RegExp(r'^\d*$'),
+        ),
+      ],
+      decoration: InputDecoration(
+        labelText: widget.label,
+        border: const OutlineInputBorder(),
+        isDense: true,
+      ),
+      onSubmitted: (_) => _commit(),
+    );
+  }
+
+  void _handleFocusChanged() {
+    if (!_focusNode.hasFocus) {
+      _commit();
+    }
+  }
+
+  void _commit() {
+    final parsed = int.tryParse(_controller.text);
+    if (parsed == null) {
+      _controller.text = '${widget.value}';
+      return;
+    }
+    final min = widget.min;
+    final max = widget.max;
+    if ((min != null && parsed < min) || (max != null && parsed > max)) {
+      _controller.text = '${widget.value}';
+      return;
+    }
+    if (parsed != widget.value) {
+      widget.onSave(parsed);
+    }
   }
 }
 
@@ -405,6 +978,17 @@ Future<void> showHitPointsCalculatorSheet({
     required int currentHp,
     required int temporaryHp,
   }) onSave,
+  required Future<void> Function({
+    required int successes,
+    required int failures,
+  }) onSaveDeathSavingThrows,
+  required Future<void> Function({
+    required List<CharacterClassEntryData> classEntries,
+    required int hpPerLevelBonus,
+    required int hpFlatBonus,
+    required Map<String, int> currentHitDice,
+    required Map<String, int> hitDiceMaxOverrides,
+  }) onSaveSettings,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -413,6 +997,8 @@ Future<void> showHitPointsCalculatorSheet({
     builder: (context) => HitPointsCalculatorSheet(
       character: character,
       onSave: onSave,
+      onSaveDeathSavingThrows: onSaveDeathSavingThrows,
+      onSaveSettings: onSaveSettings,
     ),
   );
 }

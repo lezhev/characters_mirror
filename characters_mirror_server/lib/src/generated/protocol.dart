@@ -1505,6 +1505,42 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int?',
         ),
         _i2.ColumnDefinition(
+          name: 'deathSaveSuccesses',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'deathSaveFailures',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'hpPerLevelBonus',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'hpFlatBonus',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'currentHitDice',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'Map<String,int>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'hitDiceMaxOverrides',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'Map<String,int>?',
+        ),
+        _i2.ColumnDefinition(
           name: 'currentSpellSlots',
           columnType: _i2.ColumnType.json,
           isNullable: true,
@@ -6131,6 +6167,18 @@ class Protocol extends _i1.SerializationManagerServer {
               (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
     if (t == _i1.getType<Map<int, int>?>()) {
       return (data != null
           ? Map.fromEntries((data as List).map((e) =>
@@ -6366,6 +6414,18 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List)
               .map((e) => deserialize<_i24.CharacterResourceViewData>(e))
               .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {

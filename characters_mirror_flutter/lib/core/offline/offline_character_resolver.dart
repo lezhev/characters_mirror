@@ -51,9 +51,12 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     proficiencyBonus,
     abilityModifiers,
   );
-  final hitDice = _hitDiceSummary(entries);
-  final maxHp =
-      _maxHp(entries, abilityModifiers[Ability.constitution.name] ?? 0);
+  final hitDice = _hitDiceSummary(character, entries);
+  final maxHp = _maxHp(
+    character,
+    entries,
+    abilityModifiers[Ability.constitution.name] ?? 0,
+  );
   final dexterityModifier = abilityModifiers[Ability.dexterity.name] ?? 0;
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
   final alwaysPreparedSpellKeys = _collectAlwaysPreparedSpellKeys(character);
@@ -644,7 +647,10 @@ String _featureResourceKey(
   return '${sourceType.name}:$sourceId:$resourceKey';
 }
 
-Map<String, int> _hitDiceSummary(List<CharacterClassEntryData> entries) {
+Map<String, int> _hitDiceSummary(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+) {
   final result = <String, int>{};
   for (final entry in entries) {
     final hitDie = entry.classData?.hitDieValue;
@@ -652,19 +658,47 @@ Map<String, int> _hitDiceSummary(List<CharacterClassEntryData> entries) {
     final key = 'd$hitDie';
     result[key] = (result[key] ?? 0) + (entry.level ?? 1);
   }
-  return result;
+
+  for (final override in character.hitDiceMaxOverrides?.entries ??
+      const Iterable<MapEntry<String, int>>.empty()) {
+    final key = override.key.trim();
+    if (key.isEmpty || !result.containsKey(key)) {
+      continue;
+    }
+    result[key] = max(0, override.value);
+  }
+
+  final keys = result.keys.toList()..sort();
+  return {
+    for (final key in keys) key: result[key] ?? 0,
+  };
 }
 
-int _maxHp(List<CharacterClassEntryData> entries, int constitutionModifier) {
+int _maxHp(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  int constitutionModifier,
+) {
   var total = 0;
-  for (final entry in entries) {
-    final level = max(1, entry.level ?? 1);
-    final hitDie = entry.classData?.hitDieValue ?? 8;
-    total += hitDie + constitutionModifier;
-    if (level > 1) {
-      total += (level - 1) * ((hitDie ~/ 2) + 1 + constitutionModifier);
+  var totalLevel = 0;
+  final sortedEntries = [...entries]
+    ..sort((a, b) => (a.classOrder ?? 0).compareTo(b.classOrder ?? 0));
+  for (final entry in sortedEntries) {
+    final level = max(0, entry.level ?? 0);
+    final hitDie = max(1, entry.classData?.hitDieValue ?? 8);
+    final fixedGain = max(1, (hitDie ~/ 2) + 1);
+    final rolledValues = entry.hpRolledValues ?? const <int>[];
+    for (var levelIndex = 0; levelIndex < level; levelIndex++) {
+      totalLevel++;
+      final defaultGain = totalLevel == 1 ? hitDie : fixedGain;
+      final rawGain = levelIndex < rolledValues.length
+          ? rolledValues[levelIndex]
+          : defaultGain;
+      total += rawGain.clamp(1, hitDie).toInt() + constitutionModifier;
     }
   }
+  total += totalLevel * (character.hpPerLevelBonus ?? 0);
+  total += character.hpFlatBonus ?? 0;
   return max(total, 1);
 }
 

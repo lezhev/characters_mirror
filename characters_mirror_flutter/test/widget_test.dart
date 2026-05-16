@@ -6,14 +6,16 @@ import 'package:characters_mirror_flutter/core/serverpod/data/reference_reposito
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/features/characters/application/characters_list_state.dart';
 import 'package:characters_mirror_flutter/features/characters/characters.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_progression.dart';
 import 'package:characters_mirror_flutter/core/router/app_router.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 
 void main() {
@@ -237,12 +239,20 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(
+          child: MaterialApp.router(
             theme: darkTheme,
-            home: const Scaffold(
-              appBar: CreationAppBar(
-                title: 'Создание персонажа',
-              ),
+            routerConfig: GoRouter(
+              initialLocation: Step.introduction.routePath,
+              routes: [
+                GoRoute(
+                  path: Step.introduction.routePath,
+                  builder: (_, __) => const Scaffold(
+                    appBar: CreationAppBar(
+                      title: 'Создание персонажа',
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -302,11 +312,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(repository.saveCallCount, 1);
-      expect(find.text('Лист персонажа'), findsOneWidget);
-      expect(
-        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
-        findsOneWidget,
-      );
+      expect(find.text('Тестовый герой'), findsOneWidget);
+      expect(find.text('Атаки'), findsOneWidget);
     });
 
     testWidgets('finish action cannot trigger duplicate save requests',
@@ -357,18 +364,16 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Лист персонажа'), findsOneWidget);
-      expect(
-        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
-        findsOneWidget,
-      );
+      expect(find.text('Тестовый герой'), findsOneWidget);
+      expect(find.text('Атаки'), findsOneWidget);
     });
 
     testWidgets('save failure keeps user on summary and shows snackbar',
         (tester) async {
       final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
       final repository = FakeCharacterRepository(
-        onSave: (_) async => throw Exception('Failed to fetch'),
+        onSave: (_) async =>
+            throw const protocol.ServerpodClientException('Failed to fetch', 0),
       );
       final container = ProviderContainer(
         overrides: [
@@ -426,11 +431,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(repository.getCharacterCallCount, 1);
-      expect(find.text('Лист персонажа'), findsOneWidget);
-      expect(
-        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
-        findsOneWidget,
-      );
+      expect(find.text('Тестовый герой'), findsOneWidget);
+      expect(find.text('Атаки'), findsOneWidget);
     });
 
     testWidgets('invalid sheet id shows fallback page', (tester) async {
@@ -470,6 +472,9 @@ void main() {
         overrides: [
           authServiceProvider.overrideWithValue(service),
           characterRepositoryProvider.overrideWithValue(repository),
+          charactersListControllerProvider.overrideWith(
+            (ref) => CharactersListController(repository),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -479,15 +484,12 @@ void main() {
 
       expect(find.text('Список персонажей'), findsOneWidget);
 
-      await tester.tap(find.text('Character Name').first);
+      await tester.tap(find.text('Тестовый герой').first);
       await tester.pumpAndSettle();
 
       expect(repository.getCharacterCallCount, 1);
-      expect(find.text('Лист персонажа'), findsOneWidget);
-      expect(
-        find.text('Здесь будет отображаться лист персонажа "Тестовый герой".'),
-        findsOneWidget,
-      );
+      expect(find.text('Тестовый герой'), findsOneWidget);
+      expect(find.text('Атаки'), findsOneWidget);
     });
   });
 }

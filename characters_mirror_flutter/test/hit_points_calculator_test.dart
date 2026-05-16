@@ -5,6 +5,7 @@ import 'package:characters_mirror_flutter/features/character_sheet/application/c
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stats_row.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/hit_points_calculator_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -70,6 +71,56 @@ void main() {
       expect(evaluateHitPointExpression('4+'), isNull);
       expect(evaluateHitPointExpression('-4'), isNull);
       expect(evaluateHitPointExpression('10-4+2'), 8);
+    });
+
+    test('death saves normalize to nullable 0..3 values', () {
+      expect(normalizeDeathSaveCount(-1), 0);
+      expect(normalizeDeathSaveCount(4), 3);
+      expect(normalizeDeathSaveCountForSave(0), isNull);
+      expect(normalizeDeathSaveCountForSave(2), 2);
+    });
+
+    test('max hp uses per-level gains and hp bonuses', () {
+      final character = protocol.CharacterData(
+        hpPerLevelBonus: 1,
+        hpFlatBonus: 2,
+        derived: protocol.CharacterDerivedData(
+          abilityModifiers: const {'constitution': 2},
+        ),
+        classEntries: [
+          protocol.CharacterClassEntryData(
+            classData: protocol.ClassData(hitDieValue: 10),
+            level: 3,
+            classOrder: 0,
+            hpRolledValues: const [8, 7, 6],
+          ),
+        ],
+      );
+
+      expect(calculateMaxHpForCharacter(character), 32);
+    });
+
+    test('hit dice default current to max and normalize overrides', () {
+      final character = protocol.CharacterData(
+        currentHitDice: const {'d10': 5},
+        hitDiceMaxOverrides: const {'d10': 4},
+        derived: protocol.CharacterDerivedData(
+          hitDiceSummary: const {'d10': 3},
+        ),
+      );
+
+      expect(effectiveHitDiceMaxFromCharacter(character), const {'d10': 4});
+      expect(
+        effectiveCurrentHitDice(
+          character.currentHitDice,
+          effectiveHitDiceMaxFromCharacter(character),
+        ),
+        const {'d10': 4},
+      );
+      expect(
+        normalizeCurrentHitDiceForSave(const {'d10': 4}, const {'d10': 4}),
+        isNull,
+      );
     });
   });
 
@@ -165,6 +216,125 @@ void main() {
     expect(repository.saveCallCount, 1);
     expect(repository.savedCharacter?.currentHp, isNull);
     expect(repository.savedCharacter?.temporaryHp, isNull);
+  });
+
+  test('CharacterSheetController clears death saves when hp rises above 0',
+      () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 0,
+        deathSaveSuccesses: 2,
+        deathSaveFailures: 1,
+        derived: protocol.CharacterDerivedData(maxHp: 20),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .saveHitPoints(
+          currentHp: 5,
+          temporaryHp: 0,
+        );
+
+    expect(repository.savedCharacter?.deathSaveSuccesses, isNull);
+    expect(repository.savedCharacter?.deathSaveFailures, isNull);
+  });
+
+  testWidgets('HP sheet at 0 hp shows death saves instead of hp summary',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HitPointsCalculatorSheet(
+            character: protocol.CharacterData(
+              currentHp: 0,
+              deathSaveSuccesses: 1,
+              deathSaveFailures: 2,
+              derived: protocol.CharacterDerivedData(maxHp: 20),
+            ),
+            onSave: ({required currentHp, required temporaryHp}) async {},
+            onSaveDeathSavingThrows: ({
+              required successes,
+              required failures,
+            }) async {},
+            onSaveSettings: ({
+              required classEntries,
+              required hpPerLevelBonus,
+              required hpFlatBonus,
+              required currentHitDice,
+              required hitDiceMaxOverrides,
+            }) async {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Успехи'), findsOneWidget);
+    expect(find.text('Провалы'), findsOneWidget);
+    expect(find.byKey(const Key('death_saves_skull_button')), findsOneWidget);
+    expect(find.text('Текущие'), findsNothing);
+  });
+
+  testWidgets('HP sheet removes clear button and expands tune settings',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HitPointsCalculatorSheet(
+            character: protocol.CharacterData(
+              derived: protocol.CharacterDerivedData(
+                maxHp: 20,
+                hitDiceSummary: const {'d10': 2},
+              ),
+              classEntries: [
+                protocol.CharacterClassEntryData(
+                  classData: protocol.ClassData(name: 'Воин', hitDieValue: 10),
+                  level: 2,
+                  classOrder: 0,
+                ),
+              ],
+            ),
+            onSave: ({required currentHp, required temporaryHp}) async {},
+            onSaveDeathSavingThrows: ({
+              required successes,
+              required failures,
+            }) async {},
+            onSaveSettings: ({
+              required classEntries,
+              required hpPerLevelBonus,
+              required hpFlatBonus,
+              required currentHitDice,
+              required hitDiceMaxOverrides,
+            }) async {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Очистить'), findsNothing);
+
+    await tester.ensureVisible(find.byKey(const Key('hit_points_tune_button')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('hit_points_tune_button')));
+    await tester.pump();
+
+    expect(find.text('Настройка максимума'), findsOneWidget);
+    expect(find.text('Бонус за уровень'), findsOneWidget);
+    expect(find.text('Кости хитов'), findsOneWidget);
   });
 }
 
