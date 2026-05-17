@@ -12,6 +12,10 @@ class CharactersMirrorApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(userSettingsControllerProvider);
+    final keepScreenAwake = settings.maybeWhen(
+      data: (value) => value.keepScreenAwake,
+      orElse: () => false,
+    );
 
     return MaterialApp.router(
       title: 'Characters Mirror',
@@ -30,8 +34,11 @@ class CharactersMirrorApp extends ConsumerWidget {
 
         return Theme(
           data: adaptiveTheme,
-          child: RollResultsOverlay(
-            child: child ?? const SizedBox.shrink(),
+          child: AndroidKeepScreenAwakeApplier(
+            enabled: keepScreenAwake,
+            child: RollResultsOverlay(
+              child: child ?? const SizedBox.shrink(),
+            ),
           ),
         );
       },

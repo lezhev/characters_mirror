@@ -8,6 +8,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/weapon_attack_builder.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/attack_dialog_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -79,7 +80,7 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
   String? _lastSavedText;
-  String? _pendingText;
+  late final DebouncedAutosave<String?> _autosave;
   String? _selectedText;
   bool _isSaving = false;
 
@@ -90,6 +91,33 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
     _controller = TextEditingController(text: _lastSavedText ?? '');
     _controller.addListener(_handleControllerChanged);
     _focusNode = FocusNode();
+    _autosave = DebouncedAutosave<String?>(
+      delay: characterSheetAutosaveDelay,
+      lastSaved: _lastSavedText,
+      equals: (left, right) => left == right,
+      onSavingChanged: (value) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _isSaving = value;
+        });
+      },
+      onError: (error, _) {
+        if (!mounted) {
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(humanReadableError(error)),
+          ),
+        );
+      },
+      save: (draft) async {
+        await widget.onChanged(draft);
+        _lastSavedText = draft;
+      },
+    );
   }
 
   @override
@@ -98,12 +126,14 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
     final incomingText = widget.character.equipmentText;
     if (!_focusNode.hasFocus && incomingText != _lastSavedText) {
       _lastSavedText = incomingText;
+      _autosave.updateLastSaved(incomingText);
       _controller.text = incomingText ?? '';
     }
   }
 
   @override
   void dispose() {
+    _autosave.dispose(flushPending: true);
     _controller.removeListener(_handleControllerChanged);
     _controller.dispose();
     _focusNode.dispose();
@@ -244,46 +274,6 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
   }
 
   void _queueSave(String value) {
-    _pendingText = value;
-    if (_isSaving) {
-      return;
-    }
-    _flushPendingSaves();
-  }
-
-  Future<void> _flushPendingSaves() async {
-    while (_pendingText != null) {
-      final draft = _pendingText;
-      _pendingText = null;
-      if (draft == _lastSavedText) {
-        continue;
-      }
-
-      if (mounted) {
-        setState(() {
-          _isSaving = true;
-        });
-      }
-
-      try {
-        await widget.onChanged(draft);
-        _lastSavedText = draft;
-      } catch (error) {
-        if (!mounted) {
-          return;
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(humanReadableError(error)),
-          ),
-        );
-      }
-    }
-
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-      });
-    }
+    _autosave.schedule(value);
   }
 }

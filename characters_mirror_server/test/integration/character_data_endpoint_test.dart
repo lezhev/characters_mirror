@@ -1572,12 +1572,9 @@ void main() {
           secondLevelSpell,
           thirdLevelSpell,
         ]) {
-          await SpellClassAvailabilityData.db.insertRow(
+          await SpellData.db.updateRow(
             session,
-            SpellClassAvailabilityData(
-              spellId: spell.id!,
-              classDataId: classData.id!,
-            ),
+            spell.copyWith(availableForClassIds: [classData.id!]),
           );
         }
       } finally {
@@ -1601,6 +1598,106 @@ void main() {
       expect(
         knownSpellGroup.options?.map((spell) => spell.referenceKey),
         isNot(contains('slot_step_fireball')),
+      );
+    });
+
+    test('class step prepared spells use server-side ability score formula',
+        () async {
+      await seedCoreSpellSlotTables();
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Prepared Step Cleric',
+          hitDieValue: 8,
+          spellcastingProgression: SpellcastingProgression.full,
+        ),
+      );
+      await endpoints.classLevelData.upsert(
+        sessionBuilder,
+        ClassLevelData(
+          classDataId: classData.id!,
+          level: 3,
+          preparedSpellFormula: 'wisdom modifier + cleric level',
+        ),
+      );
+      final firstLevelSpell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'prepared_step_bless',
+          name: 'Prepared Step Bless',
+          level: 1,
+          schoolValue: SpellSchool.enchantment,
+        ),
+      );
+      final secondLevelSpell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'prepared_step_lesser_restoration',
+          name: 'Prepared Step Lesser Restoration',
+          level: 2,
+          schoolValue: SpellSchool.abjuration,
+        ),
+      );
+      final thirdLevelSpell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'prepared_step_spirit_guardians',
+          name: 'Prepared Step Spirit Guardians',
+          level: 3,
+          schoolValue: SpellSchool.conjuration,
+        ),
+      );
+      final session = sessionBuilder.build();
+      try {
+        for (final spell in [
+          firstLevelSpell,
+          secondLevelSpell,
+          thirdLevelSpell,
+        ]) {
+          await SpellData.db.updateRow(
+            session,
+            spell.copyWith(availableForClassIds: [classData.id!]),
+          );
+        }
+      } finally {
+        await session.close();
+      }
+
+      final withoutScores = await endpoints.classData.getStepView(
+        sessionBuilder,
+        classData.id!,
+        selectedLevel: 3,
+        isStartingClass: true,
+      );
+      expect(
+        (withoutScores.spellSelectionGroups ?? const []).where(
+          (group) => group.kind == CharacterSpellSelectionKind.preparedSpell,
+        ),
+        isEmpty,
+      );
+
+      final stepView = await endpoints.classData.getStepView(
+        sessionBuilder,
+        classData.id!,
+        selectedLevel: 3,
+        isStartingClass: true,
+        abilityScores: const {'wisdom': 16},
+      );
+      final preparedGroup = stepView.spellSelectionGroups!.singleWhere(
+        (group) => group.kind == CharacterSpellSelectionKind.preparedSpell,
+      );
+
+      expect(preparedGroup.selectionCount, 6);
+      expect(
+        preparedGroup.options?.map((spell) => spell.referenceKey),
+        containsAll([
+          'prepared_step_bless',
+          'prepared_step_lesser_restoration',
+        ]),
+      );
+      expect(
+        preparedGroup.options?.map((spell) => spell.referenceKey),
+        isNot(contains('prepared_step_spirit_guardians')),
       );
     });
 
@@ -2098,19 +2195,13 @@ Future<_CreationFixture> _seedCreationFixture(
   );
   final session = sessionBuilder.build();
   try {
-    await SpellClassAvailabilityData.db.insertRow(
+    await SpellData.db.updateRow(
       session,
-      SpellClassAvailabilityData(
-        spellId: lightSpell.id!,
-        classDataId: classData.id!,
-      ),
+      lightSpell.copyWith(availableForClassIds: [classData.id!]),
     );
-    await SpellClassAvailabilityData.db.insertRow(
+    await SpellData.db.updateRow(
       session,
-      SpellClassAvailabilityData(
-        spellId: magicMissileSpell.id!,
-        classDataId: classData.id!,
-      ),
+      magicMissileSpell.copyWith(availableForClassIds: [classData.id!]),
     );
   } finally {
     await session.close();

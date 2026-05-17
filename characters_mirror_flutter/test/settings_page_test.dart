@@ -6,6 +6,7 @@ import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/characters/application/characters_list_state.dart';
 import 'package:characters_mirror_flutter/features/characters/characters.dart';
 import 'package:characters_mirror_flutter/features/settings/settings.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -120,6 +121,64 @@ void main() {
         find.textContaining('Сервер недоступен.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('android keep screen awake toggle persists value',
+        (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      try {
+        final storage = _FakeStorage();
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              userSettingsRepositoryProvider.overrideWithValue(
+                UserSettingsRepository(storage: storage),
+              ),
+              serverConnectionStatusProvider.overrideWith(
+                (ref) async => ServerConnectionStatus.online,
+              ),
+            ],
+            child: const _SettingsThemeHarness(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Экран'), findsOneWidget);
+        expect(find.text('Не гасить экран'), findsOneWidget);
+
+        await tester.tap(find.byType(SwitchListTile));
+        await tester.pumpAndSettle();
+
+        expect(storage.values[userSettingsKeepScreenAwakeKey], 1);
+      } finally {
+        debugDefaultTargetPlatformOverride = null;
+      }
+    });
+
+    testWidgets('keep screen awake toggle is hidden outside android',
+        (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      try {
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              userSettingsRepositoryProvider.overrideWithValue(
+                UserSettingsRepository(storage: _FakeStorage()),
+              ),
+              serverConnectionStatusProvider.overrideWith(
+                (ref) async => ServerConnectionStatus.online,
+              ),
+            ],
+            child: const _SettingsThemeHarness(),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Не гасить экран'), findsNothing);
+      } finally {
+        debugDefaultTargetPlatformOverride = null;
+      }
     });
   });
 }

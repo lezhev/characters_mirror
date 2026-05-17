@@ -120,8 +120,13 @@ void main() {
       find.text(
         'Каждое существо в 15-футовом конусе делает спасбросок Ловкости.',
       ),
-      findsNothing,
+      findsOneWidget,
     );
+    expect(find.text('Burning Hands'), findsWidgets);
+    expect(find.text('1 уровень'), findsOneWidget);
+
+    await tester.tap(find.text('Закрыть'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const ValueKey('spell-slot-Круг 1-0')));
     await tester.pump();

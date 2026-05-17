@@ -1,3 +1,4 @@
+import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/class_features.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/class_tile_view.dart';
@@ -48,6 +49,7 @@ class ClassStep extends HookConsumerWidget {
               skillSelections: data.selectedSkillSelections,
               spellSelections: data.selectedSpellSelections,
               startingEquipmentSelections: data.startingEquipmentSelections,
+              hasSpellCreationStep: _hasSpellCreationStep(data.stepView),
               level: data.selectedLevel,
             );
             notifier.nextStep(context);
@@ -101,9 +103,36 @@ void _syncAndGo({
         skillSelections: data.selectedSkillSelections,
         spellSelections: data.selectedSpellSelections,
         startingEquipmentSelections: data.startingEquipmentSelections,
+        hasSpellCreationStep: _hasSpellCreationStep(data.stepView),
         level: data.selectedLevel,
       );
   ref.read(characterCreationProvider.notifier).goToStep(context, target);
+}
+
+bool _hasSpellCreationStep(ClassStepView? stepView) {
+  final selectedLevel = stepView?.selectedLevel ?? 1;
+  ClassLevelData? selectedClassLevel;
+  for (final level in stepView?.progression ?? const <ClassLevelData>[]) {
+    if (level.level == selectedLevel) {
+      selectedClassLevel = level;
+      break;
+    }
+    if (level.level <= selectedLevel &&
+        (selectedClassLevel == null ||
+            level.level > selectedClassLevel.level)) {
+      selectedClassLevel = level;
+    }
+  }
+
+  return (selectedClassLevel?.knownCantrips ?? 0) > 0 ||
+      (selectedClassLevel?.knownSpells ?? 0) > 0 ||
+      _normalizedText(selectedClassLevel?.preparedSpellFormula) != null ||
+      (stepView?.spellSelectionGroups?.isNotEmpty ?? false);
+}
+
+String? _normalizedText(String? value) {
+  final trimmed = value?.trim();
+  return trimmed == null || trimmed.isEmpty ? null : trimmed;
 }
 
 Future<void> _scrollToDetails(GlobalKey key) async {

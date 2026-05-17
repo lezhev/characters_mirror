@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -42,7 +45,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
   late final TextEditingController _controller;
   late int _deathSaveSuccesses;
   late int _deathSaveFailures;
-  bool _isSaving = false;
   bool _isTuning = false;
 
   @override
@@ -91,9 +93,7 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                     ),
                   ),
                   IconButton(
-                    onPressed: _isSaving
-                        ? null
-                        : () => Navigator.of(context).maybePop(),
+                    onPressed: () => Navigator.of(context).maybePop(),
                     icon: const Icon(Icons.close_rounded),
                     tooltip: 'Закрыть',
                   ),
@@ -104,7 +104,7 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                 _DeathSavingThrowsSummary(
                   successes: _deathSaveSuccesses,
                   failures: _deathSaveFailures,
-                  isSaving: _isSaving,
+                  isSaving: false,
                   onSuccessChanged: (index, value) => _setDeathSave(
                     isSuccess: true,
                     index: index,
@@ -138,7 +138,7 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
               const SizedBox(height: 12),
               _CalculatorGrid(
                 onInput: _appendInput,
-                isEnabled: !_isSaving,
+                isEnabled: true,
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -150,27 +150,25 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                   _ActionButton(
                     label: 'Временные',
                     accentColor: gameColors.temporaryHitPointsOnDark,
-                    isSaving: _isSaving,
+                    isSaving: false,
                     onPressed: () => _applyAndSave(HitPointAction.temporary),
                   ),
                   _ActionButton(
                     label: 'Лечение',
                     accentColor: gameColors.healingOnDark,
-                    isSaving: _isSaving,
+                    isSaving: false,
                     onPressed: () => _applyAndSave(HitPointAction.heal),
                   ),
                   _ActionButton(
                     label: 'Урон',
                     accentColor: gameColors.damageOnDark,
-                    isSaving: _isSaving,
+                    isSaving: false,
                     onPressed: () => _applyAndSave(HitPointAction.damage),
                   ),
                   IconButton.filledTonal(
                     key: const Key('hit_points_tune_button'),
                     tooltip: 'Настроить хиты',
-                    onPressed: _isSaving
-                        ? null
-                        : () => setState(() => _isTuning = !_isTuning),
+                    onPressed: () => setState(() => _isTuning = !_isTuning),
                     icon: const Icon(Icons.tune),
                   ),
                 ],
@@ -180,7 +178,7 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                 _HitPointTunePanel(
                   character: widget.character,
                   settings: _settings,
-                  isSaving: _isSaving,
+                  isSaving: false,
                   onHpGainChanged: _setHpGain,
                   onHpPerLevelBonusChanged: (value) => _saveSettings(
                     _settings.copyWith(hpPerLevelBonus: value),
@@ -200,8 +198,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
   }
 
   void _appendInput(String value) {
-    if (_isSaving) return;
-
     final currentText = _controller.text;
     if (value == '+' || value == '-') {
       if (currentText.isEmpty) {
@@ -234,7 +230,7 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
 
   Future<void> _applyAndSave(HitPointAction action) async {
     final value = evaluateHitPointExpression(_controller.text);
-    if (value == null || value <= 0 || _isSaving) {
+    if (value == null || value <= 0) {
       return;
     }
 
@@ -253,7 +249,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
         _deathSaveSuccesses = 0;
         _deathSaveFailures = 0;
       }
-      _isSaving = true;
     });
 
     try {
@@ -273,12 +268,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
           SnackBar(content: Text(humanReadableError(error))),
         );
       }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
     }
   }
 
@@ -287,10 +276,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     required int index,
     required bool checked,
   }) async {
-    if (_isSaving) {
-      return;
-    }
-
     final previousSuccesses = _deathSaveSuccesses;
     final previousFailures = _deathSaveFailures;
     final nextValue = checked ? index + 1 : index;
@@ -300,7 +285,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     setState(() {
       _deathSaveSuccesses = nextSuccesses;
       _deathSaveFailures = nextFailures;
-      _isSaving = true;
     });
 
     try {
@@ -317,12 +301,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(humanReadableError(error))),
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
       }
     }
   }
@@ -358,10 +336,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
   }
 
   Future<void> _saveSettings(HitPointSettingsDraft nextSettings) async {
-    if (_isSaving) {
-      return;
-    }
-
     final previousSettings = _settings;
     final previousTotals = _totals;
     final baseHitDiceMax = baseHitDiceMaxFromCharacter(
@@ -398,7 +372,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     setState(() {
       _settings = normalizedSettings;
       _totals = nextTotals;
-      _isSaving = true;
     });
 
     try {
@@ -418,12 +391,6 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(humanReadableError(error))),
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
       }
     }
   }
@@ -840,6 +807,7 @@ class _AutosaveNumberField extends StatefulWidget {
 class _AutosaveNumberFieldState extends State<_AutosaveNumberField> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -858,6 +826,8 @@ class _AutosaveNumberFieldState extends State<_AutosaveNumberField> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
+    _commit();
     _focusNode
       ..removeListener(_handleFocusChanged)
       ..dispose();
@@ -882,6 +852,7 @@ class _AutosaveNumberFieldState extends State<_AutosaveNumberField> {
         border: const OutlineInputBorder(),
         isDense: true,
       ),
+      onChanged: (_) => _scheduleCommit(),
       onSubmitted: (_) => _commit(),
     );
   }
@@ -892,7 +863,14 @@ class _AutosaveNumberFieldState extends State<_AutosaveNumberField> {
     }
   }
 
+  void _scheduleCommit() {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(characterSheetAutosaveDelay, _commit);
+  }
+
   void _commit() {
+    _debounceTimer?.cancel();
+    _debounceTimer = null;
     final parsed = int.tryParse(_controller.text);
     if (parsed == null) {
       _controller.text = '${widget.value}';

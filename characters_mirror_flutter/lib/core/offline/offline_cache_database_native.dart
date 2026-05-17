@@ -246,7 +246,7 @@ VALUES (?, ?, ?, ?)
   ) async {
     final payload = _readReferencePayload(kind, cacheKey);
     if (payload == null) return null;
-    return fromJson(jsonDecode(payload) as Map<String, dynamic>);
+    return fromJson(_decodeCachedPayload(payload));
   }
 
   Future<List<T>?> getReferenceList<T>(
@@ -257,7 +257,7 @@ VALUES (?, ?, ?, ?)
     final payload = _readReferencePayload(kind, cacheKey);
     if (payload == null) return null;
     return [
-      for (final item in jsonDecode(payload) as List<dynamic>)
+      for (final item in _decodeCachedListPayload(payload))
         fromJson(item as Map<String, dynamic>),
     ];
   }
@@ -391,7 +391,9 @@ INSERT OR REPLACE INTO characters_cache(
         payload,
         basePayload,
         existing?.baseVersion ?? character.version,
-        (existing?.baseUpdatedAt ?? character.updatedAt)?.toUtc().toIso8601String(),
+        (existing?.baseUpdatedAt ?? character.updatedAt)
+            ?.toUtc()
+            .toIso8601String(),
         OfflineCharacterSyncStatus.dirty.name,
         OfflineCharacterSyncOperation.upsert.name,
         now.toIso8601String(),
@@ -609,7 +611,8 @@ WHERE user_id = ? AND id = ?
     }
   }
 
-  Future<void> markChangeFailed(int userId, String changeId, Object error) async {
+  Future<void> markChangeFailed(
+      int userId, String changeId, Object error) async {
     final stmt = _db.prepare('''
 UPDATE character_changes
 SET status = ?, last_error = ?
@@ -777,17 +780,19 @@ VALUES (?, ?, ?)
     return OfflineCharacterChange(
       id: row['id'] as String,
       userId: row['user_id'] as int,
-      changeType: CharacterChangeType.values.byName(row['change_type'] as String),
+      changeType:
+          CharacterChangeType.values.byName(row['change_type'] as String),
       entityType:
           CharacterEntityType.values.byName(row['entity_type'] as String),
       entityId: row['entity_id'] as String,
       payload: payloadJson == null
           ? null
           : CharacterData.fromJson(_decodeCharacterPayload(payloadJson)),
-      createdAt: _parseDateTime(row['created_at'] as String?) ?? DateTime.now().toUtc(),
+      createdAt: _parseDateTime(row['created_at'] as String?) ??
+          DateTime.now().toUtc(),
       baseUpdatedAt: _parseDateTime(row['base_updated_at'] as String?),
-      status: OfflineCharacterChangeStatus.values
-          .byName(row['status'] as String),
+      status:
+          OfflineCharacterChangeStatus.values.byName(row['status'] as String),
       lastError: row['last_error'] as String?,
     );
   }
@@ -803,7 +808,7 @@ VALUES (?, ?, ?)
   }
 
   Map<String, dynamic> _decodeCharacterPayload(String payloadJson) {
-    final payload = jsonDecode(payloadJson) as Map<String, dynamic>;
+    final payload = _decodeCachedPayload(payloadJson);
     final notes = payload['notes'];
     if (notes is String) {
       final trimmed = notes.trim();
@@ -844,6 +849,45 @@ VALUES (?, ?, ?)
       ];
     }
     return payload;
+  }
+
+  Map<String, dynamic> _decodeCachedPayload(String payloadJson) {
+    final payload = jsonDecode(payloadJson) as Map<String, dynamic>;
+    _normalizeLegacyClassChoiceTypes(payload);
+    return payload;
+  }
+
+  List<dynamic> _decodeCachedListPayload(String payloadJson) {
+    final payload = jsonDecode(payloadJson) as List<dynamic>;
+    _normalizeLegacyClassChoiceTypes(payload);
+    return payload;
+  }
+
+  void _normalizeLegacyClassChoiceTypes(Object? value) {
+    if (value is List<dynamic>) {
+      for (final item in value) {
+        _normalizeLegacyClassChoiceTypes(item);
+      }
+      return;
+    }
+    if (value is! Map<String, dynamic>) return;
+
+    if (value['type'] == 'skill' && _looksLikeClassChoiceGroup(value)) {
+      value['type'] = null;
+    }
+    for (final item in value.values) {
+      _normalizeLegacyClassChoiceTypes(item);
+    }
+  }
+
+  bool _looksLikeClassChoiceGroup(Map<String, dynamic> value) {
+    return value.containsKey('selectionCount') ||
+        value.containsKey('exclusiveKey') ||
+        value.containsKey('allowDuplicates') ||
+        value.containsKey('sourceClassId') ||
+        value.containsKey('sourceBackgroundId') ||
+        value.containsKey('sourceFeatureId') ||
+        value.containsKey('sourceSubclassId');
   }
 
   String _generateLegacyId(String seed) {

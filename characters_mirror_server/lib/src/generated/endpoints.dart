@@ -720,6 +720,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int?>(),
               nullable: true,
             ),
+            'abilityScores': _i1.ParameterDescription(
+              name: 'abilityScores',
+              type: _i1.getType<Map<String, int>?>(),
+              nullable: true,
+            ),
           },
           call: (
             _i1.Session session,
@@ -731,6 +736,7 @@ class Endpoints extends _i1.EndpointDispatch {
             selectedLevel: params['selectedLevel'],
             isStartingClass: params['isStartingClass'],
             selectedSubclassId: params['selectedSubclassId'],
+            abilityScores: params['abilityScores'],
           ),
         ),
         'delete': _i1.MethodConnector(

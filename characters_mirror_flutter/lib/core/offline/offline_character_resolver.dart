@@ -1056,11 +1056,19 @@ String offlineClassStepKey(
   int classId, {
   int selectedLevel = 1,
   int? selectedSubclassId,
+  Map<String, int>? abilityScores,
 }) {
+  final abilityScoreKey = abilityScores == null || abilityScores.isEmpty
+      ? 'none'
+      : (abilityScores.entries.toList()
+            ..sort((left, right) => left.key.compareTo(right.key)))
+          .map((entry) => '${entry.key}=${entry.value}')
+          .join(',');
   return [
     classId,
     selectedLevel,
     true,
     selectedSubclassId ?? 0,
+    abilityScoreKey,
   ].join(':');
 }

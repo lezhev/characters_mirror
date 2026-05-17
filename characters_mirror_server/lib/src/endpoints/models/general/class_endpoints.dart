@@ -36,6 +36,7 @@ class ClassDataEndpoint extends Endpoint {
     int selectedLevel = 1,
     bool isStartingClass = true,
     int? selectedSubclassId,
+    Map<String, int>? abilityScores,
   }) async {
     final classData = await _requireById<ClassData>(
       await ClassData.db.find(
@@ -123,9 +124,11 @@ class ClassDataEndpoint extends Endpoint {
         ? await _buildSpellSelectionGroups(
             session,
             classId: classId,
+            selectedSubclassId: selectedSubclassId,
             classData: classData,
             selectedLevel: selectedLevel,
             classLevel: selectedClassLevel,
+            abilityScores: abilityScores,
           )
         : const <ClassSpellSelectionGroupView>[];
 
@@ -253,20 +256,20 @@ ClassLevelData? _classLevelForSelection(
 Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
   Session session, {
   required int classId,
+  required int? selectedSubclassId,
   required ClassData classData,
   required int selectedLevel,
   required ClassLevelData classLevel,
+  required Map<String, int>? abilityScores,
 }) async {
-  final availability = await SpellClassAvailabilityData.db.find(
-    session,
-    where: (t) => t.classDataId.equals(classId),
-    include: SpellClassAvailabilityData.include(
-      spell: SpellData.include(),
-    ),
-  );
   final spells = [
-    for (final row in availability)
-      if (row.spell != null) row.spell!,
+    for (final spell in await SpellData.db.find(session))
+      if (_isSpellAvailableForClassStep(
+        spell,
+        classId: classId,
+        selectedSubclassId: selectedSubclassId,
+      ))
+        spell,
   ]..sort(_compareSpells);
 
   final groups = <ClassSpellSelectionGroupView>[];
@@ -314,7 +317,80 @@ Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
     }
   }
 
+  final preparedSpellCount = _preparedSpellCount(
+    classLevel.preparedSpellFormula,
+    abilityScores: abilityScores,
+    classLevel: selectedLevel,
+  );
+  if (preparedSpellCount != null && maxSpellLevel > 0) {
+    final preparedSpellOptions = [
+      for (final spell in spells)
+        if ((spell.level ?? 0) > 0 && spell.level! <= maxSpellLevel) spell,
+    ];
+    if (preparedSpellOptions.isNotEmpty) {
+      groups.add(
+        ClassSpellSelectionGroupView(
+          kind: CharacterSpellSelectionKind.preparedSpell,
+          selectionCount: preparedSpellCount,
+          classDataId: classId,
+          classLevel: selectedLevel,
+          options: preparedSpellOptions,
+        ),
+      );
+    }
+  }
+
   return groups;
+}
+
+int? _preparedSpellCount(
+  String? formula, {
+  required Map<String, int>? abilityScores,
+  required int classLevel,
+}) {
+  final normalizedFormula = formula?.trim().toLowerCase();
+  if (normalizedFormula == null || normalizedFormula.isEmpty) {
+    return null;
+  }
+  if (abilityScores == null || abilityScores.isEmpty) {
+    return null;
+  }
+
+  Ability? ability;
+  for (final candidate in Ability.values) {
+    if (normalizedFormula.contains('${candidate.name} modifier')) {
+      ability = candidate;
+      break;
+    }
+  }
+  if (ability == null || !normalizedFormula.contains('level')) {
+    return null;
+  }
+
+  final score = abilityScores[ability.name];
+  if (score == null) {
+    return null;
+  }
+
+  final count = _abilityModifier(score) + classLevel;
+  return count < 1 ? 1 : count;
+}
+
+int _abilityModifier(int score) => ((score - 10) / 2).floor();
+
+bool _isSpellAvailableForClassStep(
+  SpellData spell, {
+  required int classId,
+  required int? selectedSubclassId,
+}) {
+  if (spell.availableForClassIds?.contains(classId) == true) {
+    return true;
+  }
+  if (selectedSubclassId != null &&
+      spell.availableForSubclassIds?.contains(selectedSubclassId) == true) {
+    return true;
+  }
+  return false;
 }
 
 Future<Map<int, int>?> _spellSlotsForClassStep(

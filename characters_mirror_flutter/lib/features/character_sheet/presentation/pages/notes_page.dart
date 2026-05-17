@@ -6,6 +6,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart'
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -67,7 +68,6 @@ class _NotesEditorState extends State<_NotesEditor> {
   final List<TextEditingController> _controllers = [];
   final List<FocusNode> _focusNodes = [];
   List<String> _lastNotes = const [];
-  bool _isSaving = false;
   bool _isResettingFields = false;
   int? _confirmDeleteIndex;
 
@@ -104,23 +104,10 @@ class _NotesEditorState extends State<_NotesEditor> {
         AppSectionHeader(
           title: 'Заметки',
           showDivider: false,
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (_isSaving) ...[
-                const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-                const SizedBox(width: 8),
-              ],
-              IconButton(
-                tooltip: 'Добавить заметку',
-                onPressed: _handleAdd,
-                icon: const Icon(Icons.add),
-              ),
-            ],
+          trailing: IconButton(
+            tooltip: 'Добавить заметку',
+            onPressed: _handleAdd,
+            icon: const Icon(Icons.add),
           ),
         ),
         const SizedBox(height: 12),
@@ -167,7 +154,7 @@ class _NotesEditorState extends State<_NotesEditor> {
       _setLocalNotes([..._currentTexts(), '']);
     });
     _focusNodes.last.requestFocus();
-    await widget.onAdd();
+    runCharacterSheetSave(context, widget.onAdd());
   }
 
   Future<void> _handleDelete(int index) async {
@@ -185,7 +172,7 @@ class _NotesEditorState extends State<_NotesEditor> {
           if (i != index) _controllers[i].text,
       ]);
     });
-    await _runSave(() => widget.onDelete(index));
+    _runSave(() => widget.onDelete(index));
   }
 
   Future<void> _saveNote(int index) async {
@@ -197,35 +184,12 @@ class _NotesEditorState extends State<_NotesEditor> {
       return;
     }
 
-    await _runSave(() => widget.onUpdate(index, text));
+    _runSave(() => widget.onUpdate(index, text));
   }
 
-  Future<void> _runSave(Future<void> Function() save) async {
-    if (mounted) {
-      setState(() {
-        _isSaving = true;
-      });
-    }
-
-    try {
-      await save();
-      _lastNotes = _currentTexts();
-    } catch (error) {
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(humanReadableError(error)),
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
-    }
+  void _runSave(Future<void> Function() save) {
+    _lastNotes = _currentTexts();
+    runCharacterSheetSave(context, save());
   }
 
   void _syncNotes(List<String> notes) {

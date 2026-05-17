@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 const userSettingsThemeModeKey = 'characters_mirror.user_settings.theme_mode';
+const userSettingsKeepScreenAwakeKey =
+    'characters_mirror.user_settings.keep_screen_awake';
 
 class UserSettingsRepository {
   UserSettingsRepository({
@@ -20,6 +22,15 @@ class UserSettingsRepository {
       userSettingsThemeModeKey,
       themeModeToStorageValue(themeMode),
     );
+  }
+
+  Future<bool> loadKeepScreenAwake() async {
+    final value = await _storage.getInt(userSettingsKeepScreenAwakeKey);
+    return value == 1;
+  }
+
+  Future<void> saveKeepScreenAwake(bool value) {
+    return _storage.setInt(userSettingsKeepScreenAwakeKey, value ? 1 : 0);
   }
 }
 

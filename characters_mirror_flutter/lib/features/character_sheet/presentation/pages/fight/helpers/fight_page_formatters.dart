@@ -70,17 +70,10 @@ List<DamagePartData> effectiveSpellDamageParts(SpellData spell) {
 
 String _formatDamagePartLabel(DamagePartData part) {
   final formula = normalizedAttackText(part.formula);
-  final damageType = part.damageType;
-  if (formula == null && damageType == null) {
+  if (formula == null) {
     return 'Урон';
   }
-  if (formula == null) {
-    return damageTypeLabel(damageType!).toLowerCase();
-  }
-  if (damageType == null) {
-    return formula;
-  }
-  return '$formula ${damageTypeLabel(damageType).toLowerCase()}';
+  return formula;
 }
 
 List<DamagePartData> _normalizedDamageParts(List<DamagePartData>? parts) {

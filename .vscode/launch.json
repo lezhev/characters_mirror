@@ -9,7 +9,9 @@
             "cwd": "characters_mirror_server",
             "request": "launch",
             "type": "dart",
-            "args": ["--apply-migrations"]
+            "args": [
+                "--apply-migrations"
+            ]
         },
         {
             "name": "flutter",
@@ -31,5 +33,29 @@
             "type": "dart",
             "flutterMode": "release"
         },
+        {
+            "name": "Flutter debug local Serverpod",
+            "cwd": "characters_mirror_flutter",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "6TEEUSRGOFZPAMNR",
+            "program": "lib/main.dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--dart-define=CM_SERVER_URL=http://localhost:8083/"
+            ]
+        },
+        {
+            "name": "Flutter release local Serverpod",
+            "cwd": "characters_mirror_flutter",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "6TEEUSRGOFZPAMNR",
+            "program": "lib/main.dart",
+            "flutterMode": "release",
+            "toolArgs": [
+                "--dart-define=CM_SERVER_URL=http://localhost:8083/"
+            ]
+        }
     ]
 }

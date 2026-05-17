@@ -293,6 +293,7 @@ class _FakeClassRepository extends ClassRepository {
     int selectedLevel = 1,
     bool isStartingClass = true,
     int? selectedSubclassId,
+    Map<String, int>? abilityScores,
   }) async {
     if (selectedSubclassId != null) {
       return subclassStepViews['$classId:$selectedSubclassId']!;

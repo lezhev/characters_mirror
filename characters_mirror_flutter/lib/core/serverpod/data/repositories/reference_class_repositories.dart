@@ -30,6 +30,7 @@ class ClassRepository implements Repository<ClassData> {
     int selectedLevel = 1,
     bool isStartingClass = true,
     int? selectedSubclassId,
+    Map<String, int>? abilityScores,
   }) =>
       cachedValueFallback(
         cache: offlineCacheDatabase,
@@ -38,12 +39,14 @@ class ClassRepository implements Repository<ClassData> {
           classId,
           selectedLevel: selectedLevel,
           selectedSubclassId: selectedSubclassId,
+          abilityScores: abilityScores,
         ),
         loadRemote: () => client.classData.getStepView(
           classId,
           selectedLevel: selectedLevel,
           isStartingClass: isStartingClass,
           selectedSubclassId: selectedSubclassId,
+          abilityScores: abilityScores,
         ),
         toJson: (value) => value.toJson(),
         fromJson: ClassStepView.fromJson,

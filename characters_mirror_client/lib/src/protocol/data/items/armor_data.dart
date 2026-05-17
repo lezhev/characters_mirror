@@ -24,6 +24,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     this.updatedAt,
     this.categoryValue,
     this.baseAC,
+    this.bonusAC,
     this.dexBonus,
     this.dexBonusMax,
     this.strengthRequirement,
@@ -43,6 +44,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     DateTime? updatedAt,
     _i2.ArmorCategory? categoryValue,
     int? baseAC,
+    int? bonusAC,
     bool? dexBonus,
     int? dexBonusMax,
     int? strengthRequirement,
@@ -70,6 +72,7 @@ abstract class ArmorData implements _i1.SerializableModel {
           : _i2.ArmorCategory.fromJson(
               (jsonSerialization['categoryValue'] as String)),
       baseAC: jsonSerialization['baseAC'] as int?,
+      bonusAC: jsonSerialization['bonusAC'] as int?,
       dexBonus: jsonSerialization['dexBonus'] as bool?,
       dexBonusMax: jsonSerialization['dexBonusMax'] as int?,
       strengthRequirement: jsonSerialization['strengthRequirement'] as int?,
@@ -102,6 +105,8 @@ abstract class ArmorData implements _i1.SerializableModel {
 
   int? baseAC;
 
+  int? bonusAC;
+
   bool? dexBonus;
 
   int? dexBonusMax;
@@ -128,6 +133,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     DateTime? updatedAt,
     _i2.ArmorCategory? categoryValue,
     int? baseAC,
+    int? bonusAC,
     bool? dexBonus,
     int? dexBonusMax,
     int? strengthRequirement,
@@ -148,6 +154,7 @@ abstract class ArmorData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (categoryValue != null) 'categoryValue': categoryValue?.toJson(),
       if (baseAC != null) 'baseAC': baseAC,
+      if (bonusAC != null) 'bonusAC': bonusAC,
       if (dexBonus != null) 'dexBonus': dexBonus,
       if (dexBonusMax != null) 'dexBonusMax': dexBonusMax,
       if (strengthRequirement != null)
@@ -179,6 +186,7 @@ class _ArmorDataImpl extends ArmorData {
     DateTime? updatedAt,
     _i2.ArmorCategory? categoryValue,
     int? baseAC,
+    int? bonusAC,
     bool? dexBonus,
     int? dexBonusMax,
     int? strengthRequirement,
@@ -196,6 +204,7 @@ class _ArmorDataImpl extends ArmorData {
           updatedAt: updatedAt,
           categoryValue: categoryValue,
           baseAC: baseAC,
+          bonusAC: bonusAC,
           dexBonus: dexBonus,
           dexBonusMax: dexBonusMax,
           strengthRequirement: strengthRequirement,
@@ -219,6 +228,7 @@ class _ArmorDataImpl extends ArmorData {
     Object? updatedAt = _Undefined,
     Object? categoryValue = _Undefined,
     Object? baseAC = _Undefined,
+    Object? bonusAC = _Undefined,
     Object? dexBonus = _Undefined,
     Object? dexBonusMax = _Undefined,
     Object? strengthRequirement = _Undefined,
@@ -239,6 +249,7 @@ class _ArmorDataImpl extends ArmorData {
           ? categoryValue
           : this.categoryValue,
       baseAC: baseAC is int? ? baseAC : this.baseAC,
+      bonusAC: bonusAC is int? ? bonusAC : this.bonusAC,
       dexBonus: dexBonus is bool? ? dexBonus : this.dexBonus,
       dexBonusMax: dexBonusMax is int? ? dexBonusMax : this.dexBonusMax,
       strengthRequirement: strengthRequirement is int?

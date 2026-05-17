@@ -5,7 +5,6 @@ import 'package:characters_mirror_flutter/features/character_creation/steps/clas
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/class_feature_cards.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/class_profile_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/class_progression_sections.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/class_spell_selection_section.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/skill_selection_section.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_section.dart';
 import 'package:flutter/material.dart';
@@ -109,21 +108,6 @@ class ClassFeatures extends HookConsumerWidget {
                     onClearGroup: ref
                         .read(classStateProvider.notifier)
                         .clearSkillSelectionGroup,
-                  ),
-                ],
-                if ((currentStepView.spellSelectionGroups?.isNotEmpty ??
-                    false)) ...[
-                  const Gap(12),
-                  ClassSpellSelectionSection(
-                    groups: currentStepView.spellSelectionGroups ??
-                        const <ClassSpellSelectionGroupView>[],
-                    selections: stateData.selectedSpellSelections,
-                    onToggleSpell: ref
-                        .read(classStateProvider.notifier)
-                        .toggleSpellSelection,
-                    onClearGroup: ref
-                        .read(classStateProvider.notifier)
-                        .clearSpellSelectionGroup,
                   ),
                 ],
                 if (choiceGroups.isNotEmpty) ...[

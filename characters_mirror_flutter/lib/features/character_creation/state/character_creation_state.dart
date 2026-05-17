@@ -20,6 +20,7 @@ enum Step {
   classStep,
   background,
   attributes,
+  spells,
   personal,
   summary
 }
@@ -56,6 +57,8 @@ extension CreationStepX on Step {
         return 'Предыстория';
       case Step.attributes:
         return 'Характеристики';
+      case Step.spells:
+        return 'Заклинания';
       case Step.personal:
         return 'Личное';
       case Step.summary:
@@ -76,11 +79,19 @@ extension CreationStepX on Step {
   }
 }
 
+List<Step> creationVisibleSteps({required bool hasSpellStep}) {
+  return [
+    for (final step in Step.values)
+      if (hasSpellStep || step != Step.spells) step,
+  ];
+}
+
 @freezed
 sealed class CharacterCreationState with _$CharacterCreationState {
   const factory CharacterCreationState({
     required CharacterData character,
     required Step step,
+    @Default(false) bool hasSpellCreationStep,
     @Default(0) int draftRevision,
   }) = _CharacterCreationState;
 
@@ -102,13 +113,39 @@ class CharacterCreation extends _$CharacterCreation {
   CharacterCreationState build() => CharacterCreationState.initial();
 
   void nextStep(BuildContext context) {
-    goToStep(context, state.step.next ?? Step.summary);
+    goToStep(context, nextVisibleStep(state.step) ?? Step.summary);
   }
 
   void prevStep(BuildContext context) {
-    final previous = state.step.previous;
+    final previous = previousVisibleStep(state.step);
     if (previous == null) return;
     goToStep(context, previous);
+  }
+
+  Step? nextVisibleStep([Step? from]) {
+    final visible = creationVisibleSteps(
+      hasSpellStep: state.hasSpellCreationStep,
+    );
+    final current = from ?? state.step;
+    final index = visible.indexOf(current);
+    if (index == -1) {
+      return visible.isEmpty ? null : visible.first;
+    }
+    final nextIndex = index + 1;
+    return nextIndex < visible.length ? visible[nextIndex] : null;
+  }
+
+  Step? previousVisibleStep([Step? from]) {
+    final visible = creationVisibleSteps(
+      hasSpellStep: state.hasSpellCreationStep,
+    );
+    final current = from ?? state.step;
+    final index = visible.indexOf(current);
+    if (index == -1) {
+      return visible.isEmpty ? null : visible.last;
+    }
+    final previousIndex = index - 1;
+    return previousIndex >= 0 ? visible[previousIndex] : null;
   }
 
   void goToStep(BuildContext context, Step step) {
@@ -248,6 +285,7 @@ class CharacterCreation extends _$CharacterCreation {
     List<CharacterSpellSelectionData> spellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
+    bool hasSpellCreationStep = false,
     int level = 1,
   }) {
     if (classData == null) return;
@@ -263,6 +301,7 @@ class CharacterCreation extends _$CharacterCreation {
       skillSelections: skillSelections,
       spellSelections: spellSelections,
       startingEquipmentSelections: startingEquipmentSelections,
+      hasSpellCreationStep: hasSpellCreationStep,
     );
   }
 
@@ -429,6 +468,7 @@ class CharacterCreation extends _$CharacterCreation {
     List<CharacterSpellSelectionData> spellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
+    bool hasSpellCreationStep = false,
   }) {
     final entry = CharacterClassEntryData(
       classData: classData,
@@ -498,6 +538,7 @@ class CharacterCreation extends _$CharacterCreation {
         ),
       ),
     );
+    state = state.copyWith(hasSpellCreationStep: hasSpellCreationStep);
   }
 
   List<CharacterChoiceData> buildClassChoices({

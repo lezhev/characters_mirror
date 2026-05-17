@@ -4,4 +4,5 @@ export 'package:characters_mirror_flutter/features/character_creation/steps/clas
 export 'package:characters_mirror_flutter/features/character_creation/steps/introduction.dart';
 export 'package:characters_mirror_flutter/features/character_creation/steps/personal_step/personal.dart';
 export 'package:characters_mirror_flutter/features/character_creation/steps/race_step/race_step.dart';
+export 'package:characters_mirror_flutter/features/character_creation/steps/spells_step/spells_step.dart';
 export 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/summary.dart';

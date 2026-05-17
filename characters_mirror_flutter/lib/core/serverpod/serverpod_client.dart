@@ -13,6 +13,9 @@ Future<void> initializeServerpodClient() async {
     'CM_SERVER_URL',
     defaultValue: kIsWeb ? 'http://localhost:8083/' : 'http://10.0.2.2:8083/',
   );
+  if (kDebugMode) {
+    debugPrint('Serverpod client URL: $serverUrl');
+  }
 
   // Sets up a singleton client object that can be used to talk to the server from
   // anywhere in our app. The client is generated from your server code.

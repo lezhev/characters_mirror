@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart'
     as protocol;
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
@@ -254,6 +256,129 @@ void main() {
     expect(repository.savedCharacter?.deathSaveFailures, isNull);
   });
 
+  test('CharacterSheetController coalesces rapid saves to latest value',
+      () async {
+    final repository = _ControlledCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 12,
+        derived: protocol.CharacterDerivedData(maxHp: 20),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    final notifier =
+        container.read(characterSheetControllerProvider(1).notifier);
+
+    final first = notifier.saveHitPoints(currentHp: 11, temporaryHp: 0);
+    final second = notifier.saveHitPoints(currentHp: 10, temporaryHp: 0);
+    final third = notifier.saveHitPoints(currentHp: 8, temporaryHp: 0);
+
+    expect(repository.savedCharacters, hasLength(1));
+    expect(repository.savedCharacters.single.currentHp, 11);
+
+    repository.completeSave(0);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(repository.savedCharacters, hasLength(2));
+    expect(repository.savedCharacters.last.currentHp, 8);
+
+    repository.completeSave(1);
+    await first;
+    await second;
+    await third;
+
+    final character =
+        container.read(characterSheetControllerProvider(1)).requireValue;
+    expect(character.currentHp, 8);
+  });
+
+  test('CharacterSheetController ignores stale save failures', () async {
+    final repository = _ControlledCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 12,
+        derived: protocol.CharacterDerivedData(maxHp: 20),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    final notifier =
+        container.read(characterSheetControllerProvider(1).notifier);
+
+    final first = notifier.saveHitPoints(currentHp: 11, temporaryHp: 0);
+    final second = notifier.saveHitPoints(currentHp: 8, temporaryHp: 0);
+
+    repository.failSave(0);
+    await Future<void>.delayed(Duration.zero);
+
+    expect(repository.savedCharacters, hasLength(2));
+    expect(repository.savedCharacters.last.currentHp, 8);
+
+    repository.completeSave(1);
+    await first;
+    await second;
+
+    final character =
+        container.read(characterSheetControllerProvider(1)).requireValue;
+    expect(character.currentHp, 8);
+  });
+
+  test('CharacterSheetController rolls back latest failed save', () async {
+    final repository = _ControlledCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 12,
+        derived: protocol.CharacterDerivedData(maxHp: 20),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+
+    final save = container
+        .read(characterSheetControllerProvider(1).notifier)
+        .saveHitPoints(currentHp: 8, temporaryHp: 0);
+    repository.failSave(0);
+
+    await expectLater(save, throwsException);
+    final character =
+        container.read(characterSheetControllerProvider(1)).requireValue;
+    expect(character.currentHp, 12);
+  });
+
   testWidgets('HP sheet at 0 hp shows death saves instead of hp summary',
       (tester) async {
     await tester.pumpWidget(
@@ -336,6 +461,61 @@ void main() {
     expect(find.text('Бонус за уровень'), findsOneWidget);
     expect(find.text('Кости хитов'), findsOneWidget);
   });
+
+  testWidgets('HP sheet stays interactive while save is pending',
+      (tester) async {
+    tester.view.physicalSize = const Size(1000, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final firstSave = Completer<void>();
+    var saveCount = 0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HitPointsCalculatorSheet(
+            character: protocol.CharacterData(
+              derived: protocol.CharacterDerivedData(maxHp: 20),
+            ),
+            onSave: ({required currentHp, required temporaryHp}) {
+              saveCount += 1;
+              return saveCount == 1 ? firstSave.future : Future.value();
+            },
+            onSaveDeathSavingThrows: ({
+              required successes,
+              required failures,
+            }) async {},
+            onSaveSettings: ({
+              required classEntries,
+              required hpPerLevelBonus,
+              required hpFlatBonus,
+              required currentHitDice,
+              required hitDiceMaxOverrides,
+            }) async {},
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.widgetWithText(OutlinedButton, '1'));
+    await tester.pump();
+    await tester.ensureVisible(find.widgetWithText(FilledButton, 'Урон'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Урон'));
+    await tester.pump();
+
+    expect(saveCount, 1);
+    expect(find.text('19'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Урон'));
+    await tester.pump();
+
+    expect(saveCount, 2);
+    expect(find.text('18'), findsOneWidget);
+
+    firstSave.complete();
+  });
 }
 
 class _FakeCharacterRepository extends CharacterRepository {
@@ -358,5 +538,38 @@ class _FakeCharacterRepository extends CharacterRepository {
     savedCharacter = character;
     this.character = character;
     return character;
+  }
+}
+
+class _ControlledCharacterRepository extends CharacterRepository {
+  _ControlledCharacterRepository(this.character);
+
+  protocol.CharacterData character;
+  final savedCharacters = <protocol.CharacterData>[];
+  final _saveCompleters = <Completer<protocol.CharacterData>>[];
+
+  @override
+  Future<protocol.CharacterData> getCharacter(int characterId) async {
+    return character;
+  }
+
+  @override
+  Future<protocol.CharacterData> saveCharacter(
+    protocol.CharacterData character,
+  ) {
+    savedCharacters.add(character);
+    final completer = Completer<protocol.CharacterData>();
+    _saveCompleters.add(completer);
+    return completer.future;
+  }
+
+  void completeSave(int index) {
+    final saved = savedCharacters[index];
+    character = saved;
+    _saveCompleters[index].complete(saved);
+  }
+
+  void failSave(int index) {
+    _saveCompleters[index].completeError(Exception('save failed'));
   }
 }

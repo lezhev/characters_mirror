@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$CharacterCreationState {
   CharacterData get character;
   Step get step;
+  bool get hasSpellCreationStep;
   int get draftRevision;
 
   /// Create a copy of CharacterCreationState
@@ -34,16 +35,19 @@ mixin _$CharacterCreationState {
             (identical(other.character, character) ||
                 other.character == character) &&
             (identical(other.step, step) || other.step == step) &&
+            (identical(other.hasSpellCreationStep, hasSpellCreationStep) ||
+                other.hasSpellCreationStep == hasSpellCreationStep) &&
             (identical(other.draftRevision, draftRevision) ||
                 other.draftRevision == draftRevision));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, character, step, draftRevision);
+  int get hashCode => Object.hash(
+      runtimeType, character, step, hasSpellCreationStep, draftRevision);
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step, draftRevision: $draftRevision)';
+    return 'CharacterCreationState(character: $character, step: $step, hasSpellCreationStep: $hasSpellCreationStep, draftRevision: $draftRevision)';
   }
 }
 
@@ -53,7 +57,11 @@ abstract mixin class $CharacterCreationStateCopyWith<$Res> {
           $Res Function(CharacterCreationState) _then) =
       _$CharacterCreationStateCopyWithImpl;
   @useResult
-  $Res call({CharacterData character, Step step, int draftRevision});
+  $Res call(
+      {CharacterData character,
+      Step step,
+      bool hasSpellCreationStep,
+      int draftRevision});
 }
 
 /// @nodoc
@@ -71,6 +79,7 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
   $Res call({
     Object? character = null,
     Object? step = null,
+    Object? hasSpellCreationStep = null,
     Object? draftRevision = null,
   }) {
     return _then(_self.copyWith(
@@ -82,6 +91,10 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.step
           : step // ignore: cast_nullable_to_non_nullable
               as Step,
+      hasSpellCreationStep: null == hasSpellCreationStep
+          ? _self.hasSpellCreationStep
+          : hasSpellCreationStep // ignore: cast_nullable_to_non_nullable
+              as bool,
       draftRevision: null == draftRevision
           ? _self.draftRevision
           : draftRevision // ignore: cast_nullable_to_non_nullable
@@ -181,14 +194,16 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step, int draftRevision)?
+    TResult Function(CharacterData character, Step step,
+            bool hasSpellCreationStep, int draftRevision)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step, _that.draftRevision);
+        return $default(_that.character, _that.step, _that.hasSpellCreationStep,
+            _that.draftRevision);
       case _:
         return orElse();
     }
@@ -209,13 +224,15 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step, int draftRevision)
+    TResult Function(CharacterData character, Step step,
+            bool hasSpellCreationStep, int draftRevision)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState():
-        return $default(_that.character, _that.step, _that.draftRevision);
+        return $default(_that.character, _that.step, _that.hasSpellCreationStep,
+            _that.draftRevision);
     }
   }
 
@@ -233,13 +250,15 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(CharacterData character, Step step, int draftRevision)?
+    TResult? Function(CharacterData character, Step step,
+            bool hasSpellCreationStep, int draftRevision)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step, _that.draftRevision);
+        return $default(_that.character, _that.step, _that.hasSpellCreationStep,
+            _that.draftRevision);
       case _:
         return null;
     }
@@ -250,12 +269,18 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
 class _CharacterCreationState implements CharacterCreationState {
   const _CharacterCreationState(
-      {required this.character, required this.step, this.draftRevision = 0});
+      {required this.character,
+      required this.step,
+      this.hasSpellCreationStep = false,
+      this.draftRevision = 0});
 
   @override
   final CharacterData character;
   @override
   final Step step;
+  @override
+  @JsonKey()
+  final bool hasSpellCreationStep;
   @override
   @JsonKey()
   final int draftRevision;
@@ -277,16 +302,19 @@ class _CharacterCreationState implements CharacterCreationState {
             (identical(other.character, character) ||
                 other.character == character) &&
             (identical(other.step, step) || other.step == step) &&
+            (identical(other.hasSpellCreationStep, hasSpellCreationStep) ||
+                other.hasSpellCreationStep == hasSpellCreationStep) &&
             (identical(other.draftRevision, draftRevision) ||
                 other.draftRevision == draftRevision));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, character, step, draftRevision);
+  int get hashCode => Object.hash(
+      runtimeType, character, step, hasSpellCreationStep, draftRevision);
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step, draftRevision: $draftRevision)';
+    return 'CharacterCreationState(character: $character, step: $step, hasSpellCreationStep: $hasSpellCreationStep, draftRevision: $draftRevision)';
   }
 }
 
@@ -298,7 +326,11 @@ abstract mixin class _$CharacterCreationStateCopyWith<$Res>
       __$CharacterCreationStateCopyWithImpl;
   @override
   @useResult
-  $Res call({CharacterData character, Step step, int draftRevision});
+  $Res call(
+      {CharacterData character,
+      Step step,
+      bool hasSpellCreationStep,
+      int draftRevision});
 }
 
 /// @nodoc
@@ -316,6 +348,7 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
   $Res call({
     Object? character = null,
     Object? step = null,
+    Object? hasSpellCreationStep = null,
     Object? draftRevision = null,
   }) {
     return _then(_CharacterCreationState(
@@ -327,6 +360,10 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.step
           : step // ignore: cast_nullable_to_non_nullable
               as Step,
+      hasSpellCreationStep: null == hasSpellCreationStep
+          ? _self.hasSpellCreationStep
+          : hasSpellCreationStep // ignore: cast_nullable_to_non_nullable
+              as bool,
       draftRevision: null == draftRevision
           ? _self.draftRevision
           : draftRevision // ignore: cast_nullable_to_non_nullable

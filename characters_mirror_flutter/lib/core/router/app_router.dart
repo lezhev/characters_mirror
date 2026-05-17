@@ -82,6 +82,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/create/attributes',
         builder: (_, __) => const AttributesStep(),
       ),
+      GoRoute(path: '/create/spells', builder: (_, __) => const SpellsStep()),
       GoRoute(
           path: '/create/personal', builder: (_, __) => const PersonalStep()),
       GoRoute(path: '/create/summary', builder: (_, __) => const SummaryStep()),

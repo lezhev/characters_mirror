@@ -3,6 +3,7 @@ import 'package:characters_mirror_flutter/core/ui/feature_tag_localization.dart'
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_feature_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -100,6 +101,7 @@ class AbilitiesPage extends ConsumerWidget {
                     features: classFeatures,
                     ref: ref,
                     characterId: characterId,
+                    context: context,
                   ),
                 ],
                 if (raceFeatures.isNotEmpty) ...[
@@ -113,6 +115,7 @@ class AbilitiesPage extends ConsumerWidget {
                     features: raceFeatures,
                     ref: ref,
                     characterId: characterId,
+                    context: context,
                   ),
                 ],
               ],
@@ -133,6 +136,7 @@ List<Widget> _buildFeatureCards({
   required List<CharacterFeatureViewData> features,
   required WidgetRef ref,
   required int characterId,
+  required BuildContext context,
 }) {
   return [
     for (var index = 0; index < features.length; index++) ...[
@@ -159,11 +163,17 @@ List<Widget> _buildFeatureCards({
               characterSheetControllerProvider(characterId).notifier,
             )
             .resetFeatureOverride(features[index]),
-        onSetResource: (resourceKey, current) => ref
-            .read(
-              characterSheetControllerProvider(characterId).notifier,
-            )
-            .setFeatureResource(features[index], resourceKey, current),
+        onSetResource: (resourceKey, current) {
+          runCharacterSheetSave(
+            context,
+            ref
+                .read(
+                  characterSheetControllerProvider(characterId).notifier,
+                )
+                .setFeatureResource(features[index], resourceKey, current),
+          );
+          return Future.value();
+        },
       ),
       if (index < features.length - 1) const SizedBox(height: 8),
     ],

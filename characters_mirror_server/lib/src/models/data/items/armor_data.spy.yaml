@@ -11,6 +11,7 @@ fields:
 
   categoryValue: ArmorCategory?
   baseAC: int?
+  bonusAC: int?
   dexBonus: bool?
   dexBonusMax: int?
   strengthRequirement: int?

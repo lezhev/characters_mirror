@@ -236,7 +236,6 @@ void main() {
           ClassLevelData(
             classDataId: 1,
             level: 2,
-            subclassFeatureIds: const [200],
             resourceSummary: 'Открывается специализация подкласса.',
           ),
         ],
