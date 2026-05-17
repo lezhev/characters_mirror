@@ -6,7 +6,7 @@ part of 'background_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$backgroundStateHash() => r'063f481855b401fc3527cc440456725895833579';
+String _$backgroundStateHash() => r'481ba29ff9cf48a0c9f1b2877146b701b743dfed';
 
 /// See also [BackgroundState].
 @ProviderFor(BackgroundState)

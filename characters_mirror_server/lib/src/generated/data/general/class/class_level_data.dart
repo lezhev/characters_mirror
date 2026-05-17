@@ -21,8 +21,6 @@ abstract class ClassLevelData
     required this.classDataId,
     this.classData,
     required this.level,
-    this.featureIds,
-    this.subclassFeatureIds,
     this.knownCantrips,
     this.knownSpells,
     this.preparedSpellFormula,
@@ -39,8 +37,6 @@ abstract class ClassLevelData
     required int classDataId,
     _i2.ClassData? classData,
     required int level,
-    List<int>? featureIds,
-    List<int>? subclassFeatureIds,
     int? knownCantrips,
     int? knownSpells,
     String? preparedSpellFormula,
@@ -61,12 +57,6 @@ abstract class ClassLevelData
           : _i2.ClassData.fromJson(
               (jsonSerialization['classData'] as Map<String, dynamic>)),
       level: jsonSerialization['level'] as int,
-      featureIds: (jsonSerialization['featureIds'] as List?)
-          ?.map((e) => e as int)
-          .toList(),
-      subclassFeatureIds: (jsonSerialization['subclassFeatureIds'] as List?)
-          ?.map((e) => e as int)
-          .toList(),
       knownCantrips: jsonSerialization['knownCantrips'] as int?,
       knownSpells: jsonSerialization['knownSpells'] as int?,
       preparedSpellFormula:
@@ -97,10 +87,6 @@ abstract class ClassLevelData
 
   int level;
 
-  List<int>? featureIds;
-
-  List<int>? subclassFeatureIds;
-
   int? knownCantrips;
 
   int? knownSpells;
@@ -130,8 +116,6 @@ abstract class ClassLevelData
     int? classDataId,
     _i2.ClassData? classData,
     int? level,
-    List<int>? featureIds,
-    List<int>? subclassFeatureIds,
     int? knownCantrips,
     int? knownSpells,
     String? preparedSpellFormula,
@@ -149,9 +133,6 @@ abstract class ClassLevelData
       'classDataId': classDataId,
       if (classData != null) 'classData': classData?.toJson(),
       'level': level,
-      if (featureIds != null) 'featureIds': featureIds?.toJson(),
-      if (subclassFeatureIds != null)
-        'subclassFeatureIds': subclassFeatureIds?.toJson(),
       if (knownCantrips != null) 'knownCantrips': knownCantrips,
       if (knownSpells != null) 'knownSpells': knownSpells,
       if (preparedSpellFormula != null)
@@ -172,9 +153,6 @@ abstract class ClassLevelData
       'classDataId': classDataId,
       if (classData != null) 'classData': classData?.toJsonForProtocol(),
       'level': level,
-      if (featureIds != null) 'featureIds': featureIds?.toJson(),
-      if (subclassFeatureIds != null)
-        'subclassFeatureIds': subclassFeatureIds?.toJson(),
       if (knownCantrips != null) 'knownCantrips': knownCantrips,
       if (knownSpells != null) 'knownSpells': knownSpells,
       if (preparedSpellFormula != null)
@@ -226,8 +204,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
     required int classDataId,
     _i2.ClassData? classData,
     required int level,
-    List<int>? featureIds,
-    List<int>? subclassFeatureIds,
     int? knownCantrips,
     int? knownSpells,
     String? preparedSpellFormula,
@@ -242,8 +218,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
           classDataId: classDataId,
           classData: classData,
           level: level,
-          featureIds: featureIds,
-          subclassFeatureIds: subclassFeatureIds,
           knownCantrips: knownCantrips,
           knownSpells: knownSpells,
           preparedSpellFormula: preparedSpellFormula,
@@ -264,8 +238,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
     int? classDataId,
     Object? classData = _Undefined,
     int? level,
-    Object? featureIds = _Undefined,
-    Object? subclassFeatureIds = _Undefined,
     Object? knownCantrips = _Undefined,
     Object? knownSpells = _Undefined,
     Object? preparedSpellFormula = _Undefined,
@@ -282,12 +254,6 @@ class _ClassLevelDataImpl extends ClassLevelData {
       classData:
           classData is _i2.ClassData? ? classData : this.classData?.copyWith(),
       level: level ?? this.level,
-      featureIds: featureIds is List<int>?
-          ? featureIds
-          : this.featureIds?.map((e0) => e0).toList(),
-      subclassFeatureIds: subclassFeatureIds is List<int>?
-          ? subclassFeatureIds
-          : this.subclassFeatureIds?.map((e0) => e0).toList(),
       knownCantrips: knownCantrips is int? ? knownCantrips : this.knownCantrips,
       knownSpells: knownSpells is int? ? knownSpells : this.knownSpells,
       preparedSpellFormula: preparedSpellFormula is String?
@@ -313,14 +279,6 @@ class ClassLevelDataTable extends _i1.Table<int?> {
     );
     level = _i1.ColumnInt(
       'level',
-      this,
-    );
-    featureIds = _i1.ColumnSerializable(
-      'featureIds',
-      this,
-    );
-    subclassFeatureIds = _i1.ColumnSerializable(
-      'subclassFeatureIds',
       this,
     );
     knownCantrips = _i1.ColumnInt(
@@ -367,10 +325,6 @@ class ClassLevelDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt level;
 
-  late final _i1.ColumnSerializable featureIds;
-
-  late final _i1.ColumnSerializable subclassFeatureIds;
-
   late final _i1.ColumnInt knownCantrips;
 
   late final _i1.ColumnInt knownSpells;
@@ -407,8 +361,6 @@ class ClassLevelDataTable extends _i1.Table<int?> {
         id,
         classDataId,
         level,
-        featureIds,
-        subclassFeatureIds,
         knownCantrips,
         knownSpells,
         preparedSpellFormula,

@@ -1,6 +1,6 @@
 # Справочная модель заклинания D&D 5e (PHB 2014).
 # Хранит как базовые метаданные, так и боевые механики:
-# сейвы, атаки, урон, цели, компоненты, длительность и доступность по классам.
+# сейвы, атаки, урон, цели, компоненты, длительность и доступность по классам/подклассам.
 class: SpellData
 table: spell_data
 fields:
@@ -45,4 +45,5 @@ fields:
   requiresVerbal: bool? # Есть ли verbal component
   requiresSomatic: bool? # Есть ли somatic component
   requiresMaterial: bool? # Есть ли material component
-  classAvailability: List<SpellClassAvailabilityData>?, relation(name=spell_class_availability) # Связи со списком классов, которым заклинание доступно
+  availableForClassIds: List<int>? # Id классов, которым доступно заклинание
+  availableForSubclassIds: List<int>? # Id подклассов, которым доступно заклинание

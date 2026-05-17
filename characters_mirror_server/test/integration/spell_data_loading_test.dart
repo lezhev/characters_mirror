@@ -38,9 +38,6 @@ void main() {
             final spell = await SpellData.db.findById(
               rowSession,
               spellId,
-              include: SpellData.include(
-                classAvailability: SpellClassAvailabilityData.includeList(),
-              ),
             );
 
             if (spell == null) {
@@ -51,9 +48,6 @@ void main() {
             }
 
             spell.toJson();
-            spell.classAvailability
-                ?.map((availability) => availability.toJson())
-                .toList();
           } catch (error) {
             failures.add(
               'id=$spellId name=${spellName ?? '<null>'}: $error',

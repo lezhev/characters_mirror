@@ -1095,6 +1095,7 @@ class _ClassDataEndpoint {
     required int selectedLevel,
     required bool isStartingClass,
     int? selectedSubclassId,
+    Map<String, int>? abilityScores,
   }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1112,6 +1113,7 @@ class _ClassDataEndpoint {
             'selectedLevel': selectedLevel,
             'isStartingClass': isStartingClass,
             'selectedSubclassId': selectedSubclassId,
+            'abilityScores': abilityScores,
           }),
           serializationManager: _serializationManager,
         );

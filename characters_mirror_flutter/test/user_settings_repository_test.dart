@@ -28,6 +28,21 @@ void main() {
       expect(await repository.loadThemeMode(), ThemeMode.system);
     });
 
+    test('persists and loads keep screen awake preference', () async {
+      final storage = _FakeStorage();
+      final repository = UserSettingsRepository(storage: storage);
+
+      expect(await repository.loadKeepScreenAwake(), isFalse);
+
+      await repository.saveKeepScreenAwake(true);
+      expect(storage.values[userSettingsKeepScreenAwakeKey], 1);
+      expect(await repository.loadKeepScreenAwake(), isTrue);
+
+      await repository.saveKeepScreenAwake(false);
+      expect(storage.values[userSettingsKeepScreenAwakeKey], 0);
+      expect(await repository.loadKeepScreenAwake(), isFalse);
+    });
+
     test('falls back to system theme mode for unknown values', () async {
       final storage = _FakeStorage()
         ..values[userSettingsThemeModeKey] = 'sepia';

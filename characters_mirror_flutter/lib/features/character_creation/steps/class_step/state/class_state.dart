@@ -169,6 +169,56 @@ class ClassState extends _$ClassState {
     });
   }
 
+  Future<void> refreshSpellSelectionGroupsForAbilityScores(
+    Map<String, int> abilityScores,
+  ) async {
+    final current = state.value;
+    final selectedClass = current?.selectedClass;
+    if (current == null || selectedClass?.id == null) return;
+
+    state = await AsyncValue.guard(() async {
+      final stepView = await ref
+          .read(classRepositoryProvider)
+          .getStepView(
+            selectedClass!.id!,
+            selectedLevel: current.selectedLevel,
+            isStartingClass: true,
+            selectedSubclassId: current.selectedSubclass?.id,
+            abilityScores: abilityScores,
+          )
+          .timeout(_requestTimeout);
+
+      return current.copyWith(
+        stepView: stepView,
+        selectedSpellSelections: _normalizeSpellSelections(
+          current.selectedSpellSelections,
+          stepView.spellSelectionGroups,
+        ),
+      );
+    });
+  }
+
+  void syncSpellSelectionsToCreationDraft() {
+    final current = state.value;
+    if (current == null || current.selectedClass == null) {
+      return;
+    }
+
+    ref.read(characterCreationProvider.notifier).syncPrimaryClassDraft(
+          classData: current.selectedClass,
+          subclass: current.selectedSubclass,
+          choiceGroups: current.stepView?.choiceGroups ?? const [],
+          selectedOptions: current.selectedOptions,
+          skillSelections: current.selectedSkillSelections,
+          spellSelections: current.selectedSpellSelections,
+          startingEquipmentSelections: current.startingEquipmentSelections,
+          hasSpellCreationStep: _hasSpellSelectionGroups(
+            current.stepView?.spellSelectionGroups,
+          ),
+          level: current.selectedLevel,
+        );
+  }
+
   void toggleOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
     final current = Map<String, List<ClassChoiceOptionData>>.from(
       state.value!.selectedOptions,
@@ -686,7 +736,7 @@ class ClassState extends _$ClassState {
         savedSpellSelections,
         stepView.spellSelectionGroups,
       ),
-        startingEquipmentSelections: normalizeStartingEquipmentSelections(
+      startingEquipmentSelections: normalizeStartingEquipmentSelections(
         blocks: stepView.startingEquipmentBlocks ??
             const <StartingEquipmentBlockView>[],
         selections: savedEquipmentSelections,
@@ -856,6 +906,13 @@ class ClassState extends _$ClassState {
   String? _normalizedText(String? value) {
     final trimmed = value?.trim();
     return trimmed == null || trimmed.isEmpty ? null : trimmed;
+  }
+
+  bool _hasSpellSelectionGroups(List<ClassSpellSelectionGroupView>? groups) {
+    return groups?.any(
+          (group) => group.kind != null && (group.options?.isNotEmpty ?? false),
+        ) ??
+        false;
   }
 
   Map<String, List<ClassChoiceOptionData>> _normalizeSelectedOptions(

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:flutter/material.dart';
 
 Future<void> showAttackDialog(
@@ -54,6 +57,7 @@ class _AttackDialogState extends State<AttackDialog> {
 
   CharacterAttackData? _lastSavedDraft;
   CharacterAttackData? _pendingSave;
+  Timer? _saveDebounce;
   bool _isSaving = false;
   bool _confirmDelete = false;
 
@@ -75,6 +79,7 @@ class _AttackDialogState extends State<AttackDialog> {
 
   @override
   void dispose() {
+    _saveDebounce?.cancel();
     _nameController.dispose();
     _bonusController.dispose();
     _descriptionController.dispose();
@@ -112,7 +117,7 @@ class _AttackDialogState extends State<AttackDialog> {
               ),
             ),
           IconButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: _close,
             icon: const Icon(Icons.close),
             tooltip: 'Закрыть',
           ),
@@ -299,7 +304,10 @@ class _AttackDialogState extends State<AttackDialog> {
     if (_isSaving) {
       return;
     }
-    _flushPendingSaves();
+    _saveDebounce?.cancel();
+    _saveDebounce = Timer(characterSheetAutosaveDelay, () {
+      unawaited(_flushPendingSaves());
+    });
   }
 
   Widget _buildDamagePartsSection(BuildContext context) {
@@ -417,6 +425,12 @@ class _AttackDialogState extends State<AttackDialog> {
   }
 
   Future<void> _flushPendingSaves() async {
+    _saveDebounce?.cancel();
+    _saveDebounce = null;
+    if (_isSaving) {
+      return;
+    }
+
     while (_pendingSave != null) {
       final draft = _pendingSave!;
       _pendingSave = null;
@@ -466,6 +480,8 @@ class _AttackDialogState extends State<AttackDialog> {
       return;
     }
 
+    _saveDebounce?.cancel();
+    _pendingSave = null;
     setState(() {
       _isSaving = true;
     });
@@ -489,6 +505,11 @@ class _AttackDialogState extends State<AttackDialog> {
         ),
       );
     }
+  }
+
+  void _close() {
+    unawaited(_flushPendingSaves());
+    Navigator.of(context).pop();
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:characters_mirror_flutter/core/offline/offline_cache_database.da
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/features/settings/application/keep_screen_awake.dart';
 import 'package:characters_mirror_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +38,10 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
           children: [
             const AppearanceSettingsSection(),
+            if (isAndroidKeepScreenAwakeSupported) ...[
+              const SizedBox(height: 24),
+              const ScreenSettingsSection(),
+            ],
             const SizedBox(height: 24),
             Text(
               'Настройки персонажа',

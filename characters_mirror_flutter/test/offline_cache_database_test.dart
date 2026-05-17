@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart';
 
@@ -253,5 +254,57 @@ INSERT INTO characters_cache(
     expect(item?.name, 'Короткий меч');
     expect(item?.quantity, 1);
     expect(item?.type, CharacterInventoryItemType.custom);
+  });
+
+  test('reads legacy skill class choice group type from reference cache',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final initialCache = await OfflineCacheDatabase.openAt(path);
+    initialCache.close();
+
+    final db = sqlite3.open(path);
+    try {
+      db.execute(
+        '''
+INSERT INTO reference_cache(kind, cache_key, payload_json, fetched_at)
+VALUES (?, ?, ?, ?)
+''',
+        [
+          offlineBackgroundStepKind,
+          offlineBackgroundStepKey(42),
+          jsonEncode({
+            'choiceGroups': [
+              {
+                'group': {
+                  'id': 1,
+                  'name': 'Skills',
+                  'sourceBackgroundId': 42,
+                  'type': 'skill',
+                  'selectionCount': 2,
+                  'exclusiveKey': 'background_42_skill_pick',
+                },
+                'options': [],
+              },
+            ],
+          }),
+          DateTime.utc(2026, 4, 22).toIso8601String(),
+        ],
+      );
+    } finally {
+      db.dispose();
+    }
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+
+    final cached = await reopened.getReference<BackgroundStepView>(
+      offlineBackgroundStepKind,
+      offlineBackgroundStepKey(42),
+      BackgroundStepView.fromJson,
+    );
+
+    expect(cached?.choiceGroups?.single.group?.type, isNull);
   });
 }

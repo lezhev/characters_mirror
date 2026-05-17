@@ -325,6 +325,7 @@ class EndpointClassData extends _i1.EndpointRef {
     required int selectedLevel,
     required bool isStartingClass,
     int? selectedSubclassId,
+    Map<String, int>? abilityScores,
   }) =>
       caller.callServerEndpoint<_i13.ClassStepView>(
         'classData',
@@ -334,6 +335,7 @@ class EndpointClassData extends _i1.EndpointRef {
           'selectedLevel': selectedLevel,
           'isStartingClass': isStartingClass,
           'selectedSubclassId': selectedSubclassId,
+          'abilityScores': abilityScores,
         },
       );
 

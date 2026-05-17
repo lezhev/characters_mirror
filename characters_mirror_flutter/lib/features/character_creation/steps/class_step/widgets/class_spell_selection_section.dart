@@ -102,6 +102,8 @@ String _groupTitle(CharacterSpellSelectionKind? kind) {
       return 'Заговоры';
     case CharacterSpellSelectionKind.knownSpell:
       return 'Известные заклинания';
+    case CharacterSpellSelectionKind.preparedSpell:
+      return 'Подготовленные заклинания';
     case null:
       return 'Заклинания';
   }

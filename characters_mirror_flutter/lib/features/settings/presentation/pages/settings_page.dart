@@ -1,6 +1,7 @@
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
+import 'package:characters_mirror_flutter/features/settings/application/keep_screen_awake.dart';
 import 'package:characters_mirror_flutter/features/settings/application/server_connection_status_provider.dart';
 import 'package:characters_mirror_flutter/features/settings/application/user_settings_controller.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,10 @@ class SettingsPage extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
           children: [
             const AppearanceSettingsSection(),
+            if (isAndroidKeepScreenAwakeSupported) ...[
+              const SizedBox(height: 24),
+              const ScreenSettingsSection(),
+            ],
             const SizedBox(height: 24),
             Text(
               'Режим работы',
@@ -51,6 +56,82 @@ class SettingsPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+class ScreenSettingsSection extends ConsumerWidget {
+  const ScreenSettingsSection({
+    this.titleStyle,
+    super.key,
+  });
+
+  final TextStyle? titleStyle;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!isAndroidKeepScreenAwakeSupported) {
+      return const SizedBox.shrink();
+    }
+
+    final settings = ref.watch(userSettingsControllerProvider);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Экран',
+          style: titleStyle ?? Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 12),
+        AppSurfaceCard(
+          padding: EdgeInsets.zero,
+          border: Border.all(color: colorScheme.outline),
+          child: settings.when(
+            data: (value) => SwitchListTile(
+              secondary: const Icon(Icons.screen_lock_portrait_outlined),
+              title: const Text('Не гасить экран'),
+              subtitle: const Text(
+                'Пока приложение открыто, Android не будет выключать экран.',
+              ),
+              value: value.keepScreenAwake,
+              onChanged: (enabled) => _setKeepScreenAwake(
+                context,
+                ref,
+                enabled,
+              ),
+            ),
+            loading: () => const Padding(
+              padding: EdgeInsets.all(20),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+            error: (error, _) => _SettingsError(
+              onRetry: () => ref.invalidate(userSettingsControllerProvider),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _setKeepScreenAwake(
+    BuildContext context,
+    WidgetRef ref,
+    bool enabled,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      await ref
+          .read(userSettingsControllerProvider.notifier)
+          .setKeepScreenAwake(enabled);
+    } catch (_) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Не удалось сохранить настройки. Попробуйте ещё раз.'),
+        ),
+      );
+    }
   }
 }
 

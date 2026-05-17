@@ -79,12 +79,12 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
       }
 
       if (delta.dx < 0) {
-        final next = currentStep.next;
+        final next = notifier.nextVisibleStep(currentStep);
         if (next != null) {
           navigateToStep(next);
         }
       } else {
-        final previous = currentStep.previous;
+        final previous = notifier.previousVisibleStep(currentStep);
         if (previous != null) {
           navigateToStep(previous);
         }

@@ -13,7 +13,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum CharacterSpellSelectionKind implements _i1.SerializableModel {
   knownCantrip,
-  knownSpell;
+  knownSpell,
+  preparedSpell;
 
   static CharacterSpellSelectionKind fromJson(String name) {
     switch (name) {
@@ -21,6 +22,8 @@ enum CharacterSpellSelectionKind implements _i1.SerializableModel {
         return CharacterSpellSelectionKind.knownCantrip;
       case 'knownSpell':
         return CharacterSpellSelectionKind.knownSpell;
+      case 'preparedSpell':
+        return CharacterSpellSelectionKind.preparedSpell;
       default:
         throw ArgumentError(
             'Value "$name" cannot be converted to "CharacterSpellSelectionKind"');

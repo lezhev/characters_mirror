@@ -8,8 +8,6 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
-// ignore_for_file: unnecessary_null_comparison
-
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../enums/spell/spell_school.dart' as _i2;
@@ -21,7 +19,6 @@ import '../enums/condition_type.dart' as _i7;
 import '../enums/spell/spell_target_type.dart' as _i8;
 import '../enums/spell/area_of_effect_type.dart' as _i9;
 import '../enums/spell/spell_duration_type.dart' as _i10;
-import '../data/spell_class_availability_data.dart' as _i11;
 
 abstract class SpellData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -67,7 +64,8 @@ abstract class SpellData
     this.requiresVerbal,
     this.requiresSomatic,
     this.requiresMaterial,
-    this.classAvailability,
+    this.availableForClassIds,
+    this.availableForSubclassIds,
   });
 
   factory SpellData({
@@ -112,7 +110,8 @@ abstract class SpellData
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i11.SpellClassAvailabilityData>? classAvailability,
+    List<int>? availableForClassIds,
+    List<int>? availableForSubclassIds,
   }) = _SpellDataImpl;
 
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -188,10 +187,13 @@ abstract class SpellData
       requiresVerbal: jsonSerialization['requiresVerbal'] as bool?,
       requiresSomatic: jsonSerialization['requiresSomatic'] as bool?,
       requiresMaterial: jsonSerialization['requiresMaterial'] as bool?,
-      classAvailability: (jsonSerialization['classAvailability'] as List?)
-          ?.map((e) => _i11.SpellClassAvailabilityData.fromJson(
-              (e as Map<String, dynamic>)))
+      availableForClassIds: (jsonSerialization['availableForClassIds'] as List?)
+          ?.map((e) => e as int)
           .toList(),
+      availableForSubclassIds:
+          (jsonSerialization['availableForSubclassIds'] as List?)
+              ?.map((e) => e as int)
+              .toList(),
     );
   }
 
@@ -282,7 +284,9 @@ abstract class SpellData
 
   bool? requiresMaterial;
 
-  List<_i11.SpellClassAvailabilityData>? classAvailability;
+  List<int>? availableForClassIds;
+
+  List<int>? availableForSubclassIds;
 
   @override
   _i1.Table<int?> get table => t;
@@ -332,7 +336,8 @@ abstract class SpellData
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i11.SpellClassAvailabilityData>? classAvailability,
+    List<int>? availableForClassIds,
+    List<int>? availableForSubclassIds,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -385,9 +390,10 @@ abstract class SpellData
       if (requiresVerbal != null) 'requiresVerbal': requiresVerbal,
       if (requiresSomatic != null) 'requiresSomatic': requiresSomatic,
       if (requiresMaterial != null) 'requiresMaterial': requiresMaterial,
-      if (classAvailability != null)
-        'classAvailability':
-            classAvailability?.toJson(valueToJson: (v) => v.toJson()),
+      if (availableForClassIds != null)
+        'availableForClassIds': availableForClassIds?.toJson(),
+      if (availableForSubclassIds != null)
+        'availableForSubclassIds': availableForSubclassIds?.toJson(),
     };
   }
 
@@ -444,15 +450,15 @@ abstract class SpellData
       if (requiresVerbal != null) 'requiresVerbal': requiresVerbal,
       if (requiresSomatic != null) 'requiresSomatic': requiresSomatic,
       if (requiresMaterial != null) 'requiresMaterial': requiresMaterial,
-      if (classAvailability != null)
-        'classAvailability': classAvailability?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+      if (availableForClassIds != null)
+        'availableForClassIds': availableForClassIds?.toJson(),
+      if (availableForSubclassIds != null)
+        'availableForSubclassIds': availableForSubclassIds?.toJson(),
     };
   }
 
-  static SpellDataInclude include(
-      {_i11.SpellClassAvailabilityDataIncludeList? classAvailability}) {
-    return SpellDataInclude._(classAvailability: classAvailability);
+  static SpellDataInclude include() {
+    return SpellDataInclude._();
   }
 
   static SpellDataIncludeList includeList({
@@ -526,7 +532,8 @@ class _SpellDataImpl extends SpellData {
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i11.SpellClassAvailabilityData>? classAvailability,
+    List<int>? availableForClassIds,
+    List<int>? availableForSubclassIds,
   }) : super._(
           id: id,
           referenceKey: referenceKey,
@@ -569,7 +576,8 @@ class _SpellDataImpl extends SpellData {
           requiresVerbal: requiresVerbal,
           requiresSomatic: requiresSomatic,
           requiresMaterial: requiresMaterial,
-          classAvailability: classAvailability,
+          availableForClassIds: availableForClassIds,
+          availableForSubclassIds: availableForSubclassIds,
         );
 
   /// Returns a shallow copy of this [SpellData]
@@ -618,7 +626,8 @@ class _SpellDataImpl extends SpellData {
     Object? requiresVerbal = _Undefined,
     Object? requiresSomatic = _Undefined,
     Object? requiresMaterial = _Undefined,
-    Object? classAvailability = _Undefined,
+    Object? availableForClassIds = _Undefined,
+    Object? availableForSubclassIds = _Undefined,
   }) {
     return SpellData(
       id: id is int? ? id : this.id,
@@ -697,10 +706,12 @@ class _SpellDataImpl extends SpellData {
           requiresSomatic is bool? ? requiresSomatic : this.requiresSomatic,
       requiresMaterial:
           requiresMaterial is bool? ? requiresMaterial : this.requiresMaterial,
-      classAvailability:
-          classAvailability is List<_i11.SpellClassAvailabilityData>?
-              ? classAvailability
-              : this.classAvailability?.map((e0) => e0.copyWith()).toList(),
+      availableForClassIds: availableForClassIds is List<int>?
+          ? availableForClassIds
+          : this.availableForClassIds?.map((e0) => e0).toList(),
+      availableForSubclassIds: availableForSubclassIds is List<int>?
+          ? availableForSubclassIds
+          : this.availableForSubclassIds?.map((e0) => e0).toList(),
     );
   }
 }
@@ -873,6 +884,14 @@ class SpellDataTable extends _i1.Table<int?> {
       'requiresMaterial',
       this,
     );
+    availableForClassIds = _i1.ColumnSerializable(
+      'availableForClassIds',
+      this,
+    );
+    availableForSubclassIds = _i1.ColumnSerializable(
+      'availableForSubclassIds',
+      this,
+    );
   }
 
   late final _i1.ColumnString referenceKey;
@@ -955,42 +974,9 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool requiresMaterial;
 
-  _i11.SpellClassAvailabilityDataTable? ___classAvailability;
+  late final _i1.ColumnSerializable availableForClassIds;
 
-  _i1.ManyRelation<_i11.SpellClassAvailabilityDataTable>? _classAvailability;
-
-  _i11.SpellClassAvailabilityDataTable get __classAvailability {
-    if (___classAvailability != null) return ___classAvailability!;
-    ___classAvailability = _i1.createRelationTable(
-      relationFieldName: '__classAvailability',
-      field: SpellData.t.id,
-      foreignField: _i11.SpellClassAvailabilityData.t.spellId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i11.SpellClassAvailabilityDataTable(
-              tableRelation: foreignTableRelation),
-    );
-    return ___classAvailability!;
-  }
-
-  _i1.ManyRelation<_i11.SpellClassAvailabilityDataTable> get classAvailability {
-    if (_classAvailability != null) return _classAvailability!;
-    var relationTable = _i1.createRelationTable(
-      relationFieldName: 'classAvailability',
-      field: SpellData.t.id,
-      foreignField: _i11.SpellClassAvailabilityData.t.spellId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i11.SpellClassAvailabilityDataTable(
-              tableRelation: foreignTableRelation),
-    );
-    _classAvailability = _i1.ManyRelation<_i11.SpellClassAvailabilityDataTable>(
-      tableWithRelations: relationTable,
-      table: _i11.SpellClassAvailabilityDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
-    return _classAvailability!;
-  }
+  late final _i1.ColumnSerializable availableForSubclassIds;
 
   @override
   List<_i1.Column> get columns => [
@@ -1035,28 +1021,16 @@ class SpellDataTable extends _i1.Table<int?> {
         requiresVerbal,
         requiresSomatic,
         requiresMaterial,
+        availableForClassIds,
+        availableForSubclassIds,
       ];
-
-  @override
-  _i1.Table? getRelationTable(String relationField) {
-    if (relationField == 'classAvailability') {
-      return __classAvailability;
-    }
-    return null;
-  }
 }
 
 class SpellDataInclude extends _i1.IncludeObject {
-  SpellDataInclude._(
-      {_i11.SpellClassAvailabilityDataIncludeList? classAvailability}) {
-    _classAvailability = classAvailability;
-  }
-
-  _i11.SpellClassAvailabilityDataIncludeList? _classAvailability;
+  SpellDataInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes =>
-      {'classAvailability': _classAvailability};
+  Map<String, _i1.Include?> get includes => {};
 
   @override
   _i1.Table<int?> get table => SpellData.t;
@@ -1084,10 +1058,6 @@ class SpellDataIncludeList extends _i1.IncludeList {
 
 class SpellDataRepository {
   const SpellDataRepository._();
-
-  final attach = const SpellDataAttachRepository._();
-
-  final attachRow = const SpellDataAttachRowRepository._();
 
   /// Returns a list of [SpellData]s matching the given query parameters.
   ///
@@ -1120,7 +1090,6 @@ class SpellDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SpellDataTable>? orderByList,
     _i1.Transaction? transaction,
-    SpellDataInclude? include,
   }) async {
     return session.db.find<SpellData>(
       where: where?.call(SpellData.t),
@@ -1130,7 +1099,6 @@ class SpellDataRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -1159,7 +1127,6 @@ class SpellDataRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SpellDataTable>? orderByList,
     _i1.Transaction? transaction,
-    SpellDataInclude? include,
   }) async {
     return session.db.findFirstRow<SpellData>(
       where: where?.call(SpellData.t),
@@ -1168,7 +1135,6 @@ class SpellDataRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -1177,12 +1143,10 @@ class SpellDataRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
-    SpellDataInclude? include,
   }) async {
     return session.db.findById<SpellData>(
       id,
       transaction: transaction,
-      include: include,
     );
   }
 
@@ -1300,63 +1264,6 @@ class SpellDataRepository {
     return session.db.count<SpellData>(
       where: where?.call(SpellData.t),
       limit: limit,
-      transaction: transaction,
-    );
-  }
-}
-
-class SpellDataAttachRepository {
-  const SpellDataAttachRepository._();
-
-  /// Creates a relation between this [SpellData] and the given [SpellClassAvailabilityData]s
-  /// by setting each [SpellClassAvailabilityData]'s foreign key `spellId` to refer to this [SpellData].
-  Future<void> classAvailability(
-    _i1.Session session,
-    SpellData spellData,
-    List<_i11.SpellClassAvailabilityData> spellClassAvailabilityData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (spellClassAvailabilityData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('spellClassAvailabilityData.id');
-    }
-    if (spellData.id == null) {
-      throw ArgumentError.notNull('spellData.id');
-    }
-
-    var $spellClassAvailabilityData = spellClassAvailabilityData
-        .map((e) => e.copyWith(spellId: spellData.id))
-        .toList();
-    await session.db.update<_i11.SpellClassAvailabilityData>(
-      $spellClassAvailabilityData,
-      columns: [_i11.SpellClassAvailabilityData.t.spellId],
-      transaction: transaction,
-    );
-  }
-}
-
-class SpellDataAttachRowRepository {
-  const SpellDataAttachRowRepository._();
-
-  /// Creates a relation between this [SpellData] and the given [SpellClassAvailabilityData]
-  /// by setting the [SpellClassAvailabilityData]'s foreign key `spellId` to refer to this [SpellData].
-  Future<void> classAvailability(
-    _i1.Session session,
-    SpellData spellData,
-    _i11.SpellClassAvailabilityData spellClassAvailabilityData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (spellClassAvailabilityData.id == null) {
-      throw ArgumentError.notNull('spellClassAvailabilityData.id');
-    }
-    if (spellData.id == null) {
-      throw ArgumentError.notNull('spellData.id');
-    }
-
-    var $spellClassAvailabilityData =
-        spellClassAvailabilityData.copyWith(spellId: spellData.id);
-    await session.db.updateRow<_i11.SpellClassAvailabilityData>(
-      $spellClassAvailabilityData,
-      columns: [_i11.SpellClassAvailabilityData.t.spellId],
       transaction: transaction,
     );
   }

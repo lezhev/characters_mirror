@@ -161,7 +161,8 @@ class ServerpodAuthService extends AuthService {
         code: 'ok',
         message: 'Вход выполнен.',
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      _debugPrintAuthException('signIn', error, stackTrace);
       return AuthActionResult(
         success: false,
         code: 'server_error',
@@ -210,7 +211,8 @@ class ServerpodAuthService extends AuthService {
         code: result.code,
         message: result.message,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      _debugPrintAuthException('register', error, stackTrace);
       return AuthActionResult(
         success: false,
         code: 'server_error',
@@ -236,7 +238,8 @@ class ServerpodAuthService extends AuthService {
         code: 'ok',
         message: 'Вы вышли из аккаунта.',
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
+      _debugPrintAuthException('signOut', error, stackTrace);
       return AuthActionResult(
         success: false,
         code: 'server_error',
@@ -364,6 +367,19 @@ String _mapExceptionToMessage(Object error) {
   }
 
   return 'Произошла ошибка. Попробуйте ещё раз.';
+}
+
+void _debugPrintAuthException(
+  String action,
+  Object error,
+  StackTrace stackTrace,
+) {
+  if (!kDebugMode) {
+    return;
+  }
+
+  debugPrint('Auth $action failed: $error');
+  debugPrintStack(stackTrace: stackTrace);
 }
 
 String displayNameForUser(auth.UserInfo? user) {

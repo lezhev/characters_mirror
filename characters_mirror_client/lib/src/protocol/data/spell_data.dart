@@ -19,7 +19,6 @@ import '../enums/condition_type.dart' as _i7;
 import '../enums/spell/spell_target_type.dart' as _i8;
 import '../enums/spell/area_of_effect_type.dart' as _i9;
 import '../enums/spell/spell_duration_type.dart' as _i10;
-import '../data/spell_class_availability_data.dart' as _i11;
 
 abstract class SpellData implements _i1.SerializableModel {
   SpellData._({
@@ -64,7 +63,8 @@ abstract class SpellData implements _i1.SerializableModel {
     this.requiresVerbal,
     this.requiresSomatic,
     this.requiresMaterial,
-    this.classAvailability,
+    this.availableForClassIds,
+    this.availableForSubclassIds,
   });
 
   factory SpellData({
@@ -109,7 +109,8 @@ abstract class SpellData implements _i1.SerializableModel {
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i11.SpellClassAvailabilityData>? classAvailability,
+    List<int>? availableForClassIds,
+    List<int>? availableForSubclassIds,
   }) = _SpellDataImpl;
 
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -185,10 +186,13 @@ abstract class SpellData implements _i1.SerializableModel {
       requiresVerbal: jsonSerialization['requiresVerbal'] as bool?,
       requiresSomatic: jsonSerialization['requiresSomatic'] as bool?,
       requiresMaterial: jsonSerialization['requiresMaterial'] as bool?,
-      classAvailability: (jsonSerialization['classAvailability'] as List?)
-          ?.map((e) => _i11.SpellClassAvailabilityData.fromJson(
-              (e as Map<String, dynamic>)))
+      availableForClassIds: (jsonSerialization['availableForClassIds'] as List?)
+          ?.map((e) => e as int)
           .toList(),
+      availableForSubclassIds:
+          (jsonSerialization['availableForSubclassIds'] as List?)
+              ?.map((e) => e as int)
+              .toList(),
     );
   }
 
@@ -277,7 +281,9 @@ abstract class SpellData implements _i1.SerializableModel {
 
   bool? requiresMaterial;
 
-  List<_i11.SpellClassAvailabilityData>? classAvailability;
+  List<int>? availableForClassIds;
+
+  List<int>? availableForSubclassIds;
 
   /// Returns a shallow copy of this [SpellData]
   /// with some or all fields replaced by the given arguments.
@@ -324,7 +330,8 @@ abstract class SpellData implements _i1.SerializableModel {
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i11.SpellClassAvailabilityData>? classAvailability,
+    List<int>? availableForClassIds,
+    List<int>? availableForSubclassIds,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -377,9 +384,10 @@ abstract class SpellData implements _i1.SerializableModel {
       if (requiresVerbal != null) 'requiresVerbal': requiresVerbal,
       if (requiresSomatic != null) 'requiresSomatic': requiresSomatic,
       if (requiresMaterial != null) 'requiresMaterial': requiresMaterial,
-      if (classAvailability != null)
-        'classAvailability':
-            classAvailability?.toJson(valueToJson: (v) => v.toJson()),
+      if (availableForClassIds != null)
+        'availableForClassIds': availableForClassIds?.toJson(),
+      if (availableForSubclassIds != null)
+        'availableForSubclassIds': availableForSubclassIds?.toJson(),
     };
   }
 
@@ -434,7 +442,8 @@ class _SpellDataImpl extends SpellData {
     bool? requiresVerbal,
     bool? requiresSomatic,
     bool? requiresMaterial,
-    List<_i11.SpellClassAvailabilityData>? classAvailability,
+    List<int>? availableForClassIds,
+    List<int>? availableForSubclassIds,
   }) : super._(
           id: id,
           referenceKey: referenceKey,
@@ -477,7 +486,8 @@ class _SpellDataImpl extends SpellData {
           requiresVerbal: requiresVerbal,
           requiresSomatic: requiresSomatic,
           requiresMaterial: requiresMaterial,
-          classAvailability: classAvailability,
+          availableForClassIds: availableForClassIds,
+          availableForSubclassIds: availableForSubclassIds,
         );
 
   /// Returns a shallow copy of this [SpellData]
@@ -526,7 +536,8 @@ class _SpellDataImpl extends SpellData {
     Object? requiresVerbal = _Undefined,
     Object? requiresSomatic = _Undefined,
     Object? requiresMaterial = _Undefined,
-    Object? classAvailability = _Undefined,
+    Object? availableForClassIds = _Undefined,
+    Object? availableForSubclassIds = _Undefined,
   }) {
     return SpellData(
       id: id is int? ? id : this.id,
@@ -605,10 +616,12 @@ class _SpellDataImpl extends SpellData {
           requiresSomatic is bool? ? requiresSomatic : this.requiresSomatic,
       requiresMaterial:
           requiresMaterial is bool? ? requiresMaterial : this.requiresMaterial,
-      classAvailability:
-          classAvailability is List<_i11.SpellClassAvailabilityData>?
-              ? classAvailability
-              : this.classAvailability?.map((e0) => e0.copyWith()).toList(),
+      availableForClassIds: availableForClassIds is List<int>?
+          ? availableForClassIds
+          : this.availableForClassIds?.map((e0) => e0).toList(),
+      availableForSubclassIds: availableForSubclassIds is List<int>?
+          ? availableForSubclassIds
+          : this.availableForSubclassIds?.map((e0) => e0).toList(),
     );
   }
 }

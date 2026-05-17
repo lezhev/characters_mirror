@@ -300,6 +300,7 @@ class _CountingClassRepository extends ClassRepository {
     int selectedLevel = 1,
     bool isStartingClass = true,
     int? selectedSubclassId,
+    Map<String, int>? abilityScores,
   }) async {
     if (responseDelay > Duration.zero) {
       await Future<void>.delayed(responseDelay);

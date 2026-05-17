@@ -6,6 +6,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart
 import 'package:characters_mirror_flutter/core/ui/widgets/roll_value_button.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/widgets/expertise_flag_preview.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/widgets/saving_throw_proficiency_toggle.dart';
@@ -87,23 +88,31 @@ class AttributesPage extends ConsumerWidget {
                       modifierButtonWidth: modifierButtonWidth,
                       savingThrowButtonWidth: proficiencyButtonWidth,
                       onSaveProficiency: (savingThrowProficient) {
-                        return ref
-                            .read(
-                              characterSheetControllerProvider(characterId)
-                                  .notifier,
-                            )
-                            .saveSavingThrowProficiency(
-                              ability,
-                              savingThrowProficient,
-                            );
+                        runCharacterSheetSave(
+                          context,
+                          ref
+                              .read(
+                                characterSheetControllerProvider(characterId)
+                                    .notifier,
+                              )
+                              .saveSavingThrowProficiency(
+                                ability,
+                                savingThrowProficient,
+                              ),
+                        );
+                        return Future.value();
                       },
                       onSaveSkillProficiency: (skill, level) {
-                        return ref
-                            .read(
-                              characterSheetControllerProvider(characterId)
-                                  .notifier,
-                            )
-                            .saveSkillProficiency(skill, level);
+                        runCharacterSheetSave(
+                          context,
+                          ref
+                              .read(
+                                characterSheetControllerProvider(characterId)
+                                    .notifier,
+                              )
+                              .saveSkillProficiency(skill, level),
+                        );
+                        return Future.value();
                       },
                     ),
                     if (ability != Ability.values.last)

@@ -1,0 +1,62 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_level_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "featureIds",
+          "subclassFeatureIds"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"featureIds\" of table \"class_level_data\" will be dropped.",
+            "table": "class_level_data",
+            "columns": [
+              "featureIds"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"subclassFeatureIds\" of table \"class_level_data\" will be dropped.",
+            "table": "class_level_data",
+            "columns": [
+              "subclassFeatureIds"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"featureIds\" of table \"class_level_data\" will be dropped.",
+      "table": "class_level_data",
+      "columns": [
+        "featureIds"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"subclassFeatureIds\" of table \"class_level_data\" will be dropped.",
+      "table": "class_level_data",
+      "columns": [
+        "subclassFeatureIds"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

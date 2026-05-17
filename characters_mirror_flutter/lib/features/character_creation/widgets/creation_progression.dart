@@ -4,7 +4,7 @@ import 'package:characters_mirror_flutter/features/character_creation/state/char
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreationProgression extends StatelessWidget {
+class CreationProgression extends ConsumerWidget {
   final Step currentStep;
   final FutureOr<void> Function(Step target)? onStepTap;
 
@@ -15,51 +15,23 @@ class CreationProgression extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasSpellStep = ref.watch(
+      characterCreationProvider.select((state) => state.hasSpellCreationStep),
+    );
+    final steps = creationVisibleSteps(hasSpellStep: hasSpellStep);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        StepIndicator(
-          step: Step.introduction,
-          currentStep: currentStep,
-          onTap: onStepTap,
-        ),
-        Expanded(child: StepLine()),
-        StepIndicator(
-          step: Step.race,
-          currentStep: currentStep,
-          onTap: onStepTap,
-        ),
-        Expanded(child: StepLine()),
-        StepIndicator(
-          step: Step.classStep,
-          currentStep: currentStep,
-          onTap: onStepTap,
-        ),
-        Expanded(child: StepLine()),
-        StepIndicator(
-          step: Step.background,
-          currentStep: currentStep,
-          onTap: onStepTap,
-        ),
-        Expanded(child: StepLine()),
-        StepIndicator(
-          step: Step.attributes,
-          currentStep: currentStep,
-          onTap: onStepTap,
-        ),
-        Expanded(child: StepLine()),
-        StepIndicator(
-          step: Step.personal,
-          currentStep: currentStep,
-          onTap: onStepTap,
-        ),
-        Expanded(child: StepLine()),
-        StepIndicator(
-          step: Step.summary,
-          currentStep: currentStep,
-          onTap: onStepTap,
-        ),
+        for (var index = 0; index < steps.length; index++) ...[
+          StepIndicator(
+            step: steps[index],
+            currentStep: currentStep,
+            number: index + 1,
+            onTap: onStepTap,
+          ),
+          if (index < steps.length - 1) Expanded(child: StepLine()),
+        ],
       ],
     );
   }
@@ -68,12 +40,14 @@ class CreationProgression extends StatelessWidget {
 class StepIndicator extends StatelessWidget {
   final Step step;
   final Step currentStep;
+  final int number;
   final FutureOr<void> Function(Step target)? onTap;
 
   const StepIndicator({
     super.key,
     required this.step,
     required this.currentStep,
+    required this.number,
     this.onTap,
   });
 
@@ -82,9 +56,7 @@ class StepIndicator extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final isCurrent = step == currentStep;
     final isWide = MediaQuery.of(context).size.width > 500;
-    final radius = isCurrent
-        ? (isWide ? 28.0 : 20.0)
-        : (isWide ? 24.0 : 16.0);
+    final radius = isCurrent ? (isWide ? 28.0 : 20.0) : (isWide ? 24.0 : 16.0);
 
     return InkResponse(
       onTap: onTap == null ? null : () => onTap!(step),
@@ -96,7 +68,7 @@ class StepIndicator extends StatelessWidget {
             : colorScheme.surfaceContainerLowest,
         child: isCurrent
             ? Text(
-                '${step.number}',
+                '$number',
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       color: colorScheme.onPrimary,
                       fontWeight: FontWeight.w700,

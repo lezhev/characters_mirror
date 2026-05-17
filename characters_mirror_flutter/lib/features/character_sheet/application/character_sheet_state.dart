@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
@@ -46,17 +48,29 @@ class CharacterSheetController
   late final CharacterRepository _repository;
   late final int _characterId;
   int _saveRevision = 0;
+  bool _isPersisting = false;
+  CharacterData? _lastPersistedCharacter;
+  CharacterData? _pendingSave;
+  int _pendingSaveRevision = 0;
+  Completer<void>? _pendingSaveCompleter;
 
   @override
   Future<CharacterData> build(int characterId) async {
     _characterId = characterId;
     _repository = ref.watch(characterRepositoryProvider);
-    return _repository.getCharacter(characterId);
+    final character = await _repository.getCharacter(characterId);
+    _lastPersistedCharacter = character;
+    return character;
   }
 
   Future<void> reload() async {
-    state =
+    final nextState =
         await AsyncValue.guard(() => _repository.getCharacter(_characterId));
+    state = nextState;
+    final character = nextState.valueOrNull;
+    if (character != null) {
+      _lastPersistedCharacter = character;
+    }
   }
 
   Future<void> addAttack(CharacterAttackData attack) async {
@@ -694,18 +708,67 @@ class CharacterSheetController
     final revision = ++_saveRevision;
     state = AsyncValue.data(stamped);
 
+    if (_isPersisting) {
+      if (_pendingSaveCompleter?.isCompleted == false) {
+        _pendingSaveCompleter!.complete();
+      }
+      _pendingSave = stamped;
+      _pendingSaveRevision = revision;
+      _pendingSaveCompleter = Completer<void>();
+      return _pendingSaveCompleter!.future;
+    }
+
+    await _persistSaves(stamped, revision);
+  }
+
+  Future<void> _persistSaves(CharacterData initial, int initialRevision) async {
+    _isPersisting = true;
+    var nextCharacter = initial;
+    var nextRevision = initialRevision;
+    Completer<void>? activeCompleter;
+
     try {
-      final saved = await _repository.saveCharacter(stamped);
-      if (revision == _saveRevision) {
-        state = AsyncValue.data(saved);
-        ref.invalidate(characterSheetProvider(_characterId));
-        ref.invalidate(offlineCharacterRecordProvider(_characterId));
+      while (true) {
+        try {
+          final saved = await _repository.saveCharacter(nextCharacter);
+          _lastPersistedCharacter = saved;
+          if (nextRevision == _saveRevision) {
+            state = AsyncValue.data(saved);
+          }
+          ref.invalidate(characterSheetProvider(_characterId));
+          ref.invalidate(offlineCharacterRecordProvider(_characterId));
+          if (activeCompleter?.isCompleted == false) {
+            activeCompleter!.complete();
+          }
+        } catch (error, stackTrace) {
+          if (nextRevision == _saveRevision) {
+            final rollbackCharacter =
+                _lastPersistedCharacter ?? state.valueOrNull ?? nextCharacter;
+            state = AsyncValue.data(rollbackCharacter);
+            if (activeCompleter?.isCompleted == false) {
+              activeCompleter!.completeError(error, stackTrace);
+            }
+            Error.throwWithStackTrace(error, stackTrace);
+          }
+          if (activeCompleter?.isCompleted == false) {
+            activeCompleter!.complete();
+          }
+        }
+
+        final pending = _pendingSave;
+        if (pending == null) {
+          return;
+        }
+
+        nextCharacter = pending;
+        nextRevision = _pendingSaveRevision;
+        activeCompleter = _pendingSaveCompleter;
+        _pendingSave = null;
+        _pendingSaveRevision = 0;
+        _pendingSaveCompleter = null;
       }
-    } catch (error, stackTrace) {
-      if (revision == _saveRevision) {
-        state = AsyncValue.data(previous);
-      }
-      Error.throwWithStackTrace(error, stackTrace);
+    } finally {
+      _isPersisting = false;
     }
   }
 }

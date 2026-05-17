@@ -14,15 +14,19 @@ final userSettingsControllerProvider =
 class UserSettings {
   const UserSettings({
     this.themeMode = ThemeMode.system,
+    this.keepScreenAwake = false,
   });
 
   final ThemeMode themeMode;
+  final bool keepScreenAwake;
 
   UserSettings copyWith({
     ThemeMode? themeMode,
+    bool? keepScreenAwake,
   }) {
     return UserSettings(
       themeMode: themeMode ?? this.themeMode,
+      keepScreenAwake: keepScreenAwake ?? this.keepScreenAwake,
     );
   }
 }
@@ -34,7 +38,11 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
   Future<UserSettings> build() async {
     _repository = ref.watch(userSettingsRepositoryProvider);
     final themeMode = await _repository.loadThemeMode();
-    return UserSettings(themeMode: themeMode);
+    final keepScreenAwake = await _repository.loadKeepScreenAwake();
+    return UserSettings(
+      themeMode: themeMode,
+      keepScreenAwake: keepScreenAwake,
+    );
   }
 
   Future<void> setThemeMode(ThemeMode themeMode) async {
@@ -45,6 +53,20 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
 
     try {
       await _repository.saveThemeMode(themeMode);
+    } catch (error, stackTrace) {
+      state = AsyncValue.data(previous);
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
+
+  Future<void> setKeepScreenAwake(bool value) async {
+    final previous = state.valueOrNull ?? const UserSettings();
+    final updated = previous.copyWith(keepScreenAwake: value);
+
+    state = AsyncValue.data(updated);
+
+    try {
+      await _repository.saveKeepScreenAwake(value);
     } catch (error, stackTrace) {
       state = AsyncValue.data(previous);
       Error.throwWithStackTrace(error, stackTrace);

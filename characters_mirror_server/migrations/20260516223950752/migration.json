@@ -1,0 +1,54 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "spell_class_availability_data"
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "availableForClassIds",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<int>?"
+          },
+          {
+            "name": "availableForSubclassIds",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<int>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "tableDropped",
+            "message": "Table \"spell_class_availability_data\" will be dropped.",
+            "table": "spell_class_availability_data",
+            "columns": [],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"spell_class_availability_data\" will be dropped.",
+      "table": "spell_class_availability_data",
+      "columns": [],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

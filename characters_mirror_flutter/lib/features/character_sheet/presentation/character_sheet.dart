@@ -1,6 +1,7 @@
 import 'package:characters_mirror_flutter/core/ui/pointer_swipe_policy.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet_tabs.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/attributes_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_sheet_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_status_stack.dart';
@@ -90,11 +91,15 @@ class CharacterSheet extends HookConsumerWidget {
                   context.go('/characters/sheet/$characterId/settings');
                 },
                 onRestSelected: (restType) {
-                  ref
-                      .read(
-                        characterSheetControllerProvider(characterId).notifier,
-                      )
-                      .restoreResources(restType);
+                  runCharacterSheetSave(
+                    context,
+                    ref
+                        .read(
+                          characterSheetControllerProvider(characterId)
+                              .notifier,
+                        )
+                        .restoreResources(restType),
+                  );
                 },
                 onMenuPressed: () {
                   returnPageIndex.value = pageIndex.value;
@@ -162,12 +167,16 @@ class CharacterSheet extends HookConsumerWidget {
                     };
                   },
                   onInspirationChanged: (value) {
-                    return ref
-                        .read(
-                          characterSheetControllerProvider(characterId)
-                              .notifier,
-                        )
-                        .setInspiration(value);
+                    runCharacterSheetSave(
+                      context,
+                      ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .setInspiration(value),
+                    );
+                    return Future.value();
                   },
                   onSaveConditions: ({
                     required activeConditions,
@@ -184,20 +193,28 @@ class CharacterSheet extends HookConsumerWidget {
                         );
                   },
                   onRemoveCondition: (condition) {
-                    return ref
-                        .read(
-                          characterSheetControllerProvider(characterId)
-                              .notifier,
-                        )
-                        .removeCondition(condition);
+                    runCharacterSheetSave(
+                      context,
+                      ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .removeCondition(condition),
+                    );
+                    return Future.value();
                   },
                   onCancelConcentration: () {
-                    return ref
-                        .read(
-                          characterSheetControllerProvider(characterId)
-                              .notifier,
-                        )
-                        .cancelConcentration();
+                    runCharacterSheetSave(
+                      context,
+                      ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .cancelConcentration(),
+                    );
+                    return Future.value();
                   },
                 ),
               ),

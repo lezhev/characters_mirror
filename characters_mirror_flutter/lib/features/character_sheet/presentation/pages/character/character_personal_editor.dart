@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/character_alignment_labels.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:flutter/material.dart';
 
 typedef SavePersonalInfo = Future<void> Function({
@@ -75,7 +78,7 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
   late final FocusNode _flawsFocusNode;
 
   late _PersonalInfoSnapshot _lastSavedSnapshot;
-  _PersonalInfoSnapshot? _pendingSnapshot;
+  late final DebouncedAutosave<_PersonalInfoSnapshot> _autosave;
   CharacterAlignment? _alignment;
   bool _isSaving = false;
 
@@ -122,6 +125,51 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     _idealsFocusNode = FocusNode();
     _bondsFocusNode = FocusNode();
     _flawsFocusNode = FocusNode();
+
+    _autosave = DebouncedAutosave<_PersonalInfoSnapshot>(
+      delay: characterSheetAutosaveDelay,
+      lastSaved: _lastSavedSnapshot,
+      equals: (left, right) => left == right,
+      onSavingChanged: (value) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          _isSaving = value;
+        });
+      },
+      onError: (error, _) {
+        if (!mounted) {
+          return;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(humanReadableError(error)),
+          ),
+        );
+      },
+      save: (draft) async {
+        await widget.onChanged(
+          name: draft.name,
+          age: draft.age,
+          height: draft.height,
+          weight: draft.weight,
+          eyes: draft.eyes,
+          skin: draft.skin,
+          hair: draft.hair,
+          alignmentValue: draft.alignmentValue,
+          appearance: draft.appearance,
+          backstory: draft.backstory,
+          goals: draft.goals,
+          alliesOrganizations: draft.alliesOrganizations,
+          personalityTraits: draft.personalityTraits,
+          ideals: draft.ideals,
+          bonds: draft.bonds,
+          flaws: draft.flaws,
+        );
+        _lastSavedSnapshot = draft;
+      },
+    );
   }
 
   @override
@@ -131,12 +179,14 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
         _PersonalInfoSnapshot.fromCharacter(widget.character);
     if (!_hasAnyFocus && incomingSnapshot != _lastSavedSnapshot) {
       _lastSavedSnapshot = incomingSnapshot;
+      _autosave.updateLastSaved(incomingSnapshot);
       _applySnapshot(incomingSnapshot);
     }
   }
 
   @override
   void dispose() {
+    _autosave.dispose(flushPending: true);
     _nameController.dispose();
     _ageController.dispose();
     _heightController.dispose();
@@ -253,7 +303,7 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
                   setState(() {
                     _alignment = value;
                   });
-                  _queueSave();
+                  _queueSaveImmediately();
                 },
               );
 
@@ -428,64 +478,12 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
   }
 
   void _queueSave([String? _]) {
-    _pendingSnapshot = _snapshot();
-    if (_isSaving) {
-      return;
-    }
-    _flushPendingSaves();
+    _autosave.schedule(_snapshot());
   }
 
-  Future<void> _flushPendingSaves() async {
-    while (_pendingSnapshot != null) {
-      final draft = _pendingSnapshot;
-      _pendingSnapshot = null;
-      if (draft == null || draft == _lastSavedSnapshot) {
-        continue;
-      }
-
-      if (mounted) {
-        setState(() {
-          _isSaving = true;
-        });
-      }
-
-      try {
-        await widget.onChanged(
-          name: draft.name,
-          age: draft.age,
-          height: draft.height,
-          weight: draft.weight,
-          eyes: draft.eyes,
-          skin: draft.skin,
-          hair: draft.hair,
-          alignmentValue: draft.alignmentValue,
-          appearance: draft.appearance,
-          backstory: draft.backstory,
-          goals: draft.goals,
-          alliesOrganizations: draft.alliesOrganizations,
-          personalityTraits: draft.personalityTraits,
-          ideals: draft.ideals,
-          bonds: draft.bonds,
-          flaws: draft.flaws,
-        );
-        _lastSavedSnapshot = draft;
-      } catch (error) {
-        if (!mounted) {
-          return;
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(humanReadableError(error)),
-          ),
-        );
-      }
-    }
-
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-      });
-    }
+  void _queueSaveImmediately() {
+    _autosave.schedule(_snapshot());
+    unawaited(_autosave.flush());
   }
 }
 
