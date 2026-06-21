@@ -352,8 +352,6 @@ class _SpellCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     SpellPrimaryMetadata(spell: spell),
-                    const SizedBox(height: 8),
-                    _SpellDetailsRow(spell: spell),
                   ],
                 ),
               ),
@@ -449,24 +447,6 @@ class _SpellCastButton extends StatelessWidget {
         child: const Icon(Icons.auto_awesome, size: 18),
       ),
     );
-  }
-}
-
-class _SpellDetailsRow extends StatelessWidget {
-  const _SpellDetailsRow({
-    required this.spell,
-  });
-
-  final SpellData spell;
-
-  @override
-  Widget build(BuildContext context) {
-    final resolutionLabel = spellResolutionLabel(spell);
-    if (resolutionLabel == null) {
-      return const SizedBox.shrink();
-    }
-
-    return SpellResolutionText(label: resolutionLabel);
   }
 }
 
