@@ -1,0 +1,327 @@
+part of '../character_data_endpoint.dart';
+
+List<String> _collectAlwaysPreparedSpellKeys(
+  List<ClassSpellGrantData> grants, {
+  required Map<int, int> classLevels,
+  required Map<int, int> subclassLevels,
+  required Set<int> currentClassFeatureIds,
+  required Set<int> currentSubclassFeatureIds,
+  required Map<int, int> currentClassFeatureLevels,
+  required Map<int, int> currentSubclassFeatureLevels,
+}) {
+  final values = <String>{};
+  for (final grant in grants) {
+    if (grant.alwaysPrepared == false ||
+        !_isClassSpellGrantActive(
+          grant,
+          classLevels: classLevels,
+          subclassLevels: subclassLevels,
+          currentClassFeatureIds: currentClassFeatureIds,
+          currentSubclassFeatureIds: currentSubclassFeatureIds,
+          currentClassFeatureLevels: currentClassFeatureLevels,
+          currentSubclassFeatureLevels: currentSubclassFeatureLevels,
+        )) {
+      continue;
+    }
+
+    final spellKey = _normalizedTextOrNull(grant.spell?.referenceKey) ??
+        _normalizedTextOrNull(grant.spell?.name);
+    if (spellKey != null) {
+      values.add(spellKey);
+    }
+  }
+  return values.toList()..sort();
+}
+
+bool _isClassSpellGrantActive(
+  ClassSpellGrantData grant, {
+  required Map<int, int> classLevels,
+  required Map<int, int> subclassLevels,
+  required Set<int> currentClassFeatureIds,
+  required Set<int> currentSubclassFeatureIds,
+  required Map<int, int> currentClassFeatureLevels,
+  required Map<int, int> currentSubclassFeatureLevels,
+}) {
+  final requiredLevel = grant.grantedAtLevel ?? 1;
+  var hasSource = false;
+  var active = false;
+
+  final sourceClassId = grant.sourceClassId;
+  if (sourceClassId != null) {
+    hasSource = true;
+    active = active || (classLevels[sourceClassId] ?? 0) >= requiredLevel;
+  }
+
+  final sourceSubclassId = grant.sourceSubclassId;
+  if (sourceSubclassId != null) {
+    hasSource = true;
+    active = active || (subclassLevels[sourceSubclassId] ?? 0) >= requiredLevel;
+  }
+
+  final sourceFeatureId = grant.sourceFeatureId;
+  if (sourceFeatureId != null) {
+    hasSource = true;
+    active = active ||
+        (currentClassFeatureIds.contains(sourceFeatureId) &&
+            (currentClassFeatureLevels[sourceFeatureId] ?? 0) >= requiredLevel);
+  }
+
+  final sourceSubclassFeatureId = grant.sourceSubclassFeatureId;
+  if (sourceSubclassFeatureId != null) {
+    hasSource = true;
+    active = active ||
+        (currentSubclassFeatureIds.contains(sourceSubclassFeatureId) &&
+            (currentSubclassFeatureLevels[sourceSubclassFeatureId] ?? 0) >=
+                requiredLevel);
+  }
+
+  return hasSource && active;
+}
+
+void _addSkillNames(Set<Skill> target, List<String>? names) {
+  for (final name in names ?? const <String>[]) {
+    final skill = _skillFromName(name);
+    if (skill != null) {
+      target.add(skill);
+    }
+  }
+}
+
+Skill? _skillFromName(String raw) {
+  final normalized = raw.trim();
+  for (final value in Skill.values) {
+    if (value.name == normalized) {
+      return value;
+    }
+  }
+  return null;
+}
+
+List<String> _collectLanguages(
+  CharacterData character,
+  List<CharacterChoiceData> choices,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+  List<RaceChoiceOptionData> raceOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.languages));
+
+  for (final option in classBackgroundOptions) {
+    values.addAll([
+      for (final language in option.grantedLanguages ?? const <Language>[])
+        language.name,
+    ]);
+  }
+  for (final option in raceOptions) {
+    if (option.language != null) {
+      values.add(option.language!.name);
+    }
+  }
+  for (final choice in choices) {
+    if (choice.selectedLanguage != null) {
+      values.add(choice.selectedLanguage!.name);
+      continue;
+    }
+
+    final legacyLanguage = _languageFromName(choice.selectedText ?? '');
+    if (legacyLanguage != null) {
+      values.add(legacyLanguage.name);
+    }
+  }
+
+  return values.toList()..sort();
+}
+
+List<String> _collectToolProficiencies(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  List<CharacterChoiceData> choices,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+  List<RaceChoiceOptionData> raceOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.toolProficiencies));
+  values.addAll(_normalizedTexts(character.subrace?.toolProficiencies));
+  values.addAll(_normalizedTexts(character.background?.toolProficiencies));
+
+  for (final entry in entries) {
+    final classData = entry.classData;
+    if (classData == null) continue;
+    final isStarting = entry.isStartingClass ?? false;
+    values.addAll(_normalizedTexts(
+      isStarting ? classData.toolTraining : classData.multiclassToolTraining,
+    ));
+  }
+  for (final option in classBackgroundOptions) {
+    values.addAll(_normalizedTexts(option.grantedToolKeys));
+  }
+  for (final option in raceOptions) {
+    final toolKey = _normalizedTextOrNull(option.toolKey);
+    if (toolKey != null) {
+      values.add(toolKey);
+    }
+  }
+  for (final choice in choices) {
+    final toolKey = _normalizedTextOrNull(choice.selectedToolKey);
+    if (toolKey != null) {
+      values.add(toolKey);
+    }
+  }
+
+  return values.toList()..sort();
+}
+
+List<String> _collectArmorTraining(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.armorProficiencies));
+  values.addAll(_normalizedTexts(character.subrace?.armorProficiencies));
+
+  for (final entry in entries) {
+    final classData = entry.classData;
+    if (classData == null) continue;
+    final source = (entry.isStartingClass ?? false)
+        ? classData.armorTraining
+        : classData.multiclassArmorTraining;
+    values.addAll([
+      for (final training in source ?? const <ArmorCategory>[]) training.name,
+    ]);
+  }
+  for (final option in classBackgroundOptions) {
+    values.addAll([
+      for (final training
+          in option.grantedArmorTraining ?? const <ArmorCategory>[])
+        training.name,
+    ]);
+  }
+
+  return values.toList()..sort();
+}
+
+List<String> _collectWeaponTraining(
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+) {
+  final values = <String>{};
+  values.addAll(_normalizedTexts(character.race?.weaponProficiencies));
+  values.addAll(_normalizedTexts(character.subrace?.weaponProficiencies));
+
+  for (final entry in entries) {
+    final classData = entry.classData;
+    if (classData == null) continue;
+    final source = (entry.isStartingClass ?? false)
+        ? classData.weaponTraining
+        : classData.multiclassWeaponTraining;
+    values.addAll([
+      for (final training in source ?? const <WeaponCategory>[]) training.name,
+    ]);
+  }
+  for (final option in classBackgroundOptions) {
+    values.addAll([
+      for (final training
+          in option.grantedWeaponTraining ?? const <WeaponCategory>[])
+        training.name,
+    ]);
+  }
+
+  return values.toList()..sort();
+}
+
+List<int> _collectFeatIds(
+  List<CharacterChoiceData> choices,
+  List<RaceChoiceOptionData> raceOptions,
+) {
+  final values = <int>{
+    for (final choice in choices)
+      if (choice.selectedFeatId != null) choice.selectedFeatId!,
+    for (final option in raceOptions)
+      if (option.featId != null) option.featId!,
+  };
+  return values.toList()..sort();
+}
+
+Future<Set<FeatureTag>> _loadFeatTags(
+  Session session,
+  List<int> featIds,
+) async {
+  if (featIds.isEmpty) {
+    return const <FeatureTag>{};
+  }
+
+  final feats = await FeatData.db.find(
+    session,
+    where: (t) => t.id.inSet(featIds.toSet()),
+  );
+  return {
+    for (final feat in feats) ...?feat.tags,
+  };
+}
+
+List<FeatureTag> _collectFeatureTags({
+  required CharacterData character,
+  required _ResolvedDerivedSources resolvedSources,
+  required _CurrentRaceFeatures currentRaceFeatures,
+  required Set<FeatureTag> featTags,
+}) {
+  final values = <FeatureTag>{
+    ...featTags,
+    for (final feature in resolvedSources.currentClassFeatures)
+      ...?feature.tags,
+    for (final feature in resolvedSources.currentSubclassFeatures)
+      ...?feature.tags,
+    for (final feature in currentRaceFeatures.raceFeatures) ...?feature.tags,
+    for (final feature in currentRaceFeatures.subraceFeatures) ...?feature.tags,
+    for (final option in resolvedSources.classBackgroundOptions)
+      ...?option.grantedFeatureTags,
+    for (final option in resolvedSources.raceOptions)
+      ...?option.grantedFeatureTags,
+  };
+
+  final list = values.toList()..sort((a, b) => a.name.compareTo(b.name));
+  return list;
+}
+
+List<String> _collectGrantedSpellKeys(
+  List<CharacterSpellSelectionData> spellSelections,
+  List<ClassChoiceOptionData> classBackgroundOptions,
+  List<RaceChoiceOptionData> raceOptions,
+  _CurrentRaceFeatures currentRaceFeatures,
+  List<String> alwaysPreparedSpellKeys,
+) {
+  final values = <String>{};
+  values.addAll(alwaysPreparedSpellKeys);
+  for (final selection in spellSelections) {
+    final spellKey = _normalizedTextOrNull(selection.spellKey) ??
+        _normalizedTextOrNull(selection.spell?.referenceKey) ??
+        _normalizedTextOrNull(selection.spell?.name);
+    if (spellKey != null) {
+      values.add(spellKey);
+    }
+  }
+  for (final option in classBackgroundOptions) {
+    values.addAll(_normalizedTexts(option.grantedSpellKeys));
+  }
+  for (final option in raceOptions) {
+    final spellName = _normalizedTextOrNull(option.spell?.name);
+    if (spellName != null) {
+      values.add(spellName);
+    }
+  }
+  for (final feature in [
+    ...currentRaceFeatures.raceFeatures,
+    ...currentRaceFeatures.subraceFeatures,
+  ]) {
+    for (final grant
+        in feature.spellGrants ?? const <RaceFeatureSpellGrantData>[]) {
+      final spellName = _normalizedTextOrNull(grant.spell?.name);
+      if (spellName != null) {
+        values.add(spellName);
+      }
+    }
+  }
+  return values.toList()..sort();
+}
