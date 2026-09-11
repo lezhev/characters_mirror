@@ -16,18 +16,19 @@ import '../../../enums/character_alignment.dart' as _i2;
 import '../../../data/general/race/race_data.dart' as _i3;
 import '../../../data/general/race/subrace_data.dart' as _i4;
 import '../../../data/background_data.dart' as _i5;
-import '../../../enums/condition_type.dart' as _i6;
+import '../../../enums/character_speed_kind.dart' as _i6;
+import '../../../enums/condition_type.dart' as _i7;
 import '../../../data/general/character/character_inventory_item_data.dart'
-    as _i7;
-import '../../../data/general/character/character_skill_proficiency_state.dart'
     as _i8;
-import '../../../enums/ability.dart' as _i9;
-import '../../../data/general/character/character_note_data.dart' as _i10;
-import '../../../data/general/character/character_attack_data.dart' as _i11;
+import '../../../data/general/character/character_skill_proficiency_state.dart'
+    as _i9;
+import '../../../enums/ability.dart' as _i10;
+import '../../../data/general/character/character_note_data.dart' as _i11;
+import '../../../data/general/character/character_attack_data.dart' as _i12;
 import '../../../data/general/character/character_feature_override_data.dart'
-    as _i12;
-import '../../../data/general/character/character_resource_state_data.dart'
     as _i13;
+import '../../../data/general/character/character_resource_state_data.dart'
+    as _i14;
 
 abstract class CharacterRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -73,6 +74,16 @@ abstract class CharacterRecord
     this.hitDiceMaxOverrides,
     this.currentSpellSlots,
     this.activeConcentrationSpellName,
+    this.customInitiativeBonus,
+    this.customArmorClassBonus,
+    this.walkingSpeed,
+    this.swimmingSpeed,
+    this.climbingSpeed,
+    this.flyingSpeed,
+    this.displayedSpeedKind,
+    this.customSpellSaveDcBonus,
+    this.customSpellAttackBonus,
+    this.preparedSpellKeys,
     this.activeConditions,
     this.exhaustionLevel,
     this.inspiration,
@@ -127,16 +138,26 @@ abstract class CharacterRecord
     Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
-    List<_i6.ConditionType>? activeConditions,
+    int? customInitiativeBonus,
+    int? customArmorClassBonus,
+    int? walkingSpeed,
+    int? swimmingSpeed,
+    int? climbingSpeed,
+    int? flyingSpeed,
+    _i6.CharacterSpeedKind? displayedSpeedKind,
+    int? customSpellSaveDcBonus,
+    int? customSpellAttackBonus,
+    List<String>? preparedSpellKeys,
+    List<_i7.ConditionType>? activeConditions,
     int? exhaustionLevel,
     bool? inspiration,
-    List<_i7.CharacterInventoryItemData>? equipment,
-    List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i9.Ability>? manualSavingThrowProficiencies,
-    List<_i10.CharacterNoteData>? notes,
-    List<_i11.CharacterAttackData>? attacks,
-    List<_i12.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i13.CharacterResourceStateData>? resourceStates,
+    List<_i8.CharacterInventoryItemData>? equipment,
+    List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i10.Ability>? manualSavingThrowProficiencies,
+    List<_i11.CharacterNoteData>? notes,
+    List<_i12.CharacterAttackData>? attacks,
+    List<_i13.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i14.CharacterResourceStateData>? resourceStates,
   }) = _CharacterRecordImpl;
 
   factory CharacterRecord.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -218,38 +239,55 @@ abstract class CharacterRecord
               {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
       activeConcentrationSpellName:
           jsonSerialization['activeConcentrationSpellName'] as String?,
+      customInitiativeBonus: jsonSerialization['customInitiativeBonus'] as int?,
+      customArmorClassBonus: jsonSerialization['customArmorClassBonus'] as int?,
+      walkingSpeed: jsonSerialization['walkingSpeed'] as int?,
+      swimmingSpeed: jsonSerialization['swimmingSpeed'] as int?,
+      climbingSpeed: jsonSerialization['climbingSpeed'] as int?,
+      flyingSpeed: jsonSerialization['flyingSpeed'] as int?,
+      displayedSpeedKind: jsonSerialization['displayedSpeedKind'] == null
+          ? null
+          : _i6.CharacterSpeedKind.fromJson(
+              (jsonSerialization['displayedSpeedKind'] as int)),
+      customSpellSaveDcBonus:
+          jsonSerialization['customSpellSaveDcBonus'] as int?,
+      customSpellAttackBonus:
+          jsonSerialization['customSpellAttackBonus'] as int?,
+      preparedSpellKeys: (jsonSerialization['preparedSpellKeys'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
       activeConditions: (jsonSerialization['activeConditions'] as List?)
-          ?.map((e) => _i6.ConditionType.fromJson((e as String)))
+          ?.map((e) => _i7.ConditionType.fromJson((e as String)))
           .toList(),
       exhaustionLevel: jsonSerialization['exhaustionLevel'] as int?,
       inspiration: jsonSerialization['inspiration'] as bool?,
       equipment: (jsonSerialization['equipment'] as List?)
-          ?.map((e) => _i7.CharacterInventoryItemData.fromJson(
+          ?.map((e) => _i8.CharacterInventoryItemData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       manualSkillProficiencies:
           (jsonSerialization['manualSkillProficiencies'] as List?)
-              ?.map((e) => _i8.CharacterSkillProficiencyState.fromJson(
+              ?.map((e) => _i9.CharacterSkillProficiencyState.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
       manualSavingThrowProficiencies:
           (jsonSerialization['manualSavingThrowProficiencies'] as List?)
-              ?.map((e) => _i9.Ability.fromJson((e as String)))
+              ?.map((e) => _i10.Ability.fromJson((e as String)))
               .toList(),
       notes: (jsonSerialization['notes'] as List?)
           ?.map((e) =>
-              _i10.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
+              _i11.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
-              _i11.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+              _i12.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       featureOverrides: (jsonSerialization['featureOverrides'] as List?)
-          ?.map((e) => _i12.CharacterFeatureOverrideData.fromJson(
+          ?.map((e) => _i13.CharacterFeatureOverrideData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       resourceStates: (jsonSerialization['resourceStates'] as List?)
-          ?.map((e) => _i13.CharacterResourceStateData.fromJson(
+          ?.map((e) => _i14.CharacterResourceStateData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
     );
@@ -342,25 +380,45 @@ abstract class CharacterRecord
 
   String? activeConcentrationSpellName;
 
-  List<_i6.ConditionType>? activeConditions;
+  int? customInitiativeBonus;
+
+  int? customArmorClassBonus;
+
+  int? walkingSpeed;
+
+  int? swimmingSpeed;
+
+  int? climbingSpeed;
+
+  int? flyingSpeed;
+
+  _i6.CharacterSpeedKind? displayedSpeedKind;
+
+  int? customSpellSaveDcBonus;
+
+  int? customSpellAttackBonus;
+
+  List<String>? preparedSpellKeys;
+
+  List<_i7.ConditionType>? activeConditions;
 
   int? exhaustionLevel;
 
   bool? inspiration;
 
-  List<_i7.CharacterInventoryItemData>? equipment;
+  List<_i8.CharacterInventoryItemData>? equipment;
 
-  List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies;
+  List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencies;
 
-  List<_i9.Ability>? manualSavingThrowProficiencies;
+  List<_i10.Ability>? manualSavingThrowProficiencies;
 
-  List<_i10.CharacterNoteData>? notes;
+  List<_i11.CharacterNoteData>? notes;
 
-  List<_i11.CharacterAttackData>? attacks;
+  List<_i12.CharacterAttackData>? attacks;
 
-  List<_i12.CharacterFeatureOverrideData>? featureOverrides;
+  List<_i13.CharacterFeatureOverrideData>? featureOverrides;
 
-  List<_i13.CharacterResourceStateData>? resourceStates;
+  List<_i14.CharacterResourceStateData>? resourceStates;
 
   @override
   _i1.Table<int?> get table => t;
@@ -410,16 +468,26 @@ abstract class CharacterRecord
     Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
-    List<_i6.ConditionType>? activeConditions,
+    int? customInitiativeBonus,
+    int? customArmorClassBonus,
+    int? walkingSpeed,
+    int? swimmingSpeed,
+    int? climbingSpeed,
+    int? flyingSpeed,
+    _i6.CharacterSpeedKind? displayedSpeedKind,
+    int? customSpellSaveDcBonus,
+    int? customSpellAttackBonus,
+    List<String>? preparedSpellKeys,
+    List<_i7.ConditionType>? activeConditions,
     int? exhaustionLevel,
     bool? inspiration,
-    List<_i7.CharacterInventoryItemData>? equipment,
-    List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i9.Ability>? manualSavingThrowProficiencies,
-    List<_i10.CharacterNoteData>? notes,
-    List<_i11.CharacterAttackData>? attacks,
-    List<_i12.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i13.CharacterResourceStateData>? resourceStates,
+    List<_i8.CharacterInventoryItemData>? equipment,
+    List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i10.Ability>? manualSavingThrowProficiencies,
+    List<_i11.CharacterNoteData>? notes,
+    List<_i12.CharacterAttackData>? attacks,
+    List<_i13.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i14.CharacterResourceStateData>? resourceStates,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -472,6 +540,22 @@ abstract class CharacterRecord
         'currentSpellSlots': currentSpellSlots?.toJson(),
       if (activeConcentrationSpellName != null)
         'activeConcentrationSpellName': activeConcentrationSpellName,
+      if (customInitiativeBonus != null)
+        'customInitiativeBonus': customInitiativeBonus,
+      if (customArmorClassBonus != null)
+        'customArmorClassBonus': customArmorClassBonus,
+      if (walkingSpeed != null) 'walkingSpeed': walkingSpeed,
+      if (swimmingSpeed != null) 'swimmingSpeed': swimmingSpeed,
+      if (climbingSpeed != null) 'climbingSpeed': climbingSpeed,
+      if (flyingSpeed != null) 'flyingSpeed': flyingSpeed,
+      if (displayedSpeedKind != null)
+        'displayedSpeedKind': displayedSpeedKind?.toJson(),
+      if (customSpellSaveDcBonus != null)
+        'customSpellSaveDcBonus': customSpellSaveDcBonus,
+      if (customSpellAttackBonus != null)
+        'customSpellAttackBonus': customSpellAttackBonus,
+      if (preparedSpellKeys != null)
+        'preparedSpellKeys': preparedSpellKeys?.toJson(),
       if (activeConditions != null)
         'activeConditions':
             activeConditions?.toJson(valueToJson: (v) => v.toJson()),
@@ -585,16 +669,26 @@ class _CharacterRecordImpl extends CharacterRecord {
     Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
     String? activeConcentrationSpellName,
-    List<_i6.ConditionType>? activeConditions,
+    int? customInitiativeBonus,
+    int? customArmorClassBonus,
+    int? walkingSpeed,
+    int? swimmingSpeed,
+    int? climbingSpeed,
+    int? flyingSpeed,
+    _i6.CharacterSpeedKind? displayedSpeedKind,
+    int? customSpellSaveDcBonus,
+    int? customSpellAttackBonus,
+    List<String>? preparedSpellKeys,
+    List<_i7.ConditionType>? activeConditions,
     int? exhaustionLevel,
     bool? inspiration,
-    List<_i7.CharacterInventoryItemData>? equipment,
-    List<_i8.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i9.Ability>? manualSavingThrowProficiencies,
-    List<_i10.CharacterNoteData>? notes,
-    List<_i11.CharacterAttackData>? attacks,
-    List<_i12.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i13.CharacterResourceStateData>? resourceStates,
+    List<_i8.CharacterInventoryItemData>? equipment,
+    List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_i10.Ability>? manualSavingThrowProficiencies,
+    List<_i11.CharacterNoteData>? notes,
+    List<_i12.CharacterAttackData>? attacks,
+    List<_i13.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i14.CharacterResourceStateData>? resourceStates,
   }) : super._(
           id: id,
           name: name,
@@ -637,6 +731,16 @@ class _CharacterRecordImpl extends CharacterRecord {
           hitDiceMaxOverrides: hitDiceMaxOverrides,
           currentSpellSlots: currentSpellSlots,
           activeConcentrationSpellName: activeConcentrationSpellName,
+          customInitiativeBonus: customInitiativeBonus,
+          customArmorClassBonus: customArmorClassBonus,
+          walkingSpeed: walkingSpeed,
+          swimmingSpeed: swimmingSpeed,
+          climbingSpeed: climbingSpeed,
+          flyingSpeed: flyingSpeed,
+          displayedSpeedKind: displayedSpeedKind,
+          customSpellSaveDcBonus: customSpellSaveDcBonus,
+          customSpellAttackBonus: customSpellAttackBonus,
+          preparedSpellKeys: preparedSpellKeys,
           activeConditions: activeConditions,
           exhaustionLevel: exhaustionLevel,
           inspiration: inspiration,
@@ -695,6 +799,16 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? hitDiceMaxOverrides = _Undefined,
     Object? currentSpellSlots = _Undefined,
     Object? activeConcentrationSpellName = _Undefined,
+    Object? customInitiativeBonus = _Undefined,
+    Object? customArmorClassBonus = _Undefined,
+    Object? walkingSpeed = _Undefined,
+    Object? swimmingSpeed = _Undefined,
+    Object? climbingSpeed = _Undefined,
+    Object? flyingSpeed = _Undefined,
+    Object? displayedSpeedKind = _Undefined,
+    Object? customSpellSaveDcBonus = _Undefined,
+    Object? customSpellAttackBonus = _Undefined,
+    Object? preparedSpellKeys = _Undefined,
     Object? activeConditions = _Undefined,
     Object? exhaustionLevel = _Undefined,
     Object? inspiration = _Undefined,
@@ -810,34 +924,56 @@ class _CharacterRecordImpl extends CharacterRecord {
       activeConcentrationSpellName: activeConcentrationSpellName is String?
           ? activeConcentrationSpellName
           : this.activeConcentrationSpellName,
-      activeConditions: activeConditions is List<_i6.ConditionType>?
+      customInitiativeBonus: customInitiativeBonus is int?
+          ? customInitiativeBonus
+          : this.customInitiativeBonus,
+      customArmorClassBonus: customArmorClassBonus is int?
+          ? customArmorClassBonus
+          : this.customArmorClassBonus,
+      walkingSpeed: walkingSpeed is int? ? walkingSpeed : this.walkingSpeed,
+      swimmingSpeed: swimmingSpeed is int? ? swimmingSpeed : this.swimmingSpeed,
+      climbingSpeed: climbingSpeed is int? ? climbingSpeed : this.climbingSpeed,
+      flyingSpeed: flyingSpeed is int? ? flyingSpeed : this.flyingSpeed,
+      displayedSpeedKind: displayedSpeedKind is _i6.CharacterSpeedKind?
+          ? displayedSpeedKind
+          : this.displayedSpeedKind,
+      customSpellSaveDcBonus: customSpellSaveDcBonus is int?
+          ? customSpellSaveDcBonus
+          : this.customSpellSaveDcBonus,
+      customSpellAttackBonus: customSpellAttackBonus is int?
+          ? customSpellAttackBonus
+          : this.customSpellAttackBonus,
+      preparedSpellKeys: preparedSpellKeys is List<String>?
+          ? preparedSpellKeys
+          : this.preparedSpellKeys?.map((e0) => e0).toList(),
+      activeConditions: activeConditions is List<_i7.ConditionType>?
           ? activeConditions
           : this.activeConditions?.map((e0) => e0).toList(),
       exhaustionLevel:
           exhaustionLevel is int? ? exhaustionLevel : this.exhaustionLevel,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
-      equipment: equipment is List<_i7.CharacterInventoryItemData>?
+      equipment: equipment is List<_i8.CharacterInventoryItemData>?
           ? equipment
           : this.equipment?.map((e0) => e0.copyWith()).toList(),
       manualSkillProficiencies: manualSkillProficiencies
-              is List<_i8.CharacterSkillProficiencyState>?
+              is List<_i9.CharacterSkillProficiencyState>?
           ? manualSkillProficiencies
           : this.manualSkillProficiencies?.map((e0) => e0.copyWith()).toList(),
       manualSavingThrowProficiencies:
-          manualSavingThrowProficiencies is List<_i9.Ability>?
+          manualSavingThrowProficiencies is List<_i10.Ability>?
               ? manualSavingThrowProficiencies
               : this.manualSavingThrowProficiencies?.map((e0) => e0).toList(),
-      notes: notes is List<_i10.CharacterNoteData>?
+      notes: notes is List<_i11.CharacterNoteData>?
           ? notes
           : this.notes?.map((e0) => e0.copyWith()).toList(),
-      attacks: attacks is List<_i11.CharacterAttackData>?
+      attacks: attacks is List<_i12.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
       featureOverrides:
-          featureOverrides is List<_i12.CharacterFeatureOverrideData>?
+          featureOverrides is List<_i13.CharacterFeatureOverrideData>?
               ? featureOverrides
               : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
-      resourceStates: resourceStates is List<_i13.CharacterResourceStateData>?
+      resourceStates: resourceStates is List<_i14.CharacterResourceStateData>?
           ? resourceStates
           : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
     );
@@ -995,6 +1131,47 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'activeConcentrationSpellName',
       this,
     );
+    customInitiativeBonus = _i1.ColumnInt(
+      'customInitiativeBonus',
+      this,
+    );
+    customArmorClassBonus = _i1.ColumnInt(
+      'customArmorClassBonus',
+      this,
+    );
+    walkingSpeed = _i1.ColumnInt(
+      'walkingSpeed',
+      this,
+    );
+    swimmingSpeed = _i1.ColumnInt(
+      'swimmingSpeed',
+      this,
+    );
+    climbingSpeed = _i1.ColumnInt(
+      'climbingSpeed',
+      this,
+    );
+    flyingSpeed = _i1.ColumnInt(
+      'flyingSpeed',
+      this,
+    );
+    displayedSpeedKind = _i1.ColumnEnum(
+      'displayedSpeedKind',
+      this,
+      _i1.EnumSerialization.byIndex,
+    );
+    customSpellSaveDcBonus = _i1.ColumnInt(
+      'customSpellSaveDcBonus',
+      this,
+    );
+    customSpellAttackBonus = _i1.ColumnInt(
+      'customSpellAttackBonus',
+      this,
+    );
+    preparedSpellKeys = _i1.ColumnSerializable(
+      'preparedSpellKeys',
+      this,
+    );
     activeConditions = _i1.ColumnSerializable(
       'activeConditions',
       this,
@@ -1117,6 +1294,26 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString activeConcentrationSpellName;
 
+  late final _i1.ColumnInt customInitiativeBonus;
+
+  late final _i1.ColumnInt customArmorClassBonus;
+
+  late final _i1.ColumnInt walkingSpeed;
+
+  late final _i1.ColumnInt swimmingSpeed;
+
+  late final _i1.ColumnInt climbingSpeed;
+
+  late final _i1.ColumnInt flyingSpeed;
+
+  late final _i1.ColumnEnum<_i6.CharacterSpeedKind> displayedSpeedKind;
+
+  late final _i1.ColumnInt customSpellSaveDcBonus;
+
+  late final _i1.ColumnInt customSpellAttackBonus;
+
+  late final _i1.ColumnSerializable preparedSpellKeys;
+
   late final _i1.ColumnSerializable activeConditions;
 
   late final _i1.ColumnInt exhaustionLevel;
@@ -1216,6 +1413,16 @@ class CharacterRecordTable extends _i1.Table<int?> {
         hitDiceMaxOverrides,
         currentSpellSlots,
         activeConcentrationSpellName,
+        customInitiativeBonus,
+        customArmorClassBonus,
+        walkingSpeed,
+        swimmingSpeed,
+        climbingSpeed,
+        flyingSpeed,
+        displayedSpeedKind,
+        customSpellSaveDcBonus,
+        customSpellAttackBonus,
+        preparedSpellKeys,
         activeConditions,
         exhaustionLevel,
         inspiration,

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CharacterFeatureCard resource', () {
-    testWidgets('shows pips and current/max for small resources',
+    testWidgets('shows compact resource summary while collapsed',
         (tester) async {
       final updates = <int>[];
 
@@ -23,16 +23,82 @@ void main() {
       );
 
       expect(find.text('2/3'), findsOneWidget);
-      expect(find.byIcon(Icons.circle), findsNWidgets(2));
-      expect(find.byIcon(Icons.radio_button_unchecked), findsOneWidget);
+      expect(find.text('Использования'), findsNothing);
+      expect(find.text('Короткий отдых'), findsNothing);
+      expect(find.text('2 из 3'), findsNothing);
+      expect(find.byTooltip('Потратить ресурс'), findsNothing);
+      expect(find.byTooltip('Восстановить ресурс'), findsNothing);
+    });
 
-      await tester.tap(find.byTooltip('Восстановить ресурс'));
+    testWidgets('shows expanded resource section with pill controls',
+        (tester) async {
+      final updates = <int>[];
+
+      await _pumpCard(
+        tester,
+        resource: CharacterResourceViewData(
+          key: 'main',
+          name: 'Second Wind',
+          kind: FeatureResourceKind.uses,
+          current: 2,
+          max: 3,
+          resetOn: RestType.shortRest,
+        ),
+        onSetResource: (current) async => updates.add(current),
+      );
+
+      await tester.tap(find.byIcon(Icons.expand_more));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Использования'), findsOneWidget);
+      expect(find.text('Короткий отдых'), findsOneWidget);
+      expect(find.text('2 из 3'), findsOneWidget);
+      expect(find.byIcon(Icons.circle), findsNWidgets(2));
+      expect(find.byIcon(Icons.circle_outlined), findsOneWidget);
+
+      final spendButton = find.byTooltip('Потратить ресурс');
+      final restoreButton = find.byTooltip('Восстановить ресурс');
+      expect(tester.getSize(spendButton), const Size(44, 44));
+      expect(tester.getSize(restoreButton), const Size(44, 44));
+
+      await tester.tap(restoreButton);
       await tester.pump();
 
       expect(updates, [3]);
     });
 
-    testWidgets('uses compact count without pips for large resources',
+    testWidgets('places resource between source label and description',
+        (tester) async {
+      await _pumpCard(
+        tester,
+        sourceName: 'Божественный домен Жизнь',
+        level: 1,
+        description: 'Описание особенности.',
+        resource: CharacterResourceViewData(
+          key: 'main',
+          kind: FeatureResourceKind.uses,
+          current: 1,
+          max: 2,
+          resetOn: RestType.longRest,
+        ),
+        onSetResource: (_) async {},
+      );
+
+      await tester.tap(find.byIcon(Icons.expand_more));
+      await tester.pumpAndSettle();
+
+      final sourceTop = tester
+          .getTopLeft(find.text('Божественный домен Жизнь • Уровень 1'))
+          .dy;
+      final resourceTop = tester.getTopLeft(find.text('Использования')).dy;
+      final descriptionTop =
+          tester.getTopLeft(find.text('Описание особенности.')).dy;
+
+      expect(resourceTop, greaterThan(sourceTop));
+      expect(descriptionTop, greaterThan(resourceTop));
+    });
+
+    testWidgets('uses count without pips for large resources when expanded',
         (tester) async {
       await _pumpCard(
         tester,
@@ -48,31 +114,73 @@ void main() {
       );
 
       expect(find.text('8/10'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.expand_more));
+      await tester.pumpAndSettle();
+
+      expect(find.text('8 из 10'), findsOneWidget);
       expect(find.byIcon(Icons.circle), findsNothing);
-      expect(find.byIcon(Icons.radio_button_unchecked), findsNothing);
+      expect(find.byIcon(Icons.circle_outlined), findsNothing);
+    });
+
+    testWidgets('omits collapsed resource summary when feature has no resource',
+        (tester) async {
+      await _pumpCard(
+        tester,
+        resource: null,
+        onSetResource: (_) async {},
+      );
+
+      expect(find.text('Feature'), findsOneWidget);
+      expect(find.textContaining('/'), findsNothing);
+      expect(find.byTooltip('Потратить ресурс'), findsNothing);
+    });
+
+    testWidgets('aligns collapsed feature titles to the left', (tester) async {
+      await _pumpCard(
+        tester,
+        resource: null,
+        onSetResource: (_) async {},
+      );
+
+      final cardLeft = tester.getTopLeft(find.byType(CharacterFeatureCard)).dx;
+      final cardWidth = tester.getSize(find.byType(CharacterFeatureCard)).width;
+      final titleLeft = tester.getTopLeft(find.text('Feature')).dx;
+
+      expect(titleLeft, lessThan(cardLeft + cardWidth / 4));
     });
   });
 }
 
 Future<void> _pumpCard(
   WidgetTester tester, {
-  required CharacterResourceViewData resource,
+  required CharacterResourceViewData? resource,
   required Future<void> Function(int current) onSetResource,
+  CharacterFeatureSourceType sourceType =
+      CharacterFeatureSourceType.classFeature,
+  String? sourceName,
+  int? level,
+  String? description,
 }) {
   return tester.pumpWidget(
     MaterialApp(
       home: Scaffold(
-        body: CharacterFeatureCard(
-          feature: CharacterFeatureViewData(
-            sourceType: CharacterFeatureSourceType.classFeature,
-            sourceId: 1,
-            defaultName: 'Feature',
-            name: 'Feature',
-            resources: [resource],
+        body: SingleChildScrollView(
+          child: CharacterFeatureCard(
+            feature: CharacterFeatureViewData(
+              sourceType: sourceType,
+              sourceId: 1,
+              sourceName: sourceName,
+              level: level,
+              defaultName: 'Feature',
+              name: 'Feature',
+              description: description,
+              resources: resource == null ? null : [resource],
+            ),
+            onSave: ({name, description, tags}) async {},
+            onReset: () async {},
+            onSetResource: (_, current) => onSetResource(current),
           ),
-          onSave: ({name, description, tags}) async {},
-          onReset: () async {},
-          onSetResource: (_, current) => onSetResource(current),
         ),
       ),
     ),

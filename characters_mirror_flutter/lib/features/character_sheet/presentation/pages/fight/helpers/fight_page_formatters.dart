@@ -92,11 +92,20 @@ List<DamagePartData> _normalizedDamageParts(List<DamagePartData>? parts) {
   ];
 }
 
-String formatHpLabel(CharacterData character) {
+enum HpLabelDensity { full, withoutTemporary, currentOnly }
+
+String formatHpLabel(
+  CharacterData character, {
+  HpLabelDensity density = HpLabelDensity.full,
+}) {
   final maxHp = character.derived?.maxHp ?? 0;
   final currentHp = character.currentHp ?? maxHp;
+  if (density == HpLabelDensity.currentOnly) {
+    return '$currentHp';
+  }
+
   final temporaryHp = character.temporaryHp ?? 0;
-  if (temporaryHp <= 0) {
+  if (density == HpLabelDensity.withoutTemporary || temporaryHp <= 0) {
     return '$currentHp / $maxHp';
   }
   return '$currentHp / $maxHp ($temporaryHp)';

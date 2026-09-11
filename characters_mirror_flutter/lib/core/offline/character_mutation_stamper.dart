@@ -193,6 +193,10 @@ CharacterData normalizeCharacterForPersistence(
     currentHitDice: _normalizedNonNegativeIntMap(character.currentHitDice),
     hitDiceMaxOverrides:
         _normalizedNonNegativeIntMap(character.hitDiceMaxOverrides),
+    customSpellSaveDcBonus: _zeroAsNull(character.customSpellSaveDcBonus),
+    customSpellAttackBonus: _zeroAsNull(character.customSpellAttackBonus),
+    preparedSpellKeys:
+        _normalizedPreparedSpellKeys(character.preparedSpellKeys),
     equipment: _normalizedInventory(character.equipment, updatedAt),
     notes: _normalizedNotes(character.notes, updatedAt),
     attacks: _normalizedAttacks(character.attacks, updatedAt),
@@ -582,6 +586,17 @@ List<String>? _normalizedStringList(List<String>? values) {
       if (_normalizedText(value) != null) _normalizedText(value)!,
   ];
   return normalized.isEmpty ? null : normalized;
+}
+
+List<String>? _normalizedPreparedSpellKeys(List<String>? values) {
+  if (values == null) {
+    return null;
+  }
+  final normalized = [
+    for (final value in values)
+      if (_normalizedText(value) != null) _normalizedText(value)!,
+  ];
+  return normalized;
 }
 
 int _normalizeQuantity(int? quantity) {

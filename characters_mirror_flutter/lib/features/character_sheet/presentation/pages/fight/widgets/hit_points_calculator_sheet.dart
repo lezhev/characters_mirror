@@ -5,6 +5,7 @@ import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
+import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

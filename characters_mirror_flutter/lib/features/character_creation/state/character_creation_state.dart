@@ -14,20 +14,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'character_creation_state.freezed.dart';
 part 'character_creation_state.g.dart';
 
-enum Step {
-  introduction,
-  race,
-  classStep,
-  background,
-  attributes,
-  spells,
-  personal,
-  summary
-}
+enum Step { classStep, race, background, attributes, spells, personal, summary }
 
 extension CreationStepX on Step {
-  String get routePath =>
-      this == Step.introduction ? '/create' : '/create/$name';
+  String get routePath {
+    switch (this) {
+      case Step.classStep:
+        return '/create';
+      case Step.race:
+      case Step.background:
+      case Step.attributes:
+      case Step.spells:
+      case Step.personal:
+      case Step.summary:
+        return '/create/$name';
+    }
+  }
 
   static Step? fromContext(BuildContext context) {
     return fromRoutePath(GoRouterState.of(context).matchedLocation);
@@ -35,6 +37,7 @@ extension CreationStepX on Step {
 
   static Step? fromRoutePath(String? routePath) {
     if (routePath == null) return null;
+    if (routePath == '/create/classStep') return Step.classStep;
 
     for (final step in Step.values) {
       if (step.routePath == routePath) {
@@ -47,12 +50,10 @@ extension CreationStepX on Step {
 
   String get labelRu {
     switch (this) {
-      case Step.introduction:
-        return 'Вступление';
-      case Step.race:
-        return 'Раса';
       case Step.classStep:
         return 'Класс';
+      case Step.race:
+        return 'Раса';
       case Step.background:
         return 'Предыстория';
       case Step.attributes:
@@ -103,7 +104,7 @@ sealed class CharacterCreationState with _$CharacterCreationState {
           startingEquipmentSelections: const [],
           useFlexibleAbilityBonuses: false,
         ),
-        step: Step.introduction,
+        step: Step.classStep,
       );
 }
 

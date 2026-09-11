@@ -27,7 +27,7 @@ class RaceStep extends HookConsumerWidget {
             dismissedSelectionKey.value != selectedRaceKey;
 
         return CreationSelectionStepScaffold(
-          route: 'class',
+          route: 'background',
           onBack: () {
             ref.read(characterCreationProvider.notifier).reset();
             context.go('/characters');
@@ -46,7 +46,7 @@ class RaceStep extends HookConsumerWidget {
               raceChoices:
                   ref.read(raceStateProvider.notifier).buildRaceChoices(),
             );
-            notifier.goToStep(context, Step.classStep);
+            notifier.nextStep(context);
           },
           selection: RaceTileView(),
           details: data.selectedRace == null

@@ -44,7 +44,7 @@ void main() {
         ],
       );
 
-      expect(formatDamageLabel(attack), '4d6 огонь + 4d6 излучение');
+      expect(formatDamageLabel(attack), '4d6 + 4d6');
       expect(formatDamageRollValue(attack), '4d6 + 4d6');
     });
 

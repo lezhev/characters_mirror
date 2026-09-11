@@ -1,0 +1,64 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "customInitiativeBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "customArmorClassBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "walkingSpeed",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "swimmingSpeed",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "climbingSpeed",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "flyingSpeed",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "displayedSpeedKind",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "protocol:CharacterSpeedKind?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

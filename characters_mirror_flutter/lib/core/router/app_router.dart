@@ -71,7 +71,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/admin', builder: (_, __) => const AdminPage()),
       GoRoute(path: '/settings', builder: (_, __) => const SettingsPage()),
-      GoRoute(path: '/create', builder: (_, __) => const IntroductionStep()),
+      GoRoute(path: '/create', builder: (_, __) => const ClassStep()),
       GoRoute(path: '/create/race', builder: (_, __) => const RaceStep()),
       GoRoute(path: '/create/classStep', builder: (_, __) => const ClassStep()),
       GoRoute(

@@ -1,6 +1,8 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_roll_variables.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
@@ -8,6 +10,7 @@ import 'package:characters_mirror_flutter/features/character_sheet/presentation/
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/attack_dialog_controller.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/attack_list_section.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stat_settings_sheet.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stats_row.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/feature_list_section.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/fight_error_state.dart';
@@ -116,6 +119,68 @@ class FightPage extends ConsumerWidget {
                           );
                     },
                   ),
+                  onInitiativePressed: () => showInitiativeSettingsSheet(
+                    context: context,
+                    character: character,
+                    onSave: (bonus) {
+                      return ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .saveInitiativeBonus(bonus);
+                    },
+                  ),
+                  onInitiativeLongPressed: () {
+                    try {
+                      final result = DiceRoller().rollModifier(
+                        formatInitiativeLabel(character),
+                      );
+                      RollResultsOverlay.show(context, result.displayText);
+                    } on DiceRollException catch (error) {
+                      RollResultsOverlay.show(context, error.message);
+                    }
+                  },
+                  onArmorClassPressed: () => showArmorClassSettingsSheet(
+                    context: context,
+                    character: character,
+                    onSave: (bonus) {
+                      return ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .saveArmorClassBonus(bonus);
+                    },
+                  ),
+                  onSpeedPressed: () {
+                    final notifier = ref.read(
+                      characterSheetControllerProvider(characterId).notifier,
+                    );
+                    runCharacterSheetSave(
+                      context,
+                      () async {
+                        final initialized =
+                            await notifier.ensureMovementSpeedsInitialized();
+                        if (!context.mounted) {
+                          return;
+                        }
+                        await showMovementSpeedSettingsSheet(
+                          context: context,
+                          character: initialized,
+                          onSave: (draft) {
+                            return notifier.saveMovementSpeeds(
+                              walkingSpeed: draft.walkingSpeed,
+                              swimmingSpeed: draft.swimmingSpeed,
+                              climbingSpeed: draft.climbingSpeed,
+                              flyingSpeed: draft.flyingSpeed,
+                              displayedSpeedKind: draft.displayedSpeedKind,
+                            );
+                          },
+                        );
+                      }(),
+                    );
+                  },
                 ),
                 const SizedBox(height: 20),
                 AttackListSection(

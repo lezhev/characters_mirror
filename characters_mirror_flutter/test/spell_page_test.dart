@@ -1,10 +1,42 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/segmented_stat_bar.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/spell_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('spell stat cards keep labels and values without icons',
+      (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 280,
+            child: SegmentedStatBar(
+              segments: [
+                SegmentedStatBarItem(
+                  label: 'Спасбросок',
+                  value: '13',
+                ),
+                SegmentedStatBarItem(
+                  label: 'Атака',
+                  value: '+5',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Спасбросок'), findsOneWidget);
+    expect(find.text('13'), findsOneWidget);
+    expect(find.text('Атака'), findsOneWidget);
+    expect(find.text('+5'), findsOneWidget);
+    expect(find.byType(Icon), findsNothing);
+  });
+
   testWidgets('spell page shows spell stats header', (tester) async {
     final castLevels = <int>[];
     final slotUpdates = <int, int>{};
@@ -93,7 +125,7 @@ void main() {
     expect(find.text('Круг 1'), findsOneWidget);
     expect(find.text('Burning Hands'), findsOneWidget);
     expect(find.text('Конус огня обжигает существ перед вами.'), findsNothing);
-    expect(find.text('DEX спасбросок'), findsOneWidget);
+    expect(find.text('DEX спасбросок'), findsNothing);
     expect(find.text('V'), findsNothing);
     expect(find.text('S'), findsNothing);
     expect(find.text('M'), findsNothing);
@@ -159,6 +191,117 @@ void main() {
     );
 
     expect(find.text('—'), findsNWidgets(2));
+  });
+
+  testWidgets('spell settings store bonuses relative to base stats',
+      (tester) async {
+    int? savedDcBonus;
+    int? savedAttackBonus;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SpellPageContent(
+            onSpellcastingBonusesChanged: (saveDcBonus, attackBonus) async {
+              savedDcBonus = saveDcBonus;
+              savedAttackBonus = attackBonus;
+            },
+            character: CharacterData(
+              customSpellSaveDcBonus: 1,
+              customSpellAttackBonus: 2,
+              classEntries: [
+                CharacterClassEntryData(
+                  classOrder: 0,
+                  classData: ClassData(
+                    spellcastingAbilityValue: Ability.wisdom,
+                  ),
+                ),
+              ],
+              derived: CharacterDerivedData(
+                proficiencyBonus: 2,
+                abilityModifiers: const {'wisdom': 3},
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('14'), findsOneWidget);
+    expect(find.text('+7'), findsOneWidget);
+
+    final settingsButton = find.widgetWithIcon(TextButton, Icons.tune);
+    expect(settingsButton, findsOneWidget);
+    await tester.tapAt(tester.getCenter(settingsButton));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text('Настройки заклинаний'), findsOneWidget);
+    await tester.enterText(
+      find.byKey(const ValueKey('spell-save-dc-field')),
+      '15',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('spell-attack-bonus-field')),
+      '6',
+    );
+    await tester.pump();
+
+    expect(savedDcBonus, 2);
+    expect(savedAttackBonus, 1);
+  });
+
+  testWidgets('prepared spell classes show prepared spells on main page',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SpellPageContent(
+            onSpellCast: (_) async {},
+            character: CharacterData(
+              classEntries: [
+                CharacterClassEntryData(
+                  classOrder: 0,
+                  classData: ClassData(
+                    spellcastingAbilityValue: Ability.wisdom,
+                  ),
+                ),
+              ],
+              derived: CharacterDerivedData(
+                proficiencyBonus: 2,
+                abilityModifiers: const {'wisdom': 3},
+                spellSlots: const {1: 2},
+              ),
+              spellSelections: [
+                CharacterSpellSelectionData(
+                  selectionIndex: 0,
+                  kind: CharacterSpellSelectionKind.knownSpell,
+                  spell: SpellData(
+                    referenceKey: 'bless',
+                    name: 'Bless',
+                    level: 1,
+                  ),
+                ),
+                CharacterSpellSelectionData(
+                  selectionIndex: 1,
+                  kind: CharacterSpellSelectionKind.preparedSpell,
+                  spell: SpellData(
+                    referenceKey: 'cure_wounds',
+                    name: 'Cure Wounds',
+                    level: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Bless'), findsNothing);
+    expect(find.text('Cure Wounds'), findsOneWidget);
+    expect(find.byIcon(Icons.bookmark_border), findsNothing);
+    expect(find.byIcon(Icons.bookmark), findsNothing);
   });
 
   testWidgets(

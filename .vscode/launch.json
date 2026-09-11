@@ -17,7 +17,10 @@
             "name": "flutter",
             "cwd": "characters_mirror_flutter",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "toolArgs": [
+                "--web-hostname=127.0.0.1"
+            ]
         },
         {
             "name": "flutter (profile mode)",

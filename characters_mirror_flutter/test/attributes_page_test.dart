@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart'
     as protocol;
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
@@ -169,6 +171,68 @@ void main() {
       );
     });
 
+    testWidgets('saving throw bonus updates before delayed save completes',
+        (tester) async {
+      final repository = _DelayedCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            derived: protocol.CharacterDerivedData(
+              proficiencyBonus: 2,
+              abilityScores: const {
+                'strength': 10,
+                'dexterity': 10,
+                'constitution': 10,
+                'intelligence': 10,
+                'wisdom': 10,
+                'charisma': 10,
+              },
+              abilityModifiers: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              savingThrowBonuses: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              savingThrowProficiencies: const [],
+            ),
+          ),
+        },
+      );
+
+      await _pumpAttributesPage(tester, repository);
+
+      await tester.tap(
+        find.byKey(const ValueKey('attribute-save-toggle-strength')),
+      );
+      await tester.pump();
+
+      final strengthCard = find.byKey(
+        const ValueKey('attribute-card-strength'),
+      );
+      expect(repository.pendingSaveCount, 1);
+      expect(
+        find.descendant(
+          of: strengthCard,
+          matching: find.text('+2'),
+        ),
+        findsOneWidget,
+      );
+
+      repository.completeSave(0);
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('modifier button shows a d20 roll result', (tester) async {
       final repository = _FakeCharacterRepository(
         charactersById: {
@@ -287,6 +351,83 @@ void main() {
         _savedSkillLevel(repository, protocol.Skill.athletics),
         protocol.CharacterSkillProficiencyLevel.none,
       );
+    });
+
+    testWidgets('skill bonus updates through proficiency states optimistically',
+        (tester) async {
+      final repository = _DelayedCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            derived: protocol.CharacterDerivedData(
+              proficiencyBonus: 2,
+              abilityScores: const {
+                'strength': 12,
+                'dexterity': 10,
+                'constitution': 10,
+                'intelligence': 10,
+                'wisdom': 10,
+                'charisma': 10,
+              },
+              abilityModifiers: const {
+                'strength': 1,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              skillBonuses: const {
+                'athletics': 1,
+              },
+              skillProficiencyLevels: const [],
+            ),
+          ),
+        },
+      );
+
+      await _pumpAttributesPage(tester, repository);
+
+      final toggle = _skillToggleTapTarget(tester, protocol.Skill.athletics);
+      final bonus = find.byKey(const ValueKey('skill-bonus-athletics'));
+
+      await tester.tap(toggle);
+      await tester.pump();
+
+      expect(
+        find.descendant(of: bonus, matching: find.text('+3')),
+        findsOneWidget,
+      );
+      expect(repository.pendingSaveCount, 1);
+
+      await tester.tap(toggle);
+      await tester.pump();
+
+      expect(
+        find.descendant(of: bonus, matching: find.text('+5')),
+        findsOneWidget,
+      );
+      expect(repository.pendingSaveCount, 1);
+
+      repository.completeSave(0);
+      await tester.pump();
+      expect(repository.pendingSaveCount, 2);
+
+      await tester.tap(toggle);
+      await tester.pump();
+
+      expect(
+        find.descendant(of: bonus, matching: find.text('+1')),
+        findsOneWidget,
+      );
+      expect(repository.pendingSaveCount, 2);
+
+      repository.completeSave(1);
+      await tester.pump();
+      expect(repository.pendingSaveCount, 3);
+      repository.completeSave(2);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('skill toggle keeps size and position across all states',
@@ -939,5 +1080,34 @@ class _FakeCharacterRepository extends CharacterRepository {
   @override
   Future<void> delete(int id) async {
     _charactersById.remove(id);
+  }
+}
+
+class _DelayedCharacterRepository extends _FakeCharacterRepository {
+  _DelayedCharacterRepository({
+    required super.charactersById,
+  });
+
+  final savedCharacters = <protocol.CharacterData>[];
+  final _saveCompleters = <Completer<protocol.CharacterData>>[];
+
+  int get pendingSaveCount => _saveCompleters.length;
+
+  @override
+  Future<protocol.CharacterData> saveCharacter(
+    protocol.CharacterData character,
+  ) {
+    savedCharacters.add(character);
+    final completer = Completer<protocol.CharacterData>();
+    _saveCompleters.add(completer);
+    return completer.future;
+  }
+
+  void completeSave(int index) {
+    final saved = savedCharacters[index].copyWith(
+      id: savedCharacters[index].id ?? 1,
+    );
+    charactersById[saved.id ?? 1] = saved;
+    _saveCompleters[index].complete(saved);
   }
 }

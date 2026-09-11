@@ -1,0 +1,40 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "customSpellSaveDcBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "customSpellAttackBonus",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "preparedSpellKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

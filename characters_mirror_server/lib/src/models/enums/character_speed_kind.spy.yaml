@@ -1,0 +1,6 @@
+enum: CharacterSpeedKind
+values:
+  - walking
+  - swimming
+  - climbing
+  - flying

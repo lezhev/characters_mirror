@@ -233,6 +233,14 @@ class CharacterDataEndpoint extends Endpoint {
   Future<void> delete(Session session, int id) async {
     await _requireOwnedCharacterRecord(session, id);
     await _deleteStartingEquipmentRecords(session, id);
+    await CharacterSkillSelectionRecord.db.deleteWhere(
+      session,
+      where: (t) => t.characterId.equals(id),
+    );
+    await CharacterSpellSelectionRecord.db.deleteWhere(
+      session,
+      where: (t) => t.characterId.equals(id),
+    );
     await CharacterChoiceRecord.db.deleteWhere(
       session,
       where: (t) => t.characterId.equals(id),
@@ -618,6 +626,17 @@ CharacterRecord _toCharacterRecord(
         _normalizedNonNegativeIntMap(character.hitDiceMaxOverrides),
     currentSpellSlots: character.currentSpellSlots,
     activeConcentrationSpellName: character.activeConcentrationSpellName,
+    customInitiativeBonus: _zeroAsNull(character.customInitiativeBonus),
+    customArmorClassBonus: _zeroAsNull(character.customArmorClassBonus),
+    walkingSpeed: _normalizedSpeed(character.walkingSpeed),
+    swimmingSpeed: _normalizedSpeed(character.swimmingSpeed),
+    climbingSpeed: _normalizedSpeed(character.climbingSpeed),
+    flyingSpeed: _normalizedSpeed(character.flyingSpeed),
+    displayedSpeedKind: character.displayedSpeedKind,
+    customSpellSaveDcBonus: _zeroAsNull(character.customSpellSaveDcBonus),
+    customSpellAttackBonus: _zeroAsNull(character.customSpellAttackBonus),
+    preparedSpellKeys:
+        _normalizedPreparedSpellKeys(character.preparedSpellKeys),
     activeConditions: _normalizedActiveConditions(character.activeConditions),
     exhaustionLevel: _normalizedExhaustionLevel(character.exhaustionLevel),
     inspiration: character.inspiration,
@@ -1740,6 +1759,16 @@ CharacterData _toCharacterData(CharacterRecord record) {
         _normalizedNonNegativeIntMap(record.hitDiceMaxOverrides),
     currentSpellSlots: record.currentSpellSlots,
     activeConcentrationSpellName: record.activeConcentrationSpellName,
+    customInitiativeBonus: _zeroAsNull(record.customInitiativeBonus),
+    customArmorClassBonus: _zeroAsNull(record.customArmorClassBonus),
+    walkingSpeed: _normalizedSpeed(record.walkingSpeed),
+    swimmingSpeed: _normalizedSpeed(record.swimmingSpeed),
+    climbingSpeed: _normalizedSpeed(record.climbingSpeed),
+    flyingSpeed: _normalizedSpeed(record.flyingSpeed),
+    displayedSpeedKind: record.displayedSpeedKind,
+    customSpellSaveDcBonus: _zeroAsNull(record.customSpellSaveDcBonus),
+    customSpellAttackBonus: _zeroAsNull(record.customSpellAttackBonus),
+    preparedSpellKeys: _normalizedPreparedSpellKeys(record.preparedSpellKeys),
     activeConditions: _normalizedActiveConditions(record.activeConditions),
     exhaustionLevel: _normalizedExhaustionLevel(record.exhaustionLevel),
     inspiration: record.inspiration,
@@ -1991,6 +2020,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     if (character.race?.visionType != null) character.race!.visionType!.name,
   ];
   final resistances = _collectDamageTypes(character, choices);
+  final movementSpeeds = _effectiveMovementSpeeds(character);
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
@@ -1998,9 +2028,9 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityScores: scores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: 10 + dexMod,
-    initiative: dexMod,
-    speed: character.race?.speed ?? 30,
+    armorClass: 10 + dexMod + (character.customArmorClassBonus ?? 0),
+    initiative: dexMod + (character.customInitiativeBonus ?? 0),
+    speed: _displayedSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
     passivePerception: passivePerception,
     passiveInvestigation: passiveInvestigation,
@@ -3581,6 +3611,38 @@ int? _zeroAsNull(int? value) {
   return value == null || value == 0 ? null : value;
 }
 
+int? _normalizedSpeed(int? value) {
+  if (value == null) {
+    return null;
+  }
+  return max(0, value);
+}
+
+Map<CharacterSpeedKind, int> _effectiveMovementSpeeds(
+  CharacterData character,
+) {
+  final walking = _baseWalkingSpeed(character);
+  return {
+    CharacterSpeedKind.walking: character.walkingSpeed ?? walking,
+    CharacterSpeedKind.swimming: character.swimmingSpeed ?? walking ~/ 2,
+    CharacterSpeedKind.climbing: character.climbingSpeed ?? walking ~/ 2,
+    CharacterSpeedKind.flying: character.flyingSpeed ?? 0,
+  };
+}
+
+int _baseWalkingSpeed(CharacterData character) {
+  return character.subrace?.speedOverride ?? character.race?.speed ?? 30;
+}
+
+int _displayedSpeed(
+  CharacterSpeedKind? kind,
+  Map<CharacterSpeedKind, int> movementSpeeds,
+) {
+  return movementSpeeds[kind ?? CharacterSpeedKind.walking] ??
+      movementSpeeds[CharacterSpeedKind.walking] ??
+      30;
+}
+
 Map<String, int>? _normalizedNonNegativeIntMap(Map<String, int>? values) {
   final result = <String, int>{};
   for (final entry
@@ -3607,6 +3669,13 @@ Iterable<String> _normalizedTexts(Iterable<String>? values) sync* {
       yield normalized;
     }
   }
+}
+
+List<String>? _normalizedPreparedSpellKeys(Iterable<String>? values) {
+  if (values == null) {
+    return null;
+  }
+  return _normalizedTexts(values).toSet().toList()..sort();
 }
 
 Language? _languageFromName(String raw) {
@@ -3765,6 +3834,10 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
     );
   }
   for (final feature in resolvedSources.currentSubclassFeatures) {
+    final classEntry = character.classEntries?.firstWhere(
+      (entry) => entry.subclass?.id == feature.parentSubclassId,
+      orElse: CharacterClassEntryData.new,
+    );
     final sourceClassLevel = character.classEntries
             ?.firstWhere(
               (entry) => entry.subclass?.id == feature.parentSubclassId,
@@ -3775,13 +3848,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
     addFeature(
       sourceType: CharacterFeatureSourceType.subclassFeature,
       sourceId: feature.id,
-      sourceName: character.classEntries
-          ?.firstWhere(
-            (entry) => entry.subclass?.id == feature.parentSubclassId,
-            orElse: CharacterClassEntryData.new,
-          )
-          .subclass
-          ?.name,
+      sourceName: _subclassSourceName(classEntry?.subclass),
       level: feature.level,
       defaultName: feature.name,
       defaultDescription: feature.shortDescription ?? feature.description,
@@ -4236,6 +4303,20 @@ String _featureOverrideKey(
   int sourceId,
 ) {
   return '${sourceType.name}:$sourceId';
+}
+
+String? _subclassSourceName(SubclassData? subclass) {
+  final parts = [
+    _normalizedTextOrNull(subclass?.subclassName),
+    _normalizedTextOrNull(subclass?.name),
+  ].whereType<String>().toList();
+  if (parts.isEmpty) {
+    return null;
+  }
+  if (parts.length == 2 && parts[0] == parts[1]) {
+    return parts[0];
+  }
+  return parts.join(' ');
 }
 
 String _resourceStateKey(

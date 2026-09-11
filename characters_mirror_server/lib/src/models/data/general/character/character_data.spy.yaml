@@ -37,6 +37,16 @@ fields:
   hitDiceMaxOverrides: Map<String, int>?
   currentSpellSlots: Map<int, int>?
   activeConcentrationSpellName: String?
+  customInitiativeBonus: int?
+  customArmorClassBonus: int?
+  walkingSpeed: int?
+  swimmingSpeed: int?
+  climbingSpeed: int?
+  flyingSpeed: int?
+  displayedSpeedKind: CharacterSpeedKind?
+  customSpellSaveDcBonus: int?
+  customSpellAttackBonus: int?
+  preparedSpellKeys: List<String>?
   activeConditions: List<ConditionType>?
   exhaustionLevel: int?
   inspiration: bool?

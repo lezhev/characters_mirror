@@ -103,6 +103,102 @@ void main() {
         CharacterSkillProficiencyLevel.none,
       );
     });
+
+    test('optimistic skill bonus uses modifier and proficiency multiplier', () {
+      final character = CharacterData(
+        derived: CharacterDerivedData(
+          proficiencyBonus: 3,
+          abilityModifiers: const {
+            'strength': 1,
+            'wisdom': 2,
+          },
+          skillBonuses: const {
+            'athletics': 1,
+            'perception': 2,
+          },
+        ),
+      );
+      final manual = buildManualSkillProficiencies(
+        character: character,
+        skill: Skill.athletics,
+        level: CharacterSkillProficiencyLevel.expertise,
+      );
+
+      final updated = withOptimisticSkillProficiency(
+        character: character,
+        manualSkillProficiencies: manual,
+      );
+
+      expect(updated.derived?.skillBonuses?[Skill.athletics.name], 7);
+      expect(updated.derived?.skillBonuses?[Skill.perception.name], 2);
+      expect(
+        skillProficiencyLevelMap(
+            updated.derived?.skillProficiencyLevels)[Skill.athletics],
+        CharacterSkillProficiencyLevel.expertise,
+      );
+    });
+
+    test('optimistic saving throw bonus uses modifier and proficiency', () {
+      final character = CharacterData(
+        derived: CharacterDerivedData(
+          proficiencyBonus: 2,
+          abilityModifiers: const {
+            'strength': 1,
+            'dexterity': 3,
+          },
+          savingThrowBonuses: const {
+            'strength': 1,
+            'dexterity': 3,
+          },
+        ),
+      );
+      final manual = buildManualSavingThrowProficiencies(
+        character: character,
+        ability: Ability.dexterity,
+        proficient: true,
+      );
+
+      final updated = withOptimisticSavingThrowProficiency(
+        character: character,
+        manualSavingThrowProficiencies: manual,
+      );
+
+      expect(updated.derived?.savingThrowBonuses?[Ability.strength.name], 1);
+      expect(updated.derived?.savingThrowBonuses?[Ability.dexterity.name], 5);
+      expect(updated.derived?.savingThrowProficiencies, [Ability.dexterity]);
+    });
+
+    test('optimistic skill update refreshes passive checks', () {
+      final character = CharacterData(
+        derived: CharacterDerivedData(
+          proficiencyBonus: 2,
+          abilityModifiers: const {
+            'intelligence': 1,
+            'wisdom': 2,
+          },
+        ),
+      );
+      final manual = [
+        for (final skill in Skill.values)
+          CharacterSkillProficiencyState(
+            skill: skill,
+            level: skill == Skill.perception
+                ? CharacterSkillProficiencyLevel.proficient
+                : skill == Skill.investigation
+                    ? CharacterSkillProficiencyLevel.expertise
+                    : CharacterSkillProficiencyLevel.none,
+          ),
+      ];
+
+      final updated = withOptimisticSkillProficiency(
+        character: character,
+        manualSkillProficiencies: manual,
+      );
+
+      expect(updated.derived?.passivePerception, 14);
+      expect(updated.derived?.passiveInvestigation, 15);
+      expect(updated.derived?.passiveInsight, 12);
+    });
   });
 
   group('ProficiencyToggle', () {

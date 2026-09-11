@@ -245,7 +245,7 @@ class _SmoothSwitcherState extends State<SmoothSwitcher>
               return Padding(
                 padding: EdgeInsets.only(bottom: (1 - t) * 8),
                 child: Align(
-                  alignment: Alignment.topCenter,
+                  alignment: widget.transitionAlignment,
                   heightFactor: t.clamp(0.0, 1.0),
                   child: child,
                 ),

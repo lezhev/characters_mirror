@@ -57,6 +57,7 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
     final theme = Theme.of(context);
     final feature = widget.feature;
     final featureTags = feature.tags ?? feature.defaultTags;
+    final resources = feature.resources ?? const <CharacterResourceViewData>[];
     final sourceLabel = _featureSourceLabel(feature);
 
     return Card(
@@ -72,30 +73,53 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SmoothSwitcher.ability(
-                      title: feature.name ?? 'Без названия',
-                      text: feature.description,
-                      tags: featureTags,
-                      isCustomized: feature.isCustomized == true,
-                      onSave: ({
-                        String? title,
-                        String? text,
-                        List<FeatureTag>? tags,
-                      }) {
-                        return widget.onSave(
-                          name: title,
-                          description: text,
-                          tags: tags,
-                        );
-                      },
-                      onReset:
-                          feature.isCustomized == true ? widget.onReset : null,
-                      showTitle: true,
-                      showText: false,
-                      isEditable: !_isExpanded,
-                      titleStyle: theme.textTheme.titleMedium,
-                      switchKey:
-                          '${feature.sourceType.name}:${feature.sourceId}:title',
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: SmoothSwitcher.ability(
+                              title: feature.name ?? 'Без названия',
+                              text: feature.description,
+                              tags: featureTags,
+                              isCustomized: feature.isCustomized == true,
+                              onSave: ({
+                                String? title,
+                                String? text,
+                                List<FeatureTag>? tags,
+                              }) {
+                                return widget.onSave(
+                                  name: title,
+                                  description: text,
+                                  tags: tags,
+                                );
+                              },
+                              onReset: feature.isCustomized == true
+                                  ? widget.onReset
+                                  : null,
+                              showTitle: true,
+                              showText: false,
+                              isEditable: !_isExpanded,
+                              titleStyle: theme.textTheme.titleMedium,
+                              transitionAlignment: Alignment.topLeft,
+                              switchKey:
+                                  '${feature.sourceType.name}:${feature.sourceId}:title',
+                            ),
+                          ),
+                        ),
+                        if (!_isExpanded && resources.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: _CollapsedResourceSummary(
+                                resources: resources,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     if (feature.isCustomized == true)
                       Align(
@@ -105,16 +129,6 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                           child: const Text('Вернуть всё как было'),
                         ),
                       ),
-                    if (feature.resources != null &&
-                        feature.resources!.isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      for (final resource in feature.resources!)
-                        _FeatureResourceCounter(
-                          resource: resource,
-                          onChanged: (current) =>
-                              widget.onSetResource(resource.key, current),
-                        ),
-                    ],
                     ExpandableSection(
                       extraOffset: 64,
                       expand: _isExpanded,
@@ -130,7 +144,27 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                                   color: theme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
-                            if (sourceLabel != null) const SizedBox(height: 8),
+                            if (_isExpanded && resources.isNotEmpty) ...[
+                              if (sourceLabel != null)
+                                const SizedBox(height: 8)
+                              else
+                                const SizedBox(height: 4),
+                              for (var index = 0;
+                                  index < resources.length;
+                                  index++) ...[
+                                _FeatureResourceSection(
+                                  resource: resources[index],
+                                  onChanged: (current) => widget.onSetResource(
+                                    resources[index].key,
+                                    current,
+                                  ),
+                                ),
+                                if (index != resources.length - 1)
+                                  const SizedBox(height: 10),
+                              ],
+                              const SizedBox(height: 12),
+                            ] else if (sourceLabel != null)
+                              const SizedBox(height: 8),
                             SmoothSwitcher.ability(
                               title: feature.name,
                               text: feature.description,
@@ -155,6 +189,7 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                               isEditable: false,
                               emptyTextPlaceholder: 'Описание не добавлено.',
                               textStyle: theme.textTheme.bodyMedium,
+                              transitionAlignment: Alignment.topLeft,
                               switchKey:
                                   '${feature.sourceType.name}:${feature.sourceId}:text',
                             ),
@@ -203,8 +238,64 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
   }
 }
 
-class _FeatureResourceCounter extends StatelessWidget {
-  const _FeatureResourceCounter({
+class _CollapsedResourceSummary extends StatelessWidget {
+  const _CollapsedResourceSummary({
+    required this.resources,
+  });
+
+  final List<CharacterResourceViewData> resources;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: [
+        for (final resource in resources)
+          _ResourceSummaryBadge(resource: resource),
+      ],
+    );
+  }
+}
+
+class _ResourceSummaryBadge extends StatelessWidget {
+  const _ResourceSummaryBadge({
+    required this.resource,
+  });
+
+  final CharacterResourceViewData resource;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.primary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.34),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        child: Text(
+          _resourceAmountLabel(resource),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: colorScheme.primary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FeatureResourceSection extends StatelessWidget {
+  const _FeatureResourceSection({
     required this.resource,
     required this.onChanged,
   });
@@ -215,52 +306,221 @@ class _FeatureResourceCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.32),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.44),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _resourceTitle(resource),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: colorScheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              _resourceResetLabel(resource),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 10),
+            _FeatureResourceControl(
+              resource: resource,
+              onChanged: onChanged,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FeatureResourceControl extends StatelessWidget {
+  const _FeatureResourceControl({
+    required this.resource,
+    required this.onChanged,
+  });
+
+  final CharacterResourceViewData resource;
+  final Future<void> Function(int current) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final isUnlimited = resource.isUnlimited == true;
     final canDecrease = resource.current > 0;
     final canIncrease = resource.current < resource.max;
 
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 8,
-      runSpacing: 6,
-      children: [
-        IconButton.filledTonal(
-          visualDensity: VisualDensity.compact,
-          tooltip: 'Потратить ресурс',
-          onPressed: !isUnlimited && canDecrease
-              ? () => onChanged(resource.current - 1)
-              : null,
-          icon: const Icon(Icons.remove, size: 18),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface.withValues(alpha: 0.72),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: colorScheme.primary.withValues(alpha: 0.42),
         ),
-        if (!isUnlimited && resource.max <= 6)
-          Wrap(
-            spacing: 3,
-            children: [
-              for (var index = 0; index < resource.max; index++)
-                Icon(
-                  index < resource.current
-                      ? Icons.circle
-                      : Icons.radio_button_unchecked,
-                  size: 10,
-                  color: theme.colorScheme.primary,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+        child: Row(
+          children: [
+            _ResourceRoundButton(
+              tooltip: 'Потратить ресурс',
+              icon: Icons.remove_rounded,
+              onPressed: !isUnlimited && canDecrease
+                  ? () => onChanged(resource.current - 1)
+                  : null,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _ResourceChargeDots(resource: resource),
+                    const SizedBox(height: 4),
+                    Text(
+                      _resourceExpandedAmountLabel(resource),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
-            ],
+              ),
+            ),
+            _ResourceRoundButton(
+              tooltip: 'Восстановить ресурс',
+              icon: Icons.add_rounded,
+              onPressed: !isUnlimited && canIncrease
+                  ? () => onChanged(resource.current + 1)
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ResourceRoundButton extends StatelessWidget {
+  const _ResourceRoundButton({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton.filledTonal(
+      constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+      padding: EdgeInsets.zero,
+      tooltip: tooltip,
+      onPressed: onPressed,
+      icon: Icon(icon, size: 22),
+    );
+  }
+}
+
+class _ResourceChargeDots extends StatelessWidget {
+  const _ResourceChargeDots({
+    required this.resource,
+  });
+
+  final CharacterResourceViewData resource;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    if (resource.isUnlimited == true || resource.max > 8) {
+      return const SizedBox.shrink();
+    }
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 4,
+      runSpacing: 4,
+      children: [
+        for (var index = 0; index < resource.max; index++)
+          Icon(
+            index < resource.current ? Icons.circle : Icons.circle_outlined,
+            size: 9,
+            color: index < resource.current
+                ? colorScheme.primary
+                : colorScheme.outline,
           ),
-        Text(
-          isUnlimited ? '∞' : '${resource.current}/${resource.max}',
-          style: theme.textTheme.labelLarge,
-        ),
-        IconButton.filledTonal(
-          visualDensity: VisualDensity.compact,
-          tooltip: 'Восстановить ресурс',
-          onPressed: !isUnlimited && canIncrease
-              ? () => onChanged(resource.current + 1)
-              : null,
-          icon: const Icon(Icons.add, size: 18),
-        ),
       ],
     );
   }
+}
+
+String _resourceTitle(CharacterResourceViewData resource) {
+  switch (resource.kind) {
+    case FeatureResourceKind.uses:
+      return 'Использования';
+    case FeatureResourceKind.points:
+      return 'Очки';
+    case FeatureResourceKind.dice:
+      return 'Кости';
+    case FeatureResourceKind.slots:
+      return 'Ячейки';
+    case FeatureResourceKind.special:
+      return 'Ресурс';
+  }
+}
+
+String _resourceResetLabel(CharacterResourceViewData resource) {
+  final resetOn = resource.resetOn;
+  if (resetOn == null) {
+    return 'Без автоматического восстановления';
+  }
+  switch (resetOn) {
+    case RestType.shortRest:
+      return 'Короткий отдых';
+    case RestType.longRest:
+      return 'Длинный отдых';
+    case RestType.dawn:
+      return 'На рассвете';
+    case RestType.special:
+      return 'Особое восстановление';
+  }
+}
+
+String _resourceAmountLabel(CharacterResourceViewData resource) {
+  if (resource.isUnlimited == true) {
+    return '∞';
+  }
+  return '${resource.current}/${resource.max}';
+}
+
+String _resourceExpandedAmountLabel(CharacterResourceViewData resource) {
+  if (resource.isUnlimited == true) {
+    return 'Без ограничений';
+  }
+  return '${resource.current} из ${resource.max}';
 }
 
 String? _featureSourceLabel(CharacterFeatureViewData feature) {
