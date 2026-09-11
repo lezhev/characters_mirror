@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:characters_mirror_server/src/generated/protocol.dart';
+import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
+import 'package:characters_mirror_server/src/validation/character_quota_validator.dart';
+import 'package:characters_mirror_server/src/validation/character_validator.dart';
 import 'package:serverpod/serverpod.dart';
 
 import 'starting_equipment_endpoints.dart';
@@ -50,15 +53,27 @@ class CharacterDataEndpoint extends Endpoint {
     CharacterData character,
   ) async {
     final userId = await _requireCurrentUserId(session);
-    // TODO: Add server-side abuse limits for character count, text lengths,
-    // list sizes, and save rate before accepting user-controlled payloads.
+    final existingRecord = await _findWritableCharacterRecord(
+      session,
+      character,
+      userId,
+    );
+    if (existingRecord == null) {
+      await CharacterQuotaValidator.validateCanCreateCharacter(
+        session,
+        userId: userId,
+      );
+    }
+    CharacterSaveRateLimiter.instance.consume(
+      userId: userId,
+      characterId: existingRecord?.id,
+    );
+    CharacterValidator.validate(character);
+
     var normalizedCharacter = character.copyWith(
       featureOverrides: await _pruneFeatureOverrides(session, character),
       resourceStates: await _pruneResourceStates(session, character),
     );
-    final existingRecord = character.id == null
-        ? null
-        : await _findOwnedCharacterRecord(session, character.id!, userId);
     if (_serverSnapshotIsNewer(existingRecord, normalizedCharacter)) {
       return _buildCharacterAggregate(session, existingRecord!);
     }
@@ -127,6 +142,7 @@ class CharacterDataEndpoint extends Endpoint {
     CharacterSyncRequest request,
   ) async {
     final userId = await _requireCurrentUserId(session);
+    CharacterValidator.validateSyncRequest(request);
     final acknowledgedChangeIds = <String>[];
     final rejectedChanges = <CharacterRejectedChangeData>[];
     for (final change in request.changes ?? const <CharacterChangeData>[]) {
@@ -197,6 +213,10 @@ class CharacterDataEndpoint extends Endpoint {
             );
             continue;
           }
+          CharacterSaveRateLimiter.instance.consume(
+            userId: userId,
+            characterId: existing.id,
+          );
           await delete(session, existing.id!);
           acknowledgedChangeIds.add(change.id);
           continue;

@@ -7,6 +7,7 @@ import 'package:characters_mirror_flutter/core/offline/offline_character_resolve
 import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_save_timing.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
 import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 import 'package:flutter/foundation.dart';
@@ -58,6 +59,10 @@ class CharacterSheetController
   late final CharacterRepository _repository;
   late final int _characterId;
   int _saveRevision = 0;
+  Timer? _saveDebounceTimer;
+  CharacterData? _debouncedSave;
+  int _debouncedSaveRevision = 0;
+  Completer<void>? _debouncedSaveCompleter;
   bool _isPersisting = false;
   CharacterData? _lastPersistedCharacter;
   CharacterData? _pendingSave;
@@ -68,6 +73,7 @@ class CharacterSheetController
   Future<CharacterData> build(int characterId) async {
     _characterId = characterId;
     _repository = ref.watch(characterRepositoryProvider);
+    ref.onDispose(_disposeSaveQueue);
     final character = await _repository.getCharacter(characterId);
     _lastPersistedCharacter = character;
     return character;
@@ -91,11 +97,42 @@ class CharacterSheetController
     return current;
   }
 
-  Future<void> _saveCharacter(CharacterData updated) async {
+  Future<void> _saveCharacter(
+    CharacterData updated, {
+    bool debounce = true,
+  }) async {
     final previous = _requireCharacter();
     final stamped = stampCharacterMutation(previous: previous, next: updated);
     final revision = ++_saveRevision;
     state = AsyncValue.data(stamped);
+
+    if (!debounce) {
+      return _saveImmediately(stamped, revision);
+    }
+
+    if (_debouncedSaveCompleter?.isCompleted == false) {
+      _debouncedSaveCompleter!.complete();
+    }
+    _debouncedSave = stamped;
+    _debouncedSaveRevision = revision;
+    _debouncedSaveCompleter = Completer<void>();
+    _saveDebounceTimer?.cancel();
+    _saveDebounceTimer = Timer(
+      characterSheetAutosaveDelay,
+      _flushDebouncedSave,
+    );
+    return _debouncedSaveCompleter!.future;
+  }
+
+  Future<void> _saveImmediately(CharacterData stamped, int revision) async {
+    _saveDebounceTimer?.cancel();
+    _saveDebounceTimer = null;
+    _debouncedSave = null;
+    _debouncedSaveRevision = 0;
+    if (_debouncedSaveCompleter?.isCompleted == false) {
+      _debouncedSaveCompleter!.complete();
+    }
+    _debouncedSaveCompleter = null;
 
     if (_isPersisting) {
       if (_pendingSaveCompleter?.isCompleted == false) {
@@ -107,14 +144,62 @@ class CharacterSheetController
       return _pendingSaveCompleter!.future;
     }
 
-    await _persistSaves(stamped, revision);
+    final completer = Completer<void>();
+    unawaited(_persistSaves(stamped, revision, completer));
+    return completer.future;
   }
 
-  Future<void> _persistSaves(CharacterData initial, int initialRevision) async {
+  void _flushDebouncedSave() {
+    _saveDebounceTimer?.cancel();
+    _saveDebounceTimer = null;
+
+    final nextSave = _debouncedSave;
+    final nextRevision = _debouncedSaveRevision;
+    final nextCompleter = _debouncedSaveCompleter;
+    _debouncedSave = null;
+    _debouncedSaveRevision = 0;
+    _debouncedSaveCompleter = null;
+
+    if (nextSave == null) {
+      if (nextCompleter?.isCompleted == false) {
+        nextCompleter!.complete();
+      }
+      return;
+    }
+
+    if (_isPersisting) {
+      if (_pendingSaveCompleter?.isCompleted == false) {
+        _pendingSaveCompleter!.complete();
+      }
+      _pendingSave = nextSave;
+      _pendingSaveRevision = nextRevision;
+      _pendingSaveCompleter = nextCompleter;
+      return;
+    }
+
+    unawaited(_persistSaves(nextSave, nextRevision, nextCompleter));
+  }
+
+  void _disposeSaveQueue() {
+    _saveDebounceTimer?.cancel();
+    _saveDebounceTimer = null;
+    if (_debouncedSaveCompleter?.isCompleted == false) {
+      _debouncedSaveCompleter!.complete();
+    }
+    if (_pendingSaveCompleter?.isCompleted == false) {
+      _pendingSaveCompleter!.complete();
+    }
+  }
+
+  Future<void> _persistSaves(
+    CharacterData initial,
+    int initialRevision, [
+    Completer<void>? initialCompleter,
+  ]) async {
     _isPersisting = true;
     var nextCharacter = initial;
     var nextRevision = initialRevision;
-    Completer<void>? activeCompleter;
+    var activeCompleter = initialCompleter;
 
     try {
       while (true) {
@@ -137,7 +222,7 @@ class CharacterSheetController
             if (activeCompleter?.isCompleted == false) {
               activeCompleter!.completeError(error, stackTrace);
             }
-            Error.throwWithStackTrace(error, stackTrace);
+            return;
           }
           if (activeCompleter?.isCompleted == false) {
             activeCompleter!.complete();

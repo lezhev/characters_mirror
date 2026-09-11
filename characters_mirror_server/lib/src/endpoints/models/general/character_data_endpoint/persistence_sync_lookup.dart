@@ -115,6 +115,37 @@ Future<CharacterRecord?> _findOwnedCharacterRecord(
   return rows.first;
 }
 
+Future<CharacterRecord?> _findWritableCharacterRecord(
+  Session session,
+  CharacterData character,
+  int userId,
+) async {
+  final characterId = character.id;
+  if (characterId == null || characterId < 0) {
+    return null;
+  }
+
+  final ownedRecord = await _findOwnedCharacterRecord(
+    session,
+    characterId,
+    userId,
+  );
+  if (ownedRecord != null) {
+    return ownedRecord;
+  }
+
+  final existing = await CharacterRecord.db.find(
+    session,
+    where: (t) => t.id.equals(characterId),
+    limit: 1,
+  );
+  if (existing.isNotEmpty) {
+    throw Exception('Access denied to character id=$characterId.');
+  }
+
+  return null;
+}
+
 Future<CharacterRecord> _requireOwnedCharacterRecord(
   Session session,
   int characterId, {

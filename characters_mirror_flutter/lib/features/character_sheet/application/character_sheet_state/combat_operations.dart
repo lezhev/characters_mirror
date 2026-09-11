@@ -44,6 +44,7 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
           previous: current.equipment,
         ),
       ),
+      debounce: false,
     );
   }
 
@@ -69,6 +70,7 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
             ? null
             : current.deathSaveFailures,
       ),
+      debounce: false,
     );
   }
 
@@ -137,6 +139,7 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
     final current = _requireCharacter();
     await _saveCharacter(
       current.copyWith(customInitiativeBonus: bonus == 0 ? null : bonus),
+      debounce: false,
     );
   }
 
@@ -144,6 +147,7 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
     final current = _requireCharacter();
     await _saveCharacter(
       current.copyWith(customArmorClassBonus: bonus == 0 ? null : bonus),
+      debounce: false,
     );
   }
 
@@ -190,6 +194,7 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
         flyingSpeed: _normalizedMovementSpeed(flyingSpeed),
         displayedSpeedKind: displayedSpeedKind,
       ),
+      debounce: false,
     );
   }
 }
