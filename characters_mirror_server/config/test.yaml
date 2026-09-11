@@ -8,6 +8,8 @@
 # facing ports.
 
 # Configuration for the main API test server.
+maxRequestSize: 524288
+
 apiServer:
   port: 0
   publicHost: localhost

@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:flutter/material.dart';
 
-const characterSheetAutosaveDelay = Duration(milliseconds: 500);
+export 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_save_timing.dart'
+    show characterSheetAutosaveDelay;
 
 void runCharacterSheetSave(BuildContext context, Future<void> save) {
   unawaited(

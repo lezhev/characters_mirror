@@ -325,7 +325,7 @@ void _registerHitPointsCalculatorTests() {
       find.byKey(const ValueKey('initiative-bonus-field')),
       '3',
     );
-    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pump(characterSheetAutosaveDelay);
     expect(initiativeBonus, 3);
 
     await tester.pumpWidget(
@@ -351,7 +351,7 @@ void _registerHitPointsCalculatorTests() {
     );
     await tester.pump();
     expect(find.text('Итоговая КД: 15'), findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pump(characterSheetAutosaveDelay);
     expect(armorClassBonus, 2);
   });
 
@@ -388,7 +388,7 @@ void _registerHitPointsCalculatorTests() {
       '60',
     );
     await tester.tap(find.byType(Radio<protocol.CharacterSpeedKind>).last);
-    await tester.pump(const Duration(milliseconds: 600));
+    await tester.pump(characterSheetAutosaveDelay);
 
     expect(savedDraft?.flyingSpeed, 60);
     expect(savedDraft?.displayedSpeedKind, protocol.CharacterSpeedKind.flying);

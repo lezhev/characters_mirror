@@ -78,6 +78,7 @@ extension CharacterSheetControllerPersonal on CharacterSheetController {
         bonds: _normalizedText(bonds),
         flaws: _normalizedText(flaws),
       ),
+      debounce: false,
     );
   }
 

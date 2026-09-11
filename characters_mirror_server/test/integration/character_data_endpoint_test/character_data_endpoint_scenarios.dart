@@ -11,6 +11,8 @@ void _registerCharacterDataEndpointTests() {
       );
     }
 
+    setUp(CharacterSaveRateLimiter.resetForTests);
+
     Future<void> seedCoreSpellSlotTables() async {
       const standardRows = <int, Map<int, int>>{
         1: {1: 2},
@@ -38,6 +40,258 @@ void _registerCharacterDataEndpointTests() {
         ),
       );
     }
+
+    test('server config enforces 512 KiB character save payload limit',
+        () async {
+      final session = sessionBuilder.build();
+      try {
+        expect(
+          session.serverpod.config.maxRequestSize,
+          ValidationLimits.payloadBytes,
+        );
+      } finally {
+        await session.close();
+      }
+    });
+
+    test('saveCharacter rejects long text above centralized limit', () async {
+      final ownerSession = authenticatedSession(501);
+
+      await expectLater(
+        () => endpoints.characterData.saveCharacter(
+          ownerSession,
+          CharacterData(
+            name: 'Too Long Backstory',
+            backstory: _textOfLength(ValidationLimits.longText + 1),
+          ),
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('backstory'),
+          ),
+        ),
+      );
+    });
+
+    test('saveCharacter accepts values exactly on validation boundaries',
+        () async {
+      final ownerSession = authenticatedSession(502);
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: _textOfLength(ValidationLimits.shortText),
+          backstory: _textOfLength(ValidationLimits.longText),
+          attacks: [
+            for (var index = 0;
+                index < ValidationLimits.mediumCollection;
+                index++)
+              CharacterAttackData(name: 'Attack $index'),
+          ],
+          currentHp: ValidationLimits.nonNegativeIntMax,
+          customInitiativeBonus: ValidationLimits.boundedIntMax,
+        ),
+      );
+
+      expect(saved.id, isNotNull);
+      expect(saved.name, hasLength(ValidationLimits.shortText));
+      expect(saved.backstory, hasLength(ValidationLimits.longText));
+      expect(saved.attacks, hasLength(ValidationLimits.mediumCollection));
+    });
+
+    test('saveCharacter rejects collection above centralized limit', () async {
+      final ownerSession = authenticatedSession(503);
+
+      await expectLater(
+        () => endpoints.characterData.saveCharacter(
+          ownerSession,
+          CharacterData(
+            name: 'Too Many Attacks',
+            attacks: [
+              for (var index = 0;
+                  index < ValidationLimits.mediumCollection + 1;
+                  index++)
+                CharacterAttackData(name: 'Attack $index'),
+            ],
+          ),
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('attacks'),
+          ),
+        ),
+      );
+    });
+
+    test('saveCharacter rejects creating characters above per-user quota',
+        () async {
+      final ownerSession = authenticatedSession(509);
+      final session = ownerSession.build();
+      try {
+        final now = DateTime.now().toUtc();
+        await CharacterRecord.db.insert(
+          session,
+          [
+            for (var index = 0;
+                index < ValidationLimits.largeCollection;
+                index++)
+              CharacterRecord(
+                name: 'Quota Hero $index',
+                version: 1,
+                createdAt: now,
+                updatedAt: now,
+                userId: 509,
+              ),
+          ],
+        );
+      } finally {
+        await session.close();
+      }
+
+      await expectLater(
+        () => endpoints.characterData.saveCharacter(
+          ownerSession,
+          CharacterData(name: 'One Too Many Heroes'),
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('characters'),
+          ),
+        ),
+      );
+    });
+
+    test('saveCharacter rejects negative numeric game state', () async {
+      final ownerSession = authenticatedSession(504);
+
+      await expectLater(
+        () => endpoints.characterData.saveCharacter(
+          ownerSession,
+          CharacterData(
+            name: 'Negative HP',
+            currentHp: -1,
+          ),
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('currentHp'),
+          ),
+        ),
+      );
+    });
+
+    test('saveCharacter rejects attempts to update another user character',
+        () async {
+      final ownerSession = authenticatedSession(505);
+      final otherSession = authenticatedSession(506);
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Owned Hero'),
+      );
+
+      await expectLater(
+        () => endpoints.characterData.saveCharacter(
+          otherSession,
+          saved.copyWith(name: 'Hijacked Hero'),
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('Access denied'),
+          ),
+        ),
+      );
+
+      final loaded = await endpoints.characterData.getCharacter(
+        ownerSession,
+        saved.id!,
+      );
+      expect(loaded.name, 'Owned Hero');
+    });
+
+    test('saveCharacter rate limits rapid saves for one character', () async {
+      CharacterSaveRateLimiter.instance = CharacterSaveRateLimiter(
+        refillPerMinute: 0,
+      );
+      final ownerSession = authenticatedSession(507);
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Rate Limited Hero'),
+      );
+
+      for (var index = 0; index < 5; index++) {
+        await endpoints.characterData.saveCharacter(
+          ownerSession,
+          saved.copyWith(
+            name: 'Rate Limited Hero $index',
+            updatedAt: DateTime.now().toUtc().add(Duration(seconds: index)),
+          ),
+        );
+      }
+
+      await expectLater(
+        () => endpoints.characterData.saveCharacter(
+          ownerSession,
+          saved.copyWith(
+            name: 'Rate Limited Hero overflow',
+            updatedAt: DateTime.now().toUtc().add(const Duration(seconds: 10)),
+          ),
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (error) => error.toString(),
+            'message',
+            contains('rate limit'),
+          ),
+        ),
+      );
+    });
+
+    test('saveCharacter accepts valid user-entered character data', () async {
+      final ownerSession = authenticatedSession(508);
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Valid Hero',
+          appearance: 'A practical travel cloak and a careful smile.',
+          backstory: 'Keeps a journal of every strange door.',
+          experience: 1200,
+          currentHp: 18,
+          temporaryHp: 2,
+          walkingSpeed: 30,
+          equipment: [
+            CharacterInventoryItemData(name: 'Rope', quantity: 1),
+          ],
+          notes: [
+            CharacterNoteData(text: 'Ask the innkeeper about the old tower.'),
+          ],
+          attacks: [
+            CharacterAttackData(
+              name: 'Longsword',
+              damage: '1d8',
+              customAttackBonus: 1,
+            ),
+          ],
+        ),
+      );
+
+      expect(saved.id, isNotNull);
+      expect(saved.name, 'Valid Hero');
+      expect(saved.equipment, hasLength(1));
+      expect(saved.notes, hasLength(1));
+      expect(saved.attacks, hasLength(1));
+    });
 
     test('saveCharacter assigns ownership to authenticated user', () async {
       final ownerSession = authenticatedSession(101);
@@ -976,3 +1230,5 @@ void _registerCharacterDataEndpointTests() {
     );
   });
 }
+
+String _textOfLength(int length) => List.filled(length, 'a').join();
