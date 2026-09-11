@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
-import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_character_resolver.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
+import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -203,6 +205,66 @@ class CharacterSheetController
     );
   }
 
+  Future<void> saveInitiativeBonus(int bonus) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(customInitiativeBonus: bonus == 0 ? null : bonus),
+    );
+  }
+
+  Future<void> saveArmorClassBonus(int bonus) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(customArmorClassBonus: bonus == 0 ? null : bonus),
+    );
+  }
+
+  Future<CharacterData> ensureMovementSpeedsInitialized() async {
+    final current = _requireCharacter();
+    if (current.walkingSpeed != null &&
+        current.swimmingSpeed != null &&
+        current.climbingSpeed != null &&
+        current.flyingSpeed != null &&
+        current.displayedSpeedKind != null) {
+      return current;
+    }
+
+    final speeds = effectiveMovementSpeeds(current);
+    await _saveCharacter(
+      current.copyWith(
+        walkingSpeed:
+            current.walkingSpeed ?? speeds[CharacterSpeedKind.walking],
+        swimmingSpeed:
+            current.swimmingSpeed ?? speeds[CharacterSpeedKind.swimming],
+        climbingSpeed:
+            current.climbingSpeed ?? speeds[CharacterSpeedKind.climbing],
+        flyingSpeed: current.flyingSpeed ?? speeds[CharacterSpeedKind.flying],
+        displayedSpeedKind:
+            current.displayedSpeedKind ?? CharacterSpeedKind.walking,
+      ),
+    );
+    return _requireCharacter();
+  }
+
+  Future<void> saveMovementSpeeds({
+    required int walkingSpeed,
+    required int swimmingSpeed,
+    required int climbingSpeed,
+    required int flyingSpeed,
+    required CharacterSpeedKind displayedSpeedKind,
+  }) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        walkingSpeed: _normalizedMovementSpeed(walkingSpeed),
+        swimmingSpeed: _normalizedMovementSpeed(swimmingSpeed),
+        climbingSpeed: _normalizedMovementSpeed(climbingSpeed),
+        flyingSpeed: _normalizedMovementSpeed(flyingSpeed),
+        displayedSpeedKind: displayedSpeedKind,
+      ),
+    );
+  }
+
   Future<void> setCurrentSpellSlotsForLevel(int level, int available) async {
     final current = _requireCharacter();
     final maxSlots = _spellSlotCount(current, level);
@@ -217,6 +279,112 @@ class CharacterSheetController
     await _saveCharacter(
       current.copyWith(
         currentSpellSlots: currentSpellSlots.isEmpty ? null : currentSpellSlots,
+      ),
+    );
+  }
+
+  Future<void> saveSpellcastingBonuses({
+    required int saveDcBonus,
+    required int attackBonus,
+  }) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        customSpellSaveDcBonus: saveDcBonus == 0 ? null : saveDcBonus,
+        customSpellAttackBonus: attackBonus == 0 ? null : attackBonus,
+      ),
+    );
+  }
+
+  Future<void> learnSpell(SpellData spell, {int? classDataId}) async {
+    final current = _requireCharacter();
+    final key = _spellKey(spell);
+    if (key == null || _hasSpellSelection(current, key)) {
+      return;
+    }
+
+    final selections = [...?current.spellSelections];
+    selections.add(
+      CharacterSpellSelectionData(
+        classDataId: classDataId,
+        spell: spell,
+        spellId: spell.id,
+        spellKey: key,
+        kind: (spell.level ?? 0) <= 0
+            ? CharacterSpellSelectionKind.knownCantrip
+            : CharacterSpellSelectionKind.knownSpell,
+        selectionIndex: selections.length,
+      ),
+    );
+
+    await _saveCharacter(
+      current.copyWith(spellSelections: _normalizedSpellSelections(selections)),
+    );
+  }
+
+  Future<void> forgetSpell(SpellData spell) async {
+    final current = _requireCharacter();
+    final key = _spellKey(spell);
+    if (key == null) {
+      return;
+    }
+
+    final selections = [
+      for (final selection
+          in current.spellSelections ?? const <CharacterSpellSelectionData>[])
+        if (_spellSelectionKey(selection) != key) selection,
+    ];
+    final preparedKeys = _effectivePreparedSpellKeys(current)..remove(key);
+
+    await _saveCharacter(
+      current.copyWith(
+        spellSelections: _normalizedSpellSelections(selections),
+        preparedSpellKeys: _normalizedPreparedKeys(
+          current,
+          preparedKeys,
+        ),
+      ),
+    );
+  }
+
+  Future<void> setSpellPrepared(
+    SpellData spell,
+    bool prepared, {
+    int? classDataId,
+  }) async {
+    final current = _requireCharacter();
+    final key = _spellKey(spell);
+    if (key == null) {
+      return;
+    }
+
+    final defaultKeys = _defaultPreparedSpellKeys(current);
+    final preparedKeys = _effectivePreparedSpellKeys(current)..remove(key);
+    if (prepared) {
+      preparedKeys.add(key);
+    }
+    final selections = _hasSpellSelection(current, key)
+        ? current.spellSelections
+        : [
+            ...?current.spellSelections,
+            CharacterSpellSelectionData(
+              classDataId: classDataId,
+              spell: spell,
+              spellId: spell.id,
+              spellKey: key,
+              kind: CharacterSpellSelectionKind.knownSpell,
+              selectionIndex: current.spellSelections?.length ?? 0,
+            ),
+          ];
+
+    await _saveCharacter(
+      current.copyWith(
+        spellSelections: _normalizedSpellSelections(selections),
+        preparedSpellKeys: _normalizedPreparedKeys(
+          current,
+          preparedKeys,
+          defaultKeys: defaultKeys,
+        ),
       ),
     );
   }
@@ -473,13 +641,15 @@ class CharacterSheetController
     CharacterSkillProficiencyLevel level,
   ) async {
     final current = _requireCharacter();
+    final manualSkillProficiencies = buildManualSkillProficiencies(
+      character: current,
+      skill: skill,
+      level: level,
+    );
     await _saveCharacter(
-      current.copyWith(
-        manualSkillProficiencies: buildManualSkillProficiencies(
-          character: current,
-          skill: skill,
-          level: level,
-        ),
+      withOptimisticSkillProficiency(
+        character: current,
+        manualSkillProficiencies: manualSkillProficiencies,
       ),
     );
   }
@@ -489,13 +659,15 @@ class CharacterSheetController
     bool proficient,
   ) async {
     final current = _requireCharacter();
+    final manualSavingThrowProficiencies = buildManualSavingThrowProficiencies(
+      character: current,
+      ability: ability,
+      proficient: proficient,
+    );
     await _saveCharacter(
-      current.copyWith(
-        manualSavingThrowProficiencies: buildManualSavingThrowProficiencies(
-          character: current,
-          ability: ability,
-          proficient: proficient,
-        ),
+      withOptimisticSavingThrowProficiency(
+        character: current,
+        manualSavingThrowProficiencies: manualSavingThrowProficiencies,
       ),
     );
   }
@@ -656,7 +828,8 @@ class CharacterSheetController
             _featureResourceKey(
                 feature.sourceType, feature.sourceId, resource.key),
     };
-    if (restoredKeys.isEmpty) {
+    final isLongRest = restType == RestType.longRest;
+    if (restoredKeys.isEmpty && !isLongRest) {
       return;
     }
 
@@ -686,12 +859,29 @@ class CharacterSheetController
         ),
     ];
 
-    await _saveCharacter(
-      character.copyWith(
-        resourceStates: resourceStates.isEmpty ? null : resourceStates,
-        derived: character.derived?.copyWith(activeFeatures: updatedFeatures),
-      ),
+    var updatedCharacter = character.copyWith(
+      resourceStates: resourceStates.isEmpty ? null : resourceStates,
+      derived: character.derived?.copyWith(activeFeatures: updatedFeatures),
     );
+
+    if (isLongRest) {
+      final maxHp = calculateMaxHpForCharacter(character);
+      final restoredHitPoints = normalizeHitPointsForSave(
+        currentHp: maxHp,
+        maxHp: maxHp,
+        temporaryHp: 0,
+      );
+      updatedCharacter = updatedCharacter.copyWith(
+        currentHp: restoredHitPoints.currentHp,
+        temporaryHp: restoredHitPoints.temporaryHp,
+        deathSaveSuccesses: null,
+        deathSaveFailures: null,
+        currentSpellSlots: null,
+        currentHitDice: _restoredHitDiceForLongRest(character),
+      );
+    }
+
+    await _saveCharacter(updatedCharacter);
   }
 
   CharacterData _requireCharacter() {
@@ -892,6 +1082,60 @@ bool _resourceShouldRestore(
   }
 }
 
+Map<String, int>? _restoredHitDiceForLongRest(CharacterData character) {
+  final maxHitDice = effectiveHitDiceMaxFromCharacter(character);
+  if (maxHitDice.isEmpty) {
+    return null;
+  }
+
+  final currentHitDice = effectiveCurrentHitDice(
+    character.currentHitDice,
+    maxHitDice,
+  );
+  var remaining =
+      maxHitDice.values.fold<int>(0, (sum, value) => sum + value) ~/ 2;
+  if (remaining <= 0) {
+    remaining = 1;
+  }
+
+  final restored = <String, int>{...currentHitDice};
+  final keys = maxHitDice.keys.toList()
+    ..sort((left, right) {
+      final sizeCompare = _hitDieSize(right).compareTo(_hitDieSize(left));
+      if (sizeCompare != 0) {
+        return sizeCompare;
+      }
+      return left.compareTo(right);
+    });
+
+  for (final key in keys) {
+    if (remaining <= 0) {
+      break;
+    }
+
+    final max = maxHitDice[key] ?? 0;
+    final current = restored[key] ?? max;
+    final missing = max - current;
+    if (missing <= 0) {
+      continue;
+    }
+
+    final recovered = missing < remaining ? missing : remaining;
+    restored[key] = current + recovered;
+    remaining -= recovered;
+  }
+
+  return normalizeCurrentHitDiceForSave(restored, maxHitDice);
+}
+
+int _hitDieSize(String key) {
+  final normalized = key.trim().toLowerCase();
+  if (!normalized.startsWith('d')) {
+    return 0;
+  }
+  return int.tryParse(normalized.substring(1)) ?? 0;
+}
+
 String _featureResourceKey(
   CharacterFeatureSourceType sourceType,
   int sourceId,
@@ -977,10 +1221,76 @@ int? _normalizedExhaustionLevel(int? value) {
   return value.clamp(1, 6).toInt();
 }
 
+int _normalizedMovementSpeed(int value) {
+  return value < 0 ? 0 : value;
+}
+
 String _spellName(SpellData spell) {
   return _normalizedText(spell.name) ??
       _normalizedText(spell.referenceKey) ??
       'Заклинание';
+}
+
+String? _spellKey(SpellData spell) {
+  return _normalizedText(spell.referenceKey) ?? _normalizedText(spell.name);
+}
+
+List<CharacterSpellSelectionData>? _normalizedSpellSelections(
+  List<CharacterSpellSelectionData>? selections,
+) {
+  final normalized = [
+    for (var index = 0;
+        index < (selections ?? const <CharacterSpellSelectionData>[]).length;
+        index++)
+      selections![index].copyWith(selectionIndex: index),
+  ];
+  return normalized.isEmpty ? null : normalized;
+}
+
+bool _hasSpellSelection(CharacterData character, String key) {
+  return (character.spellSelections ?? const <CharacterSpellSelectionData>[])
+      .any((selection) => _spellSelectionKey(selection) == key);
+}
+
+List<String> _defaultPreparedSpellKeys(CharacterData character) {
+  final keys = {
+    for (final selection
+        in character.spellSelections ?? const <CharacterSpellSelectionData>[])
+      if (selection.kind == CharacterSpellSelectionKind.preparedSpell &&
+          _spellSelectionKey(selection) != null)
+        _spellSelectionKey(selection)!,
+  }.toList()
+    ..sort();
+  return keys;
+}
+
+Set<String> _effectivePreparedSpellKeys(CharacterData character) {
+  final explicit = character.preparedSpellKeys;
+  if (explicit != null) {
+    return {
+      for (final key in explicit)
+        if (_normalizedText(key) != null) _normalizedText(key)!,
+    };
+  }
+  return _defaultPreparedSpellKeys(character).toSet();
+}
+
+List<String>? _normalizedPreparedKeys(
+  CharacterData character,
+  Set<String> preparedKeys, {
+  List<String>? defaultKeys,
+}) {
+  final sortedKeys = preparedKeys.toList()..sort();
+  final defaults = defaultKeys ?? _defaultPreparedSpellKeys(character);
+  final matchesDefault = sortedKeys.length == defaults.length &&
+      sortedKeys.every(defaults.contains);
+  return matchesDefault ? null : sortedKeys;
+}
+
+String? _spellSelectionKey(CharacterSpellSelectionData selection) {
+  return _normalizedText(selection.spellKey) ??
+      _normalizedText(selection.spell?.referenceKey) ??
+      _normalizedText(selection.spell?.name);
 }
 
 int _spellSlotCount(CharacterData character, int level) {

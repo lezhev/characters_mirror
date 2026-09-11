@@ -18,6 +18,7 @@ class CreationNavBar extends ConsumerWidget {
     final routeStep = CreationStepX.fromContext(context);
     final currentStep = routeStep ?? providerStep;
     final notifier = ref.read(characterCreationProvider.notifier);
+    final hasPreviousStep = notifier.previousVisibleStep(currentStep) != null;
 
     if (routeStep != null && routeStep != providerStep) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -31,7 +32,7 @@ class CreationNavBar extends ConsumerWidget {
     return PageSizeLimiter(
       child: Row(
         children: [
-          currentStep == Step.introduction
+          !hasPreviousStep
               ? SizedBox.shrink()
               : Button.outlined(
                   leading: Icon(Icons.arrow_back,

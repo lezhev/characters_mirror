@@ -46,7 +46,16 @@ class CharacterSheetAppBar extends StatelessWidget {
                     style: theme.textTheme.titleLarge,
                   ),
                 ),
-                RestMenuButton(onSelected: onRestSelected),
+                RestActionButton(
+                  iconPath: 'assets/svg/rest/longRest.svg',
+                  tooltip: 'Долгий отдых',
+                  onPressed: () => onRestSelected(RestType.longRest),
+                ),
+                RestActionButton(
+                  iconPath: 'assets/svg/rest/shortRest.svg',
+                  tooltip: 'Короткий отдых',
+                  onPressed: () => onRestSelected(RestType.shortRest),
+                ),
                 SheetAppBarAction(
                   icon: Icons.settings,
                   tooltip: 'Настройки персонажа',
@@ -66,71 +75,33 @@ class CharacterSheetAppBar extends StatelessWidget {
   }
 }
 
-class RestMenuButton extends StatelessWidget {
-  const RestMenuButton({
-    required this.onSelected,
+class RestActionButton extends StatelessWidget {
+  const RestActionButton({
+    required this.iconPath,
+    required this.onPressed,
+    this.tooltip,
     super.key,
   });
 
-  final ValueChanged<RestType> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<RestType>(
-      tooltip: 'Отдых',
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      icon: const _RestIcon('assets/svg/rest/both.svg'),
-      onSelected: onSelected,
-      itemBuilder: (context) => const [
-        PopupMenuItem(
-          value: RestType.shortRest,
-          child: _RestMenuItem(
-            iconPath: 'assets/svg/rest/shortRest.svg',
-            label: 'Короткий отдых',
-          ),
-        ),
-        PopupMenuItem(
-          value: RestType.longRest,
-          child: _RestMenuItem(
-            iconPath: 'assets/svg/rest/longRest.svg',
-            label: 'Длинный отдых',
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _RestMenuItem extends StatelessWidget {
-  const _RestMenuItem({
-    required this.iconPath,
-    required this.label,
-  });
-
   final String iconPath;
-  final String label;
+  final VoidCallback onPressed;
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _RestIcon(iconPath, size: 24),
-        const SizedBox(width: 12),
-        Text(label),
-      ],
+    return IconButton(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      tooltip: tooltip,
+      onPressed: onPressed,
+      icon: _RestIcon(iconPath),
     );
   }
 }
 
 class _RestIcon extends StatelessWidget {
-  const _RestIcon(
-    this.assetPath, {
-    this.size = 28,
-  });
+  const _RestIcon(this.assetPath);
 
   final String assetPath;
-  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +109,8 @@ class _RestIcon extends StatelessWidget {
 
     return SvgPicture.asset(
       assetPath,
-      width: size,
-      height: size,
+      width: 28,
+      height: 28,
       colorFilter: iconColor == null
           ? null
           : ColorFilter.mode(iconColor, BlendMode.srcIn),

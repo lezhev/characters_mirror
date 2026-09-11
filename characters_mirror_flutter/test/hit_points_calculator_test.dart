@@ -2,12 +2,16 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart'
     as protocol;
+import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stat_settings_sheet.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stats_row.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/hit_points_calculator_sheet.dart';
+import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -148,6 +152,30 @@ void main() {
     );
   });
 
+  test('hp label supports compact density levels', () {
+    final character = protocol.CharacterData(
+      currentHp: 12,
+      temporaryHp: 4,
+      derived: protocol.CharacterDerivedData(maxHp: 20),
+    );
+
+    expect(formatHpLabel(character), '12 / 20 (4)');
+    expect(
+      formatHpLabel(
+        character,
+        density: HpLabelDensity.withoutTemporary,
+      ),
+      '12 / 20',
+    );
+    expect(
+      formatHpLabel(
+        character,
+        density: HpLabelDensity.currentOnly,
+      ),
+      '12',
+    );
+  });
+
   testWidgets('CombatStatsRow calls hp callback only for hp button',
       (tester) async {
     var hpTapCount = 0;
@@ -167,6 +195,10 @@ void main() {
             onHpPressed: () {
               hpTapCount += 1;
             },
+            onInitiativePressed: () {},
+            onInitiativeLongPressed: () {},
+            onArmorClassPressed: () {},
+            onSpeedPressed: () {},
           ),
         ),
       ),
@@ -183,6 +215,199 @@ void main() {
 
     expect(hpTapCount, 1);
     expect(find.text('30'), findsOneWidget);
+  });
+
+  testWidgets('CombatStatsRow cards shorten hp by card width', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(600, 300);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CombatStatsRow(
+            character: protocol.CharacterData(
+              currentHp: 12,
+              temporaryHp: 4,
+              derived: protocol.CharacterDerivedData(
+                maxHp: 20,
+                initiative: 2,
+                armorClass: 15,
+                speed: 30,
+              ),
+            ),
+            onHpPressed: () {},
+            onInitiativePressed: () {},
+            onInitiativeLongPressed: () {},
+            onArmorClassPressed: () {},
+            onSpeedPressed: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('12 / 20 (4)'), findsOneWidget);
+    expect(find.text('12 / 20'), findsNothing);
+
+    tester.view.physicalSize = const Size(500, 300);
+    await tester.pump();
+
+    expect(find.text('12 / 20'), findsOneWidget);
+    expect(find.text('12 / 20 (4)'), findsNothing);
+
+    tester.view.physicalSize = const Size(340, 300);
+    await tester.pump();
+
+    expect(find.text('12'), findsOneWidget);
+    expect(find.text('12 / 20'), findsNothing);
+    expect(
+      tester.getTopLeft(find.byIcon(Icons.directions_run)).dy,
+      greaterThan(tester.getTopLeft(find.byIcon(Icons.favorite)).dy),
+    );
+  });
+
+  testWidgets('CombatStatsRow long press can push initiative roll result',
+      (tester) async {
+    final character = protocol.CharacterData(
+      derived: protocol.CharacterDerivedData(
+        maxHp: 20,
+        initiative: 2,
+        armorClass: 15,
+        speed: 30,
+      ),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: RollResultsOverlay(
+          child: Builder(
+            builder: (context) {
+              return Scaffold(
+                body: CombatStatsRow(
+                  character: character,
+                  onHpPressed: () {},
+                  onInitiativePressed: () {},
+                  onInitiativeLongPressed: () {
+                    final result = DiceRoller(
+                      rollDie: (_) => 12,
+                    ).rollModifier(formatInitiativeLabel(character));
+                    RollResultsOverlay.show(context, result.displayText);
+                  },
+                  onArmorClassPressed: () {},
+                  onSpeedPressed: () {},
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.longPress(find.byIcon(Icons.bolt));
+    await tester.pump();
+
+    expect(find.text('d20 + 2 = 12 + 2 = 14'), findsOneWidget);
+  });
+
+  testWidgets('initiative and armor class sheets autosave bonuses',
+      (tester) async {
+    int? initiativeBonus;
+    int? armorClassBonus;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: InitiativeSettingsSheet(
+            character: protocol.CharacterData(
+              customInitiativeBonus: 1,
+              derived: protocol.CharacterDerivedData(initiative: 4),
+            ),
+            onSave: (bonus) async {
+              initiativeBonus = bonus;
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.text(
+        'Быстрый бросок инициативы: удерживайте карточку инициативы на листе персонажа.',
+      ),
+      findsOneWidget,
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('initiative-bonus-field')),
+      '3',
+    );
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(initiativeBonus, 3);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ArmorClassSettingsSheet(
+            character: protocol.CharacterData(
+              customArmorClassBonus: 1,
+              derived: protocol.CharacterDerivedData(armorClass: 14),
+            ),
+            onSave: (bonus) async {
+              armorClassBonus = bonus;
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Итоговая КД: 14'), findsOneWidget);
+    await tester.enterText(
+      find.byKey(const ValueKey('armor-class-bonus-field')),
+      '2',
+    );
+    await tester.pump();
+    expect(find.text('Итоговая КД: 15'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(armorClassBonus, 2);
+  });
+
+  testWidgets('movement speed sheet autosaves values and selected speed',
+      (tester) async {
+    MovementSpeedsDraft? savedDraft;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: MovementSpeedSettingsSheet(
+            character: protocol.CharacterData(
+              walkingSpeed: 30,
+              swimmingSpeed: 15,
+              climbingSpeed: 15,
+              flyingSpeed: 0,
+              displayedSpeedKind: protocol.CharacterSpeedKind.walking,
+            ),
+            onSave: (draft) async {
+              savedDraft = draft;
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Ходьба'), findsOneWidget);
+    expect(find.text('Плаванье'), findsOneWidget);
+    expect(find.text('Лазанье'), findsOneWidget);
+    expect(find.text('Полёт'), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const ValueKey('flying-speed-field')),
+      '60',
+    );
+    await tester.tap(find.byType(Radio<protocol.CharacterSpeedKind>).last);
+    await tester.pump(const Duration(milliseconds: 600));
+
+    expect(savedDraft?.flyingSpeed, 60);
+    expect(savedDraft?.displayedSpeedKind, protocol.CharacterSpeedKind.flying);
   });
 
   test('CharacterSheetController saves normalized hp values', () async {
@@ -220,6 +445,42 @@ void main() {
     expect(repository.savedCharacter?.temporaryHp, isNull);
   });
 
+  test('CharacterSheetController initializes movement speeds from defaults',
+      () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        race: protocol.RaceData(speed: 30),
+        subrace: protocol.SubraceData(parentRaceId: 1, speedOverride: 40),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .ensureMovementSpeedsInitialized();
+
+    expect(repository.savedCharacter?.walkingSpeed, 40);
+    expect(repository.savedCharacter?.swimmingSpeed, 20);
+    expect(repository.savedCharacter?.climbingSpeed, 20);
+    expect(repository.savedCharacter?.flyingSpeed, 0);
+    expect(
+      repository.savedCharacter?.displayedSpeedKind,
+      protocol.CharacterSpeedKind.walking,
+    );
+  });
+
   test('CharacterSheetController clears death saves when hp rises above 0',
       () async {
     final repository = _FakeCharacterRepository(
@@ -254,6 +515,272 @@ void main() {
 
     expect(repository.savedCharacter?.deathSaveSuccesses, isNull);
     expect(repository.savedCharacter?.deathSaveFailures, isNull);
+  });
+
+  test('CharacterSheetController long rest saves hp without resources',
+      () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 3,
+        temporaryHp: 7,
+        deathSaveSuccesses: 2,
+        deathSaveFailures: 1,
+        currentSpellSlots: const {1: 0},
+        currentHitDice: const {'d10': 2},
+        derived: protocol.CharacterDerivedData(
+          abilityModifiers: const {'constitution': 0},
+          spellSlots: const {1: 2},
+        ),
+        classEntries: [
+          protocol.CharacterClassEntryData(
+            classData: protocol.ClassData(hitDieValue: 10),
+            level: 2,
+          ),
+        ],
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .restoreResources(protocol.RestType.longRest);
+
+    expect(repository.saveCallCount, 1);
+    expect(repository.savedCharacter?.currentHp, isNull);
+    expect(repository.savedCharacter?.temporaryHp, isNull);
+    expect(repository.savedCharacter?.deathSaveSuccesses, isNull);
+    expect(repository.savedCharacter?.deathSaveFailures, isNull);
+    expect(repository.savedCharacter?.currentSpellSlots, isNull);
+    expect(repository.savedCharacter?.currentHitDice, isNull);
+  });
+
+  test('CharacterSheetController long rest restores feature resources',
+      () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 4,
+        currentSpellSlots: const {1: 0},
+        resourceStates: [
+          protocol.CharacterResourceStateData(
+            sourceType: protocol.CharacterFeatureSourceType.classFeature,
+            sourceId: 10,
+            resourceKey: 'second-wind',
+            current: 0,
+          ),
+        ],
+        derived: protocol.CharacterDerivedData(
+          abilityModifiers: const {'constitution': 0},
+          spellSlots: const {1: 2},
+          activeFeatures: [
+            protocol.CharacterFeatureViewData(
+              sourceType: protocol.CharacterFeatureSourceType.classFeature,
+              sourceId: 10,
+              resources: [
+                protocol.CharacterResourceViewData(
+                  key: 'second-wind',
+                  kind: protocol.FeatureResourceKind.uses,
+                  current: 0,
+                  max: 1,
+                  resetOn: protocol.RestType.shortRest,
+                ),
+              ],
+            ),
+          ],
+        ),
+        classEntries: [
+          protocol.CharacterClassEntryData(
+            classData: protocol.ClassData(hitDieValue: 10),
+            level: 1,
+          ),
+        ],
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .restoreResources(protocol.RestType.longRest);
+
+    final saved = repository.savedCharacter;
+    final resource = saved?.derived?.activeFeatures?.single.resources?.single;
+    expect(saved?.currentHp, isNull);
+    expect(saved?.currentSpellSlots, isNull);
+    expect(saved?.resourceStates, isNull);
+    expect(resource?.current, 1);
+  });
+
+  test('CharacterSheetController long rest restores half hit dice minimum one',
+      () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHitDice: const {'d8': 0},
+        derived: protocol.CharacterDerivedData(
+          abilityModifiers: const {'constitution': 0},
+        ),
+        classEntries: [
+          protocol.CharacterClassEntryData(
+            classData: protocol.ClassData(hitDieValue: 8),
+            level: 1,
+          ),
+        ],
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .restoreResources(protocol.RestType.longRest);
+
+    expect(repository.savedCharacter?.currentHitDice, isNull);
+  });
+
+  test('CharacterSheetController long rest restores largest hit dice first',
+      () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHitDice: const {'d6': 0, 'd10': 0},
+        derived: protocol.CharacterDerivedData(
+          abilityModifiers: const {'constitution': 0},
+        ),
+        classEntries: [
+          protocol.CharacterClassEntryData(
+            classData: protocol.ClassData(hitDieValue: 6),
+            level: 3,
+            classOrder: 1,
+          ),
+          protocol.CharacterClassEntryData(
+            classData: protocol.ClassData(hitDieValue: 10),
+            level: 3,
+            classOrder: 0,
+          ),
+        ],
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .restoreResources(protocol.RestType.longRest);
+
+    expect(
+      repository.savedCharacter?.currentHitDice,
+      const {'d6': 0},
+    );
+  });
+
+  test('CharacterSheetController short rest only restores short rest resources',
+      () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 3,
+        temporaryHp: 7,
+        deathSaveSuccesses: 2,
+        deathSaveFailures: 1,
+        currentSpellSlots: const {1: 0},
+        currentHitDice: const {'d10': 0},
+        resourceStates: [
+          protocol.CharacterResourceStateData(
+            sourceType: protocol.CharacterFeatureSourceType.classFeature,
+            sourceId: 10,
+            resourceKey: 'second-wind',
+            current: 0,
+          ),
+        ],
+        derived: protocol.CharacterDerivedData(
+          activeFeatures: [
+            protocol.CharacterFeatureViewData(
+              sourceType: protocol.CharacterFeatureSourceType.classFeature,
+              sourceId: 10,
+              resources: [
+                protocol.CharacterResourceViewData(
+                  key: 'second-wind',
+                  kind: protocol.FeatureResourceKind.uses,
+                  current: 0,
+                  max: 1,
+                  resetOn: protocol.RestType.shortRest,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .restoreResources(protocol.RestType.shortRest);
+
+    final saved = repository.savedCharacter;
+    final resource = saved?.derived?.activeFeatures?.single.resources?.single;
+    expect(saved?.currentHp, 3);
+    expect(saved?.temporaryHp, 7);
+    expect(saved?.deathSaveSuccesses, 2);
+    expect(saved?.deathSaveFailures, 1);
+    expect(saved?.currentSpellSlots, const {1: 0});
+    expect(saved?.currentHitDice, const {'d10': 0});
+    expect(saved?.resourceStates, isNull);
+    expect(resource?.current, 1);
   });
 
   test('CharacterSheetController coalesces rapid saves to latest value',

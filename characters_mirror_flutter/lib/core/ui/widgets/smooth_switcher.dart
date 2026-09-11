@@ -20,6 +20,7 @@ class SmoothSwitcher extends StatefulWidget {
   final EdgeInsetsGeometry contentPadding;
   final double spacing;
   final bool autoScrollOnTransition;
+  final AlignmentGeometry transitionAlignment;
   final _SmoothSwitcherAbilityConfig? _abilityConfig;
 
   const SmoothSwitcher({
@@ -37,6 +38,7 @@ class SmoothSwitcher extends StatefulWidget {
     this.contentPadding = EdgeInsets.zero,
     this.spacing = 6,
     this.autoScrollOnTransition = true,
+    this.transitionAlignment = Alignment.topCenter,
   }) : _abilityConfig = null;
 
   SmoothSwitcher.ability({
@@ -64,6 +66,7 @@ class SmoothSwitcher extends StatefulWidget {
     this.contentPadding = EdgeInsets.zero,
     this.spacing = 6,
     this.autoScrollOnTransition = true,
+    this.transitionAlignment = Alignment.topCenter,
   })  : child = null,
         editConfig = null,
         _abilityConfig = _SmoothSwitcherAbilityConfig(

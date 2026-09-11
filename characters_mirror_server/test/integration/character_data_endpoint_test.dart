@@ -146,6 +146,109 @@ void main() {
       expect(ownedCharacters, isEmpty);
     });
 
+    test('delete removes class-linked skill and spell selections', () async {
+      final ownerSession = authenticatedSession(101);
+      final classData = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(name: 'Delete Cascade Class'),
+      );
+      final primaryEntry = CharacterClassEntryData(
+        classData: classData,
+        level: 1,
+        isStartingClass: true,
+        classOrder: 0,
+      );
+
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(
+          name: 'Delete Cascade Hero',
+          classEntries: [primaryEntry],
+          skillSelections: [
+            CharacterSkillSelectionData(
+              classEntry: primaryEntry,
+              classDataId: classData.id,
+              skill: Skill.arcana,
+              kind: CharacterSkillSelectionKind.classSkill,
+              selectionIndex: 0,
+            ),
+          ],
+          spellSelections: [
+            CharacterSpellSelectionData(
+              classEntry: primaryEntry,
+              classDataId: classData.id,
+              spellKey: 'delete_cascade_spell',
+              kind: CharacterSpellSelectionKind.knownCantrip,
+              selectionIndex: 0,
+            ),
+          ],
+        ),
+      );
+
+      var session = ownerSession.build();
+      try {
+        expect(
+          await CharacterClassEntryRecord.db.find(
+            session,
+            where: (t) => t.characterId.equals(saved.id),
+          ),
+          hasLength(1),
+        );
+        expect(
+          await CharacterSkillSelectionRecord.db.find(
+            session,
+            where: (t) => t.characterId.equals(saved.id),
+          ),
+          hasLength(1),
+        );
+        expect(
+          await CharacterSpellSelectionRecord.db.find(
+            session,
+            where: (t) => t.characterId.equals(saved.id),
+          ),
+          hasLength(1),
+        );
+      } finally {
+        await session.close();
+      }
+
+      await endpoints.characterData.delete(ownerSession, saved.id!);
+
+      session = ownerSession.build();
+      try {
+        expect(
+          await CharacterSkillSelectionRecord.db.find(
+            session,
+            where: (t) => t.characterId.equals(saved.id),
+          ),
+          isEmpty,
+        );
+        expect(
+          await CharacterSpellSelectionRecord.db.find(
+            session,
+            where: (t) => t.characterId.equals(saved.id),
+          ),
+          isEmpty,
+        );
+        expect(
+          await CharacterClassEntryRecord.db.find(
+            session,
+            where: (t) => t.characterId.equals(saved.id),
+          ),
+          isEmpty,
+        );
+        expect(
+          await CharacterRecord.db.find(
+            session,
+            where: (t) => t.id.equals(saved.id),
+          ),
+          isEmpty,
+        );
+      } finally {
+        await session.close();
+      }
+    });
+
     test('delete rejects access for another authenticated user', () async {
       final ownerSession = authenticatedSession(101);
       final otherSession = authenticatedSession(202);
@@ -276,7 +379,9 @@ void main() {
         CharacterData(
           name: 'Канонический герой',
           race: fixture.race,
-          subrace: fixture.subrace,
+          subrace: fixture.subrace.copyWith(
+            features: [fixture.subraceFeature],
+          ),
           background: fixture.background,
           attacks: [
             CharacterAttackData(
@@ -289,6 +394,16 @@ void main() {
               description: 'Основная атака оружием.',
             ),
           ],
+          customSpellSaveDcBonus: 1,
+          customSpellAttackBonus: -1,
+          preparedSpellKeys: const ['light'],
+          customInitiativeBonus: 2,
+          customArmorClassBonus: 1,
+          walkingSpeed: 30,
+          swimmingSpeed: 15,
+          climbingSpeed: 15,
+          flyingSpeed: 60,
+          displayedSpeedKind: CharacterSpeedKind.flying,
           featureOverrides: [
             CharacterFeatureOverrideData(
               sourceType: CharacterFeatureSourceType.classFeature,
@@ -441,6 +556,16 @@ void main() {
       );
 
       expect(loaded.useFlexibleAbilityBonuses, isFalse);
+      expect(loaded.customSpellSaveDcBonus, 1);
+      expect(loaded.customSpellAttackBonus, -1);
+      expect(loaded.preparedSpellKeys, ['light']);
+      expect(loaded.customInitiativeBonus, 2);
+      expect(loaded.customArmorClassBonus, 1);
+      expect(loaded.walkingSpeed, 30);
+      expect(loaded.swimmingSpeed, 15);
+      expect(loaded.climbingSpeed, 15);
+      expect(loaded.flyingSpeed, 60);
+      expect(loaded.displayedSpeedKind, CharacterSpeedKind.flying);
       expect(loaded.classEntries, hasLength(1));
       final loadedEntry = loaded.classEntries!.single;
       expect(loadedEntry.classData?.id, fixture.classData.id);
@@ -519,6 +644,9 @@ void main() {
       expect(derived, isNotNull);
       expect(loaded.featureOverrides, hasLength(2));
       expect(derived!.languages, contains('celestial'));
+      expect(derived.initiative, 5);
+      expect(derived.armorClass, 14);
+      expect(derived.speed, 60);
       expect(derived.toolProficiencies, contains('smith_tools'));
       expect(derived.grantedSpellKeys, contains('light'));
       expect(
@@ -586,6 +714,16 @@ void main() {
       expect(classFeatureView.tags, [FeatureTag.combat]);
       expect(classFeatureView.isCustomized, isTrue);
 
+      final subclassFeatureView = derived.activeFeatures!.singleWhere(
+        (feature) =>
+            feature.sourceType == CharacterFeatureSourceType.subclassFeature &&
+            feature.sourceId == fixture.subclassFeature.id,
+      );
+      expect(
+        subclassFeatureView.sourceName,
+        'Fixture Archetype Fixture Champion',
+      );
+
       final subraceFeatureView = derived.activeFeatures!.singleWhere(
         (feature) =>
             feature.sourceType == CharacterFeatureSourceType.subraceFeature &&
@@ -612,11 +750,23 @@ void main() {
       expect(raceFeatureView.isCustomized, isFalse);
 
       expect(loaded.equipment, isNotNull);
-      expect(loaded.equipment, contains('Club x2'));
-      expect(loaded.equipment, contains('Dagger x2'));
-      expect(loaded.equipment, contains('Leather Armor'));
-      expect(loaded.equipment, contains('Holy symbol'));
-      expect(loaded.equipment, contains('Crystal Focus'));
+      final loadedEquipment = loaded.equipment!;
+      expect(
+        loadedEquipment.singleWhere((item) => item.name == 'Club').quantity,
+        2,
+      );
+      expect(
+        loadedEquipment.singleWhere((item) => item.name == 'Dagger').quantity,
+        2,
+      );
+      expect(
+        loadedEquipment.map((item) => item.name),
+        containsAll([
+          'Leather Armor',
+          'Holy Symbol',
+          'Crystal Focus',
+        ]),
+      );
 
       expect(loaded.attacks, hasLength(3));
       final manualAttack = loaded.attacks!.singleWhere(
@@ -2221,6 +2371,7 @@ Future<_CreationFixture> _seedCreationFixture(
     sessionBuilder,
     SubclassData(
       parentClassId: classData.id!,
+      subclassName: 'Fixture Archetype',
       name: 'Fixture Champion',
       levelRequired: 1,
       description: 'Subclass used in integration tests.',

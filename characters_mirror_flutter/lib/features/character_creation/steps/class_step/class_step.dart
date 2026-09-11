@@ -28,7 +28,7 @@ class ClassStep extends HookConsumerWidget {
             dismissedSelectionKey.value != selectedClassKey;
 
         return CreationSelectionStepScaffold(
-          route: 'background',
+          route: 'race',
           onBack: () {
             ref.read(characterCreationProvider.notifier).reset();
             context.go('/characters');

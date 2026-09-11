@@ -17,6 +17,7 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
     super.key,
     this.title = 'Создание персонажа',
     this.scrollableBody = true,
+    this.floatingActionButton,
     this.contentPadding =
         const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
   });
@@ -28,6 +29,7 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
   final String route;
   final String title;
   final bool scrollableBody;
+  final Widget? floatingActionButton;
   final EdgeInsetsGeometry contentPadding;
 
   @override
@@ -130,6 +132,7 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
           ),
         ),
       ),
+      floatingActionButton: widget.floatingActionButton,
     );
   }
 }

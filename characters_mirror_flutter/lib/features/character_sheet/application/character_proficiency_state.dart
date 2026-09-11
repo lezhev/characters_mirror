@@ -58,6 +58,94 @@ List<Ability> buildManualSavingThrowProficiencies({
   ];
 }
 
+CharacterData withOptimisticSkillProficiency({
+  required CharacterData character,
+  required List<CharacterSkillProficiencyState> manualSkillProficiencies,
+}) {
+  final derived = character.derived;
+  if (derived == null) {
+    return character.copyWith(
+        manualSkillProficiencies: manualSkillProficiencies);
+  }
+
+  final skillLevels = skillProficiencyLevelMap(manualSkillProficiencies);
+  final skillBonuses = {
+    for (final skill in Skill.values)
+      skill.name: optimisticSkillBonus(
+        character: character,
+        skill: skill,
+        level: skillLevels[skill] ?? CharacterSkillProficiencyLevel.none,
+      ),
+  };
+
+  return character.copyWith(
+    manualSkillProficiencies: manualSkillProficiencies,
+    derived: derived.copyWith(
+      skillBonuses: skillBonuses,
+      skillProficiencyLevels: manualSkillProficiencies,
+      passivePerception: 10 + (skillBonuses[Skill.perception.name] ?? 0),
+      passiveInvestigation: 10 + (skillBonuses[Skill.investigation.name] ?? 0),
+      passiveInsight: 10 + (skillBonuses[Skill.insight.name] ?? 0),
+    ),
+  );
+}
+
+CharacterData withOptimisticSavingThrowProficiency({
+  required CharacterData character,
+  required List<Ability> manualSavingThrowProficiencies,
+}) {
+  final derived = character.derived;
+  if (derived == null) {
+    return character.copyWith(
+      manualSavingThrowProficiencies: manualSavingThrowProficiencies,
+    );
+  }
+
+  final proficiencies = savingThrowProficiencySet(
+    manualSavingThrowProficiencies,
+  );
+  final savingThrowBonuses = {
+    for (final ability in Ability.values)
+      ability.name: optimisticSavingThrowBonus(
+        character: character,
+        ability: ability,
+        proficient: proficiencies.contains(ability),
+      ),
+  };
+
+  return character.copyWith(
+    manualSavingThrowProficiencies: manualSavingThrowProficiencies,
+    derived: derived.copyWith(
+      savingThrowBonuses: savingThrowBonuses,
+      savingThrowProficiencies: manualSavingThrowProficiencies,
+    ),
+  );
+}
+
+int optimisticSkillBonus({
+  required CharacterData character,
+  required Skill skill,
+  required CharacterSkillProficiencyLevel level,
+}) {
+  final modifier =
+      character.derived?.abilityModifiers?[abilityForSkill(skill).name] ?? 0;
+  return modifier +
+      characterProficiencyBonus(character) * _skillMultiplier(level);
+}
+
+int optimisticSavingThrowBonus({
+  required CharacterData character,
+  required Ability ability,
+  required bool proficient,
+}) {
+  final modifier = character.derived?.abilityModifiers?[ability.name] ?? 0;
+  return modifier + (proficient ? characterProficiencyBonus(character) : 0);
+}
+
+int characterProficiencyBonus(CharacterData character) {
+  return character.derived?.proficiencyBonus ?? 2;
+}
+
 CharacterSkillProficiencyLevel nextSkillProficiencyLevel(
   CharacterSkillProficiencyLevel level,
 ) {
@@ -98,5 +186,16 @@ Ability abilityForSkill(Skill skill) {
     case Skill.performance:
     case Skill.persuasion:
       return Ability.charisma;
+  }
+}
+
+int _skillMultiplier(CharacterSkillProficiencyLevel level) {
+  switch (level) {
+    case CharacterSkillProficiencyLevel.none:
+      return 0;
+    case CharacterSkillProficiencyLevel.proficient:
+      return 1;
+    case CharacterSkillProficiencyLevel.expertise:
+      return 2;
   }
 }

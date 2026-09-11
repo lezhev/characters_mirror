@@ -17,6 +17,29 @@ Future<CharacterData> resolveOfflineCharacter(
   );
 }
 
+Map<CharacterSpeedKind, int> effectiveMovementSpeeds(CharacterData character) {
+  final walking = baseWalkingSpeed(character);
+  return {
+    CharacterSpeedKind.walking: character.walkingSpeed ?? walking,
+    CharacterSpeedKind.swimming: character.swimmingSpeed ?? walking ~/ 2,
+    CharacterSpeedKind.climbing: character.climbingSpeed ?? walking ~/ 2,
+    CharacterSpeedKind.flying: character.flyingSpeed ?? 0,
+  };
+}
+
+int baseWalkingSpeed(CharacterData character) {
+  return character.subrace?.speedOverride ?? character.race?.speed ?? 30;
+}
+
+int displayedMovementSpeed(
+  CharacterSpeedKind? kind,
+  Map<CharacterSpeedKind, int> movementSpeeds,
+) {
+  return movementSpeeds[kind ?? CharacterSpeedKind.walking] ??
+      movementSpeeds[CharacterSpeedKind.walking] ??
+      30;
+}
+
 Future<CharacterDerivedData> buildOfflineDerivedData(
   OfflineCacheDatabase cache,
   CharacterData character,
@@ -64,6 +87,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     character,
     alwaysPreparedSpellKeys,
   );
+  final movementSpeeds = effectiveMovementSpeeds(character);
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
@@ -71,9 +95,9 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: 10 + dexterityModifier,
-    initiative: dexterityModifier,
-    speed: character.subrace?.speedOverride ?? character.race?.speed ?? 30,
+    armorClass: 10 + dexterityModifier + (character.customArmorClassBonus ?? 0),
+    initiative: dexterityModifier + (character.customInitiativeBonus ?? 0),
+    speed: displayedMovementSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
     passivePerception: 10 + (skillBonuses[Skill.perception.name] ?? 0),
     passiveInvestigation: 10 + (skillBonuses[Skill.investigation.name] ?? 0),
@@ -513,7 +537,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
       addFeature(
         sourceType: CharacterFeatureSourceType.subclassFeature,
         sourceId: feature.id,
-        sourceName: entry.subclass?.name,
+        sourceName: _subclassSourceName(entry.subclass),
         level: feature.level,
         name: feature.name,
         description: feature.shortDescription ?? feature.description,
@@ -582,6 +606,20 @@ List<CharacterResourceViewData>? _resourceViews({
     );
   }
   return result.isEmpty ? null : result;
+}
+
+String? _subclassSourceName(SubclassData? subclass) {
+  final parts = [
+    _normalizedTextOrNull(subclass?.subclassName),
+    _normalizedTextOrNull(subclass?.name),
+  ].whereType<String>().toList();
+  if (parts.isEmpty) {
+    return null;
+  }
+  if (parts.length == 2 && parts[0] == parts[1]) {
+    return parts[0];
+  }
+  return parts.join(' ');
 }
 
 int _resourceMax({

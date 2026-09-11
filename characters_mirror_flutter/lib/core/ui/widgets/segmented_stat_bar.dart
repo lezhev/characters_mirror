@@ -9,6 +9,7 @@ class SegmentedStatBar extends StatelessWidget {
   final List<SegmentedStatBarItem> segments;
 
   static const double _compactBreakpointPerSegment = 132;
+  static const double _mediumBreakpointPerSegment = 108;
   static const double _compactGap = 12;
   static const double _compactMinCardWidth = 92;
 
@@ -20,61 +21,18 @@ class SegmentedStatBar extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final compactThreshold = segments.length * _compactBreakpointPerSegment;
-        if (constraints.maxWidth < compactThreshold) {
-          return _CompactStatCards(
-            segments: segments,
-            maxWidth: constraints.maxWidth,
-            gap: _compactGap,
-            minCardWidth: _compactMinCardWidth,
-          );
-        }
-
-        return _SegmentedStatRow(segments: segments);
+        return _CompactStatCards(
+          segments: segments,
+          maxWidth: constraints.maxWidth,
+          gap: _compactGap,
+          minCardWidth: _compactMinCardWidth,
+        );
       },
     );
   }
 }
 
-class _SegmentedStatRow extends StatelessWidget {
-  const _SegmentedStatRow({
-    required this.segments,
-  });
-
-  final List<SegmentedStatBarItem> segments;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final borderColor = colorScheme.primary;
-    const borderRadius = BorderRadius.all(Radius.circular(8));
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: borderColor),
-        borderRadius: borderRadius,
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: Row(
-          children: [
-            for (var index = 0; index < segments.length; index++) ...[
-              Expanded(
-                child: _SegmentedStatButton(item: segments[index]),
-              ),
-              if (index < segments.length - 1)
-                SizedBox(
-                  width: 1,
-                  height: 62,
-                  child: ColoredBox(color: borderColor.withValues(alpha: 0.55)),
-                ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
+enum _StatValueDensity { full, medium, short }
 
 class _CompactStatCards extends StatelessWidget {
   const _CompactStatCards({
@@ -93,6 +51,7 @@ class _CompactStatCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final columns = _columnCount();
     final cardWidth = (maxWidth - gap * (columns - 1)) / columns;
+    final valueDensity = _valueDensityFor(cardWidth);
 
     return Wrap(
       spacing: gap,
@@ -101,10 +60,23 @@ class _CompactStatCards extends StatelessWidget {
         for (final segment in segments)
           SizedBox(
             width: cardWidth,
-            child: _CompactStatCard(item: segment),
+            child: _CompactStatCard(
+              item: segment,
+              valueDensity: valueDensity,
+            ),
           ),
       ],
     );
+  }
+
+  _StatValueDensity _valueDensityFor(double cardWidth) {
+    if (cardWidth < SegmentedStatBar._mediumBreakpointPerSegment) {
+      return _StatValueDensity.short;
+    }
+    if (cardWidth < SegmentedStatBar._compactBreakpointPerSegment) {
+      return _StatValueDensity.medium;
+    }
+    return _StatValueDensity.full;
   }
 
   int _columnCount() {
@@ -116,58 +88,42 @@ class _CompactStatCards extends StatelessWidget {
 class SegmentedStatBarItem {
   const SegmentedStatBarItem({
     required this.value,
+    this.mediumValue,
+    this.shortValue,
     this.label,
     this.icon,
     this.onPressed,
+    this.onLongPress,
   });
 
   final String value;
+  final String? mediumValue;
+  final String? shortValue;
   final String? label;
   final IconData? icon;
   final VoidCallback? onPressed;
-}
+  final VoidCallback? onLongPress;
 
-class _SegmentedStatButton extends StatelessWidget {
-  const _SegmentedStatButton({
-    required this.item,
-  });
-
-  final SegmentedStatBarItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: item.onPressed ?? () {},
-        overlayColor: WidgetStatePropertyAll(
-          colorScheme.primary.withValues(alpha: 0.08),
-        ),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 62),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Center(
-              child: item.icon == null
-                  ? _TextOnlySegment(item: item)
-                  : _IconSegment(item: item),
-            ),
-          ),
-        ),
-      ),
-    );
+  String _valueFor(_StatValueDensity density) {
+    switch (density) {
+      case _StatValueDensity.full:
+        return value;
+      case _StatValueDensity.medium:
+        return mediumValue ?? value;
+      case _StatValueDensity.short:
+        return shortValue ?? mediumValue ?? value;
+    }
   }
 }
 
 class _CompactStatCard extends StatelessWidget {
   const _CompactStatCard({
     required this.item,
+    required this.valueDensity,
   });
 
   final SegmentedStatBarItem item;
+  final _StatValueDensity valueDensity;
 
   @override
   Widget build(BuildContext context) {
@@ -185,6 +141,7 @@ class _CompactStatCard extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: item.onPressed ?? () {},
+            onLongPress: item.onLongPress,
             overlayColor: WidgetStatePropertyAll(
               colorScheme.primary.withValues(alpha: 0.08),
             ),
@@ -193,8 +150,16 @@ class _CompactStatCard extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                 child: item.icon == null
-                    ? Center(child: _TextOnlySegment(item: item))
-                    : _IconCardSegment(item: item),
+                    ? Center(
+                        child: _TextOnlySegment(
+                          item: item,
+                          value: item._valueFor(valueDensity),
+                        ),
+                      )
+                    : _IconCardSegment(
+                        item: item,
+                        value: item._valueFor(valueDensity),
+                      ),
               ),
             ),
           ),
@@ -204,46 +169,14 @@ class _CompactStatCard extends StatelessWidget {
   }
 }
 
-class _IconSegment extends StatelessWidget {
-  const _IconSegment({
-    required this.item,
-  });
-
-  final SegmentedStatBarItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          item.icon,
-          color: colorScheme.primary,
-          size: 24,
-        ),
-        const SizedBox(width: 14),
-        Flexible(
-          child: Text(
-            item.value,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleSmall,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _TextOnlySegment extends StatelessWidget {
   const _TextOnlySegment({
     required this.item,
+    required this.value,
   });
 
   final SegmentedStatBarItem item;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +187,8 @@ class _TextOnlySegment extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          item.value,
+          value,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.titleSmall,
         ),
@@ -262,6 +196,7 @@ class _TextOnlySegment extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             item.label!,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelSmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
@@ -276,9 +211,11 @@ class _TextOnlySegment extends StatelessWidget {
 class _IconCardSegment extends StatelessWidget {
   const _IconCardSegment({
     required this.item,
+    required this.value,
   });
 
   final SegmentedStatBarItem item;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
@@ -302,7 +239,8 @@ class _IconCardSegment extends StatelessWidget {
           ),
         ),
         Text(
-          item.value,
+          value,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.titleSmall,
         ),

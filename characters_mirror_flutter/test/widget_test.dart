@@ -242,10 +242,10 @@ void main() {
           child: MaterialApp.router(
             theme: darkTheme,
             routerConfig: GoRouter(
-              initialLocation: Step.introduction.routePath,
+              initialLocation: Step.classStep.routePath,
               routes: [
                 GoRoute(
-                  path: Step.introduction.routePath,
+                  path: Step.classStep.routePath,
                   builder: (_, __) => const Scaffold(
                     appBar: CreationAppBar(
                       title: 'Создание персонажа',
@@ -261,7 +261,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Создание персонажа'), findsOneWidget);
-      expect(find.text('Вступление'), findsOneWidget);
+      expect(find.text('Класс'), findsOneWidget);
       expect(find.byType(CreationProgression), findsOneWidget);
       expect(find.text('1'), findsOneWidget);
 

@@ -1,6 +1,6 @@
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/introduction.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/personal_step/personal.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -185,7 +185,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/create',
-                builder: (_, __) => const IntroductionStep(),
+                builder: (_, __) => const _SwipeStepHarness(),
               ),
               GoRoute(
                 path: '/create/race',
@@ -201,11 +201,30 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.drag(
-      find.text('Как будет устроено создание персонажа'),
+      find.text('Class route'),
       const Offset(-700, 0),
     );
     await tester.pumpAndSettle();
 
     expect(find.text('Race route'), findsOneWidget);
   });
+}
+
+class _SwipeStepHarness extends ConsumerWidget {
+  const _SwipeStepHarness();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CreationStepScaffold(
+      route: 'race',
+      onBack: () {},
+      onStepTap: (target) async => ref
+          .read(characterCreationProvider.notifier)
+          .goToStep(context, target),
+      onPressedNext: () {
+        ref.read(characterCreationProvider.notifier).nextStep(context);
+      },
+      body: const Text('Class route'),
+    );
+  }
 }

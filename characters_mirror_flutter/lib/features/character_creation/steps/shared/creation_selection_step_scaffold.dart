@@ -34,23 +34,20 @@ class CreationSelectionStepScaffold extends StatelessWidget {
       onBack: onBack,
       onStepTap: onStepTap,
       onPressedNext: onPressedNext,
-      body: Stack(
+      floatingActionButton: showJumpButton && onJumpToDetails != null
+          ? JumpToDetailsButton(onPressed: onJumpToDetails!)
+          : null,
+      body: Column(
         children: [
-          Column(
-            children: [
-              selection,
-              if (details != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 88.0),
-                  child: KeyedSubtree(
-                    key: detailsKey,
-                    child: details!,
-                  ),
-                ),
-            ],
-          ),
-          if (showJumpButton && onJumpToDetails != null)
-            JumpToDetailsButton(onPressed: onJumpToDetails!),
+          selection,
+          if (details != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 88.0),
+              child: KeyedSubtree(
+                key: detailsKey,
+                child: details!,
+              ),
+            ),
         ],
       ),
     );
