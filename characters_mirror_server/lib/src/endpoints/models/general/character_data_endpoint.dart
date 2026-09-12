@@ -14,6 +14,8 @@ part 'character_data_endpoint/persistence_relation_write.dart';
 part 'character_data_endpoint/persistence_starting_equipment_write.dart';
 part 'character_data_endpoint/persistence_normalization.dart';
 part 'character_data_endpoint/persistence_sync_lookup.dart';
+part 'character_data_endpoint/sync_operation_application.dart';
+part 'character_data_endpoint/sync_target_revisions.dart';
 part 'character_data_endpoint/aggregate_build.dart';
 part 'character_data_endpoint/aggregate_derived_stats.dart';
 part 'character_data_endpoint/aggregate_spell_slots.dart';
@@ -143,6 +145,17 @@ class CharacterDataEndpoint extends Endpoint {
   ) async {
     final userId = await _requireCurrentUserId(session);
     CharacterValidator.validateSyncRequest(request);
+
+    final operations =
+        request.operations ?? const <CharacterSyncOperationData>[];
+    if (operations.isNotEmpty) {
+      return _syncCharacterOperations(
+        session,
+        userId: userId,
+        request: request,
+      );
+    }
+
     final acknowledgedChangeIds = <String>[];
     final rejectedChanges = <CharacterRejectedChangeData>[];
     for (final change in request.changes ?? const <CharacterChangeData>[]) {

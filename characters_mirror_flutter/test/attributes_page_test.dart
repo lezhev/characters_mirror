@@ -5,6 +5,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart'
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_save_timing.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/attributes_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/widgets/expertise_flag_preview.dart';
@@ -53,6 +54,11 @@ Future<void> _pumpAttributesPage(
     ),
   );
   await tester.pumpAndSettle();
+}
+
+Future<void> _pumpCharacterSheetAutosave(WidgetTester tester) async {
+  await tester.pump(characterSheetAutosaveDelay);
+  await tester.pump();
 }
 
 void _noop() {}

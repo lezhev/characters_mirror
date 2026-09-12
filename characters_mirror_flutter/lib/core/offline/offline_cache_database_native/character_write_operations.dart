@@ -13,8 +13,12 @@ extension OfflineCacheCharacterWriteOperations on OfflineCacheDatabase {
             : await _allocateLocalId(userId));
     final serverId = existing?.serverId ??
         (character.id != null && character.id! > 0 ? character.id : null);
-    final localCharacter = character.copyWith(id: localId);
     final now = DateTime.now().toUtc();
+    final localCharacter = stampCharacterMutation(
+      previous: existing?.character ?? character.copyWith(id: localId),
+      next: character.copyWith(id: localId),
+      now: now,
+    );
     final payload = jsonEncode(localCharacter.toJson());
     final basePayload = existing?._basePayloadJson ??
         jsonEncode(
@@ -50,19 +54,33 @@ INSERT OR REPLACE INTO characters_cache(
       stmt.dispose();
     }
 
-    await _enqueueChange(
-      OfflineCharacterChange(
-        id: _generateChangeId(now),
-        userId: userId,
-        changeType: CharacterChangeType.upsert,
-        entityType: CharacterEntityType.character,
-        entityId: (serverId ?? localId).toString(),
-        payload: localCharacter,
-        createdAt: now,
-        baseUpdatedAt: existing?.baseUpdatedAt ?? character.updatedAt,
-        status: OfflineCharacterChangeStatus.pending,
-      ),
+    final operations = buildCharacterSyncOperations(
+      previous: existing?.character ?? localCharacter,
+      next: localCharacter,
+      localId: localId,
+      serverId: serverId,
+      createdAt: now,
+      nextChangeId: () => _generateChangeId(now),
     );
+    if (serverId == null) {
+      await deleteQueuedChangesForEntity(userId, localId.toString());
+    }
+    for (final operation in operations) {
+      await _enqueueChange(
+        OfflineCharacterChange(
+          id: operation.id,
+          userId: userId,
+          changeType: CharacterChangeType.upsert,
+          entityType: CharacterEntityType.character,
+          entityId: (serverId ?? localId).toString(),
+          payload: serverId == null ? localCharacter : null,
+          operationData: operation,
+          createdAt: now,
+          baseUpdatedAt: existing?.baseUpdatedAt ?? character.updatedAt,
+          status: OfflineCharacterChangeStatus.pending,
+        ),
+      );
+    }
 
     return (await getCharacter(userId, localId))!;
   }
@@ -71,6 +89,11 @@ INSERT OR REPLACE INTO characters_cache(
     final existing = await getCharacter(userId, id);
     if (existing == null) return;
     final now = DateTime.now().toUtc();
+    if (existing.serverId == null) {
+      await markDeleteSynced(userId, existing.localId);
+      await deleteQueuedChangesForEntity(userId, existing.localId.toString());
+      return;
+    }
     final stmt = _db.prepare('''
 UPDATE characters_cache
 SET sync_status = ?, sync_operation = ?, local_updated_at = ?, last_sync_error = ?
@@ -89,13 +112,26 @@ WHERE user_id = ? AND local_id = ?
       stmt.dispose();
     }
 
+    await deleteQueuedChangesForEntity(userId, existing.serverId.toString());
+    final operation = CharacterSyncOperationData(
+      id: _generateChangeId(now),
+      characterId: existing.serverId,
+      localCharacterId: existing.localId,
+      type: CharacterSyncOperationType.deleteCharacter,
+      targetType: CharacterSyncTargetType.character,
+      targetId: existing.serverId.toString(),
+      baseCharacterRevision: existing.character.version ?? existing.baseVersion,
+      baseTargetRevision: existing.character.version ?? existing.baseVersion,
+      createdAt: now,
+    );
     await _enqueueChange(
       OfflineCharacterChange(
-        id: _generateChangeId(now),
+        id: operation.id,
         userId: userId,
         changeType: CharacterChangeType.delete,
         entityType: CharacterEntityType.character,
-        entityId: (existing.serverId ?? existing.localId).toString(),
+        entityId: existing.serverId.toString(),
+        operationData: operation,
         createdAt: now,
         baseUpdatedAt: existing.character.updatedAt ?? existing.baseUpdatedAt,
         status: OfflineCharacterChangeStatus.pending,

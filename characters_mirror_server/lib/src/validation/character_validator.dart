@@ -27,6 +27,41 @@ abstract final class CharacterValidator {
 
   static void validateSyncRequest(CharacterSyncRequest request) {
     Rules.largeCollection('changes', request.changes);
+    Rules.largeCollection('operations', request.operations);
+    final changes = request.changes;
+    final operations = request.operations;
+    if ((changes?.isNotEmpty ?? false) && (operations?.isNotEmpty ?? false)) {
+      throw InputValidationException(
+        'sync',
+        'changes and operations cannot be sent in the same request.',
+      );
+    }
+
+    for (var index = 0; index < (changes?.length ?? 0); index++) {
+      final change = changes![index];
+      final prefix = 'changes[$index]';
+      Rules.shortText('$prefix.id', change.id);
+      Rules.shortText('$prefix.entityId', change.entityId);
+    }
+
+    for (var index = 0; index < (operations?.length ?? 0); index++) {
+      final operation = operations![index];
+      final prefix = 'operations[$index]';
+      Rules.shortText('$prefix.id', operation.id);
+      Rules.shortText('$prefix.targetId', operation.targetId);
+      Rules.shortText('$prefix.fieldPath', operation.fieldPath);
+      Rules.nonNegativeInt(
+        '$prefix.baseCharacterRevision',
+        operation.baseCharacterRevision,
+      );
+      Rules.nonNegativeInt(
+        '$prefix.baseTargetRevision',
+        operation.baseTargetRevision,
+      );
+    }
+  }
+
+  static void validateLegacySyncChanges(CharacterSyncRequest request) {
     final changes = request.changes;
     if (changes == null) return;
 

@@ -1,4 +1,5 @@
 class: CharacterSyncRequest
 fields:
   changes: List<CharacterChangeData>?
+  operations: List<CharacterSyncOperationData>?
   pullSince: DateTime?

@@ -1,0 +1,26 @@
+class: CharacterSyncValueData
+fields:
+  stringValue: String?
+  intValue: int?
+  boolValue: bool?
+  dateTimeValue: DateTime?
+  alignmentValue: CharacterAlignment?
+  speedKindValue: CharacterSpeedKind?
+  conditionListValue: List<ConditionType>?
+  stringListValue: List<String>?
+  abilityListValue: List<Ability>?
+  stringIntMapValue: Map<String, int>?
+  intIntMapValue: Map<int, int>?
+  skillProficiencyListValue: List<CharacterSkillProficiencyState>?
+  characterValue: CharacterData?
+  noteValue: CharacterNoteData?
+  equipmentValue: CharacterInventoryItemData?
+  attackValue: CharacterAttackData?
+  featureOverrideValue: CharacterFeatureOverrideData?
+  resourceStateValue: CharacterResourceStateData?
+  classEntryValue: CharacterClassEntryData?
+  choiceValue: CharacterChoiceData?
+  skillSelectionValue: CharacterSkillSelectionData?
+  spellSelectionValue: CharacterSpellSelectionData?
+  startingEquipmentSelectionValue: CharacterStartingEquipmentSelectionData?
+  startingEquipmentResolutionValue: CharacterStartingEquipmentResolutionData?

@@ -30,7 +30,18 @@ void main() {
     expect(first.operation, OfflineCharacterSyncOperation.upsert);
   });
 
-  test('saveLocal enqueues snapshot upsert change', () async {
+  test('saveLocal enqueues granular upsert operation for server characters',
+      () async {
+    await cache.upsertCleanFromServer(
+      7,
+      CharacterData(
+        id: 42,
+        name: 'Base',
+        updatedAt: DateTime.utc(2026, 4, 24),
+        version: 1,
+      ),
+    );
+
     final saved = await cache.saveLocal(
       7,
       CharacterData(
@@ -46,8 +57,27 @@ void main() {
     expect(changes.single.changeType, CharacterChangeType.upsert);
     expect(changes.single.entityType, CharacterEntityType.character);
     expect(changes.single.entityId, '42');
-    expect(changes.single.payload?.name, 'Queued');
+    expect(changes.single.payload, isNull);
+    expect(changes.single.operationData?.type,
+        CharacterSyncOperationType.setField);
+    expect(changes.single.operationData?.fieldPath, 'name');
+    expect(changes.single.operationData?.value?.stringValue, 'Queued');
     expect(saved.status, OfflineCharacterSyncStatus.dirty);
+  });
+
+  test('offline-created character keeps one final create snapshot', () async {
+    final local = await cache.saveLocal(7, CharacterData(name: 'Draft'));
+    await cache.saveLocal(7, local.character.copyWith(name: 'Final'));
+
+    final changes = await cache.getPendingChanges(7);
+
+    expect(changes, hasLength(1));
+    expect(changes.single.operationData?.type,
+        CharacterSyncOperationType.createCharacter);
+    expect(
+      changes.single.operationData?.itemPayload?.characterValue?.name,
+      'Final',
+    );
   });
 
   test('remaps a negative local id to the synced server id', () async {
@@ -103,6 +133,19 @@ void main() {
     expect(changes, hasLength(1));
     expect(changes.single.changeType, CharacterChangeType.delete);
     expect(changes.single.entityId, '42');
+    expect(
+      changes.single.operationData?.type,
+      CharacterSyncOperationType.deleteCharacter,
+    );
+  });
+
+  test('offline-created character deleted before sync sends nothing', () async {
+    final local = await cache.saveLocal(7, CharacterData(name: 'Draft'));
+
+    await cache.markDeleting(7, local.localId, null);
+
+    expect(await cache.getCharacter(7, local.localId), isNull);
+    expect(await cache.getPendingChanges(7), isEmpty);
   });
 
   test('conflicts preserve the queued operation', () async {
@@ -306,5 +349,49 @@ VALUES (?, ?, ?, ?)
     );
 
     expect(cached?.choiceGroups?.single.group?.type, isNull);
+  });
+
+  test('reads legacy queued snapshot rows after operation migration', () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final initialCache = await OfflineCacheDatabase.openAt(path);
+    initialCache.close();
+
+    final db = sqlite3.open(path);
+    try {
+      db.execute(
+        '''
+INSERT INTO character_changes(
+  id, user_id, change_type, entity_type, entity_id, payload_json,
+  created_at, base_updated_at, status, last_error
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+''',
+        [
+          'legacy-change',
+          7,
+          CharacterChangeType.upsert.name,
+          CharacterEntityType.character.name,
+          '42',
+          jsonEncode({'id': 42, 'name': 'Legacy'}),
+          DateTime.utc(2026, 4, 22).toIso8601String(),
+          null,
+          OfflineCharacterChangeStatus.pending.name,
+          null,
+        ],
+      );
+    } finally {
+      db.dispose();
+    }
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+
+    final changes = await reopened.getPendingChanges(7);
+
+    expect(changes, hasLength(1));
+    expect(changes.single.id, 'legacy-change');
+    expect(changes.single.payload?.name, 'Legacy');
+    expect(changes.single.operationData, isNull);
   });
 }

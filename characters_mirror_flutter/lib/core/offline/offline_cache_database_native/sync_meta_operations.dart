@@ -43,6 +43,54 @@ WHERE user_id = ? AND id = ?
     }
   }
 
+  Future<void> markChangeConflict(
+    int userId,
+    String changeId,
+    CharacterData conflictCharacter,
+    String? message,
+  ) async {
+    final stmt = _db.prepare('''
+UPDATE character_changes
+SET status = ?, last_error = ?, conflict_payload_json = ?, rejected_at = ?
+WHERE user_id = ? AND id = ?
+''');
+    try {
+      stmt.execute([
+        OfflineCharacterChangeStatus.conflict.name,
+        message,
+        jsonEncode(conflictCharacter.toJson()),
+        DateTime.now().toUtc().toIso8601String(),
+        userId,
+        changeId,
+      ]);
+    } finally {
+      stmt.dispose();
+    }
+  }
+
+  Future<void> markChangeRejected(
+    int userId,
+    String changeId,
+    String? message,
+  ) async {
+    final stmt = _db.prepare('''
+UPDATE character_changes
+SET status = ?, last_error = ?, rejected_at = ?
+WHERE user_id = ? AND id = ?
+''');
+    try {
+      stmt.execute([
+        OfflineCharacterChangeStatus.conflict.name,
+        message,
+        DateTime.now().toUtc().toIso8601String(),
+        userId,
+        changeId,
+      ]);
+    } finally {
+      stmt.dispose();
+    }
+  }
+
   Future<void> deleteQueuedChangesForEntity(int userId, String entityId) async {
     final stmt = _db.prepare('''
 DELETE FROM character_changes
@@ -50,6 +98,19 @@ WHERE user_id = ? AND entity_id = ?
 ''');
     try {
       stmt.execute([userId, entityId]);
+    } finally {
+      stmt.dispose();
+    }
+  }
+
+  Future<bool> hasQueuedChangesForEntity(int userId, String entityId) async {
+    final stmt = _db.prepare('''
+SELECT 1 FROM character_changes
+WHERE user_id = ? AND entity_id = ?
+LIMIT 1
+''');
+    try {
+      return stmt.select([userId, entityId]).isNotEmpty;
     } finally {
       stmt.dispose();
     }

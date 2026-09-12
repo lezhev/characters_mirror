@@ -16,6 +16,7 @@ enum OfflineCharacterChangeStatus {
   pending,
   processing,
   failed,
+  conflict,
 }
 
 class OfflineCharacterRecord {
@@ -61,6 +62,7 @@ class OfflineCharacterChange {
     required this.createdAt,
     required this.status,
     this.payload,
+    this.operationData,
     this.baseUpdatedAt,
     this.lastError,
   });
@@ -71,6 +73,7 @@ class OfflineCharacterChange {
   final CharacterEntityType entityType;
   final String entityId;
   final CharacterData? payload;
+  final CharacterSyncOperationData? operationData;
   final DateTime createdAt;
   final DateTime? baseUpdatedAt;
   final OfflineCharacterChangeStatus status;
@@ -174,9 +177,27 @@ class OfflineCacheDatabase {
 
   Future<void> removeChanges(int userId, Iterable<String> changeIds) async {}
 
-  Future<void> markChangeFailed(int userId, String changeId, Object error) async {}
+  Future<void> markChangeFailed(
+      int userId, String changeId, Object error) async {}
 
-  Future<void> deleteQueuedChangesForEntity(int userId, String entityId) async {}
+  Future<void> markChangeConflict(
+    int userId,
+    String changeId,
+    CharacterData conflictCharacter,
+    String? message,
+  ) async {}
+
+  Future<void> markChangeRejected(
+    int userId,
+    String changeId,
+    String? message,
+  ) async {}
+
+  Future<void> deleteQueuedChangesForEntity(
+      int userId, String entityId) async {}
+
+  Future<bool> hasQueuedChangesForEntity(int userId, String entityId) async =>
+      false;
 
   Future<DateTime?> getLastPulledAt(int userId) async => null;
 

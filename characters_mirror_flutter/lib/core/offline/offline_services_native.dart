@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 import 'package:flutter/foundation.dart';
 
@@ -58,29 +59,42 @@ class OfflineSyncCoordinator {
         return;
       }
 
-      final response = await _client.characterData.syncCharacters(
-        CharacterSyncRequest(
-          changes: [
-            for (final change in coalesced)
-              CharacterChangeData(
-                id: change.id,
-                changeType: change.changeType,
-                entityType: change.entityType,
-                entityId: change.entityId,
-                payload: _serverPayloadForChange(change),
-                createdAt: change.createdAt,
-                baseUpdatedAt: change.baseUpdatedAt,
-              ),
-          ],
-          pullSince: pullSince,
-        ),
-      );
+      final legacyChanges = [
+        for (final change in coalesced)
+          if (change.operationData == null) change,
+      ];
+      final operationChanges = [
+        for (final change in coalesced)
+          if (change.operationData != null) change,
+      ];
 
-      await _applyAcknowledgements(userId, coalesced, response);
-      await _applyRejections(userId, response.rejectedChanges);
-      await _applyPulledCharacters(userId, response.characters);
-      if (response.serverTime != null) {
-        await _cache.setLastPulledAt(userId, response.serverTime!);
+      CharacterSyncResponse? finalResponse;
+      if (legacyChanges.isNotEmpty) {
+        final response = await _sendLegacyChanges(
+          legacyChanges,
+          pullSince: operationChanges.isEmpty ? pullSince : null,
+        );
+        await _applyAcknowledgements(userId, legacyChanges, response);
+        await _applyRejections(userId, legacyChanges, response.rejectedChanges);
+        await _applyPulledCharacters(userId, response.characters);
+        finalResponse = response;
+      }
+      if (operationChanges.isNotEmpty || legacyChanges.isEmpty) {
+        final response = await _sendOperationChanges(
+          operationChanges,
+          pullSince: pullSince,
+        );
+        await _applyAcknowledgements(userId, operationChanges, response);
+        await _applyRejections(
+          userId,
+          operationChanges,
+          response.rejectedChanges,
+        );
+        await _applyPulledCharacters(userId, response.characters);
+        finalResponse = response;
+      }
+      if (finalResponse?.serverTime != null) {
+        await _cache.setLastPulledAt(userId, finalResponse!.serverTime!);
       }
     } catch (_) {
       for (final change in await _cache.getPendingChanges(userId)) {
@@ -95,13 +109,50 @@ class OfflineSyncCoordinator {
     }
   }
 
+  Future<CharacterSyncResponse> _sendLegacyChanges(
+    List<OfflineCharacterChange> changes, {
+    required DateTime? pullSince,
+  }) {
+    return _client.characterData.syncCharacters(
+      CharacterSyncRequest(
+        changes: [
+          for (final change in changes)
+            CharacterChangeData(
+              id: change.id,
+              changeType: change.changeType,
+              entityType: change.entityType,
+              entityId: change.entityId,
+              payload: _serverPayloadForChange(change),
+              createdAt: change.createdAt,
+              baseUpdatedAt: change.baseUpdatedAt,
+            ),
+        ],
+        pullSince: pullSince,
+      ),
+    );
+  }
+
+  Future<CharacterSyncResponse> _sendOperationChanges(
+    List<OfflineCharacterChange> changes, {
+    required DateTime? pullSince,
+  }) {
+    return _client.characterData.syncCharacters(
+      CharacterSyncRequest(
+        operations: [
+          for (final change in changes)
+            if (change.operationData != null) change.operationData!,
+        ],
+        pullSince: pullSince,
+      ),
+    );
+  }
+
   Future<List<OfflineCharacterChange>> _coalescePendingChanges(
     int userId,
     List<OfflineCharacterChange> pending,
   ) async {
-    // TODO(op-sync): replace snapshot coalescing with per-entity operation
-    // collapsing once the server accepts add/update/remove operations.
-    final effective = <OfflineCharacterChange>[];
+    final effectiveLegacy = <OfflineCharacterChange>[];
+    final operationChanges = <OfflineCharacterChange>[];
     for (final change in pending) {
       final localId = int.tryParse(change.entityId);
       if (change.changeType == CharacterChangeType.delete && localId != null) {
@@ -113,24 +164,38 @@ class OfflineSyncCoordinator {
         }
       }
 
-      if (effective.isNotEmpty) {
-        final last = effective.last;
+      if (change.operationData != null) {
+        operationChanges.add(change);
+        continue;
+      }
+
+      if (effectiveLegacy.isNotEmpty) {
+        final last = effectiveLegacy.last;
         if (last.entityId == change.entityId &&
             last.entityType == change.entityType) {
           if (last.changeType == CharacterChangeType.upsert &&
               change.changeType == CharacterChangeType.upsert) {
-            effective[effective.length - 1] = change;
+            effectiveLegacy[effectiveLegacy.length - 1] = change;
             continue;
           }
           if (change.changeType == CharacterChangeType.delete) {
-            effective[effective.length - 1] = change;
+            effectiveLegacy[effectiveLegacy.length - 1] = change;
             continue;
           }
         }
       }
-      effective.add(change);
+      effectiveLegacy.add(change);
     }
-    return effective;
+    final changesById = {
+      for (final change in operationChanges) change.id: change
+    };
+    final coalescedOperations = coalesceCharacterSyncOperations(
+      operationChanges.map((change) => change.operationData!),
+    );
+    return [
+      ...effectiveLegacy,
+      for (final operation in coalescedOperations) changesById[operation.id]!,
+    ];
   }
 
   CharacterData? _serverPayloadForChange(OfflineCharacterChange change) {
@@ -148,8 +213,8 @@ class OfflineSyncCoordinator {
     List<OfflineCharacterChange> sentChanges,
     CharacterSyncResponse response,
   ) async {
-    final acknowledged = (response.acknowledgedChangeIds ?? const <String>[])
-        .toSet();
+    final acknowledged =
+        (response.acknowledgedChangeIds ?? const <String>[]).toSet();
     if (acknowledged.isEmpty) {
       return;
     }
@@ -158,18 +223,60 @@ class OfflineSyncCoordinator {
       for (final character in response.characters ?? const <CharacterData>[])
         if (character.id != null) character.id!.toString(): character,
     };
+    final changedByChangeId = response.changedCharacters ?? const {};
+    final syncedUpdates =
+        <({int localId, String entityId, CharacterData character})>[];
 
     for (final change in sentChanges) {
       if (!acknowledged.contains(change.id)) {
         continue;
       }
+      final operation = change.operationData;
+      if (operation != null) {
+        switch (operation.type) {
+          case CharacterSyncOperationType.createCharacter:
+          case CharacterSyncOperationType.setField:
+          case CharacterSyncOperationType.setMapEntry:
+          case CharacterSyncOperationType.removeMapEntry:
+          case CharacterSyncOperationType.upsertListItem:
+          case CharacterSyncOperationType.removeListItem:
+            final serverCharacter = changedByChangeId[change.id] ??
+                (operation.characterId == null
+                    ? null
+                    : characterById[operation.characterId.toString()]);
+            final localId = operation.localCharacterId ??
+                operation.characterId ??
+                int.tryParse(change.entityId);
+            if (localId != null && serverCharacter != null) {
+              syncedUpdates.add((
+                localId: localId,
+                entityId: change.entityId,
+                character: serverCharacter,
+              ));
+            }
+            break;
+          case CharacterSyncOperationType.deleteCharacter:
+            final localId = operation.localCharacterId ??
+                operation.characterId ??
+                int.tryParse(change.entityId);
+            if (localId != null) {
+              await _cache.markDeleteSynced(userId, localId);
+            }
+            break;
+        }
+        continue;
+      }
+
       switch (change.changeType) {
         case CharacterChangeType.upsert:
           final localId = change.payload?.id;
           final serverCharacter = characterById[change.entityId];
           if (localId != null && serverCharacter != null) {
-            await _cache.markSynced(userId, localId, serverCharacter);
-            await _cache.clearSyncError(userId, serverCharacter.id!);
+            syncedUpdates.add((
+              localId: localId,
+              entityId: change.entityId,
+              character: serverCharacter,
+            ));
           }
           break;
         case CharacterChangeType.delete:
@@ -182,27 +289,54 @@ class OfflineSyncCoordinator {
     }
 
     await _cache.removeChanges(userId, acknowledged);
+    for (final update in syncedUpdates) {
+      final serverId = update.character.id;
+      final hasMoreChanges = await _cache.hasQueuedChangesForEntity(
+        userId,
+        serverId?.toString() ?? update.entityId,
+      );
+      if (!hasMoreChanges) {
+        await _cache.markSynced(userId, update.localId, update.character);
+        if (serverId != null) {
+          await _cache.clearSyncError(userId, serverId);
+        }
+      }
+    }
   }
 
   Future<void> _applyRejections(
     int userId,
+    List<OfflineCharacterChange> sentChanges,
     List<CharacterRejectedChangeData>? rejectedChanges,
   ) async {
-    for (final rejection in rejectedChanges ?? const <CharacterRejectedChangeData>[]) {
+    final sentById = {for (final change in sentChanges) change.id: change};
+    for (final rejection
+        in rejectedChanges ?? const <CharacterRejectedChangeData>[]) {
       final serverCharacter = rejection.character;
       if (serverCharacter != null && serverCharacter.id != null) {
-        await _cache.upsertCleanFromServer(
+        final change = sentById[rejection.changeId];
+        final localId = change?.operationData?.localCharacterId ??
+            int.tryParse(change?.entityId ?? '') ??
+            serverCharacter.id!;
+        await _cache.markConflict(
           userId,
+          localId,
           serverCharacter,
-          overwritePending: true,
+          rejection.message ?? rejection.reason,
         );
-        await _cache.markSyncError(
+        await _cache.markChangeConflict(
           userId,
-          serverCharacter.id!,
+          rejection.changeId,
+          serverCharacter,
+          rejection.message ?? rejection.reason,
+        );
+      } else {
+        await _cache.markChangeRejected(
+          userId,
+          rejection.changeId,
           rejection.message ?? rejection.reason ?? 'Rejected by server',
         );
       }
-      await _cache.removeChanges(userId, [rejection.changeId]);
     }
   }
 

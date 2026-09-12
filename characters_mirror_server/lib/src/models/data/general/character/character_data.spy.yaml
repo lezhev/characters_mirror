@@ -17,6 +17,7 @@ fields:
   bonds: String?
   flaws: String?
   version: int?
+  syncTargetRevisions: Map<String, int>?
   createdAt: DateTime?
   updatedAt: DateTime?
   experience: int?

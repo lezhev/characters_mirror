@@ -4,6 +4,7 @@ import 'package:characters_mirror_flutter/core/offline/offline_cache_database.da
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_save_timing.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character_sheet_settings_page.dart';
 import 'package:characters_mirror_flutter/features/settings/settings.dart';
@@ -156,6 +157,8 @@ void main() {
         find.byKey(const ValueKey('active-concentration-row')),
         findsNothing,
       );
+
+      await _pumpCharacterSheetAutosave(tester);
       expect(
         repository.charactersById[1]?.activeConcentrationSpellName,
         isNull,
@@ -291,6 +294,7 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('save-conditions')));
       await tester.pumpAndSettle();
 
+      await _pumpCharacterSheetAutosave(tester);
       expect(repository.charactersById[1]?.activeConditions,
           contains(protocol.ConditionType.poisoned));
       expect(find.text('Отравлен'), findsOneWidget);
@@ -300,6 +304,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      await _pumpCharacterSheetAutosave(tester);
       expect(repository.charactersById[1]?.activeConditions, isNull);
       expect(find.text('Отравлен'), findsNothing);
     });
@@ -325,6 +330,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      await _pumpCharacterSheetAutosave(tester);
       expect(repository.charactersById[1]?.exhaustionLevel, isNull);
       expect(find.text('Истощение 2'), findsNothing);
     });
@@ -716,6 +722,7 @@ void main() {
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
 
+      await _pumpCharacterSheetAutosave(tester);
       expect(
         repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
         const ['Обновленная заметка'],
@@ -727,6 +734,7 @@ void main() {
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
 
+      await _pumpCharacterSheetAutosave(tester);
       expect(
         repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
         const ['Обновленная заметка', 'Новая заметка'],
@@ -744,6 +752,7 @@ void main() {
       await tester.tap(find.text('Точно?'));
       await tester.pumpAndSettle();
 
+      await _pumpCharacterSheetAutosave(tester);
       expect(
         repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
         const ['Новая заметка'],
@@ -804,6 +813,11 @@ Future<void> _showStatusLabels(WidgetTester tester) async {
   await _showStatusIcons(tester);
   await tester.tap(find.byKey(const ValueKey('status-visibility-toggle')));
   await tester.pumpAndSettle();
+}
+
+Future<void> _pumpCharacterSheetAutosave(WidgetTester tester) async {
+  await tester.pump(characterSheetAutosaveDelay);
+  await tester.pump();
 }
 
 Future<void> _pumpCharacterSheet(

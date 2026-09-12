@@ -1,0 +1,8 @@
+enum: CharacterSyncTargetType
+values:
+  - character
+  - field
+  - mapEntry
+  - listItem
+  - resource
+  - startingEquipmentResolution
