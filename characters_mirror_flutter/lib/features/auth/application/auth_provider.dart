@@ -396,6 +396,20 @@ String displayNameForUser(auth.UserInfo? user) {
   return 'Игрок';
 }
 
+auth.UserInfo? userWithReachableImageUrl(auth.UserInfo? user) {
+  final imageUrl = user?.imageUrl;
+  if (user == null || imageUrl == null) {
+    return user;
+  }
+
+  final reachableImageUrl = reachableServerpodPublicUrl(imageUrl);
+  if (reachableImageUrl == imageUrl) {
+    return user;
+  }
+
+  return user.copyWith(imageUrl: reachableImageUrl);
+}
+
 String initialsForUser(auth.UserInfo? user) {
   final source = displayNameForUser(user).trim();
   if (source.isEmpty) {

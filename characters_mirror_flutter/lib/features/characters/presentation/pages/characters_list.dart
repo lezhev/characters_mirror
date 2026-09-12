@@ -9,7 +9,7 @@ import 'package:characters_mirror_flutter/features/characters/presentation/widge
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 
 class CharactersList extends ConsumerWidget {
   const CharactersList({super.key});
@@ -162,7 +162,7 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
     required this.showAdminAction,
   });
 
-  final dynamic user;
+  final auth.UserInfo? user;
   final bool showAdminAction;
 
   @override
@@ -276,13 +276,13 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
 class _AccountMenuHeader extends StatelessWidget {
   const _AccountMenuHeader({required this.user});
 
-  final dynamic user;
+  final auth.UserInfo? user;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final email = (user?.email as String?)?.trim();
+    final email = user?.email?.trim();
 
     return SizedBox(
       width: 240,
@@ -323,29 +323,11 @@ class _AccountMenuHeader extends StatelessWidget {
 class _AccountMenuAvatar extends StatelessWidget {
   const _AccountMenuAvatar({required this.user});
 
-  final dynamic user;
+  final auth.UserInfo? user;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        CircleAvatar(
-          radius: 20,
-          backgroundColor: colorScheme.primary.withValues(alpha: 0.16),
-          child: Text(
-            initialsForUser(user),
-            style: textTheme.labelLarge?.copyWith(
-              color: colorScheme.primary,
-            ),
-          ),
-        ),
-        CircularUserImage(userInfo: user, size: 40),
-      ],
-    );
+    return UserAvatar(user: user, size: 40);
   }
 }
 
