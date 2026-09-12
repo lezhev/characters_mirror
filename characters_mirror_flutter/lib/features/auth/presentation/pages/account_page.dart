@@ -1,8 +1,8 @@
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
+import 'package:characters_mirror_flutter/features/auth/presentation/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -14,8 +14,8 @@ class AccountPage extends StatelessWidget {
         ListTile(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          leading: CircularUserImage(
-            userInfo: sessionManager.signedInUser,
+          leading: UserAvatar(
+            user: sessionManager.signedInUser,
             size: 42,
           ),
           title: Text(sessionManager.signedInUser!.userName ?? ''),
