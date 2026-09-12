@@ -58,6 +58,7 @@ abstract class CharacterData
     this.bonds,
     this.flaws,
     this.version,
+    this.syncTargetRevisions,
     this.createdAt,
     this.updatedAt,
     this.experience,
@@ -124,6 +125,7 @@ abstract class CharacterData
     String? bonds,
     String? flaws,
     int? version,
+    Map<String, int>? syncTargetRevisions,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? experience,
@@ -192,6 +194,11 @@ abstract class CharacterData
       bonds: jsonSerialization['bonds'] as String?,
       flaws: jsonSerialization['flaws'] as String?,
       version: jsonSerialization['version'] as int?,
+      syncTargetRevisions: (jsonSerialization['syncTargetRevisions'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -362,6 +369,8 @@ abstract class CharacterData
 
   int? version;
 
+  Map<String, int>? syncTargetRevisions;
+
   DateTime? createdAt;
 
   DateTime? updatedAt;
@@ -476,6 +485,7 @@ abstract class CharacterData
     String? bonds,
     String? flaws,
     int? version,
+    Map<String, int>? syncTargetRevisions,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? experience,
@@ -545,6 +555,8 @@ abstract class CharacterData
       if (bonds != null) 'bonds': bonds,
       if (flaws != null) 'flaws': flaws,
       if (version != null) 'version': version,
+      if (syncTargetRevisions != null)
+        'syncTargetRevisions': syncTargetRevisions?.toJson(),
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (experience != null) 'experience': experience,
@@ -647,6 +659,8 @@ abstract class CharacterData
       if (bonds != null) 'bonds': bonds,
       if (flaws != null) 'flaws': flaws,
       if (version != null) 'version': version,
+      if (syncTargetRevisions != null)
+        'syncTargetRevisions': syncTargetRevisions?.toJson(),
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (experience != null) 'experience': experience,
@@ -758,6 +772,7 @@ class _CharacterDataImpl extends CharacterData {
     String? bonds,
     String? flaws,
     int? version,
+    Map<String, int>? syncTargetRevisions,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? experience,
@@ -823,6 +838,7 @@ class _CharacterDataImpl extends CharacterData {
           bonds: bonds,
           flaws: flaws,
           version: version,
+          syncTargetRevisions: syncTargetRevisions,
           createdAt: createdAt,
           updatedAt: updatedAt,
           experience: experience,
@@ -893,6 +909,7 @@ class _CharacterDataImpl extends CharacterData {
     Object? bonds = _Undefined,
     Object? flaws = _Undefined,
     Object? version = _Undefined,
+    Object? syncTargetRevisions = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
     Object? experience = _Undefined,
@@ -962,6 +979,16 @@ class _CharacterDataImpl extends CharacterData {
       bonds: bonds is String? ? bonds : this.bonds,
       flaws: flaws is String? ? flaws : this.flaws,
       version: version is int? ? version : this.version,
+      syncTargetRevisions: syncTargetRevisions is Map<String, int>?
+          ? syncTargetRevisions
+          : this.syncTargetRevisions?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       experience: experience is int? ? experience : this.experience,

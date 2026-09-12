@@ -50,6 +50,7 @@ abstract class CharacterRecord
     this.bonds,
     this.flaws,
     this.version,
+    this.syncTargetRevisions,
     this.createdAt,
     this.updatedAt,
     this.userId,
@@ -114,6 +115,7 @@ abstract class CharacterRecord
     String? bonds,
     String? flaws,
     int? version,
+    Map<String, int>? syncTargetRevisions,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? userId,
@@ -179,6 +181,11 @@ abstract class CharacterRecord
       bonds: jsonSerialization['bonds'] as String?,
       flaws: jsonSerialization['flaws'] as String?,
       version: jsonSerialization['version'] as int?,
+      syncTargetRevisions: (jsonSerialization['syncTargetRevisions'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -332,6 +339,8 @@ abstract class CharacterRecord
 
   int? version;
 
+  Map<String, int>? syncTargetRevisions;
+
   DateTime? createdAt;
 
   DateTime? updatedAt;
@@ -444,6 +453,7 @@ abstract class CharacterRecord
     String? bonds,
     String? flaws,
     int? version,
+    Map<String, int>? syncTargetRevisions,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? userId,
@@ -510,6 +520,8 @@ abstract class CharacterRecord
       if (bonds != null) 'bonds': bonds,
       if (flaws != null) 'flaws': flaws,
       if (version != null) 'version': version,
+      if (syncTargetRevisions != null)
+        'syncTargetRevisions': syncTargetRevisions?.toJson(),
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (userId != null) 'userId': userId,
@@ -645,6 +657,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     String? bonds,
     String? flaws,
     int? version,
+    Map<String, int>? syncTargetRevisions,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? userId,
@@ -707,6 +720,7 @@ class _CharacterRecordImpl extends CharacterRecord {
           bonds: bonds,
           flaws: flaws,
           version: version,
+          syncTargetRevisions: syncTargetRevisions,
           createdAt: createdAt,
           updatedAt: updatedAt,
           userId: userId,
@@ -775,6 +789,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? bonds = _Undefined,
     Object? flaws = _Undefined,
     Object? version = _Undefined,
+    Object? syncTargetRevisions = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
     Object? userId = _Undefined,
@@ -842,6 +857,16 @@ class _CharacterRecordImpl extends CharacterRecord {
       bonds: bonds is String? ? bonds : this.bonds,
       flaws: flaws is String? ? flaws : this.flaws,
       version: version is int? ? version : this.version,
+      syncTargetRevisions: syncTargetRevisions is Map<String, int>?
+          ? syncTargetRevisions
+          : this.syncTargetRevisions?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       userId: userId is int? ? userId : this.userId,
@@ -1046,6 +1071,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'version',
       this,
     );
+    syncTargetRevisions = _i1.ColumnSerializable(
+      'syncTargetRevisions',
+      this,
+    );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
@@ -1246,6 +1275,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt version;
 
+  late final _i1.ColumnSerializable syncTargetRevisions;
+
   late final _i1.ColumnDateTime createdAt;
 
   late final _i1.ColumnDateTime updatedAt;
@@ -1392,6 +1423,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
         bonds,
         flaws,
         version,
+        syncTargetRevisions,
         createdAt,
         updatedAt,
         userId,

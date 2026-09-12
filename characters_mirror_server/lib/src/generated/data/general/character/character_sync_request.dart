@@ -11,16 +11,20 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/character/character_change_data.dart' as _i2;
+import '../../../data/general/character/character_sync_operation_data.dart'
+    as _i3;
 
 abstract class CharacterSyncRequest
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   CharacterSyncRequest._({
     this.changes,
+    this.operations,
     this.pullSince,
   });
 
   factory CharacterSyncRequest({
     List<_i2.CharacterChangeData>? changes,
+    List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
   }) = _CharacterSyncRequestImpl;
 
@@ -31,6 +35,10 @@ abstract class CharacterSyncRequest
           ?.map((e) =>
               _i2.CharacterChangeData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      operations: (jsonSerialization['operations'] as List?)
+          ?.map((e) => _i3.CharacterSyncOperationData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       pullSince: jsonSerialization['pullSince'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['pullSince']),
@@ -39,6 +47,8 @@ abstract class CharacterSyncRequest
 
   List<_i2.CharacterChangeData>? changes;
 
+  List<_i3.CharacterSyncOperationData>? operations;
+
   DateTime? pullSince;
 
   /// Returns a shallow copy of this [CharacterSyncRequest]
@@ -46,6 +56,7 @@ abstract class CharacterSyncRequest
   @_i1.useResult
   CharacterSyncRequest copyWith({
     List<_i2.CharacterChangeData>? changes,
+    List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
   });
   @override
@@ -53,6 +64,8 @@ abstract class CharacterSyncRequest
     return {
       if (changes != null)
         'changes': changes?.toJson(valueToJson: (v) => v.toJson()),
+      if (operations != null)
+        'operations': operations?.toJson(valueToJson: (v) => v.toJson()),
       if (pullSince != null) 'pullSince': pullSince?.toJson(),
     };
   }
@@ -62,6 +75,9 @@ abstract class CharacterSyncRequest
     return {
       if (changes != null)
         'changes': changes?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (operations != null)
+        'operations':
+            operations?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (pullSince != null) 'pullSince': pullSince?.toJson(),
     };
   }
@@ -77,9 +93,11 @@ class _Undefined {}
 class _CharacterSyncRequestImpl extends CharacterSyncRequest {
   _CharacterSyncRequestImpl({
     List<_i2.CharacterChangeData>? changes,
+    List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
   }) : super._(
           changes: changes,
+          operations: operations,
           pullSince: pullSince,
         );
 
@@ -89,12 +107,16 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
   @override
   CharacterSyncRequest copyWith({
     Object? changes = _Undefined,
+    Object? operations = _Undefined,
     Object? pullSince = _Undefined,
   }) {
     return CharacterSyncRequest(
       changes: changes is List<_i2.CharacterChangeData>?
           ? changes
           : this.changes?.map((e0) => e0.copyWith()).toList(),
+      operations: operations is List<_i3.CharacterSyncOperationData>?
+          ? operations
+          : this.operations?.map((e0) => e0.copyWith()).toList(),
       pullSince: pullSince is DateTime? ? pullSince : this.pullSince,
     );
   }

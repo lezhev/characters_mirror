@@ -3,4 +3,5 @@ fields:
   acknowledgedChangeIds: List<String>?
   rejectedChanges: List<CharacterRejectedChangeData>?
   characters: List<CharacterData>?
+  changedCharacters: Map<String, CharacterData>?
   serverTime: DateTime?

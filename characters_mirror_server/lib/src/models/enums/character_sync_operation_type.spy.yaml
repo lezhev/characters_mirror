@@ -1,0 +1,9 @@
+enum: CharacterSyncOperationType
+values:
+  - createCharacter
+  - deleteCharacter
+  - setField
+  - setMapEntry
+  - removeMapEntry
+  - upsertListItem
+  - removeListItem

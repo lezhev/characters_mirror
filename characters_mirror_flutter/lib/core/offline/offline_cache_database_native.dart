@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -29,6 +31,7 @@ enum OfflineCharacterChangeStatus {
   pending,
   processing,
   failed,
+  conflict,
 }
 
 class OfflineCharacterRecord {
@@ -74,6 +77,7 @@ class OfflineCharacterChange {
     required this.createdAt,
     required this.status,
     this.payload,
+    this.operationData,
     this.baseUpdatedAt,
     this.lastError,
   });
@@ -84,6 +88,7 @@ class OfflineCharacterChange {
   final CharacterEntityType entityType;
   final String entityId;
   final CharacterData? payload;
+  final CharacterSyncOperationData? operationData;
   final DateTime createdAt;
   final DateTime? baseUpdatedAt;
   final OfflineCharacterChangeStatus status;
@@ -186,6 +191,56 @@ ON character_changes(user_id, created_at)
       column: 'base_updated_at',
       definition: 'TEXT',
     );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'operation_type',
+      definition: 'TEXT',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'target_type',
+      definition: 'TEXT',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'target_id',
+      definition: 'TEXT',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'field_path',
+      definition: 'TEXT',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'value_json',
+      definition: 'TEXT',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'item_payload_json',
+      definition: 'TEXT',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'base_character_revision',
+      definition: 'INTEGER',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'base_target_revision',
+      definition: 'INTEGER',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'conflict_payload_json',
+      definition: 'TEXT',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'rejected_at',
+      definition: 'TEXT',
+    );
   }
 
   void _ensureColumn({
@@ -212,10 +267,13 @@ ON character_changes(user_id, created_at)
     final stmt = _db.prepare('''
 INSERT OR REPLACE INTO character_changes(
   id, user_id, change_type, entity_type, entity_id, payload_json,
-  created_at, base_updated_at, status, last_error
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  created_at, base_updated_at, status, last_error, operation_type,
+  target_type, target_id, field_path, value_json, item_payload_json,
+  base_character_revision, base_target_revision
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ''');
     try {
+      final operation = change.operationData;
       stmt.execute([
         change.id,
         change.userId,
@@ -227,6 +285,18 @@ INSERT OR REPLACE INTO character_changes(
         change.baseUpdatedAt?.toUtc().toIso8601String(),
         change.status.name,
         change.lastError,
+        operation?.type.name,
+        operation?.targetType.name,
+        operation?.targetId,
+        operation?.fieldPath,
+        operation?.value == null
+            ? null
+            : jsonEncode(operation!.value!.toJson()),
+        operation?.itemPayload == null
+            ? null
+            : jsonEncode(operation!.itemPayload!.toJson()),
+        operation?.baseCharacterRevision,
+        operation?.baseTargetRevision,
       ]);
     } finally {
       stmt.dispose();
@@ -290,6 +360,25 @@ VALUES (?, ?, ?)
 
   OfflineCharacterChange _rowToCharacterChange(Row row) {
     final payloadJson = row['payload_json'] as String?;
+    final operationTypeName = row['operation_type'] as String?;
+    final targetTypeName = row['target_type'] as String?;
+    final operation = operationTypeName == null || targetTypeName == null
+        ? null
+        : CharacterSyncOperationData(
+            id: row['id'] as String,
+            characterId: int.tryParse(row['entity_id'] as String),
+            localCharacterId: int.tryParse(row['entity_id'] as String),
+            type: CharacterSyncOperationType.values.byName(operationTypeName),
+            targetType: CharacterSyncTargetType.values.byName(targetTypeName),
+            targetId: row['target_id'] as String?,
+            fieldPath: row['field_path'] as String?,
+            value: _decodeSyncValue(row['value_json'] as String?),
+            itemPayload: _decodeSyncValue(row['item_payload_json'] as String?),
+            baseCharacterRevision: row['base_character_revision'] as int?,
+            baseTargetRevision: row['base_target_revision'] as int?,
+            createdAt: _parseDateTime(row['created_at'] as String?) ??
+                DateTime.now().toUtc(),
+          );
     return OfflineCharacterChange(
       id: row['id'] as String,
       userId: row['user_id'] as int,
@@ -301,6 +390,7 @@ VALUES (?, ?, ?)
       payload: payloadJson == null
           ? null
           : CharacterData.fromJson(_decodeCharacterPayload(payloadJson)),
+      operationData: operation,
       createdAt: _parseDateTime(row['created_at'] as String?) ??
           DateTime.now().toUtc(),
       baseUpdatedAt: _parseDateTime(row['base_updated_at'] as String?),
@@ -308,6 +398,11 @@ VALUES (?, ?, ?)
           OfflineCharacterChangeStatus.values.byName(row['status'] as String),
       lastError: row['last_error'] as String?,
     );
+  }
+
+  CharacterSyncValueData? _decodeSyncValue(String? payloadJson) {
+    if (payloadJson == null) return null;
+    return CharacterSyncValueData.fromJson(_decodeCachedPayload(payloadJson));
   }
 
   DateTime? _parseDateTime(String? value) {

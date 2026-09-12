@@ -88,6 +88,7 @@ CharacterRecord _toCharacterRecord(
     bonds: character.bonds,
     flaws: character.flaws,
     version: version,
+    syncTargetRevisions: character.syncTargetRevisions,
     createdAt: createdAt,
     updatedAt: updatedAt,
     userId: userId,

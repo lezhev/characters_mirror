@@ -19,6 +19,7 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
     this.acknowledgedChangeIds,
     this.rejectedChanges,
     this.characters,
+    this.changedCharacters,
     this.serverTime,
   });
 
@@ -26,6 +27,7 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
     List<String>? acknowledgedChangeIds,
     List<_i2.CharacterRejectedChangeData>? rejectedChanges,
     List<_i3.CharacterData>? characters,
+    Map<String, _i3.CharacterData>? changedCharacters,
     DateTime? serverTime,
   }) = _CharacterSyncResponseImpl;
 
@@ -43,6 +45,11 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
       characters: (jsonSerialization['characters'] as List?)
           ?.map((e) => _i3.CharacterData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      changedCharacters: (jsonSerialization['changedCharacters'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                _i3.CharacterData.fromJson((v as Map<String, dynamic>)),
+              )),
       serverTime: jsonSerialization['serverTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['serverTime']),
@@ -55,6 +62,8 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
 
   List<_i3.CharacterData>? characters;
 
+  Map<String, _i3.CharacterData>? changedCharacters;
+
   DateTime? serverTime;
 
   /// Returns a shallow copy of this [CharacterSyncResponse]
@@ -64,6 +73,7 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
     List<String>? acknowledgedChangeIds,
     List<_i2.CharacterRejectedChangeData>? rejectedChanges,
     List<_i3.CharacterData>? characters,
+    Map<String, _i3.CharacterData>? changedCharacters,
     DateTime? serverTime,
   });
   @override
@@ -76,6 +86,9 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
             rejectedChanges?.toJson(valueToJson: (v) => v.toJson()),
       if (characters != null)
         'characters': characters?.toJson(valueToJson: (v) => v.toJson()),
+      if (changedCharacters != null)
+        'changedCharacters':
+            changedCharacters?.toJson(valueToJson: (v) => v.toJson()),
       if (serverTime != null) 'serverTime': serverTime?.toJson(),
     };
   }
@@ -93,11 +106,13 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
     List<String>? acknowledgedChangeIds,
     List<_i2.CharacterRejectedChangeData>? rejectedChanges,
     List<_i3.CharacterData>? characters,
+    Map<String, _i3.CharacterData>? changedCharacters,
     DateTime? serverTime,
   }) : super._(
           acknowledgedChangeIds: acknowledgedChangeIds,
           rejectedChanges: rejectedChanges,
           characters: characters,
+          changedCharacters: changedCharacters,
           serverTime: serverTime,
         );
 
@@ -109,6 +124,7 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
     Object? acknowledgedChangeIds = _Undefined,
     Object? rejectedChanges = _Undefined,
     Object? characters = _Undefined,
+    Object? changedCharacters = _Undefined,
     Object? serverTime = _Undefined,
   }) {
     return CharacterSyncResponse(
@@ -121,6 +137,16 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
       characters: characters is List<_i3.CharacterData>?
           ? characters
           : this.characters?.map((e0) => e0.copyWith()).toList(),
+      changedCharacters: changedCharacters is Map<String, _i3.CharacterData>?
+          ? changedCharacters
+          : this.changedCharacters?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0.copyWith(),
+                  )),
       serverTime: serverTime is DateTime? ? serverTime : this.serverTime,
     );
   }

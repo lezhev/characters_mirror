@@ -1,0 +1,14 @@
+class: CharacterSyncOperationData
+fields:
+  id: String
+  characterId: int?
+  localCharacterId: int?
+  type: CharacterSyncOperationType
+  targetType: CharacterSyncTargetType
+  targetId: String?
+  fieldPath: String?
+  value: CharacterSyncValueData?
+  itemPayload: CharacterSyncValueData?
+  baseCharacterRevision: int?
+  baseTargetRevision: int?
+  createdAt: DateTime

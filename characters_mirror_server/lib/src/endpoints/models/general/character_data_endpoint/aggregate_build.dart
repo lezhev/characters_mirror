@@ -120,6 +120,7 @@ CharacterData _toCharacterData(CharacterRecord record) {
     bonds: record.bonds,
     flaws: record.flaws,
     version: record.version,
+    syncTargetRevisions: record.syncTargetRevisions,
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
     experience: record.experience,

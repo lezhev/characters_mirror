@@ -1,0 +1,13 @@
+class: CharacterAppliedChangeRecord
+serverOnly: true
+table: character_applied_changes
+fields:
+  userId: int
+  changeId: String
+  characterId: int?
+  revision: int?
+  createdAt: DateTime
+indexes:
+  character_applied_changes_user_change_idx:
+    fields: userId, changeId
+    unique: true

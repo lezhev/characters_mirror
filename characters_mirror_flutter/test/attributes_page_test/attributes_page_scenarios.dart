@@ -208,7 +208,7 @@ void _registerAttributesPageTests() {
       final strengthCard = find.byKey(
         const ValueKey('attribute-card-strength'),
       );
-      expect(repository.pendingSaveCount, 1);
+      expect(repository.pendingSaveCount, 0);
       expect(
         find.descendant(
           of: strengthCard,
@@ -216,6 +216,9 @@ void _registerAttributesPageTests() {
         ),
         findsOneWidget,
       );
+
+      await _pumpCharacterSheetAutosave(tester);
+      expect(repository.pendingSaveCount, 1);
 
       repository.completeSave(0);
       await tester.pumpAndSettle();
@@ -387,7 +390,7 @@ void _registerAttributesPageTests() {
         find.descendant(of: bonus, matching: find.text('+3')),
         findsOneWidget,
       );
-      expect(repository.pendingSaveCount, 1);
+      expect(repository.pendingSaveCount, 0);
 
       await tester.tap(toggle);
       await tester.pump();
@@ -396,11 +399,10 @@ void _registerAttributesPageTests() {
         find.descendant(of: bonus, matching: find.text('+5')),
         findsOneWidget,
       );
-      expect(repository.pendingSaveCount, 1);
+      expect(repository.pendingSaveCount, 0);
 
-      repository.completeSave(0);
-      await tester.pump();
-      expect(repository.pendingSaveCount, 2);
+      await _pumpCharacterSheetAutosave(tester);
+      expect(repository.pendingSaveCount, 1);
 
       await tester.tap(toggle);
       await tester.pump();
@@ -409,12 +411,16 @@ void _registerAttributesPageTests() {
         find.descendant(of: bonus, matching: find.text('+1')),
         findsOneWidget,
       );
+      expect(repository.pendingSaveCount, 1);
+
+      await _pumpCharacterSheetAutosave(tester);
+      expect(repository.pendingSaveCount, 1);
+
+      repository.completeSave(0);
+      await tester.pump();
       expect(repository.pendingSaveCount, 2);
 
       repository.completeSave(1);
-      await tester.pump();
-      expect(repository.pendingSaveCount, 3);
-      repository.completeSave(2);
       await tester.pumpAndSettle();
     });
 
