@@ -76,6 +76,7 @@ flutter:
   assets:
     - assets/images/
     - assets/svg/
+    - assets/svg/feature_tags/
     - assets/svg/races/
     - assets/svg/classes/
     - assets/svg/rest/

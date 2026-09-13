@@ -18,15 +18,20 @@ void main() {
             setupSession,
             ClassData(name: 'Reference query fixture', hitDieValue: 8),
           );
-          await ClassChoiceGroupData.db.insertRow(
-            setupSession,
-            ClassChoiceGroupData(
-              name: 'Reference query choice',
-              sourceClassId: classData.id,
-              level: 1,
-              selectionCount: 1,
-            ),
-          );
+          for (final name in const [
+            'Reference query choice A',
+            'Reference query choice B',
+          ]) {
+            await ClassChoiceGroupData.db.insertRow(
+              setupSession,
+              ClassChoiceGroupData(
+                name: name,
+                sourceClassId: classData.id,
+                level: 1,
+                selectionCount: 1,
+              ),
+            );
+          }
           await WeaponData.db.insertRow(
             setupSession,
             WeaponData(
@@ -122,6 +127,10 @@ void main() {
         );
         expect(
           referenceLoads.where((key) => key == 'classChoiceGroups'),
+          hasLength(1),
+        );
+        expect(
+          referenceLoads.where((key) => key.startsWith('classChoiceOptions:')),
           hasLength(1),
         );
       });

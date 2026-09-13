@@ -1,6 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/feature_tag_localization.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
@@ -51,39 +52,6 @@ class AbilitiesPage extends ConsumerWidget {
                   'Способности',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  'Выберите теги, которые будут показываться на первой вкладке.',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final tag in _allFeatureTags)
-                      FilterChip(
-                        label: Text(featureTagRuLabel(tag)),
-                        selected: selectedFeatureTags.contains(tag),
-                        onSelected: (selected) {
-                          final next = <FeatureTag>{
-                            ...selectedFeatureTags,
-                          };
-                          if (selected) {
-                            next.add(tag);
-                          } else {
-                            next.remove(tag);
-                          }
-                          ref
-                              .read(
-                                selectedFightFeatureTagsProvider(characterId)
-                                    .notifier,
-                              )
-                              .state = next;
-                        },
-                      ),
-                  ],
-                ),
                 const SizedBox(height: 16),
                 if (activeFeatures.isEmpty)
                   Text(
@@ -118,6 +86,29 @@ class AbilitiesPage extends ConsumerWidget {
                     context: context,
                   ),
                 ],
+                const SizedBox(height: 24),
+                Text(
+                  'Теги способностей',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Выберите теги, которые будут показываться на первой вкладке.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 12),
+                FeatureTagSelectionGrid(
+                  tags: _allFeatureTags,
+                  selectedTags: selectedFeatureTags,
+                  onChanged: (next) {
+                    ref
+                        .read(
+                          selectedFightFeatureTagsProvider(characterId)
+                              .notifier,
+                        )
+                        .state = next;
+                  },
+                ),
               ],
             ),
           ),
