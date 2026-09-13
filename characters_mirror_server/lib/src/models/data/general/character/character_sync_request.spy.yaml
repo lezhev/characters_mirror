@@ -3,3 +3,4 @@ fields:
   changes: List<CharacterChangeData>?
   operations: List<CharacterSyncOperationData>?
   pullSince: DateTime?
+  pullAfterEventId: int?

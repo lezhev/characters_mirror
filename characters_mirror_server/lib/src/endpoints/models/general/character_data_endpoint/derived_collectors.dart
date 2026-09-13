@@ -246,15 +246,18 @@ List<int> _collectFeatIds(
 
 Future<Set<FeatureTag>> _loadFeatTags(
   Session session,
-  List<int> featIds,
-) async {
+  List<int> featIds, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
   if (featIds.isEmpty) {
     return const <FeatureTag>{};
   }
 
-  final feats = await FeatData.db.find(
-    session,
-    where: (t) => t.id.inSet(featIds.toSet()),
+  final feats =
+      await (resolveContext ?? _CharacterResolveContext(session)).feats(
+    featIds.toSet(),
+    transaction: transaction,
   );
   return {
     for (final feat in feats) ...?feat.tags,

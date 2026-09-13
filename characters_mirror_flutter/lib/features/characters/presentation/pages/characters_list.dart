@@ -49,9 +49,9 @@ class CharactersList extends ConsumerWidget {
                     armedDeleteCharacterId:
                         charactersState.armedDeleteCharacterId,
                     deletingCharacterId: charactersState.deletingCharacterId,
-                    onCreateCharacter: () => context.go('/create'),
+                    onCreateCharacter: () => context.push('/create'),
                     onCharacterTap: (characterId) =>
-                        context.go('/characters/sheet/$characterId'),
+                        context.push('/characters/sheet/$characterId'),
                     onDeleteIntent: ref
                         .read(charactersListControllerProvider.notifier)
                         .armDeleteCharacter,
@@ -213,10 +213,10 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
   ) async {
     switch (action) {
       case _CharacterSheetsMenuAction.settings:
-        context.go('/settings');
+        context.push('/settings');
         return;
       case _CharacterSheetsMenuAction.admin:
-        context.go('/admin');
+        context.push('/admin');
         return;
       case _CharacterSheetsMenuAction.signOut:
         final messenger = ScaffoldMessenger.of(context);

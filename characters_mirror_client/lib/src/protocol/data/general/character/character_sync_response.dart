@@ -21,6 +21,8 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
     this.characters,
     this.changedCharacters,
     this.serverTime,
+    this.pullCursor,
+    this.deletedCharacterIds,
   });
 
   factory CharacterSyncResponse({
@@ -29,6 +31,8 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
     List<_i3.CharacterData>? characters,
     Map<String, _i3.CharacterData>? changedCharacters,
     DateTime? serverTime,
+    int? pullCursor,
+    List<int>? deletedCharacterIds,
   }) = _CharacterSyncResponseImpl;
 
   factory CharacterSyncResponse.fromJson(
@@ -53,6 +57,10 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
       serverTime: jsonSerialization['serverTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['serverTime']),
+      pullCursor: jsonSerialization['pullCursor'] as int?,
+      deletedCharacterIds: (jsonSerialization['deletedCharacterIds'] as List?)
+          ?.map((e) => e as int)
+          .toList(),
     );
   }
 
@@ -66,6 +74,10 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
 
   DateTime? serverTime;
 
+  int? pullCursor;
+
+  List<int>? deletedCharacterIds;
+
   /// Returns a shallow copy of this [CharacterSyncResponse]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -75,6 +87,8 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
     List<_i3.CharacterData>? characters,
     Map<String, _i3.CharacterData>? changedCharacters,
     DateTime? serverTime,
+    int? pullCursor,
+    List<int>? deletedCharacterIds,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -90,6 +104,9 @@ abstract class CharacterSyncResponse implements _i1.SerializableModel {
         'changedCharacters':
             changedCharacters?.toJson(valueToJson: (v) => v.toJson()),
       if (serverTime != null) 'serverTime': serverTime?.toJson(),
+      if (pullCursor != null) 'pullCursor': pullCursor,
+      if (deletedCharacterIds != null)
+        'deletedCharacterIds': deletedCharacterIds?.toJson(),
     };
   }
 
@@ -108,12 +125,16 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
     List<_i3.CharacterData>? characters,
     Map<String, _i3.CharacterData>? changedCharacters,
     DateTime? serverTime,
+    int? pullCursor,
+    List<int>? deletedCharacterIds,
   }) : super._(
           acknowledgedChangeIds: acknowledgedChangeIds,
           rejectedChanges: rejectedChanges,
           characters: characters,
           changedCharacters: changedCharacters,
           serverTime: serverTime,
+          pullCursor: pullCursor,
+          deletedCharacterIds: deletedCharacterIds,
         );
 
   /// Returns a shallow copy of this [CharacterSyncResponse]
@@ -126,6 +147,8 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
     Object? characters = _Undefined,
     Object? changedCharacters = _Undefined,
     Object? serverTime = _Undefined,
+    Object? pullCursor = _Undefined,
+    Object? deletedCharacterIds = _Undefined,
   }) {
     return CharacterSyncResponse(
       acknowledgedChangeIds: acknowledgedChangeIds is List<String>?
@@ -148,6 +171,10 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
                     value0.copyWith(),
                   )),
       serverTime: serverTime is DateTime? ? serverTime : this.serverTime,
+      pullCursor: pullCursor is int? ? pullCursor : this.pullCursor,
+      deletedCharacterIds: deletedCharacterIds is List<int>?
+          ? deletedCharacterIds
+          : this.deletedCharacterIds?.map((e0) => e0).toList(),
     );
   }
 }

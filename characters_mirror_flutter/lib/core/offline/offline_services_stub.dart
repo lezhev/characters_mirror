@@ -1,4 +1,5 @@
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:flutter/foundation.dart';
 
 OfflineCacheDatabase? offlineCacheDatabase;
 OfflineSyncCoordinator? offlineSyncCoordinator;
@@ -9,7 +10,7 @@ Future<void> initializeOfflineServices() async {}
 
 int? currentOfflineUserId() => null;
 
-class OfflineSyncCoordinator {
+class OfflineSyncCoordinator extends ChangeNotifier {
   Future<void> syncNow() async {}
 
   Future<void> keepLocalVersion(OfflineCharacterRecord record) async {}

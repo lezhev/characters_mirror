@@ -79,6 +79,7 @@ flutter:
     - assets/svg/races/
     - assets/svg/classes/
     - assets/svg/rest/
+    - assets/svg/tab_bar/
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,3 +1,4 @@
+import 'package:characters_mirror_flutter/core/router/navigation_helpers.dart';
 import 'package:characters_mirror_flutter/core/ui/pointer_swipe_policy.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
@@ -93,46 +94,66 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
       }
     }
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(CreationAppBar.height),
-        child: CreationAppBar(
-          title: widget.title,
-          onBack: widget.onBack,
-          onStepTap: widget.onStepTap,
+    void handleBackNavigation() {
+      final previous = notifier.previousVisibleStep(currentStep);
+      if (previous == null) {
+        popOrGo(context, '/characters');
+        return;
+      }
+
+      navigateToStep(previous);
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          return;
+        }
+        handleBackNavigation();
+      },
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(CreationAppBar.height),
+          child: CreationAppBar(
+            title: widget.title,
+            onBack: widget.onBack,
+            onStepTap: widget.onStepTap,
+          ),
         ),
-      ),
-      body: Listener(
-        behavior: HitTestBehavior.translucent,
-        onPointerDown: (event) {
-          _lockedCurrentSwipe =
-              swipeLocked || !allowsSwipeNavigationForPointer(event.kind);
-          _swipeStart = _lockedCurrentSwipe ? null : event.position;
-        },
-        onPointerUp: handlePointerUp,
-        onPointerCancel: (_) {
-          _swipeStart = null;
-          _lockedCurrentSwipe = false;
-        },
-        child: PageSizeLimiter(
+        body: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (event) {
+            _lockedCurrentSwipe =
+                swipeLocked || !allowsSwipeNavigationForPointer(event.kind);
+            _swipeStart = _lockedCurrentSwipe ? null : event.position;
+          },
+          onPointerUp: handlePointerUp,
+          onPointerCancel: (_) {
+            _swipeStart = null;
+            _lockedCurrentSwipe = false;
+          },
+          child: PageSizeLimiter(
+            child: Padding(
+              padding: widget.contentPadding,
+              child: widget.scrollableBody
+                  ? SingleChildScrollView(child: widget.body)
+                  : widget.body,
+            ),
+          ),
+        ),
+        bottomNavigationBar: SafeArea(
           child: Padding(
-            padding: widget.contentPadding,
-            child: widget.scrollableBody
-                ? SingleChildScrollView(child: widget.body)
-                : widget.body,
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: CreationNavBar(
+              onPressedNext: widget.onPressedNext,
+              route: widget.route,
+            ),
           ),
         ),
+        floatingActionButton: widget.floatingActionButton,
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: CreationNavBar(
-            onPressedNext: widget.onPressedNext,
-            route: widget.route,
-          ),
-        ),
-      ),
-      floatingActionButton: widget.floatingActionButton,
     );
   }
 }

@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:characters_mirror_flutter/core/router/navigation_helpers.dart';
 import 'package:characters_mirror_flutter/core/ui/pointer_swipe_policy.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet_tabs.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
@@ -30,6 +34,7 @@ class CharacterSheet extends HookConsumerWidget {
     final characterData = character.valueOrNull;
     final characterName = characterData?.name?.trim();
     final statusStackMode = useState(CharacterStatusStackMode.hidden);
+    final isLeaving = useRef(false);
     final tabs = buildCharacterSheetTabs(characterId);
 
     void closeAttributes() {
@@ -78,95 +83,60 @@ class CharacterSheet extends HookConsumerWidget {
       }
     }
 
-    return Scaffold(
-      appBar: isAttributesOpen.value
-          ? null
-          : PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: CharacterSheetAppBar(
-                characterName: (characterName == null || characterName.isEmpty)
-                    ? 'Персонаж'
-                    : characterName,
-                onSettingsPressed: () {
-                  context.go('/characters/sheet/$characterId/settings');
-                },
-                onRestSelected: (restType) {
-                  runCharacterSheetSave(
-                    context,
-                    ref
-                        .read(
-                          characterSheetControllerProvider(characterId)
-                              .notifier,
-                        )
-                        .restoreResources(restType),
-                  );
-                },
-                onMenuPressed: () {
-                  returnPageIndex.value = pageIndex.value;
-                  isAttributesOpen.value = true;
-                },
-              ),
-            ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Expanded(
-                child: isAttributesOpen.value
-                    ? KeyedSubtree(
-                        key: const ValueKey('attributes'),
-                        child: AttributesPage(
-                          characterId: characterId,
-                          onClose: closeAttributes,
-                        ),
-                      )
-                    : Listener(
-                        behavior: HitTestBehavior.translucent,
-                        onPointerDown: (event) {
-                          if (!allowsSwipeNavigationForPointer(event.kind)) {
-                            edgeSwipeStart.value = null;
-                            edgeSwipeStartPage.value = null;
-                            return;
-                          }
-                          edgeSwipeStart.value = event.position;
-                          edgeSwipeStartPage.value = pageIndex.value;
-                        },
-                        onPointerUp: handleEdgePointerUp,
-                        onPointerCancel: (_) {
-                          edgeSwipeStart.value = null;
-                          edgeSwipeStartPage.value = null;
-                        },
-                        child: PageView(
-                          controller: pageController,
-                          onPageChanged: (index) => pageIndex.value = index,
-                          children: [
-                            for (final tab in tabs) tab.builder(),
-                          ],
-                        ),
-                      ),
-              ),
-            ],
-          ),
-          if (!isAttributesOpen.value && characterData != null)
-            Positioned(
-              left: 0,
-              bottom: 0,
-              child: SafeArea(
-                minimum: const EdgeInsets.only(left: 16, bottom: 12),
-                child: CharacterStatusStack(
-                  character: characterData,
-                  mode: statusStackMode.value,
-                  onModePressed: () {
-                    statusStackMode.value = switch (statusStackMode.value) {
-                      CharacterStatusStackMode.hidden =>
-                        CharacterStatusStackMode.icons,
-                      CharacterStatusStackMode.icons =>
-                        CharacterStatusStackMode.labels,
-                      CharacterStatusStackMode.labels =>
-                        CharacterStatusStackMode.hidden,
-                    };
+    Future<void> handleBackNavigation() async {
+      if (isAttributesOpen.value) {
+        closeAttributes();
+        return;
+      }
+
+      if (isLeaving.value) {
+        return;
+      }
+      isLeaving.value = true;
+      try {
+        await ref
+            .read(characterSheetControllerProvider(characterId).notifier)
+            .flushPendingSave();
+      } catch (error) {
+        isLeaving.value = false;
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(humanReadableError(error))),
+          );
+        }
+        return;
+      }
+      if (!context.mounted) {
+        return;
+      }
+      popOrGo(context, '/characters');
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          return;
+        }
+        unawaited(handleBackNavigation());
+      },
+      child: Scaffold(
+        appBar: isAttributesOpen.value
+            ? null
+            : PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: CharacterSheetAppBar(
+                  characterName:
+                      (characterName == null || characterName.isEmpty)
+                          ? 'Персонаж'
+                          : characterName,
+                  onBackPressed: () {
+                    unawaited(handleBackNavigation());
                   },
-                  onInspirationChanged: (value) {
+                  onSettingsPressed: () {
+                    context.push('/characters/sheet/$characterId/settings');
+                  },
+                  onRestSelected: (restType) {
                     runCharacterSheetSave(
                       context,
                       ref
@@ -174,63 +144,140 @@ class CharacterSheet extends HookConsumerWidget {
                             characterSheetControllerProvider(characterId)
                                 .notifier,
                           )
-                          .setInspiration(value),
+                          .restoreResources(restType),
                     );
-                    return Future.value();
                   },
-                  onSaveConditions: ({
-                    required activeConditions,
-                    exhaustionLevel,
-                  }) {
-                    return ref
-                        .read(
-                          characterSheetControllerProvider(characterId)
-                              .notifier,
-                        )
-                        .saveConditions(
-                          activeConditions: activeConditions,
-                          exhaustionLevel: exhaustionLevel,
-                        );
-                  },
-                  onRemoveCondition: (condition) {
-                    runCharacterSheetSave(
-                      context,
-                      ref
-                          .read(
-                            characterSheetControllerProvider(characterId)
-                                .notifier,
-                          )
-                          .removeCondition(condition),
-                    );
-                    return Future.value();
-                  },
-                  onCancelConcentration: () {
-                    runCharacterSheetSave(
-                      context,
-                      ref
-                          .read(
-                            characterSheetControllerProvider(characterId)
-                                .notifier,
-                          )
-                          .cancelConcentration(),
-                    );
-                    return Future.value();
+                  onMenuPressed: () {
+                    returnPageIndex.value = pageIndex.value;
+                    isAttributesOpen.value = true;
                   },
                 ),
               ),
-            ),
-        ],
-      ),
-      bottomNavigationBar: isAttributesOpen.value
-          ? null
-          : NavigationBar(
-              selectedIndex: pageIndex.value,
-              onDestinationSelected: selectPage,
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-              destinations: [
-                for (final tab in tabs) tab.destination,
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: isAttributesOpen.value
+                      ? KeyedSubtree(
+                          key: const ValueKey('attributes'),
+                          child: AttributesPage(
+                            characterId: characterId,
+                            onClose: closeAttributes,
+                          ),
+                        )
+                      : Listener(
+                          behavior: HitTestBehavior.translucent,
+                          onPointerDown: (event) {
+                            if (!allowsSwipeNavigationForPointer(event.kind)) {
+                              edgeSwipeStart.value = null;
+                              edgeSwipeStartPage.value = null;
+                              return;
+                            }
+                            edgeSwipeStart.value = event.position;
+                            edgeSwipeStartPage.value = pageIndex.value;
+                          },
+                          onPointerUp: handleEdgePointerUp,
+                          onPointerCancel: (_) {
+                            edgeSwipeStart.value = null;
+                            edgeSwipeStartPage.value = null;
+                          },
+                          child: PageView(
+                            controller: pageController,
+                            onPageChanged: (index) => pageIndex.value = index,
+                            children: [
+                              for (final tab in tabs) tab.builder(),
+                            ],
+                          ),
+                        ),
+                ),
               ],
             ),
+            if (!isAttributesOpen.value && characterData != null)
+              Positioned(
+                left: 0,
+                bottom: 0,
+                child: SafeArea(
+                  minimum: const EdgeInsets.only(left: 16, bottom: 12),
+                  child: CharacterStatusStack(
+                    character: characterData,
+                    mode: statusStackMode.value,
+                    onModePressed: () {
+                      statusStackMode.value = switch (statusStackMode.value) {
+                        CharacterStatusStackMode.hidden =>
+                          CharacterStatusStackMode.icons,
+                        CharacterStatusStackMode.icons =>
+                          CharacterStatusStackMode.labels,
+                        CharacterStatusStackMode.labels =>
+                          CharacterStatusStackMode.hidden,
+                      };
+                    },
+                    onInspirationChanged: (value) {
+                      runCharacterSheetSave(
+                        context,
+                        ref
+                            .read(
+                              characterSheetControllerProvider(characterId)
+                                  .notifier,
+                            )
+                            .setInspiration(value),
+                      );
+                      return Future.value();
+                    },
+                    onSaveConditions: ({
+                      required activeConditions,
+                      exhaustionLevel,
+                    }) {
+                      return ref
+                          .read(
+                            characterSheetControllerProvider(characterId)
+                                .notifier,
+                          )
+                          .saveConditions(
+                            activeConditions: activeConditions,
+                            exhaustionLevel: exhaustionLevel,
+                          );
+                    },
+                    onRemoveCondition: (condition) {
+                      runCharacterSheetSave(
+                        context,
+                        ref
+                            .read(
+                              characterSheetControllerProvider(characterId)
+                                  .notifier,
+                            )
+                            .removeCondition(condition),
+                      );
+                      return Future.value();
+                    },
+                    onCancelConcentration: () {
+                      runCharacterSheetSave(
+                        context,
+                        ref
+                            .read(
+                              characterSheetControllerProvider(characterId)
+                                  .notifier,
+                            )
+                            .cancelConcentration(),
+                      );
+                      return Future.value();
+                    },
+                  ),
+                ),
+              ),
+          ],
+        ),
+        bottomNavigationBar: isAttributesOpen.value
+            ? null
+            : NavigationBar(
+                selectedIndex: pageIndex.value,
+                onDestinationSelected: selectPage,
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                destinations: [
+                  for (final tab in tabs) tab.destination,
+                ],
+              ),
+      ),
     );
   }
 }

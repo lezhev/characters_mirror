@@ -88,6 +88,7 @@ class _NotesEditorState extends State<_NotesEditor> {
 
   @override
   void dispose() {
+    _flushDirtyNotes();
     for (final controller in _controllers) {
       controller.dispose();
     }
@@ -190,6 +191,23 @@ class _NotesEditorState extends State<_NotesEditor> {
   void _runSave(Future<void> Function() save) {
     _lastNotes = _currentTexts();
     runCharacterSheetSave(context, save());
+  }
+
+  void _flushDirtyNotes() {
+    if (_isResettingFields) {
+      return;
+    }
+
+    final currentNotes = _currentTexts();
+    for (var index = 0; index < currentNotes.length; index++) {
+      final previous = index < _lastNotes.length ? _lastNotes[index] : null;
+      final current = currentNotes[index];
+      if (previous == current) {
+        continue;
+      }
+      runCharacterSheetSave(context, widget.onUpdate(index, current));
+    }
+    _lastNotes = currentNotes;
   }
 
   void _syncNotes(List<String> notes) {

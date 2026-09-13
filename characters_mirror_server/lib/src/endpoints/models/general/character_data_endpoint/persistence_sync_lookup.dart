@@ -4,6 +4,11 @@ bool _serverSnapshotIsNewer(
   CharacterRecord? currentRecord,
   CharacterData incoming,
 ) {
+  final storedVersion = currentRecord?.version;
+  final incomingVersion = incoming.version;
+  if (storedVersion != null && incomingVersion != null) {
+    return storedVersion > incomingVersion;
+  }
   final storedUpdatedAt = currentRecord?.updatedAt?.toUtc();
   final incomingUpdatedAt = incoming.updatedAt?.toUtc();
   if (storedUpdatedAt == null || incomingUpdatedAt == null) {
@@ -25,11 +30,17 @@ bool _serverDeleteShouldWin(
 Future<CharacterRecord?> _findOwnedCharacterRecordByEntityId(
   Session session,
   int userId,
-  String entityId,
-) async {
+  String entityId, {
+  Transaction? transaction,
+}) async {
   final numericId = int.tryParse(entityId);
   if (numericId != null) {
-    return _findOwnedCharacterRecord(session, numericId, userId);
+    return _findOwnedCharacterRecord(
+      session,
+      numericId,
+      userId,
+      transaction: transaction,
+    );
   }
   return null;
 }
@@ -38,6 +49,7 @@ Future<List<CharacterData>> _loadCharactersUpdatedAfter(
   Session session, {
   required int userId,
   required DateTime? updatedAfter,
+  _CharacterResolveContext? resolveContext,
 }) async {
   final records = await CharacterRecord.db.find(
     session,
@@ -54,7 +66,13 @@ Future<List<CharacterData>> _loadCharactersUpdatedAfter(
   );
 
   return Future.wait(
-    records.map((record) => _buildCharacterAggregate(session, record)),
+    records.map(
+      (record) => _buildCharacterAggregate(
+        session,
+        record,
+        resolveContext: resolveContext,
+      ),
+    ),
   );
 }
 
@@ -101,12 +119,14 @@ Future<int> _requireCurrentUserId(Session session) async {
 Future<CharacterRecord?> _findOwnedCharacterRecord(
   Session session,
   int characterId,
-  int userId,
-) async {
+  int userId, {
+  Transaction? transaction,
+}) async {
   final rows = await CharacterRecord.db.find(
     session,
     where: (t) => t.id.equals(characterId) & t.userId.equals(userId),
     limit: 1,
+    transaction: transaction,
     include: _characterRecordInclude(),
   );
   if (rows.isEmpty) {
@@ -115,47 +135,18 @@ Future<CharacterRecord?> _findOwnedCharacterRecord(
   return rows.first;
 }
 
-Future<CharacterRecord?> _findWritableCharacterRecord(
-  Session session,
-  CharacterData character,
-  int userId,
-) async {
-  final characterId = character.id;
-  if (characterId == null || characterId < 0) {
-    return null;
-  }
-
-  final ownedRecord = await _findOwnedCharacterRecord(
-    session,
-    characterId,
-    userId,
-  );
-  if (ownedRecord != null) {
-    return ownedRecord;
-  }
-
-  final existing = await CharacterRecord.db.find(
-    session,
-    where: (t) => t.id.equals(characterId),
-    limit: 1,
-  );
-  if (existing.isNotEmpty) {
-    throw Exception('Access denied to character id=$characterId.');
-  }
-
-  return null;
-}
-
 Future<CharacterRecord> _requireOwnedCharacterRecord(
   Session session,
   int characterId, {
   int? userId,
+  Transaction? transaction,
 }) async {
   final resolvedUserId = userId ?? await _requireCurrentUserId(session);
   final record = await _findOwnedCharacterRecord(
     session,
     characterId,
     resolvedUserId,
+    transaction: transaction,
   );
   if (record != null) {
     return record;
@@ -165,10 +156,35 @@ Future<CharacterRecord> _requireOwnedCharacterRecord(
     session,
     where: (t) => t.id.equals(characterId),
     limit: 1,
+    transaction: transaction,
   );
   if (existing.isNotEmpty) {
     throw Exception('Access denied to character id=$characterId.');
   }
 
   throw Exception('CharacterData with id=$characterId was not found.');
+}
+
+Future<CharacterRecord?> _lockOwnedCharacterRecord(
+  Session session, {
+  required int characterId,
+  required int userId,
+  required Transaction transaction,
+}) async {
+  await session.db.unsafeQuery(
+    'SELECT "id" FROM "characters" '
+    'WHERE "id" = @characterId AND "userId" = @userId '
+    'FOR UPDATE',
+    transaction: transaction,
+    parameters: QueryParameters.named({
+      'characterId': characterId,
+      'userId': userId,
+    }),
+  );
+  return _findOwnedCharacterRecord(
+    session,
+    characterId,
+    userId,
+    transaction: transaction,
+  );
 }

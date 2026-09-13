@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart'
     as protocol;
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
@@ -54,31 +56,26 @@ void main() {
       expect(find.text('Атаки'), findsOneWidget);
       expect(repository.getCharacterCallCount, 1);
 
-      await tester.tap(find.byIcon(Icons.person));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Персонаж');
 
       expect(find.text('Класс и раса'), findsOneWidget);
       expect(find.text('Класс не выбран'), findsOneWidget);
       expect(find.text('Раса не выбрана'), findsOneWidget);
       expect(find.text('Описание персонажа'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.inventory));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Инвентарь');
 
       expect(_textField('Снаряжение'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.note));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заметки');
 
       expect(find.byTooltip('Добавить заметку'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.auto_fix_high));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заклинания');
 
       expect(find.text('Спасбросок'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.sports_martial_arts));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Бой');
 
       expect(find.text('Атаки'), findsOneWidget);
       expect(repository.getCharacterCallCount, 1);
@@ -139,8 +136,7 @@ void main() {
       );
       expect(find.text('Bless'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.person));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Персонаж');
 
       expect(find.text('Описание персонажа'), findsOneWidget);
       expect(
@@ -463,8 +459,7 @@ void main() {
 
       await _pumpCharacterSheet(tester, repository);
 
-      await tester.tap(find.byIcon(Icons.person));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Персонаж');
 
       expect(find.text('Воин 3 уровень • Чемпион'), findsOneWidget);
       expect(find.text('Человек • Вариант'), findsOneWidget);
@@ -496,8 +491,7 @@ void main() {
         surfaceSize: const Size(360, 800),
       );
 
-      await tester.tap(find.byIcon(Icons.person));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Персонаж');
 
       await tester.drag(_characterPageScrollable(), const Offset(0, -500));
       await tester.pumpAndSettle();
@@ -520,8 +514,7 @@ void main() {
 
       await _pumpCharacterSheet(tester, repository);
 
-      await tester.tap(find.byIcon(Icons.person));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Персонаж');
 
       await tester.drag(_characterPageScrollable(), const Offset(0, -500));
       await tester.pumpAndSettle();
@@ -592,8 +585,7 @@ void main() {
 
       await _pumpCharacterSheet(tester, repository);
 
-      await tester.tap(find.byIcon(Icons.note));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заметки');
       expect(find.byTooltip('Добавить заметку'), findsOneWidget);
 
       await tester.tap(find.byIcon(Icons.menu));
@@ -662,6 +654,110 @@ void main() {
       expect(find.text('Атаки'), findsOneWidget);
     });
 
+    testWidgets('system back returns from sheet to previous route',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterListToSheetRouter(tester, repository);
+
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Атаки'), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Characters route'), findsOneWidget);
+      expect(find.text('Атаки'), findsNothing);
+    });
+
+    testWidgets('system back returns from character settings to sheet',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+          ),
+        },
+      );
+
+      await _pumpCharacterSheetRouter(tester, repository);
+
+      await tester.tap(find.byTooltip('Настройки персонажа'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Внешний вид'), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Атаки'), findsOneWidget);
+      expect(find.text('Внешний вид'), findsNothing);
+    });
+
+    testWidgets('system back closes attributes page before leaving sheet',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            derived: protocol.CharacterDerivedData(
+              abilityScores: const {
+                'strength': 10,
+                'dexterity': 10,
+                'constitution': 10,
+                'intelligence': 10,
+                'wisdom': 10,
+                'charisma': 10,
+              },
+              abilityModifiers: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              savingThrowBonuses: const {
+                'strength': 0,
+                'dexterity': 0,
+                'constitution': 0,
+                'intelligence': 0,
+                'wisdom': 0,
+                'charisma': 0,
+              },
+              skillBonuses: const {},
+              savingThrowProficiencies: const [],
+            ),
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Характеристики'), findsOneWidget);
+      expect(find.byType(NavigationBar), findsNothing);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Атаки'), findsOneWidget);
+      expect(find.byType(NavigationBar), findsOneWidget);
+    });
+
     testWidgets('character settings route keeps pending sync status',
         (tester) async {
       final repository = _FakeCharacterRepository(
@@ -693,6 +789,48 @@ void main() {
       expect(find.text('Ожидает синхронизации'), findsOneWidget);
     });
 
+    testWidgets('sync status refresh runs synchronization', (tester) async {
+      final syncStarted = Completer<void>();
+      final finishSync = Completer<void>();
+      final record = OfflineCharacterRecord(
+        userId: 7,
+        localId: 1,
+        serverId: 1,
+        character: protocol.CharacterData(id: 1, name: 'Тестовый герой'),
+        status: OfflineCharacterSyncStatus.dirty,
+        operation: OfflineCharacterSyncOperation.upsert,
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: darkTheme,
+            home: Scaffold(
+              body: CharacterSheetSettingsSection(
+                characterId: 1,
+                offlineRecord: AsyncValue.data(record),
+                onSyncRequested: () async {
+                  syncStarted.complete();
+                  await finishSync.future;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byTooltip('Обновить статус'));
+      await tester.pump();
+      await syncStarted.future;
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      finishSync.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.refresh), findsOneWidget);
+    });
+
     testWidgets('notes tab shows, adds, edits, and deletes notes',
         (tester) async {
       final repository = _FakeCharacterRepository(
@@ -712,8 +850,7 @@ void main() {
 
       await _pumpCharacterSheet(tester, repository);
 
-      await tester.tap(find.byIcon(Icons.note));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заметки');
 
       expect(find.byTooltip('Добавить заметку'), findsOneWidget);
       expect(find.text('Первая заметка'), findsOneWidget);
@@ -772,8 +909,7 @@ void main() {
 
       await _pumpCharacterSheet(tester, repository);
 
-      await tester.tap(find.byIcon(Icons.note));
-      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заметки');
 
       await tester.tap(find.byTooltip('Добавить заметку'));
       await tester.pumpAndSettle();
@@ -786,6 +922,124 @@ void main() {
       expect(repository.charactersById[1]?.notes, isNull);
       expect(_noteField('Заметка 1'), findsOneWidget);
       expect(_noteField('Заметка 2'), findsOneWidget);
+    });
+
+    testWidgets('quick note edit survives immediate back and reopen',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            notes: [
+              protocol.CharacterNoteData(
+                id: 'note-1',
+                text: 'Старая заметка',
+              ),
+            ],
+          ),
+        },
+      );
+
+      await _pumpCharacterListToSheetRouter(tester, repository);
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заметки');
+
+      await tester.enterText(_noteField('Заметка 1'), 'Быстрая заметка');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.pump();
+
+      expect(
+        repository.charactersById[1]?.notes?.map((note) => note.text).toList(),
+        const ['Быстрая заметка'],
+      );
+
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заметки');
+
+      expect(find.text('Быстрая заметка'), findsOneWidget);
+    });
+
+    testWidgets('quick equipment edit survives immediate back and reopen',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            alignmentValue: protocol.CharacterAlignment.lawfulGood,
+            equipment: [
+              protocol.CharacterInventoryItemData(
+                id: 'item-1',
+                name: 'Верёвка',
+                quantity: 1,
+                type: protocol.CharacterInventoryItemType.custom,
+              ),
+            ],
+          ),
+        },
+      );
+
+      await _pumpCharacterListToSheetRouter(tester, repository);
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Инвентарь');
+
+      await tester.enterText(_textField('Снаряжение'), 'Факел');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(repository.charactersById[1]?.equipment?.single.name, 'Факел');
+
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Инвентарь');
+
+      expect(find.text('Факел'), findsOneWidget);
+    });
+
+    testWidgets('app bar back waits for a pending equipment save',
+        (tester) async {
+      final saveGate = Completer<void>();
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            equipment: [
+              protocol.CharacterInventoryItemData(
+                id: 'item-1',
+                name: 'Верёвка',
+                quantity: 1,
+                type: protocol.CharacterInventoryItemType.custom,
+              ),
+            ],
+          ),
+        },
+        saveGate: saveGate,
+      );
+
+      await _pumpCharacterListToSheetRouter(tester, repository);
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Инвентарь');
+
+      await tester.enterText(_textField('Снаряжение'), 'Факел');
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pump();
+
+      expect(find.text('Инвентарь'), findsWidgets);
+      expect(find.text('Characters route'), findsNothing);
+
+      saveGate.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Characters route'), findsOneWidget);
+      expect(repository.charactersById[1]?.equipment?.single.name, 'Факел');
     });
   });
 }
@@ -802,6 +1056,15 @@ Finder _textField(String label) {
 
 Finder _characterPageScrollable() {
   return find.byType(ListView).first;
+}
+
+Future<void> _tapSheetTab(WidgetTester tester, String label) async {
+  await tester.tap(
+    find.byWidgetPredicate(
+      (widget) => widget is NavigationDestination && widget.label == label,
+    ),
+  );
+  await tester.pumpAndSettle();
 }
 
 Future<void> _showStatusIcons(WidgetTester tester) async {
@@ -897,6 +1160,55 @@ Future<void> _pumpCharacterSheetRouter(
   await tester.pumpAndSettle();
 }
 
+Future<void> _pumpCharacterListToSheetRouter(
+  WidgetTester tester,
+  _FakeCharacterRepository repository, {
+  Size surfaceSize = const Size(1280, 800),
+}) async {
+  await tester.binding.setSurfaceSize(surfaceSize);
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+
+  final router = GoRouter(
+    initialLocation: '/characters',
+    routes: [
+      GoRoute(
+        path: '/characters',
+        builder: (context, __) => Scaffold(
+          body: Column(
+            children: [
+              const Text('Characters route'),
+              TextButton(
+                onPressed: () => context.push('/characters/sheet/1'),
+                child: const Text('Open sheet'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '/characters/sheet/:id',
+        builder: (_, state) {
+          final characterId = int.parse(state.pathParameters['id']!);
+          return CharacterSheet(characterId: characterId);
+        },
+      ),
+    ],
+  );
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+      child: MaterialApp.router(
+        theme: darkTheme,
+        routerConfig: router,
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
 Future<void> _dragWithPointerKind(
   WidgetTester tester,
   Finder target,
@@ -916,9 +1228,11 @@ Future<void> _dragWithPointerKind(
 class _FakeCharacterRepository extends CharacterRepository {
   _FakeCharacterRepository({
     required Map<int, protocol.CharacterData> charactersById,
+    this.saveGate,
   }) : _charactersById = Map<int, protocol.CharacterData>.from(charactersById);
 
   final Map<int, protocol.CharacterData> _charactersById;
+  final Completer<void>? saveGate;
   int getCharacterCallCount = 0;
 
   Map<int, protocol.CharacterData> get charactersById => _charactersById;
@@ -948,6 +1262,7 @@ class _FakeCharacterRepository extends CharacterRepository {
   Future<protocol.CharacterData> saveCharacter(
     protocol.CharacterData character,
   ) async {
+    await saveGate?.future;
     final id = character.id ?? 1;
     final saved = character.copyWith(id: id);
     _charactersById[id] = saved;

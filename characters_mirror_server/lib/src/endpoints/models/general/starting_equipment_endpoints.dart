@@ -5,6 +5,7 @@ Future<List<StartingEquipmentBlockView>> startingEquipmentBlockViews(
   Session session, {
   int? sourceClassId,
   int? sourceBackgroundId,
+  Transaction? transaction,
 }) async {
   final entries = await StartingEquipmentEntryData.db.find(
     session,
@@ -18,6 +19,7 @@ Future<List<StartingEquipmentBlockView>> startingEquipmentBlockViews(
       return byClass & byBackground;
     },
     orderBy: (t) => t.orderIndex,
+    transaction: transaction,
   );
   return startingEquipmentBlockViewsFromEntries(entries);
 }
@@ -34,7 +36,8 @@ List<StartingEquipmentBlockView> startingEquipmentBlockViewsFromEntries(
   }
 
   return [
-    for (final root in entriesByParent[null] ?? const <StartingEquipmentEntryData>[])
+    for (final root
+        in entriesByParent[null] ?? const <StartingEquipmentEntryData>[])
       if (_blockViewForRoot(root, entriesByParent) case final view?) view,
   ];
 }
@@ -58,8 +61,8 @@ StartingEquipmentBlockView? _blockViewForRoot(
       );
     case StartingEquipmentEntryKind.choiceGroup:
       final options = [
-        for (final option in entriesByParent[root.id] ??
-            const <StartingEquipmentEntryData>[])
+        for (final option
+            in entriesByParent[root.id] ?? const <StartingEquipmentEntryData>[])
           if (option.kind == StartingEquipmentEntryKind.choiceOption)
             _optionViewForEntry(option, entriesByParent),
       ];
@@ -69,7 +72,10 @@ StartingEquipmentBlockView? _blockViewForRoot(
           orderIndex: root.orderIndex,
           kind: StartingEquipmentBlockKind.choice,
           selectionCount: root.selectionCount,
-          options: [for (final option in options) if (option.option != null) option.option!],
+          options: [
+            for (final option in options)
+              if (option.option != null) option.option!
+          ],
         ),
         fixedLines: const <StartingEquipmentLineData>[],
         options: options,
@@ -86,8 +92,8 @@ StartingEquipmentOptionView _optionViewForEntry(
   Map<int?, List<StartingEquipmentEntryData>> entriesByParent,
 ) {
   final lines = [
-    for (final line in entriesByParent[option.id] ??
-        const <StartingEquipmentEntryData>[])
+    for (final line
+        in entriesByParent[option.id] ?? const <StartingEquipmentEntryData>[])
       if (line.kind == StartingEquipmentEntryKind.optionLine)
         _lineDataForEntry(line),
   ];

@@ -175,6 +175,8 @@ class OfflineCacheDatabase {
 
   Future<void> acceptServerVersion(int userId, int localId) async {}
 
+  Future<void> repairSyncQueue(int userId) async {}
+
   Future<void> removeChanges(int userId, Iterable<String> changeIds) async {}
 
   Future<void> markChangeFailed(
@@ -193,6 +195,8 @@ class OfflineCacheDatabase {
     String? message,
   ) async {}
 
+  Future<void> applyRemoteDelete(int userId, int serverId) async {}
+
   Future<void> deleteQueuedChangesForEntity(
       int userId, String entityId) async {}
 
@@ -202,6 +206,10 @@ class OfflineCacheDatabase {
   Future<DateTime?> getLastPulledAt(int userId) async => null;
 
   Future<void> setLastPulledAt(int userId, DateTime value) async {}
+
+  Future<int?> getSyncEventCursor(int userId) async => null;
+
+  Future<void> setSyncEventCursor(int userId, int value) async {}
 
   Future<void> clearUser(int userId) async {}
 

@@ -73,8 +73,11 @@ class _ActiveFeatureResourceEffect {
 Future<_ResolvedDerivedSources> _resolveDerivedSources(
   Session session,
   CharacterData character,
-  List<CharacterChoiceData> choices,
-) async {
+  List<CharacterChoiceData> choices, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
   final currentClassFeatures = <ClassFeatureData>[];
   final currentSubclassFeatures = <SubclassFeatureData>[];
@@ -87,11 +90,10 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     if (classId != null) {
       classLevels[classId] = max(classLevels[classId] ?? 0, level);
       currentClassFeatures.addAll(
-        await ClassFeatureData.db.find(
-          session,
-          where: (t) => t.parentClassId.equals(classId) & (t.level <= level),
-          orderBy: (t) => t.level,
-          include: _classFeatureInclude(),
+        await context.classFeatures(
+          classId,
+          level,
+          transaction: transaction,
         ),
       );
     }
@@ -100,12 +102,10 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     if (subclassId != null) {
       subclassLevels[subclassId] = max(subclassLevels[subclassId] ?? 0, level);
       currentSubclassFeatures.addAll(
-        await SubclassFeatureData.db.find(
-          session,
-          where: (t) =>
-              t.parentSubclassId.equals(subclassId) & (t.level <= level),
-          orderBy: (t) => t.level,
-          include: _subclassFeatureInclude(),
+        await context.subclassFeatures(
+          subclassId,
+          level,
+          transaction: transaction,
         ),
       );
     }
@@ -129,12 +129,8 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
       if (feature.id != null)
         feature.id!: subclassLevels[feature.parentSubclassId] ?? feature.level,
   };
-  final classSpellGrants = await ClassSpellGrantData.db.find(
-    session,
-    include: ClassSpellGrantData.include(
-      spell: SpellData.include(),
-    ),
-    orderBy: (t) => t.grantedAtLevel,
+  final classSpellGrants = await context.classSpellGrants(
+    transaction: transaction,
   );
   final alwaysPreparedSpellKeys = _collectAlwaysPreparedSpellKeys(
     classSpellGrants,
@@ -146,9 +142,8 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     currentSubclassFeatureLevels: currentSubclassFeatureLevels,
   );
 
-  final allGroups = await ClassChoiceGroupData.db.find(
-    session,
-    orderBy: (t) => t.id,
+  final allGroups = await context.classChoiceGroups(
+    transaction: transaction,
   );
   final relevantGroups = allGroups.where((group) {
     final groupLevel = group.level ?? 1;
@@ -170,17 +165,25 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
         byBackground;
   }).toList();
 
+  final relevantGroupIds = {
+    for (final group in relevantGroups)
+      if (group.id != null) group.id!,
+  };
+  final options = await context.classChoiceOptions(
+    relevantGroupIds,
+    transaction: transaction,
+  );
+  final optionsByGroupId = <int, List<ClassChoiceOptionData>>{};
+  for (final option in options) {
+    optionsByGroupId.putIfAbsent(option.choiceGroupId, () => []).add(option);
+  }
   final optionsByGroupKey = <String, Map<String, ClassChoiceOptionData>>{};
   for (final group in relevantGroups) {
     final groupId = group.id;
     if (groupId == null) continue;
-
-    final options = await ClassChoiceOptionData.db.find(
-      session,
-      where: (t) => t.choiceGroupId.equals(groupId),
-    );
     optionsByGroupKey[_classChoiceGroupKey(group)] = {
-      for (final option in options)
+      for (final option
+          in optionsByGroupId[groupId] ?? const <ClassChoiceOptionData>[])
         if (_normalizedTextOrNull(option.optionKey) != null)
           option.optionKey!.trim(): option,
     };

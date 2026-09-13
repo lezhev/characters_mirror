@@ -1,3 +1,4 @@
+import 'package:characters_mirror_flutter/core/router/navigation_helpers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
@@ -6,7 +7,6 @@ import 'package:characters_mirror_flutter/features/settings/application/server_c
 import 'package:characters_mirror_flutter/features/settings/application/user_settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -22,13 +22,7 @@ class SettingsPage extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           tooltip: 'Назад',
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-              return;
-            }
-            context.go('/characters');
-          },
+          onPressed: () => popOrGo(context, '/characters'),
         ),
       ),
       body: PageSizeLimiter(

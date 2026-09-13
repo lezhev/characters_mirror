@@ -2,8 +2,11 @@ part of '../character_data_endpoint.dart';
 
 Future<_SpellSlotData> _resolveSpellSlots(
   Session session,
-  List<CharacterClassEntryData> entries,
-) async {
+  List<CharacterClassEntryData> entries, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   var standardCasterLevel = 0;
   var highestPactLevel = 0;
   final standardEntries = [
@@ -46,11 +49,15 @@ Future<_SpellSlotData> _resolveSpellSlots(
     session,
     _standardSpellSlotTableKey,
     min(20, standardCasterLevel),
+    transaction: transaction,
+    resolveContext: context,
   );
   final pactSlots = await _spellSlotsForProgressionLevel(
     session,
     _pactMagicSpellSlotTableKey,
     min(20, highestPactLevel),
+    transaction: transaction,
+    resolveContext: context,
   );
 
   return _SpellSlotData(
@@ -68,20 +75,23 @@ bool _isStandardCasterProgression(SpellcastingProgression? progression) {
 Future<Map<int, int>?> _spellSlotsForProgressionLevel(
   Session session,
   String tableKey,
-  int level,
-) async {
+  int level, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
   if (level <= 0) {
     return null;
   }
-  final rows = await SpellSlotProgressionData.db.find(
-    session,
-    where: (t) => t.tableKey.equals(tableKey) & t.level.equals(level),
-    limit: 1,
+  final row = await (resolveContext ?? _CharacterResolveContext(session))
+      .spellSlotProgression(
+    tableKey,
+    level,
+    transaction: transaction,
   );
-  if (rows.isEmpty) {
+  if (row == null) {
     return null;
   }
-  return _nonZeroSpellSlots(rows.first.spellSlots);
+  return _nonZeroSpellSlots(row.spellSlots);
 }
 
 Map<int, int>? _nonZeroSpellSlots(Map<int, int>? slots) {

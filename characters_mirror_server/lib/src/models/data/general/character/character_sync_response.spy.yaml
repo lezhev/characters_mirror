@@ -5,3 +5,5 @@ fields:
   characters: List<CharacterData>?
   changedCharacters: Map<String, CharacterData>?
   serverTime: DateTime?
+  pullCursor: int?
+  deletedCharacterIds: List<int>?

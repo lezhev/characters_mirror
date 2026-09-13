@@ -2,8 +2,10 @@ part of '../character_data_endpoint.dart';
 
 Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
   Session session,
-  CharacterData character,
-) async {
+  CharacterData character, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
   final normalizedOverrides = _normalizedFeatureOverrides(
     character.featureOverrides,
   );
@@ -21,8 +23,13 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
       ability.name: _abilityModifier(scores[ability.name] ?? 10),
   };
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
-  final resolvedSources =
-      await _resolveDerivedSources(session, character, choices);
+  final resolvedSources = await _resolveDerivedSources(
+    session,
+    character,
+    choices,
+    transaction: transaction,
+    resolveContext: resolveContext,
+  );
   final currentRaceFeatures =
       _currentRaceFeaturesBySource(character, totalLevel);
   final defaultFeatures = _buildActiveFeatures(
@@ -53,8 +60,10 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
 
 Future<List<CharacterResourceStateData>> _pruneResourceStates(
   Session session,
-  CharacterData character,
-) async {
+  CharacterData character, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
   final normalizedStates = _normalizedResourceStates(character.resourceStates);
   if (normalizedStates.isEmpty) {
     return const <CharacterResourceStateData>[];
@@ -63,6 +72,8 @@ Future<List<CharacterResourceStateData>> _pruneResourceStates(
   final derived = await _buildDerivedData(
     session,
     character.copyWith(resourceStates: normalizedStates),
+    transaction: transaction,
+    resolveContext: resolveContext,
   );
   final activeResourcesByKey = {
     for (final feature
@@ -100,9 +111,17 @@ Future<List<CharacterResourceStateData>> _pruneResourceStates(
 
 Future<CharacterData> _applyInitialEquipmentSnapshot(
   Session session,
-  CharacterData character,
-) async {
-  final grantedEquipment = await _collectGrantedEquipment(session, character);
+  CharacterData character, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
+  final grantedEquipment = await _collectGrantedEquipment(
+    session,
+    character,
+    transaction: transaction,
+    resolveContext: context,
+  );
   if (grantedEquipment.isEmpty) {
     return character;
   }
@@ -118,6 +137,8 @@ Future<CharacterData> _applyInitialEquipmentSnapshot(
     session,
     character,
     grantedEquipment,
+    transaction: transaction,
+    resolveContext: context,
   );
   final attacks = [...?character.attacks];
   for (final attack in weaponAttacks) {
@@ -159,8 +180,11 @@ List<CharacterInventoryItemData> _buildEquipmentSnapshot(
 Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(
   Session session,
   CharacterData character,
-  List<CharacterEquipmentEntryView> grantedEquipment,
-) async {
+  List<CharacterEquipmentEntryView> grantedEquipment, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final weaponReferenceKeys = <String>[
     for (final entry in grantedEquipment)
       if (entry.catalogType == EquipmentCatalogType.weapon &&
@@ -180,18 +204,21 @@ Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(
       continue;
     }
 
-    final rows = await WeaponData.db.find(
-      session,
-      where: (t) => t.referenceKey.equals(referenceKey),
-      limit: 1,
+    final weapon = await context.weapon(
+      referenceKey,
+      transaction: transaction,
     );
-    if (rows.isEmpty) {
+    if (weapon == null) {
       continue;
     }
 
-    final weapon = rows.first;
     if (_hasWeaponProperty(weapon, WeaponProperty.finesse)) {
-      derived ??= await _buildDerivedData(session, character);
+      derived ??= await _buildDerivedData(
+        session,
+        character,
+        transaction: transaction,
+        resolveContext: context,
+      );
     }
 
     attacks.add(

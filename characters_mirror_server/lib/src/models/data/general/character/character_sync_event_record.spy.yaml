@@ -1,0 +1,15 @@
+class: CharacterSyncEventRecord
+serverOnly: true
+table: character_sync_events
+fields:
+  userId: int
+  characterId: int
+  characterVersion: int?
+  eventType: String
+  changeId: String?
+  createdAt: DateTime
+indexes:
+  character_sync_events_user_id_idx:
+    fields: userId, id
+  character_sync_events_character_id_idx:
+    fields: userId, characterId

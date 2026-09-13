@@ -3,8 +3,12 @@ part of '../character_data_endpoint.dart';
 Future<CharacterRecord> _upsertCharacterRecord(
   Session session,
   CharacterData character,
-  int userId,
-) async {
+  int userId, {
+  Transaction? transaction,
+  int? exactVersion,
+  CharacterRecord? lockedExistingRecord,
+  Map<String, int>? syncTargetRevisions,
+}) async {
   final now = DateTime.now().toUtc();
   final effectiveUpdatedAt = character.updatedAt?.toUtc() ?? now;
   final effectiveCreatedAt =
@@ -16,28 +20,37 @@ Future<CharacterRecord> _upsertCharacterRecord(
       _toCharacterRecord(
         character,
         userId: userId,
-        version: character.version ?? 1,
+        version: exactVersion ?? character.version ?? 1,
+        syncTargetRevisions: syncTargetRevisions,
         createdAt: effectiveCreatedAt,
         updatedAt: effectiveUpdatedAt,
       ),
+      transaction: transaction,
     );
   }
 
-  final ownedRecord = await _findOwnedCharacterRecord(
-    session,
-    character.id!,
-    userId,
-  );
+  final ownedRecord = lockedExistingRecord ??
+      await _findOwnedCharacterRecord(
+        session,
+        character.id!,
+        userId,
+        transaction: transaction,
+      );
   if (ownedRecord != null) {
     final updatedRecord = _toCharacterRecord(
       character,
       id: ownedRecord.id,
       userId: ownedRecord.userId ?? userId,
-      version: (ownedRecord.version ?? 0) + 1,
+      version: exactVersion ?? (ownedRecord.version ?? 0) + 1,
+      syncTargetRevisions: syncTargetRevisions,
       createdAt: ownedRecord.createdAt?.toUtc() ?? effectiveCreatedAt,
       updatedAt: effectiveUpdatedAt,
     );
-    await CharacterRecord.db.updateRow(session, updatedRecord);
+    await CharacterRecord.db.updateRow(
+      session,
+      updatedRecord,
+      transaction: transaction,
+    );
     return updatedRecord;
   }
 
@@ -45,6 +58,7 @@ Future<CharacterRecord> _upsertCharacterRecord(
     session,
     where: (t) => t.id.equals(character.id),
     limit: 1,
+    transaction: transaction,
   );
   if (existingById.isNotEmpty) {
     throw Exception('Access denied to character id=${character.id}.');
@@ -55,10 +69,12 @@ Future<CharacterRecord> _upsertCharacterRecord(
     _toCharacterRecord(
       character,
       userId: userId,
-      version: character.version ?? 1,
+      version: exactVersion ?? character.version ?? 1,
+      syncTargetRevisions: syncTargetRevisions,
       createdAt: effectiveCreatedAt,
       updatedAt: effectiveUpdatedAt,
     ),
+    transaction: transaction,
   );
 }
 
@@ -67,6 +83,7 @@ CharacterRecord _toCharacterRecord(
   int? id,
   required int userId,
   required int version,
+  Map<String, int>? syncTargetRevisions,
   required DateTime createdAt,
   required DateTime updatedAt,
 }) {
@@ -88,7 +105,7 @@ CharacterRecord _toCharacterRecord(
     bonds: character.bonds,
     flaws: character.flaws,
     version: version,
-    syncTargetRevisions: character.syncTargetRevisions,
+    syncTargetRevisions: syncTargetRevisions ?? character.syncTargetRevisions,
     createdAt: createdAt,
     updatedAt: updatedAt,
     userId: userId,

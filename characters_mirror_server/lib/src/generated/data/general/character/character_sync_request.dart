@@ -20,12 +20,14 @@ abstract class CharacterSyncRequest
     this.changes,
     this.operations,
     this.pullSince,
+    this.pullAfterEventId,
   });
 
   factory CharacterSyncRequest({
     List<_i2.CharacterChangeData>? changes,
     List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
+    int? pullAfterEventId,
   }) = _CharacterSyncRequestImpl;
 
   factory CharacterSyncRequest.fromJson(
@@ -42,6 +44,7 @@ abstract class CharacterSyncRequest
       pullSince: jsonSerialization['pullSince'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['pullSince']),
+      pullAfterEventId: jsonSerialization['pullAfterEventId'] as int?,
     );
   }
 
@@ -51,6 +54,8 @@ abstract class CharacterSyncRequest
 
   DateTime? pullSince;
 
+  int? pullAfterEventId;
+
   /// Returns a shallow copy of this [CharacterSyncRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -58,6 +63,7 @@ abstract class CharacterSyncRequest
     List<_i2.CharacterChangeData>? changes,
     List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
+    int? pullAfterEventId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -67,6 +73,7 @@ abstract class CharacterSyncRequest
       if (operations != null)
         'operations': operations?.toJson(valueToJson: (v) => v.toJson()),
       if (pullSince != null) 'pullSince': pullSince?.toJson(),
+      if (pullAfterEventId != null) 'pullAfterEventId': pullAfterEventId,
     };
   }
 
@@ -79,6 +86,7 @@ abstract class CharacterSyncRequest
         'operations':
             operations?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (pullSince != null) 'pullSince': pullSince?.toJson(),
+      if (pullAfterEventId != null) 'pullAfterEventId': pullAfterEventId,
     };
   }
 
@@ -95,10 +103,12 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
     List<_i2.CharacterChangeData>? changes,
     List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
+    int? pullAfterEventId,
   }) : super._(
           changes: changes,
           operations: operations,
           pullSince: pullSince,
+          pullAfterEventId: pullAfterEventId,
         );
 
   /// Returns a shallow copy of this [CharacterSyncRequest]
@@ -109,6 +119,7 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
     Object? changes = _Undefined,
     Object? operations = _Undefined,
     Object? pullSince = _Undefined,
+    Object? pullAfterEventId = _Undefined,
   }) {
     return CharacterSyncRequest(
       changes: changes is List<_i2.CharacterChangeData>?
@@ -118,6 +129,8 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
           ? operations
           : this.operations?.map((e0) => e0.copyWith()).toList(),
       pullSince: pullSince is DateTime? ? pullSince : this.pullSince,
+      pullAfterEventId:
+          pullAfterEventId is int? ? pullAfterEventId : this.pullAfterEventId,
     );
   }
 }

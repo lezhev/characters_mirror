@@ -8,11 +8,13 @@ abstract final class CharacterQuotaValidator {
   static Future<void> validateCanCreateCharacter(
     Session session, {
     required int userId,
+    Transaction? transaction,
   }) async {
     final count = await CharacterRecord.db.count(
       session,
       where: (t) => t.userId.equals(userId),
       limit: ValidationLimits.largeCollection,
+      transaction: transaction,
     );
     if (count >= ValidationLimits.largeCollection) {
       throw InputValidationException(

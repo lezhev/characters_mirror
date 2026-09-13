@@ -2,11 +2,11 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 
 class CharacterSheetAppBar extends StatelessWidget {
   const CharacterSheetAppBar({
     required this.characterName,
+    required this.onBackPressed,
     required this.onRestSelected,
     required this.onSettingsPressed,
     required this.onMenuPressed,
@@ -14,6 +14,7 @@ class CharacterSheetAppBar extends StatelessWidget {
   });
 
   final String characterName;
+  final VoidCallback onBackPressed;
   final ValueChanged<RestType> onRestSelected;
   final VoidCallback onSettingsPressed;
   final VoidCallback onMenuPressed;
@@ -35,7 +36,7 @@ class CharacterSheetAppBar extends StatelessWidget {
               children: [
                 IconButton(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  onPressed: () => context.go('/characters'),
+                  onPressed: onBackPressed,
                   icon: const Icon(Icons.arrow_back),
                 ),
                 const SizedBox(width: 4),

@@ -24,6 +24,18 @@ extension OfflineCacheCharacterWriteOperations on OfflineCacheDatabase {
         jsonEncode(
           (existing?.baseCharacter ?? character).toJson(),
         );
+    final operations = buildCharacterSyncOperations(
+      previous: existing?.character ?? localCharacter,
+      next: localCharacter,
+      localId: localId,
+      serverId: serverId,
+      createdAt: now,
+      nextChangeId: () => _generateChangeId(now),
+    );
+    final nextStatus = operations.isEmpty &&
+            existing?.status == OfflineCharacterSyncStatus.clean
+        ? OfflineCharacterSyncStatus.clean
+        : OfflineCharacterSyncStatus.dirty;
 
     final stmt = _db.prepare('''
 INSERT OR REPLACE INTO characters_cache(
@@ -33,53 +45,57 @@ INSERT OR REPLACE INTO characters_cache(
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ''');
     try {
-      stmt.execute([
-        userId,
-        localId,
-        serverId,
-        payload,
-        basePayload,
-        existing?.baseVersion ?? character.version,
-        (existing?.baseUpdatedAt ?? character.updatedAt)
-            ?.toUtc()
-            .toIso8601String(),
-        OfflineCharacterSyncStatus.dirty.name,
-        OfflineCharacterSyncOperation.upsert.name,
-        now.toIso8601String(),
-        existing?._serverUpdatedAt,
-        null,
-        null,
-      ]);
+      _runTransaction(() {
+        stmt.execute([
+          userId,
+          localId,
+          serverId,
+          payload,
+          basePayload,
+          existing?.baseVersion ?? character.version,
+          (existing?.baseUpdatedAt ?? character.updatedAt)
+              ?.toUtc()
+              .toIso8601String(),
+          nextStatus.name,
+          nextStatus == OfflineCharacterSyncStatus.clean
+              ? null
+              : OfflineCharacterSyncOperation.upsert.name,
+          now.toIso8601String(),
+          existing?._serverUpdatedAt,
+          null,
+          null,
+        ]);
+
+        if (serverId == null) {
+          final deleteStmt = _db.prepare('''
+DELETE FROM character_changes
+WHERE user_id = ? AND entity_id = ?
+''');
+          try {
+            deleteStmt.execute([userId, localId.toString()]);
+          } finally {
+            deleteStmt.dispose();
+          }
+        }
+        for (final operation in operations) {
+          _enqueueChange(
+            OfflineCharacterChange(
+              id: operation.id,
+              userId: userId,
+              changeType: CharacterChangeType.upsert,
+              entityType: CharacterEntityType.character,
+              entityId: (serverId ?? localId).toString(),
+              payload: serverId == null ? localCharacter : null,
+              operationData: operation,
+              createdAt: now,
+              baseUpdatedAt: existing?.baseUpdatedAt ?? character.updatedAt,
+              status: OfflineCharacterChangeStatus.pending,
+            ),
+          );
+        }
+      });
     } finally {
       stmt.dispose();
-    }
-
-    final operations = buildCharacterSyncOperations(
-      previous: existing?.character ?? localCharacter,
-      next: localCharacter,
-      localId: localId,
-      serverId: serverId,
-      createdAt: now,
-      nextChangeId: () => _generateChangeId(now),
-    );
-    if (serverId == null) {
-      await deleteQueuedChangesForEntity(userId, localId.toString());
-    }
-    for (final operation in operations) {
-      await _enqueueChange(
-        OfflineCharacterChange(
-          id: operation.id,
-          userId: userId,
-          changeType: CharacterChangeType.upsert,
-          entityType: CharacterEntityType.character,
-          entityId: (serverId ?? localId).toString(),
-          payload: serverId == null ? localCharacter : null,
-          operationData: operation,
-          createdAt: now,
-          baseUpdatedAt: existing?.baseUpdatedAt ?? character.updatedAt,
-          status: OfflineCharacterChangeStatus.pending,
-        ),
-      );
     }
 
     return (await getCharacter(userId, localId))!;
@@ -124,7 +140,7 @@ WHERE user_id = ? AND local_id = ?
       baseTargetRevision: existing.character.version ?? existing.baseVersion,
       createdAt: now,
     );
-    await _enqueueChange(
+    _enqueueChange(
       OfflineCharacterChange(
         id: operation.id,
         userId: userId,

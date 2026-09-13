@@ -44,26 +44,35 @@ String characterSyncOperationTargetKey(CharacterSyncOperationData operation) {
     case CharacterSyncOperationType.deleteCharacter:
       return 'character:${operation.characterId ?? operation.localCharacterId ?? ''}';
     case CharacterSyncOperationType.setField:
-      return 'field:${operation.fieldPath ?? ''}';
+      return _syncTargetKey('field', [operation.fieldPath ?? '']);
     case CharacterSyncOperationType.setMapEntry:
     case CharacterSyncOperationType.removeMapEntry:
-      return 'map:${operation.fieldPath ?? ''}:${operation.targetId ?? ''}';
+      return _syncTargetKey(
+        'map',
+        [operation.fieldPath ?? '', operation.targetId ?? ''],
+      );
     case CharacterSyncOperationType.upsertListItem:
     case CharacterSyncOperationType.removeListItem:
       if (operation.targetType == CharacterSyncTargetType.resource) {
-        final parts = (operation.targetId ?? '').split(':');
+        final parts = _decodeCompositeTargetId(operation.targetId);
         if (parts.length == 3) {
-          return 'resource:${parts[0]}:${parts[1]}:${parts[2]}';
+          return _syncTargetKey('resource', parts);
         }
       }
       if (operation.targetType ==
           CharacterSyncTargetType.startingEquipmentResolution) {
-        final parts = (operation.targetId ?? '').split(':');
+        final parts = _decodeCompositeTargetId(operation.targetId);
         if (parts.length == 2) {
-          return 'item:startingEquipmentSelections:${parts[0]}:resolution:${parts[1]}';
+          return _syncTargetKey(
+            'item',
+            ['startingEquipmentSelections', parts[0], 'resolution', parts[1]],
+          );
         }
       }
-      return 'item:${operation.fieldPath ?? ''}:${operation.targetId ?? ''}';
+      return _syncTargetKey(
+        'item',
+        [operation.fieldPath ?? '', operation.targetId ?? ''],
+      );
   }
 }
 
@@ -274,7 +283,7 @@ class _OperationBuilder {
       'featureOverrides',
       previous.featureOverrides,
       next.featureOverrides,
-      (item) => item.id,
+      _featureOverrideTargetId,
       (item) => CharacterSyncValueData(featureOverrideValue: item),
     );
     _addResourceStates();
@@ -339,7 +348,7 @@ class _OperationBuilder {
         fieldPath: field,
         targetId: field,
         value: valueBuilder(right),
-        baseTargetRevision: _baseRevision('field:$field'),
+        baseTargetRevision: _baseRevision(_syncTargetKey('field', [field])),
       ),
     );
   }
@@ -364,7 +373,7 @@ class _OperationBuilder {
 
   void _addMapEntry(String field, String key, int? left, int? right) {
     if (left == right) return;
-    final targetKey = 'map:$field:$key';
+    final targetKey = _syncTargetKey('map', [field, key]);
     _operations.add(
       _operation(
         type: right == null
@@ -393,7 +402,7 @@ class _OperationBuilder {
       final leftItem = leftById[id];
       final rightItem = rightById[id];
       if (_jsonEquals(leftItem, rightItem)) continue;
-      final targetKey = 'item:$field:$id';
+      final targetKey = _syncTargetKey('item', [field, id]);
       _operations.add(
         _operation(
           type: rightItem == null
@@ -425,7 +434,10 @@ class _OperationBuilder {
       final leftItem = leftById[id];
       final rightItem = rightById[id];
       if (_jsonEquals(leftItem, rightItem)) continue;
-      final targetKey = 'resource:$id';
+      final targetKey = _syncTargetKey(
+        'resource',
+        _decodeCompositeTargetId(id),
+      );
       _operations.add(
         _operation(
           type: rightItem == null
@@ -477,9 +489,16 @@ class _OperationBuilder {
         final leftItem = leftResolutions[resolutionId];
         final rightItem = rightResolutions[resolutionId];
         if (_jsonEquals(leftItem, rightItem)) continue;
-        final targetId = '$selectionId:$resolutionId';
-        final targetKey =
-            'item:startingEquipmentSelections:$selectionId:resolution:$resolutionId';
+        final targetId = _encodeCompositeTargetId([selectionId, resolutionId]);
+        final targetKey = _syncTargetKey(
+          'item',
+          [
+            'startingEquipmentSelections',
+            selectionId,
+            'resolution',
+            resolutionId,
+          ],
+        );
         _operations.add(
           _operation(
             type: rightItem == null
@@ -538,7 +557,54 @@ Map<String, T> _itemsById<T>(List<T>? items, String? Function(T item) idOf) {
 }
 
 String _resourceTargetId(CharacterResourceStateData state) {
-  return '${state.sourceType.name}:${state.sourceId}:${state.resourceKey}';
+  return _encodeCompositeTargetId([
+    state.sourceType.name,
+    state.sourceId.toString(),
+    state.resourceKey,
+  ]);
+}
+
+String _featureOverrideTargetId(CharacterFeatureOverrideData item) {
+  return item.id ??
+      _encodeCompositeTargetId([
+        item.sourceType.name,
+        item.sourceId.toString(),
+      ]);
+}
+
+String _syncTargetKey(String kind, Iterable<String> parts) {
+  return '$kind:${parts.map(_encodeTargetKeyPart).join(':')}';
+}
+
+String _encodeCompositeTargetId(Iterable<String> parts) {
+  return parts.map(_encodeTargetKeyPart).join(':');
+}
+
+List<String> _decodeCompositeTargetId(String? value) {
+  if (value == null || value.isEmpty) {
+    return const <String>[];
+  }
+  final parts = <String>[];
+  final buffer = StringBuffer();
+  for (var index = 0; index < value.length; index++) {
+    final char = value[index];
+    if (char == ':') {
+      parts.add(_decodeTargetKeyPart(buffer.toString()));
+      buffer.clear();
+      continue;
+    }
+    buffer.write(char);
+  }
+  parts.add(_decodeTargetKeyPart(buffer.toString()));
+  return parts;
+}
+
+String _encodeTargetKeyPart(String value) {
+  return value.replaceAll('%', '%25').replaceAll(':', '%3A');
+}
+
+String _decodeTargetKeyPart(String value) {
+  return value.replaceAll('%3A', ':').replaceAll('%25', '%');
 }
 
 bool _jsonEquals(Object? left, Object? right) {
@@ -553,11 +619,15 @@ Object? _normalizeJson(Object? value) {
     return value.toUtc().toIso8601String();
   }
   if (value is SerializableModel) {
-    final json = Map<String, dynamic>.from(value.toJson());
-    json.remove('updatedAt');
-    json.remove('derived');
-    json.remove('version');
-    json.remove('syncTargetRevisions');
+    final json = value.toJson();
+    if (json is Map) {
+      final normalizedMap = Map<String, dynamic>.from(json);
+      normalizedMap.remove('updatedAt');
+      normalizedMap.remove('derived');
+      normalizedMap.remove('version');
+      normalizedMap.remove('syncTargetRevisions');
+      return _normalizeJson(normalizedMap);
+    }
     return _normalizeJson(json);
   }
   if (value is Iterable) {

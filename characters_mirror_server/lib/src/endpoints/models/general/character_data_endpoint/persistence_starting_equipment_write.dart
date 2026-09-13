@@ -2,11 +2,13 @@ part of '../character_data_endpoint.dart';
 
 Future<void> _deleteStartingEquipmentRecords(
   Session session,
-  int characterId,
-) async {
+  int characterId, {
+  Transaction? transaction,
+}) async {
   final selections = await CharacterStartingEquipmentSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterId),
+    transaction: transaction,
   );
   final selectionIds = {
     for (final selection in selections)
@@ -16,23 +18,27 @@ Future<void> _deleteStartingEquipmentRecords(
     await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
       session,
       where: (t) => t.selectionId.inSet(selectionIds),
+      transaction: transaction,
     );
   }
   await CharacterStartingEquipmentSelectionRecord.db.deleteWhere(
     session,
     where: (t) => t.characterId.equals(characterId),
+    transaction: transaction,
   );
 }
 
 Future<void> _upsertStartingEquipmentSelectionRecords(
   Session session,
   CharacterRecord characterRecord,
-  List<CharacterStartingEquipmentSelectionData> selections,
-) async {
+  List<CharacterStartingEquipmentSelectionData> selections, {
+  Transaction? transaction,
+}) async {
   final existingSelections =
       await CharacterStartingEquipmentSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterRecord.id),
+    transaction: transaction,
   );
   final existingSelectionsBySyncId = {
     for (final record in existingSelections)
@@ -59,10 +65,12 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
         ? await CharacterStartingEquipmentSelectionRecord.db.insertRow(
             session,
             nextSelection,
+            transaction: transaction,
           )
         : await CharacterStartingEquipmentSelectionRecord.db.updateRow(
             session,
             nextSelection,
+            transaction: transaction,
           );
     if (savedSelection.id != null) {
       keepSelectionRowIds.add(savedSelection.id!);
@@ -74,6 +82,7 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
               selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
             ) ??
             const <CharacterStartingEquipmentResolutionData>[],
+        transaction: transaction,
       );
     }
   }
@@ -81,18 +90,21 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
     session,
     characterRecord.id!,
     keepSelectionRowIds,
+    transaction: transaction,
   );
 }
 
 Future<void> _upsertStartingEquipmentResolutionRecords(
   Session session,
   CharacterStartingEquipmentSelectionRecord selectionRecord,
-  List<CharacterStartingEquipmentResolutionData> resolutions,
-) async {
+  List<CharacterStartingEquipmentResolutionData> resolutions, {
+  Transaction? transaction,
+}) async {
   final existingResolutions =
       await CharacterStartingEquipmentResolutionRecord.db.find(
     session,
     where: (t) => t.selectionId.equals(selectionRecord.id),
+    transaction: transaction,
   );
   final existingBySyncId = {
     for (final record in existingResolutions)
@@ -117,10 +129,12 @@ Future<void> _upsertStartingEquipmentResolutionRecords(
         ? await CharacterStartingEquipmentResolutionRecord.db.insertRow(
             session,
             nextRecord,
+            transaction: transaction,
           )
         : await CharacterStartingEquipmentResolutionRecord.db.updateRow(
             session,
             nextRecord,
+            transaction: transaction,
           );
     if (saved.id != null) {
       keepRowIds.add(saved.id!);
@@ -135,6 +149,7 @@ Future<void> _upsertStartingEquipmentResolutionRecords(
     await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
       session,
       where: (t) => t.id.inSet(removableIds.toSet()),
+      transaction: transaction,
     );
   }
 }
@@ -165,11 +180,13 @@ CharacterClassEntryRecord? _matchSavedEntryRecord(
 Future<void> _deleteMissingClassEntryRecords(
   Session session,
   int characterId,
-  Set<int> keepRowIds,
-) async {
+  Set<int> keepRowIds, {
+  Transaction? transaction,
+}) async {
   final existingEntries = await CharacterClassEntryRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterId),
+    transaction: transaction,
   );
   final removableIds = [
     for (final entry in existingEntries)
@@ -181,17 +198,20 @@ Future<void> _deleteMissingClassEntryRecords(
   await CharacterClassEntryRecord.db.deleteWhere(
     session,
     where: (t) => t.id.inSet(removableIds.toSet()),
+    transaction: transaction,
   );
 }
 
 Future<void> _deleteMissingChoiceRecords(
   Session session,
   int characterId,
-  Set<int> keepRowIds,
-) async {
+  Set<int> keepRowIds, {
+  Transaction? transaction,
+}) async {
   final existingChoices = await CharacterChoiceRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterId),
+    transaction: transaction,
   );
   final removableIds = [
     for (final choice in existingChoices)
@@ -203,17 +223,20 @@ Future<void> _deleteMissingChoiceRecords(
   await CharacterChoiceRecord.db.deleteWhere(
     session,
     where: (t) => t.id.inSet(removableIds.toSet()),
+    transaction: transaction,
   );
 }
 
 Future<void> _deleteMissingSkillSelectionRecords(
   Session session,
   int characterId,
-  Set<int> keepRowIds,
-) async {
+  Set<int> keepRowIds, {
+  Transaction? transaction,
+}) async {
   final existingSelections = await CharacterSkillSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterId),
+    transaction: transaction,
   );
   final removableIds = [
     for (final selection in existingSelections)
@@ -226,17 +249,20 @@ Future<void> _deleteMissingSkillSelectionRecords(
   await CharacterSkillSelectionRecord.db.deleteWhere(
     session,
     where: (t) => t.id.inSet(removableIds.toSet()),
+    transaction: transaction,
   );
 }
 
 Future<void> _deleteMissingSpellSelectionRecords(
   Session session,
   int characterId,
-  Set<int> keepRowIds,
-) async {
+  Set<int> keepRowIds, {
+  Transaction? transaction,
+}) async {
   final existingSelections = await CharacterSpellSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterId),
+    transaction: transaction,
   );
   final removableIds = [
     for (final selection in existingSelections)
@@ -249,18 +275,21 @@ Future<void> _deleteMissingSpellSelectionRecords(
   await CharacterSpellSelectionRecord.db.deleteWhere(
     session,
     where: (t) => t.id.inSet(removableIds.toSet()),
+    transaction: transaction,
   );
 }
 
 Future<void> _deleteMissingStartingEquipmentSelections(
   Session session,
   int characterId,
-  Set<int> keepSelectionRowIds,
-) async {
+  Set<int> keepSelectionRowIds, {
+  Transaction? transaction,
+}) async {
   final existingSelections =
       await CharacterStartingEquipmentSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterId),
+    transaction: transaction,
   );
   final removableSelectionIds = [
     for (final selection in existingSelections)
@@ -273,10 +302,12 @@ Future<void> _deleteMissingStartingEquipmentSelections(
   await CharacterStartingEquipmentResolutionRecord.db.deleteWhere(
     session,
     where: (t) => t.selectionId.inSet(removableSelectionIds.toSet()),
+    transaction: transaction,
   );
   await CharacterStartingEquipmentSelectionRecord.db.deleteWhere(
     session,
     where: (t) => t.id.inSet(removableSelectionIds.toSet()),
+    transaction: transaction,
   );
 }
 
