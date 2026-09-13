@@ -82,7 +82,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         footer: Align(
           alignment: Alignment.center,
           child: TextButton(
-            onPressed: _isLoading ? null : () => context.go('/sign-in'),
+            onPressed: _isLoading ? null : () => context.push('/sign-in'),
             child: const Text('Уже есть аккаунт? Войти'),
           ),
         ),

@@ -44,7 +44,6 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
           previous: current.equipment,
         ),
       ),
-      debounce: false,
     );
   }
 

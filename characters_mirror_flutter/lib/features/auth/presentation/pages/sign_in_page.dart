@@ -13,13 +13,9 @@ class SignInPage extends ConsumerStatefulWidget {
 }
 
 class _SignInPageState extends ConsumerState<SignInPage> {
-  // TODO: Remove development credential autofill before release.
-  static const _defaultEmail = String.fromEnvironment('CM_DEFAULT_EMAIL');
-  static const _defaultPassword = String.fromEnvironment('CM_DEFAULT_PASSWORD');
-
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: _defaultEmail);
-  final _passwordController = TextEditingController(text: _defaultPassword);
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   bool _isLoading = false;
   bool _showValidation = false;
@@ -86,7 +82,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
         footer: Align(
           alignment: Alignment.center,
           child: TextButton(
-            onPressed: _isLoading ? null : () => context.go('/sign-up'),
+            onPressed: _isLoading ? null : () => context.push('/sign-up'),
             child: const Text('Нет аккаунта? Создать'),
           ),
         ),

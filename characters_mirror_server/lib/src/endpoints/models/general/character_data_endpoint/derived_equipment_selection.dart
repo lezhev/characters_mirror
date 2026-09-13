@@ -3,8 +3,11 @@ part of '../character_data_endpoint.dart';
 Future<_GrantedEquipmentAccumulator> _resolveWeaponCategorySelection(
   Session session,
   StartingEquipmentLineData line,
-  CharacterStartingEquipmentResolutionData resolution,
-) async {
+  CharacterStartingEquipmentResolutionData resolution, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   if (resolution.catalogType != EquipmentCatalogType.weapon) {
     throw Exception(
       'Starting equipment line "${line.entryId}" requires a weapon resolution.',
@@ -18,18 +21,16 @@ Future<_GrantedEquipmentAccumulator> _resolveWeaponCategorySelection(
     );
   }
 
-  final rows = await WeaponData.db.find(
-    session,
-    where: (t) => t.referenceKey.equals(referenceKey),
-    limit: 1,
+  final weapon = await context.weapon(
+    referenceKey,
+    transaction: transaction,
   );
-  if (rows.isEmpty) {
+  if (weapon == null) {
     throw Exception(
       'Weapon referenceKey="$referenceKey" was not found for starting equipment.',
     );
   }
 
-  final weapon = rows.first;
   final allowed = line.allowedWeaponCategories ?? const <WeaponCategory>[];
   if (allowed.isNotEmpty && !allowed.contains(weapon.category)) {
     throw Exception(
@@ -49,8 +50,11 @@ Future<_GrantedEquipmentAccumulator> _resolveWeaponCategorySelection(
 Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
   Session session,
   StartingEquipmentLineData line,
-  CharacterStartingEquipmentResolutionData resolution,
-) async {
+  CharacterStartingEquipmentResolutionData resolution, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final expectedType = line.catalogType ?? EquipmentCatalogType.item;
   if (resolution.catalogType != expectedType) {
     throw Exception(
@@ -60,7 +64,13 @@ Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
 
   switch (resolution.catalogType) {
     case EquipmentCatalogType.armor:
-      return _resolveArmorCategorySelection(session, line, resolution);
+      return _resolveArmorCategorySelection(
+        session,
+        line,
+        resolution,
+        transaction: transaction,
+        resolveContext: context,
+      );
     case EquipmentCatalogType.item:
       break;
     case EquipmentCatalogType.weapon:
@@ -78,18 +88,16 @@ Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
     );
   }
 
-  final rows = await ItemData.db.find(
-    session,
-    where: (t) => t.referenceKey.equals(referenceKey),
-    limit: 1,
+  final item = await context.item(
+    referenceKey,
+    transaction: transaction,
   );
-  if (rows.isEmpty) {
+  if (item == null) {
     throw Exception(
       'Item referenceKey="$referenceKey" was not found for starting equipment.',
     );
   }
 
-  final item = rows.first;
   final itemCategory = _normalizedTextOrNull(item.category);
   final allowedCategories = {
     for (final category in line.allowedItemCategories ?? const <String>[])
@@ -115,8 +123,11 @@ Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
 Future<_GrantedEquipmentAccumulator> _resolveArmorCategorySelection(
   Session session,
   StartingEquipmentLineData line,
-  CharacterStartingEquipmentResolutionData resolution,
-) async {
+  CharacterStartingEquipmentResolutionData resolution, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final referenceKey = _normalizedTextOrNull(resolution.referenceKey);
   if (referenceKey == null) {
     throw Exception(
@@ -124,18 +135,16 @@ Future<_GrantedEquipmentAccumulator> _resolveArmorCategorySelection(
     );
   }
 
-  final rows = await ArmorData.db.find(
-    session,
-    where: (t) => t.referenceKey.equals(referenceKey),
-    limit: 1,
+  final armor = await context.armor(
+    referenceKey,
+    transaction: transaction,
   );
-  if (rows.isEmpty) {
+  if (armor == null) {
     throw Exception(
       'Armor referenceKey="$referenceKey" was not found for starting equipment.',
     );
   }
 
-  final armor = rows.first;
   final allowedCategories = {
     for (final category in line.allowedItemCategories ?? const <String>[])
       if (_normalizedTextOrNull(category) != null)

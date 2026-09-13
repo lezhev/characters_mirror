@@ -112,33 +112,57 @@ class CharactersListController extends StateNotifier<CharactersListState> {
       );
     }
 
-    state = state.copyWith(deletingCharacterId: id);
+    final previousCharacters = state.characters;
+    final previousOfflineRecords = state.offlineRecordsByCharacterId;
+    final currentCharacters =
+        state.characters.hasValue ? state.characters.value : null;
+    final optimisticCharacters = currentCharacters
+        ?.where((character) => character.id != id)
+        .toList(growable: false);
+    final optimisticOfflineRecords =
+        Map<int, OfflineCharacterRecord>.of(previousOfflineRecords)..remove(id);
+
+    state = state.copyWith(
+      characters: optimisticCharacters == null
+          ? null
+          : AsyncValue.data(optimisticCharacters),
+      offlineRecordsByCharacterId: optimisticOfflineRecords,
+      clearArmedDeleteCharacterId: true,
+      deletingCharacterId: id,
+    );
 
     try {
       await _repository.delete(id);
-      final characters = await _repository.getAll();
-      final offlineRecords = await _repository.getOfflineRecords();
+    } catch (error) {
       state = state.copyWith(
-        characters: AsyncValue.data(characters),
-        offlineRecordsByCharacterId: {
-          for (final record in offlineRecords) record.localId: record,
-        },
+        characters: previousCharacters,
+        offlineRecordsByCharacterId: previousOfflineRecords,
         clearArmedDeleteCharacterId: true,
         clearDeletingCharacterId: true,
       );
-
-      return const CharactersListActionResult(
-        success: true,
-        message: 'Персонаж удалён.',
-      );
-    } catch (error) {
-      state = state.copyWith(clearDeletingCharacterId: true);
 
       return const CharactersListActionResult(
         success: false,
         message: 'Не удалось удалить персонажа. Попробуйте ещё раз.',
       );
     }
+
+    try {
+      final offlineRecords = await _repository.getOfflineRecords();
+      state = state.copyWith(
+        offlineRecordsByCharacterId: {
+          for (final record in offlineRecords) record.localId: record,
+        },
+        clearDeletingCharacterId: true,
+      );
+    } catch (_) {
+      state = state.copyWith(clearDeletingCharacterId: true);
+    }
+
+    return const CharactersListActionResult(
+      success: true,
+      message: 'Персонаж удалён.',
+    );
   }
 
   int? _resolveArmedDeleteCharacterId(

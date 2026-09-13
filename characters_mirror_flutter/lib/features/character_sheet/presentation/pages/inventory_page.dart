@@ -37,9 +37,16 @@ class InventoryPage extends ConsumerWidget {
           child: _EquipmentEditor(
             character: character,
             weapons: weapons,
-            onChanged: (value) => ref
-                .read(characterSheetControllerProvider(characterId).notifier)
-                .saveEquipment(value),
+            onChanged: (value) {
+              runCharacterSheetSave(
+                context,
+                ref
+                    .read(
+                      characterSheetControllerProvider(characterId).notifier,
+                    )
+                    .saveEquipment(value),
+              );
+            },
             onAddAttack: (attack) => ref
                 .read(characterSheetControllerProvider(characterId).notifier)
                 .addAttack(attack),
@@ -68,7 +75,7 @@ class _EquipmentEditor extends StatefulWidget {
 
   final CharacterData character;
   final List<WeaponData>? weapons;
-  final Future<void> Function(String? value) onChanged;
+  final ValueChanged<String?> onChanged;
   final Future<void> Function(CharacterAttackData attack) onAddAttack;
   final Future<void> Function(CharacterAttackData initialAttack) onCreateAttack;
 
@@ -79,61 +86,27 @@ class _EquipmentEditor extends StatefulWidget {
 class _EquipmentEditorState extends State<_EquipmentEditor> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
-  String? _lastSavedText;
-  late final DebouncedAutosave<String?> _autosave;
   String? _selectedText;
-  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    _lastSavedText = widget.character.equipmentText;
-    _controller = TextEditingController(text: _lastSavedText ?? '');
+    _controller = TextEditingController(text: widget.character.equipmentText);
     _controller.addListener(_handleControllerChanged);
     _focusNode = FocusNode();
-    _autosave = DebouncedAutosave<String?>(
-      delay: characterSheetAutosaveDelay,
-      lastSaved: _lastSavedText,
-      equals: (left, right) => left == right,
-      onSavingChanged: (value) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          _isSaving = value;
-        });
-      },
-      onError: (error, _) {
-        if (!mounted) {
-          return;
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(humanReadableError(error)),
-          ),
-        );
-      },
-      save: (draft) async {
-        await widget.onChanged(draft);
-        _lastSavedText = draft;
-      },
-    );
   }
 
   @override
   void didUpdateWidget(_EquipmentEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
     final incomingText = widget.character.equipmentText;
-    if (!_focusNode.hasFocus && incomingText != _lastSavedText) {
-      _lastSavedText = incomingText;
-      _autosave.updateLastSaved(incomingText);
+    if (!_focusNode.hasFocus && incomingText != _controller.text) {
       _controller.text = incomingText ?? '';
     }
   }
 
   @override
   void dispose() {
-    _autosave.dispose(flushPending: true);
     _controller.removeListener(_handleControllerChanged);
     _controller.dispose();
     _focusNode.dispose();
@@ -147,13 +120,6 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
         AppSectionHeader(
           title: 'Инвентарь',
           showDivider: false,
-          trailing: _isSaving
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : null,
         ),
         const SizedBox(height: 12),
         AppSurfaceCard(
@@ -274,6 +240,6 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
   }
 
   void _queueSave(String value) {
-    _autosave.schedule(value);
+    widget.onChanged(value);
   }
 }

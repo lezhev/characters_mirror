@@ -34,6 +34,34 @@ void main() {
 
       expect(find.text('personal route'), findsOneWidget);
     });
+
+    testWidgets('system back returns to previous visible step', (tester) async {
+      await _pumpCreationSwipeHarness(tester);
+
+      expect(find.text('attributes body'), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('background route'), findsOneWidget);
+      expect(find.text('attributes body'), findsNothing);
+    });
+
+    testWidgets('system back on first step returns to characters route',
+        (tester) async {
+      await _pumpCreationFirstStepHarness(tester);
+
+      await tester.tap(find.text('Open creation'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('class body'), findsOneWidget);
+
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      expect(find.text('characters route'), findsOneWidget);
+      expect(find.text('class body'), findsNothing);
+    });
   });
 }
 
@@ -55,6 +83,45 @@ Future<void> _pumpCreationSwipeHarness(WidgetTester tester) async {
       GoRoute(
         path: '/create/personal',
         builder: (_, __) => const Scaffold(body: Text('personal route')),
+      ),
+    ],
+  );
+
+  await tester.pumpWidget(
+    ProviderScope(
+      child: MaterialApp.router(
+        theme: darkTheme,
+        routerConfig: router,
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
+Future<void> _pumpCreationFirstStepHarness(WidgetTester tester) async {
+  await tester.binding.setSurfaceSize(const Size(1280, 900));
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+
+  final router = GoRouter(
+    initialLocation: '/characters',
+    routes: [
+      GoRoute(
+        path: '/characters',
+        builder: (context, __) => Scaffold(
+          body: Column(
+            children: [
+              const Text('characters route'),
+              TextButton(
+                onPressed: () => context.push('/create'),
+                child: const Text('Open creation'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '/create',
+        builder: (_, __) => const _CreationFirstStepHarness(),
       ),
     ],
   );
@@ -99,6 +166,24 @@ class _CreationSwipeHarness extends StatelessWidget {
       body: const SizedBox(
         height: 600,
         child: Center(child: Text('attributes body')),
+      ),
+    );
+  }
+}
+
+class _CreationFirstStepHarness extends StatelessWidget {
+  const _CreationFirstStepHarness();
+
+  @override
+  Widget build(BuildContext context) {
+    return CreationStepScaffold(
+      route: '/create',
+      onBack: () {},
+      onStepTap: null,
+      onPressedNext: () {},
+      body: const SizedBox(
+        height: 600,
+        child: Center(child: Text('class body')),
       ),
     );
   }

@@ -2,12 +2,16 @@ part of '../character_data_endpoint.dart';
 
 Future<CharacterData> _buildCharacterAggregate(
   Session session,
-  CharacterRecord record,
-) async {
+  CharacterRecord record, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final entryRecords = await CharacterClassEntryRecord.db.find(
     session,
     where: (t) => t.characterId.equals(record.id),
     orderBy: (t) => t.classOrder,
+    transaction: transaction,
     include: CharacterClassEntryRecord.include(
       classData: ClassData.include(),
       subclass: SubclassData.include(),
@@ -21,6 +25,7 @@ Future<CharacterData> _buildCharacterAggregate(
   final choiceRecords = await CharacterChoiceRecord.db.find(
     session,
     where: (t) => t.characterId.equals(record.id),
+    transaction: transaction,
     include: CharacterChoiceRecord.include(
       classEntry: CharacterClassEntryRecord.include(
         classData: ClassData.include(),
@@ -36,6 +41,7 @@ Future<CharacterData> _buildCharacterAggregate(
     session,
     where: (t) => t.characterId.equals(record.id),
     orderBy: (t) => t.selectionIndex,
+    transaction: transaction,
     include: CharacterSkillSelectionRecord.include(
       classEntry: CharacterClassEntryRecord.include(
         classData: ClassData.include(),
@@ -53,6 +59,7 @@ Future<CharacterData> _buildCharacterAggregate(
     session,
     where: (t) => t.characterId.equals(record.id),
     orderBy: (t) => t.selectionIndex,
+    transaction: transaction,
     include: CharacterSpellSelectionRecord.include(
       classEntry: CharacterClassEntryRecord.include(
         classData: ClassData.include(),
@@ -71,20 +78,36 @@ Future<CharacterData> _buildCharacterAggregate(
     session,
     where: (t) => t.characterId.equals(record.id),
     orderBy: (t) => t.selectionIndex,
+    transaction: transaction,
   );
   final startingEquipmentSelections =
       <CharacterStartingEquipmentSelectionData>[];
+  final startingEquipmentSelectionIds = {
+    for (final selection in startingEquipmentSelectionRecords)
+      if (selection.id != null) selection.id!,
+  };
+  final startingEquipmentResolutionRecords =
+      startingEquipmentSelectionIds.isEmpty
+          ? const <CharacterStartingEquipmentResolutionRecord>[]
+          : await CharacterStartingEquipmentResolutionRecord.db.find(
+              session,
+              where: (t) => t.selectionId.inSet(startingEquipmentSelectionIds),
+              orderBy: (t) => t.id,
+              transaction: transaction,
+            );
+  final resolutionsBySelectionId =
+      <int, List<CharacterStartingEquipmentResolutionRecord>>{};
+  for (final resolution in startingEquipmentResolutionRecords) {
+    resolutionsBySelectionId
+        .putIfAbsent(resolution.selectionId, () => [])
+        .add(resolution);
+  }
   for (final selection in startingEquipmentSelectionRecords) {
-    final resolutionRecords =
-        await CharacterStartingEquipmentResolutionRecord.db.find(
-      session,
-      where: (t) => t.selectionId.equals(selection.id),
-      orderBy: (t) => t.id,
-    );
     startingEquipmentSelections.add(
       _toCharacterStartingEquipmentSelectionData(
         selection,
-        resolutionRecords,
+        resolutionsBySelectionId[selection.id] ??
+            const <CharacterStartingEquipmentResolutionRecord>[],
       ),
     );
   }
@@ -97,7 +120,12 @@ Future<CharacterData> _buildCharacterAggregate(
     spellSelections: spellSelections,
     startingEquipmentSelections: startingEquipmentSelections,
   );
-  final derived = await _buildDerivedData(session, character);
+  final derived = await _buildDerivedData(
+    session,
+    character,
+    transaction: transaction,
+    resolveContext: context,
+  );
   return character.copyWith(derived: derived);
 }
 

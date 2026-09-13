@@ -4,15 +4,23 @@ int _abilityModifier(int score) => ((score - 10) / 2).floor();
 
 Future<CharacterDerivedData> _buildDerivedData(
   Session session,
-  CharacterData character,
-) async {
+  CharacterData character, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
   final choices = character.choices ?? const <CharacterChoiceData>[];
   final totalLevel =
       entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
-  final resolvedSources =
-      await _resolveDerivedSources(session, character, choices);
+  final resolvedSources = await _resolveDerivedSources(
+    session,
+    character,
+    choices,
+    transaction: transaction,
+    resolveContext: context,
+  );
   final currentRaceFeatures =
       _currentRaceFeaturesBySource(character, totalLevel);
   final scores = _buildAbilityScores(character, choices);
@@ -71,7 +79,12 @@ Future<CharacterDerivedData> _buildDerivedData(
   final passiveInvestigation =
       10 + (skillBonuses[Skill.investigation.name] ?? 0);
   final passiveInsight = 10 + (skillBonuses[Skill.insight.name] ?? 0);
-  final spellData = await _resolveSpellSlots(session, entries);
+  final spellData = await _resolveSpellSlots(
+    session,
+    entries,
+    transaction: transaction,
+    resolveContext: context,
+  );
   final languages = _collectLanguages(
     character,
     choices,
@@ -96,7 +109,12 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.classBackgroundOptions,
   );
   final featIds = _collectFeatIds(choices, resolvedSources.raceOptions);
-  final featTags = await _loadFeatTags(session, featIds);
+  final featTags = await _loadFeatTags(
+    session,
+    featIds,
+    transaction: transaction,
+    resolveContext: context,
+  );
   final featureTags = _collectFeatureTags(
     character: character,
     resolvedSources: resolvedSources,
@@ -118,7 +136,12 @@ Future<CharacterDerivedData> _buildDerivedData(
     currentRaceFeatures,
     resolvedSources.alwaysPreparedSpellKeys,
   );
-  final grantedEquipment = await _collectGrantedEquipment(session, character);
+  final grantedEquipment = await _collectGrantedEquipment(
+    session,
+    character,
+    transaction: transaction,
+    resolveContext: context,
+  );
   final hitDiceSummary = _hitDiceSummary(character, entries);
 
   final senses = <String>[

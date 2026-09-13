@@ -4,6 +4,7 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
   Session session, {
   required int userId,
   required CharacterSyncRequest request,
+  required _CharacterResolveContext resolveContext,
 }) async {
   final acknowledgedChangeIds = <String>[];
   final rejectedChanges = <CharacterRejectedChangeData>[];
@@ -11,79 +12,20 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
 
   for (final operation
       in request.operations ?? const <CharacterSyncOperationData>[]) {
-    final applied = await _findAppliedChange(session, userId, operation.id);
-    if (applied != null) {
-      acknowledgedChangeIds.add(operation.id);
-      final appliedCharacterId = applied.characterId;
-      if (appliedCharacterId != null) {
-        final record = await _findOwnedCharacterRecord(
-          session,
-          appliedCharacterId,
-          userId,
-        );
-        if (record != null) {
-          changedCharacters[operation.id] =
-              await _buildCharacterAggregate(session, record);
-        }
-      }
-      continue;
-    }
-
     try {
-      switch (operation.type) {
-        case CharacterSyncOperationType.createCharacter:
-          final created = await _applyCreateCharacterOperation(
-            session,
-            userId: userId,
-            operation: operation,
-          );
-          await _recordAppliedChange(session, userId, operation.id, created);
-          acknowledgedChangeIds.add(operation.id);
-          changedCharacters[operation.id] = created;
-          continue;
-        case CharacterSyncOperationType.deleteCharacter:
-          final result = await _applyDeleteCharacterOperation(
-            session,
-            userId: userId,
-            operation: operation,
-          );
-          if (result.rejection != null) {
-            rejectedChanges.add(result.rejection!);
-            continue;
-          }
-          await _recordAppliedChange(
-            session,
-            userId,
-            operation.id,
-            result.character,
-          );
-          acknowledgedChangeIds.add(operation.id);
-          continue;
-        case CharacterSyncOperationType.setField:
-        case CharacterSyncOperationType.setMapEntry:
-        case CharacterSyncOperationType.removeMapEntry:
-        case CharacterSyncOperationType.upsertListItem:
-        case CharacterSyncOperationType.removeListItem:
-          final result = await _applyUpdateCharacterOperation(
-            session,
-            userId: userId,
-            operation: operation,
-          );
-          if (result.rejection != null) {
-            rejectedChanges.add(result.rejection!);
-            continue;
-          }
-          await _recordAppliedChange(
-            session,
-            userId,
-            operation.id,
-            result.character,
-          );
-          acknowledgedChangeIds.add(operation.id);
-          if (result.character != null) {
-            changedCharacters[operation.id] = result.character!;
-          }
-          continue;
+      final result = await _applySyncOperationAtomically(
+        session,
+        userId: userId,
+        operation: operation,
+        resolveContext: resolveContext,
+      );
+      if (result.rejection != null) {
+        rejectedChanges.add(result.rejection!);
+        continue;
+      }
+      acknowledgedChangeIds.add(operation.id);
+      if (result.character != null) {
+        changedCharacters[operation.id] = result.character!;
       }
     } catch (error) {
       rejectedChanges.add(
@@ -96,13 +38,15 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
     }
   }
 
-  final pulledCharacters = await _loadCharactersUpdatedAfter(
+  final pullDelta = await _loadCharacterSyncDelta(
     session,
     userId: userId,
-    updatedAfter: request.pullSince,
+    pullAfterEventId: request.pullAfterEventId,
+    pullSince: request.pullSince,
+    resolveContext: resolveContext,
   );
   final charactersById = <int, CharacterData>{
-    for (final character in pulledCharacters)
+    for (final character in pullDelta.characters)
       if (character.id != null) character.id!: character,
     for (final character in changedCharacters.values)
       if (character.id != null) character.id!: character,
@@ -114,18 +58,22 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
     characters: charactersById.values.toList(),
     changedCharacters: changedCharacters,
     serverTime: DateTime.now().toUtc(),
+    pullCursor: pullDelta.cursor,
+    deletedCharacterIds: pullDelta.deletedCharacterIds,
   );
 }
 
 Future<CharacterAppliedChangeRecord?> _findAppliedChange(
   Session session,
   int userId,
-  String changeId,
-) async {
+  String changeId, {
+  Transaction? transaction,
+}) async {
   final rows = await CharacterAppliedChangeRecord.db.find(
     session,
     where: (t) => t.userId.equals(userId) & t.changeId.equals(changeId),
     limit: 1,
+    transaction: transaction,
   );
   return rows.isEmpty ? null : rows.first;
 }
@@ -134,8 +82,9 @@ Future<void> _recordAppliedChange(
   Session session,
   int userId,
   String changeId,
-  CharacterData? character,
-) async {
+  CharacterData? character, {
+  required Transaction transaction,
+}) async {
   await CharacterAppliedChangeRecord.db.insertRow(
     session,
     CharacterAppliedChangeRecord(
@@ -145,6 +94,134 @@ Future<void> _recordAppliedChange(
       revision: character?.version,
       createdAt: DateTime.now().toUtc(),
     ),
+    transaction: transaction,
+  );
+}
+
+Future<_OperationApplyResult> _applySyncOperationAtomically(
+  Session session, {
+  required int userId,
+  required CharacterSyncOperationData operation,
+  required _CharacterResolveContext resolveContext,
+}) async {
+  // Transaction boundary: idempotency, row lock, canonical mutation,
+  // target revisions, and the applied-change record must commit or roll back
+  // together. Do not move any write in this call path outside this transaction.
+  return _runCharacterMutationTransaction(
+    session,
+    (transaction) async {
+      await _lockOperationChangeId(
+        session,
+        userId: userId,
+        changeId: operation.id,
+        transaction: transaction,
+      );
+      final applied = await _findAppliedChange(
+        session,
+        userId,
+        operation.id,
+        transaction: transaction,
+      );
+      if (applied != null) {
+        return _appliedChangeResult(
+          session,
+          userId: userId,
+          operation: operation,
+          applied: applied,
+          transaction: transaction,
+          resolveContext: resolveContext,
+        );
+      }
+
+      final result = switch (operation.type) {
+        CharacterSyncOperationType.createCharacter => _OperationApplyResult(
+            character: await _applyCreateCharacterOperation(
+              session,
+              userId: userId,
+              operation: operation,
+              transaction: transaction,
+              resolveContext: resolveContext,
+            ),
+          ),
+        CharacterSyncOperationType.deleteCharacter =>
+          await _applyDeleteCharacterOperation(
+            session,
+            userId: userId,
+            operation: operation,
+            transaction: transaction,
+            resolveContext: resolveContext,
+          ),
+        CharacterSyncOperationType.setField ||
+        CharacterSyncOperationType.setMapEntry ||
+        CharacterSyncOperationType.removeMapEntry ||
+        CharacterSyncOperationType.upsertListItem ||
+        CharacterSyncOperationType.removeListItem =>
+          await _applyUpdateCharacterOperation(
+            session,
+            userId: userId,
+            operation: operation,
+            transaction: transaction,
+            resolveContext: resolveContext,
+          ),
+      };
+
+      if (result.rejection == null) {
+        await _recordAppliedChange(
+          session,
+          userId,
+          operation.id,
+          result.character,
+          transaction: transaction,
+        );
+      }
+      return result;
+    },
+  );
+}
+
+Future<void> _lockOperationChangeId(
+  Session session, {
+  required int userId,
+  required String changeId,
+  required Transaction transaction,
+}) async {
+  await session.db.unsafeQuery(
+    'SELECT pg_advisory_xact_lock(hashtext(@lockKey)::bigint)',
+    transaction: transaction,
+    parameters: QueryParameters.named({
+      'lockKey': '$userId:$changeId',
+    }),
+  );
+}
+
+Future<_OperationApplyResult> _appliedChangeResult(
+  Session session, {
+  required int userId,
+  required CharacterSyncOperationData operation,
+  required CharacterAppliedChangeRecord applied,
+  required Transaction transaction,
+  required _CharacterResolveContext resolveContext,
+}) async {
+  final characterId = applied.characterId ?? operation.characterId;
+  if (characterId == null || characterId < 0) {
+    return const _OperationApplyResult();
+  }
+  final record = await _findOwnedCharacterRecord(
+    session,
+    characterId,
+    userId,
+    transaction: transaction,
+  );
+  if (record == null) {
+    return const _OperationApplyResult();
+  }
+  return _OperationApplyResult(
+    character: await _buildCharacterAggregate(
+      session,
+      record,
+      transaction: transaction,
+      resolveContext: resolveContext,
+    ),
   );
 }
 
@@ -152,44 +229,41 @@ Future<CharacterData> _applyCreateCharacterOperation(
   Session session, {
   required int userId,
   required CharacterSyncOperationData operation,
+  required Transaction transaction,
+  required _CharacterResolveContext resolveContext,
 }) async {
   final payload =
       operation.itemPayload?.characterValue ?? operation.value?.characterValue;
   if (payload == null) {
     throw Exception('Create operation requires character payload.');
   }
-  final saved = await CharacterDataEndpoint().saveCharacter(
+  return _saveCharacterSnapshotInTransaction(
     session,
-    payload.copyWith(id: null, version: null, syncTargetRevisions: null),
-  );
-  final record = await _requireOwnedCharacterRecord(
-    session,
-    saved.id!,
+    character: payload.copyWith(id: null, version: null),
     userId: userId,
+    transaction: transaction,
+    syncChangeId: operation.id,
+    resolveContext: resolveContext,
   );
-  final revisions = _materializedSyncTargetRevisions(
-    saved,
-    saved.version ?? 1,
-  );
-  final updatedRecord = record.copyWith(syncTargetRevisions: revisions);
-  await CharacterRecord.db.updateRow(
-    session,
-    updatedRecord,
-    columns: (t) => [t.syncTargetRevisions],
-  );
-  return _buildCharacterAggregate(session, updatedRecord);
 }
 
 Future<_OperationApplyResult> _applyDeleteCharacterOperation(
   Session session, {
   required int userId,
   required CharacterSyncOperationData operation,
+  required Transaction transaction,
+  required _CharacterResolveContext resolveContext,
 }) async {
   final characterId = operation.characterId;
   if (characterId == null || characterId < 0) {
     return const _OperationApplyResult();
   }
-  final record = await _findOwnedCharacterRecord(session, characterId, userId);
+  final record = await _lockOwnedCharacterRecord(
+    session,
+    characterId: characterId,
+    userId: userId,
+    transaction: transaction,
+  );
   if (record == null) {
     return const _OperationApplyResult();
   }
@@ -200,7 +274,12 @@ Future<_OperationApplyResult> _applyDeleteCharacterOperation(
         changeId: operation.id,
         reason: 'stale_delete',
         message: 'Stored character is newer than the delete base.',
-        character: await _buildCharacterAggregate(session, record),
+        character: await _buildCharacterAggregate(
+          session,
+          record,
+          transaction: transaction,
+          resolveContext: resolveContext,
+        ),
       ),
     );
   }
@@ -208,14 +287,29 @@ Future<_OperationApplyResult> _applyDeleteCharacterOperation(
     userId: userId,
     characterId: record.id,
   );
-  await CharacterDataEndpoint().delete(session, characterId);
-  return _OperationApplyResult(character: _toCharacterData(record));
+  await _deleteCharacterInTransaction(
+    session,
+    characterId,
+    transaction: transaction,
+  );
+  await _recordCharacterSyncEvent(
+    session,
+    userId: userId,
+    characterId: characterId,
+    characterVersion: record.version,
+    eventType: _characterSyncEventDeleted,
+    changeId: operation.id,
+    transaction: transaction,
+  );
+  return const _OperationApplyResult();
 }
 
 Future<_OperationApplyResult> _applyUpdateCharacterOperation(
   Session session, {
   required int userId,
   required CharacterSyncOperationData operation,
+  required Transaction transaction,
+  required _CharacterResolveContext resolveContext,
 }) async {
   final characterId = operation.characterId;
   if (characterId == null || characterId < 0) {
@@ -228,7 +322,12 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
     );
   }
 
-  final record = await _findOwnedCharacterRecord(session, characterId, userId);
+  final record = await _lockOwnedCharacterRecord(
+    session,
+    characterId: characterId,
+    userId: userId,
+    transaction: transaction,
+  );
   if (record == null) {
     return _OperationApplyResult(
       rejection: CharacterRejectedChangeData(
@@ -239,7 +338,12 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
     );
   }
 
-  final current = await _buildCharacterAggregate(session, record);
+  final current = await _buildCharacterAggregate(
+    session,
+    record,
+    transaction: transaction,
+    resolveContext: resolveContext,
+  );
   final baselineRevision = record.version ?? current.version ?? 0;
   final targetRevisions =
       _materializedSyncTargetRevisions(current, baselineRevision);
@@ -260,14 +364,71 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
 
   final nextRevision = baselineRevision + 1;
   targetRevisions[targetKey] = nextRevision;
-  final next = _applyOperationToCharacter(current, operation).copyWith(
+  var next = _applyOperationToCharacter(current, operation).copyWith(
     id: characterId,
     version: nextRevision,
     createdAt: record.createdAt,
     updatedAt: DateTime.now().toUtc(),
     syncTargetRevisions: targetRevisions,
   );
-  final saved = await CharacterDataEndpoint().saveCharacter(session, next);
+  _validateSyncOperationResult(
+    operation: operation,
+    current: current,
+    next: next,
+  );
+  next = _normalizeIncomingCharacter(
+    next.copyWith(
+      featureOverrides: await _pruneFeatureOverrides(
+        session,
+        next,
+        transaction: transaction,
+        resolveContext: resolveContext,
+      ),
+      resourceStates: await _pruneResourceStates(
+        session,
+        next,
+        transaction: transaction,
+        resolveContext: resolveContext,
+      ),
+    ),
+    fallbackUpdatedAt: next.updatedAt,
+  ).copyWith(
+    id: characterId,
+    version: nextRevision,
+    createdAt: record.createdAt,
+    updatedAt: next.updatedAt,
+    syncTargetRevisions: targetRevisions,
+  );
+  final savedRecord = await _upsertCharacterRecord(
+    session,
+    next,
+    userId,
+    transaction: transaction,
+    exactVersion: nextRevision,
+    lockedExistingRecord: record,
+    syncTargetRevisions: targetRevisions,
+  );
+  await _upsertCharacterRelations(
+    session,
+    savedRecord,
+    next,
+    transaction: transaction,
+  );
+  final saved = await _buildCharacterAggregate(
+    session,
+    savedRecord,
+    transaction: transaction,
+    resolveContext: resolveContext,
+  );
+  await _recordCharacterSyncEvent(
+    session,
+    userId: userId,
+    characterId: saved.id!,
+    characterVersion: saved.version,
+    eventType: _characterSyncEventUpdated,
+    changeId: operation.id,
+    transaction: transaction,
+  );
   return _OperationApplyResult(character: saved);
 }
 
@@ -399,7 +560,8 @@ void _upsertListItemJsonValue(
   }
   final list = List<dynamic>.from(json[field] as List? ?? const []);
   final index = list.indexWhere((entry) =>
-      entry is Map<String, dynamic> && entry['id']?.toString() == targetId);
+      entry is Map<String, dynamic> &&
+      _listItemMatchesTargetId(field, entry, targetId));
   if (index == -1) {
     list.add(item);
   } else {
@@ -431,8 +593,26 @@ void _removeListItemJsonValue(
   }
   final list = List<dynamic>.from(json[field] as List? ?? const []);
   list.removeWhere((entry) =>
-      entry is Map<String, dynamic> && entry['id']?.toString() == targetId);
+      entry is Map<String, dynamic> &&
+      _listItemMatchesTargetId(field, entry, targetId));
   json[field] = list.isEmpty ? null : list;
+}
+
+bool _listItemMatchesTargetId(
+  String field,
+  Map<String, dynamic> item,
+  String targetId,
+) {
+  if (item['id']?.toString() == targetId) {
+    return true;
+  }
+  if (field != 'featureOverrides') {
+    return false;
+  }
+  final parts = _decodeCompositeTargetId(targetId);
+  return parts.length == 2 &&
+      item['sourceType']?.toString() == parts[0] &&
+      item['sourceId']?.toString() == parts[1];
 }
 
 void _upsertResourceStateJsonValue(
@@ -462,7 +642,7 @@ void _removeResourceStateJsonValue(
   Map<String, dynamic> json,
   CharacterSyncOperationData operation,
 ) {
-  final parts = (operation.targetId ?? '').split(':');
+  final parts = _decodeCompositeTargetId(operation.targetId);
   if (parts.length != 3) {
     throw Exception(
         'Resource operation requires sourceType:sourceId:key targetId.');
@@ -482,7 +662,7 @@ void _upsertStartingEquipmentResolutionJsonValue(
   CharacterSyncOperationData operation,
 ) {
   final item = operation.itemPayload?.startingEquipmentResolutionValue;
-  final parts = (operation.targetId ?? '').split(':');
+  final parts = _decodeCompositeTargetId(operation.targetId);
   if (item == null || parts.length != 2) {
     throw Exception(
       'Starting equipment resolution operation requires targetId and payload.',
@@ -518,7 +698,7 @@ void _removeStartingEquipmentResolutionJsonValue(
   Map<String, dynamic> json,
   CharacterSyncOperationData operation,
 ) {
-  final parts = (operation.targetId ?? '').split(':');
+  final parts = _decodeCompositeTargetId(operation.targetId);
   if (parts.length != 2) {
     throw Exception(
         'Starting equipment resolution operation requires targetId.');

@@ -4,6 +4,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_resolver.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
@@ -31,6 +32,13 @@ final characterRepositoryProvider = Provider<CharacterRepository>((ref) {
 final offlineCharacterRecordProvider =
     FutureProvider.autoDispose.family<OfflineCharacterRecord?, int>(
   (ref, characterId) {
+    final coordinator = offlineSyncCoordinator;
+    if (coordinator != null) {
+      void reloadAfterSync() => ref.invalidateSelf();
+
+      coordinator.addListener(reloadAfterSync);
+      ref.onDispose(() => coordinator.removeListener(reloadAfterSync));
+    }
     return ref.watch(characterRepositoryProvider).getOfflineRecord(characterId);
   },
 );
@@ -64,10 +72,12 @@ class CharacterSheetController
   int _debouncedSaveRevision = 0;
   Completer<void>? _debouncedSaveCompleter;
   bool _isPersisting = false;
+  bool _isDisposed = false;
   CharacterData? _lastPersistedCharacter;
   CharacterData? _pendingSave;
   int _pendingSaveRevision = 0;
   Completer<void>? _pendingSaveCompleter;
+  Completer<void>? _activeSaveCompleter;
 
   @override
   Future<CharacterData> build(int characterId) async {
@@ -149,6 +159,32 @@ class CharacterSheetController
     return completer.future;
   }
 
+  Future<void> flushPendingSave() async {
+    if (_isDisposed) {
+      return;
+    }
+
+    _saveDebounceTimer?.cancel();
+    _saveDebounceTimer = null;
+    if (_debouncedSave != null) {
+      _flushDebouncedSave();
+    }
+
+    while (true) {
+      final pending = _pendingSaveCompleter;
+      final active = _activeSaveCompleter;
+      final save = pending?.future ?? active?.future;
+      if (save == null) {
+        return;
+      }
+      await save;
+
+      if (_debouncedSave != null) {
+        _flushDebouncedSave();
+      }
+    }
+  }
+
   void _flushDebouncedSave() {
     _saveDebounceTimer?.cancel();
     _saveDebounceTimer = null;
@@ -181,13 +217,36 @@ class CharacterSheetController
   }
 
   void _disposeSaveQueue() {
+    _isDisposed = true;
     _saveDebounceTimer?.cancel();
     _saveDebounceTimer = null;
-    if (_debouncedSaveCompleter?.isCompleted == false) {
-      _debouncedSaveCompleter!.complete();
-    }
-    if (_pendingSaveCompleter?.isCompleted == false) {
-      _pendingSaveCompleter!.complete();
+
+    final debouncedSave = _debouncedSave;
+    final debouncedRevision = _debouncedSaveRevision;
+    final debouncedCompleter = _debouncedSaveCompleter;
+    _debouncedSave = null;
+    _debouncedSaveRevision = 0;
+    _debouncedSaveCompleter = null;
+
+    if (debouncedSave != null) {
+      if (_isPersisting) {
+        if (_pendingSaveCompleter?.isCompleted == false) {
+          _pendingSaveCompleter!.complete();
+        }
+        _pendingSave = debouncedSave;
+        _pendingSaveRevision = debouncedRevision;
+        _pendingSaveCompleter = debouncedCompleter;
+      } else {
+        unawaited(
+          _persistSaves(
+            debouncedSave,
+            debouncedRevision,
+            debouncedCompleter,
+          ),
+        );
+      }
+    } else if (debouncedCompleter?.isCompleted == false) {
+      debouncedCompleter!.complete();
     }
   }
 
@@ -200,22 +259,25 @@ class CharacterSheetController
     var nextCharacter = initial;
     var nextRevision = initialRevision;
     var activeCompleter = initialCompleter;
+    _activeSaveCompleter = activeCompleter;
 
     try {
       while (true) {
         try {
           final saved = await _repository.saveCharacter(nextCharacter);
           _lastPersistedCharacter = saved;
-          if (nextRevision == _saveRevision) {
+          if (!_isDisposed && nextRevision == _saveRevision) {
             state = AsyncValue.data(saved);
           }
-          ref.invalidate(characterSheetProvider(_characterId));
-          ref.invalidate(offlineCharacterRecordProvider(_characterId));
+          if (!_isDisposed) {
+            ref.invalidate(characterSheetProvider(_characterId));
+            ref.invalidate(offlineCharacterRecordProvider(_characterId));
+          }
           if (activeCompleter?.isCompleted == false) {
             activeCompleter!.complete();
           }
         } catch (error, stackTrace) {
-          if (nextRevision == _saveRevision) {
+          if (!_isDisposed && nextRevision == _saveRevision) {
             final rollbackCharacter =
                 _lastPersistedCharacter ?? state.valueOrNull ?? nextCharacter;
             state = AsyncValue.data(rollbackCharacter);
@@ -237,12 +299,14 @@ class CharacterSheetController
         nextCharacter = pending;
         nextRevision = _pendingSaveRevision;
         activeCompleter = _pendingSaveCompleter;
+        _activeSaveCompleter = activeCompleter;
         _pendingSave = null;
         _pendingSaveRevision = 0;
         _pendingSaveCompleter = null;
       }
     } finally {
       _isPersisting = false;
+      _activeSaveCompleter = null;
     }
   }
 }

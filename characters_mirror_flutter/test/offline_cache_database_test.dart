@@ -74,6 +74,8 @@ void main() {
     expect(changes, hasLength(1));
     expect(changes.single.operationData?.type,
         CharacterSyncOperationType.createCharacter);
+    expect(changes.single.operationData?.characterId, local.localId);
+    expect(changes.single.operationData?.localCharacterId, local.localId);
     expect(
       changes.single.operationData?.itemPayload?.characterValue?.name,
       'Final',
@@ -115,6 +117,29 @@ void main() {
     final cached = await cache.getCharacter(7, 42);
     expect(cached!.character.name, 'Local edit');
     expect(cached.status, OfflineCharacterSyncStatus.dirty);
+  });
+
+  test('remote delete removes clean rows and rejects pending rows', () async {
+    await cache.upsertCleanFromServer(
+      7,
+      CharacterData(id: 42, name: 'Remote', version: 1),
+    );
+
+    await cache.applyRemoteDelete(7, 42);
+    expect(await cache.getCharacter(7, 42), isNull);
+
+    await cache.upsertCleanFromServer(
+      7,
+      CharacterData(id: 43, name: 'Remote', version: 1),
+    );
+    await cache.saveLocal(7, CharacterData(id: 43, name: 'Local edit'));
+
+    await cache.applyRemoteDelete(7, 43);
+
+    final cached = await cache.getCharacter(7, 43);
+    expect(cached?.status, OfflineCharacterSyncStatus.conflict);
+    expect(cached?.lastSyncError, contains('deleted'));
+    expect(await cache.getPendingChanges(7), isEmpty);
   });
 
   test('markDeleting enqueues delete change', () async {
@@ -249,6 +274,56 @@ INSERT INTO characters_cache(
       cached?.conflictCharacter?.notes?.map((note) => note.text).toList(),
       const ['Conflict note'],
     );
+  });
+
+  test('legacy string notes decode to stable ids across cache opens', () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final initialCache = await OfflineCacheDatabase.openAt(path);
+    initialCache.close();
+
+    final db = sqlite3.open(path);
+    try {
+      db.execute(
+        '''
+INSERT INTO characters_cache(
+  user_id, local_id, server_id, payload_json, base_payload_json, base_version,
+  sync_status, sync_operation, local_updated_at, server_updated_at,
+  last_sync_error, conflict_payload_json
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+''',
+        [
+          7,
+          42,
+          42,
+          jsonEncode({'id': 42, 'name': 'Local', 'notes': 'Local note'}),
+          null,
+          1,
+          OfflineCharacterSyncStatus.clean.name,
+          null,
+          DateTime.utc(2026, 4, 22).toIso8601String(),
+          null,
+          null,
+          null,
+        ],
+      );
+    } finally {
+      db.dispose();
+    }
+
+    final firstOpen = await OfflineCacheDatabase.openAt(path);
+    final firstId =
+        (await firstOpen.getCharacter(7, 42))?.character.notes?.single.id;
+    firstOpen.close();
+
+    final secondOpen = await OfflineCacheDatabase.openAt(path);
+    addTearDown(secondOpen.close);
+    final secondId =
+        (await secondOpen.getCharacter(7, 42))?.character.notes?.single.id;
+
+    expect(firstId, isNotNull);
+    expect(secondId, firstId);
   });
 
   test('reads legacy string equipment payloads as structured inventory items',
@@ -393,5 +468,163 @@ INSERT INTO character_changes(
     expect(changes.single.id, 'legacy-change');
     expect(changes.single.payload?.name, 'Legacy');
     expect(changes.single.operationData, isNull);
+  });
+
+  test('reads legacy primitive sync value rows after operation migration',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final initialCache = await OfflineCacheDatabase.openAt(path);
+    initialCache.close();
+
+    final db = sqlite3.open(path);
+    try {
+      db.execute(
+        '''
+INSERT INTO character_changes(
+  id, user_id, change_type, entity_type, entity_id, payload_json,
+  created_at, base_updated_at, status, last_error, operation_type,
+  target_type, target_id, field_path, value_json
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+''',
+        [
+          'legacy-primitive-value',
+          7,
+          CharacterChangeType.upsert.name,
+          CharacterEntityType.character.name,
+          '42',
+          null,
+          DateTime.utc(2026, 4, 22).toIso8601String(),
+          null,
+          OfflineCharacterChangeStatus.pending.name,
+          null,
+          CharacterSyncOperationType.setField.name,
+          CharacterSyncTargetType.field.name,
+          'name',
+          'name',
+          jsonEncode('Queued'),
+        ],
+      );
+    } finally {
+      db.dispose();
+    }
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+
+    final changes = await reopened.getPendingChanges(7);
+
+    expect(changes, hasLength(1));
+    expect(changes.single.operationData?.characterId, 42);
+    expect(changes.single.operationData?.localCharacterId, 42);
+    expect(changes.single.operationData?.value?.stringValue, 'Queued');
+  });
+
+  test('repair removes legacy rows and rebuilds missing v2 operations',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final initialCache = await OfflineCacheDatabase.openAt(path);
+
+    final base = CharacterData(
+      id: 42,
+      name: 'Base',
+      version: 1,
+      alignmentValue: CharacterAlignment.lawfulGood,
+      equipment: [
+        CharacterInventoryItemData(
+          id: 'item-1',
+          name: 'Rope',
+          quantity: 1,
+          type: CharacterInventoryItemType.custom,
+        ),
+      ],
+    );
+    await initialCache.upsertCleanFromServer(
+      7,
+      base,
+    );
+    final local = base.copyWith(
+      equipment: [
+        CharacterInventoryItemData(
+          id: 'item-1',
+          name: 'Rope and torch',
+          quantity: 1,
+          type: CharacterInventoryItemType.custom,
+        ),
+      ],
+    );
+    await initialCache.saveLocal(
+      7,
+      local,
+    );
+    initialCache.close();
+
+    final db = sqlite3.open(path);
+    try {
+      db.execute("DELETE FROM character_changes WHERE user_id = 7");
+      db.execute(
+        '''
+INSERT INTO character_changes(
+  id, user_id, change_type, entity_type, entity_id, payload_json,
+  created_at, base_updated_at, status, last_error
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+''',
+        [
+          'legacy-rejected-snapshot',
+          7,
+          CharacterChangeType.upsert.name,
+          CharacterEntityType.character.name,
+          '42',
+          jsonEncode(local.toJson()),
+          DateTime.utc(2026, 4, 22).toIso8601String(),
+          null,
+          OfflineCharacterChangeStatus.failed.name,
+          'Legacy sync failure',
+        ],
+      );
+    } finally {
+      db.dispose();
+    }
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+    await reopened.repairSyncQueue(7);
+    final pending = await reopened.getPendingChanges(7);
+
+    expect(pending, hasLength(1));
+    expect(pending.single.operationData, isNotNull);
+    expect(pending.single.operationData?.fieldPath, 'equipment');
+    expect(
+      pending.single.operationData?.itemPayload?.equipmentValue?.name,
+      'Rope and torch',
+    );
+    expect(pending.single.id, isNot('legacy-rejected-snapshot'));
+  });
+
+  test('repair does not retry a dirty row with a terminal sync error',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final cache = await OfflineCacheDatabase.openAt(
+      '${directory.path}/cache.sqlite',
+    );
+    addTearDown(cache.close);
+
+    final base = CharacterData(id: 42, name: 'Base', version: 1);
+    await cache.upsertCleanFromServer(7, base);
+    await cache.saveLocal(7, base.copyWith(name: 'Rejected'));
+    final change = (await cache.getPendingChanges(7)).single;
+    await cache.markChangeConflict(7, change.id, base, 'Validation failed');
+    await cache.markSyncError(7, 42, 'Validation failed');
+
+    await cache.repairSyncQueue(7);
+
+    expect(await cache.getPendingChanges(7), isEmpty);
+    final record = await cache.getCharacter(7, 42);
+    expect(record?.status, OfflineCharacterSyncStatus.dirty);
+    expect(record?.lastSyncError, 'Validation failed');
   });
 }

@@ -44,6 +44,10 @@
             "deviceId": "6TEEUSRGOFZPAMNR",
             "program": "lib/main.dart",
             "flutterMode": "debug",
+
+            "preLaunchTask": "adb reverse Serverpod",
+            "postDebugTask": "adb reverse remove Serverpod",
+            
             "toolArgs": [
                 "--dart-define=CM_SERVER_URL=http://localhost:8083/"
             ]
@@ -56,6 +60,11 @@
             "deviceId": "6TEEUSRGOFZPAMNR",
             "program": "lib/main.dart",
             "flutterMode": "release",
+
+            "preLaunchTask": "adb reverse Serverpod",
+            "postDebugTask": "adb reverse remove Serverpod",
+
+
             "toolArgs": [
                 "--dart-define=CM_SERVER_URL=http://localhost:8083/"
             ]

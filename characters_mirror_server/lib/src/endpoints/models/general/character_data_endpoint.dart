@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
 import 'package:characters_mirror_server/src/validation/character_quota_validator.dart';
 import 'package:characters_mirror_server/src/validation/character_validator.dart';
+import 'package:characters_mirror_server/src/validation/rules.dart';
+import 'package:characters_mirror_server/src/validation/validation_exception.dart';
 import 'package:serverpod/serverpod.dart';
 
 import 'starting_equipment_endpoints.dart';
@@ -13,12 +16,16 @@ part 'character_data_endpoint/persistence_record_write.dart';
 part 'character_data_endpoint/persistence_relation_write.dart';
 part 'character_data_endpoint/persistence_starting_equipment_write.dart';
 part 'character_data_endpoint/persistence_normalization.dart';
+part 'character_data_endpoint/persistence_transactional_save.dart';
 part 'character_data_endpoint/persistence_sync_lookup.dart';
+part 'character_data_endpoint/sync_events.dart';
 part 'character_data_endpoint/sync_operation_application.dart';
+part 'character_data_endpoint/sync_operation_validation.dart';
 part 'character_data_endpoint/sync_target_revisions.dart';
 part 'character_data_endpoint/aggregate_build.dart';
 part 'character_data_endpoint/aggregate_derived_stats.dart';
 part 'character_data_endpoint/aggregate_spell_slots.dart';
+part 'character_data_endpoint/derived_resolve_context.dart';
 part 'character_data_endpoint/derived_source_resolution.dart';
 part 'character_data_endpoint/derived_collectors.dart';
 part 'character_data_endpoint/derived_starting_equipment.dart';
@@ -32,11 +39,25 @@ const _standardSpellSlotTableKey = 'standard';
 const _pactMagicSpellSlotTableKey = 'pact_magic';
 
 class CharacterDataEndpoint extends Endpoint {
+  CharacterDataEndpoint({
+    void Function(String key)? referenceQueryObserver,
+  }) : _referenceQueryObserver = referenceQueryObserver;
+
+  final void Function(String key)? _referenceQueryObserver;
+
+  _CharacterResolveContext _createResolveContext(Session session) {
+    return _CharacterResolveContext(
+      session,
+      onReferenceLoad: _referenceQueryObserver,
+    );
+  }
+
   @override
   bool get requireLogin => true;
 
   Future<List<CharacterData>> getAll(Session session) async {
     final userId = await _requireCurrentUserId(session);
+    final resolveContext = _createResolveContext(session);
     final records = await CharacterRecord.db.find(
       session,
       where: (t) => t.userId.equals(userId),
@@ -46,7 +67,13 @@ class CharacterDataEndpoint extends Endpoint {
     );
 
     return Future.wait(
-      records.map((record) => _buildCharacterAggregate(session, record)),
+      records.map(
+        (record) => _buildCharacterAggregate(
+          session,
+          record,
+          resolveContext: resolveContext,
+        ),
+      ),
     );
   }
 
@@ -55,52 +82,17 @@ class CharacterDataEndpoint extends Endpoint {
     CharacterData character,
   ) async {
     final userId = await _requireCurrentUserId(session);
-    final existingRecord = await _findWritableCharacterRecord(
+    final resolveContext = _createResolveContext(session);
+    return _runCharacterMutationTransaction(
       session,
-      character,
-      userId,
-    );
-    if (existingRecord == null) {
-      await CharacterQuotaValidator.validateCanCreateCharacter(
+      (transaction) => _saveCharacterSnapshotInTransaction(
         session,
+        character: character,
         userId: userId,
-      );
-    }
-    CharacterSaveRateLimiter.instance.consume(
-      userId: userId,
-      characterId: existingRecord?.id,
+        transaction: transaction,
+        resolveContext: resolveContext,
+      ),
     );
-    CharacterValidator.validate(character);
-
-    var normalizedCharacter = character.copyWith(
-      featureOverrides: await _pruneFeatureOverrides(session, character),
-      resourceStates: await _pruneResourceStates(session, character),
-    );
-    if (_serverSnapshotIsNewer(existingRecord, normalizedCharacter)) {
-      return _buildCharacterAggregate(session, existingRecord!);
-    }
-
-    normalizedCharacter = _normalizeIncomingCharacter(
-      normalizedCharacter,
-      fallbackUpdatedAt:
-          normalizedCharacter.updatedAt ?? existingRecord?.updatedAt,
-    );
-    if (character.id == null) {
-      normalizedCharacter = await _applyInitialEquipmentSnapshot(
-        session,
-        normalizedCharacter,
-      );
-    }
-    final savedRecord =
-        await _upsertCharacterRecord(session, normalizedCharacter, userId);
-    await _upsertCharacterRelations(session, savedRecord, normalizedCharacter);
-
-    final hydratedRecord = await _requireOwnedCharacterRecord(
-      session,
-      savedRecord.id!,
-      userId: userId,
-    );
-    return _buildCharacterAggregate(session, hydratedRecord);
   }
 
   Future<CharacterSyncResult> syncSaveCharacter(
@@ -109,30 +101,37 @@ class CharacterDataEndpoint extends Endpoint {
     int? expectedVersion,
   ) async {
     final userId = await _requireCurrentUserId(session);
-    final characterId = character.id;
-    if (characterId != null) {
-      final currentRecord = await _findOwnedCharacterRecord(
+    final resolveContext = _createResolveContext(session);
+    CharacterData saved;
+    try {
+      saved = await _runCharacterMutationTransaction(
         session,
-        characterId,
-        userId,
+        (transaction) => _saveCharacterSnapshotInTransaction(
+          session,
+          character: character,
+          userId: userId,
+          transaction: transaction,
+          expectedVersion: expectedVersion,
+          requireExistingWhenIdPresent: character.id != null,
+          resolveContext: resolveContext,
+        ),
       );
-      if (currentRecord == null) {
-        return CharacterSyncResult(
-          status: CharacterSyncStatus.notFound,
-          message: 'Character was not found for this user.',
-        );
-      }
-      if (currentRecord.version != expectedVersion) {
-        return CharacterSyncResult(
-          status: CharacterSyncStatus.conflict,
-          conflictCharacter:
-              await _buildCharacterAggregate(session, currentRecord),
-          message: 'Character version conflict.',
-        );
-      }
+    } on _SnapshotVersionConflict catch (error) {
+      return CharacterSyncResult(
+        status: CharacterSyncStatus.conflict,
+        conflictCharacter: await _buildCharacterAggregate(
+          session,
+          error.record,
+          resolveContext: resolveContext,
+        ),
+        message: 'Character version conflict.',
+      );
+    } on _SnapshotNotFound {
+      return CharacterSyncResult(
+        status: CharacterSyncStatus.notFound,
+        message: 'Character was not found for this user.',
+      );
     }
-
-    final saved = await saveCharacter(session, character);
     return CharacterSyncResult(
       status: CharacterSyncStatus.saved,
       character: saved,
@@ -145,6 +144,7 @@ class CharacterDataEndpoint extends Endpoint {
   ) async {
     final userId = await _requireCurrentUserId(session);
     CharacterValidator.validateSyncRequest(request);
+    final resolveContext = _createResolveContext(session);
 
     final operations =
         request.operations ?? const <CharacterSyncOperationData>[];
@@ -153,6 +153,7 @@ class CharacterDataEndpoint extends Endpoint {
         session,
         userId: userId,
         request: request,
+        resolveContext: resolveContext,
       );
     }
 
@@ -196,13 +197,37 @@ class CharacterDataEndpoint extends Endpoint {
                     'Stored character is newer than the incoming snapshot.',
                 character: currentRecord == null
                     ? null
-                    : await _buildCharacterAggregate(session, currentRecord),
+                    : await _buildCharacterAggregate(
+                        session,
+                        currentRecord,
+                        resolveContext: resolveContext,
+                      ),
               ),
             );
             continue;
           }
 
-          await saveCharacter(session, payload);
+          try {
+            await _runCharacterMutationTransaction(
+              session,
+              (transaction) => _saveCharacterSnapshotInTransaction(
+                session,
+                character: payload,
+                userId: userId,
+                transaction: transaction,
+                resolveContext: resolveContext,
+              ),
+            );
+          } on InputValidationException catch (error) {
+            rejectedChanges.add(
+              CharacterRejectedChangeData(
+                changeId: change.id,
+                reason: 'invalid_change',
+                message: error.toString(),
+              ),
+            );
+            continue;
+          }
           acknowledgedChangeIds.add(change.id);
           continue;
         case CharacterChangeType.delete:
@@ -221,7 +246,11 @@ class CharacterDataEndpoint extends Endpoint {
                 changeId: change.id,
                 reason: 'stale_delete',
                 message: 'Stored character is newer than the delete base.',
-                character: await _buildCharacterAggregate(session, existing),
+                character: await _buildCharacterAggregate(
+                  session,
+                  existing,
+                  resolveContext: resolveContext,
+                ),
               ),
             );
             continue;
@@ -236,23 +265,31 @@ class CharacterDataEndpoint extends Endpoint {
       }
     }
 
-    final pullCharacters = await _loadCharactersUpdatedAfter(
+    final pullDelta = await _loadCharacterSyncDelta(
       session,
       userId: userId,
-      updatedAfter: request.pullSince,
+      pullAfterEventId: request.pullAfterEventId,
+      pullSince: request.pullSince,
+      resolveContext: resolveContext,
     );
 
     return CharacterSyncResponse(
       acknowledgedChangeIds: acknowledgedChangeIds,
       rejectedChanges: rejectedChanges,
-      characters: pullCharacters,
+      characters: pullDelta.characters,
       serverTime: DateTime.now().toUtc(),
+      pullCursor: pullDelta.cursor,
+      deletedCharacterIds: pullDelta.deletedCharacterIds,
     );
   }
 
   Future<CharacterData> getCharacter(Session session, int id) async {
     final record = await _requireOwnedCharacterRecord(session, id);
-    return _buildCharacterAggregate(session, record);
+    return _buildCharacterAggregate(
+      session,
+      record,
+      resolveContext: _createResolveContext(session),
+    );
   }
 
   Future<CharacterSyncResult> syncDeleteCharacter(
@@ -261,48 +298,91 @@ class CharacterDataEndpoint extends Endpoint {
     int? expectedVersion,
   ) async {
     final userId = await _requireCurrentUserId(session);
-    final currentRecord = await _findOwnedCharacterRecord(session, id, userId);
-    if (currentRecord == null) {
-      return CharacterSyncResult(
-        status: CharacterSyncStatus.notFound,
-        message: 'Character was not found for this user.',
-      );
+    final resolveContext = _createResolveContext(session);
+    final result = await _runCharacterMutationTransaction(
+      session,
+      (transaction) async {
+        final currentRecord = await _lockOwnedCharacterRecord(
+          session,
+          characterId: id,
+          userId: userId,
+          transaction: transaction,
+        );
+        if (currentRecord == null) {
+          return CharacterSyncResult(
+            status: CharacterSyncStatus.notFound,
+            message: 'Character was not found for this user.',
+          );
+        }
+        if (currentRecord.version != expectedVersion) {
+          return CharacterSyncResult(
+            status: CharacterSyncStatus.conflict,
+            conflictCharacter: await _buildCharacterAggregate(
+              session,
+              currentRecord,
+              transaction: transaction,
+              resolveContext: resolveContext,
+            ),
+            message: 'Character version conflict.',
+          );
+        }
+        await _deleteCharacterInTransaction(
+          session,
+          currentRecord.id!,
+          transaction: transaction,
+        );
+        await _recordCharacterSyncEvent(
+          session,
+          userId: userId,
+          characterId: currentRecord.id!,
+          characterVersion: currentRecord.version,
+          eventType: _characterSyncEventDeleted,
+          transaction: transaction,
+        );
+        return CharacterSyncResult(status: CharacterSyncStatus.deleted);
+      },
+    );
+    if (result.status != CharacterSyncStatus.deleted) {
+      return result;
     }
-    if (currentRecord.version != expectedVersion) {
-      return CharacterSyncResult(
-        status: CharacterSyncStatus.conflict,
-        conflictCharacter:
-            await _buildCharacterAggregate(session, currentRecord),
-        message: 'Character version conflict.',
-      );
-    }
-
-    await delete(session, id);
     return CharacterSyncResult(status: CharacterSyncStatus.deleted);
   }
 
   Future<void> delete(Session session, int id) async {
-    await _requireOwnedCharacterRecord(session, id);
-    await _deleteStartingEquipmentRecords(session, id);
-    await CharacterSkillSelectionRecord.db.deleteWhere(
+    final userId = await _requireCurrentUserId(session);
+    await _runCharacterMutationTransaction(
       session,
-      where: (t) => t.characterId.equals(id),
-    );
-    await CharacterSpellSelectionRecord.db.deleteWhere(
-      session,
-      where: (t) => t.characterId.equals(id),
-    );
-    await CharacterChoiceRecord.db.deleteWhere(
-      session,
-      where: (t) => t.characterId.equals(id),
-    );
-    await CharacterClassEntryRecord.db.deleteWhere(
-      session,
-      where: (t) => t.characterId.equals(id),
-    );
-    await CharacterRecord.db.deleteWhere(
-      session,
-      where: (t) => t.id.equals(id),
+      (transaction) async {
+        final record = await _lockOwnedCharacterRecord(
+          session,
+          characterId: id,
+          userId: userId,
+          transaction: transaction,
+        );
+        if (record == null) {
+          await _requireOwnedCharacterRecord(
+            session,
+            id,
+            userId: userId,
+            transaction: transaction,
+          );
+        }
+        if (record != null) {
+          await _recordCharacterSyncEvent(
+            session,
+            userId: userId,
+            characterId: record.id!,
+            characterVersion: record.version,
+            eventType: _characterSyncEventDeleted,
+            transaction: transaction,
+          );
+        }
+        await _deleteCharacterInTransaction(
+          session,
+          id,
+          transaction: transaction,
+        );
+      },
     );
   }
 }

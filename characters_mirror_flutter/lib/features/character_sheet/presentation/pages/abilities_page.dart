@@ -53,7 +53,7 @@ class AbilitiesPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Выберите теги, которые будут показываться на вкладке "Бой".',
+                  'Выберите теги, которые будут показываться на первой вкладке.',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 12),

@@ -125,6 +125,18 @@ class OfflineCacheDatabase {
     _db.dispose();
   }
 
+  T _runTransaction<T>(T Function() action) {
+    _db.execute('BEGIN IMMEDIATE');
+    try {
+      final result = action();
+      _db.execute('COMMIT');
+      return result;
+    } catch (_) {
+      _db.execute('ROLLBACK');
+      rethrow;
+    }
+  }
+
   void _createSchema() {
     _db.execute('PRAGMA foreign_keys = ON');
     _db.execute('''
@@ -213,6 +225,16 @@ ON character_changes(user_id, created_at)
     );
     _ensureColumn(
       table: 'character_changes',
+      column: 'operation_character_id',
+      definition: 'INTEGER',
+    );
+    _ensureColumn(
+      table: 'character_changes',
+      column: 'operation_local_character_id',
+      definition: 'INTEGER',
+    );
+    _ensureColumn(
+      table: 'character_changes',
       column: 'value_json',
       definition: 'TEXT',
     );
@@ -263,14 +285,15 @@ ON character_changes(user_id, created_at)
     return next;
   }
 
-  Future<void> _enqueueChange(OfflineCharacterChange change) async {
+  void _enqueueChange(OfflineCharacterChange change) {
     final stmt = _db.prepare('''
 INSERT OR REPLACE INTO character_changes(
   id, user_id, change_type, entity_type, entity_id, payload_json,
   created_at, base_updated_at, status, last_error, operation_type,
-  target_type, target_id, field_path, value_json, item_payload_json,
+  target_type, target_id, field_path, operation_character_id,
+  operation_local_character_id, value_json, item_payload_json,
   base_character_revision, base_target_revision
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ''');
     try {
       final operation = change.operationData;
@@ -289,12 +312,12 @@ INSERT OR REPLACE INTO character_changes(
         operation?.targetType.name,
         operation?.targetId,
         operation?.fieldPath,
-        operation?.value == null
-            ? null
-            : jsonEncode(operation!.value!.toJson()),
+        operation?.characterId,
+        operation?.localCharacterId,
+        operation?.value == null ? null : _encodeSyncValue(operation!.value!),
         operation?.itemPayload == null
             ? null
-            : jsonEncode(operation!.itemPayload!.toJson()),
+            : _encodeSyncValue(operation!.itemPayload!),
         operation?.baseCharacterRevision,
         operation?.baseTargetRevision,
       ]);
@@ -366,8 +389,10 @@ VALUES (?, ?, ?)
         ? null
         : CharacterSyncOperationData(
             id: row['id'] as String,
-            characterId: int.tryParse(row['entity_id'] as String),
-            localCharacterId: int.tryParse(row['entity_id'] as String),
+            characterId: row['operation_character_id'] as int? ??
+                int.tryParse(row['entity_id'] as String),
+            localCharacterId: row['operation_local_character_id'] as int? ??
+                int.tryParse(row['entity_id'] as String),
             type: CharacterSyncOperationType.values.byName(operationTypeName),
             targetType: CharacterSyncTargetType.values.byName(targetTypeName),
             targetId: row['target_id'] as String?,
@@ -402,7 +427,34 @@ VALUES (?, ?, ?)
 
   CharacterSyncValueData? _decodeSyncValue(String? payloadJson) {
     if (payloadJson == null) return null;
-    return CharacterSyncValueData.fromJson(_decodeCachedPayload(payloadJson));
+    final decoded = jsonDecode(payloadJson);
+    if (decoded is Map) {
+      return CharacterSyncValueData.fromJson(
+        Map<String, dynamic>.from(decoded),
+      );
+    }
+    if (decoded is String) {
+      return CharacterSyncValueData(stringValue: decoded);
+    }
+    if (decoded is int) {
+      return CharacterSyncValueData(intValue: decoded);
+    }
+    if (decoded is bool) {
+      return CharacterSyncValueData(boolValue: decoded);
+    }
+    if (decoded is List) {
+      final stringValues = decoded.whereType<String>().toList();
+      if (stringValues.length == decoded.length) {
+        return CharacterSyncValueData(stringListValue: stringValues);
+      }
+    }
+    throw FormatException(
+      'Unsupported cached sync value payload: ${decoded.runtimeType}',
+    );
+  }
+
+  String _encodeSyncValue(CharacterSyncValueData value) {
+    return jsonEncode(value.toJson());
   }
 
   DateTime? _parseDateTime(String? value) {
@@ -499,8 +551,12 @@ VALUES (?, ?, ?)
   }
 
   String _generateLegacyId(String seed) {
-    final hash = seed.hashCode.toUnsigned(32).toRadixString(16).padLeft(8, '0');
-    return 'legacy-$hash';
+    var hash = 0x811c9dc5;
+    for (final unit in seed.codeUnits) {
+      hash ^= unit;
+      hash = (hash * 0x01000193).toUnsigned(32);
+    }
+    return 'legacy-${hash.toRadixString(16).padLeft(8, '0')}';
   }
 
   String _generateChangeId(DateTime now) {

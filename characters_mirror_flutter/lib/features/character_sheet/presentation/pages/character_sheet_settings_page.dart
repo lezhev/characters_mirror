@@ -1,4 +1,6 @@
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
+import 'package:characters_mirror_flutter/core/router/navigation_helpers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
@@ -6,7 +8,6 @@ import 'package:characters_mirror_flutter/features/settings/application/keep_scr
 import 'package:characters_mirror_flutter/features/settings/presentation/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class CharacterSheetSettingsPage extends ConsumerWidget {
   const CharacterSheetSettingsPage({
@@ -23,44 +24,56 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
         ref.watch(offlineCharacterRecordProvider(characterId));
     final characterName = character.valueOrNull?.name?.trim();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Настройки персонажа'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: 'Назад',
-          onPressed: () => context.go('/characters/sheet/$characterId'),
-        ),
-      ),
-      body: PageSizeLimiter(
-        maxWidth: 760,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
-          children: [
-            const AppearanceSettingsSection(),
-            if (isAndroidKeepScreenAwakeSupported) ...[
-              const SizedBox(height: 24),
-              const ScreenSettingsSection(),
-            ],
-            const SizedBox(height: 24),
-            Text(
-              'Настройки персонажа',
-              style: Theme.of(context).textTheme.headlineSmall,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          return;
+        }
+        popOrGo(context, '/characters/sheet/$characterId');
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Настройки персонажа'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            tooltip: 'Назад',
+            onPressed: () => popOrGo(
+              context,
+              '/characters/sheet/$characterId',
             ),
-            if (characterName != null && characterName.isNotEmpty) ...[
-              const SizedBox(height: 4),
+          ),
+        ),
+        body: PageSizeLimiter(
+          maxWidth: 760,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+            children: [
+              const AppearanceSettingsSection(),
+              if (isAndroidKeepScreenAwakeSupported) ...[
+                const SizedBox(height: 24),
+                const ScreenSettingsSection(),
+              ],
+              const SizedBox(height: 24),
               Text(
-                characterName,
-                style: Theme.of(context).textTheme.bodyMedium,
+                'Настройки персонажа',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              if (characterName != null && characterName.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  characterName,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+              const SizedBox(height: 12),
+              CharacterSheetSettingsSection(
+                characterId: characterId,
+                offlineRecord: offlineRecord,
+                showTitle: false,
               ),
             ],
-            const SizedBox(height: 12),
-            CharacterSheetSettingsSection(
-              characterId: characterId,
-              offlineRecord: offlineRecord,
-              showTitle: false,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -72,12 +85,14 @@ class CharacterSheetSettingsSection extends StatelessWidget {
     required this.characterId,
     required this.offlineRecord,
     this.showTitle = true,
+    this.onSyncRequested,
     super.key,
   });
 
   final int characterId;
   final AsyncValue<OfflineCharacterRecord?> offlineRecord;
   final bool showTitle;
+  final Future<void> Function()? onSyncRequested;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +115,14 @@ class CharacterSheetSettingsSection extends StatelessWidget {
             data: (record) => _SyncStatusSection(
               characterId: characterId,
               record: record,
+              onSyncRequested: () async {
+                final requestSync = onSyncRequested;
+                if (requestSync != null) {
+                  await requestSync();
+                } else {
+                  await offlineSyncCoordinator?.syncNow();
+                }
+              },
             ),
             loading: () => const ListTile(
               leading: Icon(Icons.sync_outlined),
@@ -118,30 +141,54 @@ class CharacterSheetSettingsSection extends StatelessWidget {
   }
 }
 
-class _SyncStatusSection extends ConsumerWidget {
+class _SyncStatusSection extends ConsumerStatefulWidget {
   const _SyncStatusSection({
     required this.characterId,
     required this.record,
+    required this.onSyncRequested,
   });
 
   final int characterId;
   final OfflineCharacterRecord? record;
+  final Future<void> Function() onSyncRequested;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final status = _resolveSyncStatus(record);
+  ConsumerState<_SyncStatusSection> createState() => _SyncStatusSectionState();
+}
+
+class _SyncStatusSectionState extends ConsumerState<_SyncStatusSection> {
+  bool _isSyncing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final status = _resolveSyncStatus(widget.record);
     return ListTile(
       leading: Icon(status.icon),
       title: Text(status.title),
       subtitle: Text(status.description),
       trailing: IconButton(
-        icon: const Icon(Icons.refresh),
+        icon: _isSyncing
+            ? const SizedBox.square(
+                dimension: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(Icons.refresh),
         tooltip: 'Обновить статус',
-        onPressed: () {
-          ref.invalidate(offlineCharacterRecordProvider(characterId));
-        },
+        onPressed: _isSyncing ? null : _syncNow,
       ),
     );
+  }
+
+  Future<void> _syncNow() async {
+    setState(() => _isSyncing = true);
+    try {
+      await widget.onSyncRequested();
+    } finally {
+      if (mounted) {
+        ref.invalidate(offlineCharacterRecordProvider(widget.characterId));
+        setState(() => _isSyncing = false);
+      }
+    }
   }
 }
 

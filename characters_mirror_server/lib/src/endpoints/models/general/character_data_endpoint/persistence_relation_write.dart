@@ -3,41 +3,48 @@ part of '../character_data_endpoint.dart';
 Future<void> _upsertCharacterRelations(
   Session session,
   CharacterRecord characterRecord,
-  CharacterData character,
-) async {
+  CharacterData character, {
+  Transaction? transaction,
+}) async {
   final entryResult = await _upsertClassEntryRecords(
     session,
     characterRecord,
     character.classEntries ?? const <CharacterClassEntryData>[],
+    transaction: transaction,
   );
   await _upsertChoiceRecords(
     session,
     characterRecord,
     entryResult.savedEntries,
     character.choices ?? const <CharacterChoiceData>[],
+    transaction: transaction,
   );
   await _upsertSkillSelectionRecords(
     session,
     characterRecord,
     entryResult.savedEntries,
     character.skillSelections ?? const <CharacterSkillSelectionData>[],
+    transaction: transaction,
   );
   await _upsertSpellSelectionRecords(
     session,
     characterRecord,
     entryResult.savedEntries,
     character.spellSelections ?? const <CharacterSpellSelectionData>[],
+    transaction: transaction,
   );
   await _deleteMissingClassEntryRecords(
     session,
     characterRecord.id!,
     entryResult.keepRowIds,
+    transaction: transaction,
   );
   await _upsertStartingEquipmentSelectionRecords(
     session,
     characterRecord,
     character.startingEquipmentSelections ??
         const <CharacterStartingEquipmentSelectionData>[],
+    transaction: transaction,
   );
 }
 
@@ -54,11 +61,13 @@ class _UpsertClassEntryResult {
 Future<_UpsertClassEntryResult> _upsertClassEntryRecords(
   Session session,
   CharacterRecord characterRecord,
-  List<CharacterClassEntryData> entries,
-) async {
+  List<CharacterClassEntryData> entries, {
+  Transaction? transaction,
+}) async {
   final existingEntries = await CharacterClassEntryRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterRecord.id),
+    transaction: transaction,
   );
   final existingBySyncId = {
     for (final record in existingEntries)
@@ -91,8 +100,16 @@ Future<_UpsertClassEntryResult> _upsertClassEntryRecords(
       updatedAt: entry.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
     final saved = existingRecord == null
-        ? await CharacterClassEntryRecord.db.insertRow(session, nextRecord)
-        : await CharacterClassEntryRecord.db.updateRow(session, nextRecord);
+        ? await CharacterClassEntryRecord.db.insertRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          )
+        : await CharacterClassEntryRecord.db.updateRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          );
     if (saved.id != null) {
       keepRowIds.add(saved.id!);
     }
@@ -109,11 +126,13 @@ Future<void> _upsertChoiceRecords(
   Session session,
   CharacterRecord characterRecord,
   List<CharacterClassEntryRecord> savedEntries,
-  List<CharacterChoiceData> choices,
-) async {
+  List<CharacterChoiceData> choices, {
+  Transaction? transaction,
+}) async {
   final existingChoices = await CharacterChoiceRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterRecord.id),
+    transaction: transaction,
   );
   final existingBySyncId = {
     for (final record in existingChoices)
@@ -154,25 +173,40 @@ Future<void> _upsertChoiceRecords(
       updatedAt: choice.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
     final saved = existingRecord == null
-        ? await CharacterChoiceRecord.db.insertRow(session, nextRecord)
-        : await CharacterChoiceRecord.db.updateRow(session, nextRecord);
+        ? await CharacterChoiceRecord.db.insertRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          )
+        : await CharacterChoiceRecord.db.updateRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          );
     if (saved.id != null) {
       keepRowIds.add(saved.id!);
     }
   }
 
-  await _deleteMissingChoiceRecords(session, characterRecord.id!, keepRowIds);
+  await _deleteMissingChoiceRecords(
+    session,
+    characterRecord.id!,
+    keepRowIds,
+    transaction: transaction,
+  );
 }
 
 Future<void> _upsertSkillSelectionRecords(
   Session session,
   CharacterRecord characterRecord,
   List<CharacterClassEntryRecord> savedEntries,
-  List<CharacterSkillSelectionData> selections,
-) async {
+  List<CharacterSkillSelectionData> selections, {
+  Transaction? transaction,
+}) async {
   final existingSelections = await CharacterSkillSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterRecord.id),
+    transaction: transaction,
   );
   final existingBySyncId = {
     for (final record in existingSelections)
@@ -212,8 +246,16 @@ Future<void> _upsertSkillSelectionRecords(
       updatedAt: selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
     final saved = existingRecord == null
-        ? await CharacterSkillSelectionRecord.db.insertRow(session, nextRecord)
-        : await CharacterSkillSelectionRecord.db.updateRow(session, nextRecord);
+        ? await CharacterSkillSelectionRecord.db.insertRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          )
+        : await CharacterSkillSelectionRecord.db.updateRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          );
     if (saved.id != null) {
       keepRowIds.add(saved.id!);
     }
@@ -223,6 +265,7 @@ Future<void> _upsertSkillSelectionRecords(
     session,
     characterRecord.id!,
     keepRowIds,
+    transaction: transaction,
   );
 }
 
@@ -230,11 +273,13 @@ Future<void> _upsertSpellSelectionRecords(
   Session session,
   CharacterRecord characterRecord,
   List<CharacterClassEntryRecord> savedEntries,
-  List<CharacterSpellSelectionData> selections,
-) async {
+  List<CharacterSpellSelectionData> selections, {
+  Transaction? transaction,
+}) async {
   final existingSelections = await CharacterSpellSelectionRecord.db.find(
     session,
     where: (t) => t.characterId.equals(characterRecord.id),
+    transaction: transaction,
   );
   final existingBySyncId = {
     for (final record in existingSelections)
@@ -278,8 +323,16 @@ Future<void> _upsertSpellSelectionRecords(
       updatedAt: selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
     final saved = existingRecord == null
-        ? await CharacterSpellSelectionRecord.db.insertRow(session, nextRecord)
-        : await CharacterSpellSelectionRecord.db.updateRow(session, nextRecord);
+        ? await CharacterSpellSelectionRecord.db.insertRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          )
+        : await CharacterSpellSelectionRecord.db.updateRow(
+            session,
+            nextRecord,
+            transaction: transaction,
+          );
     if (saved.id != null) {
       keepRowIds.add(saved.id!);
     }
@@ -289,5 +342,6 @@ Future<void> _upsertSpellSelectionRecords(
     session,
     characterRecord.id!,
     keepRowIds,
+    transaction: transaction,
   );
 }

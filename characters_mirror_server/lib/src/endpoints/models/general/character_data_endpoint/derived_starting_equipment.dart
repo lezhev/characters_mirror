@@ -2,10 +2,17 @@ part of '../character_data_endpoint.dart';
 
 Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
   Session session,
-  CharacterData character,
-) async {
-  final resolvedSources =
-      await _resolveStartingEquipmentSources(session, character);
+  CharacterData character, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
+  final resolvedSources = await _resolveStartingEquipmentSources(
+    session,
+    character,
+    transaction: transaction,
+    resolveContext: context,
+  );
   if (resolvedSources.blocks.isEmpty) {
     return const <CharacterEquipmentEntryView>[];
   }
@@ -34,6 +41,8 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
         blockLines,
         _collectBlockLevelResolutions(sourceSelections),
         accumulated,
+        transaction: transaction,
+        resolveContext: context,
       );
 
       for (final selection in sourceSelections) {
@@ -56,6 +65,8 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
           selection.resolutions ??
               const <CharacterStartingEquipmentResolutionData>[],
           accumulated,
+          transaction: transaction,
+          resolveContext: context,
         );
       }
       continue;
@@ -69,6 +80,8 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
       blockLines,
       _collectBlockLevelResolutions(sourceSelections),
       accumulated,
+      transaction: transaction,
+      resolveContext: context,
     );
   }
 
@@ -100,8 +113,11 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
 
 Future<_ResolvedStartingEquipmentSources> _resolveStartingEquipmentSources(
   Session session,
-  CharacterData character,
-) async {
+  CharacterData character, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final sourceBlocks = <_StartingEquipmentSourceBlock>[];
   final startingEntry = _resolveStartingEntry(
     character.classEntries ?? const <CharacterClassEntryData>[],
@@ -111,9 +127,9 @@ Future<_ResolvedStartingEquipmentSources> _resolveStartingEquipmentSources(
   if (startingClassId != null) {
     sourceBlocks.addAll(
       _sourceBlocksFor(
-        await startingEquipmentBlockViews(
-          session,
+        await context.startingEquipmentBlocks(
           sourceClassId: startingClassId,
+          transaction: transaction,
         ),
       ),
     );
@@ -124,9 +140,9 @@ Future<_ResolvedStartingEquipmentSources> _resolveStartingEquipmentSources(
   if (backgroundId != null) {
     sourceBlocks.addAll(
       _sourceBlocksFor(
-        await startingEquipmentBlockViews(
-          session,
+        await context.startingEquipmentBlocks(
           sourceBackgroundId: backgroundId,
+          transaction: transaction,
         ),
       ),
     );
@@ -220,8 +236,11 @@ Future<void> _applyStartingEquipmentLines(
   Session session,
   List<StartingEquipmentLineData> lines,
   List<CharacterStartingEquipmentResolutionData> resolutions,
-  Map<String, _GrantedEquipmentAccumulator> accumulated,
-) async {
+  Map<String, _GrantedEquipmentAccumulator> accumulated, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   final resolutionsByLineKey =
       <int, CharacterStartingEquipmentResolutionData>{};
   for (final resolution in resolutions) {
@@ -248,6 +267,8 @@ Future<void> _applyStartingEquipmentLines(
             session,
             catalogType,
             referenceKey,
+            transaction: transaction,
+            resolveContext: context,
           ),
           quantity: _normalizedPositiveQuantity(line.quantity),
         );
@@ -265,6 +286,8 @@ Future<void> _applyStartingEquipmentLines(
           session,
           line,
           resolution,
+          transaction: transaction,
+          resolveContext: context,
         );
         _accumulateGrantedEquipment(
           accumulated,
@@ -287,6 +310,8 @@ Future<void> _applyStartingEquipmentLines(
           session,
           line,
           resolution,
+          transaction: transaction,
+          resolveContext: context,
         );
         _accumulateGrantedEquipment(
           accumulated,
@@ -305,37 +330,31 @@ Future<void> _applyStartingEquipmentLines(
 Future<String> _catalogRefDisplayText(
   Session session,
   EquipmentCatalogType catalogType,
-  String referenceKey,
-) async {
+  String referenceKey, {
+  Transaction? transaction,
+  _CharacterResolveContext? resolveContext,
+}) async {
+  final context = resolveContext ?? _CharacterResolveContext(session);
   switch (catalogType) {
     case EquipmentCatalogType.weapon:
-      final rows = await WeaponData.db.find(
-        session,
-        where: (t) => t.referenceKey.equals(referenceKey),
-        limit: 1,
+      final weapon = await context.weapon(
+        referenceKey,
+        transaction: transaction,
       );
-      return rows.isEmpty
-          ? referenceKey
-          : _normalizedTextOrNull(rows.first.name) ?? referenceKey;
+      return _normalizedTextOrNull(weapon?.name) ?? referenceKey;
     case EquipmentCatalogType.armor:
-      final rows = await ArmorData.db.find(
-        session,
-        where: (t) => t.referenceKey.equals(referenceKey),
-        limit: 1,
+      final armor = await context.armor(
+        referenceKey,
+        transaction: transaction,
       );
-      return rows.isEmpty
-          ? referenceKey
-          : _normalizedTextOrNull(rows.first.name) ?? referenceKey;
+      return _normalizedTextOrNull(armor?.name) ?? referenceKey;
     case EquipmentCatalogType.item:
     case EquipmentCatalogType.magicItem:
-      final rows = await ItemData.db.find(
-        session,
-        where: (t) => t.referenceKey.equals(referenceKey),
-        limit: 1,
+      final item = await context.item(
+        referenceKey,
+        transaction: transaction,
       );
-      return rows.isEmpty
-          ? referenceKey
-          : _normalizedTextOrNull(rows.first.name) ?? referenceKey;
+      return _normalizedTextOrNull(item?.name) ?? referenceKey;
   }
 }
 
