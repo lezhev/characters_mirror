@@ -1,3 +1,5 @@
+import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/smooth_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +25,49 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Новый текст'), findsOneWidget);
+  });
+
+  testWidgets('ability dialog uses shared feature tag grid', (tester) async {
+    List<FeatureTag>? savedTags;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SmoothSwitcher.ability(
+            title: 'Способность',
+            text: 'Описание',
+            tags: const [FeatureTag.combat],
+            isCustomized: false,
+            onSave: ({title, text, tags}) async {
+              savedTags = tags;
+            },
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Способность'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FeatureTagSelectionGrid), findsOneWidget);
+    expect(find.byType(FilterChip), findsNothing);
+
+    final combatTile = find.byKey(const ValueKey('feature-tag-tile-combat'));
+    await tester.ensureVisible(combatTile);
+    await tester.tap(combatTile);
+    await tester.pump();
+
+    final reactionTile = find.byKey(
+      const ValueKey('feature-tag-tile-reaction'),
+    );
+    await tester.ensureVisible(reactionTile);
+    await tester.tap(reactionTile);
+    await tester.pump();
+
+    await tester.tap(find.text('Сохранить'));
+    await tester.pumpAndSettle();
+
+    expect(savedTags, const [FeatureTag.reaction]);
   });
 }
 

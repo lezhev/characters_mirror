@@ -1,6 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/ui/feature_tag_localization.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/expandable_section.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/smooth_switcher.dart';
 import 'package:flutter/material.dart';
 
@@ -196,16 +196,8 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                             if (featureTags != null &&
                                 featureTags.isNotEmpty) ...[
                               const SizedBox(height: 10),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: [
-                                  for (final tag in featureTags)
-                                    Chip(
-                                      label: Text(featureTagRuLabel(tag)),
-                                      visualDensity: VisualDensity.compact,
-                                    ),
-                                ],
+                              FeatureTagIconWrap(
+                                tags: featureTags,
                               ),
                             ],
                           ],

@@ -28,3 +28,7 @@ String featureTagRuLabel(FeatureTag tag) {
       return 'Боевая';
   }
 }
+
+String featureTagAssetPath(FeatureTag tag) {
+  return 'assets/svg/feature_tags/${tag.name}.svg';
+}

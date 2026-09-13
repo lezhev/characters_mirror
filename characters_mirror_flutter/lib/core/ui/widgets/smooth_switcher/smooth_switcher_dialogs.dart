@@ -207,32 +207,18 @@ class _SmoothSwitcherAbilityDialogState
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final tag in FeatureTag.values)
-                    FilterChip(
-                      label: Text(featureTagRuLabel(tag)),
-                      selected: _selectedTags.contains(tag),
-                      onSelected: (selected) {
-                        setState(() {
-                          if (selected) {
-                            _selectedTags = [..._selectedTags, tag];
-                          } else {
-                            _selectedTags = _selectedTags
-                                .where((item) => item != tag)
-                                .toList();
-                          }
-                          _selectedTags = _normalizedFeatureTags(
-                                _selectedTags,
-                                preserveEmpty: true,
-                              ) ??
-                              <FeatureTag>[];
-                        });
-                      },
-                    ),
-                ],
+              FeatureTagSelectionGrid(
+                tags: FeatureTag.values,
+                selectedTags: _selectedTags.toSet(),
+                onChanged: (selectedTags) {
+                  setState(() {
+                    _selectedTags = _normalizedFeatureTags(
+                          selectedTags.toList(),
+                          preserveEmpty: true,
+                        ) ??
+                        <FeatureTag>[];
+                  });
+                },
               ),
             ],
           ),

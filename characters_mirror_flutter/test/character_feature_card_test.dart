@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_feature_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -149,6 +150,34 @@ void main() {
 
       expect(titleLeft, lessThan(cardLeft + cardWidth / 4));
     });
+
+    testWidgets('shows feature tags as read-only icons when expanded',
+        (tester) async {
+      final semantics = tester.ensureSemantics();
+
+      await _pumpCard(
+        tester,
+        resource: null,
+        tags: const [FeatureTag.combat, FeatureTag.bonusAction],
+        onSetResource: (_) async {},
+      );
+
+      await tester.tap(find.byIcon(Icons.expand_more));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Chip), findsNothing);
+      expect(find.byType(FeatureTagIconWrap), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('feature-tag-icon-combat')),
+        findsOneWidget,
+      );
+      expect(find.byTooltip('Боевая'), findsOneWidget);
+      expect(find.bySemanticsLabel('Боевая'), findsOneWidget);
+      expect(find.text('Боевая'), findsNothing);
+      expect(find.text('Бонусное действие'), findsNothing);
+
+      semantics.dispose();
+    });
   });
 }
 
@@ -161,6 +190,7 @@ Future<void> _pumpCard(
   String? sourceName,
   int? level,
   String? description,
+  List<FeatureTag>? tags,
 }) {
   return tester.pumpWidget(
     MaterialApp(
@@ -175,6 +205,7 @@ Future<void> _pumpCard(
               defaultName: 'Feature',
               name: 'Feature',
               description: description,
+              defaultTags: tags,
               resources: resource == null ? null : [resource],
             ),
             onSave: ({name, description, tags}) async {},

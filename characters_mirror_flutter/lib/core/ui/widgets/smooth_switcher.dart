@@ -1,5 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/ui/feature_tag_localization.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.dart';
 import 'package:flutter/material.dart';
 
 part 'smooth_switcher/smooth_switcher_animation.dart';
