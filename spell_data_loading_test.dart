@@ -1,14 +1,13 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:test/test.dart';
 
-import 'test_tools/serverpod_test_tools.dart';
+import 'characters_mirror_server/test/integration/test_tools/serverpod_test_tools.dart';
 
 void main() {
-  withServerpod(
-    'SpellData database loading',
-    (sessionBuilder, _) {
-      test('loads every spell row without enum or type deserialization errors',
-          () async {
+  withServerpod('SpellData database loading', (sessionBuilder, _) {
+    test(
+      'loads every spell row without enum or type deserialization errors',
+      () async {
         final session = sessionBuilder.build();
         late final List<dynamic> spellRows;
 
@@ -35,10 +34,7 @@ void main() {
           final rowSession = sessionBuilder.build();
 
           try {
-            final spell = await SpellData.db.findById(
-              rowSession,
-              spellId,
-            );
+            final spell = await SpellData.db.findById(rowSession, spellId);
 
             if (spell == null) {
               failures.add(
@@ -49,9 +45,7 @@ void main() {
 
             spell.toJson();
           } catch (error) {
-            failures.add(
-              'id=$spellId name=${spellName ?? '<null>'}: $error',
-            );
+            failures.add('id=$spellId name=${spellName ?? '<null>'}: $error');
           } finally {
             await rowSession.close();
           }
@@ -65,8 +59,7 @@ void main() {
             ...failures,
           ].join('\n'),
         );
-      });
-    },
-    rollbackDatabase: RollbackDatabase.disabled,
-  );
+      },
+    );
+  }, rollbackDatabase: RollbackDatabase.disabled);
 }

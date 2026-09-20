@@ -14,12 +14,11 @@ extension OfflineCacheCharacterWriteOperations on OfflineCacheDatabase {
     final serverId = existing?.serverId ??
         (character.id != null && character.id! > 0 ? character.id : null);
     final now = DateTime.now().toUtc();
-    final localCharacter = stampCharacterMutation(
+    var localCharacter = stampCharacterMutation(
       previous: existing?.character ?? character.copyWith(id: localId),
       next: character.copyWith(id: localId),
       now: now,
     );
-    final payload = jsonEncode(localCharacter.toJson());
     final basePayload = existing?._basePayloadJson ??
         jsonEncode(
           (existing?.baseCharacter ?? character).toJson(),
@@ -32,6 +31,12 @@ extension OfflineCacheCharacterWriteOperations on OfflineCacheDatabase {
       createdAt: now,
       nextChangeId: () => _generateChangeId(now),
     );
+    localCharacter = applyLocalAbsoluteBarrierTokens(
+      localCharacter,
+      operations,
+      characterSyncOperationTargetKey,
+    );
+    final payload = jsonEncode(localCharacter.toJson());
     final nextStatus = operations.isEmpty &&
             existing?.status == OfflineCharacterSyncStatus.clean
         ? OfflineCharacterSyncStatus.clean
@@ -99,6 +104,81 @@ WHERE user_id = ? AND entity_id = ?
     }
 
     return (await getCharacter(userId, localId))!;
+  }
+
+  Future<OfflineCharacterRecord> saveSemanticLocal(
+    int userId,
+    CharacterData character,
+    CharacterSyncOperationData operation,
+  ) async {
+    final existing =
+        character.id == null ? null : await getCharacter(userId, character.id!);
+    if (existing == null || existing.serverId == null) {
+      return saveLocal(userId, character);
+    }
+
+    final now = operation.createdAt.toUtc();
+    final rebasedOperation = rebaseCharacterSemanticOperation(
+      existing.character,
+      operation.copyWith(
+        characterId: existing.serverId,
+        localCharacterId: existing.localId,
+      ),
+    );
+    var localCharacter = stampCharacterMutation(
+      previous: existing.character,
+      next: character.copyWith(id: existing.localId),
+      now: now,
+    );
+    localCharacter = materializeLocalBarrierTokens(
+      localCharacter,
+      rebasedOperation,
+    );
+    final payload = jsonEncode(localCharacter.toJson());
+    final stmt = _db.prepare('''
+INSERT OR REPLACE INTO characters_cache(
+  user_id, local_id, server_id, payload_json, base_payload_json, base_version,
+  base_updated_at, sync_status, sync_operation, local_updated_at,
+  server_updated_at, last_sync_error, conflict_payload_json
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+''');
+    try {
+      _runTransaction(() {
+        stmt.execute([
+          userId,
+          existing.localId,
+          existing.serverId,
+          payload,
+          existing._basePayloadJson ??
+              jsonEncode(
+                  (existing.baseCharacter ?? existing.character).toJson()),
+          existing.baseVersion ?? existing.character.version,
+          existing.baseUpdatedAt?.toUtc().toIso8601String(),
+          OfflineCharacterSyncStatus.dirty.name,
+          OfflineCharacterSyncOperation.upsert.name,
+          now.toIso8601String(),
+          existing._serverUpdatedAt,
+          null,
+          null,
+        ]);
+        _enqueueChange(
+          OfflineCharacterChange(
+            id: rebasedOperation.id,
+            userId: userId,
+            changeType: CharacterChangeType.upsert,
+            entityType: CharacterEntityType.character,
+            entityId: existing.serverId.toString(),
+            operationData: rebasedOperation,
+            createdAt: now,
+            baseUpdatedAt: existing.baseUpdatedAt,
+            status: OfflineCharacterChangeStatus.pending,
+          ),
+        );
+      });
+    } finally {
+      stmt.dispose();
+    }
+    return (await getCharacter(userId, existing.localId))!;
   }
 
   Future<void> markDeleting(int userId, int id, String? error) async {

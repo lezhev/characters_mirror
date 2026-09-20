@@ -165,6 +165,8 @@ class TestEndpoints {
 
   late final _AppAuthEndpoint appAuth;
 
+  late final _CharacterPortraitEndpoint characterPortrait;
+
   late final _ReferenceDataEndpoint referenceData;
 
   late final _BackgroundDataEndpoint backgroundData;
@@ -228,6 +230,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     appAuth = _AppAuthEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    characterPortrait = _CharacterPortraitEndpoint(
       endpoints,
       serializationManager,
     );
@@ -443,6 +449,133 @@ class _AppAuthEndpoint {
           _localUniqueSession,
           _localCallContext.arguments,
         ) as _i3.Future<_i5.AuthActionResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _CharacterPortraitEndpoint {
+  _CharacterPortraitEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<String> createUploadUrl(
+    _i1.TestSessionBuilder sessionBuilder,
+    int characterId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'characterPortrait',
+        method: 'createUploadUrl',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'characterPortrait',
+          methodName: 'createUploadUrl',
+          parameters: _i1.testObjectToJson({'characterId': characterId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<String>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<int> confirmUpload(
+    _i1.TestSessionBuilder sessionBuilder,
+    int characterId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'characterPortrait',
+        method: 'confirmUpload',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'characterPortrait',
+          methodName: 'confirmUpload',
+          parameters: _i1.testObjectToJson({'characterId': characterId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<String?> getUrl(
+    _i1.TestSessionBuilder sessionBuilder,
+    int characterId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'characterPortrait',
+        method: 'getUrl',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'characterPortrait',
+          methodName: 'getUrl',
+          parameters: _i1.testObjectToJson({'characterId': characterId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<String?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> deletePortrait(
+    _i1.TestSessionBuilder sessionBuilder,
+    int characterId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'characterPortrait',
+        method: 'deletePortrait',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'characterPortrait',
+          methodName: 'deletePortrait',
+          parameters: _i1.testObjectToJson({'characterId': characterId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

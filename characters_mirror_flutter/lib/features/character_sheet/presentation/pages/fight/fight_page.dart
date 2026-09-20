@@ -70,18 +70,18 @@ class FightPage extends ConsumerWidget {
                   onHpPressed: () => showHitPointsCalculatorSheet(
                     context: context,
                     character: character,
-                    onSave: ({
-                      required currentHp,
-                      required temporaryHp,
+                    onApplyAction: ({
+                      required action,
+                      required amount,
                     }) {
                       return ref
                           .read(
                             characterSheetControllerProvider(characterId)
                                 .notifier,
                           )
-                          .saveHitPoints(
-                            currentHp: currentHp,
-                            temporaryHp: temporaryHp,
+                          .applyHitPointAction(
+                            action: action,
+                            amount: amount,
                           );
                     },
                     onSaveDeathSavingThrows: ({

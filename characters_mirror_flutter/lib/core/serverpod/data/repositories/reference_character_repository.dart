@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_resolver.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
@@ -35,6 +37,50 @@ class CharacterRepository implements Repository<CharacterData> {
 
   Future<CharacterData> saveCharacter(CharacterData character) =>
       _saveCharacter(character);
+
+  Future<CharacterData> saveSemanticAction({
+    required CharacterData character,
+    required CharacterSyncOperationType type,
+    required CharacterSemanticActionData action,
+  }) async {
+    final normalized = normalizeCharacterForPersistence(
+      character,
+      fallbackUpdatedAt: character.updatedAt ?? DateTime.now().toUtc(),
+    );
+    final cache = offlineCacheDatabase;
+    final userId = currentOfflineUserId();
+    if (cache == null || userId == null) {
+      // Web/desktop still use their existing snapshot lifecycle in this phase.
+      return saveCharacter(normalized);
+    }
+    final existing = normalized.id == null
+        ? null
+        : await cache.getCharacter(userId, normalized.id!);
+    if (existing?.serverId == null) {
+      final resolved = await resolveOfflineCharacter(cache, normalized);
+      final record = await cache.saveLocal(userId, resolved);
+      unawaited(offlineSyncCoordinator?.syncNow());
+      return record.character;
+    }
+    final now = DateTime.now().toUtc();
+    final operation = createCharacterSemanticOperation(
+      character: existing!.character,
+      localId: existing.localId,
+      serverId: existing.serverId!,
+      type: type,
+      action: action,
+      changeId: createCharacterSyncItemId(),
+      createdAt: now,
+    );
+    final resolved = await resolveOfflineCharacter(cache, normalized);
+    final record = await cache.saveSemanticLocal(
+      userId,
+      resolved,
+      operation,
+    );
+    unawaited(offlineSyncCoordinator?.syncNow());
+    return record.character;
+  }
 
   Future<CharacterData> getCharacter(int characterId) async {
     final cache = offlineCacheDatabase;

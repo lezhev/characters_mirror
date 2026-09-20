@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_services_native.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/repositories/reference_character_repository.dart';
@@ -311,6 +312,108 @@ void main() {
         await container.read(offlineCharacterRecordProvider(42).future);
     expect(synced?.status, OfflineCharacterSyncStatus.clean);
     expect(repository.getOfflineRecordCallCount, 2);
+  });
+
+  test('terminal semantic rejection restores canonical server state', () async {
+    final canonical = CharacterData(
+      id: 42,
+      currentHp: 10,
+      version: 1,
+      syncTargetRevisions: const {'field:currentHp': 1},
+    );
+    await cache.upsertCleanFromServer(7, canonical);
+    final operation = createCharacterSemanticOperation(
+      character: canonical,
+      localId: 42,
+      serverId: 42,
+      type: CharacterSyncOperationType.applyDamage,
+      action: CharacterSemanticActionData(amount: 5),
+      changeId: 'damage-rejected',
+      createdAt: DateTime.utc(2026, 9, 14),
+    );
+    await cache.saveSemanticLocal(
+      7,
+      canonical.copyWith(currentHp: 5),
+      operation,
+    );
+
+    var callCount = 0;
+    final coordinator = OfflineSyncCoordinator(
+      cache: cache,
+      client: Client('http://localhost:8083/'),
+      currentUserId: () => 7,
+      syncCharacters: (request) async {
+        callCount += 1;
+        if (request.operations?.isEmpty ?? true) {
+          return CharacterSyncResponse(
+            characters: [canonical],
+            syncProtocolVersion: characterSemanticSyncProtocolVersion,
+          );
+        }
+        return CharacterSyncResponse(
+          rejectedChanges: [
+            CharacterRejectedChangeData(
+              changeId: operation.id,
+              reason: 'insufficient_resource',
+              character: canonical,
+            ),
+          ],
+          characters: [canonical],
+          syncProtocolVersion: characterSemanticSyncProtocolVersion,
+        );
+      },
+    );
+    addTearDown(coordinator.dispose);
+
+    await coordinator.syncNow();
+
+    expect(callCount, 2);
+    expect(await cache.getPendingChanges(7), isEmpty);
+    final record = await cache.getCharacter(7, 42);
+    expect(record?.status, OfflineCharacterSyncStatus.clean);
+    expect(record?.character.currentHp, 10);
+    expect(record?.lastSyncError, 'insufficient_resource');
+  });
+
+  test('does not send semantic operations to a protocol v3 server', () async {
+    final canonical = CharacterData(id: 42, currentHp: 10, version: 1);
+    await cache.upsertCleanFromServer(7, canonical);
+    final operation = createCharacterSemanticOperation(
+      character: canonical,
+      localId: 42,
+      serverId: 42,
+      type: CharacterSyncOperationType.applyDamage,
+      action: CharacterSemanticActionData(amount: 5),
+      changeId: 'unsupported-damage',
+      createdAt: DateTime.utc(2026, 9, 14),
+    );
+    await cache.saveSemanticLocal(
+      7,
+      canonical.copyWith(currentHp: 5),
+      operation,
+    );
+
+    final requests = <CharacterSyncRequest>[];
+    final coordinator = OfflineSyncCoordinator(
+      cache: cache,
+      client: Client('http://localhost:8083/'),
+      currentUserId: () => 7,
+      syncCharacters: (request) async {
+        requests.add(request);
+        return CharacterSyncResponse(
+          characters: [canonical],
+          syncProtocolVersion: 3,
+        );
+      },
+    );
+    addTearDown(coordinator.dispose);
+
+    await coordinator.syncNow();
+
+    expect(requests, hasLength(1));
+    expect(requests.single.operations, isNull);
+    expect(await cache.getPendingChanges(7), isEmpty);
+    expect((await cache.getCharacter(7, 42))?.character.currentHp, 10);
   });
 }
 

@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_target_keys.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -71,6 +72,35 @@ void main() {
     expect(coalesced, hasLength(1));
     expect(coalesced.single.id, 'second');
     expect(coalesced.single.value?.stringValue, 'Second');
+  });
+
+  test('semantic actions preserve their original sequence', () {
+    final first = CharacterSyncOperationData(
+      id: 'damage-1',
+      characterId: 42,
+      localCharacterId: 42,
+      type: CharacterSyncOperationType.applyDamage,
+      targetType: CharacterSyncTargetType.field,
+      fieldPath: 'currentHp',
+      value: CharacterSyncValueData(
+        semanticActionValue: CharacterSemanticActionData(amount: 5),
+      ),
+      createdAt: DateTime.utc(2026, 9, 14, 10),
+    );
+    final second = first.copyWith(
+      id: 'damage-2',
+      value: CharacterSyncValueData(
+        semanticActionValue: CharacterSemanticActionData(amount: 3),
+      ),
+      createdAt: DateTime.utc(2026, 9, 14, 11),
+    );
+
+    final coalesced = coalesceCharacterSyncOperations([first, second]);
+
+    expect(coalesced.map((operation) => operation.id), [
+      'damage-1',
+      'damage-2',
+    ]);
   });
 
   test('different note equipment and attack ids do not collide', () {
@@ -241,7 +271,7 @@ void main() {
     );
   });
 
-  test('feature overrides without ids use stable source target ids', () {
+  test('feature overrides use fine targets and legacy revision aliases', () {
     final operations = buildCharacterSyncOperations(
       previous: CharacterData(
         id: 42,
@@ -265,12 +295,246 @@ void main() {
     );
 
     expect(operations, hasLength(1));
-    expect(operations.single.targetId, 'classFeature:7');
+    expect(operations.single.targetId, 'classFeature:7:name');
     expect(
       characterSyncOperationTargetKey(operations.single),
-      'item:featureOverrides:classFeature%3A7',
+      'featureOverride:classFeature:7:name',
     );
     expect(operations.single.baseTargetRevision, 4);
+  });
+
+  test('feature override id churn does not create list operations', () {
+    final previous = CharacterData(
+      id: 42,
+      version: 3,
+      featureOverrides: [
+        CharacterFeatureOverrideData(
+          id: 'old-uuid',
+          sourceType: CharacterFeatureSourceType.classFeature,
+          sourceId: 7,
+          name: 'Old',
+          description: 'Description',
+          tags: const [FeatureTag.combat],
+        ),
+      ],
+    );
+    final operations = buildCharacterSyncOperations(
+      previous: previous,
+      next: previous.copyWith(
+        featureOverrides: [
+          CharacterFeatureOverrideData(
+            id: 'new-uuid',
+            sourceType: CharacterFeatureSourceType.classFeature,
+            sourceId: 7,
+            name: 'New',
+            description: 'Description',
+            tags: const [FeatureTag.combat],
+          ),
+        ],
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 4, 24),
+      nextChangeId: changeId,
+    );
+
+    expect(operations, hasLength(1));
+    expect(operations.single.type, CharacterSyncOperationType.setMemberValue);
+    expect(operations.single.targetId, 'classFeature:7:name');
+  });
+
+  test('feature override subfields and tags use independent targets', () {
+    final previous = CharacterData(
+      id: 42,
+      version: 3,
+      featureOverrides: [
+        CharacterFeatureOverrideData(
+          sourceType: CharacterFeatureSourceType.classFeature,
+          sourceId: 7,
+          name: 'Old',
+          description: 'Before',
+          tags: const [FeatureTag.combat],
+        ),
+      ],
+    );
+    final operations = buildCharacterSyncOperations(
+      previous: previous,
+      next: previous.copyWith(
+        featureOverrides: [
+          CharacterFeatureOverrideData(
+            sourceType: CharacterFeatureSourceType.classFeature,
+            sourceId: 7,
+            name: 'New',
+            description: 'After',
+            tags: const [FeatureTag.utility],
+          ),
+        ],
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 4, 24),
+      nextChangeId: changeId,
+    );
+
+    expect(
+      operations.map(characterSyncOperationTargetKey),
+      containsAll([
+        'featureOverride:classFeature:7:name',
+        'featureOverride:classFeature:7:description',
+        'featureOverride:classFeature:7:tag:combat',
+        'featureOverride:classFeature:7:tag:utility',
+      ]),
+    );
+  });
+
+  test('conditions and prepared spells produce per-member operations', () {
+    final operations = buildCharacterSyncOperations(
+      previous: CharacterData(
+        id: 42,
+        version: 2,
+        activeConditions: const [ConditionType.poisoned],
+        preparedSpellKeys: const ['fireball'],
+      ),
+      next: CharacterData(
+        id: 42,
+        version: 2,
+        activeConditions: const [ConditionType.prone],
+        preparedSpellKeys: const ['haste'],
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 4, 24),
+      nextChangeId: changeId,
+    );
+
+    expect(
+      operations.map(characterSyncOperationTargetKey),
+      containsAll([
+        'member:activeConditions:poisoned',
+        'member:activeConditions:prone',
+        'member:preparedSpellKeys:fireball',
+        'member:preparedSpellKeys:haste',
+      ]),
+    );
+    expect(
+      operations.every(
+        (operation) => operation.targetType == CharacterSyncTargetType.member,
+      ),
+      isTrue,
+    );
+  });
+
+  test('free-form member target components are collision safe', () {
+    const spellKey = 'fire:ball%3A';
+    final operations = buildCharacterSyncOperations(
+      previous: CharacterData(id: 42, version: 2),
+      next: CharacterData(
+        id: 42,
+        version: 2,
+        preparedSpellKeys: const [spellKey],
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 4, 24),
+      nextChangeId: changeId,
+    );
+
+    expect(
+      characterSyncOperationTargetKey(operations.single),
+      'member:preparedSpellKeys:fire%3Aball%253A',
+    );
+    expect(
+      decodeCharacterSyncCompositeId(
+        encodeCharacterSyncCompositeId(const ['a:b', 'c%3A']),
+      ),
+      const ['a:b', 'c%3A'],
+    );
+  });
+
+  test('manual proficiency changes produce keyed member operations', () {
+    final operations = buildCharacterSyncOperations(
+      previous: CharacterData(id: 42, version: 2),
+      next: CharacterData(
+        id: 42,
+        version: 2,
+        manualSkillProficiencyOverrides: [
+          CharacterSkillProficiencyState(
+            skill: Skill.arcana,
+            level: CharacterSkillProficiencyLevel.expertise,
+          ),
+        ],
+        manualSavingThrowProficiencyOverrides: [
+          CharacterSavingThrowProficiencyOverrideData(
+            ability: Ability.wisdom,
+            state: CharacterSavingThrowProficiencyOverride.remove,
+          ),
+        ],
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 4, 24),
+      nextChangeId: changeId,
+    );
+
+    expect(
+      operations.map(characterSyncOperationTargetKey),
+      containsAll([
+        'member:manualSkillProficiencyOverrides:arcana',
+        'member:manualSavingThrowProficiencyOverrides:wisdom',
+      ]),
+    );
+  });
+
+  test('starting equipment parent payload excludes nested resolutions', () {
+    final selection = CharacterStartingEquipmentSelectionData(
+      id: 'legacy-selection-id',
+      sourceType: ChoiceSourceType.classData,
+      sourceId: 5,
+      sourceEntryId: 11,
+      selectionIndex: 0,
+      isSelected: true,
+      resolutions: [
+        CharacterStartingEquipmentResolutionData(
+          id: 'legacy-resolution-id',
+          sourceLineEntryId: 13,
+          referenceKey: 'javelin',
+          quantity: 1,
+        ),
+      ],
+    );
+    final operations = buildCharacterSyncOperations(
+      previous: CharacterData(id: 42, version: 2),
+      next: CharacterData(
+        id: 42,
+        version: 2,
+        startingEquipmentSelections: [selection],
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 4, 24),
+      nextChangeId: changeId,
+    );
+
+    final parent = operations.singleWhere(
+      (operation) => operation.targetType == CharacterSyncTargetType.listItem,
+    );
+    final resolution = operations.singleWhere(
+      (operation) =>
+          operation.targetType ==
+          CharacterSyncTargetType.startingEquipmentResolution,
+    );
+    expect(
+      parent.itemPayload?.startingEquipmentSelectionValue?.resolutions,
+      isNull,
+    );
+    expect(parent.targetId, 'classData:5:11:0');
+    expect(
+      characterSyncOperationTargetKey(resolution),
+      characterSyncStartingEquipmentResolutionTargetKey(
+        'classData:5:11:0',
+        '13',
+      ),
+    );
   });
 
   test('offline-created character builds one create snapshot operation', () {

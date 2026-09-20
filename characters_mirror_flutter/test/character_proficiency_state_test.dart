@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('character proficiency state', () {
-    test('initializes full manual skill snapshot from derived levels', () {
+    test('creates a sparse skill override over derived levels', () {
       final character = CharacterData(
         derived: CharacterDerivedData(
           skillProficiencyLevels: [
@@ -23,15 +23,12 @@ void main() {
         skill: Skill.stealth,
         level: CharacterSkillProficiencyLevel.expertise,
       );
-      final levels = skillProficiencyLevelMap(updated);
-
-      expect(updated, hasLength(Skill.values.length));
+      expect(updated, hasLength(1));
+      expect(updated.single.skill, Skill.stealth);
       expect(
-        levels[Skill.acrobatics],
-        CharacterSkillProficiencyLevel.proficient,
+        updated.single.level,
+        CharacterSkillProficiencyLevel.expertise,
       );
-      expect(levels[Skill.stealth], CharacterSkillProficiencyLevel.expertise);
-      expect(levels[Skill.athletics], CharacterSkillProficiencyLevel.none);
     });
 
     test('manual skill snapshot replaces derived levels when present', () {
@@ -66,7 +63,7 @@ void main() {
       );
     });
 
-    test('initializes manual saving throw snapshot from derived levels', () {
+    test('creates a tri-state saving throw override over derived levels', () {
       final character = CharacterData(
         derived: CharacterDerivedData(
           savingThrowProficiencies: const [
@@ -82,11 +79,12 @@ void main() {
         proficient: true,
       );
 
-      expect(updated, [
-        Ability.strength,
-        Ability.dexterity,
-        Ability.constitution,
-      ]);
+      expect(updated, hasLength(1));
+      expect(updated.single.ability, Ability.dexterity);
+      expect(
+        updated.single.state,
+        CharacterSavingThrowProficiencyOverride.add,
+      );
     });
 
     test('skill proficiency cycles through expertise', () {

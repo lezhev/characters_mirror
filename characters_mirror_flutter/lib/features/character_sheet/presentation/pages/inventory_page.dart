@@ -1,5 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
@@ -37,16 +37,19 @@ class InventoryPage extends ConsumerWidget {
           child: _EquipmentEditor(
             character: character,
             weapons: weapons,
-            onChanged: (value) {
+            onItemChanged: (id, value) {
               runCharacterSheetSave(
                 context,
                 ref
                     .read(
                       characterSheetControllerProvider(characterId).notifier,
                     )
-                    .saveEquipment(value),
+                    .saveEquipmentItem(id, value),
               );
             },
+            onItemDelete: (id) => ref
+                .read(characterSheetControllerProvider(characterId).notifier)
+                .deleteEquipmentItem(id),
             onAddAttack: (attack) => ref
                 .read(characterSheetControllerProvider(characterId).notifier)
                 .addAttack(attack),
@@ -67,7 +70,8 @@ class InventoryPage extends ConsumerWidget {
 class _EquipmentEditor extends StatefulWidget {
   const _EquipmentEditor({
     required this.character,
-    required this.onChanged,
+    required this.onItemChanged,
+    required this.onItemDelete,
     required this.onAddAttack,
     required this.onCreateAttack,
     this.weapons,
@@ -75,7 +79,8 @@ class _EquipmentEditor extends StatefulWidget {
 
   final CharacterData character;
   final List<WeaponData>? weapons;
-  final ValueChanged<String?> onChanged;
+  final void Function(String id, String? value) onItemChanged;
+  final Future<void> Function(String id) onItemDelete;
   final Future<void> Function(CharacterAttackData attack) onAddAttack;
   final Future<void> Function(CharacterAttackData initialAttack) onCreateAttack;
 
@@ -84,32 +89,28 @@ class _EquipmentEditor extends StatefulWidget {
 }
 
 class _EquipmentEditorState extends State<_EquipmentEditor> {
-  late final TextEditingController _controller;
-  late final FocusNode _focusNode;
+  final List<TextEditingController> _controllers = [];
+  final List<FocusNode> _focusNodes = [];
+  final List<String> _itemIds = [];
   String? _selectedText;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.character.equipmentText);
-    _controller.addListener(_handleControllerChanged);
-    _focusNode = FocusNode();
+    _syncItems(widget.character.equipment);
   }
 
   @override
   void didUpdateWidget(_EquipmentEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final incomingText = widget.character.equipmentText;
-    if (!_focusNode.hasFocus && incomingText != _controller.text) {
-      _controller.text = incomingText ?? '';
+    if (!_hasAnyFocus && !_matchesIncoming(widget.character.equipment)) {
+      _syncItems(widget.character.equipment);
     }
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_handleControllerChanged);
-    _controller.dispose();
-    _focusNode.dispose();
+    _disposeEditors();
     super.dispose();
   }
 
@@ -120,40 +121,63 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
         AppSectionHeader(
           title: 'Инвентарь',
           showDivider: false,
-        ),
-        const SizedBox(height: 12),
-        AppSurfaceCard(
-          padding: const EdgeInsets.all(16),
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppAutosizeTextField(
-                label: 'Снаряжение',
-                controller: _controller,
-                focusNode: _focusNode,
-                minLines: 8,
-                onChanged: _queueSave,
-              ),
-              if (_selectedText != null) ...[
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: FilledButton(
-                    onPressed: () => _addSelectedTextToAttacks(_selectedText!),
-                    child: const Text('Добавить в атаки'),
-                  ),
-                ),
-              ],
-            ],
+          trailing: IconButton(
+            tooltip: 'Добавить предмет',
+            onPressed: _addItem,
+            icon: const Icon(Icons.add),
           ),
         ),
+        const SizedBox(height: 12),
+        if (_controllers.isEmpty)
+          const AppSurfaceCard(
+            padding: EdgeInsets.all(16),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+            child: Text('Инвентарь пока пуст'),
+          )
+        else
+          for (var index = 0; index < _controllers.length; index++) ...[
+            AppSurfaceCard(
+              padding: const EdgeInsets.all(16),
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppAutosizeTextField(
+                    label: index == 0 ? 'Снаряжение' : 'Предмет ${index + 1}',
+                    controller: _controllers[index],
+                    focusNode: _focusNodes[index],
+                    minLines: 2,
+                    onChanged: (value) => _queueSave(index, value),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      tooltip: 'Удалить предмет',
+                      onPressed: () => _deleteItem(index),
+                      icon: const Icon(Icons.delete_outline),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (index + 1 < _controllers.length) const SizedBox(height: 12),
+          ],
+        if (_selectedText != null) ...[
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: FilledButton(
+              onPressed: () => _addSelectedTextToAttacks(_selectedText!),
+              child: const Text('Добавить в атаки'),
+            ),
+          ),
+        ],
       ],
     );
   }
 
-  void _handleControllerChanged() {
-    final selectedText = _selectedEquipmentText();
+  void _handleControllerChanged(int index) {
+    final selectedText = _selectedEquipmentText(_controllers[index]);
     if (selectedText == _selectedText) {
       return;
     }
@@ -163,13 +187,13 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
     });
   }
 
-  String? _selectedEquipmentText() {
-    final selection = _controller.selection;
+  String? _selectedEquipmentText(TextEditingController controller) {
+    final selection = controller.selection;
     if (!selection.isValid || selection.isCollapsed) {
       return null;
     }
 
-    final text = _controller.text;
+    final text = controller.text;
     final start = selection.start.clamp(0, text.length).toInt();
     final end = selection.end.clamp(0, text.length).toInt();
     if (start == end) {
@@ -239,7 +263,86 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
     );
   }
 
-  void _queueSave(String value) {
-    widget.onChanged(value);
+  void _queueSave(int index, String value) {
+    widget.onItemChanged(_itemIds[index], value);
   }
+
+  void _addItem() {
+    final ids = [..._itemIds, createCharacterSyncItemId()];
+    final names = [..._controllers.map((controller) => controller.text), ''];
+    setState(() => _setEditors(ids, names));
+    _focusNodes.last.requestFocus();
+  }
+
+  void _deleteItem(int index) {
+    final id = _itemIds[index];
+    final ids = [
+      for (var i = 0; i < _itemIds.length; i++)
+        if (i != index) _itemIds[i],
+    ];
+    final names = [
+      for (var i = 0; i < _controllers.length; i++)
+        if (i != index) _controllers[i].text,
+    ];
+    setState(() {
+      _selectedText = null;
+      _setEditors(ids, names);
+    });
+    runCharacterSheetSave(context, widget.onItemDelete(id));
+  }
+
+  void _syncItems(List<CharacterInventoryItemData>? items) {
+    final values = items ?? const <CharacterInventoryItemData>[];
+    if (values.isEmpty) {
+      _setEditors([createCharacterSyncItemId()], ['']);
+      return;
+    }
+    _setEditors(
+      [for (final item in values) item.id ?? createCharacterSyncItemId()],
+      [for (final item in values) item.name ?? ''],
+    );
+  }
+
+  void _setEditors(List<String> ids, List<String> names) {
+    _disposeEditors();
+    _itemIds
+      ..clear()
+      ..addAll(ids);
+    for (var index = 0; index < names.length; index++) {
+      final controller = TextEditingController(text: names[index]);
+      controller.addListener(() => _handleControllerChanged(index));
+      _controllers.add(controller);
+      _focusNodes.add(FocusNode());
+    }
+  }
+
+  void _disposeEditors() {
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
+    }
+    _controllers.clear();
+    _focusNodes.clear();
+  }
+
+  bool _matchesIncoming(List<CharacterInventoryItemData>? items) {
+    final values = items ?? const <CharacterInventoryItemData>[];
+    if (values.isEmpty &&
+        _controllers.length == 1 &&
+        _controllers.single.text.isEmpty) {
+      return true;
+    }
+    if (values.length != _controllers.length) return false;
+    for (var index = 0; index < values.length; index++) {
+      if (values[index].id != _itemIds[index] ||
+          (values[index].name ?? '') != _controllers[index].text) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool get _hasAnyFocus => _focusNodes.any((node) => node.hasFocus);
 }

@@ -1,0 +1,34 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "manualSkillProficiencyOverrides",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:CharacterSkillProficiencyState>?"
+          },
+          {
+            "name": "manualSavingThrowProficiencyOverrides",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:CharacterSavingThrowProficiencyOverrideData>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

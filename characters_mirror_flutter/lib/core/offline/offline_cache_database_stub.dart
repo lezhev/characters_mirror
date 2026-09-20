@@ -146,6 +146,13 @@ class OfflineCacheDatabase {
   ) async =>
       throw UnsupportedError('Offline SQLite cache is only available on IO.');
 
+  Future<OfflineCharacterRecord> saveSemanticLocal(
+    int userId,
+    CharacterData character,
+    CharacterSyncOperationData operation,
+  ) async =>
+      throw UnsupportedError('Offline SQLite cache is only available on IO.');
+
   Future<void> markDeleting(int userId, int id, String? error) async {}
 
   Future<void> upsertCleanFromServer(

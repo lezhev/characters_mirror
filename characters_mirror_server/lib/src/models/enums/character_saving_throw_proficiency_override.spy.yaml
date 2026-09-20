@@ -1,0 +1,5 @@
+enum: CharacterSavingThrowProficiencyOverride
+serialized: byName
+values:
+  - add
+  - remove

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_target_keys.dart';
 
 CharacterData stampCharacterMutation({
   required CharacterData previous,
@@ -41,7 +43,7 @@ CharacterData stampCharacterMutation({
   final stampedOverrides = _stampCollection<CharacterFeatureOverrideData>(
     previous: normalizedPrevious.featureOverrides,
     next: normalizedNext.featureOverrides,
-    previousId: (item) => item.id,
+    previousId: characterSyncFeatureOverrideId,
     withUpdatedAt: (item, updatedAt) => item.copyWith(updatedAt: updatedAt),
   );
   final stampedEntries = _stampCollection<CharacterClassEntryData>(
@@ -72,13 +74,17 @@ CharacterData stampCharacterMutation({
       _stampCollection<CharacterStartingEquipmentSelectionData>(
     previous: normalizedPrevious.startingEquipmentSelections,
     next: normalizedNext.startingEquipmentSelections,
-    previousId: (item) => item.id,
+    previousId: characterSyncStartingEquipmentSelectionId,
     withUpdatedAt: (item, updatedAt) => item.copyWith(
       updatedAt: updatedAt,
       resolutions: _stampCollection<CharacterStartingEquipmentResolutionData>(
         previous: normalizedPrevious.startingEquipmentSelections
             ?.firstWhere(
-              (previousSelection) => previousSelection.id == item.id,
+              (previousSelection) =>
+                  characterSyncStartingEquipmentSelectionId(
+                    previousSelection,
+                  ) ==
+                  characterSyncStartingEquipmentSelectionId(item),
               orElse: () => CharacterStartingEquipmentSelectionData(
                 id: item.id,
                 resolutions: const [],
@@ -86,7 +92,7 @@ CharacterData stampCharacterMutation({
             )
             .resolutions,
         next: item.resolutions,
-        previousId: (resolution) => resolution.id,
+        previousId: (resolution) => resolution.sourceLineEntryId?.toString(),
         withUpdatedAt: (resolution, resolutionUpdatedAt) => resolution.copyWith(
           updatedAt: resolutionUpdatedAt,
         ),
@@ -197,6 +203,12 @@ CharacterData normalizeCharacterForPersistence(
     customSpellAttackBonus: _zeroAsNull(character.customSpellAttackBonus),
     preparedSpellKeys:
         _normalizedPreparedSpellKeys(character.preparedSpellKeys),
+    manualSkillProficiencyOverrides: _normalizedSkillOverrides(
+      character.manualSkillProficiencyOverrides,
+    ),
+    manualSavingThrowProficiencyOverrides: _normalizedSavingThrowOverrides(
+      character.manualSavingThrowProficiencyOverrides,
+    ),
     equipment: _normalizedInventory(character.equipment, updatedAt),
     notes: _normalizedNotes(character.notes, updatedAt),
     attacks: _normalizedAttacks(character.attacks, updatedAt),
@@ -339,7 +351,7 @@ List<CharacterInventoryItemData>? _normalizedInventory(
     for (final item in items ?? const <CharacterInventoryItemData>[])
       if (_normalizedText(item.name) != null)
         CharacterInventoryItemData(
-          id: item.id ?? _generateSyncId(),
+          id: item.id ?? createCharacterSyncItemId(),
           name: _normalizedText(item.name),
           quantity: _normalizeQuantity(item.quantity),
           type: item.type ?? CharacterInventoryItemType.custom,
@@ -357,7 +369,7 @@ List<CharacterNoteData>? _normalizedNotes(
     for (final note in notes ?? const <CharacterNoteData>[])
       if (_normalizedText(note.text) != null)
         CharacterNoteData(
-          id: note.id ?? _generateSyncId(),
+          id: note.id ?? createCharacterSyncItemId(),
           text: _normalizedText(note.text),
           updatedAt: note.updatedAt?.toUtc() ?? updatedAt,
         ),
@@ -383,7 +395,7 @@ CharacterAttackData _normalizedAttack(
   final damageParts = _normalizedDamageParts(attack.damageParts);
   final firstDamagePart = damageParts?.first;
   return CharacterAttackData(
-    id: attack.id ?? _generateSyncId(),
+    id: attack.id ?? createCharacterSyncItemId(),
     name: _normalizedText(attack.name),
     leadingAbility: attack.leadingAbility,
     damage: firstDamagePart?.formula ?? _normalizedText(attack.damage),
@@ -424,7 +436,7 @@ List<CharacterFeatureOverrideData>? _normalizedFeatureOverrides(
   final normalized = [
     for (final item in overrides ?? const <CharacterFeatureOverrideData>[])
       item.copyWith(
-        id: item.id ?? _generateSyncId(),
+        id: characterSyncFeatureOverrideId(item),
         name: _normalizedText(item.name),
         description: _normalizedText(item.description),
         updatedAt: item.updatedAt?.toUtc() ?? updatedAt,
@@ -481,7 +493,7 @@ List<CharacterClassEntryData>? _normalizedClassEntries(
     for (final entry in entries ?? const <CharacterClassEntryData>[])
       if (entry.classData?.id != null)
         entry.copyWith(
-          id: entry.id ?? _generateSyncId(),
+          id: entry.id ?? createCharacterSyncItemId(),
           notes: _normalizedText(entry.notes),
           updatedAt: entry.updatedAt?.toUtc() ?? updatedAt,
         ),
@@ -496,7 +508,7 @@ List<CharacterChoiceData>? _normalizedChoices(
   final normalized = [
     for (final choice in choices ?? const <CharacterChoiceData>[])
       choice.copyWith(
-        id: choice.id ?? _generateSyncId(),
+        id: choice.id ?? createCharacterSyncItemId(),
         selectedToolKey: _normalizedText(choice.selectedToolKey),
         selectedText: _normalizedText(choice.selectedText),
         updatedAt: choice.updatedAt?.toUtc() ?? updatedAt,
@@ -515,7 +527,7 @@ List<CharacterSpellSelectionData>? _normalizedSpellSelections(
           selection.spellId != null ||
           selection.spell?.id != null)
         selection.copyWith(
-          id: selection.id ?? _generateSyncId(),
+          id: selection.id ?? createCharacterSyncItemId(),
           classDataId:
               selection.classDataId ?? selection.classEntry?.classData?.id,
           spellId: selection.spellId ?? selection.spell?.id,
@@ -536,7 +548,7 @@ List<CharacterSkillSelectionData>? _normalizedSkillSelections(
     for (final selection in selections ?? const <CharacterSkillSelectionData>[])
       if (selection.skill != null)
         selection.copyWith(
-          id: selection.id ?? _generateSyncId(),
+          id: selection.id ?? createCharacterSyncItemId(),
           classDataId:
               selection.classDataId ?? selection.classEntry?.classData?.id,
           updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
@@ -553,7 +565,7 @@ List<CharacterStartingEquipmentSelectionData>? _normalizedSelections(
     for (final selection
         in selections ?? const <CharacterStartingEquipmentSelectionData>[])
       selection.copyWith(
-        id: selection.id ?? _generateSyncId(),
+        id: characterSyncStartingEquipmentSelectionId(selection),
         resolutions: _normalizedResolutions(selection.resolutions, updatedAt),
         updatedAt: selection.updatedAt?.toUtc() ?? updatedAt,
       ),
@@ -569,7 +581,7 @@ List<CharacterStartingEquipmentResolutionData>? _normalizedResolutions(
     for (final resolution
         in resolutions ?? const <CharacterStartingEquipmentResolutionData>[])
       CharacterStartingEquipmentResolutionData(
-        id: resolution.id ?? _generateSyncId(),
+        id: resolution.sourceLineEntryId?.toString() ?? resolution.id,
         sourceLineEntryId: resolution.sourceLineEntryId,
         catalogType: resolution.catalogType,
         referenceKey: _normalizedText(resolution.referenceKey),
@@ -592,11 +604,35 @@ List<String>? _normalizedPreparedSpellKeys(List<String>? values) {
   if (values == null) {
     return null;
   }
-  final normalized = [
+  final normalized = {
     for (final value in values)
       if (_normalizedText(value) != null) _normalizedText(value)!,
-  ];
+  }.toList()
+    ..sort();
   return normalized;
+}
+
+List<CharacterSkillProficiencyState>? _normalizedSkillOverrides(
+  List<CharacterSkillProficiencyState>? values,
+) {
+  if (values == null) return null;
+  final bySkill = {for (final value in values) value.skill: value};
+  return [
+    for (final skill in Skill.values)
+      if (bySkill[skill] != null) bySkill[skill]!,
+  ];
+}
+
+List<CharacterSavingThrowProficiencyOverrideData>?
+    _normalizedSavingThrowOverrides(
+  List<CharacterSavingThrowProficiencyOverrideData>? values,
+) {
+  if (values == null) return null;
+  final byAbility = {for (final value in values) value.ability: value};
+  return [
+    for (final ability in Ability.values)
+      if (byAbility[ability] != null) byAbility[ability]!,
+  ];
 }
 
 int _normalizeQuantity(int? quantity) {
@@ -638,20 +674,4 @@ String? _normalizedText(String? value) {
     return null;
   }
   return trimmed;
-}
-
-String _generateSyncId() {
-  final random = Random.secure();
-  final parts = [
-    for (final length in const [8, 4, 4, 4, 12]) _randomHex(random, length),
-  ];
-  return parts.join('-');
-}
-
-String _randomHex(Random random, int length) {
-  final buffer = StringBuffer();
-  for (var index = 0; index < length; index++) {
-    buffer.write(random.nextInt(16).toRadixString(16));
-  }
-  return buffer.toString();
 }

@@ -143,8 +143,47 @@ extension CharacterSheetControllerFeatureResources on CharacterSheetController {
     if (resource == null || resource.current <= 0) {
       return;
     }
+    await adjustFeatureResource(feature, resource.key, -1);
+  }
 
-    await setFeatureResource(feature, resource.key, resource.current - 1);
+  Future<void> adjustFeatureResource(
+    CharacterFeatureViewData feature,
+    String resourceKey,
+    int delta,
+  ) async {
+    final resource = _featureResource(feature, resourceKey);
+    if (resource == null || resource.isUnlimited == true || delta == 0) return;
+    final nextCurrent = resource.current + delta;
+    if (nextCurrent < 0 || nextCurrent > resource.max) return;
+    final character = _requireCharacter();
+    final resourceStates = _updatedResourceStates(
+      character.resourceStates,
+      feature.sourceType,
+      feature.sourceId,
+      resourceKey: resourceKey,
+      current: nextCurrent,
+      max: resource.max,
+    );
+    final updatedFeatures = _updateDerivedFeatureResource(
+      character.derived?.activeFeatures,
+      feature.sourceType,
+      feature.sourceId,
+      resourceKey: resourceKey,
+      current: nextCurrent,
+    );
+    await _saveSemanticAction(
+      character.copyWith(
+        resourceStates: resourceStates,
+        derived: character.derived?.copyWith(activeFeatures: updatedFeatures),
+      ),
+      type: CharacterSyncOperationType.adjustResource,
+      action: CharacterSemanticActionData(
+        sourceType: feature.sourceType,
+        sourceId: feature.sourceId,
+        resourceKey: resourceKey,
+        delta: delta,
+      ),
+    );
   }
 
   Future<void> restoreResources(RestType restType) async {
@@ -212,6 +251,10 @@ extension CharacterSheetControllerFeatureResources on CharacterSheetController {
       );
     }
 
-    await _saveCharacter(updatedCharacter);
+    await _saveSemanticAction(
+      updatedCharacter,
+      type: CharacterSyncOperationType.applyRest,
+      action: CharacterSemanticActionData(restType: restType),
+    );
   }
 }

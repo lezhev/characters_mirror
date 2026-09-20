@@ -78,6 +78,7 @@ class CharacterSheetController
   int _pendingSaveRevision = 0;
   Completer<void>? _pendingSaveCompleter;
   Completer<void>? _activeSaveCompleter;
+  Future<void> _semanticPersistenceTail = Future<void>.value();
 
   @override
   Future<CharacterData> build(int characterId) async {
@@ -164,6 +165,12 @@ class CharacterSheetController
       return;
     }
 
+    await _flushAbsoluteSaves();
+    await _semanticPersistenceTail;
+    await _flushAbsoluteSaves();
+  }
+
+  Future<void> _flushAbsoluteSaves() async {
     _saveDebounceTimer?.cancel();
     _saveDebounceTimer = null;
     if (_debouncedSave != null) {
@@ -183,6 +190,52 @@ class CharacterSheetController
         _flushDebouncedSave();
       }
     }
+  }
+
+  Future<void> _saveSemanticAction(
+    CharacterData updated, {
+    required CharacterSyncOperationType type,
+    required CharacterSemanticActionData action,
+  }) {
+    final previous = _requireCharacter();
+    final stamped = stampCharacterMutation(previous: previous, next: updated);
+    final revision = ++_saveRevision;
+    state = AsyncValue.data(stamped);
+    final completer = Completer<void>();
+    final previousTail = _semanticPersistenceTail;
+
+    _semanticPersistenceTail = () async {
+      try {
+        await previousTail;
+      } catch (_) {
+        // Each action reports its own failure through its returned future.
+      }
+      await _flushAbsoluteSaves();
+      try {
+        final saved = await _repository.saveSemanticAction(
+          character: stamped,
+          type: type,
+          action: action,
+        );
+        _lastPersistedCharacter = saved;
+        if (!_isDisposed && revision == _saveRevision) {
+          state = AsyncValue.data(saved);
+        }
+        if (!_isDisposed) {
+          ref.invalidate(characterSheetProvider(_characterId));
+          ref.invalidate(offlineCharacterRecordProvider(_characterId));
+        }
+        completer.complete();
+      } catch (error, stackTrace) {
+        if (!_isDisposed && revision == _saveRevision) {
+          state = AsyncValue.data(
+            _lastPersistedCharacter ?? previous,
+          );
+        }
+        completer.completeError(error, stackTrace);
+      }
+    }();
+    return completer.future;
   }
 
   void _flushDebouncedSave() {

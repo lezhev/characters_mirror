@@ -16,7 +16,7 @@ part 'hit_points_calculator_sheet/hit_point_inputs_actions.dart';
 class HitPointsCalculatorSheet extends StatefulWidget {
   const HitPointsCalculatorSheet({
     required this.character,
-    required this.onSave,
+    required this.onApplyAction,
     required this.onSaveDeathSavingThrows,
     required this.onSaveSettings,
     super.key,
@@ -24,9 +24,9 @@ class HitPointsCalculatorSheet extends StatefulWidget {
 
   final CharacterData character;
   final Future<void> Function({
-    required int currentHp,
-    required int temporaryHp,
-  }) onSave;
+    required HitPointAction action,
+    required int amount,
+  }) onApplyAction;
   final Future<void> Function({
     required int successes,
     required int failures,
@@ -257,9 +257,9 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     });
 
     try {
-      await widget.onSave(
-        currentHp: nextTotals.currentHp,
-        temporaryHp: nextTotals.temporaryHp,
+      await widget.onApplyAction(
+        action: action,
+        amount: value,
       );
       _controller.clear();
     } catch (error) {

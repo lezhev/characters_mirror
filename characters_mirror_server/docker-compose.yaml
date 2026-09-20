@@ -39,6 +39,18 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
 
+  minio:
+    image: quay.io/minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: characters_mirror
+      MINIO_ROOT_PASSWORD: characters_mirror_dev_password
+    command: server /data --console-address ":9001"
+    volumes:
+      - characters_mirror_storage:/data
 volumes:
   characters_mirror_data:
   characters_mirror_test_data:
+  characters_mirror_storage:

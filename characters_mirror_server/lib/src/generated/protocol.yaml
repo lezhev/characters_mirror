@@ -3,6 +3,11 @@ admin:
   - setAdminRole:
 appAuth:
   - register:
+characterPortrait:
+  - createUploadUrl:
+  - confirmUpload:
+  - getUrl:
+  - deletePortrait:
 referenceData:
   - insertJson:
 backgroundData:

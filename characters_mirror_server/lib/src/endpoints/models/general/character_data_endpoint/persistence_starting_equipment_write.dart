@@ -44,10 +44,16 @@ Future<void> _upsertStartingEquipmentSelectionRecords(
     for (final record in existingSelections)
       if (record.syncId != null) record.syncId!: record,
   };
+  final existingSelectionsByLogicalId = {
+    for (final record in existingSelections)
+      _startingEquipmentSelectionRecordTargetId(record): record,
+  };
   final keepSelectionRowIds = <int>{};
   for (final selection in selections) {
-    final syncId = selection.id ?? _generateSyncId();
-    final existingSelection = existingSelectionsBySyncId[syncId];
+    final logicalId = _startingEquipmentSelectionTargetId(selection);
+    final existingSelection = existingSelectionsBySyncId[selection.id] ??
+        existingSelectionsByLogicalId[logicalId];
+    final syncId = existingSelection?.syncId ?? selection.id ?? logicalId;
     final nextSelection = CharacterStartingEquipmentSelectionRecord(
       id: existingSelection?.id,
       syncId: syncId,
@@ -110,10 +116,19 @@ Future<void> _upsertStartingEquipmentResolutionRecords(
     for (final record in existingResolutions)
       if (record.syncId != null) record.syncId!: record,
   };
+  final existingBySourceLineId = {
+    for (final record in existingResolutions)
+      if (record.sourceLineEntryId != null) record.sourceLineEntryId!: record,
+  };
   final keepRowIds = <int>{};
   for (final resolution in resolutions) {
-    final syncId = resolution.id ?? _generateSyncId();
-    final existingRecord = existingBySyncId[syncId];
+    final logicalId = resolution.sourceLineEntryId?.toString();
+    final existingRecord = existingBySyncId[resolution.id] ??
+        existingBySourceLineId[resolution.sourceLineEntryId];
+    final syncId = existingRecord?.syncId ??
+        resolution.id ??
+        logicalId ??
+        _generateSyncId();
     final nextRecord = CharacterStartingEquipmentResolutionRecord(
       id: existingRecord?.id,
       syncId: syncId,
@@ -340,5 +355,23 @@ CharacterData _normalizeIncomingCharacter(
       character.startingEquipmentSelections,
       updatedAt,
     ),
+    manualSkillProficiencyOverrides: _normalizedSkillProficiencyOverrides(
+      character.manualSkillProficiencyOverrides,
+    ),
+    manualSavingThrowProficiencyOverrides:
+        _normalizedSavingThrowProficiencyOverrides(
+      character.manualSavingThrowProficiencyOverrides,
+    ),
   );
+}
+
+String _startingEquipmentSelectionRecordTargetId(
+  CharacterStartingEquipmentSelectionRecord record,
+) {
+  return _encodeCompositeTargetId([
+    record.sourceType?.name ?? '',
+    record.sourceId?.toString() ?? '',
+    record.sourceEntryId?.toString() ?? '',
+    record.selectionIndex?.toString() ?? '',
+  ]);
 }

@@ -13,7 +13,7 @@ void _registerHitPointsSheetTests() {
               deathSaveFailures: 2,
               derived: protocol.CharacterDerivedData(maxHp: 20),
             ),
-            onSave: ({required currentHp, required temporaryHp}) async {},
+            onApplyAction: ({required action, required amount}) async {},
             onSaveDeathSavingThrows: ({
               required successes,
               required failures,
@@ -55,7 +55,7 @@ void _registerHitPointsSheetTests() {
                 ),
               ],
             ),
-            onSave: ({required currentHp, required temporaryHp}) async {},
+            onApplyAction: ({required action, required amount}) async {},
             onSaveDeathSavingThrows: ({
               required successes,
               required failures,
@@ -101,7 +101,7 @@ void _registerHitPointsSheetTests() {
             character: protocol.CharacterData(
               derived: protocol.CharacterDerivedData(maxHp: 20),
             ),
-            onSave: ({required currentHp, required temporaryHp}) {
+            onApplyAction: ({required action, required amount}) {
               saveCount += 1;
               return saveCount == 1 ? firstSave.future : Future.value();
             },

@@ -172,9 +172,9 @@ Future<void> showHitPointsCalculatorSheet({
   required BuildContext context,
   required CharacterData character,
   required Future<void> Function({
-    required int currentHp,
-    required int temporaryHp,
-  }) onSave,
+    required HitPointAction action,
+    required int amount,
+  }) onApplyAction,
   required Future<void> Function({
     required int successes,
     required int failures,
@@ -193,7 +193,7 @@ Future<void> showHitPointsCalculatorSheet({
     useSafeArea: true,
     builder: (context) => HitPointsCalculatorSheet(
       character: character,
-      onSave: onSave,
+      onApplyAction: onApplyAction,
       onSaveDeathSavingThrows: onSaveDeathSavingThrows,
       onSaveSettings: onSaveSettings,
     ),

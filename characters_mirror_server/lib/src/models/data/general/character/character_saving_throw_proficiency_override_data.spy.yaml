@@ -1,0 +1,4 @@
+class: CharacterSavingThrowProficiencyOverrideData
+fields:
+  ability: Ability
+  state: CharacterSavingThrowProficiencyOverride

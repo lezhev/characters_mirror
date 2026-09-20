@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
 import 'package:path/path.dart' as p;

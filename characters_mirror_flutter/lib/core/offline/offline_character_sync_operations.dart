@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_target_keys.dart';
 
 List<CharacterSyncOperationData> buildCharacterSyncOperations({
   required CharacterData previous,
@@ -44,36 +45,65 @@ String characterSyncOperationTargetKey(CharacterSyncOperationData operation) {
     case CharacterSyncOperationType.deleteCharacter:
       return 'character:${operation.characterId ?? operation.localCharacterId ?? ''}';
     case CharacterSyncOperationType.setField:
-      return _syncTargetKey('field', [operation.fieldPath ?? '']);
+      return characterSyncFieldTargetKey(operation.fieldPath ?? '');
     case CharacterSyncOperationType.setMapEntry:
     case CharacterSyncOperationType.removeMapEntry:
-      return _syncTargetKey(
-        'map',
-        [operation.fieldPath ?? '', operation.targetId ?? ''],
+      return characterSyncMapTargetKey(
+        operation.fieldPath ?? '',
+        operation.targetId ?? '',
       );
     case CharacterSyncOperationType.upsertListItem:
     case CharacterSyncOperationType.removeListItem:
       if (operation.targetType == CharacterSyncTargetType.resource) {
-        final parts = _decodeCompositeTargetId(operation.targetId);
+        final parts = decodeCharacterSyncCompositeId(operation.targetId);
         if (parts.length == 3) {
-          return _syncTargetKey('resource', parts);
+          return characterSyncTargetKey('resource', parts);
         }
       }
       if (operation.targetType ==
           CharacterSyncTargetType.startingEquipmentResolution) {
-        final parts = _decodeCompositeTargetId(operation.targetId);
+        final parts = decodeCharacterSyncCompositeId(operation.targetId);
         if (parts.length == 2) {
-          return _syncTargetKey(
-            'item',
-            ['startingEquipmentSelections', parts[0], 'resolution', parts[1]],
+          return characterSyncStartingEquipmentResolutionTargetKey(
+            parts[0],
+            parts[1],
           );
         }
       }
-      return _syncTargetKey(
-        'item',
-        [operation.fieldPath ?? '', operation.targetId ?? ''],
+      return characterSyncItemTargetKey(
+        operation.fieldPath ?? '',
+        operation.targetId ?? '',
       );
+    case CharacterSyncOperationType.addSetMember:
+    case CharacterSyncOperationType.removeSetMember:
+    case CharacterSyncOperationType.setMemberValue:
+      return _memberOperationTargetKey(operation);
+    case CharacterSyncOperationType.applyDamage:
+    case CharacterSyncOperationType.heal:
+    case CharacterSyncOperationType.grantTemporaryHp:
+    case CharacterSyncOperationType.adjustSpellSlots:
+    case CharacterSyncOperationType.castSpell:
+    case CharacterSyncOperationType.adjustHitDice:
+    case CharacterSyncOperationType.adjustResource:
+    case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.applyRest:
+      return 'semantic:${operation.id}';
   }
+}
+
+String _memberOperationTargetKey(CharacterSyncOperationData operation) {
+  final field = operation.fieldPath ?? '';
+  final targetId = operation.targetId ?? '';
+  if (field == 'featureOverrides') {
+    final parts = decodeCharacterSyncCompositeId(targetId);
+    if (parts.length == 3) {
+      return characterSyncTargetKey('featureOverride', parts);
+    }
+    if (parts.length == 4 && parts[2] == 'tag') {
+      return characterSyncTargetKey('featureOverride', parts);
+    }
+  }
+  return characterSyncMemberTargetKey(field, targetId);
 }
 
 List<CharacterSyncOperationData> coalesceCharacterSyncOperations(
@@ -230,33 +260,13 @@ class _OperationBuilder {
       previous.customSpellAttackBonus,
       next.customSpellAttackBonus,
     );
-    _addField(
-      'preparedSpellKeys',
-      previous.preparedSpellKeys,
-      next.preparedSpellKeys,
-      (value) => CharacterSyncValueData(stringListValue: value),
-    );
-    _addField(
-      'activeConditions',
-      previous.activeConditions,
-      next.activeConditions,
-      (value) => CharacterSyncValueData(conditionListValue: value),
-    );
+    _addPreparedSpellMembers();
+    _addConditionMembers();
     _addIntField(
         'exhaustionLevel', previous.exhaustionLevel, next.exhaustionLevel);
     _addBoolField('inspiration', previous.inspiration, next.inspiration);
-    _addField(
-      'manualSkillProficiencies',
-      previous.manualSkillProficiencies,
-      next.manualSkillProficiencies,
-      (value) => CharacterSyncValueData(skillProficiencyListValue: value),
-    );
-    _addField(
-      'manualSavingThrowProficiencies',
-      previous.manualSavingThrowProficiencies,
-      next.manualSavingThrowProficiencies,
-      (value) => CharacterSyncValueData(abilityListValue: value),
-    );
+    _addSkillProficiencyMembers();
+    _addSavingThrowProficiencyMembers();
 
     _addListItems(
       'notes',
@@ -279,13 +289,7 @@ class _OperationBuilder {
       (item) => item.id,
       (item) => CharacterSyncValueData(attackValue: item),
     );
-    _addListItems(
-      'featureOverrides',
-      previous.featureOverrides,
-      next.featureOverrides,
-      _featureOverrideTargetId,
-      (item) => CharacterSyncValueData(featureOverrideValue: item),
-    );
+    _addFeatureOverrideMembers();
     _addResourceStates();
     _addListItems(
       'classEntries',
@@ -348,7 +352,7 @@ class _OperationBuilder {
         fieldPath: field,
         targetId: field,
         value: valueBuilder(right),
-        baseTargetRevision: _baseRevision(_syncTargetKey('field', [field])),
+        baseTargetRevision: _baseRevision(characterSyncFieldTargetKey(field)),
       ),
     );
   }
@@ -373,7 +377,7 @@ class _OperationBuilder {
 
   void _addMapEntry(String field, String key, int? left, int? right) {
     if (left == right) return;
-    final targetKey = _syncTargetKey('map', [field, key]);
+    final targetKey = characterSyncMapTargetKey(field, key);
     _operations.add(
       _operation(
         type: right == null
@@ -402,7 +406,7 @@ class _OperationBuilder {
       final leftItem = leftById[id];
       final rightItem = rightById[id];
       if (_jsonEquals(leftItem, rightItem)) continue;
-      final targetKey = _syncTargetKey('item', [field, id]);
+      final targetKey = characterSyncItemTargetKey(field, id);
       _operations.add(
         _operation(
           type: rightItem == null
@@ -434,9 +438,9 @@ class _OperationBuilder {
       final leftItem = leftById[id];
       final rightItem = rightById[id];
       if (_jsonEquals(leftItem, rightItem)) continue;
-      final targetKey = _syncTargetKey(
+      final targetKey = characterSyncTargetKey(
         'resource',
-        _decodeCompositeTargetId(id),
+        decodeCharacterSyncCompositeId(id),
       );
       _operations.add(
         _operation(
@@ -455,49 +459,295 @@ class _OperationBuilder {
     }
   }
 
-  void _addStartingEquipmentSelections() {
-    _addListItems(
-      'startingEquipmentSelections',
-      previous.startingEquipmentSelections,
-      next.startingEquipmentSelections,
-      (item) => item.id,
-      (item) => CharacterSyncValueData(startingEquipmentSelectionValue: item),
+  void _addConditionMembers() {
+    final left = {
+      for (final condition
+          in previous.activeConditions ?? const <ConditionType>[])
+        if (condition != ConditionType.exhaustion) condition.name: condition,
+    };
+    final right = {
+      for (final condition in next.activeConditions ?? const <ConditionType>[])
+        if (condition != ConditionType.exhaustion) condition.name: condition,
+    };
+    for (final member in {...left.keys, ...right.keys}.toList()..sort()) {
+      if (left.containsKey(member) == right.containsKey(member)) continue;
+      _operations.add(
+        _operation(
+          type: right.containsKey(member)
+              ? CharacterSyncOperationType.addSetMember
+              : CharacterSyncOperationType.removeSetMember,
+          targetType: CharacterSyncTargetType.member,
+          fieldPath: 'activeConditions',
+          targetId: member,
+          value: right[member] == null
+              ? null
+              : CharacterSyncValueData(conditionValue: right[member]),
+          baseTargetRevision: _baseMemberRevision(
+            'activeConditions',
+            member,
+          ),
+        ),
+      );
+    }
+  }
+
+  void _addPreparedSpellMembers() {
+    final left = _preparedSpellKeySet(previous.preparedSpellKeys);
+    final right = _preparedSpellKeySet(next.preparedSpellKeys);
+    for (final member in {...left, ...right}.toList()..sort()) {
+      if (left.contains(member) == right.contains(member)) continue;
+      _operations.add(
+        _operation(
+          type: right.contains(member)
+              ? CharacterSyncOperationType.addSetMember
+              : CharacterSyncOperationType.removeSetMember,
+          targetType: CharacterSyncTargetType.member,
+          fieldPath: 'preparedSpellKeys',
+          targetId: member,
+          value: right.contains(member)
+              ? CharacterSyncValueData(stringValue: member)
+              : null,
+          baseTargetRevision: _baseMemberRevision(
+            'preparedSpellKeys',
+            member,
+          ),
+        ),
+      );
+    }
+  }
+
+  void _addSkillProficiencyMembers() {
+    if (previous.manualSkillProficiencyOverrides == null &&
+        next.manualSkillProficiencyOverrides == null) {
+      _addField(
+        'manualSkillProficiencies',
+        previous.manualSkillProficiencies,
+        next.manualSkillProficiencies,
+        (value) => CharacterSyncValueData(
+          skillProficiencyListValue: value,
+        ),
+      );
+      return;
+    }
+    final left = _skillOverridesForSync(previous);
+    final right = _skillOverridesForSync(next);
+    for (final member in {...left.keys, ...right.keys}.toList()..sort()) {
+      if (_jsonEquals(left[member], right[member])) continue;
+      _operations.add(
+        _operation(
+          type: CharacterSyncOperationType.setMemberValue,
+          targetType: CharacterSyncTargetType.member,
+          fieldPath: 'manualSkillProficiencyOverrides',
+          targetId: member,
+          value: CharacterSyncValueData(
+            skillProficiencyValue: right[member],
+          ),
+          baseTargetRevision: _baseMemberRevision(
+            'manualSkillProficiencyOverrides',
+            member,
+            legacyField: 'manualSkillProficiencies',
+          ),
+        ),
+      );
+    }
+  }
+
+  void _addSavingThrowProficiencyMembers() {
+    if (previous.manualSavingThrowProficiencyOverrides == null &&
+        next.manualSavingThrowProficiencyOverrides == null) {
+      _addField(
+        'manualSavingThrowProficiencies',
+        previous.manualSavingThrowProficiencies,
+        next.manualSavingThrowProficiencies,
+        (value) => CharacterSyncValueData(abilityListValue: value),
+      );
+      return;
+    }
+    final left = _savingThrowOverridesForSync(previous);
+    final right = _savingThrowOverridesForSync(next);
+    for (final member in {...left.keys, ...right.keys}.toList()..sort()) {
+      if (_jsonEquals(left[member], right[member])) continue;
+      _operations.add(
+        _operation(
+          type: CharacterSyncOperationType.setMemberValue,
+          targetType: CharacterSyncTargetType.member,
+          fieldPath: 'manualSavingThrowProficiencyOverrides',
+          targetId: member,
+          value: CharacterSyncValueData(
+            savingThrowProficiencyOverrideValue: right[member],
+          ),
+          baseTargetRevision: _baseMemberRevision(
+            'manualSavingThrowProficiencyOverrides',
+            member,
+            legacyField: 'manualSavingThrowProficiencies',
+          ),
+        ),
+      );
+    }
+  }
+
+  void _addFeatureOverrideMembers() {
+    final left = {
+      for (final item in previous.featureOverrides ??
+          const <CharacterFeatureOverrideData>[])
+        characterSyncFeatureOverrideId(item): item,
+    };
+    final right = {
+      for (final item
+          in next.featureOverrides ?? const <CharacterFeatureOverrideData>[])
+        characterSyncFeatureOverrideId(item): item,
+    };
+    for (final id in {...left.keys, ...right.keys}.toList()..sort()) {
+      final leftItem = left[id];
+      final rightItem = right[id];
+      final identity = rightItem ?? leftItem!;
+      _addFeatureOverrideTextMember(
+        identity,
+        'name',
+        leftItem?.name,
+        rightItem?.name,
+      );
+      _addFeatureOverrideTextMember(
+        identity,
+        'description',
+        leftItem?.description,
+        rightItem?.description,
+      );
+      final leftTags = {...?leftItem?.tags};
+      final rightTags = {...?rightItem?.tags};
+      final tags = {...leftTags, ...rightTags}.toList()
+        ..sort((a, b) => a.name.compareTo(b.name));
+      for (final tag in tags) {
+        if (leftTags.contains(tag) == rightTags.contains(tag)) continue;
+        final targetId = encodeCharacterSyncCompositeId([
+          identity.sourceType.name,
+          identity.sourceId.toString(),
+          'tag',
+          tag.name,
+        ]);
+        final targetKey = characterSyncFeatureOverrideTagTargetKey(
+          identity.sourceType,
+          identity.sourceId,
+          tag,
+        );
+        _operations.add(
+          _operation(
+            type: rightTags.contains(tag)
+                ? CharacterSyncOperationType.addSetMember
+                : CharacterSyncOperationType.removeSetMember,
+            targetType: CharacterSyncTargetType.member,
+            fieldPath: 'featureOverrides',
+            targetId: targetId,
+            value: rightTags.contains(tag)
+                ? CharacterSyncValueData(featureTagValue: tag)
+                : null,
+            baseTargetRevision: _featureOverrideBaseRevision(
+              targetKey,
+              identity,
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  void _addFeatureOverrideTextMember(
+    CharacterFeatureOverrideData identity,
+    String field,
+    String? left,
+    String? right,
+  ) {
+    if (left == right) return;
+    final targetId = encodeCharacterSyncCompositeId([
+      identity.sourceType.name,
+      identity.sourceId.toString(),
+      field,
+    ]);
+    final targetKey = characterSyncFeatureOverrideFieldTargetKey(
+      identity.sourceType,
+      identity.sourceId,
+      field,
     );
+    _operations.add(
+      _operation(
+        type: CharacterSyncOperationType.setMemberValue,
+        targetType: CharacterSyncTargetType.member,
+        fieldPath: 'featureOverrides',
+        targetId: targetId,
+        value: CharacterSyncValueData(stringValue: right),
+        baseTargetRevision: _featureOverrideBaseRevision(targetKey, identity),
+      ),
+    );
+  }
+
+  void _addStartingEquipmentSelections() {
     final previousById = _itemsById(
       previous.startingEquipmentSelections,
-      (item) => item.id,
+      characterSyncStartingEquipmentSelectionId,
     );
     final nextById = _itemsById(
       next.startingEquipmentSelections,
-      (item) => item.id,
+      characterSyncStartingEquipmentSelectionId,
     );
     for (final selectionId in {...previousById.keys, ...nextById.keys}) {
+      final leftSelection = previousById[selectionId];
+      final rightSelection = nextById[selectionId];
+      final leftParent = leftSelection?.copyWith(resolutions: null);
+      final rightParent = rightSelection?.copyWith(resolutions: null);
+      if (!_jsonEquals(leftParent, rightParent)) {
+        final targetKey = characterSyncItemTargetKey(
+          'startingEquipmentSelections',
+          selectionId,
+        );
+        _operations.add(
+          _operation(
+            type: rightParent == null
+                ? CharacterSyncOperationType.removeListItem
+                : CharacterSyncOperationType.upsertListItem,
+            targetType: CharacterSyncTargetType.listItem,
+            fieldPath: 'startingEquipmentSelections',
+            targetId: selectionId,
+            itemPayload: rightParent == null
+                ? null
+                : CharacterSyncValueData(
+                    startingEquipmentSelectionValue: rightParent,
+                  ),
+            baseTargetRevision: _baseRevision(
+              targetKey,
+              aliases: [
+                if (leftSelection?.id != null)
+                  characterSyncItemTargetKey(
+                    'startingEquipmentSelections',
+                    leftSelection!.id!,
+                  ),
+              ],
+            ),
+          ),
+        );
+      }
       final leftResolutions = _itemsById(
-        previousById[selectionId]?.resolutions,
-        (item) => item.id,
+        leftSelection?.resolutions,
+        (item) => item.sourceLineEntryId?.toString(),
       );
       final rightResolutions = _itemsById(
-        nextById[selectionId]?.resolutions,
-        (item) => item.id,
+        rightSelection?.resolutions,
+        (item) => item.sourceLineEntryId?.toString(),
       );
       final resolutionIds = {
         ...leftResolutions.keys,
         ...rightResolutions.keys,
       }.toList()
         ..sort();
-      for (final resolutionId in resolutionIds) {
-        final leftItem = leftResolutions[resolutionId];
-        final rightItem = rightResolutions[resolutionId];
+      for (final sourceLineEntryId in resolutionIds) {
+        final leftItem = leftResolutions[sourceLineEntryId];
+        final rightItem = rightResolutions[sourceLineEntryId];
         if (_jsonEquals(leftItem, rightItem)) continue;
-        final targetId = _encodeCompositeTargetId([selectionId, resolutionId]);
-        final targetKey = _syncTargetKey(
-          'item',
-          [
-            'startingEquipmentSelections',
-            selectionId,
-            'resolution',
-            resolutionId,
-          ],
+        final targetId = encodeCharacterSyncCompositeId(
+          [selectionId, sourceLineEntryId],
+        );
+        final targetKey = characterSyncStartingEquipmentResolutionTargetKey(
+          selectionId,
+          sourceLineEntryId,
         );
         _operations.add(
           _operation(
@@ -512,7 +762,18 @@ class _OperationBuilder {
                 : CharacterSyncValueData(
                     startingEquipmentResolutionValue: rightItem,
                   ),
-            baseTargetRevision: _baseRevision(targetKey),
+            baseTargetRevision: _baseRevision(
+              targetKey,
+              aliases: [
+                if (leftSelection?.id != null && leftItem?.id != null)
+                  characterSyncTargetKey('item', [
+                    'startingEquipmentSelections',
+                    leftSelection!.id!,
+                    'resolution',
+                    leftItem!.id!,
+                  ]),
+              ],
+            ),
           ),
         );
       }
@@ -544,8 +805,48 @@ class _OperationBuilder {
     );
   }
 
-  int _baseRevision(String targetKey) {
-    return previous.syncTargetRevisions?[targetKey] ?? previous.version ?? 0;
+  int _baseRevision(String targetKey, {Iterable<String> aliases = const []}) {
+    final revisions = previous.syncTargetRevisions;
+    return revisions?[targetKey] ??
+        _maxRevision(revisions, aliases) ??
+        previous.version ??
+        0;
+  }
+
+  int _baseMemberRevision(
+    String field,
+    String member, {
+    String? legacyField,
+  }) {
+    final revisions = previous.syncTargetRevisions;
+    return revisions?[characterSyncMemberTargetKey(field, member)] ??
+        revisions?[characterSyncMemberBaselineTargetKey(field)] ??
+        revisions?[characterSyncFieldTargetKey(legacyField ?? field)] ??
+        previous.version ??
+        0;
+  }
+
+  int _featureOverrideBaseRevision(
+    String targetKey,
+    CharacterFeatureOverrideData item,
+  ) {
+    final revisions = previous.syncTargetRevisions;
+    final oldNaturalId = characterSyncFeatureOverrideId(item);
+    final memberBaseline =
+        revisions?[characterSyncMemberBaselineTargetKey('featureOverrides')];
+    final oldKeys = <String>[
+      characterSyncItemTargetKey('featureOverrides', oldNaturalId),
+      if (item.id != null)
+        characterSyncItemTargetKey('featureOverrides', item.id!),
+      for (final key in revisions?.keys ?? const <String>[])
+        if (key.startsWith('item:featureOverrides:')) key,
+    ];
+    return revisions?[targetKey] ??
+        memberBaseline ??
+        _maxRevision(revisions, oldKeys) ??
+        revisions?[characterSyncFieldTargetKey('featureOverrides')] ??
+        previous.version ??
+        0;
   }
 }
 
@@ -557,54 +858,84 @@ Map<String, T> _itemsById<T>(List<T>? items, String? Function(T item) idOf) {
 }
 
 String _resourceTargetId(CharacterResourceStateData state) {
-  return _encodeCompositeTargetId([
+  return encodeCharacterSyncCompositeId([
     state.sourceType.name,
     state.sourceId.toString(),
     state.resourceKey,
   ]);
 }
 
-String _featureOverrideTargetId(CharacterFeatureOverrideData item) {
-  return item.id ??
-      _encodeCompositeTargetId([
-        item.sourceType.name,
-        item.sourceId.toString(),
-      ]);
-}
-
-String _syncTargetKey(String kind, Iterable<String> parts) {
-  return '$kind:${parts.map(_encodeTargetKeyPart).join(':')}';
-}
-
-String _encodeCompositeTargetId(Iterable<String> parts) {
-  return parts.map(_encodeTargetKeyPart).join(':');
-}
-
-List<String> _decodeCompositeTargetId(String? value) {
-  if (value == null || value.isEmpty) {
-    return const <String>[];
-  }
-  final parts = <String>[];
-  final buffer = StringBuffer();
-  for (var index = 0; index < value.length; index++) {
-    final char = value[index];
-    if (char == ':') {
-      parts.add(_decodeTargetKeyPart(buffer.toString()));
-      buffer.clear();
-      continue;
+int? _maxRevision(Map<String, int>? revisions, Iterable<String> keys) {
+  int? result;
+  for (final key in keys) {
+    final revision = revisions?[key];
+    if (revision != null && (result == null || revision > result)) {
+      result = revision;
     }
-    buffer.write(char);
   }
-  parts.add(_decodeTargetKeyPart(buffer.toString()));
-  return parts;
+  return result;
 }
 
-String _encodeTargetKeyPart(String value) {
-  return value.replaceAll('%', '%25').replaceAll(':', '%3A');
+Set<String> _preparedSpellKeySet(List<String>? values) {
+  return {
+    for (final value in values ?? const <String>[])
+      if (value.trim().isNotEmpty) value.trim(),
+  };
 }
 
-String _decodeTargetKeyPart(String value) {
-  return value.replaceAll('%3A', ':').replaceAll('%25', '%');
+Map<String, CharacterSkillProficiencyState> _skillOverridesByName(
+  List<CharacterSkillProficiencyState>? values,
+) {
+  return {
+    for (final value in values ?? const <CharacterSkillProficiencyState>[])
+      value.skill.name: value,
+  };
+}
+
+Map<String, CharacterSkillProficiencyState> _skillOverridesForSync(
+  CharacterData character,
+) {
+  final overrides = character.manualSkillProficiencyOverrides;
+  if (overrides != null) return _skillOverridesByName(overrides);
+  final legacy = character.manualSkillProficiencies;
+  if (legacy == null) return const {};
+  final legacyBySkill = _skillOverridesByName(legacy);
+  return {
+    for (final skill in Skill.values)
+      skill.name: CharacterSkillProficiencyState(
+        skill: skill,
+        level: legacyBySkill[skill.name]?.level ??
+            CharacterSkillProficiencyLevel.none,
+      ),
+  };
+}
+
+Map<String, CharacterSavingThrowProficiencyOverrideData>
+    _savingThrowOverridesByName(
+  List<CharacterSavingThrowProficiencyOverrideData>? values,
+) {
+  return {
+    for (final value
+        in values ?? const <CharacterSavingThrowProficiencyOverrideData>[])
+      value.ability.name: value,
+  };
+}
+
+Map<String, CharacterSavingThrowProficiencyOverrideData>
+    _savingThrowOverridesForSync(CharacterData character) {
+  final overrides = character.manualSavingThrowProficiencyOverrides;
+  if (overrides != null) return _savingThrowOverridesByName(overrides);
+  final legacy = character.manualSavingThrowProficiencies;
+  if (legacy == null) return const {};
+  return {
+    for (final ability in Ability.values)
+      ability.name: CharacterSavingThrowProficiencyOverrideData(
+        ability: ability,
+        state: legacy.contains(ability)
+            ? CharacterSavingThrowProficiencyOverride.add
+            : CharacterSavingThrowProficiencyOverride.remove,
+      ),
+  };
 }
 
 bool _jsonEquals(Object? left, Object? right) {
@@ -626,6 +957,7 @@ Object? _normalizeJson(Object? value) {
       normalizedMap.remove('derived');
       normalizedMap.remove('version');
       normalizedMap.remove('syncTargetRevisions');
+      normalizedMap.remove('syncBarrierTokens');
       return _normalizeJson(normalizedMap);
     }
     return _normalizeJson(json);

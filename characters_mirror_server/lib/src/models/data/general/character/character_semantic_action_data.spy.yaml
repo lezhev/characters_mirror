@@ -1,0 +1,13 @@
+class: CharacterSemanticActionData
+fields:
+  amount: int?
+  delta: int?
+  level: int?
+  spellName: String?
+  startsConcentration: bool?
+  dieKind: String?
+  sourceType: CharacterFeatureSourceType?
+  sourceId: int?
+  resourceKey: String?
+  restType: RestType?
+  baseBarrierTokens: Map<String, String>?

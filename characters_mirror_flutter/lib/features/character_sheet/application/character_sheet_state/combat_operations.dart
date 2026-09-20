@@ -3,6 +3,41 @@
 part of '../character_sheet_state.dart';
 
 extension CharacterSheetControllerCombat on CharacterSheetController {
+  Future<void> applyHitPointAction({
+    required HitPointAction action,
+    required int amount,
+  }) async {
+    if (amount <= 0) return;
+    final current = _requireCharacter();
+    final totals = applyHitPointChange(
+      totals: hitPointTotalsFromCharacter(current),
+      value: amount,
+      action: action,
+    );
+    final hitPoints = normalizeHitPointsForSave(
+      currentHp: totals.currentHp,
+      maxHp: totals.maxHp,
+      temporaryHp: totals.temporaryHp,
+    );
+    final type = switch (action) {
+      HitPointAction.damage => CharacterSyncOperationType.applyDamage,
+      HitPointAction.heal => CharacterSyncOperationType.heal,
+      HitPointAction.temporary => CharacterSyncOperationType.grantTemporaryHp,
+    };
+    await _saveSemanticAction(
+      current.copyWith(
+        currentHp: hitPoints.currentHp,
+        temporaryHp: hitPoints.temporaryHp,
+        deathSaveSuccesses:
+            totals.currentHp > 0 ? null : current.deathSaveSuccesses,
+        deathSaveFailures:
+            totals.currentHp > 0 ? null : current.deathSaveFailures,
+      ),
+      type: type,
+      action: CharacterSemanticActionData(amount: amount),
+    );
+  }
+
   Future<void> addAttack(CharacterAttackData attack) async {
     final current = _requireCharacter();
     final attacks = [...?current.attacks, attack];
@@ -35,14 +70,24 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
     await _saveCharacter(current.copyWith(attacks: attacks));
   }
 
-  Future<void> saveEquipment(String? equipment) async {
+  Future<void> saveEquipmentItem(String id, String? name) async {
     final current = _requireCharacter();
     await _saveCharacter(
       current.copyWith(
-        equipment: inventoryItemsFromText(
-          equipment,
-          previous: current.equipment,
+        equipment: upsertCharacterInventoryItem(
+          current.equipment,
+          id: id,
+          name: name,
         ),
+      ),
+    );
+  }
+
+  Future<void> deleteEquipmentItem(String id) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(
+        equipment: removeCharacterInventoryItem(current.equipment, id),
       ),
     );
   }
@@ -131,6 +176,30 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
         currentHp: hitPoints.currentHp,
         temporaryHp: hitPoints.temporaryHp,
       ),
+    );
+  }
+
+  Future<void> adjustHitDice(String dieKind, int delta) async {
+    if (delta == 0) return;
+    final current = _requireCharacter();
+    final maximum = effectiveHitDiceMaxFromCharacter(current)[dieKind];
+    if (maximum == null || maximum <= 0) return;
+    final available = effectiveCurrentHitDice(
+      current.currentHitDice,
+      effectiveHitDiceMaxFromCharacter(current),
+    )[dieKind]!;
+    final next = available + delta;
+    if (next < 0 || next > maximum) return;
+    final values = <String, int>{...?current.currentHitDice};
+    if (next == maximum) {
+      values.remove(dieKind);
+    } else {
+      values[dieKind] = next;
+    }
+    await _saveSemanticAction(
+      current.copyWith(currentHitDice: values.isEmpty ? null : values),
+      type: CharacterSyncOperationType.adjustHitDice,
+      action: CharacterSemanticActionData(dieKind: dieKind, delta: delta),
     );
   }
 

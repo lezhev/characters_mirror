@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -117,6 +118,56 @@ void main() {
     final cached = await cache.getCharacter(7, 42);
     expect(cached!.character.name, 'Local edit');
     expect(cached.status, OfflineCharacterSyncStatus.dirty);
+  });
+
+  test('semantic action payload survives SQLite restart', () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final persistent = await OfflineCacheDatabase.openAt(path);
+    final base = CharacterData(
+      id: 42,
+      currentHp: 10,
+      version: 2,
+      syncTargetRevisions: const {'field:currentHp': 2},
+    );
+    await persistent.upsertCleanFromServer(7, base);
+    final operation = createCharacterSemanticOperation(
+      character: base,
+      localId: 42,
+      serverId: 42,
+      type: CharacterSyncOperationType.applyDamage,
+      action: CharacterSemanticActionData(amount: 3),
+      changeId: 'durable-damage',
+      createdAt: DateTime.utc(2026, 9, 14),
+    );
+    await persistent.saveSemanticLocal(
+      7,
+      base.copyWith(currentHp: 7),
+      operation,
+    );
+    persistent.close();
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+    final pending = await reopened.getPendingChanges(7);
+
+    expect(pending, hasLength(1));
+    expect(pending.single.operationData?.type,
+        CharacterSyncOperationType.applyDamage);
+    expect(
+      pending.single.operationData?.value?.semanticActionValue?.amount,
+      3,
+    );
+    expect(
+      pending
+          .single.operationData?.value?.semanticActionValue?.baseBarrierTokens,
+      const {
+        'field:currentHp': 'revision:2',
+        'field:temporaryHp': 'revision:0',
+      },
+    );
+    expect((await reopened.getCharacter(7, 42))?.character.currentHp, 7);
   });
 
   test('remote delete removes clean rows and rejects pending rows', () async {
