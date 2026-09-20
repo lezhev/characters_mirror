@@ -24,37 +24,57 @@ List<CharacterSkillProficiencyState> buildManualSkillProficiencies({
   required Skill skill,
   required CharacterSkillProficiencyLevel level,
 }) {
-  final levels = skillProficiencyLevelMap(
-    character.manualSkillProficiencies ??
-        character.derived?.skillProficiencyLevels,
-  );
-  levels[skill] = level;
+  final existingOverrides = character.manualSkillProficiencyOverrides;
+  final values = existingOverrides == null
+      ? character.manualSkillProficiencies == null
+          ? <Skill, CharacterSkillProficiencyState>{}
+          : {
+              for (final candidate in Skill.values)
+                candidate: CharacterSkillProficiencyState(
+                  skill: candidate,
+                  level: skillProficiencyLevelMap(
+                    character.manualSkillProficiencies,
+                  )[candidate]!,
+                ),
+            }
+      : {for (final value in existingOverrides) value.skill: value};
+  values[skill] = CharacterSkillProficiencyState(skill: skill, level: level);
   return [
-    for (final skill in Skill.values)
-      CharacterSkillProficiencyState(
-        skill: skill,
-        level: levels[skill] ?? CharacterSkillProficiencyLevel.none,
-      ),
+    for (final candidate in Skill.values)
+      if (values[candidate] != null) values[candidate]!
   ];
 }
 
-List<Ability> buildManualSavingThrowProficiencies({
+List<CharacterSavingThrowProficiencyOverrideData>
+    buildManualSavingThrowProficiencies({
   required CharacterData character,
   required Ability ability,
   required bool proficient,
 }) {
-  final abilities = savingThrowProficiencySet(
-    character.manualSavingThrowProficiencies ??
-        character.derived?.savingThrowProficiencies,
+  final existingOverrides = character.manualSavingThrowProficiencyOverrides;
+  final values = existingOverrides == null
+      ? character.manualSavingThrowProficiencies == null
+          ? <Ability, CharacterSavingThrowProficiencyOverrideData>{}
+          : {
+              for (final candidate in Ability.values)
+                candidate: CharacterSavingThrowProficiencyOverrideData(
+                  ability: candidate,
+                  state: character.manualSavingThrowProficiencies!
+                          .contains(candidate)
+                      ? CharacterSavingThrowProficiencyOverride.add
+                      : CharacterSavingThrowProficiencyOverride.remove,
+                ),
+            }
+      : {for (final value in existingOverrides) value.ability: value};
+  values[ability] = CharacterSavingThrowProficiencyOverrideData(
+    ability: ability,
+    state: proficient
+        ? CharacterSavingThrowProficiencyOverride.add
+        : CharacterSavingThrowProficiencyOverride.remove,
   );
-  if (proficient) {
-    abilities.add(ability);
-  } else {
-    abilities.remove(ability);
-  }
   return [
-    for (final ability in Ability.values)
-      if (abilities.contains(ability)) ability,
+    for (final candidate in Ability.values)
+      if (values[candidate] != null) values[candidate]!,
   ];
 }
 
@@ -65,10 +85,17 @@ CharacterData withOptimisticSkillProficiency({
   final derived = character.derived;
   if (derived == null) {
     return character.copyWith(
-        manualSkillProficiencies: manualSkillProficiencies);
+      manualSkillProficiencies: manualSkillProficiencies,
+      manualSkillProficiencyOverrides: manualSkillProficiencies,
+    );
   }
 
-  final skillLevels = skillProficiencyLevelMap(manualSkillProficiencies);
+  final skillLevels = skillProficiencyLevelMap(
+    derived.skillProficiencyLevels,
+  );
+  for (final value in manualSkillProficiencies) {
+    skillLevels[value.skill] = value.level;
+  }
   final skillBonuses = {
     for (final skill in Skill.values)
       skill.name: optimisticSkillBonus(
@@ -79,10 +106,23 @@ CharacterData withOptimisticSkillProficiency({
   };
 
   return character.copyWith(
-    manualSkillProficiencies: manualSkillProficiencies,
+    manualSkillProficiencies: [
+      for (final skill in Skill.values)
+        CharacterSkillProficiencyState(
+          skill: skill,
+          level: skillLevels[skill] ?? CharacterSkillProficiencyLevel.none,
+        ),
+    ],
+    manualSkillProficiencyOverrides: manualSkillProficiencies,
     derived: derived.copyWith(
       skillBonuses: skillBonuses,
-      skillProficiencyLevels: manualSkillProficiencies,
+      skillProficiencyLevels: [
+        for (final skill in Skill.values)
+          CharacterSkillProficiencyState(
+            skill: skill,
+            level: skillLevels[skill] ?? CharacterSkillProficiencyLevel.none,
+          ),
+      ],
       passivePerception: 10 + (skillBonuses[Skill.perception.name] ?? 0),
       passiveInvestigation: 10 + (skillBonuses[Skill.investigation.name] ?? 0),
       passiveInsight: 10 + (skillBonuses[Skill.insight.name] ?? 0),
@@ -92,18 +132,31 @@ CharacterData withOptimisticSkillProficiency({
 
 CharacterData withOptimisticSavingThrowProficiency({
   required CharacterData character,
-  required List<Ability> manualSavingThrowProficiencies,
+  required List<CharacterSavingThrowProficiencyOverrideData>
+      manualSavingThrowProficiencies,
 }) {
   final derived = character.derived;
   if (derived == null) {
     return character.copyWith(
-      manualSavingThrowProficiencies: manualSavingThrowProficiencies,
+      manualSavingThrowProficiencies: [
+        for (final value in manualSavingThrowProficiencies)
+          if (value.state == CharacterSavingThrowProficiencyOverride.add)
+            value.ability,
+      ],
+      manualSavingThrowProficiencyOverrides: manualSavingThrowProficiencies,
     );
   }
 
   final proficiencies = savingThrowProficiencySet(
-    manualSavingThrowProficiencies,
+    derived.savingThrowProficiencies,
   );
+  for (final value in manualSavingThrowProficiencies) {
+    if (value.state == CharacterSavingThrowProficiencyOverride.add) {
+      proficiencies.add(value.ability);
+    } else {
+      proficiencies.remove(value.ability);
+    }
+  }
   final savingThrowBonuses = {
     for (final ability in Ability.values)
       ability.name: optimisticSavingThrowBonus(
@@ -114,10 +167,17 @@ CharacterData withOptimisticSavingThrowProficiency({
   };
 
   return character.copyWith(
-    manualSavingThrowProficiencies: manualSavingThrowProficiencies,
+    manualSavingThrowProficiencies: [
+      for (final ability in Ability.values)
+        if (proficiencies.contains(ability)) ability,
+    ],
+    manualSavingThrowProficiencyOverrides: manualSavingThrowProficiencies,
     derived: derived.copyWith(
       savingThrowBonuses: savingThrowBonuses,
-      savingThrowProficiencies: manualSavingThrowProficiencies,
+      savingThrowProficiencies: [
+        for (final ability in Ability.values)
+          if (proficiencies.contains(ability)) ability,
+      ],
     ),
   );
 }

@@ -126,6 +126,42 @@ class EndpointAppAuth extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointCharacterPortrait extends _i1.EndpointRef {
+  EndpointCharacterPortrait(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'characterPortrait';
+
+  _i2.Future<String> createUploadUrl(int characterId) =>
+      caller.callServerEndpoint<String>(
+        'characterPortrait',
+        'createUploadUrl',
+        {'characterId': characterId},
+      );
+
+  _i2.Future<int> confirmUpload(int characterId) =>
+      caller.callServerEndpoint<int>(
+        'characterPortrait',
+        'confirmUpload',
+        {'characterId': characterId},
+      );
+
+  _i2.Future<String?> getUrl(int characterId) =>
+      caller.callServerEndpoint<String?>(
+        'characterPortrait',
+        'getUrl',
+        {'characterId': characterId},
+      );
+
+  _i2.Future<void> deletePortrait(int characterId) =>
+      caller.callServerEndpoint<void>(
+        'characterPortrait',
+        'deletePortrait',
+        {'characterId': characterId},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointReferenceData extends _i1.EndpointRef {
   EndpointReferenceData(_i1.EndpointCaller caller) : super(caller);
 
@@ -1076,6 +1112,7 @@ class Client extends _i1.ServerpodClientShared {
         ) {
     admin = EndpointAdmin(this);
     appAuth = EndpointAppAuth(this);
+    characterPortrait = EndpointCharacterPortrait(this);
     referenceData = EndpointReferenceData(this);
     backgroundData = EndpointBackgroundData(this);
     featData = EndpointFeatData(this);
@@ -1107,6 +1144,8 @@ class Client extends _i1.ServerpodClientShared {
   late final EndpointAdmin admin;
 
   late final EndpointAppAuth appAuth;
+
+  late final EndpointCharacterPortrait characterPortrait;
 
   late final EndpointReferenceData referenceData;
 
@@ -1164,6 +1203,7 @@ class Client extends _i1.ServerpodClientShared {
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'admin': admin,
         'appAuth': appAuth,
+        'characterPortrait': characterPortrait,
         'referenceData': referenceData,
         'backgroundData': backgroundData,
         'featData': featData,

@@ -93,7 +93,7 @@ List<CharacterFeatureOverrideData> _normalizedFeatureOverridesWithSync(
   return [
     for (final override in _normalizedFeatureOverrides(overrides))
       override.copyWith(
-        id: override.id ?? _generateSyncId(),
+        id: _featureOverrideTargetId(override),
         updatedAt: override.updatedAt?.toUtc() ?? updatedAt,
       ),
   ];
@@ -182,7 +182,7 @@ List<CharacterStartingEquipmentSelectionData>?
     for (final selection
         in selections ?? const <CharacterStartingEquipmentSelectionData>[])
       selection.copyWith(
-        id: selection.id ?? _generateSyncId(),
+        id: selection.id ?? _startingEquipmentSelectionTargetId(selection),
         isSelected: selection.isSelected,
         resolutions: _normalizedStartingEquipmentResolutions(
           selection.resolutions,
@@ -203,7 +203,7 @@ List<CharacterStartingEquipmentResolutionData>?
     for (final resolution
         in resolutions ?? const <CharacterStartingEquipmentResolutionData>[])
       CharacterStartingEquipmentResolutionData(
-        id: resolution.id ?? _generateSyncId(),
+        id: resolution.id ?? resolution.sourceLineEntryId?.toString(),
         sourceLineEntryId: resolution.sourceLineEntryId,
         catalogType: resolution.catalogType,
         referenceKey: _normalizedTextOrNull(resolution.referenceKey),
@@ -220,4 +220,31 @@ List<String>? _normalizedAttackTagsFromStrings(List<String>? tags) {
       if (_normalizedTextOrNull(tag) != null) _normalizedTextOrNull(tag)!,
   ];
   return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterSkillProficiencyState>? _normalizedSkillProficiencyOverrides(
+  List<CharacterSkillProficiencyState>? values,
+) {
+  if (values == null) return null;
+  final bySkill = {
+    for (final value in values) value.skill: value,
+  };
+  return [
+    for (final skill in Skill.values)
+      if (bySkill[skill] != null) bySkill[skill]!,
+  ];
+}
+
+List<CharacterSavingThrowProficiencyOverrideData>?
+    _normalizedSavingThrowProficiencyOverrides(
+  List<CharacterSavingThrowProficiencyOverrideData>? values,
+) {
+  if (values == null) return null;
+  final byAbility = {
+    for (final value in values) value.ability: value,
+  };
+  return [
+    for (final ability in Ability.values)
+      if (byAbility[ability] != null) byAbility[ability]!,
+  ];
 }

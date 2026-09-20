@@ -17,7 +17,8 @@ enum CharacterSyncTargetType implements _i1.SerializableModel {
   mapEntry,
   listItem,
   resource,
-  startingEquipmentResolution;
+  startingEquipmentResolution,
+  member;
 
   static CharacterSyncTargetType fromJson(int index) {
     switch (index) {
@@ -33,6 +34,8 @@ enum CharacterSyncTargetType implements _i1.SerializableModel {
         return CharacterSyncTargetType.resource;
       case 5:
         return CharacterSyncTargetType.startingEquipmentResolution;
+      case 6:
+        return CharacterSyncTargetType.member;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "CharacterSyncTargetType"');

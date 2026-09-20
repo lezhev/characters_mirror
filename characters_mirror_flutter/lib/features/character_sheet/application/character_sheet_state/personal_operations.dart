@@ -3,6 +3,18 @@
 part of '../character_sheet_state.dart';
 
 extension CharacterSheetControllerPersonal on CharacterSheetController {
+  Future<void> adjustExperience(int delta) async {
+    if (delta == 0) return;
+    final current = _requireCharacter();
+    final next = (current.experience ?? 0) + delta;
+    if (next < 0) return;
+    await _saveSemanticAction(
+      current.copyWith(experience: next == 0 ? null : next),
+      type: CharacterSyncOperationType.adjustExperience,
+      action: CharacterSemanticActionData(delta: delta),
+    );
+  }
+
   Future<void> setInspiration(bool value) async {
     final current = _requireCharacter();
     await _saveCharacter(current.copyWith(inspiration: value ? true : null));
@@ -84,49 +96,20 @@ extension CharacterSheetControllerPersonal on CharacterSheetController {
 
   Future<void> addNote() async {}
 
-  Future<void> updateNote(int index, String note) async {
+  Future<void> updateNote(String id, String note) async {
     final current = _requireCharacter();
-    final noteTexts = [...current.noteTexts];
-    if (index < 0) {
-      throw RangeError.index(index, noteTexts, 'index');
-    }
-
-    final normalized = _normalizedText(note);
-    if (normalized == null) {
-      if (index < noteTexts.length) {
-        noteTexts.removeAt(index);
-      } else {
-        return;
-      }
-    } else {
-      if (index < noteTexts.length) {
-        noteTexts[index] = normalized;
-      } else {
-        noteTexts.add(normalized);
-      }
-    }
-
     await _saveCharacter(
       current.copyWith(
-        notes: notesFromTexts(noteTexts, previous: current.notes),
+        notes: upsertCharacterNote(current.notes, id: id, text: note),
       ),
     );
   }
 
-  Future<void> deleteNote(int index) async {
+  Future<void> deleteNote(String id) async {
     final current = _requireCharacter();
-    final noteTexts = [...current.noteTexts];
-    if (index < 0) {
-      throw RangeError.index(index, noteTexts, 'index');
-    }
-    if (index >= noteTexts.length) {
-      return;
-    }
-
-    noteTexts.removeAt(index);
     await _saveCharacter(
       current.copyWith(
-        notes: notesFromTexts(noteTexts, previous: current.notes),
+        notes: removeCharacterNote(current.notes, id),
       ),
     );
   }

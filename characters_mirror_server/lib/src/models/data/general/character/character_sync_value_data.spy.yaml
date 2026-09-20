@@ -7,11 +7,16 @@ fields:
   alignmentValue: CharacterAlignment?
   speedKindValue: CharacterSpeedKind?
   conditionListValue: List<ConditionType>?
+  conditionValue: ConditionType?
   stringListValue: List<String>?
   abilityListValue: List<Ability>?
+  featureTagValue: FeatureTag?
   stringIntMapValue: Map<String, int>?
   intIntMapValue: Map<int, int>?
   skillProficiencyListValue: List<CharacterSkillProficiencyState>?
+  skillProficiencyValue: CharacterSkillProficiencyState?
+  savingThrowProficiencyOverrideValue: CharacterSavingThrowProficiencyOverrideData?
+  semanticActionValue: CharacterSemanticActionData?
   characterValue: CharacterData?
   noteValue: CharacterNoteData?
   equipmentValue: CharacterInventoryItemData?

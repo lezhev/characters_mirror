@@ -1,5 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
@@ -57,8 +57,8 @@ class _NotesEditor extends StatefulWidget {
 
   final CharacterData character;
   final Future<void> Function() onAdd;
-  final Future<void> Function(int index, String note) onUpdate;
-  final Future<void> Function(int index) onDelete;
+  final Future<void> Function(String id, String note) onUpdate;
+  final Future<void> Function(String id) onDelete;
 
   @override
   State<_NotesEditor> createState() => _NotesEditorState();
@@ -67,6 +67,7 @@ class _NotesEditor extends StatefulWidget {
 class _NotesEditorState extends State<_NotesEditor> {
   final List<TextEditingController> _controllers = [];
   final List<FocusNode> _focusNodes = [];
+  final List<String> _noteIds = [];
   List<String> _lastNotes = const [];
   bool _isResettingFields = false;
   int? _confirmDeleteIndex;
@@ -74,14 +75,14 @@ class _NotesEditorState extends State<_NotesEditor> {
   @override
   void initState() {
     super.initState();
-    _syncNotes(widget.character.noteTexts);
+    _syncNotes(widget.character.notes);
   }
 
   @override
   void didUpdateWidget(_NotesEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final incomingNotes = widget.character.noteTexts;
-    if (!_hasAnyFocus && !_sameNotes(incomingNotes, _lastNotes)) {
+    final incomingNotes = widget.character.notes;
+    if (!_hasAnyFocus && !_sameNotes(incomingNotes)) {
       _syncNotes(incomingNotes);
     }
   }
@@ -152,7 +153,10 @@ class _NotesEditorState extends State<_NotesEditor> {
   Future<void> _handleAdd() async {
     setState(() {
       _confirmDeleteIndex = null;
-      _setLocalNotes([..._currentTexts(), '']);
+      _setLocalNotes(
+        [..._noteIds, createCharacterSyncItemId()],
+        [..._currentTexts(), ''],
+      );
     });
     _focusNodes.last.requestFocus();
     runCharacterSheetSave(context, widget.onAdd());
@@ -166,14 +170,20 @@ class _NotesEditorState extends State<_NotesEditor> {
       return;
     }
 
+    final id = _noteIds[index];
+    final remainingIds = [
+      for (var i = 0; i < _noteIds.length; i++)
+        if (i != index) _noteIds[i],
+    ];
+    final remainingTexts = [
+      for (var i = 0; i < _controllers.length; i++)
+        if (i != index) _controllers[i].text,
+    ];
     setState(() {
       _confirmDeleteIndex = null;
-      _setLocalNotes([
-        for (var i = 0; i < _controllers.length; i++)
-          if (i != index) _controllers[i].text,
-      ]);
+      _setLocalNotes(remainingIds, remainingTexts);
     });
-    _runSave(() => widget.onDelete(index));
+    _runSave(() => widget.onDelete(id));
   }
 
   Future<void> _saveNote(int index) async {
@@ -185,7 +195,7 @@ class _NotesEditorState extends State<_NotesEditor> {
       return;
     }
 
-    _runSave(() => widget.onUpdate(index, text));
+    _runSave(() => widget.onUpdate(_noteIds[index], text));
   }
 
   void _runSave(Future<void> Function() save) {
@@ -205,18 +215,26 @@ class _NotesEditorState extends State<_NotesEditor> {
       if (previous == current) {
         continue;
       }
-      runCharacterSheetSave(context, widget.onUpdate(index, current));
+      runCharacterSheetSave(
+        context,
+        widget.onUpdate(_noteIds[index], current),
+      );
     }
     _lastNotes = currentNotes;
   }
 
-  void _syncNotes(List<String> notes) {
-    _setLocalNotes(notes);
-    _lastNotes = List<String>.from(notes);
+  void _syncNotes(List<CharacterNoteData>? notes) {
+    final values = notes ?? const <CharacterNoteData>[];
+    final ids = [
+      for (final note in values) note.id ?? createCharacterSyncItemId(),
+    ];
+    final texts = [for (final note in values) note.text ?? ''];
+    _setLocalNotes(ids, texts);
+    _lastNotes = List<String>.from(texts);
     _confirmDeleteIndex = null;
   }
 
-  void _setLocalNotes(List<String> notes) {
+  void _setLocalNotes(List<String> ids, List<String> notes) {
     _isResettingFields = true;
     for (final node in _focusNodes) {
       node.dispose();
@@ -235,6 +253,9 @@ class _NotesEditorState extends State<_NotesEditor> {
       ..addAll([
         for (final note in notes) TextEditingController(text: note),
       ]);
+    _noteIds
+      ..clear()
+      ..addAll(ids);
     _isResettingFields = false;
   }
 
@@ -244,12 +265,14 @@ class _NotesEditorState extends State<_NotesEditor> {
 
   bool get _hasAnyFocus => _focusNodes.any((node) => node.hasFocus);
 
-  bool _sameNotes(List<String> left, List<String> right) {
-    if (left.length != right.length) {
+  bool _sameNotes(List<CharacterNoteData>? notes) {
+    final values = notes ?? const <CharacterNoteData>[];
+    if (values.length != _lastNotes.length) {
       return false;
     }
-    for (var index = 0; index < left.length; index++) {
-      if (left[index] != right[index]) {
+    for (var index = 0; index < values.length; index++) {
+      if (values[index].id != _noteIds[index] ||
+          (values[index].text ?? '') != _lastNotes[index]) {
         return false;
       }
     }

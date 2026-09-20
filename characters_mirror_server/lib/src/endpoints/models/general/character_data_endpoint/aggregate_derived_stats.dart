@@ -37,13 +37,10 @@ Future<CharacterDerivedData> _buildDerivedData(
         const <Ability>[])
       ability.name,
   };
-  final savingThrowAbilities = character.manualSavingThrowProficiencies == null
-      ? defaultSavingThrowAbilities
-      : {
-          for (final ability
-              in character.manualSavingThrowProficiencies ?? const <Ability>[])
-            ability.name,
-        };
+  final savingThrowAbilities = _effectiveSavingThrowAbilities(
+    character,
+    defaultSavingThrowAbilities,
+  );
   final savingThrowProficiencies = [
     for (final ability in Ability.values)
       if (savingThrowAbilities.contains(ability.name)) ability,
@@ -55,9 +52,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.classBackgroundOptions,
     resolvedSources.raceOptions,
   );
-  final skillProficiencyLevels = character.manualSkillProficiencies == null
-      ? _defaultSkillProficiencyLevels(skillProficiencies)
-      : _normalizedSkillProficiencyLevels(character.manualSkillProficiencies);
+  final skillProficiencyLevels = _effectiveSkillProficiencyLevels(
+    character,
+    _defaultSkillProficiencyLevels(skillProficiencies),
+  );
   final skillBonuses = <String, int>{};
   for (final skill in Skill.values) {
     final base = _abilityModifier(scores[_abilityForSkill(skill).name] ?? 10);
@@ -183,6 +181,43 @@ Future<CharacterDerivedData> _buildDerivedData(
     resistances: resistances,
     rebuiltAt: DateTime.now(),
   );
+}
+
+Set<String> _effectiveSavingThrowAbilities(
+  CharacterData character,
+  Set<String> defaults,
+) {
+  final overrides = character.manualSavingThrowProficiencyOverrides;
+  if (overrides != null) {
+    final result = {...defaults};
+    for (final value in overrides) {
+      if (value.state == CharacterSavingThrowProficiencyOverride.add) {
+        result.add(value.ability.name);
+      } else {
+        result.remove(value.ability.name);
+      }
+    }
+    return result;
+  }
+  final legacy = character.manualSavingThrowProficiencies;
+  if (legacy == null) return defaults;
+  return {for (final ability in legacy) ability.name};
+}
+
+Map<Skill, CharacterSkillProficiencyLevel> _effectiveSkillProficiencyLevels(
+  CharacterData character,
+  Map<Skill, CharacterSkillProficiencyLevel> defaults,
+) {
+  final overrides = character.manualSkillProficiencyOverrides;
+  if (overrides != null) {
+    final result = {...defaults};
+    for (final value in overrides) {
+      result[value.skill] = value.level;
+    }
+    return result;
+  }
+  if (character.manualSkillProficiencies == null) return defaults;
+  return _normalizedSkillProficiencyLevels(character.manualSkillProficiencies);
 }
 
 Map<String, int> _buildAbilityScores(

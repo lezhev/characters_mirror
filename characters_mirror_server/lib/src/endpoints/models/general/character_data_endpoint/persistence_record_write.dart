@@ -106,6 +106,7 @@ CharacterRecord _toCharacterRecord(
     flaws: character.flaws,
     version: version,
     syncTargetRevisions: syncTargetRevisions ?? character.syncTargetRevisions,
+    syncBarrierTokens: character.syncBarrierTokens,
     createdAt: createdAt,
     updatedAt: updatedAt,
     userId: userId,
@@ -145,6 +146,9 @@ CharacterRecord _toCharacterRecord(
     equipment: character.equipment,
     manualSkillProficiencies: character.manualSkillProficiencies,
     manualSavingThrowProficiencies: character.manualSavingThrowProficiencies,
+    manualSkillProficiencyOverrides: character.manualSkillProficiencyOverrides,
+    manualSavingThrowProficiencyOverrides:
+        character.manualSavingThrowProficiencyOverrides,
     notes: character.notes,
     attacks: character.attacks,
     featureOverrides: _normalizedFeatureOverrides(character.featureOverrides),

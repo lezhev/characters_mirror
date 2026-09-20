@@ -66,8 +66,44 @@ void _validateSyncOperationResult({
           sizeRule: Rules.mediumCollection,
         );
       }
+      CharacterValidator.validateLogicalIdentities(
+        next,
+        field: operation.fieldPath,
+      );
+      return;
+    case CharacterSyncOperationType.addSetMember:
+    case CharacterSyncOperationType.removeSetMember:
+    case CharacterSyncOperationType.setMemberValue:
+      _validateSyncMember(next, operation.fieldPath);
+      CharacterValidator.validateLogicalIdentities(
+        next,
+        field: operation.fieldPath,
+      );
+      return;
+    case CharacterSyncOperationType.applyDamage:
+    case CharacterSyncOperationType.heal:
+    case CharacterSyncOperationType.grantTemporaryHp:
+    case CharacterSyncOperationType.adjustSpellSlots:
+    case CharacterSyncOperationType.castSpell:
+    case CharacterSyncOperationType.adjustHitDice:
+    case CharacterSyncOperationType.adjustResource:
+    case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.applyRest:
+      _validateSyncSnapshotChanges(current: current, next: next);
       return;
   }
+}
+
+void _validateSyncMember(CharacterData character, String? field) {
+  if (field == null || field.isEmpty) {
+    throw Exception('Member operation requires fieldPath.');
+  }
+  final json = character.toJson();
+  CharacterValidator.validate(
+    CharacterData.fromJson({
+      if (json.containsKey(field)) field: json[field],
+    }),
+  );
 }
 
 void _validateSyncField(CharacterData character, String? field) {
@@ -199,14 +235,8 @@ List<CharacterStartingEquipmentResolutionData> _startingEquipmentResolutions(
   CharacterData character,
   String selectionId,
 ) {
-  for (final selection in character.startingEquipmentSelections ??
-      const <CharacterStartingEquipmentSelectionData>[]) {
-    if (selection.id == selectionId) {
-      return selection.resolutions ??
-          const <CharacterStartingEquipmentResolutionData>[];
-    }
-  }
-  return const <CharacterStartingEquipmentResolutionData>[];
+  return _findStartingEquipmentSelection(character, selectionId)?.resolutions ??
+      const <CharacterStartingEquipmentResolutionData>[];
 }
 
 int _syncCollectionLength(Object? value) {

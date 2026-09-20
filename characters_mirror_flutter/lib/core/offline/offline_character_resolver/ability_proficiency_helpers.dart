@@ -41,7 +41,21 @@ Set<Ability> _savingThrowProficiencies(CharacterData character) {
       in character.classEntries ?? const <CharacterClassEntryData>[]) {
     result.addAll(entry.classData?.savingThrowProficiencies ?? const []);
   }
-  result.addAll(character.manualSavingThrowProficiencies ?? const []);
+  final overrides = character.manualSavingThrowProficiencyOverrides;
+  if (overrides != null) {
+    for (final value in overrides) {
+      if (value.state == CharacterSavingThrowProficiencyOverride.add) {
+        result.add(value.ability);
+      } else {
+        result.remove(value.ability);
+      }
+    }
+    return result;
+  }
+  final legacy = character.manualSavingThrowProficiencies;
+  if (legacy != null) {
+    return {...legacy};
+  }
   return result;
 }
 
@@ -69,8 +83,15 @@ Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
       result[skill] = CharacterSkillProficiencyLevel.proficient;
     }
   }
-  for (final state in character.manualSkillProficiencies ??
-      const <CharacterSkillProficiencyState>[]) {
+  final overrides = character.manualSkillProficiencyOverrides;
+  final legacy = character.manualSkillProficiencies;
+  if (overrides == null && legacy != null) {
+    for (final skill in Skill.values) {
+      result[skill] = CharacterSkillProficiencyLevel.none;
+    }
+  }
+  for (final state
+      in overrides ?? legacy ?? const <CharacterSkillProficiencyState>[]) {
     result[state.skill] = state.level;
   }
   return result;

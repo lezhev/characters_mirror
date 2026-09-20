@@ -56,15 +56,19 @@ extension CharacterSheetControllerAbilities on CharacterSheetController {
       bonuses[ability.name] = customBonus;
     }
 
+    final overrides = buildManualSavingThrowProficiencies(
+      character: current,
+      ability: ability,
+      proficient: savingThrowProficient,
+    );
+    final updated = withOptimisticSavingThrowProficiency(
+      character: current,
+      manualSavingThrowProficiencies: overrides,
+    );
     await _saveCharacter(
-      current.copyWith(
+      updated.copyWith(
         baseAbilityScores: scores.isEmpty ? null : scores,
         customAbilityBonuses: bonuses.isEmpty ? null : bonuses,
-        manualSavingThrowProficiencies: buildManualSavingThrowProficiencies(
-          character: current,
-          ability: ability,
-          proficient: savingThrowProficient,
-        ),
       ),
     );
   }

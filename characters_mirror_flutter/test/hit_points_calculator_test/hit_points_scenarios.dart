@@ -429,6 +429,41 @@ void _registerHitPointsCalculatorTests() {
     expect(repository.savedCharacter?.temporaryHp, isNull);
   });
 
+  test('CharacterSheetController preserves HP action intent', () async {
+    final repository = _FakeCharacterRepository(
+      protocol.CharacterData(
+        id: 1,
+        currentHp: 12,
+        temporaryHp: 2,
+        derived: protocol.CharacterDerivedData(maxHp: 20),
+      ),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        characterRepositoryProvider.overrideWithValue(repository),
+      ],
+    );
+    addTearDown(container.dispose);
+    final subscription = container.listen(
+      characterSheetControllerProvider(1),
+      (_, __) {},
+    );
+    addTearDown(subscription.close);
+
+    await container.read(characterSheetControllerProvider(1).future);
+    await container
+        .read(characterSheetControllerProvider(1).notifier)
+        .applyHitPointAction(action: HitPointAction.damage, amount: 5);
+
+    expect(
+      repository.semanticType,
+      protocol.CharacterSyncOperationType.applyDamage,
+    );
+    expect(repository.semanticAction?.amount, 5);
+    expect(repository.savedCharacter?.temporaryHp, isNull);
+    expect(repository.savedCharacter?.currentHp, 9);
+  });
+
   test('CharacterSheetController initializes movement speeds from defaults',
       () async {
     final repository = _FakeCharacterRepository(
@@ -548,6 +583,11 @@ void _registerHitPointsCalculatorTests() {
     expect(repository.savedCharacter?.deathSaveFailures, isNull);
     expect(repository.savedCharacter?.currentSpellSlots, isNull);
     expect(repository.savedCharacter?.currentHitDice, isNull);
+    expect(
+      repository.semanticType,
+      protocol.CharacterSyncOperationType.applyRest,
+    );
+    expect(repository.semanticAction?.restType, protocol.RestType.longRest);
   });
 
   test('CharacterSheetController long rest restores feature resources',

@@ -18,7 +18,19 @@ enum CharacterSyncOperationType implements _i1.SerializableModel {
   setMapEntry,
   removeMapEntry,
   upsertListItem,
-  removeListItem;
+  removeListItem,
+  addSetMember,
+  removeSetMember,
+  setMemberValue,
+  applyDamage,
+  heal,
+  grantTemporaryHp,
+  adjustSpellSlots,
+  castSpell,
+  adjustHitDice,
+  adjustResource,
+  adjustExperience,
+  applyRest;
 
   static CharacterSyncOperationType fromJson(int index) {
     switch (index) {
@@ -36,6 +48,30 @@ enum CharacterSyncOperationType implements _i1.SerializableModel {
         return CharacterSyncOperationType.upsertListItem;
       case 6:
         return CharacterSyncOperationType.removeListItem;
+      case 7:
+        return CharacterSyncOperationType.addSetMember;
+      case 8:
+        return CharacterSyncOperationType.removeSetMember;
+      case 9:
+        return CharacterSyncOperationType.setMemberValue;
+      case 10:
+        return CharacterSyncOperationType.applyDamage;
+      case 11:
+        return CharacterSyncOperationType.heal;
+      case 12:
+        return CharacterSyncOperationType.grantTemporaryHp;
+      case 13:
+        return CharacterSyncOperationType.adjustSpellSlots;
+      case 14:
+        return CharacterSyncOperationType.castSpell;
+      case 15:
+        return CharacterSyncOperationType.adjustHitDice;
+      case 16:
+        return CharacterSyncOperationType.adjustResource;
+      case 17:
+        return CharacterSyncOperationType.adjustExperience;
+      case 18:
+        return CharacterSyncOperationType.applyRest;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "CharacterSyncOperationType"');

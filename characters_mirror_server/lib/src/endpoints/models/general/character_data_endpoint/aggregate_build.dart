@@ -149,6 +149,7 @@ CharacterData _toCharacterData(CharacterRecord record) {
     flaws: record.flaws,
     version: record.version,
     syncTargetRevisions: record.syncTargetRevisions,
+    syncBarrierTokens: record.syncBarrierTokens,
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
     experience: record.experience,
@@ -186,6 +187,9 @@ CharacterData _toCharacterData(CharacterRecord record) {
     equipment: record.equipment,
     manualSkillProficiencies: record.manualSkillProficiencies,
     manualSavingThrowProficiencies: record.manualSavingThrowProficiencies,
+    manualSkillProficiencyOverrides: record.manualSkillProficiencyOverrides,
+    manualSavingThrowProficiencyOverrides:
+        record.manualSavingThrowProficiencyOverrides,
     notes: record.notes,
     attacks: record.attacks,
     featureOverrides: record.featureOverrides,

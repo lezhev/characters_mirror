@@ -7,3 +7,15 @@ values:
   - removeMapEntry
   - upsertListItem
   - removeListItem
+  - addSetMember
+  - removeSetMember
+  - setMemberValue
+  - applyDamage
+  - heal
+  - grantTemporaryHp
+  - adjustSpellSlots
+  - castSpell
+  - adjustHitDice
+  - adjustResource
+  - adjustExperience
+  - applyRest

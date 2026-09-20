@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 
 import 'custom_content_validator.dart';
@@ -70,6 +72,44 @@ abstract final class CharacterValidator {
       final prefix = 'changes[$index]';
       Rules.shortText('$prefix.id', change.id);
       Rules.shortText('$prefix.entityId', change.entityId);
+    }
+  }
+
+  static void validateLogicalIdentities(
+    CharacterData character, {
+    required String? field,
+  }) {
+    switch (field) {
+      case 'choices':
+        _validateChoices('choices', character.choices);
+        return;
+      case 'skillSelections':
+        _validateSkillSelections(
+          'skillSelections',
+          character.skillSelections,
+        );
+        return;
+      case 'spellSelections':
+        _validateSpellSelections(
+          'spellSelections',
+          character.spellSelections,
+        );
+        return;
+      case 'startingEquipmentSelections':
+        _validateStartingEquipmentSelections(
+          'startingEquipmentSelections',
+          character.startingEquipmentSelections,
+        );
+        return;
+      case 'featureOverrides':
+        _validateUniqueValues(
+          'featureOverrides',
+          character.featureOverrides,
+          (value) => '${value.sourceType.name}:${value.sourceId}',
+        );
+        return;
+      default:
+        return;
     }
   }
 
@@ -168,6 +208,24 @@ abstract final class CharacterValidator {
       'manualSavingThrowProficiencies',
       character.manualSavingThrowProficiencies,
     );
+    Rules.mediumCollection(
+      'manualSkillProficiencyOverrides',
+      character.manualSkillProficiencyOverrides,
+    );
+    Rules.mediumCollection(
+      'manualSavingThrowProficiencyOverrides',
+      character.manualSavingThrowProficiencyOverrides,
+    );
+    _validateUniqueValues(
+      'manualSkillProficiencyOverrides',
+      character.manualSkillProficiencyOverrides,
+      (value) => value.skill.name,
+    );
+    _validateUniqueValues(
+      'manualSavingThrowProficiencyOverrides',
+      character.manualSavingThrowProficiencyOverrides,
+      (value) => value.ability.name,
+    );
   }
 
   static void _validateRelations(CharacterData character) {
@@ -229,6 +287,7 @@ abstract final class CharacterValidator {
     Rules.mediumCollection(field, choices);
     if (choices == null) return;
 
+    final logicalSlots = <String>{};
     for (var index = 0; index < choices.length; index++) {
       final choice = choices[index];
       final prefix = '$field[$index]';
@@ -242,6 +301,13 @@ abstract final class CharacterValidator {
       Rules.nonNegativeInt('$prefix.selectedFeatId', choice.selectedFeatId);
       Rules.mediumText('$prefix.selectedText', choice.selectedText);
       Rules.nonNegativeInt('$prefix.selectedCount', choice.selectedCount);
+      final slotKey = _choiceSlotKey(choice);
+      if (slotKey != null && !logicalSlots.add(slotKey)) {
+        throw InputValidationException(
+          prefix,
+          'duplicates logical choice slot "$slotKey".',
+        );
+      }
     }
   }
 
@@ -252,6 +318,7 @@ abstract final class CharacterValidator {
     Rules.mediumCollection(field, selections);
     if (selections == null) return;
 
+    final logicalSlots = <String>{};
     for (var index = 0; index < selections.length; index++) {
       final selection = selections[index];
       final prefix = '$field[$index]';
@@ -263,6 +330,13 @@ abstract final class CharacterValidator {
         selection.backgroundDataId,
       );
       Rules.nonNegativeInt('$prefix.selectionIndex', selection.selectionIndex);
+      final slotKey = _skillSelectionSlotKey(selection);
+      if (slotKey != null && !logicalSlots.add(slotKey)) {
+        throw InputValidationException(
+          prefix,
+          'duplicates logical skill selection slot "$slotKey".',
+        );
+      }
     }
   }
 
@@ -273,6 +347,7 @@ abstract final class CharacterValidator {
     Rules.mediumCollection(field, selections);
     if (selections == null) return;
 
+    final logicalSlots = <String>{};
     for (var index = 0; index < selections.length; index++) {
       final selection = selections[index];
       final prefix = '$field[$index]';
@@ -286,6 +361,13 @@ abstract final class CharacterValidator {
           '$prefix.spell.referenceKey', selection.spell?.referenceKey);
       Rules.shortText('$prefix.spell.name', selection.spell?.name);
       Rules.nonNegativeInt('$prefix.selectionIndex', selection.selectionIndex);
+      final slotKey = _spellSelectionLogicalKey(selection);
+      if (slotKey != null && !logicalSlots.add(slotKey)) {
+        throw InputValidationException(
+          prefix,
+          'duplicates logical spell selection "$slotKey".',
+        );
+      }
     }
   }
 
@@ -296,6 +378,7 @@ abstract final class CharacterValidator {
     Rules.mediumCollection(field, selections);
     if (selections == null) return;
 
+    final logicalSlots = <String>{};
     for (var index = 0; index < selections.length; index++) {
       final selection = selections[index];
       final prefix = '$field[$index]';
@@ -307,6 +390,13 @@ abstract final class CharacterValidator {
         selection.choiceOptionEntryId,
       );
       Rules.nonNegativeInt('$prefix.selectionIndex', selection.selectionIndex);
+      final slotKey = _startingEquipmentSelectionSlotKey(selection);
+      if (!logicalSlots.add(slotKey)) {
+        throw InputValidationException(
+          prefix,
+          'duplicates logical starting equipment slot "$slotKey".',
+        );
+      }
       _validateStartingEquipmentResolutions(
         '$prefix.resolutions',
         selection.resolutions,
@@ -321,6 +411,7 @@ abstract final class CharacterValidator {
     Rules.smallCollection(field, resolutions);
     if (resolutions == null) return;
 
+    final sourceLineIds = <int>{};
     for (var index = 0; index < resolutions.length; index++) {
       final resolution = resolutions[index];
       final prefix = '$field[$index]';
@@ -331,6 +422,13 @@ abstract final class CharacterValidator {
       );
       Rules.shortText('$prefix.referenceKey', resolution.referenceKey);
       Rules.nonNegativeInt('$prefix.quantity', resolution.quantity);
+      final sourceLineEntryId = resolution.sourceLineEntryId;
+      if (sourceLineEntryId != null && !sourceLineIds.add(sourceLineEntryId)) {
+        throw InputValidationException(
+          prefix,
+          'duplicates sourceLineEntryId $sourceLineEntryId.',
+        );
+      }
     }
   }
 
@@ -357,4 +455,88 @@ abstract final class CharacterValidator {
       Rules.nonNegativeInt('$field.${entry.key}', entry.value);
     }
   }
+
+  static void _validateUniqueValues<T>(
+    String field,
+    List<T>? values,
+    String Function(T value) keyOf,
+  ) {
+    final keys = <String>{};
+    for (var index = 0; index < (values?.length ?? 0); index++) {
+      final key = keyOf(values![index]);
+      if (!keys.add(key)) {
+        throw InputValidationException(
+          '$field[$index]',
+          'duplicates logical key "$key".',
+        );
+      }
+    }
+  }
+
+  static String? _choiceSlotKey(CharacterChoiceData choice) {
+    if (choice.sourceType == null ||
+        choice.sourceId == null ||
+        choice.groupKey == null ||
+        choice.selectionIndex == null) {
+      return null;
+    }
+    return _logicalKey([
+      choice.sourceType!.name,
+      choice.sourceId,
+      choice.classEntry?.id,
+      choice.groupKey,
+      choice.selectionIndex,
+    ]);
+  }
+
+  static String? _skillSelectionSlotKey(
+    CharacterSkillSelectionData selection,
+  ) {
+    if (selection.kind == null || selection.selectionIndex == null) {
+      return null;
+    }
+    return _logicalKey([
+      selection.kind!.name,
+      selection.classEntry?.id,
+      selection.classDataId,
+      selection.backgroundDataId,
+      selection.selectionIndex,
+    ]);
+  }
+
+  static String? _spellSelectionLogicalKey(
+    CharacterSpellSelectionData selection,
+  ) {
+    final kind = selection.kind;
+    final spellKey = selection.spellKey ??
+        selection.spell?.referenceKey ??
+        selection.spell?.name;
+    if (kind == null || spellKey == null) return null;
+    final source = [
+      selection.classEntry?.id,
+      selection.classDataId ?? selection.classEntry?.classData?.id,
+    ];
+    if (selection.selectionIndex == null) {
+      return _logicalKey([...source, kind.name, 'member', spellKey.trim()]);
+    }
+    return _logicalKey([
+      ...source,
+      kind.name,
+      'slot',
+      selection.selectionIndex,
+    ]);
+  }
+
+  static String _startingEquipmentSelectionSlotKey(
+    CharacterStartingEquipmentSelectionData selection,
+  ) {
+    return _logicalKey([
+      selection.sourceType?.name,
+      selection.sourceId,
+      selection.sourceEntryId,
+      selection.selectionIndex,
+    ]);
+  }
+
+  static String _logicalKey(List<Object?> parts) => jsonEncode(parts);
 }

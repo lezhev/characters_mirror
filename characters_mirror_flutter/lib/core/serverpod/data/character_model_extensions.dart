@@ -47,6 +47,42 @@ List<CharacterInventoryItemData>? inventoryItemsFromText(
   ];
 }
 
+List<CharacterInventoryItemData>? upsertCharacterInventoryItem(
+  List<CharacterInventoryItemData>? items, {
+  required String id,
+  required String? name,
+}) {
+  final normalizedName = name?.trim();
+  final result = [...?items];
+  final index = result.indexWhere((item) => item.id == id);
+  if (normalizedName == null || normalizedName.isEmpty) {
+    if (index != -1) result.removeAt(index);
+  } else if (index == -1) {
+    result.add(
+      CharacterInventoryItemData(
+        id: id,
+        name: normalizedName,
+        quantity: 1,
+        type: CharacterInventoryItemType.custom,
+      ),
+    );
+  } else {
+    result[index] = result[index].copyWith(name: normalizedName);
+  }
+  return result.isEmpty ? null : result;
+}
+
+List<CharacterInventoryItemData>? removeCharacterInventoryItem(
+  List<CharacterInventoryItemData>? items,
+  String id,
+) {
+  final result = [
+    for (final item in items ?? const <CharacterInventoryItemData>[])
+      if (item.id != id) item,
+  ];
+  return result.isEmpty ? null : result;
+}
+
 List<CharacterNoteData>? notesFromTexts(
   Iterable<String> values, {
   List<CharacterNoteData>? previous,
@@ -54,7 +90,8 @@ List<CharacterNoteData>? notesFromTexts(
   // TODO(op-sync): switch note persistence from whole-list snapshots to
   // per-note operations once the sync endpoint supports them.
   final previousByIndex = {
-    for (var index = 0; index < (previous?.length ?? 0); index++) index: previous![index],
+    for (var index = 0; index < (previous?.length ?? 0); index++)
+      index: previous![index],
   };
   final normalized = <CharacterNoteData>[];
   var index = 0;
@@ -75,4 +112,33 @@ List<CharacterNoteData>? notesFromTexts(
     index++;
   }
   return normalized.isEmpty ? null : normalized;
+}
+
+List<CharacterNoteData>? upsertCharacterNote(
+  List<CharacterNoteData>? notes, {
+  required String id,
+  required String? text,
+}) {
+  final normalizedText = text?.trim();
+  final result = [...?notes];
+  final index = result.indexWhere((note) => note.id == id);
+  if (normalizedText == null || normalizedText.isEmpty) {
+    if (index != -1) result.removeAt(index);
+  } else if (index == -1) {
+    result.add(CharacterNoteData(id: id, text: normalizedText));
+  } else {
+    result[index] = result[index].copyWith(text: normalizedText);
+  }
+  return result.isEmpty ? null : result;
+}
+
+List<CharacterNoteData>? removeCharacterNote(
+  List<CharacterNoteData>? notes,
+  String id,
+) {
+  final result = [
+    for (final note in notes ?? const <CharacterNoteData>[])
+      if (note.id != id) note,
+  ];
+  return result.isEmpty ? null : result;
 }

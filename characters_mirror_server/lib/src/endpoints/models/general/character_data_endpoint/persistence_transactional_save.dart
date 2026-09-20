@@ -9,7 +9,15 @@ Future<T> _runCharacterMutationTransaction<T>(
   // ignore: invalid_use_of_visible_for_testing_member
   final existingTransaction = session.transaction;
   if (existingTransaction != null) {
-    return body(existingTransaction);
+    final savepoint = await existingTransaction.createSavepoint();
+    try {
+      final result = await body(existingTransaction);
+      await savepoint.release();
+      return result;
+    } catch (_) {
+      await savepoint.rollback();
+      rethrow;
+    }
   }
   return session.db.transaction(body);
 }
@@ -85,6 +93,7 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
   var normalizedCharacter = character.copyWith(
     id: existingRecord?.id,
     syncTargetRevisions: null,
+    syncBarrierTokens: currentCharacter?.syncBarrierTokens,
     featureOverrides: await _pruneFeatureOverrides(
       session,
       character,
@@ -125,11 +134,17 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
   final currentVersion = existingRecord?.version ?? currentCharacter?.version;
   final nextVersion = existingRecord == null ? 1 : (currentVersion ?? 0) + 1;
   final targetRevisions = existingRecord == null
-      ? <String, int>{}
+      ? _materializedSyncTargetRevisions(
+          normalizedCharacter,
+          nextVersion,
+        )
       : _materializedSyncTargetRevisions(
           currentCharacter!,
           currentVersion ?? 0,
         );
+  final barrierTokens = <String, String>{
+    ...?currentCharacter?.syncBarrierTokens,
+  };
   if (existingRecord != null) {
     final changedTargets = _changedSyncTargetKeys(
       currentCharacter!,
@@ -140,6 +155,9 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
     }
     for (final targetKey in changedTargets) {
       targetRevisions[targetKey] = nextVersion;
+      if (_isSemanticBarrierTarget(targetKey)) {
+        barrierTokens[targetKey] = syncChangeId ?? 'snapshot:$nextVersion';
+      }
     }
   }
 
@@ -148,6 +166,7 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
     version: nextVersion,
     createdAt: existingRecord?.createdAt ?? normalizedCharacter.createdAt,
     syncTargetRevisions: targetRevisions,
+    syncBarrierTokens: barrierTokens.isEmpty ? null : barrierTokens,
   );
   final savedRecord = await _upsertCharacterRecord(
     session,

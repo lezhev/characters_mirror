@@ -7,3 +7,5 @@ fields:
   serverTime: DateTime?
   pullCursor: int?
   deletedCharacterIds: List<int>?
+  syncProtocolVersion: int?
+  capabilities: List<String>?

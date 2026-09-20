@@ -12,6 +12,20 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
 
   for (final operation
       in request.operations ?? const <CharacterSyncOperationData>[]) {
+    final minimumProtocolVersion =
+        _minimumProtocolVersionForOperation(operation);
+    if (minimumProtocolVersion > 0 &&
+        (request.syncProtocolVersion ?? 0) < minimumProtocolVersion) {
+      rejectedChanges.add(
+        CharacterRejectedChangeData(
+          changeId: operation.id,
+          reason: 'unsupported_sync_protocol',
+          message: 'Operation requires sync protocol version '
+              '$minimumProtocolVersion or newer.',
+        ),
+      );
+      continue;
+    }
     try {
       final result = await _applySyncOperationAtomically(
         session,
@@ -60,7 +74,15 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
     serverTime: DateTime.now().toUtc(),
     pullCursor: pullDelta.cursor,
     deletedCharacterIds: pullDelta.deletedCharacterIds,
+    syncProtocolVersion: _characterSyncProtocolVersion,
+    capabilities: _characterSyncCapabilities,
   );
+}
+
+bool _isMemberOperation(CharacterSyncOperationData operation) {
+  return operation.type == CharacterSyncOperationType.addSetMember ||
+      operation.type == CharacterSyncOperationType.removeSetMember ||
+      operation.type == CharacterSyncOperationType.setMemberValue;
 }
 
 Future<CharacterAppliedChangeRecord?> _findAppliedChange(
@@ -155,7 +177,19 @@ Future<_OperationApplyResult> _applySyncOperationAtomically(
         CharacterSyncOperationType.setMapEntry ||
         CharacterSyncOperationType.removeMapEntry ||
         CharacterSyncOperationType.upsertListItem ||
-        CharacterSyncOperationType.removeListItem =>
+        CharacterSyncOperationType.removeListItem ||
+        CharacterSyncOperationType.addSetMember ||
+        CharacterSyncOperationType.removeSetMember ||
+        CharacterSyncOperationType.setMemberValue ||
+        CharacterSyncOperationType.applyDamage ||
+        CharacterSyncOperationType.heal ||
+        CharacterSyncOperationType.grantTemporaryHp ||
+        CharacterSyncOperationType.adjustSpellSlots ||
+        CharacterSyncOperationType.castSpell ||
+        CharacterSyncOperationType.adjustHitDice ||
+        CharacterSyncOperationType.adjustResource ||
+        CharacterSyncOperationType.adjustExperience ||
+        CharacterSyncOperationType.applyRest =>
           await _applyUpdateCharacterOperation(
             session,
             userId: userId,
@@ -347,11 +381,34 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
   final baselineRevision = record.version ?? current.version ?? 0;
   final targetRevisions =
       _materializedSyncTargetRevisions(current, baselineRevision);
-  final targetKey = _targetKeyForOperation(operation);
-  final currentTargetRevision = targetRevisions[targetKey] ?? 0;
+  final targetKey = _targetKeyForOperation(operation, current);
+  final currentTargetRevision = _currentTargetRevisionForOperation(
+    operation,
+    current,
+    targetRevisions,
+    targetKey,
+    baselineRevision,
+  );
   final baseTargetRevision =
       operation.baseTargetRevision ?? operation.baseCharacterRevision ?? 0;
-  if (currentTargetRevision != baseTargetRevision) {
+  if (_isSemanticOperation(operation)) {
+    final failure = _semanticBarrierFailure(current, operation);
+    if (failure != null) {
+      return _OperationApplyResult(
+        rejection: CharacterRejectedChangeData(
+          changeId: operation.id,
+          reason: failure.reason,
+          message: failure.message,
+          character: current.copyWith(syncTargetRevisions: targetRevisions),
+        ),
+      );
+    }
+  } else if (currentTargetRevision != baseTargetRevision) {
+    if (_memberOperationAlreadySatisfied(operation, current)) {
+      return _OperationApplyResult(
+        character: current.copyWith(syncTargetRevisions: targetRevisions),
+      );
+    }
     return _OperationApplyResult(
       rejection: CharacterRejectedChangeData(
         changeId: operation.id,
@@ -363,13 +420,26 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
   }
 
   final nextRevision = baselineRevision + 1;
-  targetRevisions[targetKey] = nextRevision;
-  var next = _applyOperationToCharacter(current, operation).copyWith(
+  CharacterData appliedCharacter;
+  try {
+    appliedCharacter = _applyOperationToCharacter(current, operation);
+  } on _SemanticActionFailure catch (failure) {
+    return _OperationApplyResult(
+      rejection: CharacterRejectedChangeData(
+        changeId: operation.id,
+        reason: failure.reason,
+        message: failure.message,
+        character: current.copyWith(syncTargetRevisions: targetRevisions),
+      ),
+    );
+  }
+  var next = appliedCharacter.copyWith(
     id: characterId,
     version: nextRevision,
     createdAt: record.createdAt,
     updatedAt: DateTime.now().toUtc(),
     syncTargetRevisions: targetRevisions,
+    syncBarrierTokens: current.syncBarrierTokens,
   );
   _validateSyncOperationResult(
     operation: operation,
@@ -398,6 +468,24 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
     createdAt: record.createdAt,
     updatedAt: next.updatedAt,
     syncTargetRevisions: targetRevisions,
+  );
+  final changedTargets = _changedSyncTargetKeys(current, next);
+  for (final changedTarget in changedTargets) {
+    targetRevisions[changedTarget] = nextRevision;
+  }
+  _updateCompatibilityTargetRevisions(
+    operation: operation,
+    changedTargets: changedTargets,
+    revisions: targetRevisions,
+    nextRevision: nextRevision,
+  );
+  next = next.copyWith(
+    syncTargetRevisions: targetRevisions,
+    syncBarrierTokens: _barrierTokensAfterOperation(
+      current: current,
+      operation: operation,
+      changedTargets: changedTargets,
+    ),
   );
   final savedRecord = await _upsertCharacterRecord(
     session,
@@ -436,6 +524,9 @@ CharacterData _applyOperationToCharacter(
   CharacterData character,
   CharacterSyncOperationData operation,
 ) {
+  if (_isSemanticOperation(operation)) {
+    return _applySemanticActionToCharacter(character, operation);
+  }
   final json = character.toJson();
   json.remove('derived');
   switch (operation.type) {
@@ -455,11 +546,527 @@ CharacterData _applyOperationToCharacter(
     case CharacterSyncOperationType.removeListItem:
       _removeListItemJsonValue(json, operation);
       break;
+    case CharacterSyncOperationType.addSetMember:
+    case CharacterSyncOperationType.removeSetMember:
+    case CharacterSyncOperationType.setMemberValue:
+      _applyMemberJsonValue(json, operation);
+      break;
     case CharacterSyncOperationType.createCharacter:
     case CharacterSyncOperationType.deleteCharacter:
+    case CharacterSyncOperationType.applyDamage:
+    case CharacterSyncOperationType.heal:
+    case CharacterSyncOperationType.grantTemporaryHp:
+    case CharacterSyncOperationType.adjustSpellSlots:
+    case CharacterSyncOperationType.castSpell:
+    case CharacterSyncOperationType.adjustHitDice:
+    case CharacterSyncOperationType.adjustResource:
+    case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.applyRest:
       break;
   }
   return CharacterData.fromJson(json);
+}
+
+int _currentTargetRevisionForOperation(
+  CharacterSyncOperationData operation,
+  CharacterData current,
+  Map<String, int> revisions,
+  String targetKey,
+  int baselineRevision,
+) {
+  final direct = revisions[targetKey];
+  if (_isMemberOperation(operation)) {
+    if (direct != null) return direct;
+    final field = operation.fieldPath ?? '';
+    return revisions[_memberBaselineTargetKey(field)] ??
+        _legacyMemberRevision(operation, revisions) ??
+        baselineRevision;
+  }
+  if (operation.fieldPath == 'featureOverrides') {
+    return _maximumRevision(
+          revisions,
+          <String>[
+            targetKey,
+            _fieldTargetKey('featureOverrides'),
+            ...revisions.keys
+                .where((key) => key.startsWith('featureOverride:')),
+          ],
+        ) ??
+        baselineRevision;
+  }
+  if (operation.fieldPath == 'startingEquipmentSelections') {
+    final semanticKey = _semanticStartingEquipmentTargetKey(
+      operation,
+      current,
+    );
+    final legacyKey = _legacyStartingEquipmentTargetKey(operation);
+    return _maximumRevision(
+          revisions,
+          [
+            targetKey,
+            if (semanticKey != null) semanticKey,
+            if (legacyKey != null) legacyKey,
+          ],
+        ) ??
+        baselineRevision;
+  }
+  return direct ?? baselineRevision;
+}
+
+bool _memberOperationAlreadySatisfied(
+  CharacterSyncOperationData operation,
+  CharacterData current,
+) {
+  if (!_isMemberOperation(operation)) return false;
+  switch (operation.fieldPath) {
+    case 'activeConditions':
+      final condition = ConditionType.values
+          .where((value) => value.name == operation.targetId)
+          .firstOrNull;
+      if (condition == null || condition == ConditionType.exhaustion) {
+        return false;
+      }
+      return _setMembershipOperationSatisfied(
+        operation,
+        current.activeConditions?.contains(condition) ?? false,
+      );
+    case 'preparedSpellKeys':
+      final member = _normalizedTextOrNull(operation.targetId);
+      if (member == null) return false;
+      return _setMembershipOperationSatisfied(
+        operation,
+        _normalizedPreparedSpellKeys(current.preparedSpellKeys)
+                ?.contains(member) ??
+            false,
+      );
+    case 'manualSkillProficiencyOverrides':
+      if (operation.type != CharacterSyncOperationType.setMemberValue) {
+        return false;
+      }
+      final target = operation.targetId;
+      final currentValue = current.manualSkillProficiencyOverrides
+          ?.where((value) => value.skill.name == target)
+          .firstOrNull;
+      return _syncJsonEquals(
+        currentValue,
+        operation.value?.skillProficiencyValue,
+      );
+    case 'manualSavingThrowProficiencyOverrides':
+      if (operation.type != CharacterSyncOperationType.setMemberValue) {
+        return false;
+      }
+      final target = operation.targetId;
+      final currentValue = current.manualSavingThrowProficiencyOverrides
+          ?.where((value) => value.ability.name == target)
+          .firstOrNull;
+      return _syncJsonEquals(
+        currentValue,
+        operation.value?.savingThrowProficiencyOverrideValue,
+      );
+    case 'featureOverrides':
+      return _featureOverrideMemberOperationAlreadySatisfied(
+        operation,
+        current,
+      );
+  }
+  return false;
+}
+
+bool _setMembershipOperationSatisfied(
+  CharacterSyncOperationData operation,
+  bool contains,
+) {
+  return switch (operation.type) {
+    CharacterSyncOperationType.addSetMember => contains,
+    CharacterSyncOperationType.removeSetMember => !contains,
+    _ => false,
+  };
+}
+
+bool _featureOverrideMemberOperationAlreadySatisfied(
+  CharacterSyncOperationData operation,
+  CharacterData current,
+) {
+  final parts = _decodeCompositeTargetId(operation.targetId);
+  if (parts.length != 3 && parts.length != 4) return false;
+  final sourceType = CharacterFeatureSourceType.values
+      .where((value) => value.name == parts[0])
+      .firstOrNull;
+  final sourceId = int.tryParse(parts[1]);
+  if (sourceType == null || sourceId == null) return false;
+  final item = current.featureOverrides
+      ?.where(
+        (value) => value.sourceType == sourceType && value.sourceId == sourceId,
+      )
+      .firstOrNull;
+  if (parts.length == 3 &&
+      operation.type == CharacterSyncOperationType.setMemberValue) {
+    if (parts[2] == 'name') {
+      return item?.name == operation.value?.stringValue;
+    }
+    if (parts[2] == 'description') {
+      return item?.description == operation.value?.stringValue;
+    }
+    return false;
+  }
+  if (parts.length == 4 && parts[2] == 'tag') {
+    final tag =
+        FeatureTag.values.where((value) => value.name == parts[3]).firstOrNull;
+    if (tag == null) return false;
+    return _setMembershipOperationSatisfied(
+      operation,
+      item?.tags?.contains(tag) ?? false,
+    );
+  }
+  return false;
+}
+
+int? _legacyMemberRevision(
+  CharacterSyncOperationData operation,
+  Map<String, int> revisions,
+) {
+  final field = operation.fieldPath ?? '';
+  final legacyField = switch (field) {
+    'manualSkillProficiencyOverrides' => 'manualSkillProficiencies',
+    'manualSavingThrowProficiencyOverrides' => 'manualSavingThrowProficiencies',
+    _ => field,
+  };
+  if (field == 'featureOverrides') {
+    return _maximumRevision(
+      revisions,
+      revisions.keys.where((key) => key.startsWith('item:featureOverrides:')),
+    );
+  }
+  return revisions[_fieldTargetKey(legacyField)];
+}
+
+String? _semanticStartingEquipmentTargetKey(
+  CharacterSyncOperationData operation,
+  CharacterData current,
+) {
+  if (operation.targetType ==
+      CharacterSyncTargetType.startingEquipmentResolution) {
+    final parts = _decodeCompositeTargetId(operation.targetId);
+    if (parts.length != 2) return null;
+    final selection = _findStartingEquipmentSelection(
+      current,
+      parts[0],
+    );
+    if (selection == null) return null;
+    final lineId = operation
+            .itemPayload?.startingEquipmentResolutionValue?.sourceLineEntryId
+            ?.toString() ??
+        _findStartingEquipmentResolution(selection, parts[1])
+            ?.sourceLineEntryId
+            ?.toString();
+    if (lineId == null) return null;
+    return _startingEquipmentResolutionTargetKey(
+      _startingEquipmentSelectionTargetId(selection),
+      lineId,
+    );
+  }
+  final selection = _findStartingEquipmentSelection(
+    current,
+    operation.targetId ?? '',
+  );
+  if (selection == null) return null;
+  return _itemTargetKey(
+    'startingEquipmentSelections',
+    _startingEquipmentSelectionTargetId(selection),
+  );
+}
+
+String? _legacyStartingEquipmentTargetKey(
+  CharacterSyncOperationData operation,
+) {
+  if (operation.targetType !=
+      CharacterSyncTargetType.startingEquipmentResolution) {
+    return null;
+  }
+  final parts = _decodeCompositeTargetId(operation.targetId);
+  if (parts.length != 2) return null;
+  return _legacyStartingEquipmentResolutionTargetKey(parts[0], parts[1]);
+}
+
+void _updateCompatibilityTargetRevisions({
+  required CharacterSyncOperationData operation,
+  required Set<String> changedTargets,
+  required Map<String, int> revisions,
+  required int nextRevision,
+}) {
+  for (final field in const [
+    'activeConditions',
+    'preparedSpellKeys',
+    'manualSkillProficiencyOverrides',
+    'manualSavingThrowProficiencyOverrides',
+  ]) {
+    final prefix = _syncTargetKey('member', [field, '']);
+    if (changedTargets.any((target) => target.startsWith(prefix))) {
+      final legacyField = switch (field) {
+        'manualSkillProficiencyOverrides' => 'manualSkillProficiencies',
+        'manualSavingThrowProficiencyOverrides' =>
+          'manualSavingThrowProficiencies',
+        _ => field,
+      };
+      revisions[_fieldTargetKey(legacyField)] = nextRevision;
+    }
+  }
+  if (changedTargets.any((target) => target.startsWith('featureOverride:'))) {
+    revisions[_fieldTargetKey('featureOverrides')] = nextRevision;
+  }
+  if (operation.type == CharacterSyncOperationType.setField) {
+    final fineField = switch (operation.fieldPath) {
+      'manualSkillProficiencies' => 'manualSkillProficiencyOverrides',
+      'manualSavingThrowProficiencies' =>
+        'manualSavingThrowProficiencyOverrides',
+      'activeConditions' => 'activeConditions',
+      'preparedSpellKeys' => 'preparedSpellKeys',
+      _ => null,
+    };
+    if (fineField != null) {
+      revisions[_memberBaselineTargetKey(fineField)] = nextRevision;
+    }
+  }
+}
+
+void _applyMemberJsonValue(
+  Map<String, dynamic> json,
+  CharacterSyncOperationData operation,
+) {
+  switch (operation.fieldPath) {
+    case 'activeConditions':
+      _applyConditionMember(json, operation);
+      return;
+    case 'preparedSpellKeys':
+      _applyPreparedSpellMember(json, operation);
+      return;
+    case 'manualSkillProficiencyOverrides':
+      _applySkillProficiencyMember(json, operation);
+      return;
+    case 'manualSavingThrowProficiencyOverrides':
+      _applySavingThrowProficiencyMember(json, operation);
+      return;
+    case 'featureOverrides':
+      _applyFeatureOverrideMember(json, operation);
+      return;
+  }
+  throw Exception('Unsupported member field "${operation.fieldPath}".');
+}
+
+void _applyConditionMember(
+  Map<String, dynamic> json,
+  CharacterSyncOperationData operation,
+) {
+  final condition = ConditionType.values.firstWhere(
+    (value) => value.name == operation.targetId,
+    orElse: () => throw Exception('Unknown condition member.'),
+  );
+  if (condition == ConditionType.exhaustion) {
+    throw Exception('Exhaustion is stored as exhaustionLevel.');
+  }
+  final values = <ConditionType>{
+    for (final raw in json['activeConditions'] as List? ?? const [])
+      ConditionType.fromJson(raw),
+  };
+  if (operation.type == CharacterSyncOperationType.addSetMember) {
+    values.add(condition);
+  } else if (operation.type == CharacterSyncOperationType.removeSetMember) {
+    values.remove(condition);
+  } else {
+    throw Exception('Condition requires addSetMember or removeSetMember.');
+  }
+  final sorted = values.toList()..sort((a, b) => a.name.compareTo(b.name));
+  json['activeConditions'] =
+      sorted.isEmpty ? null : sorted.map((value) => value.toJson()).toList();
+}
+
+void _applyPreparedSpellMember(
+  Map<String, dynamic> json,
+  CharacterSyncOperationData operation,
+) {
+  final member = _normalizedTextOrNull(operation.targetId);
+  if (member == null) throw Exception('Prepared spell key is required.');
+  final values = {
+    for (final raw in json['preparedSpellKeys'] as List? ?? const [])
+      if (_normalizedTextOrNull(raw.toString()) != null)
+        _normalizedTextOrNull(raw.toString())!,
+  };
+  if (operation.type == CharacterSyncOperationType.addSetMember) {
+    values.add(member);
+  } else if (operation.type == CharacterSyncOperationType.removeSetMember) {
+    values.remove(member);
+  } else {
+    throw Exception('Prepared spell requires a set member operation.');
+  }
+  final sorted = values.toList()..sort();
+  json['preparedSpellKeys'] = sorted.isEmpty ? null : sorted;
+}
+
+void _applySkillProficiencyMember(
+  Map<String, dynamic> json,
+  CharacterSyncOperationData operation,
+) {
+  if (operation.type != CharacterSyncOperationType.setMemberValue) {
+    throw Exception('Skill proficiency requires setMemberValue.');
+  }
+  final target = Skill.values.firstWhere(
+    (value) => value.name == operation.targetId,
+    orElse: () => throw Exception('Unknown skill member.'),
+  );
+  final values = _skillOverridesFromJson(json)
+    ..removeWhere((value) => value.skill == target);
+  final next = operation.value?.skillProficiencyValue;
+  if (next != null) values.add(next.copyWith(skill: target));
+  values.sort((a, b) => a.skill.name.compareTo(b.skill.name));
+  json['manualSkillProficiencyOverrides'] = values.isEmpty
+      ? <dynamic>[]
+      : values.map((value) => value.toJson()).toList();
+  if (json['manualSkillProficiencies'] != null) {
+    json['manualSkillProficiencies'] =
+        values.map((value) => value.toJson()).toList();
+  }
+}
+
+List<CharacterSkillProficiencyState> _skillOverridesFromJson(
+  Map<String, dynamic> json,
+) {
+  final rawOverrides = json['manualSkillProficiencyOverrides'] as List?;
+  if (rawOverrides != null) {
+    return [
+      for (final raw in rawOverrides)
+        CharacterSkillProficiencyState.fromJson(
+          Map<String, dynamic>.from(raw as Map),
+        ),
+    ];
+  }
+  final legacy = <Skill, CharacterSkillProficiencyLevel>{};
+  for (final raw
+      in json['manualSkillProficiencies'] as List? ?? const <dynamic>[]) {
+    final value = CharacterSkillProficiencyState.fromJson(
+      Map<String, dynamic>.from(raw as Map),
+    );
+    legacy[value.skill] = value.level;
+  }
+  if (json['manualSkillProficiencies'] == null) return [];
+  return [
+    for (final skill in Skill.values)
+      CharacterSkillProficiencyState(
+        skill: skill,
+        level: legacy[skill] ?? CharacterSkillProficiencyLevel.none,
+      ),
+  ];
+}
+
+void _applySavingThrowProficiencyMember(
+  Map<String, dynamic> json,
+  CharacterSyncOperationData operation,
+) {
+  if (operation.type != CharacterSyncOperationType.setMemberValue) {
+    throw Exception('Saving throw proficiency requires setMemberValue.');
+  }
+  final target = Ability.values.firstWhere(
+    (value) => value.name == operation.targetId,
+    orElse: () => throw Exception('Unknown ability member.'),
+  );
+  final values = _savingThrowOverridesFromJson(json)
+    ..removeWhere((value) => value.ability == target);
+  final next = operation.value?.savingThrowProficiencyOverrideValue;
+  if (next != null) values.add(next.copyWith(ability: target));
+  values.sort((a, b) => a.ability.name.compareTo(b.ability.name));
+  json['manualSavingThrowProficiencyOverrides'] = values.isEmpty
+      ? <dynamic>[]
+      : values.map((value) => value.toJson()).toList();
+  if (json['manualSavingThrowProficiencies'] != null) {
+    json['manualSavingThrowProficiencies'] = [
+      for (final value in values)
+        if (value.state == CharacterSavingThrowProficiencyOverride.add)
+          value.ability.toJson(),
+    ];
+  }
+}
+
+List<CharacterSavingThrowProficiencyOverrideData> _savingThrowOverridesFromJson(
+    Map<String, dynamic> json) {
+  final rawOverrides = json['manualSavingThrowProficiencyOverrides'] as List?;
+  if (rawOverrides != null) {
+    return [
+      for (final raw in rawOverrides)
+        CharacterSavingThrowProficiencyOverrideData.fromJson(
+          Map<String, dynamic>.from(raw as Map),
+        ),
+    ];
+  }
+  final rawLegacy = json['manualSavingThrowProficiencies'] as List?;
+  if (rawLegacy == null) return [];
+  final legacy = {
+    for (final raw in rawLegacy) Ability.fromJson(raw),
+  };
+  return [
+    for (final ability in Ability.values)
+      CharacterSavingThrowProficiencyOverrideData(
+        ability: ability,
+        state: legacy.contains(ability)
+            ? CharacterSavingThrowProficiencyOverride.add
+            : CharacterSavingThrowProficiencyOverride.remove,
+      ),
+  ];
+}
+
+void _applyFeatureOverrideMember(
+  Map<String, dynamic> json,
+  CharacterSyncOperationData operation,
+) {
+  final parts = _decodeCompositeTargetId(operation.targetId);
+  if (parts.length != 3 && parts.length != 4) {
+    throw Exception('Invalid feature override member target.');
+  }
+  final sourceType = CharacterFeatureSourceType.values.firstWhere(
+    (value) => value.name == parts[0],
+    orElse: () => throw Exception('Unknown feature source type.'),
+  );
+  final sourceId = int.tryParse(parts[1]);
+  if (sourceId == null) throw Exception('Invalid feature source id.');
+  final values = <CharacterFeatureOverrideData>[
+    for (final raw in json['featureOverrides'] as List? ?? const [])
+      CharacterFeatureOverrideData.fromJson(
+        Map<String, dynamic>.from(raw as Map),
+      ),
+  ];
+  var index = values.indexWhere(
+    (value) => value.sourceType == sourceType && value.sourceId == sourceId,
+  );
+  if (index == -1) {
+    values.add(CharacterFeatureOverrideData(
+      sourceType: sourceType,
+      sourceId: sourceId,
+    ));
+    index = values.length - 1;
+  }
+  var item = values[index];
+  if (parts.length == 3 && parts[2] == 'name') {
+    item = item.copyWith(name: operation.value?.stringValue);
+  } else if (parts.length == 3 && parts[2] == 'description') {
+    item = item.copyWith(description: operation.value?.stringValue);
+  } else if (parts.length == 4 && parts[2] == 'tag') {
+    final tag = FeatureTag.values.firstWhere(
+      (value) => value.name == parts[3],
+      orElse: () => throw Exception('Unknown feature tag.'),
+    );
+    final tags = {...?item.tags};
+    if (operation.type == CharacterSyncOperationType.addSetMember) {
+      tags.add(tag);
+    } else if (operation.type == CharacterSyncOperationType.removeSetMember) {
+      tags.remove(tag);
+    } else {
+      throw Exception('Feature tag requires a set member operation.');
+    }
+    final sorted = tags.toList()..sort((a, b) => a.name.compareTo(b.name));
+    item = item.copyWith(tags: sorted.isEmpty ? null : sorted);
+  } else {
+    throw Exception('Unsupported feature override member.');
+  }
+  values[index] = item;
+  json['featureOverrides'] = values.map((value) => value.toJson()).toList();
 }
 
 void _setJsonValue(
@@ -475,6 +1082,44 @@ void _setJsonValue(
     json.remove(field);
   } else {
     json[field] = encoded;
+  }
+  if (field == 'manualSkillProficiencies') {
+    if (encoded == null) {
+      json.remove('manualSkillProficiencyOverrides');
+    } else {
+      final legacy = <Skill, CharacterSkillProficiencyLevel>{};
+      for (final raw in encoded as List) {
+        final value = CharacterSkillProficiencyState.fromJson(
+          Map<String, dynamic>.from(raw as Map),
+        );
+        legacy[value.skill] = value.level;
+      }
+      json['manualSkillProficiencyOverrides'] = [
+        for (final skill in Skill.values)
+          CharacterSkillProficiencyState(
+            skill: skill,
+            level: legacy[skill] ?? CharacterSkillProficiencyLevel.none,
+          ).toJson(),
+      ];
+    }
+  }
+  if (field == 'manualSavingThrowProficiencies') {
+    if (encoded == null) {
+      json.remove('manualSavingThrowProficiencyOverrides');
+    } else {
+      final legacy = {
+        for (final raw in encoded as List) Ability.fromJson(raw),
+      };
+      json['manualSavingThrowProficiencyOverrides'] = [
+        for (final ability in Ability.values)
+          CharacterSavingThrowProficiencyOverrideData(
+            ability: ability,
+            state: legacy.contains(ability)
+                ? CharacterSavingThrowProficiencyOverride.add
+                : CharacterSavingThrowProficiencyOverride.remove,
+          ).toJson(),
+      ];
+    }
   }
 }
 
@@ -565,6 +1210,9 @@ void _upsertListItemJsonValue(
   if (index == -1) {
     list.add(item);
   } else {
+    if (field == 'startingEquipmentSelections') {
+      item['resolutions'] = (list[index] as Map)['resolutions'];
+    }
     list[index] = item;
   }
   json[field] = list;
@@ -605,6 +1253,9 @@ bool _listItemMatchesTargetId(
 ) {
   if (item['id']?.toString() == targetId) {
     return true;
+  }
+  if (field == 'startingEquipmentSelections') {
+    return _startingEquipmentSelectionJsonMatches(item, targetId);
   }
   if (field != 'featureOverrides') {
     return false;
@@ -672,7 +1323,8 @@ void _upsertStartingEquipmentResolutionJsonValue(
     json['startingEquipmentSelections'] as List? ?? const [],
   );
   final selectionIndex = selections.indexWhere((entry) =>
-      entry is Map<String, dynamic> && entry['id']?.toString() == parts[0]);
+      entry is Map<String, dynamic> &&
+      _startingEquipmentSelectionJsonMatches(entry, parts[0]));
   if (selectionIndex == -1) {
     throw Exception('Starting equipment selection was not found.');
   }
@@ -683,7 +1335,9 @@ void _upsertStartingEquipmentResolutionJsonValue(
     selection['resolutions'] as List? ?? const [],
   );
   final resolutionIndex = resolutions.indexWhere((entry) =>
-      entry is Map<String, dynamic> && entry['id']?.toString() == parts[1]);
+      entry is Map<String, dynamic> &&
+      (entry['sourceLineEntryId']?.toString() == parts[1] ||
+          entry['id']?.toString() == parts[1]));
   if (resolutionIndex == -1) {
     resolutions.add(item.toJson());
   } else {
@@ -707,7 +1361,8 @@ void _removeStartingEquipmentResolutionJsonValue(
     json['startingEquipmentSelections'] as List? ?? const [],
   );
   final selectionIndex = selections.indexWhere((entry) =>
-      entry is Map<String, dynamic> && entry['id']?.toString() == parts[0]);
+      entry is Map<String, dynamic> &&
+      _startingEquipmentSelectionJsonMatches(entry, parts[0]));
   if (selectionIndex == -1) return;
   final selection = Map<String, dynamic>.from(
     selections[selectionIndex] as Map<String, dynamic>,
@@ -715,10 +1370,54 @@ void _removeStartingEquipmentResolutionJsonValue(
   final resolutions = List<dynamic>.from(
     selection['resolutions'] as List? ?? const [],
   )..removeWhere((entry) =>
-      entry is Map<String, dynamic> && entry['id']?.toString() == parts[1]);
+      entry is Map<String, dynamic> &&
+      (entry['sourceLineEntryId']?.toString() == parts[1] ||
+          entry['id']?.toString() == parts[1]));
   selection['resolutions'] = resolutions.isEmpty ? null : resolutions;
   selections[selectionIndex] = selection;
   json['startingEquipmentSelections'] = selections;
+}
+
+bool _startingEquipmentSelectionJsonMatches(
+  Map<String, dynamic> item,
+  String targetId,
+) {
+  if (item['id']?.toString() == targetId) return true;
+  return _encodeCompositeTargetId([
+        item['sourceType']?.toString() ?? '',
+        item['sourceId']?.toString() ?? '',
+        item['sourceEntryId']?.toString() ?? '',
+        item['selectionIndex']?.toString() ?? '',
+      ]) ==
+      targetId;
+}
+
+CharacterStartingEquipmentSelectionData? _findStartingEquipmentSelection(
+  CharacterData character,
+  String targetId,
+) {
+  for (final selection in character.startingEquipmentSelections ??
+      const <CharacterStartingEquipmentSelectionData>[]) {
+    if (selection.id == targetId ||
+        _startingEquipmentSelectionTargetId(selection) == targetId) {
+      return selection;
+    }
+  }
+  return null;
+}
+
+CharacterStartingEquipmentResolutionData? _findStartingEquipmentResolution(
+  CharacterStartingEquipmentSelectionData selection,
+  String targetId,
+) {
+  for (final resolution in selection.resolutions ??
+      const <CharacterStartingEquipmentResolutionData>[]) {
+    if (resolution.id == targetId ||
+        resolution.sourceLineEntryId?.toString() == targetId) {
+      return resolution;
+    }
+  }
+  return null;
 }
 
 Object? _encodedValueForField(String field, CharacterSyncValueData? value) {

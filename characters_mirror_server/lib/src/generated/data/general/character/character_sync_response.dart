@@ -24,6 +24,8 @@ abstract class CharacterSyncResponse
     this.serverTime,
     this.pullCursor,
     this.deletedCharacterIds,
+    this.syncProtocolVersion,
+    this.capabilities,
   });
 
   factory CharacterSyncResponse({
@@ -34,6 +36,8 @@ abstract class CharacterSyncResponse
     DateTime? serverTime,
     int? pullCursor,
     List<int>? deletedCharacterIds,
+    int? syncProtocolVersion,
+    List<String>? capabilities,
   }) = _CharacterSyncResponseImpl;
 
   factory CharacterSyncResponse.fromJson(
@@ -62,6 +66,10 @@ abstract class CharacterSyncResponse
       deletedCharacterIds: (jsonSerialization['deletedCharacterIds'] as List?)
           ?.map((e) => e as int)
           .toList(),
+      syncProtocolVersion: jsonSerialization['syncProtocolVersion'] as int?,
+      capabilities: (jsonSerialization['capabilities'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
     );
   }
 
@@ -79,6 +87,10 @@ abstract class CharacterSyncResponse
 
   List<int>? deletedCharacterIds;
 
+  int? syncProtocolVersion;
+
+  List<String>? capabilities;
+
   /// Returns a shallow copy of this [CharacterSyncResponse]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -90,6 +102,8 @@ abstract class CharacterSyncResponse
     DateTime? serverTime,
     int? pullCursor,
     List<int>? deletedCharacterIds,
+    int? syncProtocolVersion,
+    List<String>? capabilities,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -108,6 +122,9 @@ abstract class CharacterSyncResponse
       if (pullCursor != null) 'pullCursor': pullCursor,
       if (deletedCharacterIds != null)
         'deletedCharacterIds': deletedCharacterIds?.toJson(),
+      if (syncProtocolVersion != null)
+        'syncProtocolVersion': syncProtocolVersion,
+      if (capabilities != null) 'capabilities': capabilities?.toJson(),
     };
   }
 
@@ -129,6 +146,9 @@ abstract class CharacterSyncResponse
       if (pullCursor != null) 'pullCursor': pullCursor,
       if (deletedCharacterIds != null)
         'deletedCharacterIds': deletedCharacterIds?.toJson(),
+      if (syncProtocolVersion != null)
+        'syncProtocolVersion': syncProtocolVersion,
+      if (capabilities != null) 'capabilities': capabilities?.toJson(),
     };
   }
 
@@ -149,6 +169,8 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
     DateTime? serverTime,
     int? pullCursor,
     List<int>? deletedCharacterIds,
+    int? syncProtocolVersion,
+    List<String>? capabilities,
   }) : super._(
           acknowledgedChangeIds: acknowledgedChangeIds,
           rejectedChanges: rejectedChanges,
@@ -157,6 +179,8 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
           serverTime: serverTime,
           pullCursor: pullCursor,
           deletedCharacterIds: deletedCharacterIds,
+          syncProtocolVersion: syncProtocolVersion,
+          capabilities: capabilities,
         );
 
   /// Returns a shallow copy of this [CharacterSyncResponse]
@@ -171,6 +195,8 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
     Object? serverTime = _Undefined,
     Object? pullCursor = _Undefined,
     Object? deletedCharacterIds = _Undefined,
+    Object? syncProtocolVersion = _Undefined,
+    Object? capabilities = _Undefined,
   }) {
     return CharacterSyncResponse(
       acknowledgedChangeIds: acknowledgedChangeIds is List<String>?
@@ -197,6 +223,12 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
       deletedCharacterIds: deletedCharacterIds is List<int>?
           ? deletedCharacterIds
           : this.deletedCharacterIds?.map((e0) => e0).toList(),
+      syncProtocolVersion: syncProtocolVersion is int?
+          ? syncProtocolVersion
+          : this.syncProtocolVersion,
+      capabilities: capabilities is List<String>?
+          ? capabilities
+          : this.capabilities?.map((e0) => e0).toList(),
     );
   }
 }

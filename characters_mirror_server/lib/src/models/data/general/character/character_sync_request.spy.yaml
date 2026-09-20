@@ -4,3 +4,4 @@ fields:
   operations: List<CharacterSyncOperationData>?
   pullSince: DateTime?
   pullAfterEventId: int?
+  syncProtocolVersion: int?

@@ -23,12 +23,14 @@ import '../../../data/general/character/character_inventory_item_data.dart'
 import '../../../data/general/character/character_skill_proficiency_state.dart'
     as _i9;
 import '../../../enums/ability.dart' as _i10;
-import '../../../data/general/character/character_note_data.dart' as _i11;
-import '../../../data/general/character/character_attack_data.dart' as _i12;
+import '../../../data/general/character/character_saving_throw_proficiency_override_data.dart'
+    as _i11;
+import '../../../data/general/character/character_note_data.dart' as _i12;
+import '../../../data/general/character/character_attack_data.dart' as _i13;
 import '../../../data/general/character/character_feature_override_data.dart'
-    as _i13;
-import '../../../data/general/character/character_resource_state_data.dart'
     as _i14;
+import '../../../data/general/character/character_resource_state_data.dart'
+    as _i15;
 
 abstract class CharacterRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -50,7 +52,9 @@ abstract class CharacterRecord
     this.bonds,
     this.flaws,
     this.version,
+    this.portraitVersion,
     this.syncTargetRevisions,
+    this.syncBarrierTokens,
     this.createdAt,
     this.updatedAt,
     this.userId,
@@ -91,6 +95,8 @@ abstract class CharacterRecord
     this.equipment,
     this.manualSkillProficiencies,
     this.manualSavingThrowProficiencies,
+    this.manualSkillProficiencyOverrides,
+    this.manualSavingThrowProficiencyOverrides,
     this.notes,
     this.attacks,
     this.featureOverrides,
@@ -115,7 +121,9 @@ abstract class CharacterRecord
     String? bonds,
     String? flaws,
     int? version,
+    int? portraitVersion,
     Map<String, int>? syncTargetRevisions,
+    Map<String, String>? syncBarrierTokens,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? userId,
@@ -156,10 +164,13 @@ abstract class CharacterRecord
     List<_i8.CharacterInventoryItemData>? equipment,
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencies,
     List<_i10.Ability>? manualSavingThrowProficiencies,
-    List<_i11.CharacterNoteData>? notes,
-    List<_i12.CharacterAttackData>? attacks,
-    List<_i13.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i14.CharacterResourceStateData>? resourceStates,
+    List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
+    List<_i11.CharacterSavingThrowProficiencyOverrideData>?
+        manualSavingThrowProficiencyOverrides,
+    List<_i12.CharacterNoteData>? notes,
+    List<_i13.CharacterAttackData>? attacks,
+    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i15.CharacterResourceStateData>? resourceStates,
   }) = _CharacterRecordImpl;
 
   factory CharacterRecord.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -181,10 +192,16 @@ abstract class CharacterRecord
       bonds: jsonSerialization['bonds'] as String?,
       flaws: jsonSerialization['flaws'] as String?,
       version: jsonSerialization['version'] as int?,
+      portraitVersion: jsonSerialization['portraitVersion'] as int?,
       syncTargetRevisions: (jsonSerialization['syncTargetRevisions'] as Map?)
           ?.map((k, v) => MapEntry(
                 k as String,
                 v as int,
+              )),
+      syncBarrierTokens: (jsonSerialization['syncBarrierTokens'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                v as String,
               )),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
@@ -281,20 +298,31 @@ abstract class CharacterRecord
           (jsonSerialization['manualSavingThrowProficiencies'] as List?)
               ?.map((e) => _i10.Ability.fromJson((e as String)))
               .toList(),
+      manualSkillProficiencyOverrides:
+          (jsonSerialization['manualSkillProficiencyOverrides'] as List?)
+              ?.map((e) => _i9.CharacterSkillProficiencyState.fromJson(
+                  (e as Map<String, dynamic>)))
+              .toList(),
+      manualSavingThrowProficiencyOverrides:
+          (jsonSerialization['manualSavingThrowProficiencyOverrides'] as List?)
+              ?.map((e) =>
+                  _i11.CharacterSavingThrowProficiencyOverrideData.fromJson(
+                      (e as Map<String, dynamic>)))
+              .toList(),
       notes: (jsonSerialization['notes'] as List?)
           ?.map((e) =>
-              _i11.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
+              _i12.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
-              _i12.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+              _i13.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       featureOverrides: (jsonSerialization['featureOverrides'] as List?)
-          ?.map((e) => _i13.CharacterFeatureOverrideData.fromJson(
+          ?.map((e) => _i14.CharacterFeatureOverrideData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       resourceStates: (jsonSerialization['resourceStates'] as List?)
-          ?.map((e) => _i14.CharacterResourceStateData.fromJson(
+          ?.map((e) => _i15.CharacterResourceStateData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
     );
@@ -339,7 +367,11 @@ abstract class CharacterRecord
 
   int? version;
 
+  int? portraitVersion;
+
   Map<String, int>? syncTargetRevisions;
+
+  Map<String, String>? syncBarrierTokens;
 
   DateTime? createdAt;
 
@@ -421,13 +453,18 @@ abstract class CharacterRecord
 
   List<_i10.Ability>? manualSavingThrowProficiencies;
 
-  List<_i11.CharacterNoteData>? notes;
+  List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides;
 
-  List<_i12.CharacterAttackData>? attacks;
+  List<_i11.CharacterSavingThrowProficiencyOverrideData>?
+      manualSavingThrowProficiencyOverrides;
 
-  List<_i13.CharacterFeatureOverrideData>? featureOverrides;
+  List<_i12.CharacterNoteData>? notes;
 
-  List<_i14.CharacterResourceStateData>? resourceStates;
+  List<_i13.CharacterAttackData>? attacks;
+
+  List<_i14.CharacterFeatureOverrideData>? featureOverrides;
+
+  List<_i15.CharacterResourceStateData>? resourceStates;
 
   @override
   _i1.Table<int?> get table => t;
@@ -453,7 +490,9 @@ abstract class CharacterRecord
     String? bonds,
     String? flaws,
     int? version,
+    int? portraitVersion,
     Map<String, int>? syncTargetRevisions,
+    Map<String, String>? syncBarrierTokens,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? userId,
@@ -494,10 +533,13 @@ abstract class CharacterRecord
     List<_i8.CharacterInventoryItemData>? equipment,
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencies,
     List<_i10.Ability>? manualSavingThrowProficiencies,
-    List<_i11.CharacterNoteData>? notes,
-    List<_i12.CharacterAttackData>? attacks,
-    List<_i13.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i14.CharacterResourceStateData>? resourceStates,
+    List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
+    List<_i11.CharacterSavingThrowProficiencyOverrideData>?
+        manualSavingThrowProficiencyOverrides,
+    List<_i12.CharacterNoteData>? notes,
+    List<_i13.CharacterAttackData>? attacks,
+    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i15.CharacterResourceStateData>? resourceStates,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -520,8 +562,11 @@ abstract class CharacterRecord
       if (bonds != null) 'bonds': bonds,
       if (flaws != null) 'flaws': flaws,
       if (version != null) 'version': version,
+      if (portraitVersion != null) 'portraitVersion': portraitVersion,
       if (syncTargetRevisions != null)
         'syncTargetRevisions': syncTargetRevisions?.toJson(),
+      if (syncBarrierTokens != null)
+        'syncBarrierTokens': syncBarrierTokens?.toJson(),
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (userId != null) 'userId': userId,
@@ -581,6 +626,13 @@ abstract class CharacterRecord
       if (manualSavingThrowProficiencies != null)
         'manualSavingThrowProficiencies': manualSavingThrowProficiencies
             ?.toJson(valueToJson: (v) => v.toJson()),
+      if (manualSkillProficiencyOverrides != null)
+        'manualSkillProficiencyOverrides': manualSkillProficiencyOverrides
+            ?.toJson(valueToJson: (v) => v.toJson()),
+      if (manualSavingThrowProficiencyOverrides != null)
+        'manualSavingThrowProficiencyOverrides':
+            manualSavingThrowProficiencyOverrides?.toJson(
+                valueToJson: (v) => v.toJson()),
       if (notes != null) 'notes': notes?.toJson(valueToJson: (v) => v.toJson()),
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
@@ -657,7 +709,9 @@ class _CharacterRecordImpl extends CharacterRecord {
     String? bonds,
     String? flaws,
     int? version,
+    int? portraitVersion,
     Map<String, int>? syncTargetRevisions,
+    Map<String, String>? syncBarrierTokens,
     DateTime? createdAt,
     DateTime? updatedAt,
     int? userId,
@@ -698,10 +752,13 @@ class _CharacterRecordImpl extends CharacterRecord {
     List<_i8.CharacterInventoryItemData>? equipment,
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencies,
     List<_i10.Ability>? manualSavingThrowProficiencies,
-    List<_i11.CharacterNoteData>? notes,
-    List<_i12.CharacterAttackData>? attacks,
-    List<_i13.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i14.CharacterResourceStateData>? resourceStates,
+    List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
+    List<_i11.CharacterSavingThrowProficiencyOverrideData>?
+        manualSavingThrowProficiencyOverrides,
+    List<_i12.CharacterNoteData>? notes,
+    List<_i13.CharacterAttackData>? attacks,
+    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i15.CharacterResourceStateData>? resourceStates,
   }) : super._(
           id: id,
           name: name,
@@ -720,7 +777,9 @@ class _CharacterRecordImpl extends CharacterRecord {
           bonds: bonds,
           flaws: flaws,
           version: version,
+          portraitVersion: portraitVersion,
           syncTargetRevisions: syncTargetRevisions,
+          syncBarrierTokens: syncBarrierTokens,
           createdAt: createdAt,
           updatedAt: updatedAt,
           userId: userId,
@@ -761,6 +820,9 @@ class _CharacterRecordImpl extends CharacterRecord {
           equipment: equipment,
           manualSkillProficiencies: manualSkillProficiencies,
           manualSavingThrowProficiencies: manualSavingThrowProficiencies,
+          manualSkillProficiencyOverrides: manualSkillProficiencyOverrides,
+          manualSavingThrowProficiencyOverrides:
+              manualSavingThrowProficiencyOverrides,
           notes: notes,
           attacks: attacks,
           featureOverrides: featureOverrides,
@@ -789,7 +851,9 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? bonds = _Undefined,
     Object? flaws = _Undefined,
     Object? version = _Undefined,
+    Object? portraitVersion = _Undefined,
     Object? syncTargetRevisions = _Undefined,
+    Object? syncBarrierTokens = _Undefined,
     Object? createdAt = _Undefined,
     Object? updatedAt = _Undefined,
     Object? userId = _Undefined,
@@ -830,6 +894,8 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? equipment = _Undefined,
     Object? manualSkillProficiencies = _Undefined,
     Object? manualSavingThrowProficiencies = _Undefined,
+    Object? manualSkillProficiencyOverrides = _Undefined,
+    Object? manualSavingThrowProficiencyOverrides = _Undefined,
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
@@ -857,9 +923,21 @@ class _CharacterRecordImpl extends CharacterRecord {
       bonds: bonds is String? ? bonds : this.bonds,
       flaws: flaws is String? ? flaws : this.flaws,
       version: version is int? ? version : this.version,
+      portraitVersion:
+          portraitVersion is int? ? portraitVersion : this.portraitVersion,
       syncTargetRevisions: syncTargetRevisions is Map<String, int>?
           ? syncTargetRevisions
           : this.syncTargetRevisions?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
+      syncBarrierTokens: syncBarrierTokens is Map<String, String>?
+          ? syncBarrierTokens
+          : this.syncBarrierTokens?.map((
                 key0,
                 value0,
               ) =>
@@ -988,17 +1066,32 @@ class _CharacterRecordImpl extends CharacterRecord {
           manualSavingThrowProficiencies is List<_i10.Ability>?
               ? manualSavingThrowProficiencies
               : this.manualSavingThrowProficiencies?.map((e0) => e0).toList(),
-      notes: notes is List<_i11.CharacterNoteData>?
+      manualSkillProficiencyOverrides: manualSkillProficiencyOverrides
+              is List<_i9.CharacterSkillProficiencyState>?
+          ? manualSkillProficiencyOverrides
+          : this
+              .manualSkillProficiencyOverrides
+              ?.map((e0) => e0.copyWith())
+              .toList(),
+      manualSavingThrowProficiencyOverrides:
+          manualSavingThrowProficiencyOverrides
+                  is List<_i11.CharacterSavingThrowProficiencyOverrideData>?
+              ? manualSavingThrowProficiencyOverrides
+              : this
+                  .manualSavingThrowProficiencyOverrides
+                  ?.map((e0) => e0.copyWith())
+                  .toList(),
+      notes: notes is List<_i12.CharacterNoteData>?
           ? notes
           : this.notes?.map((e0) => e0.copyWith()).toList(),
-      attacks: attacks is List<_i12.CharacterAttackData>?
+      attacks: attacks is List<_i13.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
       featureOverrides:
-          featureOverrides is List<_i13.CharacterFeatureOverrideData>?
+          featureOverrides is List<_i14.CharacterFeatureOverrideData>?
               ? featureOverrides
               : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
-      resourceStates: resourceStates is List<_i14.CharacterResourceStateData>?
+      resourceStates: resourceStates is List<_i15.CharacterResourceStateData>?
           ? resourceStates
           : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
     );
@@ -1071,8 +1164,16 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'version',
       this,
     );
+    portraitVersion = _i1.ColumnInt(
+      'portraitVersion',
+      this,
+    );
     syncTargetRevisions = _i1.ColumnSerializable(
       'syncTargetRevisions',
+      this,
+    );
+    syncBarrierTokens = _i1.ColumnSerializable(
+      'syncBarrierTokens',
       this,
     );
     createdAt = _i1.ColumnDateTime(
@@ -1225,6 +1326,14 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'manualSavingThrowProficiencies',
       this,
     );
+    manualSkillProficiencyOverrides = _i1.ColumnSerializable(
+      'manualSkillProficiencyOverrides',
+      this,
+    );
+    manualSavingThrowProficiencyOverrides = _i1.ColumnSerializable(
+      'manualSavingThrowProficiencyOverrides',
+      this,
+    );
     notes = _i1.ColumnSerializable(
       'notes',
       this,
@@ -1275,7 +1384,11 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt version;
 
+  late final _i1.ColumnInt portraitVersion;
+
   late final _i1.ColumnSerializable syncTargetRevisions;
+
+  late final _i1.ColumnSerializable syncBarrierTokens;
 
   late final _i1.ColumnDateTime createdAt;
 
@@ -1357,6 +1470,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable manualSavingThrowProficiencies;
 
+  late final _i1.ColumnSerializable manualSkillProficiencyOverrides;
+
+  late final _i1.ColumnSerializable manualSavingThrowProficiencyOverrides;
+
   late final _i1.ColumnSerializable notes;
 
   late final _i1.ColumnSerializable attacks;
@@ -1423,7 +1540,9 @@ class CharacterRecordTable extends _i1.Table<int?> {
         bonds,
         flaws,
         version,
+        portraitVersion,
         syncTargetRevisions,
+        syncBarrierTokens,
         createdAt,
         updatedAt,
         userId,
@@ -1461,6 +1580,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
         equipment,
         manualSkillProficiencies,
         manualSavingThrowProficiencies,
+        manualSkillProficiencyOverrides,
+        manualSavingThrowProficiencyOverrides,
         notes,
         attacks,
         featureOverrides,

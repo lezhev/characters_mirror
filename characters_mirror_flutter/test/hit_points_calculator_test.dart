@@ -30,6 +30,8 @@ class _FakeCharacterRepository extends CharacterRepository {
 
   protocol.CharacterData character;
   protocol.CharacterData? savedCharacter;
+  protocol.CharacterSyncOperationType? semanticType;
+  protocol.CharacterSemanticActionData? semanticAction;
   int saveCallCount = 0;
 
   @override
@@ -45,6 +47,17 @@ class _FakeCharacterRepository extends CharacterRepository {
     savedCharacter = character;
     this.character = character;
     return character;
+  }
+
+  @override
+  Future<protocol.CharacterData> saveSemanticAction({
+    required protocol.CharacterData character,
+    required protocol.CharacterSyncOperationType type,
+    required protocol.CharacterSemanticActionData action,
+  }) {
+    semanticType = type;
+    semanticAction = action;
+    return saveCharacter(character);
   }
 }
 

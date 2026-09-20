@@ -128,6 +128,10 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
   }
 
   Future<void> spendSpellSlot(int level) async {
+    await adjustSpellSlots(level, -1);
+  }
+
+  Future<void> adjustSpellSlots(int level, int delta) async {
     if (level <= 0) {
       return;
     }
@@ -135,11 +139,24 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
     final current = _requireCharacter();
     final maxSlots = _spellSlotCount(current, level);
     final available = _currentSpellSlotCount(current, level);
-    if (maxSlots <= 0 || available <= 0) {
+    final nextAvailable = available + delta;
+    if (delta == 0 ||
+        maxSlots <= 0 ||
+        nextAvailable < 0 ||
+        nextAvailable > maxSlots) {
       return;
     }
-
-    await setCurrentSpellSlotsForLevel(level, available - 1);
+    final slots = <int, int>{...?current.currentSpellSlots};
+    if (nextAvailable == maxSlots) {
+      slots.remove(level);
+    } else {
+      slots[level] = nextAvailable;
+    }
+    await _saveSemanticAction(
+      current.copyWith(currentSpellSlots: slots.isEmpty ? null : slots),
+      type: CharacterSyncOperationType.adjustSpellSlots,
+      action: CharacterSemanticActionData(level: level, delta: delta),
+    );
   }
 
   Future<void> castSpell(SpellData spell) async {
@@ -162,12 +179,18 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
       }
     }
 
-    await _saveCharacter(
+    await _saveSemanticAction(
       current.copyWith(
         currentSpellSlots: currentSpellSlots.isEmpty ? null : currentSpellSlots,
         activeConcentrationSpellName: spell.concentration == true
             ? _spellName(spell)
             : current.activeConcentrationSpellName,
+      ),
+      type: CharacterSyncOperationType.castSpell,
+      action: CharacterSemanticActionData(
+        level: level,
+        spellName: spell.concentration == true ? _spellName(spell) : null,
+        startsConcentration: spell.concentration == true,
       ),
     );
   }

@@ -21,6 +21,8 @@ part 'character_data_endpoint/persistence_sync_lookup.dart';
 part 'character_data_endpoint/sync_events.dart';
 part 'character_data_endpoint/sync_operation_application.dart';
 part 'character_data_endpoint/sync_operation_validation.dart';
+part 'character_data_endpoint/sync_semantic_actions.dart';
+part 'character_data_endpoint/sync_target_keys.dart';
 part 'character_data_endpoint/sync_target_revisions.dart';
 part 'character_data_endpoint/aggregate_build.dart';
 part 'character_data_endpoint/aggregate_derived_stats.dart';
@@ -37,6 +39,17 @@ part 'character_data_endpoint/normalization_sorting_includes.dart';
 
 const _standardSpellSlotTableKey = 'standard';
 const _pactMagicSpellSlotTableKey = 'pact_magic';
+const _characterSyncProtocolVersion = 4;
+const _characterSyncCapabilities = <String>[
+  'member_operations',
+  'logical_feature_override_targets',
+  'logical_starting_equipment_targets',
+  'sparse_proficiency_overrides',
+  'post_normalization_target_revisions',
+  'semantic_counter_actions',
+  'semantic_barrier_tokens',
+  'compound_cast_and_rest',
+];
 
 class CharacterDataEndpoint extends Endpoint {
   CharacterDataEndpoint({
@@ -280,6 +293,8 @@ class CharacterDataEndpoint extends Endpoint {
       serverTime: DateTime.now().toUtc(),
       pullCursor: pullDelta.cursor,
       deletedCharacterIds: pullDelta.deletedCharacterIds,
+      syncProtocolVersion: _characterSyncProtocolVersion,
+      capabilities: _characterSyncCapabilities,
     );
   }
 

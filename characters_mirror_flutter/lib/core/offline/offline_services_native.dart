@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_sync_rejection.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
@@ -19,6 +20,7 @@ const _offlineSyncRetryDelays = [
   Duration(seconds: 30),
   Duration(minutes: 1),
 ];
+const _characterSyncProtocolVersion = characterSemanticSyncProtocolVersion;
 
 bool get isAndroidOfflineCacheEnabled =>
     !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
@@ -70,6 +72,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
   bool _isDisposed = false;
   int _retryAttempt = 0;
   Timer? _retryTimer;
+  int? _negotiatedSyncProtocolVersion;
 
   Future<void> syncNow() async {
     _cancelScheduledRetry();
@@ -132,7 +135,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
         shouldRetry |= await _applyRejections(
           userId,
           legacyChanges,
-          response.rejectedChanges,
+          response,
         );
         await _applyRemoteChanges(userId, response);
         finalResponse = response;
@@ -147,7 +150,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
         shouldRetry |= await _applyRejections(
           userId,
           operationChanges,
-          response.rejectedChanges,
+          response,
         );
         await _applyRemoteChanges(userId, response);
         finalResponse = response;
@@ -228,16 +231,79 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     List<OfflineCharacterChange> changes, {
     required DateTime? pullSince,
     required int? pullAfterEventId,
-  }) {
-    return _syncCharacters(
-      CharacterSyncRequest(
-        operations: [
-          for (final change in changes)
-            if (change.operationData != null) change.operationData!,
-        ],
-        pullSince: pullSince,
-        pullAfterEventId: pullAfterEventId,
-      ),
+  }) async {
+    final operations = [
+      for (final change in changes)
+        if (change.operationData != null) change.operationData!,
+    ];
+    CharacterSyncResponse? probe;
+    final requiresNegotiation = operations.any(
+      (operation) => _requiredProtocolVersion(operation.type) > 0,
+    );
+    if (requiresNegotiation && _negotiatedSyncProtocolVersion == null) {
+      probe = await _syncCharacters(
+        CharacterSyncRequest(
+          pullSince: pullSince,
+          pullAfterEventId: pullAfterEventId,
+          syncProtocolVersion: _characterSyncProtocolVersion,
+        ),
+      );
+      _negotiatedSyncProtocolVersion = probe.syncProtocolVersion ?? 0;
+    }
+    final negotiated = _negotiatedSyncProtocolVersion ?? 0;
+    final supported = [
+      for (final operation in operations)
+        if (_requiredProtocolVersion(operation.type) <= negotiated) operation,
+    ];
+    final unsupported = [
+      for (final operation in operations)
+        if (_requiredProtocolVersion(operation.type) > negotiated) operation,
+    ];
+    CharacterSyncResponse response;
+    if (supported.isEmpty && unsupported.isEmpty) {
+      response = await _syncCharacters(
+        CharacterSyncRequest(
+          operations: const [],
+          pullSince: pullSince,
+          pullAfterEventId: pullAfterEventId,
+          syncProtocolVersion: _characterSyncProtocolVersion,
+        ),
+      );
+    } else if (supported.isEmpty) {
+      response = probe ??
+          CharacterSyncResponse(
+            serverTime: DateTime.now().toUtc(),
+            syncProtocolVersion: negotiated,
+          );
+    } else {
+      response = await _syncCharacters(
+        CharacterSyncRequest(
+          operations: supported,
+          pullSince: pullSince,
+          pullAfterEventId: pullAfterEventId,
+          syncProtocolVersion: negotiated,
+        ),
+      );
+    }
+    if (unsupported.isEmpty) return response;
+    return CharacterSyncResponse(
+      acknowledgedChangeIds: response.acknowledgedChangeIds,
+      rejectedChanges: [
+        ...?response.rejectedChanges,
+        for (final operation in unsupported)
+          CharacterRejectedChangeData(
+            changeId: operation.id,
+            reason: 'unsupported_sync_protocol',
+            message: 'Server does not support this semantic operation.',
+          ),
+      ],
+      characters: response.characters,
+      changedCharacters: response.changedCharacters,
+      serverTime: response.serverTime,
+      pullCursor: response.pullCursor,
+      deletedCharacterIds: response.deletedCharacterIds,
+      syncProtocolVersion: response.syncProtocolVersion,
+      capabilities: response.capabilities,
     );
   }
 
@@ -342,6 +408,18 @@ class OfflineSyncCoordinator extends ChangeNotifier {
           case CharacterSyncOperationType.removeMapEntry:
           case CharacterSyncOperationType.upsertListItem:
           case CharacterSyncOperationType.removeListItem:
+          case CharacterSyncOperationType.addSetMember:
+          case CharacterSyncOperationType.removeSetMember:
+          case CharacterSyncOperationType.setMemberValue:
+          case CharacterSyncOperationType.applyDamage:
+          case CharacterSyncOperationType.heal:
+          case CharacterSyncOperationType.grantTemporaryHp:
+          case CharacterSyncOperationType.adjustSpellSlots:
+          case CharacterSyncOperationType.castSpell:
+          case CharacterSyncOperationType.adjustHitDice:
+          case CharacterSyncOperationType.adjustResource:
+          case CharacterSyncOperationType.adjustExperience:
+          case CharacterSyncOperationType.applyRest:
             final serverCharacter = changedByChangeId[change.id] ??
                 (operation.characterId == null
                     ? null
@@ -409,16 +487,49 @@ class OfflineSyncCoordinator extends ChangeNotifier {
   Future<bool> _applyRejections(
     int userId,
     List<OfflineCharacterChange> sentChanges,
-    List<CharacterRejectedChangeData>? rejectedChanges,
+    CharacterSyncResponse response,
   ) async {
     var shouldRetry = false;
     final sentById = {for (final change in sentChanges) change.id: change};
+    final canonicalById = {
+      for (final character in response.characters ?? const <CharacterData>[])
+        if (character.id != null) character.id!: character,
+    };
     for (final rejection
-        in rejectedChanges ?? const <CharacterRejectedChangeData>[]) {
+        in response.rejectedChanges ?? const <CharacterRejectedChangeData>[]) {
       final change = sentById[rejection.changeId];
       final message =
           rejection.message ?? rejection.reason ?? 'Rejected by server';
-      final serverCharacter = rejection.character;
+      final operation = change?.operationData;
+      final serverCharacter = operation?.characterId == null
+          ? rejection.character
+          : canonicalById[operation!.characterId!] ?? rejection.character;
+      if (change != null &&
+          operation != null &&
+          isCharacterSemanticOperation(operation.type)) {
+        await _cache.removeChanges(userId, [rejection.changeId]);
+        final localId = operation.localCharacterId ??
+            operation.characterId ??
+            int.tryParse(change.entityId);
+        final hasNewerChanges = (await _cache.getPendingChanges(userId)).any(
+          (pending) => _changesReferToSameCharacter(
+            pending,
+            localId: localId,
+            serverId: operation.characterId,
+          ),
+        );
+        final canonical = serverCharacter;
+        if (!hasNewerChanges &&
+            localId != null &&
+            canonical != null &&
+            canonical.id != null) {
+          await _cache.markSynced(userId, localId, canonical);
+          await _cache.markSyncError(userId, canonical.id!, message);
+        } else if (localId != null) {
+          await _cache.markSyncError(userId, localId, message);
+        }
+        continue;
+      }
       if (serverCharacter != null && serverCharacter.id != null) {
         final localId = change?.operationData?.localCharacterId ??
             int.tryParse(change?.entityId ?? '') ??
@@ -457,6 +568,20 @@ class OfflineSyncCoordinator extends ChangeNotifier {
       }
     }
     return shouldRetry;
+  }
+
+  bool _changesReferToSameCharacter(
+    OfflineCharacterChange change, {
+    required int? localId,
+    required int? serverId,
+  }) {
+    final operation = change.operationData;
+    return (serverId != null &&
+            (change.entityId == serverId.toString() ||
+                operation?.characterId == serverId)) ||
+        (localId != null &&
+            (change.entityId == localId.toString() ||
+                operation?.localCharacterId == localId));
   }
 
   Future<void> _markChangeSyncError(
@@ -498,6 +623,17 @@ class OfflineSyncCoordinator extends ChangeNotifier {
       await _cache.upsertCleanFromServer(userId, character);
     }
   }
+}
+
+int _requiredProtocolVersion(CharacterSyncOperationType type) {
+  if (isCharacterSemanticOperation(type)) return 4;
+  return switch (type) {
+    CharacterSyncOperationType.addSetMember ||
+    CharacterSyncOperationType.removeSetMember ||
+    CharacterSyncOperationType.setMemberValue =>
+      3,
+    _ => 0,
+  };
 }
 
 class _SyncPassResult {
