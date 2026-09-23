@@ -2,6 +2,16 @@ part of '../offline_cache_database_native.dart';
 
 extension OfflineCacheSyncMetaOperations on OfflineCacheDatabase {
   Future<void> repairSyncQueue(int userId) async {
+    _db.execute('''
+UPDATE character_changes
+SET status = ?
+WHERE user_id = ? AND status = ?
+''', [
+      OfflineCharacterChangeStatus.failed.name,
+      userId,
+      OfflineCharacterChangeStatus.processing.name,
+    ]);
+
     final legacyRows = _db.select('''
 SELECT DISTINCT entity_id
 FROM character_changes
@@ -178,6 +188,34 @@ WHERE user_id = ? AND id = ?
     }
   }
 
+  Future<void> markChangesProcessing(
+    int userId,
+    Iterable<String> changeIds,
+  ) async {
+    final ids = changeIds.toSet();
+    if (ids.isEmpty) return;
+    final stmt = _db.prepare('''
+UPDATE character_changes
+SET status = ?, last_error = NULL
+WHERE user_id = ? AND id = ? AND status IN (?, ?)
+''');
+    try {
+      _runTransaction(() {
+        for (final id in ids) {
+          stmt.execute([
+            OfflineCharacterChangeStatus.processing.name,
+            userId,
+            id,
+            OfflineCharacterChangeStatus.pending.name,
+            OfflineCharacterChangeStatus.failed.name,
+          ]);
+        }
+      });
+    } finally {
+      stmt.dispose();
+    }
+  }
+
   Future<void> markChangeFailed(
       int userId, String changeId, Object error) async {
     final stmt = _db.prepare('''
@@ -248,44 +286,30 @@ WHERE user_id = ? AND id = ?
   Future<void> applyRemoteDelete(int userId, int serverId) async {
     final existing = await getCharacterByServerId(userId, serverId);
     if (existing == null) return;
-
-    if (existing.status == OfflineCharacterSyncStatus.clean ||
-        existing.status == OfflineCharacterSyncStatus.deleting) {
-      await markDeleteSynced(userId, existing.localId);
-      await deleteQueuedChangesForEntity(userId, serverId.toString());
-      return;
-    }
-
-    final stmt = _db.prepare('''
-UPDATE characters_cache
-SET sync_status = ?, last_sync_error = ?, conflict_payload_json = NULL
+    _runTransaction(() {
+      final deleteCharacter = _db.prepare('''
+DELETE FROM characters_cache
 WHERE user_id = ? AND local_id = ?
 ''');
-    try {
-      stmt.execute([
-        OfflineCharacterSyncStatus.conflict.name,
-        'Character was deleted on another device.',
-        userId,
-        existing.localId,
-      ]);
-    } finally {
-      stmt.dispose();
-    }
-
-    final changes = await getPendingChanges(userId);
-    for (final change in changes) {
-      final operation = change.operationData;
-      final matches = change.entityId == serverId.toString() ||
-          operation?.characterId == serverId ||
-          operation?.localCharacterId == existing.localId;
-      if (matches) {
-        await markChangeRejected(
+      final deleteChanges = _db.prepare('''
+DELETE FROM character_changes
+WHERE user_id = ?
+  AND (entity_id = ? OR operation_character_id = ?
+       OR operation_local_character_id = ?)
+''');
+      try {
+        deleteCharacter.execute([userId, existing.localId]);
+        deleteChanges.execute([
           userId,
-          change.id,
-          'Character was deleted on another device.',
-        );
+          serverId.toString(),
+          serverId,
+          existing.localId,
+        ]);
+      } finally {
+        deleteCharacter.dispose();
+        deleteChanges.dispose();
       }
-    }
+    });
   }
 
   Future<void> deleteQueuedChangesForEntity(int userId, String entityId) async {
@@ -329,6 +353,18 @@ LIMIT 1
 
   Future<void> setSyncEventCursor(int userId, int value) async {
     _writeMeta(userId, 'sync_event_cursor', value.toString());
+  }
+
+  Future<void> clearSyncEventCursor(int userId) async {
+    final stmt = _db.prepare('''
+DELETE FROM offline_meta
+WHERE user_id = ? AND key = ?
+''');
+    try {
+      stmt.execute([userId, 'sync_event_cursor']);
+    } finally {
+      stmt.dispose();
+    }
   }
 
   Future<void> clearUser(int userId) async {

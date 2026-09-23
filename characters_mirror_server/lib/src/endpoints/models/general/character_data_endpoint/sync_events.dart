@@ -4,6 +4,45 @@ const _characterSyncEventCreated = 'created';
 const _characterSyncEventUpdated = 'updated';
 const _characterSyncEventDeleted = 'deleted';
 
+Future<_CharacterSyncPullDelta> _loadAuthoritativeCharacterFullResync(
+  Session session, {
+  required int userId,
+  required _CharacterResolveContext resolveContext,
+}) {
+  return _runCharacterMutationTransaction(
+    session,
+    (transaction) async {
+      final records = await CharacterRecord.db.find(
+        session,
+        where: (t) => t.userId.equals(userId),
+        orderBy: (t) => t.id,
+        include: _characterRecordInclude(),
+        transaction: transaction,
+      );
+      final characters = await Future.wait(
+        records.map(
+          (record) => _buildCharacterAggregate(
+            session,
+            record,
+            transaction: transaction,
+            resolveContext: resolveContext,
+          ),
+        ),
+      );
+      return _CharacterSyncPullDelta(
+        characters: characters,
+        cursor: await _latestCharacterSyncEventId(
+              session,
+              userId: userId,
+              transaction: transaction,
+            ) ??
+            0,
+      );
+    },
+    userId: userId,
+  );
+}
+
 Future<void> _recordCharacterSyncEvent(
   Session session, {
   required int userId,
@@ -119,12 +158,14 @@ Future<_CharacterSyncPullDelta> _loadCharacterSyncDeltaAfterEventId(
 Future<int?> _latestCharacterSyncEventId(
   Session session, {
   required int userId,
+  Transaction? transaction,
 }) async {
   final latest = await CharacterSyncEventRecord.db.findFirstRow(
     session,
     where: (t) => t.userId.equals(userId),
     orderBy: (t) => t.id,
     orderDescending: true,
+    transaction: transaction,
   );
   return latest?.id;
 }

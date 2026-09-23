@@ -8,7 +8,7 @@ fields:
   createdAt: DateTime?
   updatedAt: DateTime?
 
-  skillProficiencies: List<String>?
+  skillProficiencies: List<Skill>?
   availableSkills: List<Skill>?
   skillCount: int?
   toolProficiencies: List<String>?

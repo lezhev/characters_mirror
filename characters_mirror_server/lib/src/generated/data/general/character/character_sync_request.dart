@@ -21,6 +21,7 @@ abstract class CharacterSyncRequest
     this.operations,
     this.pullSince,
     this.pullAfterEventId,
+    this.fullResync,
     this.syncProtocolVersion,
   });
 
@@ -29,6 +30,7 @@ abstract class CharacterSyncRequest
     List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
     int? pullAfterEventId,
+    bool? fullResync,
     int? syncProtocolVersion,
   }) = _CharacterSyncRequestImpl;
 
@@ -47,6 +49,7 @@ abstract class CharacterSyncRequest
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['pullSince']),
       pullAfterEventId: jsonSerialization['pullAfterEventId'] as int?,
+      fullResync: jsonSerialization['fullResync'] as bool?,
       syncProtocolVersion: jsonSerialization['syncProtocolVersion'] as int?,
     );
   }
@@ -59,6 +62,8 @@ abstract class CharacterSyncRequest
 
   int? pullAfterEventId;
 
+  bool? fullResync;
+
   int? syncProtocolVersion;
 
   /// Returns a shallow copy of this [CharacterSyncRequest]
@@ -69,6 +74,7 @@ abstract class CharacterSyncRequest
     List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
     int? pullAfterEventId,
+    bool? fullResync,
     int? syncProtocolVersion,
   });
   @override
@@ -80,6 +86,7 @@ abstract class CharacterSyncRequest
         'operations': operations?.toJson(valueToJson: (v) => v.toJson()),
       if (pullSince != null) 'pullSince': pullSince?.toJson(),
       if (pullAfterEventId != null) 'pullAfterEventId': pullAfterEventId,
+      if (fullResync != null) 'fullResync': fullResync,
       if (syncProtocolVersion != null)
         'syncProtocolVersion': syncProtocolVersion,
     };
@@ -95,6 +102,7 @@ abstract class CharacterSyncRequest
             operations?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (pullSince != null) 'pullSince': pullSince?.toJson(),
       if (pullAfterEventId != null) 'pullAfterEventId': pullAfterEventId,
+      if (fullResync != null) 'fullResync': fullResync,
       if (syncProtocolVersion != null)
         'syncProtocolVersion': syncProtocolVersion,
     };
@@ -114,12 +122,14 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
     List<_i3.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
     int? pullAfterEventId,
+    bool? fullResync,
     int? syncProtocolVersion,
   }) : super._(
           changes: changes,
           operations: operations,
           pullSince: pullSince,
           pullAfterEventId: pullAfterEventId,
+          fullResync: fullResync,
           syncProtocolVersion: syncProtocolVersion,
         );
 
@@ -132,6 +142,7 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
     Object? operations = _Undefined,
     Object? pullSince = _Undefined,
     Object? pullAfterEventId = _Undefined,
+    Object? fullResync = _Undefined,
     Object? syncProtocolVersion = _Undefined,
   }) {
     return CharacterSyncRequest(
@@ -144,6 +155,7 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
       pullSince: pullSince is DateTime? ? pullSince : this.pullSince,
       pullAfterEventId:
           pullAfterEventId is int? ? pullAfterEventId : this.pullAfterEventId,
+      fullResync: fullResync is bool? ? fullResync : this.fullResync,
       syncProtocolVersion: syncProtocolVersion is int?
           ? syncProtocolVersion
           : this.syncProtocolVersion,

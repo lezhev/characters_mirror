@@ -8,6 +8,7 @@ import 'package:characters_mirror_flutter/features/character_creation/widgets/cr
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/skill_selection_section.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_section.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -52,9 +53,12 @@ class BackgroundFeatures extends ConsumerWidget {
         const <StartingEquipmentBlockView>[];
     final skillSelectionGroups =
         stepView?.skillSelectionGroups ?? const <SkillSelectionGroupView>[];
+    final fixedSkillLabels = selectedBackground.skillProficiencies
+        ?.map(skillLabel)
+        .toList(growable: false);
     final hasStructuredEquipment = startingEquipmentBlocks.isNotEmpty;
     final hasProficienciesOrLanguages = _hasAnyValues([
-          selectedBackground.skillProficiencies,
+          fixedSkillLabels,
           selectedBackground.toolProficiencies,
         ]) ||
         skillSelectionGroups.isNotEmpty ||
@@ -133,7 +137,7 @@ class BackgroundFeatures extends ConsumerWidget {
           const Gap(8),
           BackgroundValueGroup(
             label: 'Владение навыками',
-            values: selectedBackground.skillProficiencies,
+            values: fixedSkillLabels,
           ),
           if (skillSelectionGroups.isNotEmpty) ...[
             const Gap(8),

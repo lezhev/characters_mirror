@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_dev_log.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_resolver.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
@@ -51,6 +52,9 @@ final selectedFightFeatureTagsProvider =
   };
 });
 
+final characterSheetLocalSavePendingProvider =
+    StateProvider.autoDispose.family<bool, int>((ref, characterId) => false);
+
 @riverpod
 Future<CharacterData> characterSheet(Ref ref, int characterId) async {
   final repository = ref.watch(characterRepositoryProvider);
@@ -79,15 +83,66 @@ class CharacterSheetController
   Completer<void>? _pendingSaveCompleter;
   Completer<void>? _activeSaveCompleter;
   Future<void> _semanticPersistenceTail = Future<void>.value();
+  bool _localSavePending = false;
+  bool _syncReloadRequested = false;
+  bool _isReloadingAfterSync = false;
 
   @override
   Future<CharacterData> build(int characterId) async {
     _characterId = characterId;
     _repository = ref.watch(characterRepositoryProvider);
     ref.onDispose(_disposeSaveQueue);
+    final coordinator = offlineSyncCoordinator;
+    if (coordinator != null) {
+      coordinator.addListener(_reloadAfterSync);
+      ref.onDispose(() => coordinator.removeListener(_reloadAfterSync));
+    }
     final character = await _repository.getCharacter(characterId);
     _lastPersistedCharacter = character;
     return character;
+  }
+
+  void _reloadAfterSync() {
+    if (_isDisposed) return;
+    _syncReloadRequested = true;
+    unawaited(_reloadFromLocalStoreWhenIdle());
+  }
+
+  Future<void> _reloadFromLocalStoreWhenIdle() async {
+    if (_isDisposed ||
+        _isReloadingAfterSync ||
+        _localSavePending ||
+        _isPersisting ||
+        _debouncedSave != null ||
+        _pendingSave != null) {
+      return;
+    }
+    _syncReloadRequested = false;
+    _isReloadingAfterSync = true;
+    final revisionBeforeRead = _saveRevision;
+    try {
+      final record = await _repository.getOfflineRecord(_characterId);
+      if (_isDisposed ||
+          record == null ||
+          record.status == OfflineCharacterSyncStatus.deleting) {
+        return;
+      }
+      if (revisionBeforeRead != _saveRevision ||
+          _localSavePending ||
+          _isPersisting ||
+          _debouncedSave != null ||
+          _pendingSave != null) {
+        _syncReloadRequested = true;
+        return;
+      }
+      _lastPersistedCharacter = record.character;
+      state = AsyncValue.data(record.character);
+    } finally {
+      _isReloadingAfterSync = false;
+      if (_syncReloadRequested && !_isDisposed && !_localSavePending) {
+        unawaited(_reloadFromLocalStoreWhenIdle());
+      }
+    }
   }
 
   Future<void> reload() async {
@@ -115,6 +170,7 @@ class CharacterSheetController
     final previous = _requireCharacter();
     final stamped = stampCharacterMutation(previous: previous, next: updated);
     final revision = ++_saveRevision;
+    _setLocalSavePending(true);
     state = AsyncValue.data(stamped);
 
     if (!debounce) {
@@ -200,6 +256,7 @@ class CharacterSheetController
     final previous = _requireCharacter();
     final stamped = stampCharacterMutation(previous: previous, next: updated);
     final revision = ++_saveRevision;
+    _setLocalSavePending(true);
     state = AsyncValue.data(stamped);
     final completer = Completer<void>();
     final previousTail = _semanticPersistenceTail;
@@ -225,12 +282,16 @@ class CharacterSheetController
           ref.invalidate(characterSheetProvider(_characterId));
           ref.invalidate(offlineCharacterRecordProvider(_characterId));
         }
+        if (!_isDisposed && revision == _saveRevision) {
+          _setLocalSavePending(false);
+        }
         completer.complete();
       } catch (error, stackTrace) {
         if (!_isDisposed && revision == _saveRevision) {
           state = AsyncValue.data(
             _lastPersistedCharacter ?? previous,
           );
+          _setLocalSavePending(false);
         }
         completer.completeError(error, stackTrace);
       }
@@ -326,6 +387,9 @@ class CharacterSheetController
             ref.invalidate(characterSheetProvider(_characterId));
             ref.invalidate(offlineCharacterRecordProvider(_characterId));
           }
+          if (!_isDisposed && nextRevision == _saveRevision) {
+            _setLocalSavePending(false);
+          }
           if (activeCompleter?.isCompleted == false) {
             activeCompleter!.complete();
           }
@@ -334,6 +398,7 @@ class CharacterSheetController
             final rollbackCharacter =
                 _lastPersistedCharacter ?? state.valueOrNull ?? nextCharacter;
             state = AsyncValue.data(rollbackCharacter);
+            _setLocalSavePending(false);
             if (activeCompleter?.isCompleted == false) {
               activeCompleter!.completeError(error, stackTrace);
             }
@@ -360,6 +425,20 @@ class CharacterSheetController
     } finally {
       _isPersisting = false;
       _activeSaveCompleter = null;
+      if (_syncReloadRequested && !_isDisposed) {
+        unawaited(_reloadFromLocalStoreWhenIdle());
+      }
+    }
+  }
+
+  void _setLocalSavePending(bool value) {
+    _localSavePending = value;
+    if (_isDisposed) return;
+    ref
+        .read(characterSheetLocalSavePendingProvider(_characterId).notifier)
+        .state = value;
+    if (!value && _syncReloadRequested) {
+      unawaited(_reloadFromLocalStoreWhenIdle());
     }
   }
 }

@@ -12,6 +12,7 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
 
   for (final operation
       in request.operations ?? const <CharacterSyncOperationData>[]) {
+    _logServerNoteSync(session, stage: 'request', operation: operation);
     final minimumProtocolVersion =
         _minimumProtocolVersionForOperation(operation);
     if (minimumProtocolVersion > 0 &&
@@ -24,6 +25,12 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
               '$minimumProtocolVersion or newer.',
         ),
       );
+      _logServerNoteSync(
+        session,
+        stage: 'rejection',
+        operation: operation,
+        reason: 'unsupported_sync_protocol',
+      );
       continue;
     }
     try {
@@ -35,9 +42,22 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
       );
       if (result.rejection != null) {
         rejectedChanges.add(result.rejection!);
+        _logServerNoteSync(
+          session,
+          stage: 'rejection',
+          operation: operation,
+          character: result.rejection!.character,
+          reason: result.rejection!.reason ?? result.rejection!.message,
+        );
         continue;
       }
       acknowledgedChangeIds.add(operation.id);
+      _logServerNoteSync(
+        session,
+        stage: 'ack',
+        operation: operation,
+        character: result.character,
+      );
       if (result.character != null) {
         changedCharacters[operation.id] = result.character!;
       }
@@ -49,20 +69,32 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
           message: error.toString(),
         ),
       );
+      _logServerNoteSync(
+        session,
+        stage: 'rejection',
+        operation: operation,
+        reason: 'invalid_operation:${error.runtimeType}',
+      );
     }
   }
 
-  final pullDelta = await _loadCharacterSyncDelta(
-    session,
-    userId: userId,
-    pullAfterEventId: request.pullAfterEventId,
-    pullSince: request.pullSince,
-    resolveContext: resolveContext,
-  );
+  final pullDelta = request.fullResync == true
+      ? await _loadAuthoritativeCharacterFullResync(
+          session,
+          userId: userId,
+          resolveContext: resolveContext,
+        )
+      : await _loadCharacterSyncDelta(
+          session,
+          userId: userId,
+          pullAfterEventId: request.pullAfterEventId,
+          pullSince: request.pullSince,
+          resolveContext: resolveContext,
+        );
   final charactersById = <int, CharacterData>{
-    for (final character in pullDelta.characters)
-      if (character.id != null) character.id!: character,
     for (final character in changedCharacters.values)
+      if (character.id != null) character.id!: character,
+    for (final character in pullDelta.characters)
       if (character.id != null) character.id!: character,
   };
 
@@ -77,6 +109,46 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
     syncProtocolVersion: _characterSyncProtocolVersion,
     capabilities: _characterSyncCapabilities,
   );
+}
+
+void _logServerNoteSync(
+  Session session, {
+  required String stage,
+  required CharacterSyncOperationData operation,
+  CharacterData? character,
+  String? reason,
+}) {
+  if (operation.fieldPath != 'notes') return;
+  final operationNote = operation.itemPayload?.noteValue;
+  final canonicalNote = character?.notes
+      ?.where((note) => note.id == operation.targetId)
+      .firstOrNull;
+  final text = canonicalNote?.text ?? operationNote?.text;
+  final fields = <String>[
+    'stage=$stage',
+    if (operation.characterId != null) 'characterId=${operation.characterId}',
+    if (operation.targetId != null) 'noteId=${operation.targetId}',
+    if (text != null) ...[
+      'noteHash=${_syncTextHash(text)}',
+      'noteLength=${text.length}',
+    ],
+    'changeId=${operation.id}',
+    'operation=${operation.type.name}',
+    if (character?.version != null) 'serverVersion=${character!.version}',
+    if (operation.baseCharacterRevision != null)
+      'baseVersion=${operation.baseCharacterRevision}',
+    if (reason != null) 'reason=$reason',
+  ];
+  session.log('[character-sync] ${fields.join(' ')}');
+}
+
+String _syncTextHash(String value) {
+  var hash = 0x811c9dc5;
+  for (final codeUnit in value.codeUnits) {
+    hash ^= codeUnit;
+    hash = (hash * 0x01000193) & 0xffffffff;
+  }
+  return hash.toRadixString(16).padLeft(8, '0');
 }
 
 bool _isMemberOperation(CharacterSyncOperationData operation) {
@@ -210,6 +282,7 @@ Future<_OperationApplyResult> _applySyncOperationAtomically(
       }
       return result;
     },
+    userId: userId,
   );
 }
 

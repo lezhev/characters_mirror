@@ -789,6 +789,35 @@ void main() {
       expect(find.text('Ожидает синхронизации'), findsOneWidget);
     });
 
+    testWidgets('clean sync status is hidden while local save is pending',
+        (tester) async {
+      final record = OfflineCharacterRecord(
+        userId: 7,
+        localId: 1,
+        serverId: 1,
+        character: protocol.CharacterData(id: 1, name: 'Hero'),
+        status: OfflineCharacterSyncStatus.clean,
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            theme: darkTheme,
+            home: Scaffold(
+              body: CharacterSheetSettingsSection(
+                characterId: 1,
+                offlineRecord: AsyncValue.data(record),
+                localSavePending: true,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Сохраняем локально'), findsOneWidget);
+      expect(find.text('Синхронизировано'), findsNothing);
+    });
+
     testWidgets('sync status refresh runs synchronization', (tester) async {
       final syncStarted = Completer<void>();
       final finishSync = Completer<void>();
@@ -961,6 +990,102 @@ void main() {
       await _tapSheetTab(tester, 'Заметки');
 
       expect(find.text('Быстрая заметка'), findsOneWidget);
+    });
+
+    testWidgets(
+        'opening attributes after a note edit does not mutate provider '
+        'during build', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            notes: [
+              protocol.CharacterNoteData(
+                id: 'note-1',
+                text: 'Старая заметка',
+              ),
+            ],
+          ),
+        },
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+      await _tapSheetTab(tester, 'Заметки');
+      await tester.enterText(_noteField('Заметка 1'), 'Новая заметка');
+      await tester.tap(find.byTooltip('Характеристики'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Характеристики'), findsOneWidget);
+      await _pumpCharacterSheetAutosave(tester);
+      expect(repository.charactersById[1]?.notes?.single.text, 'Новая заметка');
+    });
+
+    testWidgets('terminal note rejection updates the focused field immediately',
+        (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            notes: [
+              protocol.CharacterNoteData(
+                id: 'note-1',
+                text: 'Серверная заметка',
+              ),
+            ],
+          ),
+        },
+        rejectSaves: true,
+      );
+
+      await _pumpCharacterSheet(tester, repository);
+      await _tapSheetTab(tester, 'Заметки');
+      await tester.enterText(_noteField('Заметка 1'), 'Отклоненная заметка');
+      await _pumpCharacterSheetAutosave(tester);
+
+      final field = tester.widget<TextField>(_noteField('Заметка 1'));
+      expect(field.controller?.text, 'Серверная заметка');
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('app bar back waits for a pending note durable save',
+        (tester) async {
+      final saveGate = Completer<void>();
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            notes: [
+              protocol.CharacterNoteData(
+                id: 'note-1',
+                text: 'Старая заметка',
+              ),
+            ],
+          ),
+        },
+        saveGate: saveGate,
+      );
+
+      await _pumpCharacterListToSheetRouter(tester, repository);
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Заметки');
+      await tester.enterText(_noteField('Заметка 1'), 'Быстрая заметка');
+      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.pump();
+
+      expect(find.text('Characters route'), findsNothing);
+      expect(find.text('Заметки'), findsWidgets);
+
+      saveGate.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.text('Characters route'), findsOneWidget);
+      expect(
+          repository.charactersById[1]?.notes?.single.text, 'Быстрая заметка');
     });
 
     testWidgets('quick equipment edit survives immediate back and reopen',
@@ -1229,10 +1354,12 @@ class _FakeCharacterRepository extends CharacterRepository {
   _FakeCharacterRepository({
     required Map<int, protocol.CharacterData> charactersById,
     this.saveGate,
+    this.rejectSaves = false,
   }) : _charactersById = Map<int, protocol.CharacterData>.from(charactersById);
 
   final Map<int, protocol.CharacterData> _charactersById;
   final Completer<void>? saveGate;
+  final bool rejectSaves;
   int getCharacterCallCount = 0;
 
   Map<int, protocol.CharacterData> get charactersById => _charactersById;
@@ -1264,6 +1391,9 @@ class _FakeCharacterRepository extends CharacterRepository {
   ) async {
     await saveGate?.future;
     final id = character.id ?? 1;
+    if (rejectSaves) {
+      return _charactersById[id]!;
+    }
     final saved = character.copyWith(id: id);
     _charactersById[id] = saved;
     return saved;

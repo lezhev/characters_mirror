@@ -17,13 +17,13 @@ fields:
   wisdomBonus: int?
   charismaBonus: int?
   traits: List<String>?
-  languages: List<String>?
+  languages: List<Language>?
 
   visionType: SenseType?
   visionRange: int?
   resistances: List<DamageType>?
-  skillProficiencies: List<String>?
-  armorProficiencies: List<String>?
+  skillProficiencies: List<Skill>?
+  armorProficiencies: List<ArmorCategory>?
   weaponProficiencies: List<String>?
   toolProficiencies: List<String>?
   features: List<RaceFeatureData>?, relation(name=race_features)

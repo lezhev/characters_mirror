@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_dev_log.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -105,7 +106,7 @@ class OfflineCacheDatabase {
     final directory = await getApplicationSupportDirectory();
     await Directory(directory.path).create(recursive: true);
     return openAt(
-      p.join(directory.path, 'characters_mirror_offline_v2.sqlite'),
+      p.join(directory.path, 'characters_mirror_offline_v3.sqlite'),
     );
   }
 

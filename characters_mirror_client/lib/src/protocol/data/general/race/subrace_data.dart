@@ -11,8 +11,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../enums/damage_type.dart' as _i3;
-import '../../../data/general/race/race_feature_data.dart' as _i4;
+import '../../../enums/skill.dart' as _i3;
+import '../../../enums/damage_type.dart' as _i4;
+import '../../../enums/armor_category.dart' as _i5;
+import '../../../data/general/race/race_feature_data.dart' as _i6;
 
 abstract class SubraceData implements _i1.SerializableModel {
   SubraceData._({
@@ -61,12 +63,12 @@ abstract class SubraceData implements _i1.SerializableModel {
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<String>? skillProficiencies,
-    List<_i3.DamageType>? resistances,
-    List<String>? armorProficiencies,
+    List<_i3.Skill>? skillProficiencies,
+    List<_i4.DamageType>? resistances,
+    List<_i5.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i4.RaceFeatureData>? features,
+    List<_i6.RaceFeatureData>? features,
   }) = _SubraceDataImpl;
 
   factory SubraceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -99,13 +101,13 @@ abstract class SubraceData implements _i1.SerializableModel {
       speedOverride: jsonSerialization['speedOverride'] as int?,
       visionRangeOverride: jsonSerialization['visionRangeOverride'] as int?,
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i3.Skill.fromJson((e as String)))
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i3.DamageType.fromJson((e as String)))
+          ?.map((e) => _i4.DamageType.fromJson((e as String)))
           .toList(),
       armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i5.ArmorCategory.fromJson((e as String)))
           .toList(),
       weaponProficiencies: (jsonSerialization['weaponProficiencies'] as List?)
           ?.map((e) => e as String)
@@ -115,7 +117,7 @@ abstract class SubraceData implements _i1.SerializableModel {
           .toList(),
       features: (jsonSerialization['features'] as List?)
           ?.map(
-              (e) => _i4.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
+              (e) => _i6.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -159,17 +161,17 @@ abstract class SubraceData implements _i1.SerializableModel {
 
   int? visionRangeOverride;
 
-  List<String>? skillProficiencies;
+  List<_i3.Skill>? skillProficiencies;
 
-  List<_i3.DamageType>? resistances;
+  List<_i4.DamageType>? resistances;
 
-  List<String>? armorProficiencies;
+  List<_i5.ArmorCategory>? armorProficiencies;
 
   List<String>? weaponProficiencies;
 
   List<String>? toolProficiencies;
 
-  List<_i4.RaceFeatureData>? features;
+  List<_i6.RaceFeatureData>? features;
 
   /// Returns a shallow copy of this [SubraceData]
   /// with some or all fields replaced by the given arguments.
@@ -193,12 +195,12 @@ abstract class SubraceData implements _i1.SerializableModel {
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<String>? skillProficiencies,
-    List<_i3.DamageType>? resistances,
-    List<String>? armorProficiencies,
+    List<_i3.Skill>? skillProficiencies,
+    List<_i4.DamageType>? resistances,
+    List<_i5.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i4.RaceFeatureData>? features,
+    List<_i6.RaceFeatureData>? features,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -223,11 +225,13 @@ abstract class SubraceData implements _i1.SerializableModel {
       if (visionRangeOverride != null)
         'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
-        'skillProficiencies': skillProficiencies?.toJson(),
+        'skillProficiencies':
+            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (armorProficiencies != null)
-        'armorProficiencies': armorProficiencies?.toJson(),
+        'armorProficiencies':
+            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (weaponProficiencies != null)
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
@@ -265,12 +269,12 @@ class _SubraceDataImpl extends SubraceData {
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<String>? skillProficiencies,
-    List<_i3.DamageType>? resistances,
-    List<String>? armorProficiencies,
+    List<_i3.Skill>? skillProficiencies,
+    List<_i4.DamageType>? resistances,
+    List<_i5.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i4.RaceFeatureData>? features,
+    List<_i6.RaceFeatureData>? features,
   }) : super._(
           id: id,
           name: name,
@@ -358,13 +362,13 @@ class _SubraceDataImpl extends SubraceData {
       visionRangeOverride: visionRangeOverride is int?
           ? visionRangeOverride
           : this.visionRangeOverride,
-      skillProficiencies: skillProficiencies is List<String>?
+      skillProficiencies: skillProficiencies is List<_i3.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      resistances: resistances is List<_i3.DamageType>?
+      resistances: resistances is List<_i4.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      armorProficiencies: armorProficiencies is List<String>?
+      armorProficiencies: armorProficiencies is List<_i5.ArmorCategory>?
           ? armorProficiencies
           : this.armorProficiencies?.map((e0) => e0).toList(),
       weaponProficiencies: weaponProficiencies is List<String>?
@@ -373,7 +377,7 @@ class _SubraceDataImpl extends SubraceData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
-      features: features is List<_i4.RaceFeatureData>?
+      features: features is List<_i6.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
     );

@@ -13,8 +13,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../enums/damage_type.dart' as _i3;
-import '../../../data/general/race/race_feature_data.dart' as _i4;
+import '../../../enums/skill.dart' as _i3;
+import '../../../enums/damage_type.dart' as _i4;
+import '../../../enums/armor_category.dart' as _i5;
+import '../../../data/general/race/race_feature_data.dart' as _i6;
 
 abstract class SubraceData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -64,12 +66,12 @@ abstract class SubraceData
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<String>? skillProficiencies,
-    List<_i3.DamageType>? resistances,
-    List<String>? armorProficiencies,
+    List<_i3.Skill>? skillProficiencies,
+    List<_i4.DamageType>? resistances,
+    List<_i5.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i4.RaceFeatureData>? features,
+    List<_i6.RaceFeatureData>? features,
   }) = _SubraceDataImpl;
 
   factory SubraceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -102,13 +104,13 @@ abstract class SubraceData
       speedOverride: jsonSerialization['speedOverride'] as int?,
       visionRangeOverride: jsonSerialization['visionRangeOverride'] as int?,
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i3.Skill.fromJson((e as String)))
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i3.DamageType.fromJson((e as String)))
+          ?.map((e) => _i4.DamageType.fromJson((e as String)))
           .toList(),
       armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i5.ArmorCategory.fromJson((e as String)))
           .toList(),
       weaponProficiencies: (jsonSerialization['weaponProficiencies'] as List?)
           ?.map((e) => e as String)
@@ -118,7 +120,7 @@ abstract class SubraceData
           .toList(),
       features: (jsonSerialization['features'] as List?)
           ?.map(
-              (e) => _i4.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
+              (e) => _i6.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -164,17 +166,17 @@ abstract class SubraceData
 
   int? visionRangeOverride;
 
-  List<String>? skillProficiencies;
+  List<_i3.Skill>? skillProficiencies;
 
-  List<_i3.DamageType>? resistances;
+  List<_i4.DamageType>? resistances;
 
-  List<String>? armorProficiencies;
+  List<_i5.ArmorCategory>? armorProficiencies;
 
   List<String>? weaponProficiencies;
 
   List<String>? toolProficiencies;
 
-  List<_i4.RaceFeatureData>? features;
+  List<_i6.RaceFeatureData>? features;
 
   @override
   _i1.Table<int?> get table => t;
@@ -201,12 +203,12 @@ abstract class SubraceData
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<String>? skillProficiencies,
-    List<_i3.DamageType>? resistances,
-    List<String>? armorProficiencies,
+    List<_i3.Skill>? skillProficiencies,
+    List<_i4.DamageType>? resistances,
+    List<_i5.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i4.RaceFeatureData>? features,
+    List<_i6.RaceFeatureData>? features,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -231,11 +233,13 @@ abstract class SubraceData
       if (visionRangeOverride != null)
         'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
-        'skillProficiencies': skillProficiencies?.toJson(),
+        'skillProficiencies':
+            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (armorProficiencies != null)
-        'armorProficiencies': armorProficiencies?.toJson(),
+        'armorProficiencies':
+            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (weaponProficiencies != null)
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
@@ -268,11 +272,13 @@ abstract class SubraceData
       if (visionRangeOverride != null)
         'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
-        'skillProficiencies': skillProficiencies?.toJson(),
+        'skillProficiencies':
+            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (armorProficiencies != null)
-        'armorProficiencies': armorProficiencies?.toJson(),
+        'armorProficiencies':
+            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (weaponProficiencies != null)
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
@@ -284,7 +290,7 @@ abstract class SubraceData
 
   static SubraceDataInclude include({
     _i2.RaceDataInclude? parentRace,
-    _i4.RaceFeatureDataIncludeList? features,
+    _i6.RaceFeatureDataIncludeList? features,
   }) {
     return SubraceDataInclude._(
       parentRace: parentRace,
@@ -340,12 +346,12 @@ class _SubraceDataImpl extends SubraceData {
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<String>? skillProficiencies,
-    List<_i3.DamageType>? resistances,
-    List<String>? armorProficiencies,
+    List<_i3.Skill>? skillProficiencies,
+    List<_i4.DamageType>? resistances,
+    List<_i5.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i4.RaceFeatureData>? features,
+    List<_i6.RaceFeatureData>? features,
   }) : super._(
           id: id,
           name: name,
@@ -433,13 +439,13 @@ class _SubraceDataImpl extends SubraceData {
       visionRangeOverride: visionRangeOverride is int?
           ? visionRangeOverride
           : this.visionRangeOverride,
-      skillProficiencies: skillProficiencies is List<String>?
+      skillProficiencies: skillProficiencies is List<_i3.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      resistances: resistances is List<_i3.DamageType>?
+      resistances: resistances is List<_i4.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      armorProficiencies: armorProficiencies is List<String>?
+      armorProficiencies: armorProficiencies is List<_i5.ArmorCategory>?
           ? armorProficiencies
           : this.armorProficiencies?.map((e0) => e0).toList(),
       weaponProficiencies: weaponProficiencies is List<String>?
@@ -448,7 +454,7 @@ class _SubraceDataImpl extends SubraceData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
-      features: features is List<_i4.RaceFeatureData>?
+      features: features is List<_i6.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
     );
@@ -587,9 +593,9 @@ class SubraceDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable toolProficiencies;
 
-  _i4.RaceFeatureDataTable? ___features;
+  _i6.RaceFeatureDataTable? ___features;
 
-  _i1.ManyRelation<_i4.RaceFeatureDataTable>? _features;
+  _i1.ManyRelation<_i6.RaceFeatureDataTable>? _features;
 
   _i2.RaceDataTable get parentRace {
     if (_parentRace != null) return _parentRace!;
@@ -604,32 +610,32 @@ class SubraceDataTable extends _i1.Table<int?> {
     return _parentRace!;
   }
 
-  _i4.RaceFeatureDataTable get __features {
+  _i6.RaceFeatureDataTable get __features {
     if (___features != null) return ___features!;
     ___features = _i1.createRelationTable(
       relationFieldName: '__features',
       field: SubraceData.t.id,
-      foreignField: _i4.RaceFeatureData.t.subraceId,
+      foreignField: _i6.RaceFeatureData.t.subraceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.RaceFeatureDataTable(tableRelation: foreignTableRelation),
+          _i6.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return ___features!;
   }
 
-  _i1.ManyRelation<_i4.RaceFeatureDataTable> get features {
+  _i1.ManyRelation<_i6.RaceFeatureDataTable> get features {
     if (_features != null) return _features!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'features',
       field: SubraceData.t.id,
-      foreignField: _i4.RaceFeatureData.t.subraceId,
+      foreignField: _i6.RaceFeatureData.t.subraceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.RaceFeatureDataTable(tableRelation: foreignTableRelation),
+          _i6.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
-    _features = _i1.ManyRelation<_i4.RaceFeatureDataTable>(
+    _features = _i1.ManyRelation<_i6.RaceFeatureDataTable>(
       tableWithRelations: relationTable,
-      table: _i4.RaceFeatureDataTable(
+      table: _i6.RaceFeatureDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _features!;
@@ -676,7 +682,7 @@ class SubraceDataTable extends _i1.Table<int?> {
 class SubraceDataInclude extends _i1.IncludeObject {
   SubraceDataInclude._({
     _i2.RaceDataInclude? parentRace,
-    _i4.RaceFeatureDataIncludeList? features,
+    _i6.RaceFeatureDataIncludeList? features,
   }) {
     _parentRace = parentRace;
     _features = features;
@@ -684,7 +690,7 @@ class SubraceDataInclude extends _i1.IncludeObject {
 
   _i2.RaceDataInclude? _parentRace;
 
-  _i4.RaceFeatureDataIncludeList? _features;
+  _i6.RaceFeatureDataIncludeList? _features;
 
   @override
   Map<String, _i1.Include?> get includes => {
@@ -951,7 +957,7 @@ class SubraceDataAttachRepository {
   Future<void> features(
     _i1.Session session,
     SubraceData subraceData,
-    List<_i4.RaceFeatureData> raceFeatureData, {
+    List<_i6.RaceFeatureData> raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
     if (raceFeatureData.any((e) => e.id == null)) {
@@ -964,9 +970,9 @@ class SubraceDataAttachRepository {
     var $raceFeatureData = raceFeatureData
         .map((e) => e.copyWith(subraceId: subraceData.id))
         .toList();
-    await session.db.update<_i4.RaceFeatureData>(
+    await session.db.update<_i6.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i4.RaceFeatureData.t.subraceId],
+      columns: [_i6.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }
@@ -1003,7 +1009,7 @@ class SubraceDataAttachRowRepository {
   Future<void> features(
     _i1.Session session,
     SubraceData subraceData,
-    _i4.RaceFeatureData raceFeatureData, {
+    _i6.RaceFeatureData raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
     if (raceFeatureData.id == null) {
@@ -1014,9 +1020,9 @@ class SubraceDataAttachRowRepository {
     }
 
     var $raceFeatureData = raceFeatureData.copyWith(subraceId: subraceData.id);
-    await session.db.updateRow<_i4.RaceFeatureData>(
+    await session.db.updateRow<_i6.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i4.RaceFeatureData.t.subraceId],
+      columns: [_i6.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }
@@ -1032,7 +1038,7 @@ class SubraceDataDetachRepository {
   /// the related record.
   Future<void> features(
     _i1.Session session,
-    List<_i4.RaceFeatureData> raceFeatureData, {
+    List<_i6.RaceFeatureData> raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
     if (raceFeatureData.any((e) => e.id == null)) {
@@ -1041,9 +1047,9 @@ class SubraceDataDetachRepository {
 
     var $raceFeatureData =
         raceFeatureData.map((e) => e.copyWith(subraceId: null)).toList();
-    await session.db.update<_i4.RaceFeatureData>(
+    await session.db.update<_i6.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i4.RaceFeatureData.t.subraceId],
+      columns: [_i6.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }
@@ -1059,7 +1065,7 @@ class SubraceDataDetachRowRepository {
   /// the related record.
   Future<void> features(
     _i1.Session session,
-    _i4.RaceFeatureData raceFeatureData, {
+    _i6.RaceFeatureData raceFeatureData, {
     _i1.Transaction? transaction,
   }) async {
     if (raceFeatureData.id == null) {
@@ -1067,9 +1073,9 @@ class SubraceDataDetachRowRepository {
     }
 
     var $raceFeatureData = raceFeatureData.copyWith(subraceId: null);
-    await session.db.updateRow<_i4.RaceFeatureData>(
+    await session.db.updateRow<_i6.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i4.RaceFeatureData.t.subraceId],
+      columns: [_i6.RaceFeatureData.t.subraceId],
       transaction: transaction,
     );
   }

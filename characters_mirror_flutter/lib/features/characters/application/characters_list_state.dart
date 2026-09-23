@@ -1,11 +1,20 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final charactersListControllerProvider = StateNotifierProvider.autoDispose<
     CharactersListController, CharactersListState>((ref) {
-  return CharactersListController(CharacterRepository());
+  final controller = CharactersListController(CharacterRepository());
+  final coordinator = offlineSyncCoordinator;
+  if (coordinator != null) {
+    void reloadAfterSync() => controller.reloadFromStore();
+
+    coordinator.addListener(reloadAfterSync);
+    ref.onDispose(() => coordinator.removeListener(reloadAfterSync));
+  }
+  return controller;
 });
 
 class CharactersListState {
@@ -85,6 +94,26 @@ class CharactersListController extends StateNotifier<CharactersListState> {
         characters: AsyncValue.error(error, stackTrace),
         clearDeletingCharacterId: true,
       );
+    }
+  }
+
+  Future<void> reloadFromStore() async {
+    try {
+      final records = await _repository.getOfflineRecords();
+      if (!mounted) return;
+      final characters = [for (final record in records) record.character];
+      state = state.copyWith(
+        characters: AsyncValue.data(characters),
+        offlineRecordsByCharacterId: {
+          for (final record in records) record.localId: record,
+        },
+        armedDeleteCharacterId: _resolveArmedDeleteCharacterId(
+          characters,
+          state.armedDeleteCharacterId,
+        ),
+      );
+    } catch (_) {
+      // A background refresh keeps the last usable list on local read errors.
     }
   }
 

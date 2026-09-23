@@ -1,7 +1,7 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:test/test.dart';
 
-import 'characters_mirror_server/test/integration/test_tools/serverpod_test_tools.dart';
+import 'test_tools/serverpod_test_tools.dart';
 
 void main() {
   withServerpod('SpellData database loading', (sessionBuilder, _) {

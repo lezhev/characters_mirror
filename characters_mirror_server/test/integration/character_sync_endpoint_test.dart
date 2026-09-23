@@ -191,19 +191,31 @@ void main() {
         ),
       );
 
-      await endpoints.characterData.syncCharacters(
+      final firstResponse = await endpoints.characterData.syncCharacters(
         ownerSession,
         CharacterSyncRequest(operations: [noteA]),
       );
-      await endpoints.characterData.syncCharacters(
+      final secondResponse = await endpoints.characterData.syncCharacters(
         ownerSession,
         CharacterSyncRequest(operations: [noteB]),
       );
 
+      expect(firstResponse.acknowledgedChangeIds, contains('note-a-change'));
+      expect(secondResponse.acknowledgedChangeIds, contains('note-b-change'));
+      expect(firstResponse.rejectedChanges, isEmpty);
+      expect(secondResponse.rejectedChanges, isEmpty);
+      expect(
+        firstResponse.changedCharacters?['note-a-change']?.notes
+            ?.singleWhere((note) => note.id == 'note-a')
+            .text,
+        'A+',
+      );
       final current = await endpoints.characterData.getCharacter(
         ownerSession,
         saved.id!,
       );
+      expect(current.notes?.map((note) => note.id),
+          containsAll(['note-a', 'note-b']));
       expect(
           current.notes?.map((note) => note.text), containsAll(['A+', 'B+']));
     });
@@ -710,6 +722,47 @@ void main() {
       expect(updatePull.characters?.single.name, 'Remote update');
       expect(deletePull.characters, isEmpty);
       expect(deletePull.deletedCharacterIds, contains(created.id));
+    });
+
+    test('authoritative full resync returns current state and cursor',
+        () async {
+      final ownerSession = authenticatedSession(311);
+      final retained = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Retained'),
+      );
+      final removed = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Removed'),
+      );
+      await endpoints.characterData.delete(ownerSession, removed.id!);
+
+      final full = await endpoints.characterData.syncCharacters(
+        ownerSession,
+        CharacterSyncRequest(
+          fullResync: true,
+          pullAfterEventId: 999999999,
+        ),
+      );
+
+      expect(full.capabilities, contains('authoritative_full_resync'));
+      expect(full.characters?.map((character) => character.id), [retained.id]);
+      expect(full.deletedCharacterIds, isEmpty);
+      expect(full.pullCursor, isNotNull);
+
+      final createdAfter = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'After full resync'),
+      );
+      final delta = await endpoints.characterData.syncCharacters(
+        ownerSession,
+        CharacterSyncRequest(pullAfterEventId: full.pullCursor),
+      );
+      expect(
+        delta.characters?.map((character) => character.id),
+        contains(createdAfter.id),
+      );
+      expect(delta.pullCursor, greaterThan(full.pullCursor ?? 0));
     });
 
     test('stale operation does not resurrect deleted character', () async {
@@ -1283,6 +1336,46 @@ void main() {
               .reason,
           'target_conflict',
         );
+      });
+
+      test('full resync cursor cannot hide a concurrent mutation', () async {
+        final userId = 920000 + DateTime.now().microsecondsSinceEpoch % 100000;
+        final ownerSession = authenticatedSession(userId);
+        await endpoints.characterData.saveCharacter(
+          ownerSession,
+          CharacterData(name: 'Baseline'),
+        );
+
+        for (var attempt = 0; attempt < 5; attempt++) {
+          CharacterSaveRateLimiter.resetForTests();
+          final results = await Future.wait<Object>([
+            endpoints.characterData.syncCharacters(
+              ownerSession,
+              CharacterSyncRequest(fullResync: true),
+            ),
+            endpoints.characterData.saveCharacter(
+              ownerSession,
+              CharacterData(name: 'Concurrent full $attempt'),
+            ),
+          ]);
+          final full = results[0] as CharacterSyncResponse;
+          final saved = results[1] as CharacterData;
+          final included = full.characters?.any(
+                (character) => character.id == saved.id,
+              ) ??
+              false;
+          if (included) continue;
+
+          final delta = await endpoints.characterData.syncCharacters(
+            ownerSession,
+            CharacterSyncRequest(pullAfterEventId: full.pullCursor),
+          );
+          expect(
+            delta.characters?.map((character) => character.id),
+            contains(saved.id),
+          );
+          expect(delta.pullCursor, greaterThan(full.pullCursor ?? 0));
+        }
       });
     },
     rollbackDatabase: RollbackDatabase.disabled,

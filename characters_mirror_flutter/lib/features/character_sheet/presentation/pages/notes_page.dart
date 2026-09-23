@@ -82,14 +82,13 @@ class _NotesEditorState extends State<_NotesEditor> {
   void didUpdateWidget(_NotesEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
     final incomingNotes = widget.character.notes;
-    if (!_hasAnyFocus && !_sameNotes(incomingNotes)) {
+    if (!_sameNotes(incomingNotes)) {
       _syncNotes(incomingNotes);
     }
   }
 
   @override
   void dispose() {
-    _flushDirtyNotes();
     for (final controller in _controllers) {
       controller.dispose();
     }
@@ -132,7 +131,7 @@ class _NotesEditorState extends State<_NotesEditor> {
                     controller: _controllers[index],
                     focusNode: _focusNodes[index],
                     minLines: 4,
-                    onChanged: (_) => _resetDeleteConfirmation(index),
+                    onChanged: (_) => _handleNoteChanged(index),
                   ),
                   const SizedBox(height: 8),
                   TextButton(
@@ -157,6 +156,7 @@ class _NotesEditorState extends State<_NotesEditor> {
         [..._noteIds, createCharacterSyncItemId()],
         [..._currentTexts(), ''],
       );
+      _lastNotes = _currentTexts();
     });
     _focusNodes.last.requestFocus();
     runCharacterSheetSave(context, widget.onAdd());
@@ -198,39 +198,49 @@ class _NotesEditorState extends State<_NotesEditor> {
     _runSave(() => widget.onUpdate(_noteIds[index], text));
   }
 
+  void _handleNoteChanged(int index) {
+    _resetDeleteConfirmation(index);
+    _saveNote(index);
+  }
+
   void _runSave(Future<void> Function() save) {
     _lastNotes = _currentTexts();
     runCharacterSheetSave(context, save());
   }
 
-  void _flushDirtyNotes() {
-    if (_isResettingFields) {
-      return;
-    }
-
-    final currentNotes = _currentTexts();
-    for (var index = 0; index < currentNotes.length; index++) {
-      final previous = index < _lastNotes.length ? _lastNotes[index] : null;
-      final current = currentNotes[index];
-      if (previous == current) {
-        continue;
-      }
-      runCharacterSheetSave(
-        context,
-        widget.onUpdate(_noteIds[index], current),
-      );
-    }
-    _lastNotes = currentNotes;
-  }
-
   void _syncNotes(List<CharacterNoteData>? notes) {
     final values = notes ?? const <CharacterNoteData>[];
-    final ids = [
+    final incomingIds = [
       for (final note in values) note.id ?? createCharacterSyncItemId(),
     ];
-    final texts = [for (final note in values) note.text ?? ''];
-    _setLocalNotes(ids, texts);
-    _lastNotes = List<String>.from(texts);
+    final incomingTexts = [for (final note in values) note.text ?? ''];
+    if (_noteIds.length == incomingIds.length &&
+        _sameIds(_noteIds, incomingIds)) {
+      _isResettingFields = true;
+      for (var index = 0; index < incomingTexts.length; index++) {
+        final text = incomingTexts[index];
+        if (_controllers[index].text == text) continue;
+        _controllers[index].value = TextEditingValue(
+          text: text,
+          selection: TextSelection.collapsed(offset: text.length),
+        );
+      }
+      _isResettingFields = false;
+    } else {
+      final incomingIdSet = incomingIds.toSet();
+      final blankDraftIds = <String>[];
+      for (var index = 0; index < _noteIds.length; index++) {
+        if (_controllers[index].text.trim().isEmpty &&
+            !incomingIdSet.contains(_noteIds[index])) {
+          blankDraftIds.add(_noteIds[index]);
+        }
+      }
+      _setLocalNotes(
+        [...incomingIds, ...blankDraftIds],
+        [...incomingTexts, for (final _ in blankDraftIds) ''],
+      );
+    }
+    _lastNotes = _currentTexts();
     _confirmDeleteIndex = null;
   }
 
@@ -263,18 +273,30 @@ class _NotesEditorState extends State<_NotesEditor> {
         for (final controller in _controllers) controller.text,
       ];
 
-  bool get _hasAnyFocus => _focusNodes.any((node) => node.hasFocus);
-
   bool _sameNotes(List<CharacterNoteData>? notes) {
     final values = notes ?? const <CharacterNoteData>[];
-    if (values.length != _lastNotes.length) {
+    final persistedLocalIndexes = [
+      for (var index = 0; index < _controllers.length; index++)
+        if (_controllers[index].text.trim().isNotEmpty) index,
+    ];
+    if (values.length != persistedLocalIndexes.length) {
       return false;
     }
     for (var index = 0; index < values.length; index++) {
-      if (values[index].id != _noteIds[index] ||
-          (values[index].text ?? '') != _lastNotes[index]) {
+      final localIndex = persistedLocalIndexes[index];
+      if (values[index].id != _noteIds[localIndex] ||
+          (values[index].text ?? '').trim() !=
+              _controllers[localIndex].text.trim()) {
         return false;
       }
+    }
+    return true;
+  }
+
+  bool _sameIds(List<String> left, List<String> right) {
+    if (left.length != right.length) return false;
+    for (var index = 0; index < left.length; index++) {
+      if (left[index] != right[index]) return false;
     }
     return true;
   }

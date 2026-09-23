@@ -140,6 +140,11 @@ class OfflineCacheDatabase {
   Future<List<OfflineCharacterChange>> getPendingChanges(int userId) async =>
       const [];
 
+  Future<void> markChangesProcessing(
+    int userId,
+    Iterable<String> changeIds,
+  ) async {}
+
   Future<OfflineCharacterRecord> saveLocal(
     int userId,
     CharacterData character,
@@ -217,6 +222,8 @@ class OfflineCacheDatabase {
   Future<int?> getSyncEventCursor(int userId) async => null;
 
   Future<void> setSyncEventCursor(int userId, int value) async {}
+
+  Future<void> clearSyncEventCursor(int userId) async {}
 
   Future<void> clearUser(int userId) async {}
 

@@ -78,25 +78,6 @@ bool _isClassSpellGrantActive(
   return hasSource && active;
 }
 
-void _addSkillNames(Set<Skill> target, List<String>? names) {
-  for (final name in names ?? const <String>[]) {
-    final skill = _skillFromName(name);
-    if (skill != null) {
-      target.add(skill);
-    }
-  }
-}
-
-Skill? _skillFromName(String raw) {
-  final normalized = raw.trim();
-  for (final value in Skill.values) {
-    if (value.name == normalized) {
-      return value;
-    }
-  }
-  return null;
-}
-
 List<String> _collectLanguages(
   CharacterData character,
   List<CharacterChoiceData> choices,
@@ -104,7 +85,10 @@ List<String> _collectLanguages(
   List<RaceChoiceOptionData> raceOptions,
 ) {
   final values = <String>{};
-  values.addAll(_normalizedTexts(character.race?.languages));
+  values.addAll([
+    for (final language in character.race?.languages ?? const <Language>[])
+      language.name,
+  ]);
 
   for (final option in classBackgroundOptions) {
     values.addAll([
@@ -177,8 +161,14 @@ List<String> _collectArmorTraining(
   List<ClassChoiceOptionData> classBackgroundOptions,
 ) {
   final values = <String>{};
-  values.addAll(_normalizedTexts(character.race?.armorProficiencies));
-  values.addAll(_normalizedTexts(character.subrace?.armorProficiencies));
+  values.addAll([
+    for (final training
+        in character.race?.armorProficiencies ?? const <ArmorCategory>[])
+      training.name,
+    for (final training
+        in character.subrace?.armorProficiencies ?? const <ArmorCategory>[])
+      training.name,
+  ]);
 
   for (final entry in entries) {
     final classData = entry.classData;

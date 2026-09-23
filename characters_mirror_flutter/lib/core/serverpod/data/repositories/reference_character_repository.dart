@@ -13,20 +13,26 @@ import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 class CharacterRepository implements Repository<CharacterData> {
   @override
   Future<List<CharacterData>> getAll() async {
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache != null && userId != null) {
-      final cached = await cache.getCharacters(userId);
-      unawaited(_refreshCharacters(cache, userId));
+    if (store != null && userId != null) {
+      final cached = await store.getCharacters(userId);
       if (cached.isNotEmpty) {
+        unawaited(offlineSyncCoordinator?.syncNow());
         return cached.map((record) => record.character).toList();
+      }
+      await offlineSyncCoordinator?.syncNow();
+      final synchronized = await store.getCharacters(userId);
+      if (synchronized.isNotEmpty ||
+          await store.getSyncEventCursor(userId) != null) {
+        return synchronized.map((record) => record.character).toList();
       }
     }
 
     final characters = await client.characterData.getAll();
-    if (cache != null && userId != null) {
+    if (store != null && userId != null) {
       for (final character in characters) {
-        await cache.upsertCleanFromServer(userId, character);
+        await store.upsertCleanFromServer(userId, character);
       }
     }
     return characters;
@@ -47,18 +53,17 @@ class CharacterRepository implements Repository<CharacterData> {
       character,
       fallbackUpdatedAt: character.updatedAt ?? DateTime.now().toUtc(),
     );
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache == null || userId == null) {
-      // Web/desktop still use their existing snapshot lifecycle in this phase.
+    if (store == null || userId == null) {
       return saveCharacter(normalized);
     }
     final existing = normalized.id == null
         ? null
-        : await cache.getCharacter(userId, normalized.id!);
+        : await store.getCharacter(userId, normalized.id!);
     if (existing?.serverId == null) {
-      final resolved = await resolveOfflineCharacter(cache, normalized);
-      final record = await cache.saveLocal(userId, resolved);
+      final resolved = await _resolveForLocalStore(normalized);
+      final record = await store.saveLocal(userId, resolved);
       unawaited(offlineSyncCoordinator?.syncNow());
       return record.character;
     }
@@ -72,8 +77,8 @@ class CharacterRepository implements Repository<CharacterData> {
       changeId: createCharacterSyncItemId(),
       createdAt: now,
     );
-    final resolved = await resolveOfflineCharacter(cache, normalized);
-    final record = await cache.saveSemanticLocal(
+    final resolved = await _resolveForLocalStore(normalized);
+    final record = await store.saveSemanticLocal(
       userId,
       resolved,
       operation,
@@ -83,20 +88,26 @@ class CharacterRepository implements Repository<CharacterData> {
   }
 
   Future<CharacterData> getCharacter(int characterId) async {
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache != null && userId != null) {
-      final cached = await cache.getCharacter(userId, characterId);
+    if (store != null && userId != null) {
+      final cached = await store.getCharacter(userId, characterId);
       if (cached != null &&
           cached.status != OfflineCharacterSyncStatus.deleting) {
-        unawaited(_refreshCharacter(cache, userId, characterId));
+        unawaited(offlineSyncCoordinator?.syncNow());
         return cached.character;
+      }
+      await offlineSyncCoordinator?.syncNow();
+      final synchronized = await store.getCharacter(userId, characterId);
+      if (synchronized != null &&
+          synchronized.status != OfflineCharacterSyncStatus.deleting) {
+        return synchronized.character;
       }
     }
 
     final character = await client.characterData.getCharacter(characterId);
-    if (cache != null && userId != null) {
-      await cache.upsertCleanFromServer(userId, character);
+    if (store != null && userId != null) {
+      await store.upsertCleanFromServer(userId, character);
     }
     return character;
   }
@@ -106,10 +117,10 @@ class CharacterRepository implements Repository<CharacterData> {
 
   @override
   Future<void> delete(int id) async {
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache != null && userId != null) {
-      await cache.markDeleting(userId, id, null);
+    if (store != null && userId != null) {
+      await store.markDeleting(userId, id, null);
       unawaited(offlineSyncCoordinator?.syncNow());
       return;
     }
@@ -117,37 +128,37 @@ class CharacterRepository implements Repository<CharacterData> {
   }
 
   Future<OfflineCharacterRecord?> getOfflineRecord(int id) async {
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache == null || userId == null) return null;
-    return cache.getCharacter(userId, id);
+    if (store == null || userId == null) return null;
+    return store.getCharacter(userId, id);
   }
 
   Future<List<OfflineCharacterRecord>> getOfflineRecords() async {
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache == null || userId == null) return const [];
-    return cache.getCharacters(userId);
+    if (store == null || userId == null) return const [];
+    return store.getCharacters(userId);
   }
 
   Future<bool> hasUnsyncedChanges() async {
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache == null || userId == null) return false;
-    return cache.hasUnsyncedChanges(userId);
+    if (store == null || userId == null) return false;
+    return store.hasUnsyncedChanges(userId);
   }
 
   Future<void> clearLocalUserCache() async {
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache == null || userId == null) return;
-    await cache.clearUser(userId);
+    if (store == null || userId == null) return;
+    await store.clearUser(userId);
   }
 
   Future<void> clearLocalUserCacheForUser(int userId) async {
-    final cache = offlineCacheDatabase;
-    if (cache == null) return;
-    await cache.clearUser(userId);
+    final store = characterSyncStore;
+    if (store == null) return;
+    await store.clearUser(userId);
   }
 
   Future<CharacterData> _saveCharacter(CharacterData character) async {
@@ -155,11 +166,11 @@ class CharacterRepository implements Repository<CharacterData> {
       character,
       fallbackUpdatedAt: character.updatedAt ?? DateTime.now().toUtc(),
     );
-    final cache = offlineCacheDatabase;
+    final store = characterSyncStore;
     final userId = currentOfflineUserId();
-    if (cache != null && userId != null) {
-      final resolved = await resolveOfflineCharacter(cache, normalized);
-      final record = await cache.saveLocal(userId, resolved);
+    if (store != null && userId != null) {
+      final resolved = await _resolveForLocalStore(normalized);
+      final record = await store.saveLocal(userId, resolved);
       unawaited(offlineSyncCoordinator?.syncNow());
       return record.character;
     }
@@ -167,30 +178,9 @@ class CharacterRepository implements Repository<CharacterData> {
     return client.characterData.saveCharacter(normalized);
   }
 
-  Future<void> _refreshCharacters(
-      OfflineCacheDatabase cache, int userId) async {
-    try {
-      final characters = await client.characterData.getAll();
-      for (final character in characters) {
-        await cache.upsertCleanFromServer(userId, character);
-      }
-      unawaited(offlineSyncCoordinator?.syncNow());
-    } catch (_) {
-      // Cached data is still valid for offline use.
-    }
-  }
-
-  Future<void> _refreshCharacter(
-    OfflineCacheDatabase cache,
-    int userId,
-    int characterId,
-  ) async {
-    if (characterId < 0) return;
-    try {
-      final character = await client.characterData.getCharacter(characterId);
-      await cache.upsertCleanFromServer(userId, character);
-    } catch (_) {
-      // Cached data is still valid for offline use.
-    }
+  Future<CharacterData> _resolveForLocalStore(CharacterData character) async {
+    final cache = offlineCacheDatabase;
+    if (cache == null) return character;
+    return resolveOfflineCharacter(cache, character);
   }
 }
