@@ -512,7 +512,7 @@ class Protocol extends _i1.SerializationManagerServer {
           name: 'skillProficiencies',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
+          dartType: 'List<protocol:Skill>?',
         ),
         _i2.ColumnDefinition(
           name: 'availableSkills',
@@ -4005,7 +4005,7 @@ class Protocol extends _i1.SerializationManagerServer {
           name: 'languages',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
+          dartType: 'List<protocol:Language>?',
         ),
         _i2.ColumnDefinition(
           name: 'visionType',
@@ -4029,13 +4029,13 @@ class Protocol extends _i1.SerializationManagerServer {
           name: 'skillProficiencies',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
+          dartType: 'List<protocol:Skill>?',
         ),
         _i2.ColumnDefinition(
           name: 'armorProficiencies',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
+          dartType: 'List<protocol:ArmorCategory>?',
         ),
         _i2.ColumnDefinition(
           name: 'weaponProficiencies',
@@ -5227,7 +5227,7 @@ class Protocol extends _i1.SerializationManagerServer {
           name: 'skillProficiencies',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
+          dartType: 'List<protocol:Skill>?',
         ),
         _i2.ColumnDefinition(
           name: 'resistances',
@@ -5239,7 +5239,7 @@ class Protocol extends _i1.SerializationManagerServer {
           name: 'armorProficiencies',
           columnType: _i2.ColumnType.json,
           isNullable: true,
-          dartType: 'List<String>?',
+          dartType: 'List<protocol:ArmorCategory>?',
         ),
         _i2.ColumnDefinition(
           name: 'weaponProficiencies',
@@ -6342,9 +6342,9 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<_i97.FeatureTag>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i103.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i103.Skill>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i103.Skill>?>()) {
@@ -7144,9 +7144,9 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i99.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i99.Language>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i89.DamageType>?>()) {
@@ -7154,14 +7154,16 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<_i89.DamageType>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i103.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i103.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i72.ArmorCategory>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List)
+              .map((e) => deserialize<_i72.ArmorCategory>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -7219,9 +7221,9 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i103.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i103.Skill>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i89.DamageType>?>()) {
@@ -7229,9 +7231,11 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<_i89.DamageType>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i72.ArmorCategory>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List)
+              .map((e) => deserialize<_i72.ArmorCategory>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {

@@ -11,9 +11,12 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../enums/creature_size.dart' as _i2;
-import '../../../enums/sense_type.dart' as _i3;
-import '../../../enums/damage_type.dart' as _i4;
-import '../../../data/general/race/race_feature_data.dart' as _i5;
+import '../../../enums/language.dart' as _i3;
+import '../../../enums/sense_type.dart' as _i4;
+import '../../../enums/damage_type.dart' as _i5;
+import '../../../enums/skill.dart' as _i6;
+import '../../../enums/armor_category.dart' as _i7;
+import '../../../data/general/race/race_feature_data.dart' as _i8;
 
 abstract class RaceData implements _i1.SerializableModel {
   RaceData._({
@@ -62,15 +65,15 @@ abstract class RaceData implements _i1.SerializableModel {
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<String>? languages,
-    _i3.SenseType? visionType,
+    List<_i3.Language>? languages,
+    _i4.SenseType? visionType,
     int? visionRange,
-    List<_i4.DamageType>? resistances,
-    List<String>? skillProficiencies,
-    List<String>? armorProficiencies,
+    List<_i5.DamageType>? resistances,
+    List<_i6.Skill>? skillProficiencies,
+    List<_i7.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i5.RaceFeatureData>? features,
+    List<_i8.RaceFeatureData>? features,
     String? imageURL,
   }) = _RaceDataImpl;
 
@@ -101,20 +104,20 @@ abstract class RaceData implements _i1.SerializableModel {
           ?.map((e) => e as String)
           .toList(),
       languages: (jsonSerialization['languages'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i3.Language.fromJson((e as String)))
           .toList(),
       visionType: jsonSerialization['visionType'] == null
           ? null
-          : _i3.SenseType.fromJson((jsonSerialization['visionType'] as String)),
+          : _i4.SenseType.fromJson((jsonSerialization['visionType'] as String)),
       visionRange: jsonSerialization['visionRange'] as int?,
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i4.DamageType.fromJson((e as String)))
+          ?.map((e) => _i5.DamageType.fromJson((e as String)))
           .toList(),
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i6.Skill.fromJson((e as String)))
           .toList(),
       armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i7.ArmorCategory.fromJson((e as String)))
           .toList(),
       weaponProficiencies: (jsonSerialization['weaponProficiencies'] as List?)
           ?.map((e) => e as String)
@@ -124,7 +127,7 @@ abstract class RaceData implements _i1.SerializableModel {
           .toList(),
       features: (jsonSerialization['features'] as List?)
           ?.map(
-              (e) => _i5.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
+              (e) => _i8.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       imageURL: jsonSerialization['imageURL'] as String?,
     );
@@ -165,23 +168,23 @@ abstract class RaceData implements _i1.SerializableModel {
 
   List<String>? traits;
 
-  List<String>? languages;
+  List<_i3.Language>? languages;
 
-  _i3.SenseType? visionType;
+  _i4.SenseType? visionType;
 
   int? visionRange;
 
-  List<_i4.DamageType>? resistances;
+  List<_i5.DamageType>? resistances;
 
-  List<String>? skillProficiencies;
+  List<_i6.Skill>? skillProficiencies;
 
-  List<String>? armorProficiencies;
+  List<_i7.ArmorCategory>? armorProficiencies;
 
   List<String>? weaponProficiencies;
 
   List<String>? toolProficiencies;
 
-  List<_i5.RaceFeatureData>? features;
+  List<_i8.RaceFeatureData>? features;
 
   String? imageURL;
 
@@ -205,15 +208,15 @@ abstract class RaceData implements _i1.SerializableModel {
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<String>? languages,
-    _i3.SenseType? visionType,
+    List<_i3.Language>? languages,
+    _i4.SenseType? visionType,
     int? visionRange,
-    List<_i4.DamageType>? resistances,
-    List<String>? skillProficiencies,
-    List<String>? armorProficiencies,
+    List<_i5.DamageType>? resistances,
+    List<_i6.Skill>? skillProficiencies,
+    List<_i7.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i5.RaceFeatureData>? features,
+    List<_i8.RaceFeatureData>? features,
     String? imageURL,
   });
   @override
@@ -235,15 +238,18 @@ abstract class RaceData implements _i1.SerializableModel {
       if (wisdomBonus != null) 'wisdomBonus': wisdomBonus,
       if (charismaBonus != null) 'charismaBonus': charismaBonus,
       if (traits != null) 'traits': traits?.toJson(),
-      if (languages != null) 'languages': languages?.toJson(),
+      if (languages != null)
+        'languages': languages?.toJson(valueToJson: (v) => v.toJson()),
       if (visionType != null) 'visionType': visionType?.toJson(),
       if (visionRange != null) 'visionRange': visionRange,
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (skillProficiencies != null)
-        'skillProficiencies': skillProficiencies?.toJson(),
+        'skillProficiencies':
+            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (armorProficiencies != null)
-        'armorProficiencies': armorProficiencies?.toJson(),
+        'armorProficiencies':
+            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (weaponProficiencies != null)
         'weaponProficiencies': weaponProficiencies?.toJson(),
       if (toolProficiencies != null)
@@ -280,15 +286,15 @@ class _RaceDataImpl extends RaceData {
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<String>? languages,
-    _i3.SenseType? visionType,
+    List<_i3.Language>? languages,
+    _i4.SenseType? visionType,
     int? visionRange,
-    List<_i4.DamageType>? resistances,
-    List<String>? skillProficiencies,
-    List<String>? armorProficiencies,
+    List<_i5.DamageType>? resistances,
+    List<_i6.Skill>? skillProficiencies,
+    List<_i7.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencies,
     List<String>? toolProficiencies,
-    List<_i5.RaceFeatureData>? features,
+    List<_i8.RaceFeatureData>? features,
     String? imageURL,
   }) : super._(
           id: id,
@@ -375,18 +381,18 @@ class _RaceDataImpl extends RaceData {
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
-      languages: languages is List<String>?
+      languages: languages is List<_i3.Language>?
           ? languages
           : this.languages?.map((e0) => e0).toList(),
-      visionType: visionType is _i3.SenseType? ? visionType : this.visionType,
+      visionType: visionType is _i4.SenseType? ? visionType : this.visionType,
       visionRange: visionRange is int? ? visionRange : this.visionRange,
-      resistances: resistances is List<_i4.DamageType>?
+      resistances: resistances is List<_i5.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      skillProficiencies: skillProficiencies is List<String>?
+      skillProficiencies: skillProficiencies is List<_i6.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      armorProficiencies: armorProficiencies is List<String>?
+      armorProficiencies: armorProficiencies is List<_i7.ArmorCategory>?
           ? armorProficiencies
           : this.armorProficiencies?.map((e0) => e0).toList(),
       weaponProficiencies: weaponProficiencies is List<String>?
@@ -395,7 +401,7 @@ class _RaceDataImpl extends RaceData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
-      features: features is List<_i5.RaceFeatureData>?
+      features: features is List<_i8.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,

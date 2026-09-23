@@ -49,6 +49,7 @@ const _characterSyncCapabilities = <String>[
   'semantic_counter_actions',
   'semantic_barrier_tokens',
   'compound_cast_and_rest',
+  'authoritative_full_resync',
 ];
 
 class CharacterDataEndpoint extends Endpoint {
@@ -105,6 +106,7 @@ class CharacterDataEndpoint extends Endpoint {
         transaction: transaction,
         resolveContext: resolveContext,
       ),
+      userId: userId,
     );
   }
 
@@ -128,6 +130,7 @@ class CharacterDataEndpoint extends Endpoint {
           requireExistingWhenIdPresent: character.id != null,
           resolveContext: resolveContext,
         ),
+        userId: userId,
       );
     } on _SnapshotVersionConflict catch (error) {
       return CharacterSyncResult(
@@ -230,6 +233,7 @@ class CharacterDataEndpoint extends Endpoint {
                 transaction: transaction,
                 resolveContext: resolveContext,
               ),
+              userId: userId,
             );
           } on InputValidationException catch (error) {
             rejectedChanges.add(
@@ -278,13 +282,19 @@ class CharacterDataEndpoint extends Endpoint {
       }
     }
 
-    final pullDelta = await _loadCharacterSyncDelta(
-      session,
-      userId: userId,
-      pullAfterEventId: request.pullAfterEventId,
-      pullSince: request.pullSince,
-      resolveContext: resolveContext,
-    );
+    final pullDelta = request.fullResync == true
+        ? await _loadAuthoritativeCharacterFullResync(
+            session,
+            userId: userId,
+            resolveContext: resolveContext,
+          )
+        : await _loadCharacterSyncDelta(
+            session,
+            userId: userId,
+            pullAfterEventId: request.pullAfterEventId,
+            pullSince: request.pullSince,
+            resolveContext: resolveContext,
+          );
 
     return CharacterSyncResponse(
       acknowledgedChangeIds: acknowledgedChangeIds,
@@ -356,6 +366,7 @@ class CharacterDataEndpoint extends Endpoint {
         );
         return CharacterSyncResult(status: CharacterSyncStatus.deleted);
       },
+      userId: userId,
     );
     if (result.status != CharacterSyncStatus.deleted) {
       return result;
@@ -398,6 +409,7 @@ class CharacterDataEndpoint extends Endpoint {
           transaction: transaction,
         );
       },
+      userId: userId,
     );
   }
 }

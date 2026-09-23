@@ -74,10 +74,15 @@ INSERT OR REPLACE INTO characters_cache(
         if (serverId == null) {
           final deleteStmt = _db.prepare('''
 DELETE FROM character_changes
-WHERE user_id = ? AND entity_id = ?
+WHERE user_id = ? AND entity_id = ? AND status IN (?, ?)
 ''');
           try {
-            deleteStmt.execute([userId, localId.toString()]);
+            deleteStmt.execute([
+              userId,
+              localId.toString(),
+              OfflineCharacterChangeStatus.pending.name,
+              OfflineCharacterChangeStatus.failed.name,
+            ]);
           } finally {
             deleteStmt.dispose();
           }
@@ -101,6 +106,22 @@ WHERE user_id = ? AND entity_id = ?
       });
     } finally {
       stmt.dispose();
+    }
+
+    for (final operation in operations) {
+      if (operation.fieldPath != 'notes') continue;
+      final note = operation.itemPayload?.noteValue;
+      logCharacterSyncLifecycle(
+        stage: 'sqlite-commit-queue-insert',
+        characterId: serverId ?? localId,
+        noteId: operation.targetId,
+        noteText: note?.text,
+        changeId: operation.id,
+        operationType: operation.type.name,
+        localVersion: localCharacter.version,
+        baseVersion: existing?.baseVersion ?? character.version,
+        status: nextStatus.name,
+      );
     }
 
     return (await getCharacter(userId, localId))!;
@@ -195,20 +216,12 @@ UPDATE characters_cache
 SET sync_status = ?, sync_operation = ?, local_updated_at = ?, last_sync_error = ?
 WHERE user_id = ? AND local_id = ?
 ''');
-    try {
-      stmt.execute([
-        OfflineCharacterSyncStatus.deleting.name,
-        OfflineCharacterSyncOperation.delete.name,
-        now.toIso8601String(),
-        error,
-        userId,
-        existing.localId,
-      ]);
-    } finally {
-      stmt.dispose();
-    }
-
-    await deleteQueuedChangesForEntity(userId, existing.serverId.toString());
+    final deleteChanges = _db.prepare('''
+DELETE FROM character_changes
+WHERE user_id = ?
+  AND (entity_id = ? OR operation_character_id = ?
+       OR operation_local_character_id = ?)
+''');
     final operation = CharacterSyncOperationData(
       id: _generateChangeId(now),
       characterId: existing.serverId,
@@ -220,19 +233,41 @@ WHERE user_id = ? AND local_id = ?
       baseTargetRevision: existing.character.version ?? existing.baseVersion,
       createdAt: now,
     );
-    _enqueueChange(
-      OfflineCharacterChange(
-        id: operation.id,
-        userId: userId,
-        changeType: CharacterChangeType.delete,
-        entityType: CharacterEntityType.character,
-        entityId: existing.serverId.toString(),
-        operationData: operation,
-        createdAt: now,
-        baseUpdatedAt: existing.character.updatedAt ?? existing.baseUpdatedAt,
-        status: OfflineCharacterChangeStatus.pending,
-      ),
-    );
+    try {
+      _runTransaction(() {
+        stmt.execute([
+          OfflineCharacterSyncStatus.deleting.name,
+          OfflineCharacterSyncOperation.delete.name,
+          now.toIso8601String(),
+          error,
+          userId,
+          existing.localId,
+        ]);
+        deleteChanges.execute([
+          userId,
+          existing.serverId.toString(),
+          existing.serverId,
+          existing.localId,
+        ]);
+        _enqueueChange(
+          OfflineCharacterChange(
+            id: operation.id,
+            userId: userId,
+            changeType: CharacterChangeType.delete,
+            entityType: CharacterEntityType.character,
+            entityId: existing.serverId.toString(),
+            operationData: operation,
+            createdAt: now,
+            baseUpdatedAt:
+                existing.character.updatedAt ?? existing.baseUpdatedAt,
+            status: OfflineCharacterChangeStatus.pending,
+          ),
+        );
+      });
+    } finally {
+      stmt.dispose();
+      deleteChanges.dispose();
+    }
   }
 
   Future<void> upsertCleanFromServer(
@@ -277,6 +312,18 @@ INSERT OR REPLACE INTO characters_cache(
       ]);
     } finally {
       stmt.dispose();
+    }
+    for (final note in character.notes ?? const <CharacterNoteData>[]) {
+      logCharacterSyncLifecycle(
+        stage: 'sqlite-canonical-clean',
+        characterId: serverId,
+        noteId: note.id,
+        noteText: note.text,
+        serverVersion: character.version,
+        localVersion: character.version,
+        baseVersion: character.version,
+        status: OfflineCharacterSyncStatus.clean.name,
+      );
     }
   }
 

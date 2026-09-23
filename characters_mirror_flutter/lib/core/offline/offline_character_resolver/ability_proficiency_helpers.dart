@@ -36,11 +36,12 @@ void _addBonus(Map<String, int> scores, Ability ability, int? bonus) {
 int _modifier(int score) => ((score - 10) / 2).floor();
 
 Set<Ability> _savingThrowProficiencies(CharacterData character) {
-  final result = <Ability>{};
-  for (final entry
-      in character.classEntries ?? const <CharacterClassEntryData>[]) {
-    result.addAll(entry.classData?.savingThrowProficiencies ?? const []);
-  }
+  final startingEntry = _startingClassEntry(
+    character.classEntries ?? const <CharacterClassEntryData>[],
+  );
+  final result = <Ability>{
+    ...?startingEntry?.classData?.savingThrowProficiencies,
+  };
   final overrides = character.manualSavingThrowProficiencyOverrides;
   if (overrides != null) {
     for (final value in overrides) {
@@ -66,15 +67,12 @@ Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
     for (final skill in Skill.values)
       skill: CharacterSkillProficiencyLevel.none,
   };
-  for (final name in [
+  for (final skill in [
     ...?character.race?.skillProficiencies,
     ...?character.subrace?.skillProficiencies,
     ...?character.background?.skillProficiencies,
   ]) {
-    final skill = _skillFromName(name);
-    if (skill != null) {
-      result[skill] = CharacterSkillProficiencyLevel.proficient;
-    }
+    result[skill] = CharacterSkillProficiencyLevel.proficient;
   }
   for (final selection
       in character.skillSelections ?? const <CharacterSkillSelectionData>[]) {
@@ -95,14 +93,6 @@ Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
     result[state.skill] = state.level;
   }
   return result;
-}
-
-Skill? _skillFromName(String value) {
-  final normalized = value.trim();
-  for (final skill in Skill.values) {
-    if (skill.name == normalized) return skill;
-  }
-  return null;
 }
 
 int _skillMultiplier(CharacterSkillProficiencyLevel level) {

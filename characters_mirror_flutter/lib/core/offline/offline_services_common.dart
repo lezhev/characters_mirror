@@ -3,15 +3,21 @@ import 'dart:async';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_dev_log.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_store.dart';
+import 'package:characters_mirror_flutter/core/offline/memory_character_sync_store.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_operation_replay.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_sync_rejection.dart';
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 OfflineCacheDatabase? offlineCacheDatabase;
+CharacterSyncStore? characterSyncStore;
 OfflineSyncCoordinator? offlineSyncCoordinator;
 OfflineSyncLifecycleObserver? _offlineSyncLifecycleObserver;
+VoidCallback? _sessionListener;
 
 const _offlineSyncRetryDelays = [
   Duration(seconds: 2),
@@ -21,24 +27,34 @@ const _offlineSyncRetryDelays = [
   Duration(minutes: 1),
 ];
 const _characterSyncProtocolVersion = characterSemanticSyncProtocolVersion;
+const _foregroundPollInterval = Duration(seconds: 12);
 
 bool get isAndroidOfflineCacheEnabled =>
     !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
 
 Future<void> initializeOfflineServices() async {
-  if (!isAndroidOfflineCacheEnabled) {
-    return;
-  }
   _offlineSyncLifecycleObserver?.dispose();
   offlineSyncCoordinator?.dispose();
-  offlineCacheDatabase = await OfflineCacheDatabase.openDefault();
+  if (_sessionListener != null) {
+    sessionManager.removeListener(_sessionListener!);
+  }
+  if (isAndroidOfflineCacheEnabled) {
+    offlineCacheDatabase = await OfflineCacheDatabase.openDefault();
+    characterSyncStore = SqliteCharacterSyncStore(offlineCacheDatabase!);
+  } else {
+    offlineCacheDatabase = null;
+    characterSyncStore = MemoryCharacterSyncStore();
+  }
   offlineSyncCoordinator = OfflineSyncCoordinator(
-    cache: offlineCacheDatabase!,
+    store: characterSyncStore!,
     client: client,
     currentUserId: currentOfflineUserId,
   );
   _offlineSyncLifecycleObserver =
       OfflineSyncLifecycleObserver(offlineSyncCoordinator!);
+  _sessionListener = () => offlineSyncCoordinator?.authenticationChanged();
+  sessionManager.addListener(_sessionListener!);
+  offlineSyncCoordinator!.start();
 }
 
 int? currentOfflineUserId() {
@@ -51,18 +67,20 @@ int? currentOfflineUserId() {
 
 class OfflineSyncCoordinator extends ChangeNotifier {
   OfflineSyncCoordinator({
-    required OfflineCacheDatabase cache,
+    CharacterSyncStore? store,
+    OfflineCacheDatabase? cache,
     required Client client,
     required int? Function() currentUserId,
     Future<CharacterSyncResponse> Function(CharacterSyncRequest request)?
         syncCharacters,
     List<Duration> retryDelays = _offlineSyncRetryDelays,
-  })  : _cache = cache,
+  })  : assert(store != null || cache != null),
+        _cache = store ?? SqliteCharacterSyncStore(cache!),
         _currentUserId = currentUserId,
         _syncCharacters = syncCharacters ?? client.characterData.syncCharacters,
         _retryDelays = retryDelays;
 
-  final OfflineCacheDatabase _cache;
+  final CharacterSyncStore _cache;
   final int? Function() _currentUserId;
   final Future<CharacterSyncResponse> Function(CharacterSyncRequest request)
       _syncCharacters;
@@ -72,7 +90,43 @@ class OfflineSyncCoordinator extends ChangeNotifier {
   bool _isDisposed = false;
   int _retryAttempt = 0;
   Timer? _retryTimer;
+  Timer? _pollTimer;
   int? _negotiatedSyncProtocolVersion;
+  int? _activeUserId;
+  bool _isForeground = true;
+
+  void start() {
+    _restartPolling();
+    authenticationChanged();
+  }
+
+  void authenticationChanged() {
+    final userId = _currentUserId();
+    if (_activeUserId == userId) return;
+    _activeUserId = userId;
+    _negotiatedSyncProtocolVersion = null;
+    _retryAttempt = 0;
+    _cancelScheduledRetry();
+    _restartPolling();
+    if (userId != null) unawaited(syncNow());
+  }
+
+  void setForeground(bool foreground) {
+    if (_isForeground == foreground) return;
+    _isForeground = foreground;
+    _restartPolling();
+    if (foreground) unawaited(syncNow());
+  }
+
+  void _restartPolling() {
+    _pollTimer?.cancel();
+    _pollTimer = null;
+    if (!_isForeground || _isDisposed || _currentUserId() == null) return;
+    _pollTimer = Timer.periodic(
+      _foregroundPollInterval,
+      (_) => unawaited(syncNow()),
+    );
+  }
 
   Future<void> syncNow() async {
     _cancelScheduledRetry();
@@ -80,14 +134,15 @@ class OfflineSyncCoordinator extends ChangeNotifier {
       _rerunRequested = true;
       return;
     }
-    final userId = _currentUserId();
-    if (userId == null) return;
+    if (_currentUserId() == null) return;
 
     _isRunning = true;
     var result = const _SyncPassResult.succeeded();
     try {
       do {
         _rerunRequested = false;
+        final userId = _currentUserId();
+        if (userId == null) break;
         result = await _runSyncPass(userId);
       } while (_rerunRequested);
     } finally {
@@ -113,8 +168,13 @@ class OfflineSyncCoordinator extends ChangeNotifier {
       pending = await _cache.getPendingChanges(userId);
       final coalesced = await _coalescePendingChanges(userId, pending);
       hadPendingChanges = coalesced.isNotEmpty;
+      await _cache.markChangesProcessing(
+        userId,
+        coalesced.map((change) => change.id),
+      );
       final pullSince = await _cache.getLastPulledAt(userId);
       final pullAfterEventId = await _cache.getSyncEventCursor(userId);
+      final fullResync = pullAfterEventId == null;
       final legacyChanges = [
         for (final change in coalesced)
           if (change.operationData == null) change,
@@ -130,14 +190,14 @@ class OfflineSyncCoordinator extends ChangeNotifier {
           legacyChanges,
           pullSince: operationChanges.isEmpty ? pullSince : null,
           pullAfterEventId: operationChanges.isEmpty ? pullAfterEventId : null,
+          fullResync: operationChanges.isEmpty && fullResync,
         );
-        await _applyAcknowledgements(userId, legacyChanges, response);
-        shouldRetry |= await _applyRejections(
+        shouldRetry |= await _reconcileResponse(
           userId,
           legacyChanges,
           response,
+          fullResync: operationChanges.isEmpty && fullResync,
         );
-        await _applyRemoteChanges(userId, response);
         finalResponse = response;
       }
       if (operationChanges.isNotEmpty || legacyChanges.isEmpty) {
@@ -145,14 +205,14 @@ class OfflineSyncCoordinator extends ChangeNotifier {
           operationChanges,
           pullSince: pullSince,
           pullAfterEventId: pullAfterEventId,
+          fullResync: fullResync,
         );
-        await _applyAcknowledgements(userId, operationChanges, response);
-        shouldRetry |= await _applyRejections(
+        shouldRetry |= await _reconcileResponse(
           userId,
           operationChanges,
           response,
+          fullResync: fullResync,
         );
-        await _applyRemoteChanges(userId, response);
         finalResponse = response;
       }
       if (finalResponse?.serverTime != null) {
@@ -199,6 +259,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
   void dispose() {
     _isDisposed = true;
     _cancelScheduledRetry();
+    _pollTimer?.cancel();
     super.dispose();
   }
 
@@ -206,6 +267,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     List<OfflineCharacterChange> changes, {
     required DateTime? pullSince,
     required int? pullAfterEventId,
+    required bool fullResync,
   }) {
     return _syncCharacters(
       CharacterSyncRequest(
@@ -223,6 +285,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
         ],
         pullSince: pullSince,
         pullAfterEventId: pullAfterEventId,
+        fullResync: fullResync,
       ),
     );
   }
@@ -231,6 +294,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     List<OfflineCharacterChange> changes, {
     required DateTime? pullSince,
     required int? pullAfterEventId,
+    required bool fullResync,
   }) async {
     final operations = [
       for (final change in changes)
@@ -245,6 +309,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
         CharacterSyncRequest(
           pullSince: pullSince,
           pullAfterEventId: pullAfterEventId,
+          fullResync: fullResync,
           syncProtocolVersion: _characterSyncProtocolVersion,
         ),
       );
@@ -266,6 +331,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
           operations: const [],
           pullSince: pullSince,
           pullAfterEventId: pullAfterEventId,
+          fullResync: fullResync,
           syncProtocolVersion: _characterSyncProtocolVersion,
         ),
       );
@@ -281,6 +347,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
           operations: supported,
           pullSince: pullSince,
           pullAfterEventId: pullAfterEventId,
+          fullResync: fullResync,
           syncProtocolVersion: negotiated,
         ),
       );
@@ -359,6 +426,11 @@ class OfflineSyncCoordinator extends ChangeNotifier {
       for (final change in operationChanges)
         if (!retainedIds.contains(change.id)) change.id,
     ];
+    for (final change in operationChanges) {
+      if (supersededIds.contains(change.id)) {
+        _logNoteChange(stage: 'queue-remove-coalesced', change: change);
+      }
+    }
     await _cache.removeChanges(userId, supersededIds);
     return [
       ...effectiveLegacy,
@@ -376,198 +448,235 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     return payload.copyWith(id: parsedId);
   }
 
-  Future<void> _applyAcknowledgements(
-    int userId,
-    List<OfflineCharacterChange> sentChanges,
-    CharacterSyncResponse response,
-  ) async {
-    final acknowledged =
-        (response.acknowledgedChangeIds ?? const <String>[]).toSet();
-    if (acknowledged.isEmpty) {
-      return;
-    }
-
-    final characterById = {
-      for (final character in response.characters ?? const <CharacterData>[])
-        if (character.id != null) character.id!.toString(): character,
-    };
-    final changedByChangeId = response.changedCharacters ?? const {};
-    final syncedUpdates =
-        <({int localId, String entityId, CharacterData character})>[];
-
-    for (final change in sentChanges) {
-      if (!acknowledged.contains(change.id)) {
-        continue;
-      }
-      final operation = change.operationData;
-      if (operation != null) {
-        switch (operation.type) {
-          case CharacterSyncOperationType.createCharacter:
-          case CharacterSyncOperationType.setField:
-          case CharacterSyncOperationType.setMapEntry:
-          case CharacterSyncOperationType.removeMapEntry:
-          case CharacterSyncOperationType.upsertListItem:
-          case CharacterSyncOperationType.removeListItem:
-          case CharacterSyncOperationType.addSetMember:
-          case CharacterSyncOperationType.removeSetMember:
-          case CharacterSyncOperationType.setMemberValue:
-          case CharacterSyncOperationType.applyDamage:
-          case CharacterSyncOperationType.heal:
-          case CharacterSyncOperationType.grantTemporaryHp:
-          case CharacterSyncOperationType.adjustSpellSlots:
-          case CharacterSyncOperationType.castSpell:
-          case CharacterSyncOperationType.adjustHitDice:
-          case CharacterSyncOperationType.adjustResource:
-          case CharacterSyncOperationType.adjustExperience:
-          case CharacterSyncOperationType.applyRest:
-            final serverCharacter = changedByChangeId[change.id] ??
-                (operation.characterId == null
-                    ? null
-                    : characterById[operation.characterId.toString()]);
-            final localId = operation.localCharacterId ??
-                operation.characterId ??
-                int.tryParse(change.entityId);
-            if (localId != null && serverCharacter != null) {
-              syncedUpdates.add((
-                localId: localId,
-                entityId: change.entityId,
-                character: serverCharacter,
-              ));
-            }
-            break;
-          case CharacterSyncOperationType.deleteCharacter:
-            final localId = operation.localCharacterId ??
-                operation.characterId ??
-                int.tryParse(change.entityId);
-            if (localId != null) {
-              await _cache.markDeleteSynced(userId, localId);
-            }
-            break;
-        }
-        continue;
-      }
-
-      switch (change.changeType) {
-        case CharacterChangeType.upsert:
-          final localId = change.payload?.id;
-          final serverCharacter = characterById[change.entityId];
-          if (localId != null && serverCharacter != null) {
-            syncedUpdates.add((
-              localId: localId,
-              entityId: change.entityId,
-              character: serverCharacter,
-            ));
-          }
-          break;
-        case CharacterChangeType.delete:
-          final localId = int.tryParse(change.entityId);
-          if (localId != null) {
-            await _cache.markDeleteSynced(userId, localId);
-          }
-          break;
-      }
-    }
-
-    await _cache.removeChanges(userId, acknowledged);
-    for (final update in syncedUpdates) {
-      final serverId = update.character.id;
-      final hasMoreChanges = await _cache.hasQueuedChangesForEntity(
-        userId,
-        serverId?.toString() ?? update.entityId,
-      );
-      if (!hasMoreChanges) {
-        await _cache.markSynced(userId, update.localId, update.character);
-        if (serverId != null) {
-          await _cache.clearSyncError(userId, serverId);
-        }
-      }
-    }
-  }
-
-  Future<bool> _applyRejections(
-    int userId,
-    List<OfflineCharacterChange> sentChanges,
-    CharacterSyncResponse response,
-  ) async {
+  Future<bool> _reconcileResponse(int userId,
+      List<OfflineCharacterChange> sentChanges, CharacterSyncResponse response,
+      {required bool fullResync}) async {
     var shouldRetry = false;
     final sentById = {for (final change in sentChanges) change.id: change};
-    final canonicalById = {
-      for (final character in response.characters ?? const <CharacterData>[])
-        if (character.id != null) character.id!: character,
-    };
+    final acknowledged =
+        (response.acknowledgedChangeIds ?? const <String>[]).toSet();
+    final canonicalById = <int, CharacterData>{};
+    final canonicalSourceById = <int, String>{};
+    final localHintByServerId = <int, int>{};
+    final terminalIds = <String>{...acknowledged};
+    final errorsByServerId = <int, String>{};
+
+    void addCanonical(CharacterData? character, String source) {
+      final id = character?.id;
+      if (id == null || character == null) return;
+      final existing = canonicalById[id];
+      if (existing == null ||
+          (character.version ?? 0) > (existing.version ?? 0)) {
+        canonicalById[id] = character;
+        canonicalSourceById[id] = source;
+      }
+    }
+
+    for (final character in response.characters ?? const <CharacterData>[]) {
+      addCanonical(character, 'pull');
+    }
+    for (final entry in (response.changedCharacters ?? const {}).entries) {
+      addCanonical(entry.value, 'ack:${entry.key}');
+      final change = sentById[entry.key];
+      final serverId = entry.value.id;
+      final localId = change?.operationData?.localCharacterId ??
+          change?.payload?.id ??
+          int.tryParse(change?.entityId ?? '');
+      if (serverId != null && localId != null) {
+        localHintByServerId[serverId] = localId;
+      }
+    }
+
+    for (final change in sentChanges) {
+      if (!acknowledged.contains(change.id)) continue;
+      final operation = change.operationData;
+      _logNoteChange(
+        stage: 'server-ack',
+        change: change,
+        canonical: response.changedCharacters?[change.id],
+      );
+      if (operation?.type == CharacterSyncOperationType.deleteCharacter ||
+          (operation == null &&
+              change.changeType == CharacterChangeType.delete)) {
+        final localId = operation?.localCharacterId ??
+            operation?.characterId ??
+            int.tryParse(change.entityId);
+        if (localId != null) await _cache.markDeleteSynced(userId, localId);
+      }
+    }
+
     for (final rejection
         in response.rejectedChanges ?? const <CharacterRejectedChangeData>[]) {
       final change = sentById[rejection.changeId];
       final message =
           rejection.message ?? rejection.reason ?? 'Rejected by server';
       final operation = change?.operationData;
-      final serverCharacter = operation?.characterId == null
-          ? rejection.character
-          : canonicalById[operation!.characterId!] ?? rejection.character;
-      if (change != null &&
-          operation != null &&
-          isCharacterSemanticOperation(operation.type)) {
-        await _cache.removeChanges(userId, [rejection.changeId]);
-        final localId = operation.localCharacterId ??
-            operation.characterId ??
-            int.tryParse(change.entityId);
-        final hasNewerChanges = (await _cache.getPendingChanges(userId)).any(
-          (pending) => _changesReferToSameCharacter(
-            pending,
-            localId: localId,
-            serverId: operation.characterId,
-          ),
+      addCanonical(rejection.character, 'rejection:${rejection.changeId}');
+      if (change != null) {
+        _logNoteChange(
+          stage: 'server-rejection',
+          change: change,
+          canonical: rejection.character,
+          reason: message,
         );
-        final canonical = serverCharacter;
-        if (!hasNewerChanges &&
-            localId != null &&
-            canonical != null &&
-            canonical.id != null) {
-          await _cache.markSynced(userId, localId, canonical);
-          await _cache.markSyncError(userId, canonical.id!, message);
-        } else if (localId != null) {
-          await _cache.markSyncError(userId, localId, message);
-        }
-        continue;
       }
-      if (serverCharacter != null && serverCharacter.id != null) {
-        final localId = change?.operationData?.localCharacterId ??
-            int.tryParse(change?.entityId ?? '') ??
-            serverCharacter.id!;
-        await _cache.markConflict(
-          userId,
-          localId,
-          serverCharacter,
-          message,
-        );
-        await _cache.markChangeConflict(
-          userId,
-          rejection.changeId,
-          serverCharacter,
-          message,
-        );
-      } else if (change != null &&
+      final serverId = operation?.characterId ?? rejection.character?.id;
+      final localId =
+          operation?.localCharacterId ?? int.tryParse(change?.entityId ?? '');
+      if (serverId != null && localId != null) {
+        localHintByServerId[serverId] = localId;
+        errorsByServerId[serverId] = message;
+      }
+      if (change != null &&
           isRetryableUntouchedFieldValidationRejection(
             reason: rejection.reason,
             message: rejection.message,
-            operationType: change.operationData?.type,
-            fieldPath: change.operationData?.fieldPath,
+            operationType: operation?.type,
+            fieldPath: operation?.fieldPath,
           )) {
         await _cache.markChangeFailed(userId, rejection.changeId, message);
         await _markChangeSyncError(userId, change, message);
         shouldRetry = true;
       } else {
-        await _cache.markChangeRejected(
-          userId,
-          rejection.changeId,
-          message,
-        );
+        terminalIds.add(rejection.changeId);
         if (change != null) {
           await _markChangeSyncError(userId, change, message);
         }
       }
     }
+
+    for (final changeId in terminalIds) {
+      final change = sentById[changeId];
+      if (change != null) {
+        _logNoteChange(stage: 'queue-remove', change: change);
+      }
+    }
+    await _cache.removeChanges(userId, terminalIds);
+
+    for (final serverId in response.deletedCharacterIds ?? const <int>[]) {
+      canonicalById.remove(serverId);
+      await _cache.applyRemoteDelete(userId, serverId);
+    }
+
+    final authoritativeFullResync = fullResync &&
+        (response.capabilities ?? const <String>[])
+            .contains('authoritative_full_resync');
+    if (authoritativeFullResync) {
+      final presentIds = canonicalById.keys.toSet();
+      for (final record in await _cache.getCharacters(userId)) {
+        final serverId = record.serverId;
+        if (serverId != null && !presentIds.contains(serverId)) {
+          await _cache.applyRemoteDelete(userId, serverId);
+        }
+      }
+    }
+
+    for (final canonical in canonicalById.values) {
+      await _acceptCanonicalAndRebase(
+        userId,
+        canonical,
+        localIdHint: localHintByServerId[canonical.id!],
+        syncError: errorsByServerId[canonical.id!],
+        reconciliationSource: canonicalSourceById[canonical.id!] ?? 'unknown',
+      );
+    }
     return shouldRetry;
+  }
+
+  Future<void> _acceptCanonicalAndRebase(
+    int userId,
+    CharacterData canonical, {
+    int? localIdHint,
+    String? syncError,
+    required String reconciliationSource,
+  }) async {
+    final serverId = canonical.id;
+    if (serverId == null) return;
+    final existing = await _cache.getCharacterByServerId(userId, serverId) ??
+        (localIdHint == null
+            ? null
+            : await _cache.getCharacter(userId, localIdHint));
+    final pending = [
+      for (final change in await _cache.getPendingChanges(userId))
+        if (_changesReferToSameCharacter(
+          change,
+          localId: existing?.localId ?? localIdHint,
+          serverId: serverId,
+        ))
+          change,
+    ];
+    await _cache.removeChanges(userId, pending.map((change) => change.id));
+    await _cache.markSynced(
+      userId,
+      existing?.localId ?? localIdHint ?? serverId,
+      canonical,
+    );
+    for (final note in canonical.notes ?? const <CharacterNoteData>[]) {
+      logCharacterSyncLifecycle(
+        stage: 'reconcile-canonical',
+        characterId: serverId,
+        noteId: note.id,
+        noteText: note.text,
+        serverVersion: canonical.version,
+        localVersion: canonical.version,
+        baseVersion: canonical.version,
+        status: OfflineCharacterSyncStatus.clean.name,
+        reconciliationSource: reconciliationSource,
+        reason: syncError,
+      );
+    }
+
+    for (final change in pending) {
+      final operation = change.operationData;
+      if (operation == null) continue;
+      if (operation.type == CharacterSyncOperationType.deleteCharacter) {
+        await _cache.markDeleting(userId, serverId, syncError);
+        continue;
+      }
+      final current = await _cache.getCharacter(userId, serverId);
+      if (current == null) break;
+      final visible = replayCharacterSyncOperation(
+        current.character,
+        operation,
+      );
+      if (isCharacterSemanticOperation(operation.type)) {
+        await _cache.saveSemanticLocal(userId, visible, operation);
+      } else {
+        await _cache.saveLocal(userId, visible);
+      }
+    }
+    if (syncError != null) {
+      await _cache.markSyncError(userId, serverId, syncError);
+    } else {
+      await _cache.clearSyncError(userId, serverId);
+    }
+  }
+
+  void _logNoteChange({
+    required String stage,
+    required OfflineCharacterChange change,
+    CharacterData? canonical,
+    String? reason,
+  }) {
+    final operation = change.operationData;
+    if (operation?.fieldPath != 'notes') return;
+    final note = operation?.itemPayload?.noteValue;
+    final canonicalNote = canonical?.notes
+        ?.where((value) => value.id == operation?.targetId)
+        .firstOrNull;
+    logCharacterSyncLifecycle(
+      stage: stage,
+      characterId: operation?.characterId ??
+          operation?.localCharacterId ??
+          int.tryParse(change.entityId),
+      noteId: operation?.targetId,
+      noteText: canonicalNote?.text ?? note?.text,
+      changeId: change.id,
+      operationType: operation?.type.name,
+      serverVersion: canonical?.version,
+      baseVersion: operation?.baseCharacterRevision,
+      reason: reason,
+    );
   }
 
   bool _changesReferToSameCharacter(
@@ -595,32 +704,6 @@ class OfflineSyncCoordinator extends ChangeNotifier {
         int.tryParse(change.entityId);
     if (localId != null) {
       await _cache.markSyncError(userId, localId, message);
-    }
-  }
-
-  Future<void> _applyRemoteChanges(
-    int userId,
-    CharacterSyncResponse response,
-  ) async {
-    await _applyRemoteDeletes(userId, response.deletedCharacterIds);
-    await _applyPulledCharacters(userId, response.characters);
-  }
-
-  Future<void> _applyRemoteDeletes(
-    int userId,
-    List<int>? deletedCharacterIds,
-  ) async {
-    for (final id in deletedCharacterIds ?? const <int>[]) {
-      await _cache.applyRemoteDelete(userId, id);
-    }
-  }
-
-  Future<void> _applyPulledCharacters(
-    int userId,
-    List<CharacterData>? characters,
-  ) async {
-    for (final character in characters ?? const <CharacterData>[]) {
-      await _cache.upsertCleanFromServer(userId, character);
     }
   }
 }
@@ -656,9 +739,7 @@ class OfflineSyncLifecycleObserver with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _coordinator.syncNow();
-    }
+    _coordinator.setForeground(state == AppLifecycleState.resumed);
   }
 
   void dispose() {

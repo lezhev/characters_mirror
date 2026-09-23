@@ -891,7 +891,7 @@ void _registerCharacterDataEndpointTests() {
       final derived = loaded.derived;
       expect(derived, isNotNull);
       expect(loaded.featureOverrides, hasLength(2));
-      expect(derived!.languages, contains('celestial'));
+      expect(derived!.languages, containsAll(['celestial', 'common']));
       expect(derived.initiative, 5);
       expect(derived.armorClass, 14);
       expect(derived.speed, 60);
@@ -928,15 +928,37 @@ void _registerCharacterDataEndpointTests() {
       expect(derived.skillBonuses?['acrobatics'], 5);
       expect(derived.skillBonuses?['athletics'], 2);
       expect(derived.skillBonuses?['insight'], 2);
+      expect(derived.skillBonuses?['perception'], 2);
       expect(derived.skillBonuses?['religion'], 2);
       expect(derived.skillBonuses?['survival'], 2);
+      expect(
+        derived.armorTraining,
+        containsAll([
+          ArmorCategory.heavy.name,
+          ArmorCategory.shield.name,
+        ]),
+      );
       expect(derived.savingThrowProficiencies, contains(Ability.strength));
       expect(derived.savingThrowProficiencies, contains(Ability.constitution));
       final acrobaticsLevel = derived.skillProficiencyLevels!.singleWhere(
         (state) => state.skill == Skill.acrobatics,
       );
+      final perceptionLevel = derived.skillProficiencyLevels!.singleWhere(
+        (state) => state.skill == Skill.perception,
+      );
+      final insightLevel = derived.skillProficiencyLevels!.singleWhere(
+        (state) => state.skill == Skill.insight,
+      );
       expect(
         acrobaticsLevel.level,
+        CharacterSkillProficiencyLevel.proficient,
+      );
+      expect(
+        perceptionLevel.level,
+        CharacterSkillProficiencyLevel.proficient,
+      );
+      expect(
+        insightLevel.level,
         CharacterSkillProficiencyLevel.proficient,
       );
       expect(
@@ -1218,6 +1240,11 @@ void _registerCharacterDataEndpointTests() {
     });
 
     _registerCharacterDataCreationScenarios(
+      sessionBuilder,
+      endpoints,
+      authenticatedSession,
+    );
+    _registerCharacterDataProficiencyScenarios(
       sessionBuilder,
       endpoints,
       authenticatedSession,

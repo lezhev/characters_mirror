@@ -4,13 +4,19 @@ typedef _CharacterMutationBody<T> = Future<T> Function(Transaction transaction);
 
 Future<T> _runCharacterMutationTransaction<T>(
   Session session,
-  _CharacterMutationBody<T> body,
-) async {
+  _CharacterMutationBody<T> body, {
+  required int userId,
+}) async {
   // ignore: invalid_use_of_visible_for_testing_member
   final existingTransaction = session.transaction;
   if (existingTransaction != null) {
     final savepoint = await existingTransaction.createSavepoint();
     try {
+      await _lockCharacterSyncUser(
+        session,
+        userId: userId,
+        transaction: existingTransaction,
+      );
       final result = await body(existingTransaction);
       await savepoint.release();
       return result;
@@ -19,7 +25,28 @@ Future<T> _runCharacterMutationTransaction<T>(
       rethrow;
     }
   }
-  return session.db.transaction(body);
+  return session.db.transaction((transaction) async {
+    await _lockCharacterSyncUser(
+      session,
+      userId: userId,
+      transaction: transaction,
+    );
+    return body(transaction);
+  });
+}
+
+Future<void> _lockCharacterSyncUser(
+  Session session, {
+  required int userId,
+  required Transaction transaction,
+}) async {
+  await session.db.unsafeQuery(
+    'SELECT pg_advisory_xact_lock(hashtext(@lockKey)::bigint)',
+    transaction: transaction,
+    parameters: QueryParameters.named({
+      'lockKey': 'character-sync-user:$userId',
+    }),
+  );
 }
 
 Future<CharacterData> _saveCharacterSnapshotInTransaction(

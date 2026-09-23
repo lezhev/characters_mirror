@@ -98,6 +98,14 @@ extension CharacterSheetControllerPersonal on CharacterSheetController {
 
   Future<void> updateNote(String id, String note) async {
     final current = _requireCharacter();
+    logCharacterSyncLifecycle(
+      stage: 'ui-edit-accepted',
+      characterId: current.id,
+      noteId: id,
+      noteText: note,
+      localVersion: current.version,
+      status: 'local-save-pending',
+    );
     await _saveCharacter(
       current.copyWith(
         notes: upsertCharacterNote(current.notes, id: id, text: note),

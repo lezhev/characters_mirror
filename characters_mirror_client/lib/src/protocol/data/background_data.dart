@@ -43,7 +43,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<String>? skillProficiencies,
+    List<_i2.Skill>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencies,
@@ -71,7 +71,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => e as String)
+          ?.map((e) => _i2.Skill.fromJson((e as String)))
           .toList(),
       availableSkills: (jsonSerialization['availableSkills'] as List?)
           ?.map((e) => _i2.Skill.fromJson((e as String)))
@@ -118,7 +118,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  List<String>? skillProficiencies;
+  List<_i2.Skill>? skillProficiencies;
 
   List<_i2.Skill>? availableSkills;
 
@@ -153,7 +153,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<String>? skillProficiencies,
+    List<_i2.Skill>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencies,
@@ -177,7 +177,8 @@ abstract class BackgroundData implements _i1.SerializableModel {
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (skillProficiencies != null)
-        'skillProficiencies': skillProficiencies?.toJson(),
+        'skillProficiencies':
+            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
       if (availableSkills != null)
         'availableSkills':
             availableSkills?.toJson(valueToJson: (v) => v.toJson()),
@@ -213,7 +214,7 @@ class _BackgroundDataImpl extends BackgroundData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<String>? skillProficiencies,
+    List<_i2.Skill>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencies,
@@ -280,7 +281,7 @@ class _BackgroundDataImpl extends BackgroundData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      skillProficiencies: skillProficiencies is List<String>?
+      skillProficiencies: skillProficiencies is List<_i2.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
       availableSkills: availableSkills is List<_i2.Skill>?

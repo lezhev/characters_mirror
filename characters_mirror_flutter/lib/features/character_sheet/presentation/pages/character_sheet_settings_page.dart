@@ -22,6 +22,8 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
     final character = ref.watch(characterSheetControllerProvider(characterId));
     final offlineRecord =
         ref.watch(offlineCharacterRecordProvider(characterId));
+    final localSavePending =
+        ref.watch(characterSheetLocalSavePendingProvider(characterId));
     final characterName = character.valueOrNull?.name?.trim();
 
     return PopScope(
@@ -70,6 +72,7 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
               CharacterSheetSettingsSection(
                 characterId: characterId,
                 offlineRecord: offlineRecord,
+                localSavePending: localSavePending,
                 showTitle: false,
               ),
             ],
@@ -84,6 +87,7 @@ class CharacterSheetSettingsSection extends StatelessWidget {
   const CharacterSheetSettingsSection({
     required this.characterId,
     required this.offlineRecord,
+    this.localSavePending = false,
     this.showTitle = true,
     this.onSyncRequested,
     super.key,
@@ -91,6 +95,7 @@ class CharacterSheetSettingsSection extends StatelessWidget {
 
   final int characterId;
   final AsyncValue<OfflineCharacterRecord?> offlineRecord;
+  final bool localSavePending;
   final bool showTitle;
   final Future<void> Function()? onSyncRequested;
 
@@ -115,6 +120,7 @@ class CharacterSheetSettingsSection extends StatelessWidget {
             data: (record) => _SyncStatusSection(
               characterId: characterId,
               record: record,
+              localSavePending: localSavePending,
               onSyncRequested: () async {
                 final requestSync = onSyncRequested;
                 if (requestSync != null) {
@@ -145,11 +151,13 @@ class _SyncStatusSection extends ConsumerStatefulWidget {
   const _SyncStatusSection({
     required this.characterId,
     required this.record,
+    required this.localSavePending,
     required this.onSyncRequested,
   });
 
   final int characterId;
   final OfflineCharacterRecord? record;
+  final bool localSavePending;
   final Future<void> Function() onSyncRequested;
 
   @override
@@ -161,7 +169,13 @@ class _SyncStatusSectionState extends ConsumerState<_SyncStatusSection> {
 
   @override
   Widget build(BuildContext context) {
-    final status = _resolveSyncStatus(widget.record);
+    final status = widget.localSavePending
+        ? const _SyncStatusText(
+            icon: Icons.save_outlined,
+            title: 'Сохраняем локально',
+            description: 'Изменение ещё записывается на устройство.',
+          )
+        : _resolveSyncStatus(widget.record);
     return ListTile(
       leading: Icon(status.icon),
       title: Text(status.title),

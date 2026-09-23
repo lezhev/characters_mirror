@@ -119,15 +119,20 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       ..sort((a, b) => a.name.compareTo(b.name)),
     hitDiceSummary: hitDice,
     languages: _uniqueStrings([
-      ...?character.race?.languages,
+      for (final language in character.race?.languages ?? const <Language>[])
+        language.name,
     ]),
     toolProficiencies: _uniqueStrings([
       ...?character.race?.toolProficiencies,
       ...?character.subrace?.toolProficiencies,
     ]),
     armorTraining: _uniqueStrings([
-      ...?character.race?.armorProficiencies,
-      ...?character.subrace?.armorProficiencies,
+      for (final training
+          in character.race?.armorProficiencies ?? const <ArmorCategory>[])
+        training.name,
+      for (final training
+          in character.subrace?.armorProficiencies ?? const <ArmorCategory>[])
+        training.name,
       for (final entry in entries)
         ...?entry.classData?.armorTraining?.map((item) => item.name),
     ]),

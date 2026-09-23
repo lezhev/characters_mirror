@@ -9,7 +9,7 @@
 # Configuration for the main API server.
 apiServer:
   port: 8083
-  publicHost: localhost
+  publicHost: localhost 
   publicPort: 8083
   publicScheme: http
 

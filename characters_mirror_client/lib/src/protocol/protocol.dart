@@ -1114,9 +1114,9 @@ class Protocol extends _i1.SerializationManager {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i92.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i92.Skill>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i92.Skill>?>()) {
@@ -1823,9 +1823,9 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i88.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i88.Language>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i78.DamageType>?>()) {
@@ -1833,14 +1833,16 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<_i78.DamageType>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i92.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i92.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i61.ArmorCategory>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List)
+              .map((e) => deserialize<_i61.ArmorCategory>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -1898,9 +1900,9 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i92.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i92.Skill>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i78.DamageType>?>()) {
@@ -1908,9 +1910,11 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<_i78.DamageType>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i61.ArmorCategory>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List)
+              .map((e) => deserialize<_i61.ArmorCategory>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {

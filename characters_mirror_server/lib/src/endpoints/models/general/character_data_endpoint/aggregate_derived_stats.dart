@@ -383,9 +383,9 @@ Set<Skill> _collectSkillProficiencies(
   List<RaceChoiceOptionData> raceOptions,
 ) {
   final skills = <Skill>{};
-  _addSkillNames(skills, character.race?.skillProficiencies);
-  _addSkillNames(skills, character.subrace?.skillProficiencies);
-  _addSkillNames(skills, character.background?.skillProficiencies);
+  skills.addAll(character.race?.skillProficiencies ?? const <Skill>[]);
+  skills.addAll(character.subrace?.skillProficiencies ?? const <Skill>[]);
+  skills.addAll(character.background?.skillProficiencies ?? const <Skill>[]);
 
   for (final selection in skillSelections) {
     final skill = selection.skill;

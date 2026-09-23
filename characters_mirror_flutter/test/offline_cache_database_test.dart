@@ -170,7 +170,33 @@ void main() {
     expect((await reopened.getCharacter(7, 42))?.character.currentHp, 7);
   });
 
-  test('remote delete removes clean rows and rejects pending rows', () async {
+  test('repair retries an operation left processing by a process restart',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final persistent = await OfflineCacheDatabase.openAt(path);
+    await persistent.upsertCleanFromServer(
+      7,
+      CharacterData(id: 42, name: 'Base', version: 1),
+    );
+    await persistent.saveLocal(7, CharacterData(id: 42, name: 'Pending'));
+    final change = (await persistent.getPendingChanges(7)).single;
+    await persistent.markChangesProcessing(7, [change.id]);
+    expect(await persistent.getPendingChanges(7), isEmpty);
+    persistent.close();
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+    await reopened.repairSyncQueue(7);
+
+    final pending = await reopened.getPendingChanges(7);
+    expect(pending, hasLength(1));
+    expect(pending.single.id, change.id);
+    expect(pending.single.status, OfflineCharacterChangeStatus.failed);
+  });
+
+  test('accepted remote delete removes clean and pending rows', () async {
     await cache.upsertCleanFromServer(
       7,
       CharacterData(id: 42, name: 'Remote', version: 1),
@@ -187,9 +213,7 @@ void main() {
 
     await cache.applyRemoteDelete(7, 43);
 
-    final cached = await cache.getCharacter(7, 43);
-    expect(cached?.status, OfflineCharacterSyncStatus.conflict);
-    expect(cached?.lastSyncError, contains('deleted'));
+    expect(await cache.getCharacter(7, 43), isNull);
     expect(await cache.getPendingChanges(7), isEmpty);
   });
 
@@ -653,6 +677,46 @@ INSERT INTO character_changes(
       'Rope and torch',
     );
     expect(pending.single.id, isNot('legacy-rejected-snapshot'));
+  });
+
+  test('note edit and queue survive an immediate SQLite close and reopen',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final persistent = await OfflineCacheDatabase.openAt(path);
+    final base = CharacterData(
+      id: 42,
+      name: 'Hero',
+      version: 1,
+      notes: [CharacterNoteData(id: 'note-1', text: 'Old note')],
+      syncTargetRevisions: const {'item:notes:note-1': 1},
+    );
+    await persistent.upsertCleanFromServer(7, base);
+    await persistent.saveLocal(
+      7,
+      base.copyWith(
+        notes: [CharacterNoteData(id: 'note-1', text: 'Quick edit')],
+      ),
+    );
+    persistent.close();
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+    final record = await reopened.getCharacter(7, 42);
+    final queued = await reopened.getPendingChanges(7);
+
+    expect(record?.status, OfflineCharacterSyncStatus.dirty);
+    expect(record?.character.notes?.single.text, 'Quick edit');
+    expect(record?.baseCharacter?.notes?.single.text, 'Old note');
+    expect(queued, hasLength(1));
+    expect(queued.single.operationData?.targetId, 'note-1');
+    expect(queued.single.operationData?.localCharacterId, 42);
+    expect(queued.single.operationData?.characterId, 42);
+    expect(
+      queued.single.operationData?.itemPayload?.noteValue?.text,
+      'Quick edit',
+    );
   });
 
   test('repair does not retry a dirty row with a terminal sync error',

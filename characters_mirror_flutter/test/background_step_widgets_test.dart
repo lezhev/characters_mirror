@@ -48,7 +48,7 @@ void main() {
     final background = BackgroundData(
       id: 3,
       name: 'Народный герой',
-      skillProficiencies: ['Уход за животными'],
+      skillProficiencies: const [Skill.animalHandling],
       toolProficiencies: ['Инструменты ремесленника'],
       languageCount: 1,
       items: ['Комплект путешественника'],

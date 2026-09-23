@@ -18,9 +18,9 @@ fields:
   traits: List<String>?
   speedOverride: int?
   visionRangeOverride: int?
-  skillProficiencies: List<String>?
+  skillProficiencies: List<Skill>?
   resistances: List<DamageType>?
-  armorProficiencies: List<String>?
+  armorProficiencies: List<ArmorCategory>?
   weaponProficiencies: List<String>?
   toolProficiencies: List<String>?
   features: List<RaceFeatureData>?, relation(name=subrace_features)

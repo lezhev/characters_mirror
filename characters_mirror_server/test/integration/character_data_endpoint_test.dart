@@ -10,6 +10,7 @@ import 'test_tools/serverpod_test_tools.dart';
 
 part 'character_data_endpoint_test/character_data_endpoint_scenarios.dart';
 part 'character_data_endpoint_test/character_data_creation_scenarios.dart';
+part 'character_data_endpoint_test/character_data_proficiency_scenarios.dart';
 part 'character_data_endpoint_test/character_data_spell_slot_scenarios.dart';
 
 void main() {
@@ -366,7 +367,6 @@ Future<_CreationFixture> _seedCreationFixture(
       armorTraining: const [
         ArmorCategory.light,
         ArmorCategory.medium,
-        ArmorCategory.shield,
       ],
       weaponTraining: const [
         WeaponCategory.simpleMelee,
@@ -497,7 +497,7 @@ Future<_CreationFixture> _seedCreationFixture(
     sessionBuilder,
     BackgroundData(
       name: 'Fixture Acolyte',
-      skillProficiencies: const ['insight', 'religion'],
+      skillProficiencies: const [Skill.insight, Skill.religion],
       availableSkills: const [Skill.survival, Skill.history],
       skillCount: 1,
       feature: 'Shelter of the Faithful',
@@ -627,10 +627,10 @@ Future<_CreationFixture> _seedCreationFixture(
       name: 'Fixture Variant Human',
       size: CreatureSize.medium,
       speed: 30,
-      languages: const ['common'],
+      languages: const [Language.common],
       visionType: SenseType.darkvision,
-      skillProficiencies: const [],
-      armorProficiencies: const [],
+      skillProficiencies: const [Skill.perception],
+      armorProficiencies: const [ArmorCategory.heavy],
       weaponProficiencies: const [],
       toolProficiencies: const [],
     ),
@@ -651,6 +651,7 @@ Future<_CreationFixture> _seedCreationFixture(
       parentRaceId: race.id!,
       name: 'Fixture Nightfolk',
       description: 'Subrace used in integration tests.',
+      armorProficiencies: const [ArmorCategory.shield],
     ),
   );
 
