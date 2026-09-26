@@ -25,12 +25,20 @@ import '../../../data/general/character/character_skill_proficiency_state.dart'
 import '../../../enums/ability.dart' as _i10;
 import '../../../data/general/character/character_saving_throw_proficiency_override_data.dart'
     as _i11;
-import '../../../data/general/character/character_note_data.dart' as _i12;
-import '../../../data/general/character/character_attack_data.dart' as _i13;
-import '../../../data/general/character/character_feature_override_data.dart'
+import '../../../data/general/character/character_language_overrides_data.dart'
+    as _i12;
+import '../../../data/general/character/character_tool_proficiency_overrides_data.dart'
+    as _i13;
+import '../../../data/general/character/character_weapon_proficiency_overrides_data.dart'
     as _i14;
-import '../../../data/general/character/character_resource_state_data.dart'
+import '../../../data/general/character/character_armor_training_overrides_data.dart'
     as _i15;
+import '../../../data/general/character/character_note_data.dart' as _i16;
+import '../../../data/general/character/character_attack_data.dart' as _i17;
+import '../../../data/general/character/character_feature_override_data.dart'
+    as _i18;
+import '../../../data/general/character/character_resource_state_data.dart'
+    as _i19;
 
 abstract class CharacterRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -97,6 +105,10 @@ abstract class CharacterRecord
     this.manualSavingThrowProficiencies,
     this.manualSkillProficiencyOverrides,
     this.manualSavingThrowProficiencyOverrides,
+    this.manualLanguageOverrides,
+    this.manualToolProficiencyOverrides,
+    this.manualWeaponProficiencyOverrides,
+    this.manualArmorTrainingOverrides,
     this.notes,
     this.attacks,
     this.featureOverrides,
@@ -167,10 +179,15 @@ abstract class CharacterRecord
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
     List<_i11.CharacterSavingThrowProficiencyOverrideData>?
         manualSavingThrowProficiencyOverrides,
-    List<_i12.CharacterNoteData>? notes,
-    List<_i13.CharacterAttackData>? attacks,
-    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i15.CharacterResourceStateData>? resourceStates,
+    _i12.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
+    _i14.CharacterWeaponProficiencyOverridesData?
+        manualWeaponProficiencyOverrides,
+    _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_i16.CharacterNoteData>? notes,
+    List<_i17.CharacterAttackData>? attacks,
+    List<_i18.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i19.CharacterResourceStateData>? resourceStates,
   }) = _CharacterRecordImpl;
 
   factory CharacterRecord.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -309,20 +326,44 @@ abstract class CharacterRecord
                   _i11.CharacterSavingThrowProficiencyOverrideData.fromJson(
                       (e as Map<String, dynamic>)))
               .toList(),
+      manualLanguageOverrides:
+          jsonSerialization['manualLanguageOverrides'] == null
+              ? null
+              : _i12.CharacterLanguageOverridesData.fromJson(
+                  (jsonSerialization['manualLanguageOverrides']
+                      as Map<String, dynamic>)),
+      manualToolProficiencyOverrides:
+          jsonSerialization['manualToolProficiencyOverrides'] == null
+              ? null
+              : _i13.CharacterToolProficiencyOverridesData.fromJson(
+                  (jsonSerialization['manualToolProficiencyOverrides']
+                      as Map<String, dynamic>)),
+      manualWeaponProficiencyOverrides:
+          jsonSerialization['manualWeaponProficiencyOverrides'] == null
+              ? null
+              : _i14.CharacterWeaponProficiencyOverridesData.fromJson(
+                  (jsonSerialization['manualWeaponProficiencyOverrides']
+                      as Map<String, dynamic>)),
+      manualArmorTrainingOverrides:
+          jsonSerialization['manualArmorTrainingOverrides'] == null
+              ? null
+              : _i15.CharacterArmorTrainingOverridesData.fromJson(
+                  (jsonSerialization['manualArmorTrainingOverrides']
+                      as Map<String, dynamic>)),
       notes: (jsonSerialization['notes'] as List?)
           ?.map((e) =>
-              _i12.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
+              _i16.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
-              _i13.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+              _i17.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       featureOverrides: (jsonSerialization['featureOverrides'] as List?)
-          ?.map((e) => _i14.CharacterFeatureOverrideData.fromJson(
+          ?.map((e) => _i18.CharacterFeatureOverrideData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       resourceStates: (jsonSerialization['resourceStates'] as List?)
-          ?.map((e) => _i15.CharacterResourceStateData.fromJson(
+          ?.map((e) => _i19.CharacterResourceStateData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
     );
@@ -458,13 +499,22 @@ abstract class CharacterRecord
   List<_i11.CharacterSavingThrowProficiencyOverrideData>?
       manualSavingThrowProficiencyOverrides;
 
-  List<_i12.CharacterNoteData>? notes;
+  _i12.CharacterLanguageOverridesData? manualLanguageOverrides;
 
-  List<_i13.CharacterAttackData>? attacks;
+  _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides;
 
-  List<_i14.CharacterFeatureOverrideData>? featureOverrides;
+  _i14.CharacterWeaponProficiencyOverridesData?
+      manualWeaponProficiencyOverrides;
 
-  List<_i15.CharacterResourceStateData>? resourceStates;
+  _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides;
+
+  List<_i16.CharacterNoteData>? notes;
+
+  List<_i17.CharacterAttackData>? attacks;
+
+  List<_i18.CharacterFeatureOverrideData>? featureOverrides;
+
+  List<_i19.CharacterResourceStateData>? resourceStates;
 
   @override
   _i1.Table<int?> get table => t;
@@ -536,10 +586,15 @@ abstract class CharacterRecord
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
     List<_i11.CharacterSavingThrowProficiencyOverrideData>?
         manualSavingThrowProficiencyOverrides,
-    List<_i12.CharacterNoteData>? notes,
-    List<_i13.CharacterAttackData>? attacks,
-    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i15.CharacterResourceStateData>? resourceStates,
+    _i12.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
+    _i14.CharacterWeaponProficiencyOverridesData?
+        manualWeaponProficiencyOverrides,
+    _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_i16.CharacterNoteData>? notes,
+    List<_i17.CharacterAttackData>? attacks,
+    List<_i18.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i19.CharacterResourceStateData>? resourceStates,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -633,6 +688,16 @@ abstract class CharacterRecord
         'manualSavingThrowProficiencyOverrides':
             manualSavingThrowProficiencyOverrides?.toJson(
                 valueToJson: (v) => v.toJson()),
+      if (manualLanguageOverrides != null)
+        'manualLanguageOverrides': manualLanguageOverrides?.toJson(),
+      if (manualToolProficiencyOverrides != null)
+        'manualToolProficiencyOverrides':
+            manualToolProficiencyOverrides?.toJson(),
+      if (manualWeaponProficiencyOverrides != null)
+        'manualWeaponProficiencyOverrides':
+            manualWeaponProficiencyOverrides?.toJson(),
+      if (manualArmorTrainingOverrides != null)
+        'manualArmorTrainingOverrides': manualArmorTrainingOverrides?.toJson(),
       if (notes != null) 'notes': notes?.toJson(valueToJson: (v) => v.toJson()),
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
@@ -755,10 +820,15 @@ class _CharacterRecordImpl extends CharacterRecord {
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
     List<_i11.CharacterSavingThrowProficiencyOverrideData>?
         manualSavingThrowProficiencyOverrides,
-    List<_i12.CharacterNoteData>? notes,
-    List<_i13.CharacterAttackData>? attacks,
-    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i15.CharacterResourceStateData>? resourceStates,
+    _i12.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
+    _i14.CharacterWeaponProficiencyOverridesData?
+        manualWeaponProficiencyOverrides,
+    _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_i16.CharacterNoteData>? notes,
+    List<_i17.CharacterAttackData>? attacks,
+    List<_i18.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i19.CharacterResourceStateData>? resourceStates,
   }) : super._(
           id: id,
           name: name,
@@ -823,6 +893,10 @@ class _CharacterRecordImpl extends CharacterRecord {
           manualSkillProficiencyOverrides: manualSkillProficiencyOverrides,
           manualSavingThrowProficiencyOverrides:
               manualSavingThrowProficiencyOverrides,
+          manualLanguageOverrides: manualLanguageOverrides,
+          manualToolProficiencyOverrides: manualToolProficiencyOverrides,
+          manualWeaponProficiencyOverrides: manualWeaponProficiencyOverrides,
+          manualArmorTrainingOverrides: manualArmorTrainingOverrides,
           notes: notes,
           attacks: attacks,
           featureOverrides: featureOverrides,
@@ -896,6 +970,10 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? manualSavingThrowProficiencies = _Undefined,
     Object? manualSkillProficiencyOverrides = _Undefined,
     Object? manualSavingThrowProficiencyOverrides = _Undefined,
+    Object? manualLanguageOverrides = _Undefined,
+    Object? manualToolProficiencyOverrides = _Undefined,
+    Object? manualWeaponProficiencyOverrides = _Undefined,
+    Object? manualArmorTrainingOverrides = _Undefined,
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
@@ -1081,17 +1159,33 @@ class _CharacterRecordImpl extends CharacterRecord {
                   .manualSavingThrowProficiencyOverrides
                   ?.map((e0) => e0.copyWith())
                   .toList(),
-      notes: notes is List<_i12.CharacterNoteData>?
+      manualLanguageOverrides:
+          manualLanguageOverrides is _i12.CharacterLanguageOverridesData?
+              ? manualLanguageOverrides
+              : this.manualLanguageOverrides?.copyWith(),
+      manualToolProficiencyOverrides: manualToolProficiencyOverrides
+              is _i13.CharacterToolProficiencyOverridesData?
+          ? manualToolProficiencyOverrides
+          : this.manualToolProficiencyOverrides?.copyWith(),
+      manualWeaponProficiencyOverrides: manualWeaponProficiencyOverrides
+              is _i14.CharacterWeaponProficiencyOverridesData?
+          ? manualWeaponProficiencyOverrides
+          : this.manualWeaponProficiencyOverrides?.copyWith(),
+      manualArmorTrainingOverrides: manualArmorTrainingOverrides
+              is _i15.CharacterArmorTrainingOverridesData?
+          ? manualArmorTrainingOverrides
+          : this.manualArmorTrainingOverrides?.copyWith(),
+      notes: notes is List<_i16.CharacterNoteData>?
           ? notes
           : this.notes?.map((e0) => e0.copyWith()).toList(),
-      attacks: attacks is List<_i13.CharacterAttackData>?
+      attacks: attacks is List<_i17.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
       featureOverrides:
-          featureOverrides is List<_i14.CharacterFeatureOverrideData>?
+          featureOverrides is List<_i18.CharacterFeatureOverrideData>?
               ? featureOverrides
               : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
-      resourceStates: resourceStates is List<_i15.CharacterResourceStateData>?
+      resourceStates: resourceStates is List<_i19.CharacterResourceStateData>?
           ? resourceStates
           : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
     );
@@ -1334,6 +1428,22 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'manualSavingThrowProficiencyOverrides',
       this,
     );
+    manualLanguageOverrides = _i1.ColumnSerializable(
+      'manualLanguageOverrides',
+      this,
+    );
+    manualToolProficiencyOverrides = _i1.ColumnSerializable(
+      'manualToolProficiencyOverrides',
+      this,
+    );
+    manualWeaponProficiencyOverrides = _i1.ColumnSerializable(
+      'manualWeaponProficiencyOverrides',
+      this,
+    );
+    manualArmorTrainingOverrides = _i1.ColumnSerializable(
+      'manualArmorTrainingOverrides',
+      this,
+    );
     notes = _i1.ColumnSerializable(
       'notes',
       this,
@@ -1474,6 +1584,14 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable manualSavingThrowProficiencyOverrides;
 
+  late final _i1.ColumnSerializable manualLanguageOverrides;
+
+  late final _i1.ColumnSerializable manualToolProficiencyOverrides;
+
+  late final _i1.ColumnSerializable manualWeaponProficiencyOverrides;
+
+  late final _i1.ColumnSerializable manualArmorTrainingOverrides;
+
   late final _i1.ColumnSerializable notes;
 
   late final _i1.ColumnSerializable attacks;
@@ -1582,6 +1700,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
         manualSavingThrowProficiencies,
         manualSkillProficiencyOverrides,
         manualSavingThrowProficiencyOverrides,
+        manualLanguageOverrides,
+        manualToolProficiencyOverrides,
+        manualWeaponProficiencyOverrides,
+        manualArmorTrainingOverrides,
         notes,
         attacks,
         featureOverrides,

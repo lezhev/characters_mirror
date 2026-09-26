@@ -1,0 +1,5 @@
+class: CharacterLanguageOverridesData
+fields:
+  added: List<Language>?
+  removed: List<Language>?
+  custom: List<String>?

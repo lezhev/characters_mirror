@@ -159,6 +159,41 @@ void main() {
       expect(current.currentHp, 7);
     });
 
+    test('operation sync persists proficiency override fields', () async {
+      final ownerSession = authenticatedSession(205);
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Proficiency sync'),
+      );
+      final operation = _setFieldOperation(
+        id: 'language-overrides',
+        character: saved,
+        fieldPath: 'manualLanguageOverrides',
+        targetId: 'manualLanguageOverrides',
+        value: CharacterSyncValueData(
+          languageOverridesValue: CharacterLanguageOverridesData(
+            added: const [Language.elvish],
+            custom: const ['River speech'],
+          ),
+        ),
+      );
+
+      final response = await endpoints.characterData.syncCharacters(
+        ownerSession,
+        CharacterSyncRequest(operations: [operation]),
+      );
+      final current = await endpoints.characterData.getCharacter(
+        ownerSession,
+        saved.id!,
+      );
+
+      expect(response.acknowledgedChangeIds, contains('language-overrides'));
+      expect(response.rejectedChanges, isEmpty);
+      expect(current.manualLanguageOverrides?.added, [Language.elvish]);
+      expect(current.derived?.languages, [Language.elvish]);
+      expect(current.derived?.customLanguages, ['River speech']);
+    });
+
     test('operation sync merges different note ids', () async {
       final ownerSession = authenticatedSession(202);
       final saved = await endpoints.characterData.saveCharacter(

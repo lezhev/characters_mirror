@@ -23,22 +23,30 @@ import '../../../data/general/character/character_skill_proficiency_state.dart'
 import '../../../enums/ability.dart' as _i10;
 import '../../../data/general/character/character_saving_throw_proficiency_override_data.dart'
     as _i11;
-import '../../../data/general/character/character_note_data.dart' as _i12;
-import '../../../data/general/character/character_attack_data.dart' as _i13;
-import '../../../data/general/character/character_feature_override_data.dart'
+import '../../../data/general/character/character_language_overrides_data.dart'
+    as _i12;
+import '../../../data/general/character/character_tool_proficiency_overrides_data.dart'
+    as _i13;
+import '../../../data/general/character/character_weapon_proficiency_overrides_data.dart'
     as _i14;
-import '../../../data/general/character/character_resource_state_data.dart'
+import '../../../data/general/character/character_armor_training_overrides_data.dart'
     as _i15;
-import '../../../data/general/character/character_class_entry_data.dart'
-    as _i16;
-import '../../../data/general/character/character_choice_data.dart' as _i17;
-import '../../../data/general/character/character_skill_selection_data.dart'
+import '../../../data/general/character/character_note_data.dart' as _i16;
+import '../../../data/general/character/character_attack_data.dart' as _i17;
+import '../../../data/general/character/character_feature_override_data.dart'
     as _i18;
-import '../../../data/general/character/character_spell_selection_data.dart'
+import '../../../data/general/character/character_resource_state_data.dart'
     as _i19;
-import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+import '../../../data/general/character/character_class_entry_data.dart'
     as _i20;
-import '../../../data/general/character/character_derived_data.dart' as _i21;
+import '../../../data/general/character/character_choice_data.dart' as _i21;
+import '../../../data/general/character/character_skill_selection_data.dart'
+    as _i22;
+import '../../../data/general/character/character_spell_selection_data.dart'
+    as _i23;
+import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+    as _i24;
+import '../../../data/general/character/character_derived_data.dart' as _i25;
 
 abstract class CharacterData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -101,6 +109,10 @@ abstract class CharacterData
     this.manualSavingThrowProficiencies,
     this.manualSkillProficiencyOverrides,
     this.manualSavingThrowProficiencyOverrides,
+    this.manualLanguageOverrides,
+    this.manualToolProficiencyOverrides,
+    this.manualWeaponProficiencyOverrides,
+    this.manualArmorTrainingOverrides,
     this.notes,
     this.attacks,
     this.featureOverrides,
@@ -173,17 +185,22 @@ abstract class CharacterData
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
     List<_i11.CharacterSavingThrowProficiencyOverrideData>?
         manualSavingThrowProficiencyOverrides,
-    List<_i12.CharacterNoteData>? notes,
-    List<_i13.CharacterAttackData>? attacks,
-    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i15.CharacterResourceStateData>? resourceStates,
-    List<_i16.CharacterClassEntryData>? classEntries,
-    List<_i17.CharacterChoiceData>? choices,
-    List<_i18.CharacterSkillSelectionData>? skillSelections,
-    List<_i19.CharacterSpellSelectionData>? spellSelections,
-    List<_i20.CharacterStartingEquipmentSelectionData>?
+    _i12.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
+    _i14.CharacterWeaponProficiencyOverridesData?
+        manualWeaponProficiencyOverrides,
+    _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_i16.CharacterNoteData>? notes,
+    List<_i17.CharacterAttackData>? attacks,
+    List<_i18.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i19.CharacterResourceStateData>? resourceStates,
+    List<_i20.CharacterClassEntryData>? classEntries,
+    List<_i21.CharacterChoiceData>? choices,
+    List<_i22.CharacterSkillSelectionData>? skillSelections,
+    List<_i23.CharacterSpellSelectionData>? spellSelections,
+    List<_i24.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i21.CharacterDerivedData? derived,
+    _i25.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -318,47 +335,71 @@ abstract class CharacterData
                   _i11.CharacterSavingThrowProficiencyOverrideData.fromJson(
                       (e as Map<String, dynamic>)))
               .toList(),
+      manualLanguageOverrides:
+          jsonSerialization['manualLanguageOverrides'] == null
+              ? null
+              : _i12.CharacterLanguageOverridesData.fromJson(
+                  (jsonSerialization['manualLanguageOverrides']
+                      as Map<String, dynamic>)),
+      manualToolProficiencyOverrides:
+          jsonSerialization['manualToolProficiencyOverrides'] == null
+              ? null
+              : _i13.CharacterToolProficiencyOverridesData.fromJson(
+                  (jsonSerialization['manualToolProficiencyOverrides']
+                      as Map<String, dynamic>)),
+      manualWeaponProficiencyOverrides:
+          jsonSerialization['manualWeaponProficiencyOverrides'] == null
+              ? null
+              : _i14.CharacterWeaponProficiencyOverridesData.fromJson(
+                  (jsonSerialization['manualWeaponProficiencyOverrides']
+                      as Map<String, dynamic>)),
+      manualArmorTrainingOverrides:
+          jsonSerialization['manualArmorTrainingOverrides'] == null
+              ? null
+              : _i15.CharacterArmorTrainingOverridesData.fromJson(
+                  (jsonSerialization['manualArmorTrainingOverrides']
+                      as Map<String, dynamic>)),
       notes: (jsonSerialization['notes'] as List?)
           ?.map((e) =>
-              _i12.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
+              _i16.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       attacks: (jsonSerialization['attacks'] as List?)
           ?.map((e) =>
-              _i13.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
+              _i17.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       featureOverrides: (jsonSerialization['featureOverrides'] as List?)
-          ?.map((e) => _i14.CharacterFeatureOverrideData.fromJson(
+          ?.map((e) => _i18.CharacterFeatureOverrideData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       resourceStates: (jsonSerialization['resourceStates'] as List?)
-          ?.map((e) => _i15.CharacterResourceStateData.fromJson(
+          ?.map((e) => _i19.CharacterResourceStateData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       classEntries: (jsonSerialization['classEntries'] as List?)
-          ?.map((e) => _i16.CharacterClassEntryData.fromJson(
+          ?.map((e) => _i20.CharacterClassEntryData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       choices: (jsonSerialization['choices'] as List?)
           ?.map((e) =>
-              _i17.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
+              _i21.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       skillSelections: (jsonSerialization['skillSelections'] as List?)
-          ?.map((e) => _i18.CharacterSkillSelectionData.fromJson(
+          ?.map((e) => _i22.CharacterSkillSelectionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       spellSelections: (jsonSerialization['spellSelections'] as List?)
-          ?.map((e) => _i19.CharacterSpellSelectionData.fromJson(
+          ?.map((e) => _i23.CharacterSpellSelectionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       startingEquipmentSelections:
           (jsonSerialization['startingEquipmentSelections'] as List?)
               ?.map((e) =>
-                  _i20.CharacterStartingEquipmentSelectionData.fromJson(
+                  _i24.CharacterStartingEquipmentSelectionData.fromJson(
                       (e as Map<String, dynamic>)))
               .toList(),
       derived: jsonSerialization['derived'] == null
           ? null
-          : _i21.CharacterDerivedData.fromJson(
+          : _i25.CharacterDerivedData.fromJson(
               (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
@@ -480,26 +521,35 @@ abstract class CharacterData
   List<_i11.CharacterSavingThrowProficiencyOverrideData>?
       manualSavingThrowProficiencyOverrides;
 
-  List<_i12.CharacterNoteData>? notes;
+  _i12.CharacterLanguageOverridesData? manualLanguageOverrides;
 
-  List<_i13.CharacterAttackData>? attacks;
+  _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides;
 
-  List<_i14.CharacterFeatureOverrideData>? featureOverrides;
+  _i14.CharacterWeaponProficiencyOverridesData?
+      manualWeaponProficiencyOverrides;
 
-  List<_i15.CharacterResourceStateData>? resourceStates;
+  _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides;
 
-  List<_i16.CharacterClassEntryData>? classEntries;
+  List<_i16.CharacterNoteData>? notes;
 
-  List<_i17.CharacterChoiceData>? choices;
+  List<_i17.CharacterAttackData>? attacks;
 
-  List<_i18.CharacterSkillSelectionData>? skillSelections;
+  List<_i18.CharacterFeatureOverrideData>? featureOverrides;
 
-  List<_i19.CharacterSpellSelectionData>? spellSelections;
+  List<_i19.CharacterResourceStateData>? resourceStates;
 
-  List<_i20.CharacterStartingEquipmentSelectionData>?
+  List<_i20.CharacterClassEntryData>? classEntries;
+
+  List<_i21.CharacterChoiceData>? choices;
+
+  List<_i22.CharacterSkillSelectionData>? skillSelections;
+
+  List<_i23.CharacterSpellSelectionData>? spellSelections;
+
+  List<_i24.CharacterStartingEquipmentSelectionData>?
       startingEquipmentSelections;
 
-  _i21.CharacterDerivedData? derived;
+  _i25.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
@@ -564,17 +614,22 @@ abstract class CharacterData
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
     List<_i11.CharacterSavingThrowProficiencyOverrideData>?
         manualSavingThrowProficiencyOverrides,
-    List<_i12.CharacterNoteData>? notes,
-    List<_i13.CharacterAttackData>? attacks,
-    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i15.CharacterResourceStateData>? resourceStates,
-    List<_i16.CharacterClassEntryData>? classEntries,
-    List<_i17.CharacterChoiceData>? choices,
-    List<_i18.CharacterSkillSelectionData>? skillSelections,
-    List<_i19.CharacterSpellSelectionData>? spellSelections,
-    List<_i20.CharacterStartingEquipmentSelectionData>?
+    _i12.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
+    _i14.CharacterWeaponProficiencyOverridesData?
+        manualWeaponProficiencyOverrides,
+    _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_i16.CharacterNoteData>? notes,
+    List<_i17.CharacterAttackData>? attacks,
+    List<_i18.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i19.CharacterResourceStateData>? resourceStates,
+    List<_i20.CharacterClassEntryData>? classEntries,
+    List<_i21.CharacterChoiceData>? choices,
+    List<_i22.CharacterSkillSelectionData>? skillSelections,
+    List<_i23.CharacterSpellSelectionData>? spellSelections,
+    List<_i24.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i21.CharacterDerivedData? derived,
+    _i25.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -664,6 +719,16 @@ abstract class CharacterData
         'manualSavingThrowProficiencyOverrides':
             manualSavingThrowProficiencyOverrides?.toJson(
                 valueToJson: (v) => v.toJson()),
+      if (manualLanguageOverrides != null)
+        'manualLanguageOverrides': manualLanguageOverrides?.toJson(),
+      if (manualToolProficiencyOverrides != null)
+        'manualToolProficiencyOverrides':
+            manualToolProficiencyOverrides?.toJson(),
+      if (manualWeaponProficiencyOverrides != null)
+        'manualWeaponProficiencyOverrides':
+            manualWeaponProficiencyOverrides?.toJson(),
+      if (manualArmorTrainingOverrides != null)
+        'manualArmorTrainingOverrides': manualArmorTrainingOverrides?.toJson(),
       if (notes != null) 'notes': notes?.toJson(valueToJson: (v) => v.toJson()),
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
@@ -779,6 +844,17 @@ abstract class CharacterData
         'manualSavingThrowProficiencyOverrides':
             manualSavingThrowProficiencyOverrides?.toJson(
                 valueToJson: (v) => v.toJsonForProtocol()),
+      if (manualLanguageOverrides != null)
+        'manualLanguageOverrides': manualLanguageOverrides?.toJsonForProtocol(),
+      if (manualToolProficiencyOverrides != null)
+        'manualToolProficiencyOverrides':
+            manualToolProficiencyOverrides?.toJsonForProtocol(),
+      if (manualWeaponProficiencyOverrides != null)
+        'manualWeaponProficiencyOverrides':
+            manualWeaponProficiencyOverrides?.toJsonForProtocol(),
+      if (manualArmorTrainingOverrides != null)
+        'manualArmorTrainingOverrides':
+            manualArmorTrainingOverrides?.toJsonForProtocol(),
       if (notes != null)
         'notes': notes?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (attacks != null)
@@ -876,17 +952,22 @@ class _CharacterDataImpl extends CharacterData {
     List<_i9.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
     List<_i11.CharacterSavingThrowProficiencyOverrideData>?
         manualSavingThrowProficiencyOverrides,
-    List<_i12.CharacterNoteData>? notes,
-    List<_i13.CharacterAttackData>? attacks,
-    List<_i14.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i15.CharacterResourceStateData>? resourceStates,
-    List<_i16.CharacterClassEntryData>? classEntries,
-    List<_i17.CharacterChoiceData>? choices,
-    List<_i18.CharacterSkillSelectionData>? skillSelections,
-    List<_i19.CharacterSpellSelectionData>? spellSelections,
-    List<_i20.CharacterStartingEquipmentSelectionData>?
+    _i12.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i13.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
+    _i14.CharacterWeaponProficiencyOverridesData?
+        manualWeaponProficiencyOverrides,
+    _i15.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_i16.CharacterNoteData>? notes,
+    List<_i17.CharacterAttackData>? attacks,
+    List<_i18.CharacterFeatureOverrideData>? featureOverrides,
+    List<_i19.CharacterResourceStateData>? resourceStates,
+    List<_i20.CharacterClassEntryData>? classEntries,
+    List<_i21.CharacterChoiceData>? choices,
+    List<_i22.CharacterSkillSelectionData>? skillSelections,
+    List<_i23.CharacterSpellSelectionData>? spellSelections,
+    List<_i24.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i21.CharacterDerivedData? derived,
+    _i25.CharacterDerivedData? derived,
   }) : super._(
           id: id,
           name: name,
@@ -947,6 +1028,10 @@ class _CharacterDataImpl extends CharacterData {
           manualSkillProficiencyOverrides: manualSkillProficiencyOverrides,
           manualSavingThrowProficiencyOverrides:
               manualSavingThrowProficiencyOverrides,
+          manualLanguageOverrides: manualLanguageOverrides,
+          manualToolProficiencyOverrides: manualToolProficiencyOverrides,
+          manualWeaponProficiencyOverrides: manualWeaponProficiencyOverrides,
+          manualArmorTrainingOverrides: manualArmorTrainingOverrides,
           notes: notes,
           attacks: attacks,
           featureOverrides: featureOverrides,
@@ -1022,6 +1107,10 @@ class _CharacterDataImpl extends CharacterData {
     Object? manualSavingThrowProficiencies = _Undefined,
     Object? manualSkillProficiencyOverrides = _Undefined,
     Object? manualSavingThrowProficiencyOverrides = _Undefined,
+    Object? manualLanguageOverrides = _Undefined,
+    Object? manualToolProficiencyOverrides = _Undefined,
+    Object? manualWeaponProficiencyOverrides = _Undefined,
+    Object? manualArmorTrainingOverrides = _Undefined,
     Object? notes = _Undefined,
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
@@ -1209,41 +1298,57 @@ class _CharacterDataImpl extends CharacterData {
                   .manualSavingThrowProficiencyOverrides
                   ?.map((e0) => e0.copyWith())
                   .toList(),
-      notes: notes is List<_i12.CharacterNoteData>?
+      manualLanguageOverrides:
+          manualLanguageOverrides is _i12.CharacterLanguageOverridesData?
+              ? manualLanguageOverrides
+              : this.manualLanguageOverrides?.copyWith(),
+      manualToolProficiencyOverrides: manualToolProficiencyOverrides
+              is _i13.CharacterToolProficiencyOverridesData?
+          ? manualToolProficiencyOverrides
+          : this.manualToolProficiencyOverrides?.copyWith(),
+      manualWeaponProficiencyOverrides: manualWeaponProficiencyOverrides
+              is _i14.CharacterWeaponProficiencyOverridesData?
+          ? manualWeaponProficiencyOverrides
+          : this.manualWeaponProficiencyOverrides?.copyWith(),
+      manualArmorTrainingOverrides: manualArmorTrainingOverrides
+              is _i15.CharacterArmorTrainingOverridesData?
+          ? manualArmorTrainingOverrides
+          : this.manualArmorTrainingOverrides?.copyWith(),
+      notes: notes is List<_i16.CharacterNoteData>?
           ? notes
           : this.notes?.map((e0) => e0.copyWith()).toList(),
-      attacks: attacks is List<_i13.CharacterAttackData>?
+      attacks: attacks is List<_i17.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
       featureOverrides:
-          featureOverrides is List<_i14.CharacterFeatureOverrideData>?
+          featureOverrides is List<_i18.CharacterFeatureOverrideData>?
               ? featureOverrides
               : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
-      resourceStates: resourceStates is List<_i15.CharacterResourceStateData>?
+      resourceStates: resourceStates is List<_i19.CharacterResourceStateData>?
           ? resourceStates
           : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
-      classEntries: classEntries is List<_i16.CharacterClassEntryData>?
+      classEntries: classEntries is List<_i20.CharacterClassEntryData>?
           ? classEntries
           : this.classEntries?.map((e0) => e0.copyWith()).toList(),
-      choices: choices is List<_i17.CharacterChoiceData>?
+      choices: choices is List<_i21.CharacterChoiceData>?
           ? choices
           : this.choices?.map((e0) => e0.copyWith()).toList(),
       skillSelections:
-          skillSelections is List<_i18.CharacterSkillSelectionData>?
+          skillSelections is List<_i22.CharacterSkillSelectionData>?
               ? skillSelections
               : this.skillSelections?.map((e0) => e0.copyWith()).toList(),
       spellSelections:
-          spellSelections is List<_i19.CharacterSpellSelectionData>?
+          spellSelections is List<_i23.CharacterSpellSelectionData>?
               ? spellSelections
               : this.spellSelections?.map((e0) => e0.copyWith()).toList(),
       startingEquipmentSelections: startingEquipmentSelections
-              is List<_i20.CharacterStartingEquipmentSelectionData>?
+              is List<_i24.CharacterStartingEquipmentSelectionData>?
           ? startingEquipmentSelections
           : this
               .startingEquipmentSelections
               ?.map((e0) => e0.copyWith())
               .toList(),
-      derived: derived is _i21.CharacterDerivedData?
+      derived: derived is _i25.CharacterDerivedData?
           ? derived
           : this.derived?.copyWith(),
     );

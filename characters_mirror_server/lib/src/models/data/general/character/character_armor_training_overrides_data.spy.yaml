@@ -1,0 +1,5 @@
+class: CharacterArmorTrainingOverridesData
+fields:
+  addedCategories: List<ArmorCategory>?
+  removedCategories: List<ArmorCategory>?
+  custom: List<String>?

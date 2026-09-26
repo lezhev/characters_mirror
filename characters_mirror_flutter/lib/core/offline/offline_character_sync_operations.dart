@@ -267,6 +267,30 @@ class _OperationBuilder {
     _addBoolField('inspiration', previous.inspiration, next.inspiration);
     _addSkillProficiencyMembers();
     _addSavingThrowProficiencyMembers();
+    _addField(
+      'manualLanguageOverrides',
+      previous.manualLanguageOverrides,
+      next.manualLanguageOverrides,
+      (value) => CharacterSyncValueData(languageOverridesValue: value),
+    );
+    _addField(
+      'manualToolProficiencyOverrides',
+      previous.manualToolProficiencyOverrides,
+      next.manualToolProficiencyOverrides,
+      (value) => CharacterSyncValueData(toolProficiencyOverridesValue: value),
+    );
+    _addField(
+      'manualWeaponProficiencyOverrides',
+      previous.manualWeaponProficiencyOverrides,
+      next.manualWeaponProficiencyOverrides,
+      (value) => CharacterSyncValueData(weaponProficiencyOverridesValue: value),
+    );
+    _addField(
+      'manualArmorTrainingOverrides',
+      previous.manualArmorTrainingOverrides,
+      next.manualArmorTrainingOverrides,
+      (value) => CharacterSyncValueData(armorTrainingOverridesValue: value),
+    );
 
     _addListItems(
       'notes',

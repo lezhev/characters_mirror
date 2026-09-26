@@ -5,7 +5,10 @@ import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_portrait/character_portrait.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/character_personal_editor.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/character_proficiencies_page.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/character_proficiency_summary.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/class_race_details_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/class_race_formatters.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +36,17 @@ class CharacterPage extends ConsumerWidget {
             .reload(),
       ),
       data: (character) {
+        final toolNames = {
+          for (final tool in ref.watch(toolCatalogProvider).valueOrNull ??
+              const <ToolData>[])
+            tool.referenceKey: tool.name,
+        };
+        final weaponNames = {
+          for (final weapon in ref.watch(weaponCatalogProvider).valueOrNull ??
+              const <WeaponData>[])
+            if (weapon.referenceKey != null && weapon.name != null)
+              weapon.referenceKey!: weapon.name!,
+        };
         return Padding(
           padding: const EdgeInsets.all(12),
           child: PageSizeLimiter(
@@ -49,6 +63,21 @@ class CharacterPage extends ConsumerWidget {
                       MaterialPageRoute<void>(
                         builder: (context) => ClassRaceDetailsPage(
                           character: character,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                CharacterProficiencySummary(
+                  character: character,
+                  toolNames: toolNames,
+                  weaponNames: weaponNames,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => CharacterProficienciesPage(
+                          characterId: characterId,
                         ),
                       ),
                     );

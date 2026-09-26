@@ -1,5 +1,76 @@
 part of '../offline_character_resolver.dart';
 
+List<T> _effectiveProficiencyValues<T extends Object>(
+  Iterable<T> automatic,
+  Iterable<T>? added,
+  Iterable<T>? removed,
+  String Function(T value) sortKey,
+) {
+  final values = automatic.toSet();
+  values.removeAll(removed ?? const []);
+  values.addAll(added ?? const []);
+  final result = values.toList()
+    ..sort((left, right) => sortKey(left).compareTo(sortKey(right)));
+  return result;
+}
+
+List<String> _normalizedCustomValues(Iterable<String>? values) {
+  final unique = <String, String>{};
+  for (final value in values ?? const <String>[]) {
+    final trimmed = value.trim();
+    if (trimmed.isNotEmpty) {
+      unique.putIfAbsent(trimmed.toLowerCase(), () => trimmed);
+    }
+  }
+  return unique.values.toList()..sort();
+}
+
+Future<List<Language>> _languages(
+  OfflineCacheDatabase cache,
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+) async {
+  final values = <Language>{...?character.race?.languages};
+  final options = await _selectedClassBackgroundChoiceOptions(
+    cache,
+    character,
+    entries,
+  );
+  for (final option in options) {
+    values.addAll(option.grantedLanguages ?? const <Language>[]);
+  }
+  for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
+    final language = choice.selectedLanguage;
+    if (language != null) values.add(language);
+  }
+  return values.toList()..sort((left, right) => left.name.compareTo(right.name));
+}
+
+Future<List<ArmorCategory>> _armorTraining(
+  OfflineCacheDatabase cache,
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+) async {
+  final values = <ArmorCategory>{
+    ...?character.race?.armorProficiencies,
+    ...?character.subrace?.armorProficiencies,
+    for (final entry in entries)
+      ...((entry.isStartingClass ?? false)
+          ? entry.classData?.armorTraining ?? const <ArmorCategory>[]
+          : entry.classData?.multiclassArmorTraining ??
+              const <ArmorCategory>[]),
+  };
+  final options = await _selectedClassBackgroundChoiceOptions(
+    cache,
+    character,
+    entries,
+  );
+  for (final option in options) {
+    values.addAll(option.grantedArmorTraining ?? const <ArmorCategory>[]);
+  }
+  return values.toList()..sort((left, right) => left.name.compareTo(right.name));
+}
+
 Future<List<WeaponCategory>> _weaponTraining(
   OfflineCacheDatabase cache,
   CharacterData character,

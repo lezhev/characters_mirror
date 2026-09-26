@@ -100,16 +100,53 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     character,
     alwaysPreparedSpellKeys,
   );
-  final weaponTraining = await _weaponTraining(cache, character, entries);
-  final toolProficiencyKeys = await _toolProficiencyKeys(
+  final automaticLanguages = await _languages(cache, character, entries);
+  final languages = _effectiveProficiencyValues<Language>(
+    automaticLanguages,
+    character.manualLanguageOverrides?.added,
+    character.manualLanguageOverrides?.removed,
+    (value) => value.name,
+  );
+  final automaticToolKeys = await _toolProficiencyKeys(
     cache,
     character,
     entries,
+  );
+  final toolProficiencyKeys = _effectiveProficiencyValues<String>(
+    automaticToolKeys,
+    character.manualToolProficiencyOverrides?.addedKeys,
+    character.manualToolProficiencyOverrides?.removedKeys,
+    (value) => value,
+  );
+  final automaticArmorTraining = await _armorTraining(
+    cache,
+    character,
+    entries,
+  );
+  final armorTraining = _effectiveProficiencyValues<ArmorCategory>(
+    automaticArmorTraining,
+    character.manualArmorTrainingOverrides?.addedCategories,
+    character.manualArmorTrainingOverrides?.removedCategories,
+    (value) => value.name,
+  );
+  final automaticWeaponTraining =
+      await _weaponTraining(cache, character, entries);
+  final weaponTraining = _effectiveProficiencyValues<WeaponCategory>(
+    automaticWeaponTraining,
+    character.manualWeaponProficiencyOverrides?.addedCategories,
+    character.manualWeaponProficiencyOverrides?.removedCategories,
+    (value) => value.name,
   );
   final weaponProficiencyKeys = _uniqueStrings([
     ...?character.race?.weaponProficiencyKeys,
     ...?character.subrace?.weaponProficiencyKeys,
   ]);
+  final effectiveWeaponKeys = _effectiveProficiencyValues<String>(
+    weaponProficiencyKeys,
+    character.manualWeaponProficiencyOverrides?.addedKeys,
+    character.manualWeaponProficiencyOverrides?.removedKeys,
+    (value) => value,
+  );
   final movementSpeeds = effectiveMovementSpeeds(character);
 
   return CharacterDerivedData(
@@ -135,23 +172,23 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     savingThrowProficiencies: savingThrowProficiencies.toList()
       ..sort((a, b) => a.name.compareTo(b.name)),
     hitDiceSummary: hitDice,
-    languages: _uniqueStrings([
-      for (final language in character.race?.languages ?? const <Language>[])
-        language.name,
-    ]),
+    languages: languages,
     toolProficiencyKeys: toolProficiencyKeys,
-    armorTraining: _uniqueStrings([
-      for (final training
-          in character.race?.armorProficiencies ?? const <ArmorCategory>[])
-        training.name,
-      for (final training
-          in character.subrace?.armorProficiencies ?? const <ArmorCategory>[])
-        training.name,
-      for (final entry in entries)
-        ...?entry.classData?.armorTraining?.map((item) => item.name),
-    ]),
+    armorTraining: armorTraining,
     weaponTraining: weaponTraining,
-    weaponProficiencyKeys: weaponProficiencyKeys,
+    weaponProficiencyKeys: effectiveWeaponKeys,
+    customLanguages: _normalizedCustomValues(
+      character.manualLanguageOverrides?.custom,
+    ),
+    customToolProficiencies: _normalizedCustomValues(
+      character.manualToolProficiencyOverrides?.custom,
+    ),
+    customWeaponProficiencies: _normalizedCustomValues(
+      character.manualWeaponProficiencyOverrides?.custom,
+    ),
+    customArmorTraining: _normalizedCustomValues(
+      character.manualArmorTrainingOverrides?.custom,
+    ),
     featureTags: _featureTags(activeFeatures),
     grantedSpellKeys: grantedSpellKeys,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,

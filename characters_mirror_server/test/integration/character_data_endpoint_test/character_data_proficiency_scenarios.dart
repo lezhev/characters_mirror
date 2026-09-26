@@ -1,5 +1,6 @@
 part of '../character_data_endpoint_test.dart';
 
+
 void _registerCharacterDataProficiencyScenarios(
   TestSessionBuilder sessionBuilder,
   TestEndpoints endpoints,
@@ -458,6 +459,125 @@ void _registerCharacterDataProficiencyScenarios(
     expect(
       tools.singleWhere((tool) => tool.referenceKey == 'lute').category,
       ToolCategory.musicalInstrument,
+    );
+  });
+
+  test('proficiency overrides affect effective state and normalize custom text',
+      () async {
+    final session = sessionBuilder.build();
+    try {
+      await ToolData.db.insertRow(
+        session,
+        ToolData(referenceKey: 'thieves_tools', name: 'Воровские инструменты'),
+      );
+      await ToolData.db.insertRow(
+        session,
+        ToolData(referenceKey: 'smith_tools', name: 'Инструменты кузнеца'),
+      );
+      await WeaponData.db.insertRow(
+        session,
+        WeaponData(
+          referenceKey: 'battleaxe',
+          name: 'Боевой топор',
+          category: WeaponCategory.martialMelee,
+        ),
+      );
+      await WeaponData.db.insertRow(
+        session,
+        WeaponData(
+          referenceKey: 'longsword',
+          name: 'Длинный меч',
+          category: WeaponCategory.martialMelee,
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    final race = await endpoints.raceData.upsert(
+      sessionBuilder,
+      RaceData(
+        name: 'Override Race',
+        languages: const [Language.common],
+        armorProficiencies: const [ArmorCategory.light],
+        toolProficiencyKeys: const ['smith_tools'],
+        weaponProficiencyKeys: const ['battleaxe'],
+      ),
+    );
+    final classData = await endpoints.classData.upsert(
+      sessionBuilder,
+      ClassData(
+        name: 'Override Class',
+        weaponTraining: const [WeaponCategory.martialMelee],
+      ),
+    );
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(709),
+      CharacterData(
+        name: 'Proficiency Overrides',
+        race: race,
+        classEntries: [
+          CharacterClassEntryData(
+            classData: classData,
+            level: 1,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+        ],
+        manualLanguageOverrides: CharacterLanguageOverridesData(
+          added: const [Language.elvish],
+          removed: const [Language.common],
+          custom: const ['  River speech  ', 'river SPEECH'],
+        ),
+        manualToolProficiencyOverrides:
+            CharacterToolProficiencyOverridesData(
+          addedKeys: const ['thieves_tools'],
+          removedKeys: const ['smith_tools'],
+          custom: const [' Clockwork tools '],
+        ),
+        manualWeaponProficiencyOverrides:
+            CharacterWeaponProficiencyOverridesData(
+          addedCategories: const [WeaponCategory.simpleRanged],
+          removedCategories: const [WeaponCategory.martialMelee],
+          addedKeys: const ['longsword'],
+          removedKeys: const ['battleaxe'],
+          custom: const [' Moonblade '],
+        ),
+        manualArmorTrainingOverrides: CharacterArmorTrainingOverridesData(
+          addedCategories: const [ArmorCategory.shield],
+          removedCategories: const [ArmorCategory.light],
+          custom: const [' Bone armor '],
+        ),
+      ),
+    );
+
+    expect(saved.derived?.languages, [Language.elvish]);
+    expect(saved.derived?.customLanguages, ['River speech']);
+    expect(saved.derived?.toolProficiencyKeys, ['thieves_tools']);
+    expect(saved.derived?.customToolProficiencies, ['Clockwork tools']);
+    expect(saved.derived?.weaponTraining, [WeaponCategory.simpleRanged]);
+    expect(saved.derived?.weaponProficiencyKeys, ['longsword']);
+    expect(saved.derived?.customWeaponProficiencies, ['Moonblade']);
+    expect(saved.derived?.armorTraining, [ArmorCategory.shield]);
+    expect(saved.derived?.customArmorTraining, ['Bone armor']);
+    expect(saved.manualLanguageOverrides?.custom, ['River speech']);
+  });
+
+  test('proficiency overrides reject unknown canonical reference keys',
+      () async {
+    await expectLater(
+      endpoints.characterData.saveCharacter(
+        authenticatedSession(710),
+        CharacterData(
+          name: 'Unknown Tool Grant',
+          manualToolProficiencyOverrides:
+              CharacterToolProficiencyOverridesData(
+            addedKeys: const ['not_in_tool_data'],
+          ),
+        ),
+      ),
+      throwsA(isA<InputValidationException>()),
     );
   });
 

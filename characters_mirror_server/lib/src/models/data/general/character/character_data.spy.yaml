@@ -58,6 +58,10 @@ fields:
   manualSavingThrowProficiencies: List<Ability>?
   manualSkillProficiencyOverrides: List<CharacterSkillProficiencyState>?
   manualSavingThrowProficiencyOverrides: List<CharacterSavingThrowProficiencyOverrideData>?
+  manualLanguageOverrides: CharacterLanguageOverridesData?
+  manualToolProficiencyOverrides: CharacterToolProficiencyOverridesData?
+  manualWeaponProficiencyOverrides: CharacterWeaponProficiencyOverridesData?
+  manualArmorTrainingOverrides: CharacterArmorTrainingOverridesData?
   notes: List<CharacterNoteData>?
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?

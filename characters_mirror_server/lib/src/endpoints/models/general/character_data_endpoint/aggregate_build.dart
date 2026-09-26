@@ -190,6 +190,10 @@ CharacterData _toCharacterData(CharacterRecord record) {
     manualSkillProficiencyOverrides: record.manualSkillProficiencyOverrides,
     manualSavingThrowProficiencyOverrides:
         record.manualSavingThrowProficiencyOverrides,
+    manualLanguageOverrides: record.manualLanguageOverrides,
+    manualToolProficiencyOverrides: record.manualToolProficiencyOverrides,
+    manualWeaponProficiencyOverrides: record.manualWeaponProficiencyOverrides,
+    manualArmorTrainingOverrides: record.manualArmorTrainingOverrides,
     notes: record.notes,
     attacks: record.attacks,
     featureOverrides: record.featureOverrides,

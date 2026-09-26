@@ -8,6 +8,7 @@ abstract final class ValidationLimits {
   static const smallCollection = 20;
   static const mediumCollection = 100;
   static const largeCollection = 500;
+  static const proficiencyOverrideEntries = 64;
 
   static const boundedIntMin = -100000;
   static const boundedIntMax = 100000;

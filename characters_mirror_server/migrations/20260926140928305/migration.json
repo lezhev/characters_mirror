@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "manualLanguageOverrides",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:CharacterLanguageOverridesData?"
+          },
+          {
+            "name": "manualToolProficiencyOverrides",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:CharacterToolProficiencyOverridesData?"
+          },
+          {
+            "name": "manualWeaponProficiencyOverrides",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:CharacterWeaponProficiencyOverridesData?"
+          },
+          {
+            "name": "manualArmorTrainingOverrides",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:CharacterArmorTrainingOverridesData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

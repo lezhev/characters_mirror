@@ -331,6 +331,8 @@ CharacterData _normalizeIncomingCharacter(
   required DateTime? fallbackUpdatedAt,
 }) {
   final updatedAt = character.updatedAt?.toUtc() ?? fallbackUpdatedAt?.toUtc();
+  final proficiencyOverrides =
+      CharacterProficiencyOverrideValidator.normalize(character);
 
   return character.copyWith(
     updatedAt: updatedAt,
@@ -362,6 +364,13 @@ CharacterData _normalizeIncomingCharacter(
         _normalizedSavingThrowProficiencyOverrides(
       character.manualSavingThrowProficiencyOverrides,
     ),
+    manualLanguageOverrides: proficiencyOverrides.manualLanguageOverrides,
+    manualToolProficiencyOverrides:
+        proficiencyOverrides.manualToolProficiencyOverrides,
+    manualWeaponProficiencyOverrides:
+        proficiencyOverrides.manualWeaponProficiencyOverrides,
+    manualArmorTrainingOverrides:
+        proficiencyOverrides.manualArmorTrainingOverrides,
   );
 }
 

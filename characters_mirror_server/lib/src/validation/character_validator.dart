@@ -5,6 +5,7 @@ import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'custom_content_validator.dart';
 import 'item_validator.dart';
 import 'rules.dart';
+import 'character_proficiency_override_validator.dart';
 import 'validation_exception.dart';
 
 abstract final class CharacterValidator {
@@ -25,6 +26,7 @@ abstract final class CharacterValidator {
       'resourceStates',
       character.resourceStates,
     );
+    CharacterProficiencyOverrideValidator.validate(character);
   }
 
   static void validateSyncRequest(CharacterSyncRequest request) {

@@ -1,0 +1,5 @@
+class: CharacterToolProficiencyOverridesData
+fields:
+  addedKeys: List<String>?
+  removedKeys: List<String>?
+  custom: List<String>?

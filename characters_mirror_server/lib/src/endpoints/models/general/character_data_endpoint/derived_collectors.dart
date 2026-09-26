@@ -1,5 +1,30 @@
 part of '../character_data_endpoint.dart';
 
+List<T> _applyProficiencyOverrides<T extends Object>({
+  required Iterable<T> automatic,
+  Iterable<T>? added,
+  Iterable<T>? removed,
+  required String Function(T value) sortKey,
+}) {
+  final values = automatic.toSet();
+  values.removeAll(removed ?? const []);
+  values.addAll(added ?? const []);
+  final result = values.toList()
+    ..sort((left, right) => sortKey(left).compareTo(sortKey(right)));
+  return result;
+}
+
+List<String> _normalizedCustomValues(Iterable<String>? values) {
+  final unique = <String, String>{};
+  for (final value in values ?? const <String>[]) {
+    final trimmed = value.trim();
+    if (trimmed.isNotEmpty) {
+      unique.putIfAbsent(trimmed.toLowerCase(), () => trimmed);
+    }
+  }
+  return unique.values.toList()..sort();
+}
+
 List<String> _collectAlwaysPreparedSpellKeys(
   List<ClassSpellGrantData> grants, {
   required Map<int, int> classLevels,
@@ -78,42 +103,42 @@ bool _isClassSpellGrantActive(
   return hasSource && active;
 }
 
-List<String> _collectLanguages(
+List<Language> _collectLanguages(
   CharacterData character,
   List<CharacterChoiceData> choices,
   List<ClassChoiceOptionData> classBackgroundOptions,
   List<RaceChoiceOptionData> raceOptions,
 ) {
-  final values = <String>{};
+  final values = <Language>{};
   values.addAll([
     for (final language in character.race?.languages ?? const <Language>[])
-      language.name,
+      language,
   ]);
 
   for (final option in classBackgroundOptions) {
     values.addAll([
       for (final language in option.grantedLanguages ?? const <Language>[])
-        language.name,
+        language,
     ]);
   }
   for (final option in raceOptions) {
     if (option.language != null) {
-      values.add(option.language!.name);
+      values.add(option.language!);
     }
   }
   for (final choice in choices) {
     if (choice.selectedLanguage != null) {
-      values.add(choice.selectedLanguage!.name);
+      values.add(choice.selectedLanguage!);
       continue;
     }
 
     final legacyLanguage = _languageFromName(choice.selectedText ?? '');
     if (legacyLanguage != null) {
-      values.add(legacyLanguage.name);
+      values.add(legacyLanguage);
     }
   }
 
-  return values.toList()..sort();
+  return values.toList()..sort((a, b) => a.name.compareTo(b.name));
 }
 
 List<String> _collectToolProficiencyKeys(
@@ -157,19 +182,19 @@ List<String> _collectToolProficiencyKeys(
   return values.toList()..sort();
 }
 
-List<String> _collectArmorTraining(
+List<ArmorCategory> _collectArmorTraining(
   CharacterData character,
   List<CharacterClassEntryData> entries,
   List<ClassChoiceOptionData> classBackgroundOptions,
 ) {
-  final values = <String>{};
+  final values = <ArmorCategory>{};
   values.addAll([
     for (final training
         in character.race?.armorProficiencies ?? const <ArmorCategory>[])
-      training.name,
+      training,
     for (final training
         in character.subrace?.armorProficiencies ?? const <ArmorCategory>[])
-      training.name,
+      training,
   ]);
 
   for (final entry in entries) {
@@ -179,18 +204,18 @@ List<String> _collectArmorTraining(
         ? classData.armorTraining
         : classData.multiclassArmorTraining;
     values.addAll([
-      for (final training in source ?? const <ArmorCategory>[]) training.name,
+      ...?source,
     ]);
   }
   for (final option in classBackgroundOptions) {
     values.addAll([
       for (final training
           in option.grantedArmorTraining ?? const <ArmorCategory>[])
-        training.name,
+        training,
     ]);
   }
 
-  return values.toList()..sort();
+  return values.toList()..sort((a, b) => a.name.compareTo(b.name));
 }
 
 List<WeaponCategory> _collectWeaponTraining(
