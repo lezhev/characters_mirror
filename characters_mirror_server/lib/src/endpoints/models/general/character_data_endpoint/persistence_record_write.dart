@@ -149,6 +149,11 @@ CharacterRecord _toCharacterRecord(
     manualSkillProficiencyOverrides: character.manualSkillProficiencyOverrides,
     manualSavingThrowProficiencyOverrides:
         character.manualSavingThrowProficiencyOverrides,
+    manualLanguageOverrides: character.manualLanguageOverrides,
+    manualToolProficiencyOverrides: character.manualToolProficiencyOverrides,
+    manualWeaponProficiencyOverrides:
+        character.manualWeaponProficiencyOverrides,
+    manualArmorTrainingOverrides: character.manualArmorTrainingOverrides,
     notes: character.notes,
     attacks: character.attacks,
     featureOverrides: _normalizedFeatureOverrides(character.featureOverrides),

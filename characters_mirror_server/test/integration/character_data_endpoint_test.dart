@@ -1,6 +1,7 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
 import 'package:characters_mirror_server/src/validation/validation_limits.dart';
+import 'package:characters_mirror_server/src/validation/validation_exception.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 

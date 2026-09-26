@@ -83,29 +83,54 @@ Future<CharacterDerivedData> _buildDerivedData(
     transaction: transaction,
     resolveContext: context,
   );
-  final languages = _collectLanguages(
-    character,
-    choices,
-    resolvedSources.classBackgroundOptions,
-    resolvedSources.raceOptions,
+  final languages = _applyProficiencyOverrides<Language>(
+    automatic: _collectLanguages(
+      character,
+      choices,
+      resolvedSources.classBackgroundOptions,
+      resolvedSources.raceOptions,
+    ),
+    added: character.manualLanguageOverrides?.added,
+    removed: character.manualLanguageOverrides?.removed,
+    sortKey: (value) => value.name,
   );
-  final toolProficiencyKeys = _collectToolProficiencyKeys(
-    character,
-    entries,
-    choices,
-    resolvedSources.classBackgroundOptions,
-    resolvedSources.raceOptions,
+  final toolProficiencyKeys = _applyProficiencyOverrides<String>(
+    automatic: _collectToolProficiencyKeys(
+      character,
+      entries,
+      choices,
+      resolvedSources.classBackgroundOptions,
+      resolvedSources.raceOptions,
+    ),
+    added: character.manualToolProficiencyOverrides?.addedKeys,
+    removed: character.manualToolProficiencyOverrides?.removedKeys,
+    sortKey: (value) => value,
   );
-  final armorTraining = _collectArmorTraining(
-    character,
-    entries,
-    resolvedSources.classBackgroundOptions,
+  final armorTraining = _applyProficiencyOverrides<ArmorCategory>(
+    automatic: _collectArmorTraining(
+      character,
+      entries,
+      resolvedSources.classBackgroundOptions,
+    ),
+    added: character.manualArmorTrainingOverrides?.addedCategories,
+    removed: character.manualArmorTrainingOverrides?.removedCategories,
+    sortKey: (value) => value.name,
   );
-  final weaponTraining = _collectWeaponTraining(
-    entries,
-    resolvedSources.classBackgroundOptions,
+  final weaponTraining = _applyProficiencyOverrides<WeaponCategory>(
+    automatic: _collectWeaponTraining(
+      entries,
+      resolvedSources.classBackgroundOptions,
+    ),
+    added: character.manualWeaponProficiencyOverrides?.addedCategories,
+    removed: character.manualWeaponProficiencyOverrides?.removedCategories,
+    sortKey: (value) => value.name,
   );
-  final weaponProficiencyKeys = _collectWeaponProficiencyKeys(character);
+  final weaponProficiencyKeys = _applyProficiencyOverrides<String>(
+    automatic: _collectWeaponProficiencyKeys(character),
+    added: character.manualWeaponProficiencyOverrides?.addedKeys,
+    removed: character.manualWeaponProficiencyOverrides?.removedKeys,
+    sortKey: (value) => value,
+  );
   final featIds = _collectFeatIds(choices, resolvedSources.raceOptions);
   final featTags = await _loadFeatTags(
     session,
@@ -173,6 +198,17 @@ Future<CharacterDerivedData> _buildDerivedData(
     armorTraining: armorTraining,
     weaponTraining: weaponTraining,
     weaponProficiencyKeys: weaponProficiencyKeys,
+    customLanguages:
+        _normalizedCustomValues(character.manualLanguageOverrides?.custom),
+    customToolProficiencies: _normalizedCustomValues(
+      character.manualToolProficiencyOverrides?.custom,
+    ),
+    customWeaponProficiencies: _normalizedCustomValues(
+      character.manualWeaponProficiencyOverrides?.custom,
+    ),
+    customArmorTraining: _normalizedCustomValues(
+      character.manualArmorTrainingOverrides?.custom,
+    ),
     featureTags: featureTags,
     featIds: featIds,
     grantedSpellKeys: grantedSpellKeys,

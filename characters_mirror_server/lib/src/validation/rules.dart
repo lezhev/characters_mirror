@@ -41,6 +41,15 @@ abstract final class Rules {
     );
   }
 
+  static void proficiencyOverrideCollection(String field, Object? value) {
+    _collection(
+      field,
+      value,
+      ValidationLimits.proficiencyOverrideEntries,
+      'proficiencyOverrideCollection',
+    );
+  }
+
   static void boundedInt(
     String field,
     int? value, {

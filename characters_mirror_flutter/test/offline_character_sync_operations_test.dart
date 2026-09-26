@@ -485,6 +485,42 @@ void main() {
     );
   });
 
+  test('manual language overrides use a typed scalar sync target', () {
+    final operations = buildCharacterSyncOperations(
+      previous: CharacterData(
+        id: 42,
+        version: 2,
+        syncTargetRevisions: const {
+          'field:manualLanguageOverrides': 11,
+        },
+      ),
+      next: CharacterData(
+        id: 42,
+        version: 2,
+        manualLanguageOverrides: CharacterLanguageOverridesData(
+          added: const [Language.elvish],
+          custom: const ['River speech'],
+        ),
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 9, 26),
+      nextChangeId: changeId,
+    );
+
+    final operation = operations.singleWhere(
+      (value) => value.fieldPath == 'manualLanguageOverrides',
+    );
+    expect(characterSyncOperationTargetKey(operation),
+        'field:manualLanguageOverrides');
+    expect(operation.baseTargetRevision, 11);
+    expect(operation.value?.languageOverridesValue?.added, [Language.elvish]);
+    expect(
+      operation.value?.languageOverridesValue?.custom,
+      ['River speech'],
+    );
+  });
+
   test('starting equipment parent payload excludes nested resolutions', () {
     final selection = CharacterStartingEquipmentSelectionData(
       id: 'legacy-selection-id',

@@ -19,11 +19,15 @@ fields:
   spellSlots: Map<int, int>?
   pactSlots: Map<int, int>?
   hitDiceSummary: Map<String, int>?
-  languages: List<String>?
+  languages: List<Language>?
   toolProficiencyKeys: List<String>?
-  armorTraining: List<String>?
+  armorTraining: List<ArmorCategory>?
   weaponTraining: List<WeaponCategory>?
   weaponProficiencyKeys: List<String>?
+  customLanguages: List<String>?
+  customToolProficiencies: List<String>?
+  customWeaponProficiencies: List<String>?
+  customArmorTraining: List<String>?
   featureTags: List<FeatureTag>?
   featIds: List<int>?
   grantedSpellKeys: List<String>?

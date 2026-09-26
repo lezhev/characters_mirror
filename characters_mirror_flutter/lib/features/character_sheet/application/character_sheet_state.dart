@@ -156,6 +156,10 @@ class CharacterSheetController
     }
   }
 
+  Future<void> saveProficiencyOverrides(CharacterData updated) async {
+    await _saveCharacter(updated, debounce: false);
+  }
+
   CharacterData _requireCharacter() {
     final current = state.valueOrNull;
     if (current == null) {

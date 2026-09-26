@@ -19,28 +19,36 @@ import '../../../data/general/character/character_skill_proficiency_state.dart'
     as _i7;
 import '../../../data/general/character/character_saving_throw_proficiency_override_data.dart'
     as _i8;
-import '../../../data/general/character/character_semantic_action_data.dart'
+import '../../../data/general/character/character_language_overrides_data.dart'
     as _i9;
-import '../../../data/general/character/character_data.dart' as _i10;
-import '../../../data/general/character/character_note_data.dart' as _i11;
-import '../../../data/general/character/character_inventory_item_data.dart'
+import '../../../data/general/character/character_tool_proficiency_overrides_data.dart'
+    as _i10;
+import '../../../data/general/character/character_weapon_proficiency_overrides_data.dart'
+    as _i11;
+import '../../../data/general/character/character_armor_training_overrides_data.dart'
     as _i12;
-import '../../../data/general/character/character_attack_data.dart' as _i13;
-import '../../../data/general/character/character_feature_override_data.dart'
-    as _i14;
-import '../../../data/general/character/character_resource_state_data.dart'
-    as _i15;
-import '../../../data/general/character/character_class_entry_data.dart'
+import '../../../data/general/character/character_semantic_action_data.dart'
+    as _i13;
+import '../../../data/general/character/character_data.dart' as _i14;
+import '../../../data/general/character/character_note_data.dart' as _i15;
+import '../../../data/general/character/character_inventory_item_data.dart'
     as _i16;
-import '../../../data/general/character/character_choice_data.dart' as _i17;
-import '../../../data/general/character/character_skill_selection_data.dart'
+import '../../../data/general/character/character_attack_data.dart' as _i17;
+import '../../../data/general/character/character_feature_override_data.dart'
     as _i18;
-import '../../../data/general/character/character_spell_selection_data.dart'
+import '../../../data/general/character/character_resource_state_data.dart'
     as _i19;
-import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+import '../../../data/general/character/character_class_entry_data.dart'
     as _i20;
+import '../../../data/general/character/character_choice_data.dart' as _i21;
+import '../../../data/general/character/character_skill_selection_data.dart'
+    as _i22;
+import '../../../data/general/character/character_spell_selection_data.dart'
+    as _i23;
+import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+    as _i24;
 import '../../../data/general/character/character_starting_equipment_resolution_data.dart'
-    as _i21;
+    as _i25;
 
 abstract class CharacterSyncValueData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -61,6 +69,10 @@ abstract class CharacterSyncValueData
     this.skillProficiencyListValue,
     this.skillProficiencyValue,
     this.savingThrowProficiencyOverrideValue,
+    this.languageOverridesValue,
+    this.toolProficiencyOverridesValue,
+    this.weaponProficiencyOverridesValue,
+    this.armorTrainingOverridesValue,
     this.semanticActionValue,
     this.characterValue,
     this.noteValue,
@@ -94,20 +106,25 @@ abstract class CharacterSyncValueData
     _i7.CharacterSkillProficiencyState? skillProficiencyValue,
     _i8.CharacterSavingThrowProficiencyOverrideData?
         savingThrowProficiencyOverrideValue,
-    _i9.CharacterSemanticActionData? semanticActionValue,
-    _i10.CharacterData? characterValue,
-    _i11.CharacterNoteData? noteValue,
-    _i12.CharacterInventoryItemData? equipmentValue,
-    _i13.CharacterAttackData? attackValue,
-    _i14.CharacterFeatureOverrideData? featureOverrideValue,
-    _i15.CharacterResourceStateData? resourceStateValue,
-    _i16.CharacterClassEntryData? classEntryValue,
-    _i17.CharacterChoiceData? choiceValue,
-    _i18.CharacterSkillSelectionData? skillSelectionValue,
-    _i19.CharacterSpellSelectionData? spellSelectionValue,
-    _i20.CharacterStartingEquipmentSelectionData?
+    _i9.CharacterLanguageOverridesData? languageOverridesValue,
+    _i10.CharacterToolProficiencyOverridesData? toolProficiencyOverridesValue,
+    _i11.CharacterWeaponProficiencyOverridesData?
+        weaponProficiencyOverridesValue,
+    _i12.CharacterArmorTrainingOverridesData? armorTrainingOverridesValue,
+    _i13.CharacterSemanticActionData? semanticActionValue,
+    _i14.CharacterData? characterValue,
+    _i15.CharacterNoteData? noteValue,
+    _i16.CharacterInventoryItemData? equipmentValue,
+    _i17.CharacterAttackData? attackValue,
+    _i18.CharacterFeatureOverrideData? featureOverrideValue,
+    _i19.CharacterResourceStateData? resourceStateValue,
+    _i20.CharacterClassEntryData? classEntryValue,
+    _i21.CharacterChoiceData? choiceValue,
+    _i22.CharacterSkillSelectionData? skillSelectionValue,
+    _i23.CharacterSpellSelectionData? spellSelectionValue,
+    _i24.CharacterStartingEquipmentSelectionData?
         startingEquipmentSelectionValue,
-    _i21.CharacterStartingEquipmentResolutionData?
+    _i25.CharacterStartingEquipmentResolutionData?
         startingEquipmentResolutionValue,
   }) = _CharacterSyncValueDataImpl;
 
@@ -170,65 +187,89 @@ abstract class CharacterSyncValueData
               : _i8.CharacterSavingThrowProficiencyOverrideData.fromJson(
                   (jsonSerialization['savingThrowProficiencyOverrideValue']
                       as Map<String, dynamic>)),
+      languageOverridesValue:
+          jsonSerialization['languageOverridesValue'] == null
+              ? null
+              : _i9.CharacterLanguageOverridesData.fromJson(
+                  (jsonSerialization['languageOverridesValue']
+                      as Map<String, dynamic>)),
+      toolProficiencyOverridesValue:
+          jsonSerialization['toolProficiencyOverridesValue'] == null
+              ? null
+              : _i10.CharacterToolProficiencyOverridesData.fromJson(
+                  (jsonSerialization['toolProficiencyOverridesValue']
+                      as Map<String, dynamic>)),
+      weaponProficiencyOverridesValue:
+          jsonSerialization['weaponProficiencyOverridesValue'] == null
+              ? null
+              : _i11.CharacterWeaponProficiencyOverridesData.fromJson(
+                  (jsonSerialization['weaponProficiencyOverridesValue']
+                      as Map<String, dynamic>)),
+      armorTrainingOverridesValue:
+          jsonSerialization['armorTrainingOverridesValue'] == null
+              ? null
+              : _i12.CharacterArmorTrainingOverridesData.fromJson(
+                  (jsonSerialization['armorTrainingOverridesValue']
+                      as Map<String, dynamic>)),
       semanticActionValue: jsonSerialization['semanticActionValue'] == null
           ? null
-          : _i9.CharacterSemanticActionData.fromJson(
+          : _i13.CharacterSemanticActionData.fromJson(
               (jsonSerialization['semanticActionValue']
                   as Map<String, dynamic>)),
       characterValue: jsonSerialization['characterValue'] == null
           ? null
-          : _i10.CharacterData.fromJson(
+          : _i14.CharacterData.fromJson(
               (jsonSerialization['characterValue'] as Map<String, dynamic>)),
       noteValue: jsonSerialization['noteValue'] == null
           ? null
-          : _i11.CharacterNoteData.fromJson(
+          : _i15.CharacterNoteData.fromJson(
               (jsonSerialization['noteValue'] as Map<String, dynamic>)),
       equipmentValue: jsonSerialization['equipmentValue'] == null
           ? null
-          : _i12.CharacterInventoryItemData.fromJson(
+          : _i16.CharacterInventoryItemData.fromJson(
               (jsonSerialization['equipmentValue'] as Map<String, dynamic>)),
       attackValue: jsonSerialization['attackValue'] == null
           ? null
-          : _i13.CharacterAttackData.fromJson(
+          : _i17.CharacterAttackData.fromJson(
               (jsonSerialization['attackValue'] as Map<String, dynamic>)),
       featureOverrideValue: jsonSerialization['featureOverrideValue'] == null
           ? null
-          : _i14.CharacterFeatureOverrideData.fromJson(
+          : _i18.CharacterFeatureOverrideData.fromJson(
               (jsonSerialization['featureOverrideValue']
                   as Map<String, dynamic>)),
       resourceStateValue: jsonSerialization['resourceStateValue'] == null
           ? null
-          : _i15.CharacterResourceStateData.fromJson(
+          : _i19.CharacterResourceStateData.fromJson(
               (jsonSerialization['resourceStateValue']
                   as Map<String, dynamic>)),
       classEntryValue: jsonSerialization['classEntryValue'] == null
           ? null
-          : _i16.CharacterClassEntryData.fromJson(
+          : _i20.CharacterClassEntryData.fromJson(
               (jsonSerialization['classEntryValue'] as Map<String, dynamic>)),
       choiceValue: jsonSerialization['choiceValue'] == null
           ? null
-          : _i17.CharacterChoiceData.fromJson(
+          : _i21.CharacterChoiceData.fromJson(
               (jsonSerialization['choiceValue'] as Map<String, dynamic>)),
       skillSelectionValue: jsonSerialization['skillSelectionValue'] == null
           ? null
-          : _i18.CharacterSkillSelectionData.fromJson(
+          : _i22.CharacterSkillSelectionData.fromJson(
               (jsonSerialization['skillSelectionValue']
                   as Map<String, dynamic>)),
       spellSelectionValue: jsonSerialization['spellSelectionValue'] == null
           ? null
-          : _i19.CharacterSpellSelectionData.fromJson(
+          : _i23.CharacterSpellSelectionData.fromJson(
               (jsonSerialization['spellSelectionValue']
                   as Map<String, dynamic>)),
       startingEquipmentSelectionValue:
           jsonSerialization['startingEquipmentSelectionValue'] == null
               ? null
-              : _i20.CharacterStartingEquipmentSelectionData.fromJson(
+              : _i24.CharacterStartingEquipmentSelectionData.fromJson(
                   (jsonSerialization['startingEquipmentSelectionValue']
                       as Map<String, dynamic>)),
       startingEquipmentResolutionValue:
           jsonSerialization['startingEquipmentResolutionValue'] == null
               ? null
-              : _i21.CharacterStartingEquipmentResolutionData.fromJson(
+              : _i25.CharacterStartingEquipmentResolutionData.fromJson(
                   (jsonSerialization['startingEquipmentResolutionValue']
                       as Map<String, dynamic>)),
     );
@@ -267,31 +308,39 @@ abstract class CharacterSyncValueData
   _i8.CharacterSavingThrowProficiencyOverrideData?
       savingThrowProficiencyOverrideValue;
 
-  _i9.CharacterSemanticActionData? semanticActionValue;
+  _i9.CharacterLanguageOverridesData? languageOverridesValue;
 
-  _i10.CharacterData? characterValue;
+  _i10.CharacterToolProficiencyOverridesData? toolProficiencyOverridesValue;
 
-  _i11.CharacterNoteData? noteValue;
+  _i11.CharacterWeaponProficiencyOverridesData? weaponProficiencyOverridesValue;
 
-  _i12.CharacterInventoryItemData? equipmentValue;
+  _i12.CharacterArmorTrainingOverridesData? armorTrainingOverridesValue;
 
-  _i13.CharacterAttackData? attackValue;
+  _i13.CharacterSemanticActionData? semanticActionValue;
 
-  _i14.CharacterFeatureOverrideData? featureOverrideValue;
+  _i14.CharacterData? characterValue;
 
-  _i15.CharacterResourceStateData? resourceStateValue;
+  _i15.CharacterNoteData? noteValue;
 
-  _i16.CharacterClassEntryData? classEntryValue;
+  _i16.CharacterInventoryItemData? equipmentValue;
 
-  _i17.CharacterChoiceData? choiceValue;
+  _i17.CharacterAttackData? attackValue;
 
-  _i18.CharacterSkillSelectionData? skillSelectionValue;
+  _i18.CharacterFeatureOverrideData? featureOverrideValue;
 
-  _i19.CharacterSpellSelectionData? spellSelectionValue;
+  _i19.CharacterResourceStateData? resourceStateValue;
 
-  _i20.CharacterStartingEquipmentSelectionData? startingEquipmentSelectionValue;
+  _i20.CharacterClassEntryData? classEntryValue;
 
-  _i21.CharacterStartingEquipmentResolutionData?
+  _i21.CharacterChoiceData? choiceValue;
+
+  _i22.CharacterSkillSelectionData? skillSelectionValue;
+
+  _i23.CharacterSpellSelectionData? spellSelectionValue;
+
+  _i24.CharacterStartingEquipmentSelectionData? startingEquipmentSelectionValue;
+
+  _i25.CharacterStartingEquipmentResolutionData?
       startingEquipmentResolutionValue;
 
   /// Returns a shallow copy of this [CharacterSyncValueData]
@@ -315,20 +364,25 @@ abstract class CharacterSyncValueData
     _i7.CharacterSkillProficiencyState? skillProficiencyValue,
     _i8.CharacterSavingThrowProficiencyOverrideData?
         savingThrowProficiencyOverrideValue,
-    _i9.CharacterSemanticActionData? semanticActionValue,
-    _i10.CharacterData? characterValue,
-    _i11.CharacterNoteData? noteValue,
-    _i12.CharacterInventoryItemData? equipmentValue,
-    _i13.CharacterAttackData? attackValue,
-    _i14.CharacterFeatureOverrideData? featureOverrideValue,
-    _i15.CharacterResourceStateData? resourceStateValue,
-    _i16.CharacterClassEntryData? classEntryValue,
-    _i17.CharacterChoiceData? choiceValue,
-    _i18.CharacterSkillSelectionData? skillSelectionValue,
-    _i19.CharacterSpellSelectionData? spellSelectionValue,
-    _i20.CharacterStartingEquipmentSelectionData?
+    _i9.CharacterLanguageOverridesData? languageOverridesValue,
+    _i10.CharacterToolProficiencyOverridesData? toolProficiencyOverridesValue,
+    _i11.CharacterWeaponProficiencyOverridesData?
+        weaponProficiencyOverridesValue,
+    _i12.CharacterArmorTrainingOverridesData? armorTrainingOverridesValue,
+    _i13.CharacterSemanticActionData? semanticActionValue,
+    _i14.CharacterData? characterValue,
+    _i15.CharacterNoteData? noteValue,
+    _i16.CharacterInventoryItemData? equipmentValue,
+    _i17.CharacterAttackData? attackValue,
+    _i18.CharacterFeatureOverrideData? featureOverrideValue,
+    _i19.CharacterResourceStateData? resourceStateValue,
+    _i20.CharacterClassEntryData? classEntryValue,
+    _i21.CharacterChoiceData? choiceValue,
+    _i22.CharacterSkillSelectionData? skillSelectionValue,
+    _i23.CharacterSpellSelectionData? spellSelectionValue,
+    _i24.CharacterStartingEquipmentSelectionData?
         startingEquipmentSelectionValue,
-    _i21.CharacterStartingEquipmentResolutionData?
+    _i25.CharacterStartingEquipmentResolutionData?
         startingEquipmentResolutionValue,
   });
   @override
@@ -360,6 +414,16 @@ abstract class CharacterSyncValueData
       if (savingThrowProficiencyOverrideValue != null)
         'savingThrowProficiencyOverrideValue':
             savingThrowProficiencyOverrideValue?.toJson(),
+      if (languageOverridesValue != null)
+        'languageOverridesValue': languageOverridesValue?.toJson(),
+      if (toolProficiencyOverridesValue != null)
+        'toolProficiencyOverridesValue':
+            toolProficiencyOverridesValue?.toJson(),
+      if (weaponProficiencyOverridesValue != null)
+        'weaponProficiencyOverridesValue':
+            weaponProficiencyOverridesValue?.toJson(),
+      if (armorTrainingOverridesValue != null)
+        'armorTrainingOverridesValue': armorTrainingOverridesValue?.toJson(),
       if (semanticActionValue != null)
         'semanticActionValue': semanticActionValue?.toJson(),
       if (characterValue != null) 'characterValue': characterValue?.toJson(),
@@ -414,6 +478,17 @@ abstract class CharacterSyncValueData
       if (savingThrowProficiencyOverrideValue != null)
         'savingThrowProficiencyOverrideValue':
             savingThrowProficiencyOverrideValue?.toJsonForProtocol(),
+      if (languageOverridesValue != null)
+        'languageOverridesValue': languageOverridesValue?.toJsonForProtocol(),
+      if (toolProficiencyOverridesValue != null)
+        'toolProficiencyOverridesValue':
+            toolProficiencyOverridesValue?.toJsonForProtocol(),
+      if (weaponProficiencyOverridesValue != null)
+        'weaponProficiencyOverridesValue':
+            weaponProficiencyOverridesValue?.toJsonForProtocol(),
+      if (armorTrainingOverridesValue != null)
+        'armorTrainingOverridesValue':
+            armorTrainingOverridesValue?.toJsonForProtocol(),
       if (semanticActionValue != null)
         'semanticActionValue': semanticActionValue?.toJsonForProtocol(),
       if (characterValue != null)
@@ -469,20 +544,25 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
     _i7.CharacterSkillProficiencyState? skillProficiencyValue,
     _i8.CharacterSavingThrowProficiencyOverrideData?
         savingThrowProficiencyOverrideValue,
-    _i9.CharacterSemanticActionData? semanticActionValue,
-    _i10.CharacterData? characterValue,
-    _i11.CharacterNoteData? noteValue,
-    _i12.CharacterInventoryItemData? equipmentValue,
-    _i13.CharacterAttackData? attackValue,
-    _i14.CharacterFeatureOverrideData? featureOverrideValue,
-    _i15.CharacterResourceStateData? resourceStateValue,
-    _i16.CharacterClassEntryData? classEntryValue,
-    _i17.CharacterChoiceData? choiceValue,
-    _i18.CharacterSkillSelectionData? skillSelectionValue,
-    _i19.CharacterSpellSelectionData? spellSelectionValue,
-    _i20.CharacterStartingEquipmentSelectionData?
+    _i9.CharacterLanguageOverridesData? languageOverridesValue,
+    _i10.CharacterToolProficiencyOverridesData? toolProficiencyOverridesValue,
+    _i11.CharacterWeaponProficiencyOverridesData?
+        weaponProficiencyOverridesValue,
+    _i12.CharacterArmorTrainingOverridesData? armorTrainingOverridesValue,
+    _i13.CharacterSemanticActionData? semanticActionValue,
+    _i14.CharacterData? characterValue,
+    _i15.CharacterNoteData? noteValue,
+    _i16.CharacterInventoryItemData? equipmentValue,
+    _i17.CharacterAttackData? attackValue,
+    _i18.CharacterFeatureOverrideData? featureOverrideValue,
+    _i19.CharacterResourceStateData? resourceStateValue,
+    _i20.CharacterClassEntryData? classEntryValue,
+    _i21.CharacterChoiceData? choiceValue,
+    _i22.CharacterSkillSelectionData? skillSelectionValue,
+    _i23.CharacterSpellSelectionData? spellSelectionValue,
+    _i24.CharacterStartingEquipmentSelectionData?
         startingEquipmentSelectionValue,
-    _i21.CharacterStartingEquipmentResolutionData?
+    _i25.CharacterStartingEquipmentResolutionData?
         startingEquipmentResolutionValue,
   }) : super._(
           stringValue: stringValue,
@@ -502,6 +582,10 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
           skillProficiencyValue: skillProficiencyValue,
           savingThrowProficiencyOverrideValue:
               savingThrowProficiencyOverrideValue,
+          languageOverridesValue: languageOverridesValue,
+          toolProficiencyOverridesValue: toolProficiencyOverridesValue,
+          weaponProficiencyOverridesValue: weaponProficiencyOverridesValue,
+          armorTrainingOverridesValue: armorTrainingOverridesValue,
           semanticActionValue: semanticActionValue,
           characterValue: characterValue,
           noteValue: noteValue,
@@ -538,6 +622,10 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
     Object? skillProficiencyListValue = _Undefined,
     Object? skillProficiencyValue = _Undefined,
     Object? savingThrowProficiencyOverrideValue = _Undefined,
+    Object? languageOverridesValue = _Undefined,
+    Object? toolProficiencyOverridesValue = _Undefined,
+    Object? weaponProficiencyOverridesValue = _Undefined,
+    Object? armorTrainingOverridesValue = _Undefined,
     Object? semanticActionValue = _Undefined,
     Object? characterValue = _Undefined,
     Object? noteValue = _Undefined,
@@ -611,49 +699,65 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
               is _i8.CharacterSavingThrowProficiencyOverrideData?
           ? savingThrowProficiencyOverrideValue
           : this.savingThrowProficiencyOverrideValue?.copyWith(),
+      languageOverridesValue:
+          languageOverridesValue is _i9.CharacterLanguageOverridesData?
+              ? languageOverridesValue
+              : this.languageOverridesValue?.copyWith(),
+      toolProficiencyOverridesValue: toolProficiencyOverridesValue
+              is _i10.CharacterToolProficiencyOverridesData?
+          ? toolProficiencyOverridesValue
+          : this.toolProficiencyOverridesValue?.copyWith(),
+      weaponProficiencyOverridesValue: weaponProficiencyOverridesValue
+              is _i11.CharacterWeaponProficiencyOverridesData?
+          ? weaponProficiencyOverridesValue
+          : this.weaponProficiencyOverridesValue?.copyWith(),
+      armorTrainingOverridesValue: armorTrainingOverridesValue
+              is _i12.CharacterArmorTrainingOverridesData?
+          ? armorTrainingOverridesValue
+          : this.armorTrainingOverridesValue?.copyWith(),
       semanticActionValue:
-          semanticActionValue is _i9.CharacterSemanticActionData?
+          semanticActionValue is _i13.CharacterSemanticActionData?
               ? semanticActionValue
               : this.semanticActionValue?.copyWith(),
-      characterValue: characterValue is _i10.CharacterData?
+      characterValue: characterValue is _i14.CharacterData?
           ? characterValue
           : this.characterValue?.copyWith(),
-      noteValue: noteValue is _i11.CharacterNoteData?
+      noteValue: noteValue is _i15.CharacterNoteData?
           ? noteValue
           : this.noteValue?.copyWith(),
-      equipmentValue: equipmentValue is _i12.CharacterInventoryItemData?
+      equipmentValue: equipmentValue is _i16.CharacterInventoryItemData?
           ? equipmentValue
           : this.equipmentValue?.copyWith(),
-      attackValue: attackValue is _i13.CharacterAttackData?
+      attackValue: attackValue is _i17.CharacterAttackData?
           ? attackValue
           : this.attackValue?.copyWith(),
       featureOverrideValue:
-          featureOverrideValue is _i14.CharacterFeatureOverrideData?
+          featureOverrideValue is _i18.CharacterFeatureOverrideData?
               ? featureOverrideValue
               : this.featureOverrideValue?.copyWith(),
-      resourceStateValue: resourceStateValue is _i15.CharacterResourceStateData?
+      resourceStateValue: resourceStateValue is _i19.CharacterResourceStateData?
           ? resourceStateValue
           : this.resourceStateValue?.copyWith(),
-      classEntryValue: classEntryValue is _i16.CharacterClassEntryData?
+      classEntryValue: classEntryValue is _i20.CharacterClassEntryData?
           ? classEntryValue
           : this.classEntryValue?.copyWith(),
-      choiceValue: choiceValue is _i17.CharacterChoiceData?
+      choiceValue: choiceValue is _i21.CharacterChoiceData?
           ? choiceValue
           : this.choiceValue?.copyWith(),
       skillSelectionValue:
-          skillSelectionValue is _i18.CharacterSkillSelectionData?
+          skillSelectionValue is _i22.CharacterSkillSelectionData?
               ? skillSelectionValue
               : this.skillSelectionValue?.copyWith(),
       spellSelectionValue:
-          spellSelectionValue is _i19.CharacterSpellSelectionData?
+          spellSelectionValue is _i23.CharacterSpellSelectionData?
               ? spellSelectionValue
               : this.spellSelectionValue?.copyWith(),
       startingEquipmentSelectionValue: startingEquipmentSelectionValue
-              is _i20.CharacterStartingEquipmentSelectionData?
+              is _i24.CharacterStartingEquipmentSelectionData?
           ? startingEquipmentSelectionValue
           : this.startingEquipmentSelectionValue?.copyWith(),
       startingEquipmentResolutionValue: startingEquipmentResolutionValue
-              is _i21.CharacterStartingEquipmentResolutionData?
+              is _i25.CharacterStartingEquipmentResolutionData?
           ? startingEquipmentResolutionValue
           : this.startingEquipmentResolutionValue?.copyWith(),
     );

@@ -1559,6 +1559,14 @@ Object? _encodedValueForField(String field, CharacterSyncValueData? value) {
       return value.abilityListValue
           ?.map((ability) => ability.toJson())
           .toList();
+    case 'manualLanguageOverrides':
+      return value.languageOverridesValue?.toJson();
+    case 'manualToolProficiencyOverrides':
+      return value.toolProficiencyOverridesValue?.toJson();
+    case 'manualWeaponProficiencyOverrides':
+      return value.weaponProficiencyOverridesValue?.toJson();
+    case 'manualArmorTrainingOverrides':
+      return value.armorTrainingOverridesValue?.toJson();
     case 'race':
       return value.intValue == null ? null : {'id': value.intValue};
     case 'subrace':

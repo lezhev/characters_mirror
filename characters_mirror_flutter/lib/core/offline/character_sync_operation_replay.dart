@@ -472,6 +472,13 @@ Object? _encodedFieldValue(String field, CharacterSyncValueData? value) {
       value.skillProficiencyListValue?.map((item) => item.toJson()).toList(),
     'manualSavingThrowProficiencies' =>
       value.abilityListValue?.map((item) => item.toJson()).toList(),
+    'manualLanguageOverrides' => value.languageOverridesValue?.toJson(),
+    'manualToolProficiencyOverrides' =>
+      value.toolProficiencyOverridesValue?.toJson(),
+    'manualWeaponProficiencyOverrides' =>
+      value.weaponProficiencyOverridesValue?.toJson(),
+    'manualArmorTrainingOverrides' =>
+      value.armorTrainingOverridesValue?.toJson(),
     'race' ||
     'subrace' ||
     'background' =>

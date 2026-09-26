@@ -891,7 +891,10 @@ void _registerCharacterDataEndpointTests() {
       final derived = loaded.derived;
       expect(derived, isNotNull);
       expect(loaded.featureOverrides, hasLength(2));
-      expect(derived!.languages, containsAll(['celestial', 'common']));
+      expect(
+        derived!.languages,
+        containsAll([Language.celestial, Language.common]),
+      );
       expect(derived.initiative, 5);
       expect(derived.armorClass, 14);
       expect(derived.speed, 60);
@@ -934,8 +937,8 @@ void _registerCharacterDataEndpointTests() {
       expect(
         derived.armorTraining,
         containsAll([
-          ArmorCategory.heavy.name,
-          ArmorCategory.shield.name,
+          ArmorCategory.heavy,
+          ArmorCategory.shield,
         ]),
       );
       expect(derived.savingThrowProficiencies, contains(Ability.strength));

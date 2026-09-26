@@ -44,6 +44,10 @@ const _characterScalarSyncFields = <String>[
   'inspiration',
   'manualSkillProficiencies',
   'manualSavingThrowProficiencies',
+  'manualLanguageOverrides',
+  'manualToolProficiencyOverrides',
+  'manualWeaponProficiencyOverrides',
+  'manualArmorTrainingOverrides',
 ];
 
 Map<String, int> _materializedSyncTargetRevisions(

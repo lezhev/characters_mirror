@@ -144,6 +144,64 @@ void main() {
     );
   });
 
+  test('offline proficiency overrides preserve canonical identities and deltas',
+      () async {
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        race: RaceData(
+          languages: const [Language.common],
+          armorProficiencies: const [ArmorCategory.light],
+          toolProficiencyKeys: const ['smith_tools'],
+          weaponProficiencyKeys: const ['battleaxe'],
+        ),
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(
+              weaponTraining: const [WeaponCategory.martialMelee],
+            ),
+            level: 1,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+        ],
+        manualLanguageOverrides: CharacterLanguageOverridesData(
+          added: const [Language.elvish],
+          removed: const [Language.common],
+          custom: const ['  River speech  ', 'river SPEECH'],
+        ),
+        manualToolProficiencyOverrides: CharacterToolProficiencyOverridesData(
+          addedKeys: const ['thieves_tools'],
+          removedKeys: const ['smith_tools'],
+          custom: const ['  Clockwork tools  '],
+        ),
+        manualWeaponProficiencyOverrides:
+            CharacterWeaponProficiencyOverridesData(
+          addedCategories: const [WeaponCategory.simpleRanged],
+          removedCategories: const [WeaponCategory.martialMelee],
+          addedKeys: const ['longsword'],
+          removedKeys: const ['battleaxe'],
+          custom: const ['  Moonblade  '],
+        ),
+        manualArmorTrainingOverrides: CharacterArmorTrainingOverridesData(
+          addedCategories: const [ArmorCategory.shield],
+          removedCategories: const [ArmorCategory.light],
+          custom: const ['  Bone armor  '],
+        ),
+      ),
+    );
+
+    expect(derived.languages, [Language.elvish]);
+    expect(derived.customLanguages, ['River speech']);
+    expect(derived.toolProficiencyKeys, ['thieves_tools']);
+    expect(derived.customToolProficiencies, ['Clockwork tools']);
+    expect(derived.weaponTraining, [WeaponCategory.simpleRanged]);
+    expect(derived.weaponProficiencyKeys, ['longsword']);
+    expect(derived.customWeaponProficiencies, ['Moonblade']);
+    expect(derived.armorTraining, [ArmorCategory.shield]);
+    expect(derived.customArmorTraining, ['Bone armor']);
+  });
+
   test('fixed reference skills contribute to offline derived proficiencies',
       () async {
     final character = CharacterData(
@@ -183,12 +241,12 @@ void main() {
       levels[Skill.arcana],
       CharacterSkillProficiencyLevel.none,
     );
-    expect(derived.languages, [Language.common.name]);
+    expect(derived.languages, [Language.common]);
     expect(
       derived.armorTraining,
       unorderedEquals([
-        ArmorCategory.heavy.name,
-        ArmorCategory.shield.name,
+        ArmorCategory.heavy,
+        ArmorCategory.shield,
       ]),
     );
   });

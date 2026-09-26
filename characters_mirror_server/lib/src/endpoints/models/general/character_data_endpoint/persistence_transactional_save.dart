@@ -59,6 +59,8 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
   String? syncChangeId,
   _CharacterResolveContext? resolveContext,
 }) async {
+  CharacterProficiencyOverrideValidator.validate(character);
+  character = CharacterProficiencyOverrideValidator.normalize(character);
   final context = resolveContext ?? _CharacterResolveContext(session);
   CharacterRecord? existingRecord;
   final characterId = character.id;
@@ -116,6 +118,11 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
       next: character,
     );
   }
+  await CharacterProficiencyOverrideValidator.validateReferenceKeys(
+    session,
+    character,
+    transaction: transaction,
+  );
 
   var normalizedCharacter = character.copyWith(
     id: existingRecord?.id,

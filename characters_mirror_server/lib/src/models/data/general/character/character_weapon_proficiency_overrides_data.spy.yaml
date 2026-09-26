@@ -1,0 +1,7 @@
+class: CharacterWeaponProficiencyOverridesData
+fields:
+  addedCategories: List<WeaponCategory>?
+  removedCategories: List<WeaponCategory>?
+  addedKeys: List<String>?
+  removedKeys: List<String>?
+  custom: List<String>?

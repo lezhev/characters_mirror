@@ -16,6 +16,10 @@ fields:
   skillProficiencyListValue: List<CharacterSkillProficiencyState>?
   skillProficiencyValue: CharacterSkillProficiencyState?
   savingThrowProficiencyOverrideValue: CharacterSavingThrowProficiencyOverrideData?
+  languageOverridesValue: CharacterLanguageOverridesData?
+  toolProficiencyOverridesValue: CharacterToolProficiencyOverridesData?
+  weaponProficiencyOverridesValue: CharacterWeaponProficiencyOverridesData?
+  armorTrainingOverridesValue: CharacterArmorTrainingOverridesData?
   semanticActionValue: CharacterSemanticActionData?
   characterValue: CharacterData?
   noteValue: CharacterNoteData?
