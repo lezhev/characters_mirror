@@ -895,7 +895,7 @@ void _registerCharacterDataEndpointTests() {
       expect(derived.initiative, 5);
       expect(derived.armorClass, 14);
       expect(derived.speed, 60);
-      expect(derived.toolProficiencies, contains('smith_tools'));
+      expect(derived.toolProficiencyKeys, contains('smith_tools'));
       expect(derived.grantedSpellKeys, contains('light'));
       expect(
         derived.grantedEquipment?.map((entry) => entry.referenceKey),

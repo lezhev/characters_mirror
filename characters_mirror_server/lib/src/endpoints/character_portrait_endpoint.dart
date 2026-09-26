@@ -53,12 +53,12 @@ class CharacterPortraitEndpoint extends Endpoint {
     Session session,
     int characterId,
   ) async {
-    final record = await _requireOwnedCharacter(
+    final record = await _findOwnedCharacter(
       session,
       characterId,
     );
 
-    if (record.portraitVersion == null) {
+    if (record?.portraitVersion == null) {
       return null;
     }
 
@@ -100,6 +100,19 @@ class CharacterPortraitEndpoint extends Endpoint {
     Session session,
     int characterId,
   ) async {
+    final record = await _findOwnedCharacter(session, characterId);
+    if (record == null) {
+      throw Exception(
+        'Character not found or access denied.',
+      );
+    }
+    return record;
+  }
+
+  Future<CharacterRecord?> _findOwnedCharacter(
+    Session session,
+    int characterId,
+  ) async {
     final userId = (await session.authenticated)?.userId;
 
     if (userId == null) {
@@ -112,13 +125,7 @@ class CharacterPortraitEndpoint extends Endpoint {
       limit: 1,
     );
 
-    if (records.isEmpty) {
-      throw Exception(
-        'Character not found or access denied.',
-      );
-    }
-
-    return records.first;
+    return records.firstOrNull;
   }
 
   String _portraitKey(int characterId) {

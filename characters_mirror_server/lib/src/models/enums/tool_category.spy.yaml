@@ -1,0 +1,5 @@
+enum: ToolCategory
+values:
+  - artisan
+  - musicalInstrument
+  - gamingSet

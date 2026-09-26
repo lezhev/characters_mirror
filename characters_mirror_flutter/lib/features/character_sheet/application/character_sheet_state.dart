@@ -83,9 +83,9 @@ class CharacterSheetController
   Completer<void>? _pendingSaveCompleter;
   Completer<void>? _activeSaveCompleter;
   Future<void> _semanticPersistenceTail = Future<void>.value();
-  bool _localSavePending = false;
   bool _syncReloadRequested = false;
   bool _isReloadingAfterSync = false;
+  int _semanticSavesInFlight = 0;
 
   @override
   Future<CharacterData> build(int characterId) async {
@@ -111,8 +111,8 @@ class CharacterSheetController
   Future<void> _reloadFromLocalStoreWhenIdle() async {
     if (_isDisposed ||
         _isReloadingAfterSync ||
-        _localSavePending ||
         _isPersisting ||
+        _semanticSavesInFlight > 0 ||
         _debouncedSave != null ||
         _pendingSave != null) {
       return;
@@ -128,8 +128,8 @@ class CharacterSheetController
         return;
       }
       if (revisionBeforeRead != _saveRevision ||
-          _localSavePending ||
           _isPersisting ||
+          _semanticSavesInFlight > 0 ||
           _debouncedSave != null ||
           _pendingSave != null) {
         _syncReloadRequested = true;
@@ -137,9 +137,10 @@ class CharacterSheetController
       }
       _lastPersistedCharacter = record.character;
       state = AsyncValue.data(record.character);
+      _setLocalSavePending(false);
     } finally {
       _isReloadingAfterSync = false;
-      if (_syncReloadRequested && !_isDisposed && !_localSavePending) {
+      if (_syncReloadRequested && !_isDisposed) {
         unawaited(_reloadFromLocalStoreWhenIdle());
       }
     }
@@ -260,40 +261,50 @@ class CharacterSheetController
     state = AsyncValue.data(stamped);
     final completer = Completer<void>();
     final previousTail = _semanticPersistenceTail;
+    _semanticSavesInFlight += 1;
 
     _semanticPersistenceTail = () async {
       try {
-        await previousTail;
-      } catch (_) {
-        // Each action reports its own failure through its returned future.
-      }
-      await _flushAbsoluteSaves();
-      try {
-        final saved = await _repository.saveSemanticAction(
-          character: stamped,
-          type: type,
-          action: action,
-        );
-        _lastPersistedCharacter = saved;
-        if (!_isDisposed && revision == _saveRevision) {
-          state = AsyncValue.data(saved);
+        try {
+          await previousTail;
+        } catch (_) {
+          // Each action reports its own failure through its returned future.
         }
-        if (!_isDisposed) {
-          ref.invalidate(characterSheetProvider(_characterId));
-          ref.invalidate(offlineCharacterRecordProvider(_characterId));
-        }
-        if (!_isDisposed && revision == _saveRevision) {
-          _setLocalSavePending(false);
-        }
-        completer.complete();
-      } catch (error, stackTrace) {
-        if (!_isDisposed && revision == _saveRevision) {
-          state = AsyncValue.data(
-            _lastPersistedCharacter ?? previous,
+        await _flushAbsoluteSaves();
+        try {
+          final saved = await _repository.saveSemanticAction(
+            character: stamped,
+            type: type,
+            action: action,
           );
-          _setLocalSavePending(false);
+          _lastPersistedCharacter = saved;
+          if (!_isDisposed && revision == _saveRevision) {
+            state = AsyncValue.data(saved);
+          }
+          if (!_isDisposed) {
+            ref.invalidate(characterSheetProvider(_characterId));
+            ref.invalidate(offlineCharacterRecordProvider(_characterId));
+          }
+          if (!_isDisposed &&
+              revision == _saveRevision &&
+              !_syncReloadRequested) {
+            _setLocalSavePending(false);
+          }
+          completer.complete();
+        } catch (error, stackTrace) {
+          if (!_isDisposed && revision == _saveRevision) {
+            state = AsyncValue.data(
+              _lastPersistedCharacter ?? previous,
+            );
+            _setLocalSavePending(false);
+          }
+          completer.completeError(error, stackTrace);
         }
-        completer.completeError(error, stackTrace);
+      } finally {
+        _semanticSavesInFlight -= 1;
+        if (_syncReloadRequested && !_isDisposed) {
+          unawaited(_reloadFromLocalStoreWhenIdle());
+        }
       }
     }();
     return completer.future;
@@ -387,7 +398,9 @@ class CharacterSheetController
             ref.invalidate(characterSheetProvider(_characterId));
             ref.invalidate(offlineCharacterRecordProvider(_characterId));
           }
-          if (!_isDisposed && nextRevision == _saveRevision) {
+          if (!_isDisposed &&
+              nextRevision == _saveRevision &&
+              !_syncReloadRequested) {
             _setLocalSavePending(false);
           }
           if (activeCompleter?.isCompleted == false) {
@@ -432,7 +445,6 @@ class CharacterSheetController
   }
 
   void _setLocalSavePending(bool value) {
-    _localSavePending = value;
     if (_isDisposed) return;
     ref
         .read(characterSheetLocalSavePendingProvider(_characterId).notifier)

@@ -10,12 +10,19 @@ part 'offline_character_resolver/ability_proficiency_helpers.dart';
 part 'offline_character_resolver/feature_helpers.dart';
 part 'offline_character_resolver/starting_equipment_helpers.dart';
 part 'offline_character_resolver/offline_keys.dart';
+part 'offline_character_resolver/weapon_proficiency_helpers.dart';
 
 Future<CharacterData> resolveOfflineCharacter(
   OfflineCacheDatabase cache,
   CharacterData character,
 ) async {
-  final derived = await buildOfflineDerivedData(cache, character);
+  final locallyDerived = await buildOfflineDerivedData(cache, character);
+  // Spell-slot progression is currently calculated authoritatively by the
+  // server. Preserve that immutable progression through local mutations.
+  final derived = locallyDerived.copyWith(
+    spellSlots: character.derived?.spellSlots,
+    pactSlots: character.derived?.pactSlots,
+  );
   return character.copyWith(
     derived: derived,
     currentHp: character.currentHp ?? derived.maxHp,
@@ -93,6 +100,16 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     character,
     alwaysPreparedSpellKeys,
   );
+  final weaponTraining = await _weaponTraining(cache, character, entries);
+  final toolProficiencyKeys = await _toolProficiencyKeys(
+    cache,
+    character,
+    entries,
+  );
+  final weaponProficiencyKeys = _uniqueStrings([
+    ...?character.race?.weaponProficiencyKeys,
+    ...?character.subrace?.weaponProficiencyKeys,
+  ]);
   final movementSpeeds = effectiveMovementSpeeds(character);
 
   return CharacterDerivedData(
@@ -122,10 +139,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       for (final language in character.race?.languages ?? const <Language>[])
         language.name,
     ]),
-    toolProficiencies: _uniqueStrings([
-      ...?character.race?.toolProficiencies,
-      ...?character.subrace?.toolProficiencies,
-    ]),
+    toolProficiencyKeys: toolProficiencyKeys,
     armorTraining: _uniqueStrings([
       for (final training
           in character.race?.armorProficiencies ?? const <ArmorCategory>[])
@@ -136,12 +150,8 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       for (final entry in entries)
         ...?entry.classData?.armorTraining?.map((item) => item.name),
     ]),
-    weaponTraining: _uniqueStrings([
-      ...?character.race?.weaponProficiencies,
-      ...?character.subrace?.weaponProficiencies,
-      for (final entry in entries)
-        ...?entry.classData?.weaponTraining?.map((item) => item.name),
-    ]),
+    weaponTraining: weaponTraining,
+    weaponProficiencyKeys: weaponProficiencyKeys,
     featureTags: _featureTags(activeFeatures),
     grantedSpellKeys: grantedSpellKeys,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,

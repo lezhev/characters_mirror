@@ -1,0 +1,405 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "background_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "skillProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          }
+        ],
+        "deleteColumns": [
+          "skillProficiencies"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"weaponProficiencies\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "weaponProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column languages of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "languages"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column armorProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "armorProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"weaponProficiencies\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "weaponProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column armorProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "armorProficiencies"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "weaponProficiencyKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "languages",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Language>?"
+          },
+          {
+            "name": "skillProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "armorProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:ArmorCategory>?"
+          }
+        ],
+        "deleteColumns": [
+          "weaponProficiencies",
+          "languages",
+          "skillProficiencies",
+          "armorProficiencies"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"weaponProficiencies\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "weaponProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column languages of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "languages"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column armorProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "armorProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"weaponProficiencies\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "weaponProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column armorProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "armorProficiencies"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subrace_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "weaponProficiencyKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "skillProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "armorProficiencies",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:ArmorCategory>?"
+          }
+        ],
+        "deleteColumns": [
+          "weaponProficiencies",
+          "skillProficiencies",
+          "armorProficiencies"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table background_data is modified in a way that it must be deleted and recreated.",
+            "table": "background_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"weaponProficiencies\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "weaponProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column languages of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "languages"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column armorProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+            "table": "race_data",
+            "columns": [
+              "armorProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"weaponProficiencies\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "weaponProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column skillProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "skillProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column armorProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+            "table": "subrace_data",
+            "columns": [
+              "armorProficiencies"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column skillProficiencies of table background_data is modified in a way that it must be deleted and recreated.",
+      "table": "background_data",
+      "columns": [
+        "skillProficiencies"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"weaponProficiencies\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "weaponProficiencies"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column languages of table race_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_data",
+      "columns": [
+        "languages"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column skillProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_data",
+      "columns": [
+        "skillProficiencies"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column armorProficiencies of table race_data is modified in a way that it must be deleted and recreated.",
+      "table": "race_data",
+      "columns": [
+        "armorProficiencies"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"weaponProficiencies\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "weaponProficiencies"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column skillProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+      "table": "subrace_data",
+      "columns": [
+        "skillProficiencies"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column armorProficiencies of table subrace_data is modified in a way that it must be deleted and recreated.",
+      "table": "subrace_data",
+      "columns": [
+        "armorProficiencies"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

@@ -443,7 +443,7 @@ void main() {
                   weaponTraining: const [
                     protocol.WeaponCategory.martialMelee,
                   ],
-                  toolTraining: const ['Игровые кости'],
+                  toolTrainingKeys: const ['dice_set'],
                 ),
                 subclass: protocol.SubclassData(
                   id: 1,

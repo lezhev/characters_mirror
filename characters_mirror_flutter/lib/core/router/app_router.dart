@@ -1,4 +1,3 @@
-import 'package:characters_mirror_flutter/features/admin/admin.dart';
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/character_creation/character_creation.dart';
 import 'package:characters_mirror_flutter/core/router/default_route_page.dart';
@@ -36,10 +35,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/characters';
       }
 
-      if (location == '/admin' && !authState.hasScope('admin')) {
-        return '/characters';
-      }
-
       return null;
     },
     routes: [
@@ -69,7 +64,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           return CharacterSheetSettingsPage(characterId: characterId);
         },
       ),
-      GoRoute(path: '/admin', builder: (_, __) => const AdminPage()),
       GoRoute(path: '/settings', builder: (_, __) => const SettingsPage()),
       GoRoute(path: '/create', builder: (_, __) => const ClassStep()),
       GoRoute(path: '/create/race', builder: (_, __) => const RaceStep()),

@@ -106,24 +106,30 @@ extension ClassStateSelectionOperations on ClassState {
     if (current == null || selectedClass?.id == null) return;
 
     state = await AsyncValue.guard(() async {
-      final stepView = await ref
-          .read(classRepositoryProvider)
-          .getStepView(
-            selectedClass!.id!,
-            selectedLevel: current.selectedLevel,
-            isStartingClass: true,
-            selectedSubclassId: current.selectedSubclass?.id,
-            abilityScores: abilityScores,
-          )
-          .timeout(ClassState._requestTimeout);
+      try {
+        final stepView = await ref
+            .read(classRepositoryProvider)
+            .getStepView(
+              selectedClass!.id!,
+              selectedLevel: current.selectedLevel,
+              isStartingClass: true,
+              selectedSubclassId: current.selectedSubclass?.id,
+              abilityScores: abilityScores,
+            )
+            .timeout(ClassState._requestTimeout);
 
-      return current.copyWith(
-        stepView: stepView,
-        selectedSpellSelections: _normalizeSpellSelections(
-          current.selectedSpellSelections,
-          stepView.spellSelectionGroups,
-        ),
-      );
+        return current.copyWith(
+          stepView: stepView,
+          selectedSpellSelections: _normalizeSpellSelections(
+            current.selectedSpellSelections,
+            stepView.spellSelectionGroups,
+          ),
+        );
+      } catch (_) {
+        // Ability-specific spell groups are an enhancement of the draft.
+        // Keep the cached class selection usable when the device is offline.
+        return current;
+      }
     });
   }
 

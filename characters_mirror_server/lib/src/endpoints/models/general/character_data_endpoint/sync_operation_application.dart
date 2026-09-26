@@ -118,7 +118,10 @@ void _logServerNoteSync(
   CharacterData? character,
   String? reason,
 }) {
-  if (operation.fieldPath != 'notes') return;
+  if (session.server.runMode == ServerpodRunMode.production ||
+      operation.fieldPath != 'notes') {
+    return;
+  }
   final operationNote = operation.itemPayload?.noteValue;
   final canonicalNote = character?.notes
       ?.where((note) => note.id == operation.targetId)

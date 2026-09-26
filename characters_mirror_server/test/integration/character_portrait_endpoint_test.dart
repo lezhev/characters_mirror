@@ -113,5 +113,27 @@ void main() {
         throwsException,
       );
     });
+
+    test('getUrl returns null when character was deleted', () async {
+      const userId = 704;
+      final ownerSession = authenticatedSession(userId);
+      final dbSession = ownerSession.build();
+      final character = await CharacterRecord.db.insertRow(
+        dbSession,
+        CharacterRecord(
+          name: 'Deleted Portrait Test',
+          userId: userId,
+        ),
+      );
+      await CharacterRecord.db.deleteRow(dbSession, character);
+      await dbSession.close();
+
+      final url = await endpoints.characterPortrait.getUrl(
+        ownerSession,
+        character.id!,
+      );
+
+      expect(url, isNull);
+    });
   });
 }

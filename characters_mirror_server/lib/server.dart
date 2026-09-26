@@ -3,6 +3,7 @@ import 'package:serverpod_auth_server/serverpod_auth_server.dart' as auth;
 import 'package:characters_mirror_server/src/web/routes/root.dart';
 import 'src/generated/protocol.dart';
 import 'src/generated/endpoints.dart';
+import 'src/logging/development_log_profile.dart';
 
 // This is the starting point of your Serverpod server. In most cases, you will
 // only need to make additions to this file if you add future calls,  are
@@ -28,17 +29,16 @@ void run(List<String> args) async {
   auth.AuthConfig.set(auth.AuthConfig(
     sendValidationEmail: (session, email, validationCode) async {
       // TODO: integrate with mail server
-      session.log('Validation code: $validationCode');
       return true;
     },
     sendPasswordResetEmail: (session, userInfo, validationCode) async {
       // TODO: integrate with mail server
-      session.log('Validation code: $validationCode');
       return true;
     },
   ));
   // Start the server.
   await pod.start();
+  await configureDevelopmentLogging(pod);
 
   // After starting the server, you can register future calls. Future calls are
   // tasks that need to happen in the future, or independently of the request/response
@@ -57,4 +57,3 @@ void run(List<String> args) async {
 ///
 /// This is better than using a string literal, as it will reduce the risk of
 /// typos and make it easier to refactor the code.
-

@@ -186,8 +186,8 @@ class ClassDataEndpoint extends Endpoint {
             ? classData.weaponTraining
             : classData.multiclassWeaponTraining,
         toolKeys: isStartingClass
-            ? classData.toolTraining
-            : classData.multiclassToolTraining,
+            ? classData.toolTrainingKeys
+            : classData.multiclassToolTrainingKeys,
       ),
       multiclassWarnings: warnings,
       progression: progression,

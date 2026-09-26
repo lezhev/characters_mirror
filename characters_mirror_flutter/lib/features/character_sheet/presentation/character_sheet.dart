@@ -31,6 +31,7 @@ class CharacterSheet extends HookConsumerWidget {
     final isAttributesOpen = useState(false);
     final returnPageIndex = useState(0);
     final character = ref.watch(characterSheetControllerProvider(characterId));
+    ref.watch(characterSheetLocalSavePendingProvider(characterId));
     final characterData = character.valueOrNull;
     final characterName = characterData?.name?.trim();
     final statusStackMode = useState(CharacterStatusStackMode.hidden);

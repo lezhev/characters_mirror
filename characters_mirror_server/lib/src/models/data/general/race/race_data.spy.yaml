@@ -24,8 +24,8 @@ fields:
   resistances: List<DamageType>?
   skillProficiencies: List<Skill>?
   armorProficiencies: List<ArmorCategory>?
-  weaponProficiencies: List<String>?
-  toolProficiencies: List<String>?
+  weaponProficiencyKeys: List<String>?
+  toolProficiencyKeys: List<String>?
   features: List<RaceFeatureData>?, relation(name=race_features)
 
   imageURL: String?

@@ -1,0 +1,10 @@
+class: ToolData
+table: tool_data
+fields:
+  referenceKey: String
+  name: String
+  category: ToolCategory?
+indexes:
+  tool_data_reference_key_idx:
+    fields: referenceKey
+    unique: true

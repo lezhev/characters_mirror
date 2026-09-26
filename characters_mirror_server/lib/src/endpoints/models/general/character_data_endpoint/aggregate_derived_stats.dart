@@ -89,7 +89,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.classBackgroundOptions,
     resolvedSources.raceOptions,
   );
-  final toolProficiencies = _collectToolProficiencies(
+  final toolProficiencyKeys = _collectToolProficiencyKeys(
     character,
     entries,
     choices,
@@ -102,10 +102,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.classBackgroundOptions,
   );
   final weaponTraining = _collectWeaponTraining(
-    character,
     entries,
     resolvedSources.classBackgroundOptions,
   );
+  final weaponProficiencyKeys = _collectWeaponProficiencyKeys(character);
   final featIds = _collectFeatIds(choices, resolvedSources.raceOptions);
   final featTags = await _loadFeatTags(
     session,
@@ -169,9 +169,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     pactSlots: spellData.pactSlots,
     hitDiceSummary: hitDiceSummary,
     languages: languages,
-    toolProficiencies: toolProficiencies,
+    toolProficiencyKeys: toolProficiencyKeys,
     armorTraining: armorTraining,
     weaponTraining: weaponTraining,
+    weaponProficiencyKeys: weaponProficiencyKeys,
     featureTags: featureTags,
     featIds: featIds,
     grantedSpellKeys: grantedSpellKeys,

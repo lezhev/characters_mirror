@@ -62,17 +62,19 @@ import 'package:characters_mirror_client/src/protocol/data/general/race/race_cho
     as _i27;
 import 'package:characters_mirror_client/src/protocol/data/general/race/race_feature_spell_grant_data.dart'
     as _i28;
-import 'package:characters_mirror_client/src/protocol/data/items/armor_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/general/tool_data.dart'
     as _i29;
-import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/armor_data.dart'
     as _i30;
-import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/item_data.dart'
     as _i31;
-import 'package:characters_mirror_client/src/protocol/data/items/weapon_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/magic_item_data.dart'
     as _i32;
-import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
+import 'package:characters_mirror_client/src/protocol/data/items/weapon_data.dart'
     as _i33;
-import 'protocol.dart' as _i34;
+import 'package:characters_mirror_client/src/protocol/data/spell_data.dart'
+    as _i34;
+import 'protocol.dart' as _i35;
 
 /// {@category Endpoint}
 class EndpointAdmin extends _i1.EndpointRef {
@@ -158,27 +160,6 @@ class EndpointCharacterPortrait extends _i1.EndpointRef {
         'characterPortrait',
         'deletePortrait',
         {'characterId': characterId},
-      );
-}
-
-/// {@category Endpoint}
-class EndpointReferenceData extends _i1.EndpointRef {
-  EndpointReferenceData(_i1.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'referenceData';
-
-  _i2.Future<void> insertJson(
-    String entityType,
-    String jsonString,
-  ) =>
-      caller.callServerEndpoint<void>(
-        'referenceData',
-        'insertJson',
-        {
-          'entityType': entityType,
-          'jsonString': jsonString,
-        },
       );
 }
 
@@ -888,28 +869,43 @@ class EndpointRaceFeatureSpellGrantData extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointToolData extends _i1.EndpointRef {
+  EndpointToolData(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'toolData';
+
+  _i2.Future<List<_i29.ToolData>> getAll() =>
+      caller.callServerEndpoint<List<_i29.ToolData>>(
+        'toolData',
+        'getAll',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointArmorData extends _i1.EndpointRef {
   EndpointArmorData(_i1.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'armorData';
 
-  _i2.Future<List<_i29.ArmorData>> getAll() =>
-      caller.callServerEndpoint<List<_i29.ArmorData>>(
+  _i2.Future<List<_i30.ArmorData>> getAll() =>
+      caller.callServerEndpoint<List<_i30.ArmorData>>(
         'armorData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i29.ArmorData> add(_i29.ArmorData armor) =>
-      caller.callServerEndpoint<_i29.ArmorData>(
+  _i2.Future<_i30.ArmorData> add(_i30.ArmorData armor) =>
+      caller.callServerEndpoint<_i30.ArmorData>(
         'armorData',
         'add',
         {'armor': armor},
       );
 
-  _i2.Future<_i29.ArmorData> upsert(_i29.ArmorData armor) =>
-      caller.callServerEndpoint<_i29.ArmorData>(
+  _i2.Future<_i30.ArmorData> upsert(_i30.ArmorData armor) =>
+      caller.callServerEndpoint<_i30.ArmorData>(
         'armorData',
         'upsert',
         {'armor': armor},
@@ -929,22 +925,22 @@ class EndpointItemData extends _i1.EndpointRef {
   @override
   String get name => 'itemData';
 
-  _i2.Future<List<_i30.ItemData>> getAll() =>
-      caller.callServerEndpoint<List<_i30.ItemData>>(
+  _i2.Future<List<_i31.ItemData>> getAll() =>
+      caller.callServerEndpoint<List<_i31.ItemData>>(
         'itemData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i30.ItemData> add(_i30.ItemData item) =>
-      caller.callServerEndpoint<_i30.ItemData>(
+  _i2.Future<_i31.ItemData> add(_i31.ItemData item) =>
+      caller.callServerEndpoint<_i31.ItemData>(
         'itemData',
         'add',
         {'item': item},
       );
 
-  _i2.Future<_i30.ItemData> upsert(_i30.ItemData item) =>
-      caller.callServerEndpoint<_i30.ItemData>(
+  _i2.Future<_i31.ItemData> upsert(_i31.ItemData item) =>
+      caller.callServerEndpoint<_i31.ItemData>(
         'itemData',
         'upsert',
         {'item': item},
@@ -964,22 +960,22 @@ class EndpointMagicItemData extends _i1.EndpointRef {
   @override
   String get name => 'magicItemData';
 
-  _i2.Future<List<_i31.MagicItemData>> getAll() =>
-      caller.callServerEndpoint<List<_i31.MagicItemData>>(
+  _i2.Future<List<_i32.MagicItemData>> getAll() =>
+      caller.callServerEndpoint<List<_i32.MagicItemData>>(
         'magicItemData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i31.MagicItemData> add(_i31.MagicItemData item) =>
-      caller.callServerEndpoint<_i31.MagicItemData>(
+  _i2.Future<_i32.MagicItemData> add(_i32.MagicItemData item) =>
+      caller.callServerEndpoint<_i32.MagicItemData>(
         'magicItemData',
         'add',
         {'item': item},
       );
 
-  _i2.Future<_i31.MagicItemData> upsert(_i31.MagicItemData magicItem) =>
-      caller.callServerEndpoint<_i31.MagicItemData>(
+  _i2.Future<_i32.MagicItemData> upsert(_i32.MagicItemData magicItem) =>
+      caller.callServerEndpoint<_i32.MagicItemData>(
         'magicItemData',
         'upsert',
         {'magicItem': magicItem},
@@ -999,22 +995,22 @@ class EndpointWeaponData extends _i1.EndpointRef {
   @override
   String get name => 'weaponData';
 
-  _i2.Future<List<_i32.WeaponData>> getAll() =>
-      caller.callServerEndpoint<List<_i32.WeaponData>>(
+  _i2.Future<List<_i33.WeaponData>> getAll() =>
+      caller.callServerEndpoint<List<_i33.WeaponData>>(
         'weaponData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i32.WeaponData> add(_i32.WeaponData weapon) =>
-      caller.callServerEndpoint<_i32.WeaponData>(
+  _i2.Future<_i33.WeaponData> add(_i33.WeaponData weapon) =>
+      caller.callServerEndpoint<_i33.WeaponData>(
         'weaponData',
         'add',
         {'weapon': weapon},
       );
 
-  _i2.Future<_i32.WeaponData> upsert(_i32.WeaponData weapon) =>
-      caller.callServerEndpoint<_i32.WeaponData>(
+  _i2.Future<_i33.WeaponData> upsert(_i33.WeaponData weapon) =>
+      caller.callServerEndpoint<_i33.WeaponData>(
         'weaponData',
         'upsert',
         {'weapon': weapon},
@@ -1034,22 +1030,22 @@ class EndpointSpellData extends _i1.EndpointRef {
   @override
   String get name => 'spellData';
 
-  _i2.Future<List<_i33.SpellData>> getAll() =>
-      caller.callServerEndpoint<List<_i33.SpellData>>(
+  _i2.Future<List<_i34.SpellData>> getAll() =>
+      caller.callServerEndpoint<List<_i34.SpellData>>(
         'spellData',
         'getAll',
         {},
       );
 
-  _i2.Future<_i33.SpellData> add(_i33.SpellData spell) =>
-      caller.callServerEndpoint<_i33.SpellData>(
+  _i2.Future<_i34.SpellData> add(_i34.SpellData spell) =>
+      caller.callServerEndpoint<_i34.SpellData>(
         'spellData',
         'add',
         {'spell': spell},
       );
 
-  _i2.Future<_i33.SpellData> upsert(_i33.SpellData spell) =>
-      caller.callServerEndpoint<_i33.SpellData>(
+  _i2.Future<_i34.SpellData> upsert(_i34.SpellData spell) =>
+      caller.callServerEndpoint<_i34.SpellData>(
         'spellData',
         'upsert',
         {'spell': spell},
@@ -1100,7 +1096,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i34.Protocol(),
+          _i35.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -1113,7 +1109,6 @@ class Client extends _i1.ServerpodClientShared {
     admin = EndpointAdmin(this);
     appAuth = EndpointAppAuth(this);
     characterPortrait = EndpointCharacterPortrait(this);
-    referenceData = EndpointReferenceData(this);
     backgroundData = EndpointBackgroundData(this);
     featData = EndpointFeatData(this);
     characterData = EndpointCharacterData(this);
@@ -1132,6 +1127,7 @@ class Client extends _i1.ServerpodClientShared {
     raceChoiceSetData = EndpointRaceChoiceSetData(this);
     raceChoiceOptionData = EndpointRaceChoiceOptionData(this);
     raceFeatureSpellGrantData = EndpointRaceFeatureSpellGrantData(this);
+    toolData = EndpointToolData(this);
     armorData = EndpointArmorData(this);
     itemData = EndpointItemData(this);
     magicItemData = EndpointMagicItemData(this);
@@ -1146,8 +1142,6 @@ class Client extends _i1.ServerpodClientShared {
   late final EndpointAppAuth appAuth;
 
   late final EndpointCharacterPortrait characterPortrait;
-
-  late final EndpointReferenceData referenceData;
 
   late final EndpointBackgroundData backgroundData;
 
@@ -1185,6 +1179,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointRaceFeatureSpellGrantData raceFeatureSpellGrantData;
 
+  late final EndpointToolData toolData;
+
   late final EndpointArmorData armorData;
 
   late final EndpointItemData itemData;
@@ -1204,7 +1200,6 @@ class Client extends _i1.ServerpodClientShared {
         'admin': admin,
         'appAuth': appAuth,
         'characterPortrait': characterPortrait,
-        'referenceData': referenceData,
         'backgroundData': backgroundData,
         'featData': featData,
         'characterData': characterData,
@@ -1223,6 +1218,7 @@ class Client extends _i1.ServerpodClientShared {
         'raceChoiceSetData': raceChoiceSetData,
         'raceChoiceOptionData': raceChoiceOptionData,
         'raceFeatureSpellGrantData': raceFeatureSpellGrantData,
+        'toolData': toolData,
         'armorData': armorData,
         'itemData': itemData,
         'magicItemData': magicItemData,

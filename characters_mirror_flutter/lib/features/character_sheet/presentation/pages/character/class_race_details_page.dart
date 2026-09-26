@@ -1,9 +1,11 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/class_race_formatters.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ClassRaceDetailsPage extends StatelessWidget {
+class ClassRaceDetailsPage extends ConsumerWidget {
   const ClassRaceDetailsPage({
     required this.character,
     super.key,
@@ -12,8 +14,13 @@ class ClassRaceDetailsPage extends StatelessWidget {
   final CharacterData character;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final classEntries = sortedClassEntries(character.classEntries);
+    final toolNames = {
+      for (final tool in ref.watch(toolCatalogProvider).valueOrNull ??
+          const <ToolData>[])
+        tool.referenceKey: tool.name,
+    };
     final subclassEntries = [
       for (final entry in classEntries)
         if (normalizedText(entry.subclass?.name) != null) entry,
@@ -40,7 +47,10 @@ class ClassRaceDetailsPage extends StatelessWidget {
                           for (var index = 0;
                               index < classEntries.length;
                               index++) ...[
-                            _ClassEntryDetails(entry: classEntries[index]),
+                            _ClassEntryDetails(
+                              entry: classEntries[index],
+                              toolNames: toolNames,
+                            ),
                             if (index < classEntries.length - 1)
                               const Divider(height: 24),
                           ],
@@ -106,13 +116,19 @@ class ClassRaceDetailsPage extends StatelessWidget {
 class _ClassEntryDetails extends StatelessWidget {
   const _ClassEntryDetails({
     required this.entry,
+    required this.toolNames,
   });
 
   final CharacterClassEntryData entry;
+  final Map<String, String> toolNames;
 
   @override
   Widget build(BuildContext context) {
     final classData = entry.classData;
+    final toolTrainingLabels = [
+      for (final key in classData?.toolTrainingKeys ?? const <String>[])
+        if (toolNames[key] case final name?) name,
+    ];
     final rows = <_DetailRow>[
       _DetailRow(
         label: 'Класс',
@@ -144,10 +160,10 @@ class _ClassEntryDetails extends StatelessWidget {
           label: 'Оружие',
           value: joinWeaponCategories(classData!.weaponTraining!),
         ),
-      if (classData?.toolTraining?.isNotEmpty ?? false)
+      if (toolTrainingLabels.isNotEmpty)
         _DetailRow(
           label: 'Инструменты',
-          value: classData!.toolTraining!.join(', '),
+          value: toolTrainingLabels.join(', '),
         ),
       if (classData?.spellcastingAbilityValue != null)
         _DetailRow(

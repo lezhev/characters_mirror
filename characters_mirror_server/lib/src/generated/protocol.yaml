@@ -8,8 +8,6 @@ characterPortrait:
   - confirmUpload:
   - getUrl:
   - deletePortrait:
-referenceData:
-  - insertJson:
 backgroundData:
   - getAll:
   - getStepView:
@@ -106,6 +104,8 @@ raceFeatureSpellGrantData:
   - add:
   - upsert:
   - delete:
+toolData:
+  - getAll:
 armorData:
   - getAll:
   - add:

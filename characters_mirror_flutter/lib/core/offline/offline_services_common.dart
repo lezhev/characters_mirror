@@ -94,6 +94,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
   int? _negotiatedSyncProtocolVersion;
   int? _activeUserId;
   bool _isForeground = true;
+  bool _requiresAuthoritativeFullResync = true;
 
   void start() {
     _restartPolling();
@@ -105,6 +106,7 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     if (_activeUserId == userId) return;
     _activeUserId = userId;
     _negotiatedSyncProtocolVersion = null;
+    _requiresAuthoritativeFullResync = true;
     _retryAttempt = 0;
     _cancelScheduledRetry();
     _restartPolling();
@@ -164,6 +166,10 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     var shouldRetry = false;
     var pending = const <OfflineCharacterChange>[];
     try {
+      if (_requiresAuthoritativeFullResync) {
+        await _cache.clearSyncCursor(userId);
+        _requiresAuthoritativeFullResync = false;
+      }
       await _cache.repairSyncQueue(userId);
       pending = await _cache.getPendingChanges(userId);
       final coalesced = await _coalescePendingChanges(userId, pending);
@@ -227,10 +233,6 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     } catch (_) {
       for (final change in pending) {
         await _cache.markChangeFailed(userId, change.id, 'Sync request failed');
-        final localId = int.tryParse(change.entityId);
-        if (localId != null) {
-          await _cache.markSyncError(userId, localId, 'Sync request failed');
-        }
       }
       return _SyncPassResult.failed(shouldRetry: hadPendingChanges);
     }
@@ -466,7 +468,9 @@ class OfflineSyncCoordinator extends ChangeNotifier {
       if (id == null || character == null) return;
       final existing = canonicalById[id];
       if (existing == null ||
-          (character.version ?? 0) > (existing.version ?? 0)) {
+          (character.version ?? 0) > (existing.version ?? 0) ||
+          ((character.version ?? 0) == (existing.version ?? 0) &&
+              source != 'pull')) {
         canonicalById[id] = character;
         canonicalSourceById[id] = source;
       }
@@ -523,9 +527,20 @@ class OfflineSyncCoordinator extends ChangeNotifier {
       final serverId = operation?.characterId ?? rejection.character?.id;
       final localId =
           operation?.localCharacterId ?? int.tryParse(change?.entityId ?? '');
+      final characterIsAuthoritativelyAbsent =
+          rejection.reason == 'not_found' &&
+              operation != null &&
+              operation.type != CharacterSyncOperationType.createCharacter &&
+              serverId != null;
+      if (characterIsAuthoritativelyAbsent) {
+        canonicalById.remove(serverId);
+        await _cache.applyRemoteDelete(userId, serverId);
+      }
       if (serverId != null && localId != null) {
         localHintByServerId[serverId] = localId;
-        errorsByServerId[serverId] = message;
+        if (!characterIsAuthoritativelyAbsent) {
+          errorsByServerId[serverId] = message;
+        }
       }
       if (change != null &&
           isRetryableUntouchedFieldValidationRejection(
@@ -645,7 +660,14 @@ class OfflineSyncCoordinator extends ChangeNotifier {
         await _cache.saveLocal(userId, visible);
       }
     }
-    if (syncError != null) {
+    final hasRemainingPending = (await _cache.getPendingChanges(userId)).any(
+      (change) => _changesReferToSameCharacter(
+        change,
+        localId: existing?.localId ?? localIdHint,
+        serverId: serverId,
+      ),
+    );
+    if (syncError != null && hasRemainingPending) {
       await _cache.markSyncError(userId, serverId, syncError);
     } else {
       await _cache.clearSyncError(userId, serverId);
