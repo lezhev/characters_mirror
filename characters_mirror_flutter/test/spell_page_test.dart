@@ -359,6 +359,39 @@ void main() {
     expect(availableSlots, 4);
   });
 
+  testWidgets('spent final spell slot keeps its level row visible',
+      (tester) async {
+    final title = String.fromCharCodes(const [0x41a, 0x440, 0x443, 0x433]);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SpellPageContent(
+            onSpellCast: (_) async {},
+            character: CharacterData(
+              currentSpellSlots: const {1: 0},
+              derived: CharacterDerivedData(
+                spellSlots: const {1: 1},
+              ),
+              spellSelections: [
+                CharacterSpellSelectionData(
+                  selectionIndex: 0,
+                  spell: SpellData(
+                    referenceKey: 'magic_missile',
+                    name: 'Magic Missile',
+                    level: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('$title 1'), findsOneWidget);
+    expect(find.byKey(ValueKey('spell-slot-$title 1-0')), findsOneWidget);
+  });
+
   testWidgets('casting concentration spell reports the cast spell',
       (tester) async {
     String? castSpellName;

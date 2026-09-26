@@ -25,6 +25,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     this.availableSkills,
     this.skillCount,
     this.toolProficiencies,
+    this.toolProficiencyKeys,
     this.languageCount,
     this.items,
     this.coins,
@@ -47,6 +48,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     List<_i2.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencies,
+    List<String>? toolProficiencyKeys,
     int? languageCount,
     List<String>? items,
     double? coins,
@@ -78,6 +80,9 @@ abstract class BackgroundData implements _i1.SerializableModel {
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
       toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
+      toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       languageCount: jsonSerialization['languageCount'] as int?,
@@ -126,6 +131,8 @@ abstract class BackgroundData implements _i1.SerializableModel {
 
   List<String>? toolProficiencies;
 
+  List<String>? toolProficiencyKeys;
+
   int? languageCount;
 
   List<String>? items;
@@ -157,6 +164,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
     List<_i2.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencies,
+    List<String>? toolProficiencyKeys,
     int? languageCount,
     List<String>? items,
     double? coins,
@@ -185,6 +193,8 @@ abstract class BackgroundData implements _i1.SerializableModel {
       if (skillCount != null) 'skillCount': skillCount,
       if (toolProficiencies != null)
         'toolProficiencies': toolProficiencies?.toJson(),
+      if (toolProficiencyKeys != null)
+        'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
       if (languageCount != null) 'languageCount': languageCount,
       if (items != null) 'items': items?.toJson(),
       if (coins != null) 'coins': coins,
@@ -218,6 +228,7 @@ class _BackgroundDataImpl extends BackgroundData {
     List<_i2.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencies,
+    List<String>? toolProficiencyKeys,
     int? languageCount,
     List<String>? items,
     double? coins,
@@ -238,6 +249,7 @@ class _BackgroundDataImpl extends BackgroundData {
           availableSkills: availableSkills,
           skillCount: skillCount,
           toolProficiencies: toolProficiencies,
+          toolProficiencyKeys: toolProficiencyKeys,
           languageCount: languageCount,
           items: items,
           coins: coins,
@@ -264,6 +276,7 @@ class _BackgroundDataImpl extends BackgroundData {
     Object? availableSkills = _Undefined,
     Object? skillCount = _Undefined,
     Object? toolProficiencies = _Undefined,
+    Object? toolProficiencyKeys = _Undefined,
     Object? languageCount = _Undefined,
     Object? items = _Undefined,
     Object? coins = _Undefined,
@@ -291,6 +304,9 @@ class _BackgroundDataImpl extends BackgroundData {
       toolProficiencies: toolProficiencies is List<String>?
           ? toolProficiencies
           : this.toolProficiencies?.map((e0) => e0).toList(),
+      toolProficiencyKeys: toolProficiencyKeys is List<String>?
+          ? toolProficiencyKeys
+          : this.toolProficiencyKeys?.map((e0) => e0).toList(),
       languageCount: languageCount is int? ? languageCount : this.languageCount,
       items:
           items is List<String>? ? items : this.items?.map((e0) => e0).toList(),

@@ -3,33 +3,34 @@ import 'dart:async';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:flutter/material.dart';
 
-Widget errorWidget(
-    {required Object e,
-    required StackTrace s,
-    required VoidCallback refresh,
-    required BuildContext context}) {
-  return Scaffold(
-    body: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.error_outline,
-            color: Theme.of(context).colorScheme.error,
-            size: 48,
-          ),
-          const SizedBox(height: 8),
-          SelectableText(
-            humanReadableError(e),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: refresh,
-            child: const Text('Попробовать снова'),
-          ),
-        ],
-      ),
+Widget errorWidget({
+  required Object e,
+  required StackTrace s,
+  required VoidCallback refresh,
+  required BuildContext context,
+}) {
+  return Padding(
+    padding: const EdgeInsets.all(24),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.error_outline,
+          color: Theme.of(context).colorScheme.error,
+          size: 48,
+        ),
+        const SizedBox(height: 8),
+        SelectableText(
+          humanReadableError(e),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: refresh,
+          child: const Text('Попробовать снова'),
+        ),
+      ],
     ),
   );
 }

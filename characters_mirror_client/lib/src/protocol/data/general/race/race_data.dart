@@ -42,8 +42,8 @@ abstract class RaceData implements _i1.SerializableModel {
     this.resistances,
     this.skillProficiencies,
     this.armorProficiencies,
-    this.weaponProficiencies,
-    this.toolProficiencies,
+    this.weaponProficiencyKeys,
+    this.toolProficiencyKeys,
     this.features,
     this.imageURL,
   });
@@ -71,8 +71,8 @@ abstract class RaceData implements _i1.SerializableModel {
     List<_i5.DamageType>? resistances,
     List<_i6.Skill>? skillProficiencies,
     List<_i7.ArmorCategory>? armorProficiencies,
-    List<String>? weaponProficiencies,
-    List<String>? toolProficiencies,
+    List<String>? weaponProficiencyKeys,
+    List<String>? toolProficiencyKeys,
     List<_i8.RaceFeatureData>? features,
     String? imageURL,
   }) = _RaceDataImpl;
@@ -119,10 +119,11 @@ abstract class RaceData implements _i1.SerializableModel {
       armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
           ?.map((e) => _i7.ArmorCategory.fromJson((e as String)))
           .toList(),
-      weaponProficiencies: (jsonSerialization['weaponProficiencies'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
+      weaponProficiencyKeys:
+          (jsonSerialization['weaponProficiencyKeys'] as List?)
+              ?.map((e) => e as String)
+              .toList(),
+      toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       features: (jsonSerialization['features'] as List?)
@@ -180,9 +181,9 @@ abstract class RaceData implements _i1.SerializableModel {
 
   List<_i7.ArmorCategory>? armorProficiencies;
 
-  List<String>? weaponProficiencies;
+  List<String>? weaponProficiencyKeys;
 
-  List<String>? toolProficiencies;
+  List<String>? toolProficiencyKeys;
 
   List<_i8.RaceFeatureData>? features;
 
@@ -214,8 +215,8 @@ abstract class RaceData implements _i1.SerializableModel {
     List<_i5.DamageType>? resistances,
     List<_i6.Skill>? skillProficiencies,
     List<_i7.ArmorCategory>? armorProficiencies,
-    List<String>? weaponProficiencies,
-    List<String>? toolProficiencies,
+    List<String>? weaponProficiencyKeys,
+    List<String>? toolProficiencyKeys,
     List<_i8.RaceFeatureData>? features,
     String? imageURL,
   });
@@ -250,10 +251,10 @@ abstract class RaceData implements _i1.SerializableModel {
       if (armorProficiencies != null)
         'armorProficiencies':
             armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
-      if (weaponProficiencies != null)
-        'weaponProficiencies': weaponProficiencies?.toJson(),
-      if (toolProficiencies != null)
-        'toolProficiencies': toolProficiencies?.toJson(),
+      if (weaponProficiencyKeys != null)
+        'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
+      if (toolProficiencyKeys != null)
+        'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
       if (features != null)
         'features': features?.toJson(valueToJson: (v) => v.toJson()),
       if (imageURL != null) 'imageURL': imageURL,
@@ -292,8 +293,8 @@ class _RaceDataImpl extends RaceData {
     List<_i5.DamageType>? resistances,
     List<_i6.Skill>? skillProficiencies,
     List<_i7.ArmorCategory>? armorProficiencies,
-    List<String>? weaponProficiencies,
-    List<String>? toolProficiencies,
+    List<String>? weaponProficiencyKeys,
+    List<String>? toolProficiencyKeys,
     List<_i8.RaceFeatureData>? features,
     String? imageURL,
   }) : super._(
@@ -319,8 +320,8 @@ class _RaceDataImpl extends RaceData {
           resistances: resistances,
           skillProficiencies: skillProficiencies,
           armorProficiencies: armorProficiencies,
-          weaponProficiencies: weaponProficiencies,
-          toolProficiencies: toolProficiencies,
+          weaponProficiencyKeys: weaponProficiencyKeys,
+          toolProficiencyKeys: toolProficiencyKeys,
           features: features,
           imageURL: imageURL,
         );
@@ -352,8 +353,8 @@ class _RaceDataImpl extends RaceData {
     Object? resistances = _Undefined,
     Object? skillProficiencies = _Undefined,
     Object? armorProficiencies = _Undefined,
-    Object? weaponProficiencies = _Undefined,
-    Object? toolProficiencies = _Undefined,
+    Object? weaponProficiencyKeys = _Undefined,
+    Object? toolProficiencyKeys = _Undefined,
     Object? features = _Undefined,
     Object? imageURL = _Undefined,
   }) {
@@ -395,12 +396,12 @@ class _RaceDataImpl extends RaceData {
       armorProficiencies: armorProficiencies is List<_i7.ArmorCategory>?
           ? armorProficiencies
           : this.armorProficiencies?.map((e0) => e0).toList(),
-      weaponProficiencies: weaponProficiencies is List<String>?
-          ? weaponProficiencies
-          : this.weaponProficiencies?.map((e0) => e0).toList(),
-      toolProficiencies: toolProficiencies is List<String>?
-          ? toolProficiencies
-          : this.toolProficiencies?.map((e0) => e0).toList(),
+      weaponProficiencyKeys: weaponProficiencyKeys is List<String>?
+          ? weaponProficiencyKeys
+          : this.weaponProficiencyKeys?.map((e0) => e0).toList(),
+      toolProficiencyKeys: toolProficiencyKeys is List<String>?
+          ? toolProficiencyKeys
+          : this.toolProficiencyKeys?.map((e0) => e0).toList(),
       features: features is List<_i8.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),

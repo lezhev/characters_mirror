@@ -102,7 +102,7 @@ WHERE user_id = ? AND entity_id = ? AND operation_type IS NULL
       if (operations.isEmpty) {
         final base = record.baseCharacter;
         if (base != null) {
-          await markSynced(userId, record.localId, base);
+          await clearSyncEventCursor(userId);
         } else {
           await markSyncError(
             userId,

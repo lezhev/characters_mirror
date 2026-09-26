@@ -245,54 +245,6 @@ void _registerCharacterDataCreationScenarios(
     expect(storedGrant.alwaysPrepared, isTrue);
   });
 
-  test('reference import stores class spell grant by spell reference key',
-      () async {
-    final classData = await endpoints.classData.upsert(
-      sessionBuilder,
-      ClassData(
-        name: 'Grant Import Class',
-        hitDieValue: 8,
-      ),
-    );
-    final feature = await endpoints.classFeatureData.upsert(
-      sessionBuilder,
-      ClassFeatureData(
-        parentClassId: classData.id!,
-        name: 'Imported Feature Spells',
-        level: 1,
-      ),
-    );
-    final spell = await endpoints.spellData.add(
-      sessionBuilder,
-      SpellData(
-        referenceKey: 'grant_import_bless',
-        name: 'Grant Import Bless',
-        level: 1,
-        schoolValue: SpellSchool.enchantment,
-      ),
-    );
-
-    await endpoints.referenceData.insertJson(
-      sessionBuilder,
-      'classspellgrant',
-      jsonEncode({
-        'sourceFeatureId': feature.id,
-        'spellReferenceKey': 'grant_import_bless',
-        'grantedAtLevel': 1,
-        'alwaysPrepared': true,
-      }),
-    );
-
-    final allGrants = await endpoints.classSpellGrantData.getAll(
-      sessionBuilder,
-    );
-    final storedGrant = allGrants.singleWhere(
-      (grant) => grant.sourceFeatureId == feature.id,
-    );
-    expect(storedGrant.spellId, spell.id);
-    expect(storedGrant.spell?.referenceKey, 'grant_import_bless');
-  });
-
   test(
       'class step view includes class and subclass feature spell grants with nested spells',
       () async {

@@ -116,7 +116,7 @@ List<String> _collectLanguages(
   return values.toList()..sort();
 }
 
-List<String> _collectToolProficiencies(
+List<String> _collectToolProficiencyKeys(
   CharacterData character,
   List<CharacterClassEntryData> entries,
   List<CharacterChoiceData> choices,
@@ -124,16 +124,18 @@ List<String> _collectToolProficiencies(
   List<RaceChoiceOptionData> raceOptions,
 ) {
   final values = <String>{};
-  values.addAll(_normalizedTexts(character.race?.toolProficiencies));
-  values.addAll(_normalizedTexts(character.subrace?.toolProficiencies));
-  values.addAll(_normalizedTexts(character.background?.toolProficiencies));
+  values.addAll(_normalizedTexts(character.race?.toolProficiencyKeys));
+  values.addAll(_normalizedTexts(character.subrace?.toolProficiencyKeys));
+  values.addAll(_normalizedTexts(character.background?.toolProficiencyKeys));
 
   for (final entry in entries) {
     final classData = entry.classData;
     if (classData == null) continue;
     final isStarting = entry.isStartingClass ?? false;
     values.addAll(_normalizedTexts(
-      isStarting ? classData.toolTraining : classData.multiclassToolTraining,
+      isStarting
+          ? classData.toolTrainingKeys
+          : classData.multiclassToolTrainingKeys,
     ));
   }
   for (final option in classBackgroundOptions) {
@@ -191,14 +193,11 @@ List<String> _collectArmorTraining(
   return values.toList()..sort();
 }
 
-List<String> _collectWeaponTraining(
-  CharacterData character,
+List<WeaponCategory> _collectWeaponTraining(
   List<CharacterClassEntryData> entries,
   List<ClassChoiceOptionData> classBackgroundOptions,
 ) {
-  final values = <String>{};
-  values.addAll(_normalizedTexts(character.race?.weaponProficiencies));
-  values.addAll(_normalizedTexts(character.subrace?.weaponProficiencies));
+  final values = <WeaponCategory>{};
 
   for (final entry in entries) {
     final classData = entry.classData;
@@ -206,18 +205,20 @@ List<String> _collectWeaponTraining(
     final source = (entry.isStartingClass ?? false)
         ? classData.weaponTraining
         : classData.multiclassWeaponTraining;
-    values.addAll([
-      for (final training in source ?? const <WeaponCategory>[]) training.name,
-    ]);
+    values.addAll(source ?? const <WeaponCategory>[]);
   }
   for (final option in classBackgroundOptions) {
-    values.addAll([
-      for (final training
-          in option.grantedWeaponTraining ?? const <WeaponCategory>[])
-        training.name,
-    ]);
+    values.addAll(option.grantedWeaponTraining ?? const <WeaponCategory>[]);
   }
 
+  return values.toList()..sort((a, b) => a.name.compareTo(b.name));
+}
+
+List<String> _collectWeaponProficiencyKeys(CharacterData character) {
+  final values = <String>{
+    ..._normalizedTexts(character.race?.weaponProficiencyKeys),
+    ..._normalizedTexts(character.subrace?.weaponProficiencyKeys),
+  };
   return values.toList()..sort();
 }
 

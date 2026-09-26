@@ -1,0 +1,206 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "toolTraining",
+          "multiclassToolTraining"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolTraining\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "toolTraining"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"multiclassToolTraining\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "multiclassToolTraining"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolProficiencies\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "toolProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolProficiencies\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "toolProficiencies"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "toolProficiencies"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolTraining\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "toolTraining"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"multiclassToolTraining\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "multiclassToolTraining"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolProficiencies\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "toolProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolProficiencies\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "toolProficiencies"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subrace_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "toolProficiencies"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolTraining\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "toolTraining"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"multiclassToolTraining\" of table \"class_data\" will be dropped.",
+            "table": "class_data",
+            "columns": [
+              "multiclassToolTraining"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolProficiencies\" of table \"race_data\" will be dropped.",
+            "table": "race_data",
+            "columns": [
+              "toolProficiencies"
+            ],
+            "destrucive": true
+          },
+          {
+            "type": "columnDropped",
+            "message": "Column \"toolProficiencies\" of table \"subrace_data\" will be dropped.",
+            "table": "subrace_data",
+            "columns": [
+              "toolProficiencies"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"toolTraining\" of table \"class_data\" will be dropped.",
+      "table": "class_data",
+      "columns": [
+        "toolTraining"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"multiclassToolTraining\" of table \"class_data\" will be dropped.",
+      "table": "class_data",
+      "columns": [
+        "multiclassToolTraining"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"toolProficiencies\" of table \"race_data\" will be dropped.",
+      "table": "race_data",
+      "columns": [
+        "toolProficiencies"
+      ],
+      "destrucive": true
+    },
+    {
+      "type": "columnDropped",
+      "message": "Column \"toolProficiencies\" of table \"subrace_data\" will be dropped.",
+      "table": "subrace_data",
+      "columns": [
+        "toolProficiencies"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/repositories/reference_character_repository.dart';
+import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character_sheet_settings_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -180,6 +184,246 @@ void main() {
     final record = await cache.getCharacter(7, 42);
     expect(record?.status, OfflineCharacterSyncStatus.clean);
     expect(record?.lastSyncError, isNull);
+  });
+
+  testWidgets(
+      'transport failure stays pending and successful reconnect becomes clean',
+      (tester) async {
+    await cache.upsertCleanFromServer(
+      7,
+      CharacterData(id: 42, name: 'Base', version: 1),
+    );
+    await cache.saveLocal(7, CharacterData(id: 42, name: 'Offline edit'));
+
+    var transportAvailable = false;
+    final coordinator = OfflineSyncCoordinator(
+      cache: cache,
+      client: Client('http://localhost:8083/'),
+      currentUserId: () => 7,
+      retryDelays: const [],
+      syncCharacters: (request) async {
+        if (!transportAvailable) {
+          throw Exception('No connection');
+        }
+        final operation = request.operations!.single;
+        final canonical = CharacterData(
+          id: 42,
+          name: 'Offline edit',
+          version: 2,
+        );
+        return CharacterSyncResponse(
+          acknowledgedChangeIds: [operation.id],
+          changedCharacters: {operation.id: canonical},
+          characters: [canonical],
+          pullCursor: 2,
+        );
+      },
+    );
+    addTearDown(coordinator.dispose);
+
+    await coordinator.syncNow();
+
+    final pendingRecord = await cache.getCharacter(7, 42);
+    expect(pendingRecord?.status, OfflineCharacterSyncStatus.dirty);
+    expect(pendingRecord?.lastSyncError, isNull);
+    expect(await cache.getPendingChanges(7), hasLength(1));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          theme: darkTheme,
+          home: Scaffold(
+            body: CharacterSheetSettingsSection(
+              characterId: 42,
+              offlineRecord: AsyncValue.data(pendingRecord),
+            ),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Ожидает синхронизации'), findsOneWidget);
+
+    transportAvailable = true;
+    await coordinator.syncNow();
+
+    final cleanRecord = await cache.getCharacter(7, 42);
+    expect(cleanRecord?.status, OfflineCharacterSyncStatus.clean);
+    expect(cleanRecord?.lastSyncError, isNull);
+    expect(cleanRecord?.conflictCharacter, isNull);
+    expect(await cache.getPendingChanges(7), isEmpty);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          theme: darkTheme,
+          home: Scaffold(
+            body: CharacterSheetSettingsSection(
+              characterId: 42,
+              offlineRecord: AsyncValue.data(cleanRecord),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.text('Синхронизировано'), findsOneWidget);
+    expect(find.text('Серверная версия новее'), findsNothing);
+  });
+
+  test('simple remote delete removes the local character on reconnect',
+      () async {
+    await cache.upsertCleanFromServer(
+      7,
+      CharacterData(id: 42, name: 'Remote', version: 1),
+    );
+    var callCount = 0;
+    final coordinator = OfflineSyncCoordinator(
+      cache: cache,
+      client: Client('http://localhost:8083/'),
+      currentUserId: () => 7,
+      syncCharacters: (request) async {
+        callCount += 1;
+        if (callCount == 1) {
+          return CharacterSyncResponse(
+            characters: [CharacterData(id: 42, name: 'Remote', version: 1)],
+            pullCursor: 1,
+            capabilities: const ['authoritative_full_resync'],
+          );
+        }
+        return CharacterSyncResponse(
+          characters: const [],
+          pullCursor: 2,
+          deletedCharacterIds: const [42],
+          capabilities: const ['authoritative_full_resync'],
+        );
+      },
+    );
+    addTearDown(coordinator.dispose);
+
+    await coordinator.syncNow();
+    await coordinator.syncNow();
+
+    expect(callCount, 2);
+    expect(await cache.getCharacter(7, 42), isNull);
+    expect(await cache.getPendingChanges(7), isEmpty);
+  });
+
+  test('not_found rejection removes stale local edit without a tombstone',
+      () async {
+    final base = CharacterData(id: 42, name: 'Remote', version: 1);
+    await cache.upsertCleanFromServer(7, base);
+    var callCount = 0;
+    final coordinator = OfflineSyncCoordinator(
+      cache: cache,
+      client: Client('http://localhost:8083/'),
+      currentUserId: () => 7,
+      syncCharacters: (request) async {
+        callCount += 1;
+        if (callCount == 1) {
+          return CharacterSyncResponse(
+            characters: [base],
+            pullCursor: 2,
+            capabilities: const ['authoritative_full_resync'],
+          );
+        }
+        final operation = request.operations!.single;
+        return CharacterSyncResponse(
+          rejectedChanges: [
+            CharacterRejectedChangeData(
+              changeId: operation.id,
+              reason: 'not_found',
+            ),
+          ],
+          characters: const [],
+          pullCursor: 2,
+          deletedCharacterIds: const [],
+          capabilities: const ['authoritative_full_resync'],
+        );
+      },
+    );
+    addTearDown(coordinator.dispose);
+
+    await coordinator.syncNow();
+    await cache.saveLocal(7, base.copyWith(name: 'Stale local edit'));
+    await coordinator.syncNow();
+
+    expect(callCount, 2);
+    expect(await cache.getCharacter(7, 42), isNull);
+    expect(await cache.getPendingChanges(7), isEmpty);
+  });
+
+  test('restart recovery cannot promote an unverified ghost to clean',
+      () async {
+    final directory = await Directory.systemTemp.createTemp('sync-ghost-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final persistent = await OfflineCacheDatabase.openAt(path);
+    final base = CharacterData(id: 42, name: 'Remote', version: 1);
+    await persistent.upsertCleanFromServer(7, base);
+    await persistent.saveLocal(7, base.copyWith(name: 'Stale local edit'));
+    final queued = await persistent.getPendingChanges(7);
+    await persistent.removeChanges(7, queued.map((change) => change.id));
+    await persistent.setSyncEventCursor(7, 9);
+    persistent.close();
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+    final requests = <CharacterSyncRequest>[];
+    final coordinator = OfflineSyncCoordinator(
+      cache: reopened,
+      client: Client('http://localhost:8083/'),
+      currentUserId: () => 7,
+      syncCharacters: (request) async {
+        requests.add(request);
+        expect(
+          (await reopened.getCharacter(7, 42))?.status,
+          OfflineCharacterSyncStatus.dirty,
+        );
+        return CharacterSyncResponse(
+          characters: const [],
+          pullCursor: 9,
+          capabilities: const ['authoritative_full_resync'],
+        );
+      },
+    );
+    addTearDown(coordinator.dispose);
+
+    await coordinator.syncNow();
+
+    expect(requests, hasLength(1));
+    expect(requests.single.fullResync, isTrue);
+    expect(await reopened.getCharacter(7, 42), isNull);
+    expect(await reopened.getPendingChanges(7), isEmpty);
+  });
+
+  test('first sync validates a clean persisted cache authoritatively',
+      () async {
+    await cache.upsertCleanFromServer(
+      7,
+      CharacterData(id: 42, name: 'Clean ghost', version: 1),
+    );
+    await cache.setSyncEventCursor(7, 12);
+    final requests = <CharacterSyncRequest>[];
+    final coordinator = OfflineSyncCoordinator(
+      cache: cache,
+      client: Client('http://localhost:8083/'),
+      currentUserId: () => 7,
+      syncCharacters: (request) async {
+        requests.add(request);
+        return CharacterSyncResponse(
+          characters: const [],
+          pullCursor: 12,
+          capabilities: const ['authoritative_full_resync'],
+        );
+      },
+    );
+    addTearDown(coordinator.dispose);
+
+    await coordinator.syncNow();
+
+    expect(requests.single.fullResync, isTrue);
+    expect(await cache.getCharacter(7, 42), isNull);
+    expect(await cache.getPendingChanges(7), isEmpty);
   });
 
   test('retries validation failure caused by an untouched legacy field',
@@ -425,7 +669,8 @@ void main() {
     final record = await cache.getCharacter(7, 42);
     expect(record?.status, OfflineCharacterSyncStatus.clean);
     expect(record?.character.currentHp, 10);
-    expect(record?.lastSyncError, 'insufficient_resource');
+    expect(record?.lastSyncError, isNull);
+    expect(record?.conflictCharacter, isNull);
   });
 
   test('does not send semantic operations to a protocol v3 server', () async {
@@ -905,6 +1150,24 @@ void main() {
     final controller = container.read(
       characterSheetControllerProvider(42).notifier,
     );
+    final prematureCleanValues = <String?>[];
+    final pendingSubscription = container.listen(
+      characterSheetLocalSavePendingProvider(42),
+      (previous, next) {
+        if (previous == true && !next) {
+          final visibleNote = container
+              .read(characterSheetControllerProvider(42))
+              .valueOrNull
+              ?.notes
+              ?.single
+              .text;
+          if (visibleNote != 'Server note') {
+            prematureCleanValues.add(visibleNote);
+          }
+        }
+      },
+    );
+    addTearDown(pendingSubscription.close);
 
     final update = controller.updateNote('note-1', 'Rejected note');
     expect(
@@ -938,7 +1201,10 @@ void main() {
     expect(local?.status, OfflineCharacterSyncStatus.clean);
     expect(local?.character.notes?.single.text, 'Server note');
     expect(local?.baseCharacter?.notes?.single.text, 'Server note');
+    expect(local?.lastSyncError, isNull);
+    expect(local?.conflictCharacter, isNull);
     expect(await cache.getPendingChanges(7), isEmpty);
+    expect(prematureCleanValues, isEmpty);
   });
 }
 

@@ -12,6 +12,7 @@ fields:
   availableSkills: List<Skill>?
   skillCount: int?
   toolProficiencies: List<String>?
+  toolProficiencyKeys: List<String>?
   languageCount: int?
   items: List<String>?
   coins: double?

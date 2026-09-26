@@ -10,6 +10,7 @@ class OfflineReferencePrewarmer {
     ItemRepository? itemRepository,
     WeaponRepository? weaponRepository,
     ArmorRepository? armorRepository,
+    ToolDataRepository? toolDataRepository,
     MagicItemRepository? magicItemRepository,
     FeatRepository? featRepository,
     SpellRepository? spellRepository,
@@ -29,6 +30,7 @@ class OfflineReferencePrewarmer {
         _itemRepository = itemRepository ?? ItemRepository(),
         _weaponRepository = weaponRepository ?? WeaponRepository(),
         _armorRepository = armorRepository ?? ArmorRepository(),
+        _toolDataRepository = toolDataRepository ?? ToolDataRepository(),
         _magicItemRepository = magicItemRepository ?? MagicItemRepository(),
         _featRepository = featRepository ?? FeatRepository(),
         _spellRepository = spellRepository ?? SpellRepository(),
@@ -57,6 +59,7 @@ class OfflineReferencePrewarmer {
   final ItemRepository _itemRepository;
   final WeaponRepository _weaponRepository;
   final ArmorRepository _armorRepository;
+  final ToolDataRepository _toolDataRepository;
   final MagicItemRepository _magicItemRepository;
   final FeatRepository _featRepository;
   final SpellRepository _spellRepository;
@@ -85,6 +88,7 @@ class OfflineReferencePrewarmer {
         _itemRepository.getAll(),
         _weaponRepository.getAll(),
         _armorRepository.getAll(),
+        _toolDataRepository.getAll(),
         _magicItemRepository.getAll(),
         _featRepository.getAll(),
         _spellRepository.getAll(),

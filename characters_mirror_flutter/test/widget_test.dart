@@ -7,7 +7,6 @@ import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/characters/application/characters_list_state.dart';
-import 'package:characters_mirror_flutter/features/characters/characters.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_progression.dart';
 import 'package:characters_mirror_flutter/core/router/app_router.dart';
@@ -205,31 +204,6 @@ void main() {
       expect(service.signOutCallCount, 1);
     });
 
-    testWidgets('admin button is visible for admin users', (tester) async {
-      final service = FakeAuthService.signedIn(
-        _user(
-          email: 'admin@test.dev',
-          scopes: const ['admin'],
-        ),
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [authServiceProvider.overrideWithValue(service)],
-          child: MaterialApp(
-            theme: darkTheme,
-            home: const CharactersList(),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      await tester.tap(_accountMenuButtonFinder());
-      await tester.pumpAndSettle();
-
-      expect(find.text('Админ'), findsOneWidget);
-      expect(find.text('admin@test.dev'), findsOneWidget);
-    });
   });
 
   group('Creation flow app bar', () {

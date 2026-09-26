@@ -33,7 +33,6 @@ class CharactersList extends ConsumerWidget {
             title: 'Список персонажей',
             trailing: _CharacterSheetsMenuButton(
               user: authState.user,
-              showAdminAction: authState.hasScope('admin'),
             ),
           ),
           Expanded(
@@ -152,18 +151,15 @@ class _CharactersErrorState extends StatelessWidget {
 
 enum _CharacterSheetsMenuAction {
   settings,
-  admin,
   signOut,
 }
 
 class _CharacterSheetsMenuButton extends ConsumerWidget {
   const _CharacterSheetsMenuButton({
     required this.user,
-    required this.showAdminAction,
   });
 
   final auth.UserInfo? user;
-  final bool showAdminAction;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -183,14 +179,6 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
             label: 'Настройки',
           ),
         ),
-        if (showAdminAction)
-          const PopupMenuItem<_CharacterSheetsMenuAction>(
-            value: _CharacterSheetsMenuAction.admin,
-            child: _AccountMenuItem(
-              icon: Icons.admin_panel_settings_outlined,
-              label: 'Админ',
-            ),
-          ),
         const PopupMenuItem<_CharacterSheetsMenuAction>(
           value: _CharacterSheetsMenuAction.signOut,
           child: _AccountMenuItem(
@@ -214,9 +202,6 @@ class _CharacterSheetsMenuButton extends ConsumerWidget {
     switch (action) {
       case _CharacterSheetsMenuAction.settings:
         context.push('/settings');
-        return;
-      case _CharacterSheetsMenuAction.admin:
-        context.push('/admin');
         return;
       case _CharacterSheetsMenuAction.signOut:
         final messenger = ScaffoldMessenger.of(context);

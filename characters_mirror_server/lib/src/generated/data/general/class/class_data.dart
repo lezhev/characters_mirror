@@ -31,7 +31,7 @@ abstract class ClassData
     this.savingThrowProficiencies,
     this.armorTraining,
     this.weaponTraining,
-    this.toolTraining,
+    this.toolTrainingKeys,
     this.availableSkills,
     this.skillCount,
     this.subclassChoiceLevel,
@@ -40,7 +40,7 @@ abstract class ClassData
     this.multiclassPrerequisites,
     this.multiclassArmorTraining,
     this.multiclassWeaponTraining,
-    this.multiclassToolTraining,
+    this.multiclassToolTrainingKeys,
     this.imageURL,
   });
 
@@ -57,7 +57,7 @@ abstract class ClassData
     List<_i2.Ability>? savingThrowProficiencies,
     List<_i3.ArmorCategory>? armorTraining,
     List<_i4.WeaponCategory>? weaponTraining,
-    List<String>? toolTraining,
+    List<String>? toolTrainingKeys,
     List<_i5.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
@@ -66,7 +66,7 @@ abstract class ClassData
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
     List<_i4.WeaponCategory>? multiclassWeaponTraining,
-    List<String>? multiclassToolTraining,
+    List<String>? multiclassToolTrainingKeys,
     String? imageURL,
   }) = _ClassDataImpl;
 
@@ -97,7 +97,7 @@ abstract class ClassData
       weaponTraining: (jsonSerialization['weaponTraining'] as List?)
           ?.map((e) => _i4.WeaponCategory.fromJson((e as String)))
           .toList(),
-      toolTraining: (jsonSerialization['toolTraining'] as List?)
+      toolTrainingKeys: (jsonSerialization['toolTrainingKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       availableSkills: (jsonSerialization['availableSkills'] as List?)
@@ -129,8 +129,8 @@ abstract class ClassData
           (jsonSerialization['multiclassWeaponTraining'] as List?)
               ?.map((e) => _i4.WeaponCategory.fromJson((e as String)))
               .toList(),
-      multiclassToolTraining:
-          (jsonSerialization['multiclassToolTraining'] as List?)
+      multiclassToolTrainingKeys:
+          (jsonSerialization['multiclassToolTrainingKeys'] as List?)
               ?.map((e) => e as String)
               .toList(),
       imageURL: jsonSerialization['imageURL'] as String?,
@@ -166,7 +166,7 @@ abstract class ClassData
 
   List<_i4.WeaponCategory>? weaponTraining;
 
-  List<String>? toolTraining;
+  List<String>? toolTrainingKeys;
 
   List<_i5.Skill>? availableSkills;
 
@@ -184,7 +184,7 @@ abstract class ClassData
 
   List<_i4.WeaponCategory>? multiclassWeaponTraining;
 
-  List<String>? multiclassToolTraining;
+  List<String>? multiclassToolTrainingKeys;
 
   String? imageURL;
 
@@ -207,7 +207,7 @@ abstract class ClassData
     List<_i2.Ability>? savingThrowProficiencies,
     List<_i3.ArmorCategory>? armorTraining,
     List<_i4.WeaponCategory>? weaponTraining,
-    List<String>? toolTraining,
+    List<String>? toolTrainingKeys,
     List<_i5.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
@@ -216,7 +216,7 @@ abstract class ClassData
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
     List<_i4.WeaponCategory>? multiclassWeaponTraining,
-    List<String>? multiclassToolTraining,
+    List<String>? multiclassToolTrainingKeys,
     String? imageURL,
   });
   @override
@@ -241,7 +241,8 @@ abstract class ClassData
       if (weaponTraining != null)
         'weaponTraining':
             weaponTraining?.toJson(valueToJson: (v) => v.toJson()),
-      if (toolTraining != null) 'toolTraining': toolTraining?.toJson(),
+      if (toolTrainingKeys != null)
+        'toolTrainingKeys': toolTrainingKeys?.toJson(),
       if (availableSkills != null)
         'availableSkills':
             availableSkills?.toJson(valueToJson: (v) => v.toJson()),
@@ -260,8 +261,8 @@ abstract class ClassData
       if (multiclassWeaponTraining != null)
         'multiclassWeaponTraining':
             multiclassWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
-      if (multiclassToolTraining != null)
-        'multiclassToolTraining': multiclassToolTraining?.toJson(),
+      if (multiclassToolTrainingKeys != null)
+        'multiclassToolTrainingKeys': multiclassToolTrainingKeys?.toJson(),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
@@ -288,7 +289,8 @@ abstract class ClassData
       if (weaponTraining != null)
         'weaponTraining':
             weaponTraining?.toJson(valueToJson: (v) => v.toJson()),
-      if (toolTraining != null) 'toolTraining': toolTraining?.toJson(),
+      if (toolTrainingKeys != null)
+        'toolTrainingKeys': toolTrainingKeys?.toJson(),
       if (availableSkills != null)
         'availableSkills':
             availableSkills?.toJson(valueToJson: (v) => v.toJson()),
@@ -307,8 +309,8 @@ abstract class ClassData
       if (multiclassWeaponTraining != null)
         'multiclassWeaponTraining':
             multiclassWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
-      if (multiclassToolTraining != null)
-        'multiclassToolTraining': multiclassToolTraining?.toJson(),
+      if (multiclassToolTrainingKeys != null)
+        'multiclassToolTrainingKeys': multiclassToolTrainingKeys?.toJson(),
       if (imageURL != null) 'imageURL': imageURL,
     };
   }
@@ -359,7 +361,7 @@ class _ClassDataImpl extends ClassData {
     List<_i2.Ability>? savingThrowProficiencies,
     List<_i3.ArmorCategory>? armorTraining,
     List<_i4.WeaponCategory>? weaponTraining,
-    List<String>? toolTraining,
+    List<String>? toolTrainingKeys,
     List<_i5.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
@@ -368,7 +370,7 @@ class _ClassDataImpl extends ClassData {
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
     List<_i4.WeaponCategory>? multiclassWeaponTraining,
-    List<String>? multiclassToolTraining,
+    List<String>? multiclassToolTrainingKeys,
     String? imageURL,
   }) : super._(
           id: id,
@@ -383,7 +385,7 @@ class _ClassDataImpl extends ClassData {
           savingThrowProficiencies: savingThrowProficiencies,
           armorTraining: armorTraining,
           weaponTraining: weaponTraining,
-          toolTraining: toolTraining,
+          toolTrainingKeys: toolTrainingKeys,
           availableSkills: availableSkills,
           skillCount: skillCount,
           subclassChoiceLevel: subclassChoiceLevel,
@@ -392,7 +394,7 @@ class _ClassDataImpl extends ClassData {
           multiclassPrerequisites: multiclassPrerequisites,
           multiclassArmorTraining: multiclassArmorTraining,
           multiclassWeaponTraining: multiclassWeaponTraining,
-          multiclassToolTraining: multiclassToolTraining,
+          multiclassToolTrainingKeys: multiclassToolTrainingKeys,
           imageURL: imageURL,
         );
 
@@ -413,7 +415,7 @@ class _ClassDataImpl extends ClassData {
     Object? savingThrowProficiencies = _Undefined,
     Object? armorTraining = _Undefined,
     Object? weaponTraining = _Undefined,
-    Object? toolTraining = _Undefined,
+    Object? toolTrainingKeys = _Undefined,
     Object? availableSkills = _Undefined,
     Object? skillCount = _Undefined,
     Object? subclassChoiceLevel = _Undefined,
@@ -422,7 +424,7 @@ class _ClassDataImpl extends ClassData {
     Object? multiclassPrerequisites = _Undefined,
     Object? multiclassArmorTraining = _Undefined,
     Object? multiclassWeaponTraining = _Undefined,
-    Object? multiclassToolTraining = _Undefined,
+    Object? multiclassToolTrainingKeys = _Undefined,
     Object? imageURL = _Undefined,
   }) {
     return ClassData(
@@ -446,9 +448,9 @@ class _ClassDataImpl extends ClassData {
       weaponTraining: weaponTraining is List<_i4.WeaponCategory>?
           ? weaponTraining
           : this.weaponTraining?.map((e0) => e0).toList(),
-      toolTraining: toolTraining is List<String>?
-          ? toolTraining
-          : this.toolTraining?.map((e0) => e0).toList(),
+      toolTrainingKeys: toolTrainingKeys is List<String>?
+          ? toolTrainingKeys
+          : this.toolTrainingKeys?.map((e0) => e0).toList(),
       availableSkills: availableSkills is List<_i5.Skill>?
           ? availableSkills
           : this.availableSkills?.map((e0) => e0).toList(),
@@ -481,9 +483,9 @@ class _ClassDataImpl extends ClassData {
           multiclassWeaponTraining is List<_i4.WeaponCategory>?
               ? multiclassWeaponTraining
               : this.multiclassWeaponTraining?.map((e0) => e0).toList(),
-      multiclassToolTraining: multiclassToolTraining is List<String>?
-          ? multiclassToolTraining
-          : this.multiclassToolTraining?.map((e0) => e0).toList(),
+      multiclassToolTrainingKeys: multiclassToolTrainingKeys is List<String>?
+          ? multiclassToolTrainingKeys
+          : this.multiclassToolTrainingKeys?.map((e0) => e0).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,
     );
   }
@@ -535,8 +537,8 @@ class ClassDataTable extends _i1.Table<int?> {
       'weaponTraining',
       this,
     );
-    toolTraining = _i1.ColumnSerializable(
-      'toolTraining',
+    toolTrainingKeys = _i1.ColumnSerializable(
+      'toolTrainingKeys',
       this,
     );
     availableSkills = _i1.ColumnSerializable(
@@ -573,8 +575,8 @@ class ClassDataTable extends _i1.Table<int?> {
       'multiclassWeaponTraining',
       this,
     );
-    multiclassToolTraining = _i1.ColumnSerializable(
-      'multiclassToolTraining',
+    multiclassToolTrainingKeys = _i1.ColumnSerializable(
+      'multiclassToolTrainingKeys',
       this,
     );
     imageURL = _i1.ColumnString(
@@ -605,7 +607,7 @@ class ClassDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable weaponTraining;
 
-  late final _i1.ColumnSerializable toolTraining;
+  late final _i1.ColumnSerializable toolTrainingKeys;
 
   late final _i1.ColumnSerializable availableSkills;
 
@@ -624,7 +626,7 @@ class ClassDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable multiclassWeaponTraining;
 
-  late final _i1.ColumnSerializable multiclassToolTraining;
+  late final _i1.ColumnSerializable multiclassToolTrainingKeys;
 
   late final _i1.ColumnString imageURL;
 
@@ -642,7 +644,7 @@ class ClassDataTable extends _i1.Table<int?> {
         savingThrowProficiencies,
         armorTraining,
         weaponTraining,
-        toolTraining,
+        toolTrainingKeys,
         availableSkills,
         skillCount,
         subclassChoiceLevel,
@@ -651,7 +653,7 @@ class ClassDataTable extends _i1.Table<int?> {
         multiclassPrerequisites,
         multiclassArmorTraining,
         multiclassWeaponTraining,
-        multiclassToolTraining,
+        multiclassToolTrainingKeys,
         imageURL,
       ];
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
 import 'package:characters_mirror_server/src/validation/validation_limits.dart';
@@ -631,8 +629,7 @@ Future<_CreationFixture> _seedCreationFixture(
       visionType: SenseType.darkvision,
       skillProficiencies: const [Skill.perception],
       armorProficiencies: const [ArmorCategory.heavy],
-      weaponProficiencies: const [],
-      toolProficiencies: const [],
+      weaponProficiencyKeys: const [],
     ),
   );
 

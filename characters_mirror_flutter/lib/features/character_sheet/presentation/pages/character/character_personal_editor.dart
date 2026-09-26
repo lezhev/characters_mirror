@@ -181,7 +181,9 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     super.didUpdateWidget(oldWidget);
     final incomingSnapshot =
         _PersonalInfoSnapshot.fromCharacter(widget.character);
-    if (!_hasAnyFocus && incomingSnapshot != _lastSavedSnapshot) {
+    final currentSnapshot = _snapshot();
+    if (incomingSnapshot != _lastSavedSnapshot &&
+        currentSnapshot == _lastSavedSnapshot) {
       _lastSavedSnapshot = incomingSnapshot;
       _autosave.updateLastSaved(incomingSnapshot);
       _applySnapshot(incomingSnapshot);
@@ -437,27 +439,6 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
     _bondsController.text = snapshot.bonds;
     _flawsController.text = snapshot.flaws;
     _alignment = snapshot.alignmentValue;
-  }
-
-  bool get _hasAnyFocus {
-    return [
-      _nameFocusNode,
-      _ageFocusNode,
-      _heightFocusNode,
-      _weightFocusNode,
-      _eyesFocusNode,
-      _skinFocusNode,
-      _hairFocusNode,
-      _alignmentFocusNode,
-      _appearanceFocusNode,
-      _backstoryFocusNode,
-      _goalsFocusNode,
-      _alliesOrganizationsFocusNode,
-      _personalityTraitsFocusNode,
-      _idealsFocusNode,
-      _bondsFocusNode,
-      _flawsFocusNode,
-    ].any((node) => node.hasFocus);
   }
 
   _PersonalInfoSnapshot _snapshot() {

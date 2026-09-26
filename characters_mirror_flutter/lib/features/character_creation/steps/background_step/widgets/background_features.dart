@@ -9,6 +9,7 @@ import 'package:characters_mirror_flutter/features/character_creation/widgets/cr
 import 'package:characters_mirror_flutter/features/character_creation/widgets/skill_selection_section.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_section.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -56,10 +57,20 @@ class BackgroundFeatures extends ConsumerWidget {
     final fixedSkillLabels = selectedBackground.skillProficiencies
         ?.map(skillLabel)
         .toList(growable: false);
+    final toolsByKey = {
+      for (final tool in ref.watch(toolCatalogProvider).valueOrNull ??
+          const <ToolData>[])
+        tool.referenceKey: tool.name,
+    };
+    final toolProficiencyLabels = [
+      ...?selectedBackground.toolProficiencies,
+      for (final key in selectedBackground.toolProficiencyKeys ?? const [])
+        if (toolsByKey[key] case final name?) name,
+    ];
     final hasStructuredEquipment = startingEquipmentBlocks.isNotEmpty;
     final hasProficienciesOrLanguages = _hasAnyValues([
           fixedSkillLabels,
-          selectedBackground.toolProficiencies,
+          toolProficiencyLabels,
         ]) ||
         skillSelectionGroups.isNotEmpty ||
         languageChoiceGroups.isNotEmpty ||
@@ -159,7 +170,7 @@ class BackgroundFeatures extends ConsumerWidget {
           BackgroundChoiceGroupCards(choiceGroups: languageChoiceGroups),
           BackgroundValueGroup(
             label: 'Владение инструментами',
-            values: selectedBackground.toolProficiencies,
+            values: toolProficiencyLabels,
           ),
           BackgroundCountGroup(
             label: 'Языков на выбор',

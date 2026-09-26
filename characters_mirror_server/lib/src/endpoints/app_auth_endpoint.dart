@@ -57,8 +57,7 @@ class AppAuthEndpoint extends Endpoint {
 
       if (user == null) {
         session.log(
-          'AppAuth register failed: createUser returned null for '
-          '$normalizedEmail',
+          'AppAuth register failed: createUser returned null.',
           level: LogLevel.error,
         );
         return _result(
@@ -72,10 +71,12 @@ class AppAuthEndpoint extends Endpoint {
         code: 'ok',
         message: 'Аккаунт успешно создан.',
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
       session.log(
-        'AppAuth register exception for $normalizedEmail: $error',
+        'AppAuth register failed with an exception.',
         level: LogLevel.error,
+        exception: error,
+        stackTrace: stackTrace,
       );
       return _result(
         code: 'server_error',

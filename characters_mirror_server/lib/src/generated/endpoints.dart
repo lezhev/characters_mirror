@@ -13,12 +13,12 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/admin_endpoint.dart' as _i2;
 import '../endpoints/app_auth_endpoint.dart' as _i3;
 import '../endpoints/character_portrait_endpoint.dart' as _i4;
-import '../endpoints/import_data_endpoint.dart' as _i5;
-import '../endpoints/models/background_data_endpoint.dart' as _i6;
-import '../endpoints/models/feat_data_endpoint.dart' as _i7;
-import '../endpoints/models/general/character_data_endpoint.dart' as _i8;
-import '../endpoints/models/general/class_endpoints.dart' as _i9;
-import '../endpoints/models/general/race_endpoints.dart' as _i10;
+import '../endpoints/models/background_data_endpoint.dart' as _i5;
+import '../endpoints/models/feat_data_endpoint.dart' as _i6;
+import '../endpoints/models/general/character_data_endpoint.dart' as _i7;
+import '../endpoints/models/general/class_endpoints.dart' as _i8;
+import '../endpoints/models/general/race_endpoints.dart' as _i9;
+import '../endpoints/models/general/tool_data_endpoint.dart' as _i10;
 import '../endpoints/models/items/armor_data_endpoint.dart' as _i11;
 import '../endpoints/models/items/item_data_endpoint.dart' as _i12;
 import '../endpoints/models/items/magic_item_endpoint.dart' as _i13;
@@ -97,118 +97,118 @@ class Endpoints extends _i1.EndpointDispatch {
           'characterPortrait',
           null,
         ),
-      'referenceData': _i5.ReferenceDataEndpoint()
-        ..initialize(
-          server,
-          'referenceData',
-          null,
-        ),
-      'backgroundData': _i6.BackgroundDataEndpoint()
+      'backgroundData': _i5.BackgroundDataEndpoint()
         ..initialize(
           server,
           'backgroundData',
           null,
         ),
-      'featData': _i7.FeatDataEndpoint()
+      'featData': _i6.FeatDataEndpoint()
         ..initialize(
           server,
           'featData',
           null,
         ),
-      'characterData': _i8.CharacterDataEndpoint()
+      'characterData': _i7.CharacterDataEndpoint()
         ..initialize(
           server,
           'characterData',
           null,
         ),
-      'classData': _i9.ClassDataEndpoint()
+      'classData': _i8.ClassDataEndpoint()
         ..initialize(
           server,
           'classData',
           null,
         ),
-      'classFeatureData': _i9.ClassFeatureDataEndpoint()
+      'classFeatureData': _i8.ClassFeatureDataEndpoint()
         ..initialize(
           server,
           'classFeatureData',
           null,
         ),
-      'classSpellGrantData': _i9.ClassSpellGrantDataEndpoint()
+      'classSpellGrantData': _i8.ClassSpellGrantDataEndpoint()
         ..initialize(
           server,
           'classSpellGrantData',
           null,
         ),
-      'classLevelData': _i9.ClassLevelDataEndpoint()
+      'classLevelData': _i8.ClassLevelDataEndpoint()
         ..initialize(
           server,
           'classLevelData',
           null,
         ),
-      'spellSlotProgressionData': _i9.SpellSlotProgressionDataEndpoint()
+      'spellSlotProgressionData': _i8.SpellSlotProgressionDataEndpoint()
         ..initialize(
           server,
           'spellSlotProgressionData',
           null,
         ),
-      'subclassData': _i9.SubclassDataEndpoint()
+      'subclassData': _i8.SubclassDataEndpoint()
         ..initialize(
           server,
           'subclassData',
           null,
         ),
-      'classChoiceGroupData': _i9.ClassChoiceGroupDataEndpoint()
+      'classChoiceGroupData': _i8.ClassChoiceGroupDataEndpoint()
         ..initialize(
           server,
           'classChoiceGroupData',
           null,
         ),
-      'classChoiceOptionData': _i9.ClassChoiceOptionDataEndpoint()
+      'classChoiceOptionData': _i8.ClassChoiceOptionDataEndpoint()
         ..initialize(
           server,
           'classChoiceOptionData',
           null,
         ),
-      'subclassFeatureData': _i9.SubclassFeatureDataEndpoint()
+      'subclassFeatureData': _i8.SubclassFeatureDataEndpoint()
         ..initialize(
           server,
           'subclassFeatureData',
           null,
         ),
-      'raceData': _i10.RaceDataEndpoint()
+      'raceData': _i9.RaceDataEndpoint()
         ..initialize(
           server,
           'raceData',
           null,
         ),
-      'raceFeature': _i10.RaceFeatureEndpoint()
+      'raceFeature': _i9.RaceFeatureEndpoint()
         ..initialize(
           server,
           'raceFeature',
           null,
         ),
-      'subraceData': _i10.SubraceDataEndpoint()
+      'subraceData': _i9.SubraceDataEndpoint()
         ..initialize(
           server,
           'subraceData',
           null,
         ),
-      'raceChoiceSetData': _i10.RaceChoiceSetDataEndpoint()
+      'raceChoiceSetData': _i9.RaceChoiceSetDataEndpoint()
         ..initialize(
           server,
           'raceChoiceSetData',
           null,
         ),
-      'raceChoiceOptionData': _i10.RaceChoiceOptionDataEndpoint()
+      'raceChoiceOptionData': _i9.RaceChoiceOptionDataEndpoint()
         ..initialize(
           server,
           'raceChoiceOptionData',
           null,
         ),
-      'raceFeatureSpellGrantData': _i10.RaceFeatureSpellGrantDataEndpoint()
+      'raceFeatureSpellGrantData': _i9.RaceFeatureSpellGrantDataEndpoint()
         ..initialize(
           server,
           'raceFeatureSpellGrantData',
+          null,
+        ),
+      'toolData': _i10.ToolDataEndpoint()
+        ..initialize(
+          server,
+          'toolData',
           null,
         ),
       'armorData': _i11.ArmorDataEndpoint()
@@ -405,37 +405,6 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
-    connectors['referenceData'] = _i1.EndpointConnector(
-      name: 'referenceData',
-      endpoint: endpoints['referenceData']!,
-      methodConnectors: {
-        'insertJson': _i1.MethodConnector(
-          name: 'insertJson',
-          params: {
-            'entityType': _i1.ParameterDescription(
-              name: 'entityType',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'jsonString': _i1.ParameterDescription(
-              name: 'jsonString',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['referenceData'] as _i5.ReferenceDataEndpoint)
-                  .insertJson(
-            session,
-            params['entityType'],
-            params['jsonString'],
-          ),
-        )
-      },
-    );
     connectors['backgroundData'] = _i1.EndpointConnector(
       name: 'backgroundData',
       endpoint: endpoints['backgroundData']!,
@@ -447,7 +416,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['backgroundData'] as _i6.BackgroundDataEndpoint)
+              (endpoints['backgroundData'] as _i5.BackgroundDataEndpoint)
                   .getAll(session),
         ),
         'getStepView': _i1.MethodConnector(
@@ -463,7 +432,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['backgroundData'] as _i6.BackgroundDataEndpoint)
+              (endpoints['backgroundData'] as _i5.BackgroundDataEndpoint)
                   .getStepView(
             session,
             params['backgroundId'],
@@ -482,7 +451,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['backgroundData'] as _i6.BackgroundDataEndpoint).add(
+              (endpoints['backgroundData'] as _i5.BackgroundDataEndpoint).add(
             session,
             params['background'],
           ),
@@ -500,7 +469,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['backgroundData'] as _i6.BackgroundDataEndpoint)
+              (endpoints['backgroundData'] as _i5.BackgroundDataEndpoint)
                   .upsert(
             session,
             params['background'],
@@ -519,7 +488,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['backgroundData'] as _i6.BackgroundDataEndpoint)
+              (endpoints['backgroundData'] as _i5.BackgroundDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -538,7 +507,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['featData'] as _i7.FeatDataEndpoint).getAll(session),
+              (endpoints['featData'] as _i6.FeatDataEndpoint).getAll(session),
         ),
         'add': _i1.MethodConnector(
           name: 'add',
@@ -553,7 +522,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['featData'] as _i7.FeatDataEndpoint).add(
+              (endpoints['featData'] as _i6.FeatDataEndpoint).add(
             session,
             params['feat'],
           ),
@@ -571,7 +540,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['featData'] as _i7.FeatDataEndpoint).upsert(
+              (endpoints['featData'] as _i6.FeatDataEndpoint).upsert(
             session,
             params['feat'],
           ),
@@ -589,7 +558,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['featData'] as _i7.FeatDataEndpoint).delete(
+              (endpoints['featData'] as _i6.FeatDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -607,7 +576,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i8.CharacterDataEndpoint)
+              (endpoints['characterData'] as _i7.CharacterDataEndpoint)
                   .getAll(session),
         ),
         'saveCharacter': _i1.MethodConnector(
@@ -623,7 +592,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i8.CharacterDataEndpoint)
+              (endpoints['characterData'] as _i7.CharacterDataEndpoint)
                   .saveCharacter(
             session,
             params['character'],
@@ -647,7 +616,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i8.CharacterDataEndpoint)
+              (endpoints['characterData'] as _i7.CharacterDataEndpoint)
                   .syncSaveCharacter(
             session,
             params['character'],
@@ -667,7 +636,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i8.CharacterDataEndpoint)
+              (endpoints['characterData'] as _i7.CharacterDataEndpoint)
                   .syncCharacters(
             session,
             params['request'],
@@ -686,7 +655,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i8.CharacterDataEndpoint)
+              (endpoints['characterData'] as _i7.CharacterDataEndpoint)
                   .getCharacter(
             session,
             params['id'],
@@ -710,7 +679,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i8.CharacterDataEndpoint)
+              (endpoints['characterData'] as _i7.CharacterDataEndpoint)
                   .syncDeleteCharacter(
             session,
             params['id'],
@@ -730,7 +699,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['characterData'] as _i8.CharacterDataEndpoint).delete(
+              (endpoints['characterData'] as _i7.CharacterDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -748,7 +717,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classData'] as _i9.ClassDataEndpoint).getAll(session),
+              (endpoints['classData'] as _i8.ClassDataEndpoint).getAll(session),
         ),
         'add': _i1.MethodConnector(
           name: 'add',
@@ -763,7 +732,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classData'] as _i9.ClassDataEndpoint).add(
+              (endpoints['classData'] as _i8.ClassDataEndpoint).add(
             session,
             params['classData'],
           ),
@@ -781,7 +750,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classData'] as _i9.ClassDataEndpoint).upsert(
+              (endpoints['classData'] as _i8.ClassDataEndpoint).upsert(
             session,
             params['classData'],
           ),
@@ -819,7 +788,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classData'] as _i9.ClassDataEndpoint).getStepView(
+              (endpoints['classData'] as _i8.ClassDataEndpoint).getStepView(
             session,
             params['classId'],
             selectedLevel: params['selectedLevel'],
@@ -841,7 +810,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classData'] as _i9.ClassDataEndpoint).delete(
+              (endpoints['classData'] as _i8.ClassDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -859,7 +828,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classFeatureData'] as _i9.ClassFeatureDataEndpoint)
+              (endpoints['classFeatureData'] as _i8.ClassFeatureDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -875,7 +844,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classFeatureData'] as _i9.ClassFeatureDataEndpoint)
+              (endpoints['classFeatureData'] as _i8.ClassFeatureDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -894,7 +863,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classFeatureData'] as _i9.ClassFeatureDataEndpoint)
+              (endpoints['classFeatureData'] as _i8.ClassFeatureDataEndpoint)
                   .upsert(
             session,
             params['feature'],
@@ -913,7 +882,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classFeatureData'] as _i9.ClassFeatureDataEndpoint)
+              (endpoints['classFeatureData'] as _i8.ClassFeatureDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -933,7 +902,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classSpellGrantData']
-                      as _i9.ClassSpellGrantDataEndpoint)
+                      as _i8.ClassSpellGrantDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -950,7 +919,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classSpellGrantData']
-                      as _i9.ClassSpellGrantDataEndpoint)
+                      as _i8.ClassSpellGrantDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -970,7 +939,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classSpellGrantData']
-                      as _i9.ClassSpellGrantDataEndpoint)
+                      as _i8.ClassSpellGrantDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -990,7 +959,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classSpellGrantData']
-                      as _i9.ClassSpellGrantDataEndpoint)
+                      as _i8.ClassSpellGrantDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1009,7 +978,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classLevelData'] as _i9.ClassLevelDataEndpoint)
+              (endpoints['classLevelData'] as _i8.ClassLevelDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1025,7 +994,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classLevelData'] as _i9.ClassLevelDataEndpoint).add(
+              (endpoints['classLevelData'] as _i8.ClassLevelDataEndpoint).add(
             session,
             params['item'],
           ),
@@ -1043,7 +1012,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classLevelData'] as _i9.ClassLevelDataEndpoint)
+              (endpoints['classLevelData'] as _i8.ClassLevelDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1062,7 +1031,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['classLevelData'] as _i9.ClassLevelDataEndpoint)
+              (endpoints['classLevelData'] as _i8.ClassLevelDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1082,7 +1051,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['spellSlotProgressionData']
-                      as _i9.SpellSlotProgressionDataEndpoint)
+                      as _i8.SpellSlotProgressionDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1099,7 +1068,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['spellSlotProgressionData']
-                      as _i9.SpellSlotProgressionDataEndpoint)
+                      as _i8.SpellSlotProgressionDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1119,7 +1088,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['spellSlotProgressionData']
-                      as _i9.SpellSlotProgressionDataEndpoint)
+                      as _i8.SpellSlotProgressionDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1139,7 +1108,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['spellSlotProgressionData']
-                      as _i9.SpellSlotProgressionDataEndpoint)
+                      as _i8.SpellSlotProgressionDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1158,7 +1127,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subclassData'] as _i9.SubclassDataEndpoint)
+              (endpoints['subclassData'] as _i8.SubclassDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1174,7 +1143,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subclassData'] as _i9.SubclassDataEndpoint).add(
+              (endpoints['subclassData'] as _i8.SubclassDataEndpoint).add(
             session,
             params['item'],
           ),
@@ -1192,7 +1161,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subclassData'] as _i9.SubclassDataEndpoint).upsert(
+              (endpoints['subclassData'] as _i8.SubclassDataEndpoint).upsert(
             session,
             params['subclass'],
           ),
@@ -1210,7 +1179,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subclassData'] as _i9.SubclassDataEndpoint).delete(
+              (endpoints['subclassData'] as _i8.SubclassDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1229,7 +1198,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceGroupData']
-                      as _i9.ClassChoiceGroupDataEndpoint)
+                      as _i8.ClassChoiceGroupDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1246,7 +1215,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceGroupData']
-                      as _i9.ClassChoiceGroupDataEndpoint)
+                      as _i8.ClassChoiceGroupDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1266,7 +1235,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceGroupData']
-                      as _i9.ClassChoiceGroupDataEndpoint)
+                      as _i8.ClassChoiceGroupDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1286,7 +1255,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceGroupData']
-                      as _i9.ClassChoiceGroupDataEndpoint)
+                      as _i8.ClassChoiceGroupDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1306,7 +1275,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceOptionData']
-                      as _i9.ClassChoiceOptionDataEndpoint)
+                      as _i8.ClassChoiceOptionDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1323,7 +1292,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceOptionData']
-                      as _i9.ClassChoiceOptionDataEndpoint)
+                      as _i8.ClassChoiceOptionDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1343,7 +1312,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceOptionData']
-                      as _i9.ClassChoiceOptionDataEndpoint)
+                      as _i8.ClassChoiceOptionDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1363,7 +1332,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['classChoiceOptionData']
-                      as _i9.ClassChoiceOptionDataEndpoint)
+                      as _i8.ClassChoiceOptionDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1383,7 +1352,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['subclassFeatureData']
-                      as _i9.SubclassFeatureDataEndpoint)
+                      as _i8.SubclassFeatureDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1400,7 +1369,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['subclassFeatureData']
-                      as _i9.SubclassFeatureDataEndpoint)
+                      as _i8.SubclassFeatureDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1420,7 +1389,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['subclassFeatureData']
-                      as _i9.SubclassFeatureDataEndpoint)
+                      as _i8.SubclassFeatureDataEndpoint)
                   .upsert(
             session,
             params['subclassFeature'],
@@ -1440,7 +1409,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['subclassFeatureData']
-                      as _i9.SubclassFeatureDataEndpoint)
+                      as _i8.SubclassFeatureDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1459,7 +1428,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).getAll(session),
+              (endpoints['raceData'] as _i9.RaceDataEndpoint).getAll(session),
         ),
         'add': _i1.MethodConnector(
           name: 'add',
@@ -1474,7 +1443,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).add(
+              (endpoints['raceData'] as _i9.RaceDataEndpoint).add(
             session,
             params['race'],
           ),
@@ -1492,7 +1461,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).upsert(
+              (endpoints['raceData'] as _i9.RaceDataEndpoint).upsert(
             session,
             params['race'],
           ),
@@ -1510,7 +1479,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).getStepView(
+              (endpoints['raceData'] as _i9.RaceDataEndpoint).getStepView(
             session,
             params['raceId'],
           ),
@@ -1528,7 +1497,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).delete(
+              (endpoints['raceData'] as _i9.RaceDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1546,7 +1515,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint)
+              (endpoints['raceFeature'] as _i9.RaceFeatureEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1562,7 +1531,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint).add(
+              (endpoints['raceFeature'] as _i9.RaceFeatureEndpoint).add(
             session,
             params['raceFeature'],
           ),
@@ -1580,7 +1549,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint).upsert(
+              (endpoints['raceFeature'] as _i9.RaceFeatureEndpoint).upsert(
             session,
             params['raceFeature'],
           ),
@@ -1598,7 +1567,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint).delete(
+              (endpoints['raceFeature'] as _i9.RaceFeatureEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1616,7 +1585,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint)
+              (endpoints['subraceData'] as _i9.SubraceDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1632,7 +1601,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint).add(
+              (endpoints['subraceData'] as _i9.SubraceDataEndpoint).add(
             session,
             params['subrace'],
           ),
@@ -1650,7 +1619,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint).upsert(
+              (endpoints['subraceData'] as _i9.SubraceDataEndpoint).upsert(
             session,
             params['subrace'],
           ),
@@ -1668,7 +1637,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint).delete(
+              (endpoints['subraceData'] as _i9.SubraceDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1686,7 +1655,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceChoiceSetData'] as _i10.RaceChoiceSetDataEndpoint)
+              (endpoints['raceChoiceSetData'] as _i9.RaceChoiceSetDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1702,7 +1671,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceChoiceSetData'] as _i10.RaceChoiceSetDataEndpoint)
+              (endpoints['raceChoiceSetData'] as _i9.RaceChoiceSetDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1721,7 +1690,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceChoiceSetData'] as _i10.RaceChoiceSetDataEndpoint)
+              (endpoints['raceChoiceSetData'] as _i9.RaceChoiceSetDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1740,7 +1709,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceChoiceSetData'] as _i10.RaceChoiceSetDataEndpoint)
+              (endpoints['raceChoiceSetData'] as _i9.RaceChoiceSetDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1760,7 +1729,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceChoiceOptionData']
-                      as _i10.RaceChoiceOptionDataEndpoint)
+                      as _i9.RaceChoiceOptionDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1777,7 +1746,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceChoiceOptionData']
-                      as _i10.RaceChoiceOptionDataEndpoint)
+                      as _i9.RaceChoiceOptionDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1797,7 +1766,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceChoiceOptionData']
-                      as _i10.RaceChoiceOptionDataEndpoint)
+                      as _i9.RaceChoiceOptionDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1817,7 +1786,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceChoiceOptionData']
-                      as _i10.RaceChoiceOptionDataEndpoint)
+                      as _i9.RaceChoiceOptionDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1837,7 +1806,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i9.RaceFeatureSpellGrantDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1854,7 +1823,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i9.RaceFeatureSpellGrantDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1874,7 +1843,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i9.RaceFeatureSpellGrantDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1894,12 +1863,27 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i9.RaceFeatureSpellGrantDataEndpoint)
                   .delete(
             session,
             params['id'],
           ),
         ),
+      },
+    );
+    connectors['toolData'] = _i1.EndpointConnector(
+      name: 'toolData',
+      endpoint: endpoints['toolData']!,
+      methodConnectors: {
+        'getAll': _i1.MethodConnector(
+          name: 'getAll',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['toolData'] as _i10.ToolDataEndpoint).getAll(session),
+        )
       },
     );
     connectors['armorData'] = _i1.EndpointConnector(

@@ -19,6 +19,7 @@ part 'character_data_endpoint/persistence_normalization.dart';
 part 'character_data_endpoint/persistence_transactional_save.dart';
 part 'character_data_endpoint/persistence_sync_lookup.dart';
 part 'character_data_endpoint/sync_events.dart';
+part 'character_data_endpoint/sync_logging.dart';
 part 'character_data_endpoint/sync_operation_application.dart';
 part 'character_data_endpoint/sync_operation_validation.dart';
 part 'character_data_endpoint/sync_semantic_actions.dart';
@@ -165,12 +166,14 @@ class CharacterDataEndpoint extends Endpoint {
     final operations =
         request.operations ?? const <CharacterSyncOperationData>[];
     if (operations.isNotEmpty) {
-      return _syncCharacterOperations(
+      final response = await _syncCharacterOperations(
         session,
         userId: userId,
         request: request,
         resolveContext: resolveContext,
       );
+      _logCharacterSyncSummary(session, request, response);
+      return response;
     }
 
     final acknowledgedChangeIds = <String>[];
@@ -296,7 +299,7 @@ class CharacterDataEndpoint extends Endpoint {
             resolveContext: resolveContext,
           );
 
-    return CharacterSyncResponse(
+    final response = CharacterSyncResponse(
       acknowledgedChangeIds: acknowledgedChangeIds,
       rejectedChanges: rejectedChanges,
       characters: pullDelta.characters,
@@ -306,6 +309,8 @@ class CharacterDataEndpoint extends Endpoint {
       syncProtocolVersion: _characterSyncProtocolVersion,
       capabilities: _characterSyncCapabilities,
     );
+    _logCharacterSyncSummary(session, request, response);
+    return response;
   }
 
   Future<CharacterData> getCharacter(Session session, int id) async {
