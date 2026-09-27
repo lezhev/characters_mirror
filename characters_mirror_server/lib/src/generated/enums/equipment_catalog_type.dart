@@ -15,7 +15,8 @@ enum EquipmentCatalogType implements _i1.SerializableModel {
   item,
   weapon,
   armor,
-  magicItem;
+  magicItem,
+  tool;
 
   static EquipmentCatalogType fromJson(String name) {
     switch (name) {
@@ -27,6 +28,8 @@ enum EquipmentCatalogType implements _i1.SerializableModel {
         return EquipmentCatalogType.armor;
       case 'magicItem':
         return EquipmentCatalogType.magicItem;
+      case 'tool':
+        return EquipmentCatalogType.tool;
       default:
         throw ArgumentError(
             'Value "$name" cannot be converted to "EquipmentCatalogType"');

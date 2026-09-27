@@ -5,6 +5,288 @@ void _registerCharacterDataCreationScenarios(
   TestEndpoints endpoints,
   TestSessionBuilder Function(int userId) authenticatedSession,
 ) {
+  test('Charlatan background includes its canonical forgery kit grant',
+      () async {
+    final session = sessionBuilder.build();
+    try {
+      final background = await BackgroundData.db.findFirstRow(
+        session,
+        where: (row) => row.name.equals('Шарлатан'),
+      );
+      expect(background, isNotNull);
+
+      final entries = await StartingEquipmentEntryData.db.find(
+        session,
+        where: (row) => row.sourceBackgroundId.equals(background!.id),
+      );
+      expect(
+        entries.where(
+          (entry) =>
+              entry.kind == StartingEquipmentEntryKind.fixedLine &&
+              entry.lineKind == StartingEquipmentLineKind.catalogRef &&
+              entry.catalogType == EquipmentCatalogType.tool &&
+              entry.referenceKey == 'forgery_kit',
+        ),
+        hasLength(1),
+      );
+    } finally {
+      await session.close();
+    }
+  });
+
+  test(
+      'background starting equipment resolves canonical fixed and category grants',
+      () async {
+    final session = sessionBuilder.build();
+    late BackgroundData background;
+    late ItemData clothes;
+    late ToolData tool;
+    late StartingEquipmentEntryData fixedLine;
+    late StartingEquipmentEntryData group;
+    late StartingEquipmentEntryData option;
+    late StartingEquipmentEntryData categoryLine;
+    try {
+      background = await BackgroundData.db.insertRow(
+        session,
+        BackgroundData(name: 'Stage 6 folk hero fixture', coins: 10),
+      );
+      clothes = await _ensureItemData(
+        session,
+        referenceKey: 'common_clothes',
+        name: 'Common clothes fixture',
+      );
+      tool = await _ensureToolData(
+        session,
+        referenceKey: 'smith_tools',
+        name: 'Smith tools fixture',
+        category: ToolCategory.artisan,
+      );
+      fixedLine = await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceBackgroundId: background.id,
+          kind: StartingEquipmentEntryKind.fixedLine,
+          orderIndex: 0,
+          lineKind: StartingEquipmentLineKind.catalogRef,
+          catalogType: EquipmentCatalogType.item,
+          referenceKey: clothes.referenceKey,
+          quantity: 1,
+        ),
+      );
+      group = await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceBackgroundId: background.id,
+          kind: StartingEquipmentEntryKind.choiceGroup,
+          orderIndex: 1,
+          selectionCount: 1,
+          referenceKey: 'folk_hero_artisan_tool',
+        ),
+      );
+      option = await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceBackgroundId: background.id,
+          parentEntryId: group.id,
+          kind: StartingEquipmentEntryKind.choiceOption,
+          orderIndex: 0,
+          referenceKey: 'artisan',
+        ),
+      );
+      categoryLine = await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceBackgroundId: background.id,
+          parentEntryId: option.id,
+          kind: StartingEquipmentEntryKind.optionLine,
+          orderIndex: 0,
+          lineKind: StartingEquipmentLineKind.itemCategory,
+          catalogType: EquipmentCatalogType.tool,
+          allowedItemCategories: [ToolCategory.artisan.name],
+          quantity: 1,
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(418),
+      CharacterData(
+        name: 'Stage 6 background equipment fixture',
+        background: background,
+        startingEquipmentSelections: [
+          CharacterStartingEquipmentSelectionData(
+            sourceType: ChoiceSourceType.background,
+            sourceId: background.id,
+            sourceEntryId: group.id,
+            choiceOptionEntryId: option.id,
+            isSelected: true,
+            resolutions: [
+              CharacterStartingEquipmentResolutionData(
+                sourceLineEntryId: categoryLine.id,
+                catalogType: EquipmentCatalogType.tool,
+                referenceKey: tool.referenceKey,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    expect(saved.background?.coins, 10);
+    expect(
+      saved.derived!.grantedEquipment
+          ?.map((entry) => (entry.catalogType, entry.referenceKey))
+          .toSet(),
+      {
+        (EquipmentCatalogType.item, clothes.referenceKey),
+        (EquipmentCatalogType.tool, tool.referenceKey),
+      },
+    );
+    expect(
+        saved.derived!.grantedEquipment!.every((entry) => entry.quantity == 1),
+        isTrue);
+    expect(fixedLine.referenceKey, 'common_clothes');
+  });
+
+  test('bard starting instrument resolves from ToolData by category', () async {
+    final session = sessionBuilder.build();
+    late ClassData bard;
+    late ToolData lute;
+    late StartingEquipmentEntryData group;
+    late StartingEquipmentEntryData option;
+    late StartingEquipmentEntryData line;
+    try {
+      bard = await ClassData.db.insertRow(
+        session,
+        ClassData(name: 'Starting Equipment Bard Tool Fixture'),
+      );
+      lute = await _ensureToolData(
+        session,
+        referenceKey: 'lute',
+        name: 'Lute Tool Fixture',
+        category: ToolCategory.musicalInstrument,
+      );
+      group = await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceClassId: bard.id,
+          kind: StartingEquipmentEntryKind.choiceGroup,
+          selectionCount: 1,
+        ),
+      );
+      option = await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceClassId: bard.id,
+          parentEntryId: group.id,
+          kind: StartingEquipmentEntryKind.choiceOption,
+        ),
+      );
+      line = await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceClassId: bard.id,
+          parentEntryId: option.id,
+          kind: StartingEquipmentEntryKind.optionLine,
+          lineKind: StartingEquipmentLineKind.itemCategory,
+          catalogType: EquipmentCatalogType.tool,
+          allowedItemCategories: [ToolCategory.musicalInstrument.name],
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    final classEntry = CharacterClassEntryData(
+      id: 'bard-tool-equipment-entry',
+      classData: bard,
+      level: 1,
+      isStartingClass: true,
+      classOrder: 0,
+    );
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(416),
+      CharacterData(
+        name: 'Bard instrument choice',
+        classEntries: [classEntry],
+        startingEquipmentSelections: [
+          CharacterStartingEquipmentSelectionData(
+            sourceType: ChoiceSourceType.classData,
+            sourceId: bard.id,
+            sourceEntryId: group.id,
+            choiceOptionEntryId: option.id,
+            isSelected: true,
+            resolutions: [
+              CharacterStartingEquipmentResolutionData(
+                sourceLineEntryId: line.id,
+                catalogType: EquipmentCatalogType.tool,
+                referenceKey: lute.referenceKey,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final selected = saved.derived!.grantedEquipment!.single;
+    expect(selected.catalogType, EquipmentCatalogType.tool);
+    expect(selected.referenceKey, lute.referenceKey);
+    expect(selected.displayText, lute.name);
+  });
+
+  test('thieves tools starting grant resolves through ToolData', () async {
+    final session = sessionBuilder.build();
+    late ClassData rogue;
+    late ToolData thievesTools;
+    try {
+      rogue = await ClassData.db.insertRow(
+        session,
+        ClassData(name: 'Starting Equipment Rogue Tool Fixture'),
+      );
+      thievesTools = await _ensureToolData(
+        session,
+        referenceKey: 'thieves_tools',
+        name: 'Thieves’ Tools Fixture',
+        category: ToolCategory.artisan,
+      );
+      await StartingEquipmentEntryData.db.insertRow(
+        session,
+        StartingEquipmentEntryData(
+          sourceClassId: rogue.id,
+          kind: StartingEquipmentEntryKind.fixedLine,
+          lineKind: StartingEquipmentLineKind.catalogRef,
+          catalogType: EquipmentCatalogType.tool,
+          referenceKey: thievesTools.referenceKey,
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(417),
+      CharacterData(
+        name: 'Rogue thieves tools grant',
+        classEntries: [
+          CharacterClassEntryData(
+            id: 'rogue-tool-equipment-entry',
+            classData: rogue,
+            level: 1,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+        ],
+      ),
+    );
+
+    final selected = saved.derived!.grantedEquipment!.single;
+    expect(selected.catalogType, EquipmentCatalogType.tool);
+    expect(selected.referenceKey, thievesTools.referenceKey);
+    expect(selected.displayText, thievesTools.name);
+  });
+
   test(
       'racial ability choices stack with fixed race ability bonuses in racial mode',
       () async {

@@ -1,4 +1,8 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/repositories/reference_catalog_repositories.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/repositories/tool_data_repository.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/starting_equipment_dialogs.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/widgets/race_choice_set_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_group_card.dart';
@@ -9,6 +13,70 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('bard instrument resolution selects a ToolData catalog entry',
+      (tester) async {
+    final selected = ValueNotifier<String?>(null);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          itemRepositoryProvider.overrideWithValue(
+            _StartingEquipmentItemRepository([
+              ItemData(
+                referenceKey: 'lute',
+                name: 'Legacy item lute',
+                category: ToolCategory.musicalInstrument.name,
+              ),
+            ]),
+          ),
+          toolDataRepositoryProvider.overrideWithValue(
+            _StartingEquipmentToolRepository([
+              ToolData(
+                referenceKey: 'lute',
+                name: 'Canonical lute',
+                category: ToolCategory.musicalInstrument,
+              ),
+              ToolData(
+                referenceKey: 'drum',
+                name: 'Drum',
+                category: ToolCategory.musicalInstrument,
+              ),
+              ToolData(
+                referenceKey: 'thieves_tools',
+                name: 'Thieves’ tools',
+                category: ToolCategory.artisan,
+              ),
+            ]),
+          ),
+        ],
+        child: MaterialApp(
+          home: Scaffold(
+            body: _StartingEquipmentDialogHarness(
+              line: StartingEquipmentLineData(
+                kind: StartingEquipmentLineKind.itemCategory,
+                catalogType: EquipmentCatalogType.tool,
+                allowedItemCategories: [ToolCategory.musicalInstrument.name],
+              ),
+              onSelected: (value) => selected.value = value,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Choose tool'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Canonical lute'), findsOneWidget);
+    expect(find.text('Legacy item lute'), findsNothing);
+    expect(find.text('Drum'), findsOneWidget);
+    expect(find.text('Thieves’ tools'), findsNothing);
+
+    await tester.tap(find.text('Canonical lute'));
+    await tester.pumpAndSettle();
+
+    expect(selected.value, 'tool:lute');
+  });
+
   group('CreationChoiceSelector', () {
     testWidgets('single toggles one option and clears it on repeated tap',
         (tester) async {
@@ -436,6 +504,56 @@ void main() {
       expect(fixedTapCount, 1);
     });
   });
+}
+
+class _StartingEquipmentItemRepository extends ItemRepository {
+  _StartingEquipmentItemRepository(this.items);
+
+  final List<ItemData> items;
+
+  @override
+  Future<List<ItemData>> getAll() async => items;
+}
+
+class _StartingEquipmentToolRepository extends ToolDataRepository {
+  _StartingEquipmentToolRepository(this.tools);
+
+  final List<ToolData> tools;
+
+  @override
+  Future<List<ToolData>> getAll() async => tools;
+}
+
+class _StartingEquipmentDialogHarness extends ConsumerWidget {
+  const _StartingEquipmentDialogHarness({
+    required this.line,
+    required this.onSelected,
+  });
+
+  final StartingEquipmentLineData line;
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        TextButton(
+          onPressed: () async {
+            final result = await showStartingEquipmentResolutionDialog(
+              context: context,
+              ref: ref,
+              line: line,
+              selectedReferenceKey: null,
+            );
+            if (result != null) {
+              onSelected('${result.catalogType.name}:${result.referenceKey}');
+            }
+          },
+          child: const Text('Choose tool'),
+        ),
+      ],
+    );
+  }
 }
 
 Future<void> _expandSelector(WidgetTester tester) async {

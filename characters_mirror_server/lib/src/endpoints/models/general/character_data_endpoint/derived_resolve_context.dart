@@ -19,6 +19,7 @@ class _CharacterResolveContext {
   final Map<String, Future<WeaponData?>> _weapons = {};
   final Map<String, Future<ArmorData?>> _armor = {};
   final Map<String, Future<ItemData?>> _items = {};
+  final Map<String, Future<ToolData?>> _tools = {};
   final Map<String, Future<SpellSlotProgressionData?>> _spellSlotProgressions =
       {};
   final Map<int, Future<FeatData?>> _feats = {};
@@ -189,6 +190,24 @@ class _CharacterResolveContext {
       referenceKey,
       () => _load('item:$referenceKey', () async {
         final rows = await ItemData.db.find(
+          session,
+          where: (t) => t.referenceKey.equals(referenceKey),
+          limit: 1,
+          transaction: transaction,
+        );
+        return rows.isEmpty ? null : rows.first;
+      }),
+    );
+  }
+
+  Future<ToolData?> tool(
+    String referenceKey, {
+    Transaction? transaction,
+  }) {
+    return _tools.putIfAbsent(
+      referenceKey,
+      () => _load('tool:$referenceKey', () async {
+        final rows = await ToolData.db.find(
           session,
           where: (t) => t.referenceKey.equals(referenceKey),
           limit: 1,

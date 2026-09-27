@@ -131,3 +131,7 @@
 20260926194654038
 20260926201907379
 20260926214114338-stage5-equipment-selection
+20260927090431637-starting-equipment-tool-catalog
+20260927105833200-stage6-background-starting-equipment
+20260927112208460-stage6-charlatan-forgery-kit
+20260927114850990-normalize-background-skill-names

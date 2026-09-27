@@ -73,6 +73,13 @@ Future<_GrantedEquipmentAccumulator> _resolveItemCategorySelection(
       );
     case EquipmentCatalogType.item:
       break;
+    case EquipmentCatalogType.tool:
+      return _resolveToolCategorySelection(
+        line,
+        resolution,
+        transaction: transaction,
+        resolveContext: context,
+      );
     case EquipmentCatalogType.weapon:
     case EquipmentCatalogType.magicItem:
     case null:
@@ -189,4 +196,46 @@ int _normalizedPositiveQuantity(
 }) {
   final candidate = value ?? fallback ?? 1;
   return candidate > 0 ? candidate : 1;
+}
+
+Future<_GrantedEquipmentAccumulator> _resolveToolCategorySelection(
+  StartingEquipmentLineData line,
+  CharacterStartingEquipmentResolutionData resolution, {
+  Transaction? transaction,
+  required _CharacterResolveContext resolveContext,
+}) async {
+  final referenceKey = _normalizedTextOrNull(resolution.referenceKey);
+  if (referenceKey == null) {
+    throw Exception(
+      'Starting equipment line "${line.entryId}" requires tool referenceKey.',
+    );
+  }
+  final tool =
+      await resolveContext.tool(referenceKey, transaction: transaction);
+  if (tool == null) {
+    throw Exception(
+      'Tool referenceKey="$referenceKey" was not found for starting equipment.',
+    );
+  }
+  final allowedCategories = {
+    for (final category in line.allowedItemCategories ?? const <String>[])
+      if (_normalizedTextOrNull(category) != null)
+        _normalizedTextOrNull(category)!,
+  };
+  if (allowedCategories.isNotEmpty &&
+      (tool.category == null ||
+          !allowedCategories.contains(tool.category!.name))) {
+    throw Exception(
+      'Tool "$referenceKey" is not allowed for starting equipment line "${line.entryId}".',
+    );
+  }
+  return _GrantedEquipmentAccumulator(
+    catalogType: EquipmentCatalogType.tool,
+    referenceKey: referenceKey,
+    displayText: _normalizedTextOrNull(tool.name) ?? referenceKey,
+    quantity: _normalizedPositiveQuantity(
+      resolution.quantity,
+      fallback: line.quantity,
+    ),
+  );
 }

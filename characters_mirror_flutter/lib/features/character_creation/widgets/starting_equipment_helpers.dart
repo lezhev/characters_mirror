@@ -32,6 +32,16 @@ Map<String, String> buildStartingEquipmentArmorLabels(List<ArmorData> armor) {
   };
 }
 
+Map<String, String> buildStartingEquipmentToolLabels(List<ToolData> tools) {
+  return {
+    for (final tool in tools)
+      if (normalizeStartingEquipmentText(tool.referenceKey) != null)
+        normalizeStartingEquipmentText(tool.referenceKey)!:
+            normalizeStartingEquipmentText(tool.name) ??
+                normalizeStartingEquipmentText(tool.referenceKey)!,
+  };
+}
+
 typedef StartingEquipmentCatalogLabels
     = Map<EquipmentCatalogType, Map<String, String>>;
 
@@ -205,6 +215,14 @@ String _itemCategoryTitle(StartingEquipmentLineData line) {
     return 'Любой доспех';
   }
   final categories = line.allowedItemCategories ?? const <String>[];
+  if (line.catalogType == EquipmentCatalogType.tool && categories.length == 1) {
+    return switch (categories.single) {
+      'musicalInstrument' => 'Любой музыкальный инструмент',
+      'gamingSet' => 'Любой игровой набор',
+      'artisan' => 'Любые инструменты ремесленника',
+      _ => 'Любой инструмент',
+    };
+  }
   if (categories.length == 1) {
     return 'Любой предмет: ${categories.single}';
   }

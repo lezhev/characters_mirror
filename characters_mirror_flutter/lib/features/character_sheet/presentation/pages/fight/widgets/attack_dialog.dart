@@ -4,6 +4,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/damage_type_picker_dialog.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:flutter/material.dart';
 
@@ -358,30 +359,31 @@ class _AttackDialogState extends State<AttackDialog> {
         const SizedBox(width: 8),
         Expanded(
           flex: 2,
-          child: DropdownButtonFormField<DamageType?>(
-            initialValue: part.damageType,
-            isExpanded: true,
-            decoration: const InputDecoration(
-              labelText: 'Тип',
+          child: InkWell(
+            onTap: () => showDamageTypePickerDialog(
+              context,
+              selectedType: part.damageType,
+              onSelected: (value) {
+                setState(() {
+                  part.damageType = value;
+                  _confirmDelete = false;
+                });
+                _queueSave();
+              },
             ),
-            items: [
-              const DropdownMenuItem<DamageType?>(
-                value: null,
-                child: Text('Не указан'),
+            child: InputDecorator(
+              decoration: const InputDecoration(
+                labelText: 'Тип',
+                suffixIcon: Icon(Icons.arrow_drop_down),
               ),
-              for (final value in DamageType.values)
-                DropdownMenuItem<DamageType?>(
-                  value: value,
-                  child: Text(damageTypeLabel(value)),
-                ),
-            ],
-            onChanged: (value) {
-              setState(() {
-                part.damageType = value;
-                _confirmDelete = false;
-              });
-              _queueSave();
-            },
+              child: Text(
+                part.damageType == null
+                    ? 'Не указан'
+                    : damageTypeLabel(part.damageType!),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 4),

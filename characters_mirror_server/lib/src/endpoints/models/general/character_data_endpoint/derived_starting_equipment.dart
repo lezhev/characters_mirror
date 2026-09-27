@@ -348,6 +348,9 @@ Future<String> _catalogRefDisplayText(
         transaction: transaction,
       );
       return _normalizedTextOrNull(armor?.name) ?? referenceKey;
+    case EquipmentCatalogType.tool:
+      final tool = await context.tool(referenceKey, transaction: transaction);
+      return _normalizedTextOrNull(tool?.name) ?? referenceKey;
     case EquipmentCatalogType.item:
     case EquipmentCatalogType.magicItem:
       final item = await context.item(

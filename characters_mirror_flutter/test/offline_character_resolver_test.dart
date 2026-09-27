@@ -53,6 +53,211 @@ void main() {
     ]);
   });
 
+  test('offline starting equipment resolves fixed and selected ToolData',
+      () async {
+    final startingClass = ClassData(id: 12, name: 'Bard');
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(12),
+      ClassStepView(
+        classData: startingClass,
+        selectedLevel: 1,
+        startingEquipmentBlocks: [
+          StartingEquipmentBlockView(
+            block: StartingEquipmentBlockData(
+              entryId: 101,
+              kind: StartingEquipmentBlockKind.fixedGrant,
+            ),
+            fixedLines: [
+              StartingEquipmentLineData(
+                entryId: 102,
+                kind: StartingEquipmentLineKind.itemCategory,
+                catalogType: EquipmentCatalogType.tool,
+                allowedItemCategories: [ToolCategory.musicalInstrument.name],
+              ),
+              StartingEquipmentLineData(
+                entryId: 103,
+                kind: StartingEquipmentLineKind.catalogRef,
+                catalogType: EquipmentCatalogType.tool,
+                referenceKey: 'thieves_tools',
+              ),
+            ],
+          ),
+        ],
+      ),
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'tool',
+      offlineAllKey,
+      [
+        ToolData(
+          referenceKey: 'lute',
+          name: 'Lute from tools',
+          category: ToolCategory.musicalInstrument,
+        ),
+        ToolData(referenceKey: 'thieves_tools', name: 'Thieves’ tools'),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: startingClass,
+            level: 1,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+        ],
+        startingEquipmentSelections: [
+          CharacterStartingEquipmentSelectionData(
+            sourceType: ChoiceSourceType.classData,
+            sourceId: 12,
+            sourceEntryId: 101,
+            isSelected: true,
+            resolutions: [
+              CharacterStartingEquipmentResolutionData(
+                sourceLineEntryId: 102,
+                catalogType: EquipmentCatalogType.tool,
+                referenceKey: 'lute',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    expect(
+      derived.grantedEquipment
+          ?.map((entry) =>
+              (entry.catalogType, entry.referenceKey, entry.displayText))
+          .toSet(),
+      {
+        (EquipmentCatalogType.tool, 'lute', 'Lute from tools'),
+        (EquipmentCatalogType.tool, 'thieves_tools', 'Thieves’ tools'),
+      },
+    );
+  });
+
+  test('offline background equipment keeps fixed, category, and coin data',
+      () async {
+    const backgroundId = 19;
+    const fixedLineId = 1901;
+    const groupId = 1902;
+    const optionId = 1903;
+    const categoryLineId = 1904;
+    final background = BackgroundData(
+      id: backgroundId,
+      name: 'Народный герой',
+      coins: 10,
+      items: const ['legacy free-text equipment'],
+    );
+    final fixedLine = StartingEquipmentLineData(
+      entryId: fixedLineId,
+      kind: StartingEquipmentLineKind.catalogRef,
+      catalogType: EquipmentCatalogType.item,
+      referenceKey: 'common_clothes',
+      quantity: 1,
+    );
+    final categoryLine = StartingEquipmentLineData(
+      entryId: categoryLineId,
+      kind: StartingEquipmentLineKind.itemCategory,
+      catalogType: EquipmentCatalogType.tool,
+      allowedItemCategories: [ToolCategory.artisan.name],
+      quantity: 1,
+    );
+    final option = StartingEquipmentOptionData(
+      entryId: optionId,
+      parentEntryId: groupId,
+      orderIndex: 0,
+      lines: [categoryLine],
+    );
+    final stepView = BackgroundStepView(
+      background: background,
+      startingEquipmentBlocks: [
+        StartingEquipmentBlockView(
+          block: StartingEquipmentBlockData(
+            entryId: fixedLineId,
+            kind: StartingEquipmentBlockKind.fixedGrant,
+            fixedLines: [fixedLine],
+          ),
+          fixedLines: [fixedLine],
+        ),
+        StartingEquipmentBlockView(
+          block: StartingEquipmentBlockData(
+            entryId: groupId,
+            kind: StartingEquipmentBlockKind.choice,
+            selectionCount: 1,
+            options: [option],
+          ),
+          options: [
+            StartingEquipmentOptionView(option: option, lines: [categoryLine])
+          ],
+        ),
+      ],
+    );
+    await cache.putReference(
+      offlineBackgroundStepKind,
+      offlineBackgroundStepKey(backgroundId),
+      stepView,
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'item',
+      offlineAllKey,
+      [ItemData(referenceKey: 'common_clothes', name: 'Common clothes')],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'tool',
+      offlineAllKey,
+      [
+        ToolData(
+          referenceKey: 'smith_tools',
+          name: 'Smith tools',
+          category: ToolCategory.artisan,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final character = CharacterData(
+      background: background,
+      startingEquipmentSelections: [
+        CharacterStartingEquipmentSelectionData(
+          sourceType: ChoiceSourceType.background,
+          sourceId: backgroundId,
+          sourceEntryId: groupId,
+          choiceOptionEntryId: optionId,
+          isSelected: true,
+          resolutions: [
+            CharacterStartingEquipmentResolutionData(
+              sourceLineEntryId: categoryLineId,
+              catalogType: EquipmentCatalogType.tool,
+              referenceKey: 'smith_tools',
+            ),
+          ],
+        ),
+      ],
+    );
+    final derived = await buildOfflineDerivedData(cache, character);
+
+    expect(character.background?.coins, 10);
+    expect(
+      derived.grantedEquipment
+          ?.map((entry) =>
+              (entry.catalogType, entry.referenceKey, entry.displayText))
+          .toSet(),
+      {
+        (EquipmentCatalogType.item, 'common_clothes', 'Common clothes'),
+        (EquipmentCatalogType.tool, 'smith_tools', 'Smith tools'),
+      },
+    );
+  });
+
   test('offline tool grants merge canonical keys and ignore category markers',
       () async {
     await cache.putReferenceList(
