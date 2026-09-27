@@ -540,16 +540,48 @@ void main() {
 
     test('rejects a second UUID for the same logical choice slot', () async {
       final session = authenticatedSession(306);
+      final race = await endpoints.raceData.upsert(
+        session,
+        RaceData(name: 'Fine target choice race'),
+      );
+      final fixtureSession = session.build();
+      late ChoiceGroupData choiceGroup;
+      try {
+        choiceGroup = await ChoiceGroupData.db.insertRow(
+          fixtureSession,
+          ChoiceGroupData(
+            referenceKey: 'fine_target_language_choice',
+            sourceRaceId: race.id,
+            type: ChoiceType.language,
+            selectionCount: 1,
+            allowDuplicates: false,
+          ),
+        );
+        for (final (key, language) in const [
+          ('common', Language.common),
+          ('elvish', Language.elvish),
+        ]) {
+          await ChoiceOptionData.db.insertRow(
+            fixtureSession,
+            ChoiceOptionData(
+              choiceGroupId: choiceGroup.id!,
+              optionKey: key,
+              grantedLanguages: [language],
+            ),
+          );
+        }
+      } finally {
+        await fixtureSession.close();
+      }
       final saved = await endpoints.characterData.saveCharacter(
         session,
         CharacterData(
           name: 'Choice identity',
+          race: race,
           choices: [
             CharacterChoiceData(
               id: 'choice-a',
-              sourceType: ChoiceSourceType.race,
-              sourceId: 7,
-              groupKey: 'language',
+              groupKey: 'fine_target_language_choice',
               optionKey: 'common',
               selectionIndex: 0,
             ),
@@ -567,9 +599,7 @@ void main() {
         itemPayload: CharacterSyncValueData(
           choiceValue: CharacterChoiceData(
             id: 'choice-b',
-            sourceType: ChoiceSourceType.race,
-            sourceId: 7,
-            groupKey: 'language',
+            groupKey: 'fine_target_language_choice',
             optionKey: 'elvish',
             selectionIndex: 0,
           ),

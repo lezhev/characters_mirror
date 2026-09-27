@@ -18,7 +18,7 @@ mixin _$ClassStateModel {
   ClassData? get selectedClass;
   ClassStepView? get stepView;
   SubclassData? get selectedSubclass;
-  Map<String, List<ClassChoiceOptionData>> get selectedOptions;
+  Map<String, List<ChoiceOptionData>> get selectedOptions;
   List<CharacterSkillSelectionData> get selectedSkillSelections;
   List<CharacterSpellSelectionData> get selectedSpellSelections;
   List<CharacterStartingEquipmentSelectionData> get startingEquipmentSelections;
@@ -88,7 +88,7 @@ abstract mixin class $ClassStateModelCopyWith<$Res> {
       ClassData? selectedClass,
       ClassStepView? stepView,
       SubclassData? selectedSubclass,
-      Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      Map<String, List<ChoiceOptionData>> selectedOptions,
       List<CharacterSkillSelectionData> selectedSkillSelections,
       List<CharacterSpellSelectionData> selectedSpellSelections,
       List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
@@ -138,7 +138,7 @@ class _$ClassStateModelCopyWithImpl<$Res>
       selectedOptions: null == selectedOptions
           ? _self.selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<ClassChoiceOptionData>>,
+              as Map<String, List<ChoiceOptionData>>,
       selectedSkillSelections: null == selectedSkillSelections
           ? _self.selectedSkillSelections
           : selectedSkillSelections // ignore: cast_nullable_to_non_nullable
@@ -255,7 +255,7 @@ extension ClassStateModelPatterns on ClassStateModel {
             ClassData? selectedClass,
             ClassStepView? stepView,
             SubclassData? selectedSubclass,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            Map<String, List<ChoiceOptionData>> selectedOptions,
             List<CharacterSkillSelectionData> selectedSkillSelections,
             List<CharacterSpellSelectionData> selectedSpellSelections,
             List<CharacterStartingEquipmentSelectionData>
@@ -302,7 +302,7 @@ extension ClassStateModelPatterns on ClassStateModel {
             ClassData? selectedClass,
             ClassStepView? stepView,
             SubclassData? selectedSubclass,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            Map<String, List<ChoiceOptionData>> selectedOptions,
             List<CharacterSkillSelectionData> selectedSkillSelections,
             List<CharacterSpellSelectionData> selectedSpellSelections,
             List<CharacterStartingEquipmentSelectionData>
@@ -345,7 +345,7 @@ extension ClassStateModelPatterns on ClassStateModel {
             ClassData? selectedClass,
             ClassStepView? stepView,
             SubclassData? selectedSubclass,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            Map<String, List<ChoiceOptionData>> selectedOptions,
             List<CharacterSkillSelectionData> selectedSkillSelections,
             List<CharacterSpellSelectionData> selectedSpellSelections,
             List<CharacterStartingEquipmentSelectionData>
@@ -380,7 +380,7 @@ class _ClassStateModel implements ClassStateModel {
       this.selectedClass,
       this.stepView,
       this.selectedSubclass,
-      final Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+      final Map<String, List<ChoiceOptionData>> selectedOptions = const {},
       final List<CharacterSkillSelectionData> selectedSkillSelections =
           const [],
       final List<CharacterSpellSelectionData> selectedSpellSelections =
@@ -409,10 +409,10 @@ class _ClassStateModel implements ClassStateModel {
   final ClassStepView? stepView;
   @override
   final SubclassData? selectedSubclass;
-  final Map<String, List<ClassChoiceOptionData>> _selectedOptions;
+  final Map<String, List<ChoiceOptionData>> _selectedOptions;
   @override
   @JsonKey()
-  Map<String, List<ClassChoiceOptionData>> get selectedOptions {
+  Map<String, List<ChoiceOptionData>> get selectedOptions {
     if (_selectedOptions is EqualUnmodifiableMapView) return _selectedOptions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_selectedOptions);
@@ -520,7 +520,7 @@ abstract mixin class _$ClassStateModelCopyWith<$Res>
       ClassData? selectedClass,
       ClassStepView? stepView,
       SubclassData? selectedSubclass,
-      Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      Map<String, List<ChoiceOptionData>> selectedOptions,
       List<CharacterSkillSelectionData> selectedSkillSelections,
       List<CharacterSpellSelectionData> selectedSpellSelections,
       List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
@@ -570,7 +570,7 @@ class __$ClassStateModelCopyWithImpl<$Res>
       selectedOptions: null == selectedOptions
           ? _self._selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<ClassChoiceOptionData>>,
+              as Map<String, List<ChoiceOptionData>>,
       selectedSkillSelections: null == selectedSkillSelections
           ? _self._selectedSkillSelections
           : selectedSkillSelections // ignore: cast_nullable_to_non_nullable

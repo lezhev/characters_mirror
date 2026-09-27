@@ -295,14 +295,9 @@ abstract final class CharacterValidator {
       final prefix = '$field[$index]';
       Rules.shortText('$prefix.id', choice.id);
       Rules.shortText('$prefix.classEntry.id', choice.classEntry?.id);
-      Rules.nonNegativeInt('$prefix.sourceId', choice.sourceId);
       Rules.shortText('$prefix.groupKey', choice.groupKey);
       Rules.shortText('$prefix.optionKey', choice.optionKey);
       Rules.nonNegativeInt('$prefix.selectionIndex', choice.selectionIndex);
-      Rules.shortText('$prefix.selectedToolKey', choice.selectedToolKey);
-      Rules.nonNegativeInt('$prefix.selectedFeatId', choice.selectedFeatId);
-      Rules.mediumText('$prefix.selectedText', choice.selectedText);
-      Rules.nonNegativeInt('$prefix.selectedCount', choice.selectedCount);
       final slotKey = _choiceSlotKey(choice);
       if (slotKey != null && !logicalSlots.add(slotKey)) {
         throw InputValidationException(
@@ -476,15 +471,10 @@ abstract final class CharacterValidator {
   }
 
   static String? _choiceSlotKey(CharacterChoiceData choice) {
-    if (choice.sourceType == null ||
-        choice.sourceId == null ||
-        choice.groupKey == null ||
-        choice.selectionIndex == null) {
+    if (choice.groupKey == null || choice.selectionIndex == null) {
       return null;
     }
     return _logicalKey([
-      choice.sourceType!.name,
-      choice.sourceId,
       choice.classEntry?.id,
       choice.groupKey,
       choice.selectionIndex,

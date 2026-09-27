@@ -16,6 +16,24 @@ void main() {
   _registerCharacterDataEndpointTests();
 }
 
+Future<ToolData> _ensureToolData(
+  Session session, {
+  required String referenceKey,
+  required String name,
+  ToolCategory? category,
+}) async {
+  final existing = await ToolData.db.find(
+    session,
+    where: (t) => t.referenceKey.equals(referenceKey),
+    limit: 1,
+  );
+  if (existing.isNotEmpty) return existing.first;
+  return ToolData.db.insertRow(
+    session,
+    ToolData(referenceKey: referenceKey, name: name, category: category),
+  );
+}
+
 class _CreationFixture {
   const _CreationFixture({
     required this.classData,
@@ -27,7 +45,7 @@ class _CreationFixture {
     required this.raceFeature,
     required this.subrace,
     required this.subraceFeature,
-    required this.raceChoiceSet,
+    required this.raceChoiceGroup,
     required this.feat,
     required this.lightSpell,
     required this.magicMissileSpell,
@@ -43,7 +61,7 @@ class _CreationFixture {
   final RaceFeatureData raceFeature;
   final SubraceData subrace;
   final RaceFeatureData subraceFeature;
-  final RaceChoiceSetData raceChoiceSet;
+  final ChoiceGroupData raceChoiceGroup;
   final FeatData feat;
   final SpellData lightSpell;
   final SpellData magicMissileSpell;
@@ -286,13 +304,13 @@ Future<_StartingEquipmentFixture> _seedStartingEquipmentEntries(
 class _MixedAbilityBonusRaceFixture {
   const _MixedAbilityBonusRaceFixture({
     required this.race,
-    required this.anyBonusChoiceSet,
+    required this.anyBonusChoiceGroup,
   });
 
   final RaceData race;
-  final RaceChoiceSetData anyBonusChoiceSet;
+  final ChoiceGroupData anyBonusChoiceGroup;
 
-  String get anyBonusGroupKey => 'race_choice_${anyBonusChoiceSet.id}_bonus_1';
+  String get anyBonusGroupKey => anyBonusChoiceGroup.referenceKey;
 }
 
 Future<_MixedAbilityBonusRaceFixture> _seedMixedAbilityBonusRace(
@@ -314,28 +332,72 @@ Future<_MixedAbilityBonusRaceFixture> _seedMixedAbilityBonusRace(
       level: 1,
     ),
   );
-  final choiceSet = await endpoints.raceChoiceSetData.upsert(
+  final choiceGroup = await _insertGenericChoiceGroup(
     sessionBuilder,
-    RaceChoiceSetData(
-      featureId: feature.id!,
-      kind: RaceChoiceKind.abilityBonusChoice,
-      pickCount: 1,
-      mustBeDistinct: true,
+    ChoiceGroupData(
+      referenceKey: 'fixture_any_race_ability_plus_one',
+      sourceRaceFeatureId: feature.id,
+      type: ChoiceType.abilityIncrease,
+      selectionCount: 1,
+      allowDuplicates: false,
       description: 'Choose one ability score to increase by 1.',
     ),
   );
 
   for (final ability in Ability.values) {
-    await endpoints.raceChoiceOptionData.upsert(
+    await _insertGenericChoiceOption(
       sessionBuilder,
-      RaceChoiceOptionData(
-        choiceSetId: choiceSet.id!,
+      ChoiceOptionData(
+        choiceGroupId: choiceGroup.id!,
         optionKey: ability.name,
         name: ability.name,
-        ability: ability,
-        bonusValue: 1,
+        grantedAbilityBonuses: {ability.name: 1},
       ),
     );
+  }
+
+  final modeGroup = await _insertGenericChoiceGroup(
+    sessionBuilder,
+    ChoiceGroupData(
+      referenceKey: 'race_bonus_mode',
+      sourceRaceId: race.id,
+      type: ChoiceType.abilityIncrease,
+      selectionCount: 1,
+    ),
+  );
+  await _insertGenericChoiceOption(
+    sessionBuilder,
+    ChoiceOptionData(
+      choiceGroupId: modeGroup.id!,
+      optionKey: 'flexible_plus_two_one',
+      name: 'Flexible +2/+1',
+    ),
+  );
+
+  for (final (groupKey, bonus) in const [
+    ('race_flexible_bonus_plus2', 2),
+    ('race_flexible_bonus_plus1', 1),
+  ]) {
+    final group = await _insertGenericChoiceGroup(
+      sessionBuilder,
+      ChoiceGroupData(
+        referenceKey: groupKey,
+        sourceRaceId: race.id,
+        type: ChoiceType.abilityIncrease,
+        selectionCount: 1,
+      ),
+    );
+    for (final ability in Ability.values) {
+      await _insertGenericChoiceOption(
+        sessionBuilder,
+        ChoiceOptionData(
+          choiceGroupId: group.id!,
+          optionKey: ability.name,
+          name: ability.name,
+          grantedAbilityBonuses: {ability.name: bonus},
+        ),
+      );
+    }
   }
 
   final hydratedRace = await endpoints.raceData.getStepView(
@@ -345,8 +407,32 @@ Future<_MixedAbilityBonusRaceFixture> _seedMixedAbilityBonusRace(
 
   return _MixedAbilityBonusRaceFixture(
     race: hydratedRace.race!,
-    anyBonusChoiceSet: choiceSet,
+    anyBonusChoiceGroup: choiceGroup,
   );
+}
+
+Future<ChoiceGroupData> _insertGenericChoiceGroup(
+  TestSessionBuilder sessionBuilder,
+  ChoiceGroupData group,
+) async {
+  final session = sessionBuilder.build();
+  try {
+    return await ChoiceGroupData.db.insertRow(session, group);
+  } finally {
+    await session.close();
+  }
+}
+
+Future<ChoiceOptionData> _insertGenericChoiceOption(
+  TestSessionBuilder sessionBuilder,
+  ChoiceOptionData option,
+) async {
+  final session = sessionBuilder.build();
+  try {
+    return await ChoiceOptionData.db.insertRow(session, option);
+  } finally {
+    await session.close();
+  }
 }
 
 Future<_CreationFixture> _seedCreationFixture(
@@ -471,26 +557,38 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
-  final subclassToolGroup = await endpoints.classChoiceGroupData.upsert(
+  final subclassToolGroup = await _insertGenericChoiceGroup(
     sessionBuilder,
-    ClassChoiceGroupData(
+    ChoiceGroupData(
+      referenceKey: 'fixture_subclass_tool_pick',
       name: 'Subclass tools',
       sourceSubclassFeatureId: subclassFeature.id,
-      type: ClassChoiceType.tool,
+      type: ChoiceType.tool,
       selectionCount: 1,
       allowDuplicates: false,
       exclusiveKey: 'subclass_tool_pick',
     ),
   );
-  await endpoints.classChoiceOptionData.upsert(
+  await _insertGenericChoiceOption(
     sessionBuilder,
-    ClassChoiceOptionData(
+    ChoiceOptionData(
       choiceGroupId: subclassToolGroup.id!,
       optionKey: 'smith_tools',
       name: 'Smith tools',
       grantedToolKeys: const ['smith_tools'],
     ),
   );
+  final toolSession = sessionBuilder.build();
+  try {
+    await _ensureToolData(
+      toolSession,
+      referenceKey: 'smith_tools',
+      name: 'Smith’s tools',
+      category: ToolCategory.artisan,
+    );
+  } finally {
+    await toolSession.close();
+  }
 
   final background = await endpoints.backgroundData.upsert(
     sessionBuilder,
@@ -503,20 +601,21 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
-  final backgroundLanguageGroup = await endpoints.classChoiceGroupData.upsert(
+  final backgroundLanguageGroup = await _insertGenericChoiceGroup(
     sessionBuilder,
-    ClassChoiceGroupData(
+    ChoiceGroupData(
+      referenceKey: 'background_language_pick',
       name: 'Background language',
       sourceBackgroundId: background.id,
-      type: ClassChoiceType.language,
+      type: ChoiceType.language,
       selectionCount: 1,
       allowDuplicates: false,
       exclusiveKey: 'background_language_pick',
     ),
   );
-  await endpoints.classChoiceOptionData.upsert(
+  await _insertGenericChoiceOption(
     sessionBuilder,
-    ClassChoiceOptionData(
+    ChoiceOptionData(
       choiceGroupId: backgroundLanguageGroup.id!,
       optionKey: 'celestial_language',
       name: 'Celestial',
@@ -664,24 +763,24 @@ Future<_CreationFixture> _seedCreationFixture(
     ),
   );
 
-  final raceChoiceSet = await endpoints.raceChoiceSetData.upsert(
+  final raceChoiceGroup = await _insertGenericChoiceGroup(
     sessionBuilder,
-    RaceChoiceSetData(
-      featureId: raceFeature.id!,
-      kind: RaceChoiceKind.featChoice,
-      pickCount: 1,
-      mustBeDistinct: true,
+    ChoiceGroupData(
+      referenceKey: 'fixture_race_feature_option',
+      sourceRaceFeatureId: raceFeature.id,
+      type: ChoiceType.featureOption,
+      selectionCount: 1,
+      allowDuplicates: false,
       description: 'Choose one feat.',
     ),
   );
 
-  await endpoints.raceChoiceOptionData.upsert(
+  await _insertGenericChoiceOption(
     sessionBuilder,
-    RaceChoiceOptionData(
-      choiceSetId: raceChoiceSet.id!,
+    ChoiceOptionData(
+      choiceGroupId: raceChoiceGroup.id!,
       optionKey: 'skilled_feat',
       name: 'Skilled',
-      featId: feat.id!,
       grantedFeatureTags: const [FeatureTag.exploration],
     ),
   );
@@ -701,7 +800,7 @@ Future<_CreationFixture> _seedCreationFixture(
     raceFeature: raceFeature,
     subrace: subrace,
     subraceFeature: subraceFeature,
-    raceChoiceSet: raceChoiceSet,
+    raceChoiceGroup: raceChoiceGroup,
     feat: feat,
     lightSpell: lightSpell,
     magicMissileSpell: magicMissileSpell,

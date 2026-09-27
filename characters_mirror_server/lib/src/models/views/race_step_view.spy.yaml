@@ -3,3 +3,4 @@ fields:
   race: RaceData?
   subraces: List<SubraceData>?
   features: List<RaceFeatureData>?
+  choiceGroups: List<ChoiceGroupView>?

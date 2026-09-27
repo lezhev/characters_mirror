@@ -19,7 +19,6 @@ import '../../../data/general/feature_resource_definition_data.dart' as _i5;
 import '../../../data/general/feature_resource_effect_data.dart' as _i6;
 import '../../../enums/feature_tag.dart' as _i7;
 import '../../../data/general/race/race_feature_spell_grant_data.dart' as _i8;
-import '../../../data/general/race/race_choice_set_data.dart' as _i9;
 
 abstract class RaceFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -43,7 +42,6 @@ abstract class RaceFeatureData
     this.resourceEffects,
     this.tags,
     this.spellGrants,
-    this.choiceSets,
   });
 
   factory RaceFeatureData({
@@ -66,7 +64,6 @@ abstract class RaceFeatureData
     List<_i6.FeatureResourceEffectData>? resourceEffects,
     List<_i7.FeatureTag>? tags,
     List<_i8.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i9.RaceChoiceSetData>? choiceSets,
   }) = _RaceFeatureDataImpl;
 
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -112,10 +109,6 @@ abstract class RaceFeatureData
       spellGrants: (jsonSerialization['spellGrants'] as List?)
           ?.map((e) => _i8.RaceFeatureSpellGrantData.fromJson(
               (e as Map<String, dynamic>)))
-          .toList(),
-      choiceSets: (jsonSerialization['choiceSets'] as List?)
-          ?.map((e) =>
-              _i9.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -163,8 +156,6 @@ abstract class RaceFeatureData
 
   List<_i8.RaceFeatureSpellGrantData>? spellGrants;
 
-  List<_i9.RaceChoiceSetData>? choiceSets;
-
   @override
   _i1.Table<int?> get table => t;
 
@@ -191,7 +182,6 @@ abstract class RaceFeatureData
     List<_i6.FeatureResourceEffectData>? resourceEffects,
     List<_i7.FeatureTag>? tags,
     List<_i8.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i9.RaceChoiceSetData>? choiceSets,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -219,8 +209,6 @@ abstract class RaceFeatureData
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
-      if (choiceSets != null)
-        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -252,9 +240,6 @@ abstract class RaceFeatureData
       if (spellGrants != null)
         'spellGrants':
             spellGrants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (choiceSets != null)
-        'choiceSets':
-            choiceSets?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -264,7 +249,6 @@ abstract class RaceFeatureData
     _i5.FeatureResourceDefinitionDataIncludeList? resources,
     _i6.FeatureResourceEffectDataIncludeList? resourceEffects,
     _i8.RaceFeatureSpellGrantDataIncludeList? spellGrants,
-    _i9.RaceChoiceSetDataIncludeList? choiceSets,
   }) {
     return RaceFeatureDataInclude._(
       race: race,
@@ -272,7 +256,6 @@ abstract class RaceFeatureData
       resources: resources,
       resourceEffects: resourceEffects,
       spellGrants: spellGrants,
-      choiceSets: choiceSets,
     );
   }
 
@@ -325,7 +308,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     List<_i6.FeatureResourceEffectData>? resourceEffects,
     List<_i7.FeatureTag>? tags,
     List<_i8.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i9.RaceChoiceSetData>? choiceSets,
   }) : super._(
           id: id,
           raceId: raceId,
@@ -346,7 +328,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           resourceEffects: resourceEffects,
           tags: tags,
           spellGrants: spellGrants,
-          choiceSets: choiceSets,
         );
 
   /// Returns a shallow copy of this [RaceFeatureData]
@@ -373,7 +354,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? resourceEffects = _Undefined,
     Object? tags = _Undefined,
     Object? spellGrants = _Undefined,
-    Object? choiceSets = _Undefined,
   }) {
     return RaceFeatureData(
       id: id is int? ? id : this.id,
@@ -406,9 +386,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       spellGrants: spellGrants is List<_i8.RaceFeatureSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
-      choiceSets: choiceSets is List<_i9.RaceChoiceSetData>?
-          ? choiceSets
-          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -513,10 +490,6 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
 
   _i1.ManyRelation<_i8.RaceFeatureSpellGrantDataTable>? _spellGrants;
 
-  _i9.RaceChoiceSetDataTable? ___choiceSets;
-
-  _i1.ManyRelation<_i9.RaceChoiceSetDataTable>? _choiceSets;
-
   _i2.RaceDataTable get race {
     if (_race != null) return _race!;
     _race = _i1.createRelationTable(
@@ -583,19 +556,6 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
     return ___spellGrants!;
   }
 
-  _i9.RaceChoiceSetDataTable get __choiceSets {
-    if (___choiceSets != null) return ___choiceSets!;
-    ___choiceSets = _i1.createRelationTable(
-      relationFieldName: '__choiceSets',
-      field: RaceFeatureData.t.id,
-      foreignField: _i9.RaceChoiceSetData.t.featureId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i9.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
-    );
-    return ___choiceSets!;
-  }
-
   _i1.ManyRelation<_i5.FeatureResourceDefinitionDataTable> get resources {
     if (_resources != null) return _resources!;
     var relationTable = _i1.createRelationTable(
@@ -651,24 +611,6 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
     return _spellGrants!;
   }
 
-  _i1.ManyRelation<_i9.RaceChoiceSetDataTable> get choiceSets {
-    if (_choiceSets != null) return _choiceSets!;
-    var relationTable = _i1.createRelationTable(
-      relationFieldName: 'choiceSets',
-      field: RaceFeatureData.t.id,
-      foreignField: _i9.RaceChoiceSetData.t.featureId,
-      tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i9.RaceChoiceSetDataTable(tableRelation: foreignTableRelation),
-    );
-    _choiceSets = _i1.ManyRelation<_i9.RaceChoiceSetDataTable>(
-      tableWithRelations: relationTable,
-      table: _i9.RaceChoiceSetDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
-    return _choiceSets!;
-  }
-
   @override
   List<_i1.Column> get columns => [
         id,
@@ -704,9 +646,6 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
     if (relationField == 'spellGrants') {
       return __spellGrants;
     }
-    if (relationField == 'choiceSets') {
-      return __choiceSets;
-    }
     return null;
   }
 }
@@ -718,14 +657,12 @@ class RaceFeatureDataInclude extends _i1.IncludeObject {
     _i5.FeatureResourceDefinitionDataIncludeList? resources,
     _i6.FeatureResourceEffectDataIncludeList? resourceEffects,
     _i8.RaceFeatureSpellGrantDataIncludeList? spellGrants,
-    _i9.RaceChoiceSetDataIncludeList? choiceSets,
   }) {
     _race = race;
     _subrace = subrace;
     _resources = resources;
     _resourceEffects = resourceEffects;
     _spellGrants = spellGrants;
-    _choiceSets = choiceSets;
   }
 
   _i2.RaceDataInclude? _race;
@@ -738,8 +675,6 @@ class RaceFeatureDataInclude extends _i1.IncludeObject {
 
   _i8.RaceFeatureSpellGrantDataIncludeList? _spellGrants;
 
-  _i9.RaceChoiceSetDataIncludeList? _choiceSets;
-
   @override
   Map<String, _i1.Include?> get includes => {
         'race': _race,
@@ -747,7 +682,6 @@ class RaceFeatureDataInclude extends _i1.IncludeObject {
         'resources': _resources,
         'resourceEffects': _resourceEffects,
         'spellGrants': _spellGrants,
-        'choiceSets': _choiceSets,
       };
 
   @override
@@ -1078,31 +1012,6 @@ class RaceFeatureDataAttachRepository {
       transaction: transaction,
     );
   }
-
-  /// Creates a relation between this [RaceFeatureData] and the given [RaceChoiceSetData]s
-  /// by setting each [RaceChoiceSetData]'s foreign key `featureId` to refer to this [RaceFeatureData].
-  Future<void> choiceSets(
-    _i1.Session session,
-    RaceFeatureData raceFeatureData,
-    List<_i9.RaceChoiceSetData> raceChoiceSetData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (raceChoiceSetData.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
-    }
-    if (raceFeatureData.id == null) {
-      throw ArgumentError.notNull('raceFeatureData.id');
-    }
-
-    var $raceChoiceSetData = raceChoiceSetData
-        .map((e) => e.copyWith(featureId: raceFeatureData.id))
-        .toList();
-    await session.db.update<_i9.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i9.RaceChoiceSetData.t.featureId],
-      transaction: transaction,
-    );
-  }
 }
 
 class RaceFeatureDataAttachRowRepository {
@@ -1222,30 +1131,6 @@ class RaceFeatureDataAttachRowRepository {
     await session.db.updateRow<_i8.RaceFeatureSpellGrantData>(
       $raceFeatureSpellGrantData,
       columns: [_i8.RaceFeatureSpellGrantData.t.featureId],
-      transaction: transaction,
-    );
-  }
-
-  /// Creates a relation between this [RaceFeatureData] and the given [RaceChoiceSetData]
-  /// by setting the [RaceChoiceSetData]'s foreign key `featureId` to refer to this [RaceFeatureData].
-  Future<void> choiceSets(
-    _i1.Session session,
-    RaceFeatureData raceFeatureData,
-    _i9.RaceChoiceSetData raceChoiceSetData, {
-    _i1.Transaction? transaction,
-  }) async {
-    if (raceChoiceSetData.id == null) {
-      throw ArgumentError.notNull('raceChoiceSetData.id');
-    }
-    if (raceFeatureData.id == null) {
-      throw ArgumentError.notNull('raceFeatureData.id');
-    }
-
-    var $raceChoiceSetData =
-        raceChoiceSetData.copyWith(featureId: raceFeatureData.id);
-    await session.db.updateRow<_i9.RaceChoiceSetData>(
-      $raceChoiceSetData,
-      columns: [_i9.RaceChoiceSetData.t.featureId],
       transaction: transaction,
     );
   }

@@ -4,18 +4,28 @@ List<CharacterInventoryItemData>? _normalizedInventoryItems(
   List<CharacterInventoryItemData>? items,
   DateTime? updatedAt,
 ) {
-  final normalized = [
+  final normalizedItems = [
     for (final item in items ?? const <CharacterInventoryItemData>[])
-      if (_normalizedTextOrNull(item.name) != null)
-        CharacterInventoryItemData(
-          id: item.id ?? _generateSyncId(),
-          name: _normalizedTextOrNull(item.name),
-          quantity: _normalizedPositiveQuantity(item.quantity),
-          type: item.type ?? CharacterInventoryItemType.custom,
-          updatedAt: item.updatedAt?.toUtc() ?? updatedAt,
-        ),
+      if (_normalizedTextOrNull(item.name) != null) item,
   ];
-  return normalized.isEmpty ? null : normalized;
+  if (normalizedItems.isEmpty) {
+    return null;
+  }
+
+  final text = normalizedItems.map((item) {
+    final name = _normalizedTextOrNull(item.name)!;
+    final quantity = _normalizedPositiveQuantity(item.quantity);
+    return quantity > 1 ? '$name x$quantity' : name;
+  }).join(', ');
+  return [
+    CharacterInventoryItemData(
+      id: normalizedItems.first.id ?? _generateSyncId(),
+      name: text,
+      quantity: 1,
+      type: CharacterInventoryItemType.custom,
+      updatedAt: normalizedItems.first.updatedAt?.toUtc() ?? updatedAt,
+    ),
+  ];
 }
 
 List<CharacterNoteData>? _normalizedNotes(
@@ -123,8 +133,8 @@ List<CharacterChoiceData>? _normalizedChoices(
     for (final choice in choices ?? const <CharacterChoiceData>[])
       choice.copyWith(
         id: choice.id ?? _generateSyncId(),
-        selectedToolKey: _normalizedTextOrNull(choice.selectedToolKey),
-        selectedText: _normalizedTextOrNull(choice.selectedText),
+        groupKey: _normalizedTextOrNull(choice.groupKey),
+        optionKey: _normalizedTextOrNull(choice.optionKey),
         updatedAt: choice.updatedAt?.toUtc() ?? updatedAt,
       ),
   ];

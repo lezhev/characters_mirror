@@ -1,6 +1,5 @@
 part of '../character_data_endpoint_test.dart';
 
-
 void _registerCharacterDataProficiencyScenarios(
   TestSessionBuilder sessionBuilder,
   TestEndpoints endpoints,
@@ -273,18 +272,19 @@ void _registerCharacterDataProficiencyScenarios(
       sessionBuilder,
       ClassData(name: 'Choice Weapon Class'),
     );
-    final group = await endpoints.classChoiceGroupData.upsert(
+    final group = await _insertGenericChoiceGroup(
       sessionBuilder,
-      ClassChoiceGroupData(
+      ChoiceGroupData(
+        referenceKey: 'choice_weapon_training',
         name: 'Weapon training choice',
         sourceClassId: classData.id!,
         exclusiveKey: 'choice_weapon_training',
         level: 1,
       ),
     );
-    await endpoints.classChoiceOptionData.upsert(
+    await _insertGenericChoiceOption(
       sessionBuilder,
-      ClassChoiceOptionData(
+      ChoiceOptionData(
         choiceGroupId: group.id!,
         optionKey: 'martial',
         grantedWeaponTraining: const [WeaponCategory.martialMelee],
@@ -305,8 +305,6 @@ void _registerCharacterDataProficiencyScenarios(
         ],
         choices: [
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.classData,
-            sourceId: classData.id,
             groupKey: 'choice_weapon_training',
             optionKey: 'martial',
           ),
@@ -338,12 +336,47 @@ void _registerCharacterDataProficiencyScenarios(
       sessionBuilder,
       BackgroundData(
         name: 'Tool Background',
-        toolProficiencies: const [
-          'Музыкальный инструмент',
-          'Игровой набор',
-          'Инструменты ремесленника',
-        ],
         toolProficiencyKeys: const ['smith_tools', 'dice_set'],
+      ),
+    );
+    final fixtureSession = sessionBuilder.build();
+    try {
+      for (final key in const [
+        'smith_tools',
+        'thieves_tools',
+        'lute',
+        'dice_set',
+        'navigator_tools',
+        'vehicle_land',
+      ]) {
+        await _ensureToolData(
+          fixtureSession,
+          referenceKey: key,
+          name: key,
+          category: ToolCategory.artisan,
+        );
+      }
+    } finally {
+      await fixtureSession.close();
+    }
+    final backgroundToolGroup = await _insertGenericChoiceGroup(
+      sessionBuilder,
+      ChoiceGroupData(
+        referenceKey: 'background_tool_choice',
+        name: 'Background tool choice',
+        sourceBackgroundId: background.id,
+        type: ChoiceType.tool,
+        selectionCount: 1,
+        allowDuplicates: false,
+      ),
+    );
+    await _insertGenericChoiceOption(
+      sessionBuilder,
+      ChoiceOptionData(
+        choiceGroupId: backgroundToolGroup.id!,
+        optionKey: 'lute',
+        name: 'Lute',
+        grantedToolKeys: const ['lute'],
       ),
     );
     final startingClass = await endpoints.classData.upsert(
@@ -361,18 +394,20 @@ void _registerCharacterDataProficiencyScenarios(
         multiclassToolTrainingKeys: const ['vehicle_land'],
       ),
     );
-    final choiceGroup = await endpoints.classChoiceGroupData.upsert(
+    final choiceGroup = await _insertGenericChoiceGroup(
       sessionBuilder,
-      ClassChoiceGroupData(
+      ChoiceGroupData(
+        referenceKey: 'tool_choice',
         name: 'Tool choice',
         sourceClassId: startingClass.id!,
+        type: ChoiceType.tool,
         exclusiveKey: 'tool_choice',
         level: 1,
       ),
     );
-    await endpoints.classChoiceOptionData.upsert(
+    await _insertGenericChoiceOption(
       sessionBuilder,
-      ClassChoiceOptionData(
+      ChoiceOptionData(
         choiceGroupId: choiceGroup.id!,
         optionKey: 'tools',
         grantedToolKeys: const ['lute', 'dice_set'],
@@ -402,10 +437,12 @@ void _registerCharacterDataProficiencyScenarios(
         ],
         choices: [
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.classData,
-            sourceId: startingClass.id,
             groupKey: 'tool_choice',
             optionKey: 'tools',
+          ),
+          CharacterChoiceData(
+            groupKey: 'background_tool_choice',
+            optionKey: 'lute',
           ),
         ],
       ),
@@ -429,20 +466,16 @@ void _registerCharacterDataProficiencyScenarios(
       () async {
     final session = sessionBuilder.build();
     try {
-      await ToolData.db.insertRow(
+      await _ensureToolData(
         session,
-        ToolData(
-          referenceKey: 'thieves_tools',
-          name: 'Воровские инструменты',
-        ),
+        referenceKey: 'thieves_tools',
+        name: 'Воровские инструменты',
       );
-      await ToolData.db.insertRow(
+      await _ensureToolData(
         session,
-        ToolData(
-          referenceKey: 'lute',
-          name: 'Лютня',
-          category: ToolCategory.musicalInstrument,
-        ),
+        referenceKey: 'lute',
+        name: 'Лютня',
+        category: ToolCategory.musicalInstrument,
       );
     } finally {
       await session.close();
@@ -450,9 +483,9 @@ void _registerCharacterDataProficiencyScenarios(
 
     final tools = await endpoints.toolData.getAll(sessionBuilder);
 
-    expect(tools, hasLength(2));
     expect(
-      tools.singleWhere((tool) => tool.referenceKey == 'thieves_tools')
+      tools
+          .singleWhere((tool) => tool.referenceKey == 'thieves_tools')
           .category,
       isNull,
     );
@@ -466,13 +499,15 @@ void _registerCharacterDataProficiencyScenarios(
       () async {
     final session = sessionBuilder.build();
     try {
-      await ToolData.db.insertRow(
+      await _ensureToolData(
         session,
-        ToolData(referenceKey: 'thieves_tools', name: 'Воровские инструменты'),
+        referenceKey: 'thieves_tools',
+        name: 'Воровские инструменты',
       );
-      await ToolData.db.insertRow(
+      await _ensureToolData(
         session,
-        ToolData(referenceKey: 'smith_tools', name: 'Инструменты кузнеца'),
+        referenceKey: 'smith_tools',
+        name: 'Инструменты кузнеца',
       );
       await WeaponData.db.insertRow(
         session,
@@ -530,8 +565,7 @@ void _registerCharacterDataProficiencyScenarios(
           removed: const [Language.common],
           custom: const ['  River speech  ', 'river SPEECH'],
         ),
-        manualToolProficiencyOverrides:
-            CharacterToolProficiencyOverridesData(
+        manualToolProficiencyOverrides: CharacterToolProficiencyOverridesData(
           addedKeys: const ['thieves_tools'],
           removedKeys: const ['smith_tools'],
           custom: const [' Clockwork tools '],
@@ -571,8 +605,7 @@ void _registerCharacterDataProficiencyScenarios(
         authenticatedSession(710),
         CharacterData(
           name: 'Unknown Tool Grant',
-          manualToolProficiencyOverrides:
-              CharacterToolProficiencyOverridesData(
+          manualToolProficiencyOverrides: CharacterToolProficiencyOverridesData(
             addedKeys: const ['not_in_tool_data'],
           ),
         ),
@@ -580,5 +613,4 @@ void _registerCharacterDataProficiencyScenarios(
       throwsA(isA<InputValidationException>()),
     );
   });
-
 }

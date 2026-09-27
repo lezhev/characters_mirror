@@ -56,11 +56,12 @@ void main() {
   test('offline tool grants merge canonical keys and ignore category markers',
       () async {
     await cache.putReferenceList(
-      'class_choice_group',
+      'choice_group',
       offlineAllKey,
       [
-        ClassChoiceGroupData(
+        ChoiceGroupData(
           id: 1,
+          referenceKey: 'class_tool_choice',
           sourceClassId: 10,
           exclusiveKey: 'tool_choice',
         ),
@@ -68,10 +69,10 @@ void main() {
       (value) => value.toJson(),
     );
     await cache.putReferenceList(
-      'class_choice_option',
+      'choice_option',
       offlineAllKey,
       [
-        ClassChoiceOptionData(
+        ChoiceOptionData(
           id: 2,
           choiceGroupId: 1,
           optionKey: 'tools',
@@ -92,11 +93,6 @@ void main() {
           toolProficiencyKeys: const ['lute'],
         ),
         background: BackgroundData(
-          toolProficiencies: const [
-            'Музыкальный инструмент',
-            'Игровой набор',
-            'Инструменты ремесленника',
-          ],
           toolProficiencyKeys: const ['smith_tools', 'dice_set'],
         ),
         classEntries: [
@@ -123,7 +119,6 @@ void main() {
         ],
         choices: [
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.classData,
             groupKey: 'tool_choice',
             optionKey: 'tools',
           ),
@@ -142,6 +137,51 @@ void main() {
         'vehicle_land',
       ]),
     );
+  });
+
+  test('generic background choice resolves its typed tool grant offline',
+      () async {
+    await cache.putReferenceList(
+      'choice_group',
+      offlineAllKey,
+      [
+        ChoiceGroupData(
+          id: 7,
+          referenceKey: 'folk_hero_artisan_tool',
+          sourceBackgroundId: 3,
+          selectionCount: 1,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_option',
+      offlineAllKey,
+      [
+        ChoiceOptionData(
+          id: 17,
+          choiceGroupId: 7,
+          optionKey: 'smith_tools',
+          grantedToolKeys: const ['smith_tools'],
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        background: BackgroundData(id: 3),
+        choices: [
+          CharacterChoiceData(
+            groupKey: 'folk_hero_artisan_tool',
+            optionKey: 'smith_tools',
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.toolProficiencyKeys, ['smith_tools']);
   });
 
   test('offline proficiency overrides preserve canonical identities and deltas',
@@ -450,11 +490,12 @@ void main() {
   test('offline applies cached supported class choice weapon training',
       () async {
     await cache.putReferenceList(
-      'class_choice_group',
+      'choice_group',
       offlineAllKey,
       [
-        ClassChoiceGroupData(
+        ChoiceGroupData(
           id: 1,
+          referenceKey: 'class_weapon_choice',
           sourceClassId: 10,
           exclusiveKey: 'weapon_choice',
         ),
@@ -462,10 +503,10 @@ void main() {
       (value) => value.toJson(),
     );
     await cache.putReferenceList(
-      'class_choice_option',
+      'choice_option',
       offlineAllKey,
       [
-        ClassChoiceOptionData(
+        ChoiceOptionData(
           id: 2,
           choiceGroupId: 1,
           optionKey: 'martial',
@@ -488,9 +529,7 @@ void main() {
         ],
         choices: [
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.classData,
-            sourceId: 10,
-            groupKey: 'weapon_choice',
+            groupKey: 'class_weapon_choice',
             optionKey: 'martial',
           ),
         ],
@@ -498,5 +537,59 @@ void main() {
     );
 
     expect(derived.weaponTraining, [WeaponCategory.martialMelee]);
+  });
+
+  test('offline applies typed ability, skill, and spell choice grants',
+      () async {
+    await cache.putReferenceList(
+      'choice_group',
+      offlineAllKey,
+      [
+        ChoiceGroupData(
+          id: 30,
+          referenceKey: 'race_feature_choice',
+          sourceRaceId: 7,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_option',
+      offlineAllKey,
+      [
+        ChoiceOptionData(
+          choiceGroupId: 30,
+          optionKey: 'gift',
+          grantedAbilityBonuses: const {'strength': 2},
+          grantedSkills: const [Skill.athletics],
+          grantedSpellKeys: const ['false_life'],
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        race: RaceData(id: 7),
+        baseAbilityScores: const {'strength': 10},
+        choices: [
+          CharacterChoiceData(
+            groupKey: 'race_feature_choice',
+            optionKey: 'gift',
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.abilityScores?['strength'], 12);
+    expect(
+      derived.skillProficiencyLevels
+          ?.firstWhere((state) => state.skill == Skill.athletics)
+          .level,
+      CharacterSkillProficiencyLevel.proficient,
+    );
+    expect(derived.skillBonuses?['athletics'], 3);
+    expect(derived.grantedSpellKeys, contains('false_life'));
   });
 }

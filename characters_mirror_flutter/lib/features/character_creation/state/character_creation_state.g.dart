@@ -6,7 +6,7 @@ part of 'character_creation_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$characterCreationHash() => r'aa8a830b05a2084a7d56f3d66e3fb8714d25ac22';
+String _$characterCreationHash() => r'522497a9131eef7deb87636e6d7cbcae40c98e3e';
 
 /// See also [CharacterCreation].
 @ProviderFor(CharacterCreation)

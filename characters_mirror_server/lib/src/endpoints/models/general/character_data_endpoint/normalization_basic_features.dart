@@ -99,16 +99,6 @@ List<String>? _normalizedPreparedSpellKeys(Iterable<String>? values) {
   return _normalizedTexts(values).toSet().toList()..sort();
 }
 
-Language? _languageFromName(String raw) {
-  final normalized = raw.trim();
-  for (final value in Language.values) {
-    if (value.name == normalized) {
-      return value;
-    }
-  }
-  return null;
-}
-
 _CurrentRaceFeatures _currentRaceFeaturesBySource(
   CharacterData character,
   int totalLevel,

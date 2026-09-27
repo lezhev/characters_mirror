@@ -1,0 +1,479 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "choice_group_data",
+        "dartName": "ChoiceGroupData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('choice_group_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "sourceClassId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceSubclassId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceSubclassFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceRaceId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceSubraceId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceRaceFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceBackgroundId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "level",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "type",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:ChoiceType?"
+          },
+          {
+            "name": "selectionCount",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "appliesAtCharacterLevel",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "exclusiveKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "allowDuplicates",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "sortOrder",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "choice_group_data_fk_0",
+            "columns": [
+              "sourceClassId"
+            ],
+            "referenceTable": "class_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "choice_group_data_fk_1",
+            "columns": [
+              "sourceSubclassId"
+            ],
+            "referenceTable": "subclass_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "choice_group_data_fk_2",
+            "columns": [
+              "sourceFeatureId"
+            ],
+            "referenceTable": "class_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "choice_group_data_fk_3",
+            "columns": [
+              "sourceSubclassFeatureId"
+            ],
+            "referenceTable": "subclass_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "choice_group_data_fk_4",
+            "columns": [
+              "sourceRaceId"
+            ],
+            "referenceTable": "race_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "choice_group_data_fk_5",
+            "columns": [
+              "sourceSubraceId"
+            ],
+            "referenceTable": "subrace_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "choice_group_data_fk_6",
+            "columns": [
+              "sourceRaceFeatureId"
+            ],
+            "referenceTable": "race_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "choice_group_data_fk_7",
+            "columns": [
+              "sourceBackgroundId"
+            ],
+            "referenceTable": "background_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "choice_group_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "choice_group_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "choice_option_data",
+        "dartName": "ChoiceOptionData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('choice_option_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "choiceGroupId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "optionKey",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "sortOrder",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "grantedAbilityBonuses",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,int>?"
+          },
+          {
+            "name": "grantedSkills",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "grantedLanguages",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Language>?"
+          },
+          {
+            "name": "grantedArmorTraining",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:ArmorCategory>?"
+          },
+          {
+            "name": "grantedWeaponTraining",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:WeaponCategory>?"
+          },
+          {
+            "name": "grantedToolKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "grantedSpellKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "grantedFeatureTags",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:FeatureTag>?"
+          },
+          {
+            "name": "damageType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:DamageType?"
+          },
+          {
+            "name": "areaOfEffectType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:AreaOfEffectType?"
+          },
+          {
+            "name": "areaText",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "damageByLevel",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,String>?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "choice_option_data_fk_0",
+            "columns": [
+              "choiceGroupId"
+            ],
+            "referenceTable": "choice_group_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "choice_option_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "choice_option_group_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "choiceGroupId"
+              },
+              {
+                "type": 0,
+                "definition": "optionKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

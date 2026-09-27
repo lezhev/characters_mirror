@@ -17,12 +17,6 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
   final choices = character.choices ?? const <CharacterChoiceData>[];
   final totalLevel =
       entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
-  final scores = _buildAbilityScores(character, choices);
-  final abilityModifiers = {
-    for (final ability in Ability.values)
-      ability.name: _abilityModifier(scores[ability.name] ?? 10),
-  };
-  final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
   final resolvedSources = await _resolveDerivedSources(
     session,
     character,
@@ -30,6 +24,18 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
     transaction: transaction,
     resolveContext: resolveContext,
   );
+  final scores = _buildAbilityScores(
+    character,
+    [
+      ...resolvedSources.classBackgroundOptions,
+      ...resolvedSources.raceOptions,
+    ],
+  );
+  final abilityModifiers = {
+    for (final ability in Ability.values)
+      ability.name: _abilityModifier(scores[ability.name] ?? 10),
+  };
+  final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
   final currentRaceFeatures =
       _currentRaceFeaturesBySource(character, totalLevel);
   final defaultFeatures = _buildActiveFeatures(
@@ -132,7 +138,7 @@ Future<CharacterData> _applyInitialEquipmentSnapshot(
               grantedEquipment,
               fallbackUpdatedAt: character.updatedAt,
             )
-          : character.equipment;
+          : _normalizedInventoryItems(character.equipment, character.updatedAt);
   final weaponAttacks = await _buildStartingWeaponAttacks(
     session,
     character,
@@ -157,24 +163,28 @@ List<CharacterInventoryItemData> _buildEquipmentSnapshot(
   List<CharacterEquipmentEntryView> grantedEquipment, {
   required DateTime? fallbackUpdatedAt,
 }) {
-  final items = <CharacterInventoryItemData>[];
+  final items = <String>[];
   for (final entry in grantedEquipment) {
     final name = _normalizedTextOrNull(entry.displayText) ??
         _normalizedTextOrNull(entry.referenceKey);
     if (name == null) {
       continue;
     }
-    items.add(
-      CharacterInventoryItemData(
-        id: _generateSyncId(),
-        name: name,
-        quantity: _normalizedPositiveQuantity(entry.quantity),
-        type: _inventoryItemTypeForCatalog(entry.catalogType),
-        updatedAt: fallbackUpdatedAt,
-      ),
-    );
+    final quantity = _normalizedPositiveQuantity(entry.quantity);
+    items.add(quantity > 1 ? '$name x$quantity' : name);
   }
-  return items;
+  if (items.isEmpty) {
+    return const <CharacterInventoryItemData>[];
+  }
+  return [
+    CharacterInventoryItemData(
+      id: _generateSyncId(),
+      name: items.join(', '),
+      quantity: 1,
+      type: CharacterInventoryItemType.custom,
+      updatedAt: fallbackUpdatedAt,
+    ),
+  ];
 }
 
 Future<List<CharacterAttackData>> _buildStartingWeaponAttacks(

@@ -94,6 +94,10 @@ sealed class CharacterCreationState with _$CharacterCreationState {
     required Step step,
     @Default(false) bool hasSpellCreationStep,
     @Default(0) int draftRevision,
+    @Default([]) List<ChoiceGroupView> raceChoiceGroups,
+    @Default([]) List<ChoiceGroupView> classChoiceGroups,
+    @Default([]) List<ChoiceGroupView> backgroundChoiceGroups,
+    @Default([]) List<String> backgroundChoiceGroupKeys,
   }) = _CharacterCreationState;
 
   factory CharacterCreationState.initial() => CharacterCreationState(
@@ -162,6 +166,7 @@ class CharacterCreation extends _$CharacterCreation {
   void syncRaceDraft({
     RaceData? selectedRace,
     SubraceData? selectedSubrace,
+    List<ChoiceGroupView> choiceGroups = const [],
     List<CharacterChoiceData> raceChoices = const [],
   }) {
     if (selectedRace == null) return;
@@ -173,30 +178,38 @@ class CharacterCreation extends _$CharacterCreation {
       race: selectedRace,
       subrace: selectedSubrace,
     );
-    final preservedChoices = raceChanged || subraceChanged
-        ? withoutChoiceSources(
-            currentChoices,
-            const {
-              ChoiceSourceType.race,
-              ChoiceSourceType.subrace,
-            },
-          )
-        : withoutChoiceGroups(
-            currentChoices,
-            racialNonAttributeChoiceGroups(updatedCharacter),
-          );
+    final previousRaceGroupKeys = {
+      for (final group in state.raceChoiceGroups)
+        if (group.group != null) group.group!.referenceKey,
+    };
+    final nextRaceGroupKeys = {
+      for (final group in choiceGroups)
+        if (group.group != null) group.group!.referenceKey,
+    };
+    final replacedRaceGroupKeys = raceChanged || subraceChanged
+        ? previousRaceGroupKeys
+        : {
+            for (final key in nextRaceGroupKeys)
+              if (choiceGroups.any((view) =>
+                  view.group?.referenceKey == key &&
+                  view.group?.type != ChoiceType.abilityIncrease))
+                key,
+          };
+    final preservedChoices =
+        withoutChoiceGroups(currentChoices, replacedRaceGroupKeys);
 
     _updateCharacter(
       updatedCharacter.copyWith(
         choices: [...preservedChoices, ...raceChoices],
       ),
     );
+    state = state.copyWith(raceChoiceGroups: choiceGroups);
   }
 
   void syncBackgroundDraft({
     required BackgroundData? selectedBackground,
-    List<ClassChoiceGroupView> choiceGroups = const [],
-    Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+    List<ChoiceGroupView> choiceGroups = const [],
+    Map<String, List<ChoiceOptionData>> selectedOptions = const {},
     List<CharacterSkillSelectionData> skillSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
         const [],
@@ -212,14 +225,17 @@ class CharacterCreation extends _$CharacterCreation {
             const <CharacterStartingEquipmentSelectionData>[];
     final currentSkillSelections = state.character.skillSelections ??
         const <CharacterSkillSelectionData>[];
+    final previousBackgroundChoiceGroupKeys =
+        state.backgroundChoiceGroupKeys.toSet();
+    final nextBackgroundChoiceGroupKeys = classChoiceGroupKeys(choiceGroups);
     final backgroundChoices = buildBackgroundChoices(
       selectedOptions: selectedOptions,
       groups: choiceGroups,
     );
     final preservedChoices = backgroundChanged
-        ? withoutChoiceSources(
+        ? withoutChoiceGroups(
             currentChoices,
-            const {ChoiceSourceType.background},
+            previousBackgroundChoiceGroupKeys,
           )
         : withoutChoiceGroups(
             currentChoices,
@@ -256,6 +272,10 @@ class CharacterCreation extends _$CharacterCreation {
         ),
       ),
     );
+    state = state.copyWith(
+      backgroundChoiceGroupKeys: nextBackgroundChoiceGroupKeys.toList(),
+      backgroundChoiceGroups: choiceGroups,
+    );
   }
 
   void syncAttributesDraft(Map<String, int> attributes) {
@@ -267,7 +287,10 @@ class CharacterCreation extends _$CharacterCreation {
   void syncRacialAttributeChoicesDraft(List<CharacterChoiceData> choices) {
     final preserved = withoutChoiceGroups(
       state.character.choices ?? const <CharacterChoiceData>[],
-      racialAttributeChoiceGroups(state.character),
+      racialAttributeChoiceGroups(
+        state.character,
+        state.raceChoiceGroups,
+      ),
     );
 
     _updateCharacter(
@@ -280,8 +303,8 @@ class CharacterCreation extends _$CharacterCreation {
   void syncPrimaryClassDraft({
     required ClassData? classData,
     SubclassData? subclass,
-    List<ClassChoiceGroupView> choiceGroups = const [],
-    Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+    List<ChoiceGroupView> choiceGroups = const [],
+    Map<String, List<ChoiceOptionData>> selectedOptions = const {},
     List<CharacterSkillSelectionData> skillSelections = const [],
     List<CharacterSpellSelectionData> spellSelections = const [],
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections =
@@ -304,6 +327,7 @@ class CharacterCreation extends _$CharacterCreation {
       startingEquipmentSelections: startingEquipmentSelections,
       hasSpellCreationStep: hasSpellCreationStep,
     );
+    state = state.copyWith(classChoiceGroups: choiceGroups);
   }
 
   void setName(String? name) => _updateCharacter(
@@ -389,12 +413,9 @@ class CharacterCreation extends _$CharacterCreation {
         character: state.character.copyWith(
           race: race,
           choices: state.character.race?.id != race?.id
-              ? withoutChoiceSources(
+              ? withoutChoiceGroups(
                   state.character.choices ?? const <CharacterChoiceData>[],
-                  const {
-                    ChoiceSourceType.race,
-                    ChoiceSourceType.subrace,
-                  },
+                  _raceChoiceGroupKeys,
                 )
               : state.character.choices,
         ),
@@ -404,12 +425,9 @@ class CharacterCreation extends _$CharacterCreation {
         character: state.character.copyWith(
           subrace: subrace,
           choices: state.character.subrace?.id != subrace?.id
-              ? withoutChoiceSources(
+              ? withoutChoiceGroups(
                   state.character.choices ?? const <CharacterChoiceData>[],
-                  const {
-                    ChoiceSourceType.race,
-                    ChoiceSourceType.subrace,
-                  },
+                  _raceChoiceGroupKeys,
                 )
               : state.character.choices,
         ),
@@ -480,15 +498,9 @@ class CharacterCreation extends _$CharacterCreation {
       hpMode: HitPointMode.fixed,
     );
 
-    final preserved = withoutChoiceSources(
-      state.character.choices ?? const <CharacterChoiceData>[],
-      const {
-        ChoiceSourceType.classData,
-        ChoiceSourceType.subclass,
-        ChoiceSourceType.classFeature,
-        ChoiceSourceType.subclassFeature,
-      },
-    );
+    final preserved = (state.character.choices ?? const <CharacterChoiceData>[])
+        .where((choice) => choice.classEntry == null)
+        .toList();
 
     final linkedChoices = choices
         .map(
@@ -543,8 +555,8 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   List<CharacterChoiceData> buildClassChoices({
-    required Map<String, List<ClassChoiceOptionData>> selectedOptions,
-    required List<ClassChoiceGroupView> groups,
+    required Map<String, List<ChoiceOptionData>> selectedOptions,
+    required List<ChoiceGroupView> groups,
   }) {
     return buildGroupedChoices(
       selectedOptions: selectedOptions,
@@ -553,8 +565,8 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   List<CharacterChoiceData> buildBackgroundChoices({
-    required Map<String, List<ClassChoiceOptionData>> selectedOptions,
-    required List<ClassChoiceGroupView> groups,
+    required Map<String, List<ChoiceOptionData>> selectedOptions,
+    required List<ChoiceGroupView> groups,
   }) {
     return buildGroupedChoices(
       selectedOptions: selectedOptions,
@@ -574,6 +586,11 @@ class CharacterCreation extends _$CharacterCreation {
     ref.invalidate(classStateProvider);
     ref.invalidate(backgroundStateProvider);
   }
+
+  Set<String> get _raceChoiceGroupKeys => {
+        for (final view in state.raceChoiceGroups)
+          if (view.group case final group?) group.referenceKey,
+      };
 }
 
 List<CharacterNoteData>? _singleNoteList(String? value) {

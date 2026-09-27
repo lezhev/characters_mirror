@@ -1,22 +1,21 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 
 Map<String, int> buildCharacterCreationAbilityScores(
-  CharacterData character,
-  List<CharacterChoiceData> choices,
-) {
+    CharacterData character, List<CharacterChoiceData> choices,
+    {List<ChoiceGroupView> choiceGroups = const []}) {
   final scores = <String, int>{
     ...?character.baseAbilityScores,
   };
 
   final raceChoices = _racialChoicesForSource(
     choices,
-    ChoiceSourceType.race,
-    character.race?.id,
+    choiceGroups,
+    raceId: character.race?.id,
   );
   final subraceChoices = _racialChoicesForSource(
     choices,
-    ChoiceSourceType.subrace,
-    character.subrace?.id,
+    choiceGroups,
+    subraceId: character.subrace?.id,
   );
   final activeBonusMode = _resolveActiveBonusMode(raceChoices);
   final usesFlexibleBonuses =
@@ -29,6 +28,8 @@ Map<String, int> buildCharacterCreationAbilityScores(
   _applyRacialChoiceBonuses(
     scores,
     _filterChoicesForActiveBonusMode(raceChoices, activeBonusMode),
+    character: character,
+    choiceGroups: choiceGroups,
   );
 
   if (!usesFlexibleBonuses) {
@@ -40,6 +41,8 @@ Map<String, int> buildCharacterCreationAbilityScores(
   _applyRacialChoiceBonuses(
     scores,
     _filterChoicesForActiveBonusMode(subraceChoices, activeBonusMode),
+    character: character,
+    choiceGroups: choiceGroups,
   );
 
   return scores;
@@ -49,9 +52,9 @@ enum _BonusMode { racial, flexiblePlusTwoOne, flexibleThreePlusOne }
 
 _BonusMode _resolveActiveBonusMode(List<CharacterChoiceData> raceChoices) {
   for (final choice in raceChoices) {
-    if (choice.groupKey != 'race_bonus_mode') continue;
+    if (choice.groupKey?.endsWith('_ability_bonus_mode') != true) continue;
 
-    switch (choice.selectedText) {
+    switch (choice.optionKey) {
       case 'flexiblePlusTwoOne':
         return _BonusMode.flexiblePlusTwoOne;
       case 'flexibleThreePlusOne':
@@ -71,7 +74,7 @@ List<CharacterChoiceData> _filterChoicesForActiveBonusMode(
 ) {
   return choices.where((choice) {
     final groupKey = choice.groupKey;
-    if (groupKey == null || groupKey == 'race_bonus_mode') {
+    if (groupKey == null || groupKey.endsWith('_ability_bonus_mode')) {
       return false;
     }
 
@@ -80,25 +83,28 @@ List<CharacterChoiceData> _filterChoicesForActiveBonusMode(
       case _BonusMode.racial:
         return !isFlexible;
       case _BonusMode.flexiblePlusTwoOne:
-        return groupKey == 'race_flexible_bonus_plus2' ||
-            groupKey == 'race_flexible_bonus_plus1';
+        return groupKey.startsWith('race_flexible_bonus_plus2_') ||
+            groupKey.startsWith('race_flexible_bonus_plus1_');
       case _BonusMode.flexibleThreePlusOne:
-        return groupKey == 'race_flexible_bonus_three_plus1';
+        return groupKey.startsWith('race_flexible_bonus_three_plus1_');
     }
   }).toList();
 }
 
 List<CharacterChoiceData> _racialChoicesForSource(
   List<CharacterChoiceData> choices,
-  ChoiceSourceType sourceType,
-  int? sourceId,
-) {
-  if (sourceId == null) {
-    return const [];
-  }
-
+  List<ChoiceGroupView> choiceGroups, {
+  int? raceId,
+  int? subraceId,
+}) {
+  final groupsByKey = {
+    for (final view in choiceGroups)
+      if (view.group case final group?) group.referenceKey: group,
+  };
   return choices.where((choice) {
-    return choice.sourceType == sourceType && choice.sourceId == sourceId;
+    final group = groupsByKey[choice.groupKey];
+    return (raceId != null && group?.sourceRaceId == raceId) ||
+        (subraceId != null && group?.sourceSubraceId == subraceId);
   }).toList();
 }
 
@@ -111,22 +117,37 @@ void _applyFixedRaceBonuses(Map<String, int> scores, Map<String, int> bonuses) {
 }
 
 void _applyRacialChoiceBonuses(
-  Map<String, int> scores,
-  List<CharacterChoiceData> choices,
-) {
+    Map<String, int> scores, List<CharacterChoiceData> choices,
+    {required CharacterData character,
+    required List<ChoiceGroupView> choiceGroups}) {
+  final groupsByKey = {
+    for (final view in choiceGroups)
+      if (view.group case final group?) group.referenceKey: view,
+  };
   for (final choice in choices) {
-    final bonus = choice.selectedCount ?? 0;
-    final key = choice.selectedAbility?.name ?? choice.optionKey?.trim();
-    if (key == null || key.isEmpty || bonus == 0) {
-      continue;
+    final groupKey = choice.groupKey;
+    final optionKey = choice.optionKey;
+    if (groupKey == null || optionKey == null) continue;
+    final group = groupsByKey[groupKey]?.group;
+    final belongsToRace = group?.sourceRaceId == character.race?.id;
+    final belongsToSubrace = group?.sourceSubraceId == character.subrace?.id;
+    if (!belongsToRace && !belongsToSubrace) continue;
+    final option = groupsByKey[groupKey]
+        ?.options
+        ?.where(
+          (item) => item.optionKey == optionKey,
+        )
+        .firstOrNull;
+    if (option == null) continue;
+    final bonuses = option.grantedAbilityBonuses;
+    if (bonuses == null) continue;
+    for (final bonus in bonuses.entries) {
+      final abilityKey = _normalizeAbilityKey(bonus.key);
+      if (abilityKey == null) continue;
+      final score = scores[abilityKey];
+      if (score == null) continue;
+      scores[abilityKey] = (score + bonus.value).round();
     }
-
-    final abilityKey = _normalizeAbilityKey(key);
-    if (abilityKey == null) continue;
-
-    final score = scores[abilityKey];
-    if (score == null) continue;
-    scores[abilityKey] = score + bonus;
   }
 }
 

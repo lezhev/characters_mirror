@@ -265,6 +265,18 @@ class _OperationBuilder {
     _addIntField(
         'exhaustionLevel', previous.exhaustionLevel, next.exhaustionLevel);
     _addBoolField('inspiration', previous.inspiration, next.inspiration);
+    _addField(
+      'equippedArmor',
+      previous.equippedArmor,
+      next.equippedArmor,
+      (value) => CharacterSyncValueData(equipmentSelectionValue: value),
+    );
+    _addField(
+      'equippedShield',
+      previous.equippedShield,
+      next.equippedShield,
+      (value) => CharacterSyncValueData(equipmentSelectionValue: value),
+    );
     _addSkillProficiencyMembers();
     _addSavingThrowProficiencyMembers();
     _addField(

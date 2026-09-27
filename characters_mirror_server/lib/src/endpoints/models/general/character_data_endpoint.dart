@@ -6,6 +6,7 @@ import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_l
 import 'package:characters_mirror_server/src/validation/character_quota_validator.dart';
 import 'package:characters_mirror_server/src/validation/character_validator.dart';
 import 'package:characters_mirror_server/src/validation/character_proficiency_override_validator.dart';
+import 'package:characters_mirror_server/src/validation/character_equipment_selection_validator.dart';
 import 'package:characters_mirror_server/src/validation/rules.dart';
 import 'package:characters_mirror_server/src/validation/validation_exception.dart';
 import 'package:serverpod/serverpod.dart';

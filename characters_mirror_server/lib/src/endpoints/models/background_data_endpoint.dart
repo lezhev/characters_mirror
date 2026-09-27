@@ -21,30 +21,24 @@ class BackgroundDataEndpoint extends Endpoint {
       throw Exception('BackgroundData with id=$backgroundId was not found.');
     }
 
-    final groups = await ClassChoiceGroupData.db.find(
+    final groups = await ChoiceGroupData.db.find(
       session,
       where: (t) => t.sourceBackgroundId.equals(backgroundId),
-      orderBy: (t) => t.id,
+      orderBy: (t) => t.sortOrder,
     );
-    final choiceGroups = <ClassChoiceGroupView>[];
+    final choiceGroups = <ChoiceGroupView>[];
     for (final group in groups) {
-      if (_isMigratedSkillGroup(group)) {
-        continue;
-      }
-      final options = await ClassChoiceOptionData.db.find(
+      final options = await ChoiceOptionData.db.find(
         session,
         where: (t) => t.choiceGroupId.equals(group.id),
+        orderBy: (t) => t.sortOrder,
       );
       choiceGroups.add(
-        ClassChoiceGroupView(
+        ChoiceGroupView(
           group: group,
           options: options,
         ),
       );
-    }
-    final languageChoiceGroup = _buildLanguageChoiceGroup(backgrounds.first);
-    if (languageChoiceGroup != null && !_hasLanguageChoiceGroup(choiceGroups)) {
-      choiceGroups.add(languageChoiceGroup);
     }
 
     final startingEquipmentBlocks = await startingEquipmentBlockViews(
@@ -88,13 +82,6 @@ class BackgroundDataEndpoint extends Endpoint {
   }
 }
 
-bool _isMigratedSkillGroup(ClassChoiceGroupData group) {
-  return group.type == null &&
-      group.sourceBackgroundId != null &&
-      (group.exclusiveKey?.contains('skill') == true ||
-          group.name?.toLowerCase().contains('skill') == true);
-}
-
 List<SkillSelectionGroupView> _buildBackgroundSkillSelectionGroups(
   BackgroundData background,
 ) {
@@ -124,39 +111,4 @@ List<Skill> _uniqueSkills(List<Skill>? skills) {
     }
   }
   return result;
-}
-
-bool _hasLanguageChoiceGroup(List<ClassChoiceGroupView> groups) {
-  return groups.any((view) => view.group?.type == ClassChoiceType.language);
-}
-
-ClassChoiceGroupView? _buildLanguageChoiceGroup(BackgroundData background) {
-  final languageCount = background.languageCount ?? 0;
-  final backgroundId = background.id;
-  if (languageCount <= 0 || backgroundId == null) {
-    return null;
-  }
-
-  final groupId = -backgroundId;
-  return ClassChoiceGroupView(
-    group: ClassChoiceGroupData(
-      id: groupId,
-      name: 'Языки',
-      description: 'Выберите языки, которые дает предыстория.',
-      sourceBackgroundId: backgroundId,
-      type: ClassChoiceType.language,
-      selectionCount: languageCount,
-      exclusiveKey: 'background_${backgroundId}_language_pick',
-      allowDuplicates: false,
-    ),
-    options: [
-      for (final language in Language.values)
-        ClassChoiceOptionData(
-          choiceGroupId: groupId,
-          optionKey: language.name,
-          name: language.name,
-          grantedLanguages: [language],
-        ),
-    ],
-  );
 }

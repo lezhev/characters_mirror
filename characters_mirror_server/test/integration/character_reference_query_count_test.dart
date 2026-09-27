@@ -18,17 +18,26 @@ void main() {
             setupSession,
             ClassData(name: 'Reference query fixture', hitDieValue: 8),
           );
-          for (final name in const [
-            'Reference query choice A',
-            'Reference query choice B',
+          for (final key in const [
+            'reference_query_choice_a',
+            'reference_query_choice_b',
           ]) {
-            await ClassChoiceGroupData.db.insertRow(
+            final group = await ChoiceGroupData.db.insertRow(
               setupSession,
-              ClassChoiceGroupData(
-                name: name,
+              ChoiceGroupData(
+                referenceKey: key,
+                name: key,
                 sourceClassId: classData.id,
                 level: 1,
                 selectionCount: 1,
+              ),
+            );
+            await ChoiceOptionData.db.insertRow(
+              setupSession,
+              ChoiceOptionData(
+                choiceGroupId: group.id!,
+                optionKey: 'selected',
+                name: 'Selected',
               ),
             );
           }
@@ -97,6 +106,16 @@ void main() {
                   classOrder: 0,
                 ),
               ],
+              choices: [
+                CharacterChoiceData(
+                  groupKey: 'reference_query_choice_a',
+                  optionKey: 'selected',
+                ),
+                CharacterChoiceData(
+                  groupKey: 'reference_query_choice_b',
+                  optionKey: 'selected',
+                ),
+              ],
               startingEquipmentSelections: [
                 CharacterStartingEquipmentSelectionData(
                   sourceType: ChoiceSourceType.classData,
@@ -126,11 +145,11 @@ void main() {
           hasLength(1),
         );
         expect(
-          referenceLoads.where((key) => key == 'classChoiceGroups'),
+          referenceLoads.where((key) => key == 'choiceGroups'),
           hasLength(1),
         );
         expect(
-          referenceLoads.where((key) => key.startsWith('classChoiceOptions:')),
+          referenceLoads.where((key) => key.startsWith('choiceOptions:')),
           hasLength(1),
         );
       });

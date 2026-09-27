@@ -52,12 +52,34 @@ void main() {
       'strength': 10,
       'intelligence': 16,
     });
-    notifier.setChoices([
-      CharacterChoiceData(
-        sourceType: ChoiceSourceType.background,
-        selectedText: 'Драконий',
-      ),
-    ]);
+    final dragonbornGroup = ChoiceGroupData(
+      id: 10,
+      referenceKey: 'dragonborn_draconic_ancestry',
+      sourceRaceId: 1,
+      selectionCount: 1,
+    );
+    notifier.syncRaceDraft(
+      selectedRace: notifier.state.character.race,
+      choiceGroups: [
+        ChoiceGroupView(
+          group: dragonbornGroup,
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 10,
+              optionKey: 'red_dragon',
+              name: 'Драконий',
+            ),
+          ],
+        ),
+      ],
+      raceChoices: [
+        CharacterChoiceData(
+          groupKey: 'dragonborn_draconic_ancestry',
+          optionKey: 'red_dragon',
+          selectionIndex: 0,
+        ),
+      ],
+    );
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -112,13 +134,34 @@ void main() {
       'dexterity': 14,
       'wisdom': 12,
     });
+    final abilityGroup = ChoiceGroupData(
+      id: 11,
+      referenceKey: 'test_race_ability_choice',
+      sourceRaceId: 1,
+      type: ChoiceType.abilityIncrease,
+      selectionCount: 1,
+    );
+    notifier.syncRaceDraft(
+      selectedRace: notifier.state.character.race,
+      selectedSubrace: notifier.state.character.subrace,
+      choiceGroups: [
+        ChoiceGroupView(
+          group: abilityGroup,
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 11,
+              optionKey: 'wisdom_plus_one',
+              grantedAbilityBonuses: const {'wisdom': 1},
+            ),
+          ],
+        ),
+      ],
+    );
     notifier.syncRacialAttributeChoicesDraft([
       CharacterChoiceData(
-        sourceType: ChoiceSourceType.race,
-        sourceId: 1,
-        groupKey: 'race_choice_10_bonus_1',
-        selectedAbility: Ability.wisdom,
-        selectedCount: 1,
+        groupKey: 'test_race_ability_choice',
+        optionKey: 'wisdom_plus_one',
+        selectionIndex: 0,
       ),
     ]);
 

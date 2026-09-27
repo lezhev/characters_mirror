@@ -1,0 +1,4 @@
+class: ChoiceGroupView
+fields:
+  group: ChoiceGroupData?
+  options: List<ChoiceOptionData>?

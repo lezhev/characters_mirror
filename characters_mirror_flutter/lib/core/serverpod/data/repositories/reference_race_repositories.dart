@@ -101,62 +101,6 @@ class RaceFeatureRepository implements Repository<RaceFeatureData> {
   Future<void> delete(int id) => client.raceFeature.delete(id);
 }
 
-class RaceChoiceSetRepository implements Repository<RaceChoiceSetData> {
-  @override
-  Future<List<RaceChoiceSetData>> getAll() => cachedListFallback(
-        cache: offlineCacheDatabase,
-        kind: 'race_choice_set',
-        loadRemote: client.raceChoiceSetData.getAll,
-        toJson: (value) => value.toJson(),
-        fromJson: RaceChoiceSetData.fromJson,
-      );
-
-  @override
-  Future<RaceChoiceSetData?> getById(int id) async {
-    final all = await getAll();
-    try {
-      return all.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  @override
-  Future<RaceChoiceSetData> upsert(RaceChoiceSetData entity) =>
-      client.raceChoiceSetData.upsert(entity);
-
-  @override
-  Future<void> delete(int id) => client.raceChoiceSetData.delete(id);
-}
-
-class RaceChoiceOptionRepository implements Repository<RaceChoiceOptionData> {
-  @override
-  Future<List<RaceChoiceOptionData>> getAll() => cachedListFallback(
-        cache: offlineCacheDatabase,
-        kind: 'race_choice_option',
-        loadRemote: client.raceChoiceOptionData.getAll,
-        toJson: (value) => value.toJson(),
-        fromJson: RaceChoiceOptionData.fromJson,
-      );
-
-  @override
-  Future<RaceChoiceOptionData?> getById(int id) async {
-    final all = await getAll();
-    try {
-      return all.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  @override
-  Future<RaceChoiceOptionData> upsert(RaceChoiceOptionData entity) =>
-      client.raceChoiceOptionData.upsert(entity);
-
-  @override
-  Future<void> delete(int id) => client.raceChoiceOptionData.delete(id);
-}
-
 class RaceFeatureSpellGrantRepository
     implements Repository<RaceFeatureSpellGrantData> {
   @override

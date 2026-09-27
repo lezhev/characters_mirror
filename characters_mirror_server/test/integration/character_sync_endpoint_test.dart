@@ -319,7 +319,9 @@ void main() {
         ownerSession,
         saved.id!,
       );
-      expect(current.equipment?.single.quantity, 2);
+      expect(current.equipment, hasLength(1));
+      expect(current.equipment?.single.name, 'Rope x2');
+      expect(current.equipment?.single.quantity, 1);
       expect(current.attacks?.single.damage, '1d8');
     });
 

@@ -1,8 +1,8 @@
 part of '../character_data_endpoint.dart';
 
 class _ResolvedDerivedSources {
-  final List<ClassChoiceOptionData> classBackgroundOptions;
-  final List<RaceChoiceOptionData> raceOptions;
+  final List<ChoiceOptionData> classBackgroundOptions;
+  final List<ChoiceOptionData> raceOptions;
   final List<ClassFeatureData> currentClassFeatures;
   final List<SubclassFeatureData> currentSubclassFeatures;
   final List<String> alwaysPreparedSpellKeys;
@@ -142,7 +142,16 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     currentSubclassFeatureLevels: currentSubclassFeatureLevels,
   );
 
-  final allGroups = await context.classChoiceGroups(
+  final currentRaceFeatures =
+      _currentRaceFeaturesBySource(character, entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
+  final raceFeatureIds = {
+    for (final feature in [
+      ...currentRaceFeatures.raceFeatures,
+      ...currentRaceFeatures.subraceFeatures,
+    ])
+      if (feature.id != null) feature.id!,
+  };
+  final allGroups = await context.choiceGroups(
     transaction: transaction,
   );
   final relevantGroups = allGroups.where((group) {
@@ -157,55 +166,296 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
         currentSubclassFeatureIds.contains(group.sourceSubclassFeatureId);
     final byBackground = group.sourceBackgroundId != null &&
         group.sourceBackgroundId == character.background?.id;
+    final byRace = group.sourceRaceId != null &&
+        group.sourceRaceId == character.race?.id;
+    final bySubrace = group.sourceSubraceId != null &&
+        group.sourceSubraceId == character.subrace?.id;
+    final byRaceFeature = group.sourceRaceFeatureId != null &&
+        raceFeatureIds.contains(group.sourceRaceFeatureId);
 
     return byClass ||
         bySubclass ||
         byFeature ||
         bySubclassFeature ||
-        byBackground;
+        byBackground ||
+        byRace ||
+        bySubrace ||
+        byRaceFeature;
   }).toList();
+
+  for (final group in relevantGroups) {
+    _validateChoiceGroupSourceInvariant(group);
+  }
 
   final relevantGroupIds = {
     for (final group in relevantGroups)
       if (group.id != null) group.id!,
   };
-  final options = await context.classChoiceOptions(
+  final options = await context.choiceOptions(
     relevantGroupIds,
     transaction: transaction,
   );
-  final optionsByGroupId = <int, List<ClassChoiceOptionData>>{};
+  final optionsByGroupId = <int, List<ChoiceOptionData>>{};
   for (final option in options) {
     optionsByGroupId.putIfAbsent(option.choiceGroupId, () => []).add(option);
   }
-  final optionsByGroupKey = <String, Map<String, ClassChoiceOptionData>>{};
+  final optionsByGroupKey = <String, Map<String, ChoiceOptionData>>{};
   for (final group in relevantGroups) {
     final groupId = group.id;
     if (groupId == null) continue;
-    optionsByGroupKey[_classChoiceGroupKey(group)] = {
+    optionsByGroupKey[group.referenceKey] = {
       for (final option
-          in optionsByGroupId[groupId] ?? const <ClassChoiceOptionData>[])
-        if (_normalizedTextOrNull(option.optionKey) != null)
-          option.optionKey!.trim(): option,
+          in optionsByGroupId[groupId] ?? const <ChoiceOptionData>[])
+        if (option.optionKey.trim().isNotEmpty)
+          option.optionKey.trim(): option,
     };
   }
 
-  final classBackgroundOptions = <ClassChoiceOptionData>[];
-  for (final choice in choices.where(_isClassOrBackgroundChoice)) {
+  final classBackgroundOptions = <ChoiceOptionData>[];
+  final raceOptions = <ChoiceOptionData>[];
+  final selectedByGroupKey = <String, List<_SelectedGenericChoice>>{};
+  for (final choice in choices) {
     final groupKey = choice.groupKey;
     final optionKey = _normalizedTextOrNull(choice.optionKey);
-    if (groupKey == null || optionKey == null) continue;
+    if (groupKey == null || optionKey == null) {
+      throw InputValidationException(
+        'choices',
+        'A generic choice requires groupKey and optionKey.',
+      );
+    }
 
+    final group = relevantGroups.where((item) => item.referenceKey == groupKey);
+    if (group.length != 1) {
+      throw InputValidationException(
+        'choices',
+        'Choice group "$groupKey" is unavailable for this character.',
+      );
+    }
+    final selectedGroup = group.single;
     final option = optionsByGroupKey[groupKey]?[optionKey];
-    if (option != null) {
+    if (option == null || option.choiceGroupId != selectedGroup.id) {
+      throw InputValidationException(
+        'choices',
+        'Choice option "$optionKey" is not part of group "$groupKey".',
+      );
+    }
+
+    _validateChoiceClassEntryBinding(choice, selectedGroup, character);
+    selectedByGroupKey.putIfAbsent(groupKey, () => []).add(
+          _SelectedGenericChoice(choice, option),
+        );
+
+    if (selectedGroup.sourceClassId != null ||
+        selectedGroup.sourceSubclassId != null ||
+        selectedGroup.sourceFeatureId != null ||
+        selectedGroup.sourceSubclassFeatureId != null) {
       classBackgroundOptions.add(option);
+    } else {
+      raceOptions.add(option);
     }
   }
 
+  _validateGenericChoiceSelectionRules(selectedByGroupKey, relevantGroups);
+  await _validateGenericChoiceReferenceKeys(
+    session,
+    [for (final selected in selectedByGroupKey.values) ...selected.map((e) => e.option)],
+    transaction: transaction,
+  );
+
   return _ResolvedDerivedSources(
     classBackgroundOptions: classBackgroundOptions,
-    raceOptions: _selectedRaceChoiceOptions(character, choices),
+    raceOptions: raceOptions,
     currentClassFeatures: currentClassFeatures,
     currentSubclassFeatures: currentSubclassFeatures,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
   );
+}
+
+class _SelectedGenericChoice {
+  const _SelectedGenericChoice(this.choice, this.option);
+
+  final CharacterChoiceData choice;
+  final ChoiceOptionData option;
+}
+
+void _validateGenericChoiceSelectionRules(
+  Map<String, List<_SelectedGenericChoice>> selectedByGroupKey,
+  List<ChoiceGroupData> groups,
+) {
+  final groupsByKey = {
+    for (final group in groups) group.referenceKey: group,
+  };
+  final exclusiveGroups = <String, String>{};
+  for (final entry in selectedByGroupKey.entries) {
+    final group = groupsByKey[entry.key]!;
+    final selections = entry.value;
+    final selectionCount = group.selectionCount ?? 1;
+    if (selections.length > selectionCount) {
+      throw InputValidationException(
+        'choices.${entry.key}',
+        'selects ${selections.length} options; maximum is $selectionCount.',
+      );
+    }
+    final optionKeys = <String>{};
+    final selectionIndices = <int>{};
+    for (final selection in selections) {
+      if (group.allowDuplicates != true &&
+          !optionKeys.add(selection.option.optionKey)) {
+        throw InputValidationException(
+          'choices.${entry.key}',
+          'does not allow duplicate option keys.',
+        );
+      }
+      final index = selection.choice.selectionIndex;
+      if (index != null && !selectionIndices.add(index)) {
+        throw InputValidationException(
+          'choices.${entry.key}',
+          'duplicates selection index $index.',
+        );
+      }
+    }
+    final exclusiveKey = group.exclusiveKey?.trim();
+    if (exclusiveKey == null || exclusiveKey.isEmpty) continue;
+    final previous = exclusiveGroups[exclusiveKey];
+    if (previous != null && previous != entry.key) {
+      throw InputValidationException(
+        'choices.${entry.key}',
+        'conflicts with choice group "$previous".',
+      );
+    }
+    exclusiveGroups[exclusiveKey] = entry.key;
+  }
+}
+
+void _validateChoiceClassEntryBinding(
+  CharacterChoiceData choice,
+  ChoiceGroupData group,
+  CharacterData character,
+) {
+  final classSource = group.sourceClassId != null ||
+      group.sourceSubclassId != null ||
+      group.sourceFeatureId != null ||
+      group.sourceSubclassFeatureId != null;
+  if (!classSource) {
+    if (choice.classEntry != null) {
+      throw InputValidationException(
+        'choices.${group.referenceKey}.classEntry',
+        'is only valid for a class-sourced choice group.',
+      );
+    }
+    return;
+  }
+
+  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
+  final matchingEntries = entries.where((entry) {
+    final classId = entry.classData?.id;
+    final subclassId = entry.subclass?.id;
+    if (group.sourceClassId != null && classId != group.sourceClassId) {
+      return false;
+    }
+    if (group.sourceSubclassId != null &&
+        subclassId != group.sourceSubclassId) {
+      return false;
+    }
+    if (group.sourceFeatureId != null && classId == null) return false;
+    if (group.sourceSubclassFeatureId != null && subclassId == null) {
+      return false;
+    }
+    return true;
+  }).toList();
+  if (matchingEntries.isEmpty) {
+    throw InputValidationException(
+      'choices.${group.referenceKey}.classEntry',
+      'must match an active class or subclass source.',
+    );
+  }
+
+  final classEntryId = choice.classEntry?.id;
+  if (classEntryId == null) {
+    if (matchingEntries.length > 1) {
+      throw InputValidationException(
+        'choices.${group.referenceKey}.classEntry',
+        'is required when multiple matching class entries exist.',
+      );
+    }
+    return;
+  }
+  if (matchingEntries.where((entry) => entry.id == classEntryId).length != 1) {
+    throw InputValidationException(
+      'choices.${group.referenceKey}.classEntry',
+      'does not match the choice group source.',
+    );
+  }
+}
+
+Future<void> _validateGenericChoiceReferenceKeys(
+  Session session,
+  List<ChoiceOptionData> selectedOptions, {
+  Transaction? transaction,
+}) async {
+  final toolKeys = <String>{};
+  final spellKeys = <String>{};
+  for (final option in selectedOptions) {
+    toolKeys.addAll(option.grantedToolKeys ?? const <String>[]);
+    spellKeys.addAll(option.grantedSpellKeys ?? const <String>[]);
+  }
+  if (toolKeys.any((key) => key.trim().isEmpty || key != key.trim())) {
+    throw InputValidationException(
+      'choices.grantedToolKeys',
+      'must contain canonical, non-empty ToolData.referenceKey values.',
+    );
+  }
+  if (spellKeys.any((key) => key.trim().isEmpty || key != key.trim())) {
+    throw InputValidationException(
+      'choices.grantedSpellKeys',
+      'must contain canonical, non-empty SpellData.referenceKey values.',
+    );
+  }
+  final tools = toolKeys.isEmpty
+      ? const <ToolData>[]
+      : await ToolData.db.find(
+          session,
+          where: (t) => t.referenceKey.inSet(toolKeys),
+          transaction: transaction,
+        );
+  final spells = spellKeys.isEmpty
+      ? const <SpellData>[]
+      : await SpellData.db.find(
+          session,
+          where: (t) => t.referenceKey.inSet(spellKeys),
+          transaction: transaction,
+        );
+  final knownTools = tools.map((tool) => tool.referenceKey).toSet();
+  final knownSpells = spells.map((spell) => spell.referenceKey).toSet();
+  for (final key in toolKeys.difference(knownTools)) {
+    throw InputValidationException(
+      'choices.grantedToolKeys',
+      'unknown ToolData.referenceKey "$key".',
+    );
+  }
+  for (final key in spellKeys.difference(knownSpells)) {
+    throw InputValidationException(
+      'choices.grantedSpellKeys',
+      'unknown SpellData.referenceKey "$key".',
+    );
+  }
+}
+
+void _validateChoiceGroupSourceInvariant(ChoiceGroupData group) {
+  final sourceCount = [
+    group.sourceClassId,
+    group.sourceSubclassId,
+    group.sourceFeatureId,
+    group.sourceSubclassFeatureId,
+    group.sourceRaceId,
+    group.sourceSubraceId,
+    group.sourceRaceFeatureId,
+    group.sourceBackgroundId,
+  ].where((id) => id != null).length;
+  if (sourceCount != 1) {
+    throw InputValidationException(
+      'choiceGroups.${group.referenceKey}',
+      'A choice group must have exactly one source relation.',
+    );
+  }
 }

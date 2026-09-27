@@ -17,7 +17,6 @@ import '../../../data/general/feature_resource_definition_data.dart' as _i5;
 import '../../../data/general/feature_resource_effect_data.dart' as _i6;
 import '../../../enums/feature_tag.dart' as _i7;
 import '../../../data/general/race/race_feature_spell_grant_data.dart' as _i8;
-import '../../../data/general/race/race_choice_set_data.dart' as _i9;
 
 abstract class RaceFeatureData implements _i1.SerializableModel {
   RaceFeatureData._({
@@ -40,7 +39,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     this.resourceEffects,
     this.tags,
     this.spellGrants,
-    this.choiceSets,
   });
 
   factory RaceFeatureData({
@@ -63,7 +61,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     List<_i6.FeatureResourceEffectData>? resourceEffects,
     List<_i7.FeatureTag>? tags,
     List<_i8.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i9.RaceChoiceSetData>? choiceSets,
   }) = _RaceFeatureDataImpl;
 
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -110,10 +107,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
           ?.map((e) => _i8.RaceFeatureSpellGrantData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
-      choiceSets: (jsonSerialization['choiceSets'] as List?)
-          ?.map((e) =>
-              _i9.RaceChoiceSetData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
     );
   }
 
@@ -158,8 +151,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
 
   List<_i8.RaceFeatureSpellGrantData>? spellGrants;
 
-  List<_i9.RaceChoiceSetData>? choiceSets;
-
   /// Returns a shallow copy of this [RaceFeatureData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -183,7 +174,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     List<_i6.FeatureResourceEffectData>? resourceEffects,
     List<_i7.FeatureTag>? tags,
     List<_i8.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i9.RaceChoiceSetData>? choiceSets,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -211,8 +201,6 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
-      if (choiceSets != null)
-        'choiceSets': choiceSets?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -245,7 +233,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     List<_i6.FeatureResourceEffectData>? resourceEffects,
     List<_i7.FeatureTag>? tags,
     List<_i8.RaceFeatureSpellGrantData>? spellGrants,
-    List<_i9.RaceChoiceSetData>? choiceSets,
   }) : super._(
           id: id,
           raceId: raceId,
@@ -266,7 +253,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           resourceEffects: resourceEffects,
           tags: tags,
           spellGrants: spellGrants,
-          choiceSets: choiceSets,
         );
 
   /// Returns a shallow copy of this [RaceFeatureData]
@@ -293,7 +279,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? resourceEffects = _Undefined,
     Object? tags = _Undefined,
     Object? spellGrants = _Undefined,
-    Object? choiceSets = _Undefined,
   }) {
     return RaceFeatureData(
       id: id is int? ? id : this.id,
@@ -326,9 +311,6 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       spellGrants: spellGrants is List<_i8.RaceFeatureSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
-      choiceSets: choiceSets is List<_i9.RaceChoiceSetData>?
-          ? choiceSets
-          : this.choiceSets?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

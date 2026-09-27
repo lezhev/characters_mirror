@@ -9,9 +9,9 @@ class _CharacterResolveContext {
   final Session session;
   final void Function(String key)? _onReferenceLoad;
 
-  Future<List<ClassChoiceGroupData>>? _classChoiceGroups;
+  Future<List<ChoiceGroupData>>? _choiceGroups;
   Future<List<ClassSpellGrantData>>? _classSpellGrants;
-  final Map<int, Future<List<ClassChoiceOptionData>>> _classChoiceOptions = {};
+  final Map<int, Future<List<ChoiceOptionData>>> _choiceOptions = {};
   final Map<String, Future<List<ClassFeatureData>>> _classFeatures = {};
   final Map<String, Future<List<SubclassFeatureData>>> _subclassFeatures = {};
   final Map<String, Future<List<StartingEquipmentBlockView>>>
@@ -23,38 +23,39 @@ class _CharacterResolveContext {
       {};
   final Map<int, Future<FeatData?>> _feats = {};
 
-  Future<List<ClassChoiceGroupData>> classChoiceGroups({
+  Future<List<ChoiceGroupData>> choiceGroups({
     Transaction? transaction,
   }) {
-    return _classChoiceGroups ??= _load(
-      'classChoiceGroups',
-      () => ClassChoiceGroupData.db.find(
+    return _choiceGroups ??= _load(
+      'choiceGroups',
+      () => ChoiceGroupData.db.find(
         session,
-        orderBy: (t) => t.id,
+        orderBy: (t) => t.referenceKey,
         transaction: transaction,
       ),
     );
   }
 
-  Future<List<ClassChoiceOptionData>> classChoiceOptions(
+  Future<List<ChoiceOptionData>> choiceOptions(
     Set<int> groupIds, {
     Transaction? transaction,
   }) {
     if (groupIds.isEmpty) {
-      return Future.value(const <ClassChoiceOptionData>[]);
+      return Future.value(const <ChoiceOptionData>[]);
     }
-    final missingIds = groupIds.difference(_classChoiceOptions.keys.toSet());
+    final missingIds = groupIds.difference(_choiceOptions.keys.toSet());
     if (missingIds.isNotEmpty) {
       final batch = _load(
-        'classChoiceOptions:${_sortedKey(missingIds)}',
-        () => ClassChoiceOptionData.db.find(
+        'choiceOptions:${_sortedKey(missingIds)}',
+        () => ChoiceOptionData.db.find(
           session,
           where: (t) => t.choiceGroupId.inSet(missingIds),
+          orderBy: (t) => t.sortOrder,
           transaction: transaction,
         ),
       );
       for (final groupId in missingIds) {
-        _classChoiceOptions[groupId] = batch.then(
+        _choiceOptions[groupId] = batch.then(
           (options) => [
             for (final option in options)
               if (option.choiceGroupId == groupId) option,
@@ -63,7 +64,7 @@ class _CharacterResolveContext {
       }
     }
     return Future.wait([
-      for (final groupId in groupIds) _classChoiceOptions[groupId]!,
+      for (final groupId in groupIds) _choiceOptions[groupId]!,
     ]).then((groups) => [for (final options in groups) ...options]);
   }
 

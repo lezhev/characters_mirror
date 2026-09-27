@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_operation_replay.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_sync_operations.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_target_keys.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +12,138 @@ void main() {
   });
 
   String changeId() => 'change-${nextId++}';
+
+  test('generic choice update survives sync payload serialization and replay',
+      () {
+    final previous = CharacterData(
+      id: 42,
+      version: 7,
+      choices: [
+        CharacterChoiceData(
+          id: 'choice-a',
+          groupKey: 'race_language_choice',
+          optionKey: 'common',
+          selectionIndex: 0,
+        ),
+      ],
+    );
+    final next = previous.copyWith(
+      choices: [
+        CharacterChoiceData(
+          id: 'choice-a',
+          groupKey: 'race_language_choice',
+          optionKey: 'elvish',
+          selectionIndex: 0,
+        ),
+      ],
+    );
+
+    final operations = buildCharacterSyncOperations(
+      previous: previous,
+      next: next,
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 9, 26),
+      nextChangeId: changeId,
+    );
+
+    expect(operations, hasLength(1));
+    final decoded = CharacterSyncOperationData.fromJson(
+      operations.single.toJson(),
+    );
+    expect(decoded.type, CharacterSyncOperationType.upsertListItem);
+    expect(decoded.targetId, 'choice-a');
+    expect(decoded.itemPayload?.choiceValue?.groupKey, 'race_language_choice');
+    expect(decoded.itemPayload?.choiceValue?.optionKey, 'elvish');
+
+    final replayed = replayCharacterSyncOperation(previous, decoded);
+    expect(replayed.choices, hasLength(1));
+    expect(replayed.choices!.single.id, 'choice-a');
+    expect(replayed.choices!.single.groupKey, 'race_language_choice');
+    expect(replayed.choices!.single.optionKey, 'elvish');
+  });
+
+  test('equipped armor set, replace, and clear survive sync replay', () {
+    final leather = CharacterEquipmentSelectionData(
+      referenceKey: 'leather_armor',
+      name: 'Кожаный доспех',
+    );
+    final chain = CharacterEquipmentSelectionData(
+      referenceKey: 'chain_mail',
+      name: 'Кольчуга',
+    );
+    final empty = CharacterData(id: 42, version: 7);
+    final setOperations = buildCharacterSyncOperations(
+      previous: empty,
+      next: empty.copyWith(equippedArmor: leather),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 9, 26),
+      nextChangeId: changeId,
+    );
+    expect(setOperations, hasLength(1));
+    expect(setOperations.single.fieldPath, 'equippedArmor');
+    final setReplay = replayCharacterSyncOperation(
+      empty,
+      CharacterSyncOperationData.fromJson(setOperations.single.toJson()),
+    );
+    expect(setReplay.equippedArmor?.referenceKey, 'leather_armor');
+
+    final replaceOperations = buildCharacterSyncOperations(
+      previous: empty.copyWith(equippedArmor: leather),
+      next: empty.copyWith(equippedArmor: chain),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 9, 26),
+      nextChangeId: changeId,
+    );
+    expect(replaceOperations, hasLength(1));
+    final replaceReplay = replayCharacterSyncOperation(
+      empty.copyWith(equippedArmor: leather),
+      CharacterSyncOperationData.fromJson(replaceOperations.single.toJson()),
+    );
+    expect(replaceReplay.equippedArmor?.referenceKey, 'chain_mail');
+
+    final clearOperations = buildCharacterSyncOperations(
+      previous: empty.copyWith(equippedArmor: chain),
+      next: empty,
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 9, 26),
+      nextChangeId: changeId,
+    );
+    expect(clearOperations, hasLength(1));
+    final clearReplay = replayCharacterSyncOperation(
+      empty.copyWith(equippedArmor: chain),
+      CharacterSyncOperationData.fromJson(clearOperations.single.toJson()),
+    );
+    expect(clearReplay.equippedArmor, isNull);
+  });
+
+  test('equipped shield is an independent sync target', () {
+    final previous = CharacterData(id: 42, version: 7);
+    final operations = buildCharacterSyncOperations(
+      previous: previous,
+      next: previous.copyWith(
+        equippedShield: CharacterEquipmentSelectionData(
+          referenceKey: 'shield',
+          name: 'Щит',
+        ),
+      ),
+      localId: 42,
+      serverId: 42,
+      createdAt: DateTime.utc(2026, 9, 26),
+      nextChangeId: changeId,
+    );
+
+    expect(operations, hasLength(1));
+    expect(operations.single.fieldPath, 'equippedShield');
+    final replayed = replayCharacterSyncOperation(
+      previous,
+      CharacterSyncOperationData.fromJson(operations.single.toJson()),
+    );
+    expect(replayed.equippedShield?.referenceKey, 'shield');
+  });
 
   test('independent scalar changes produce separate targets', () {
     final operations = buildCharacterSyncOperations(

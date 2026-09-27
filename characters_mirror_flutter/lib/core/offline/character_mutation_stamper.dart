@@ -509,8 +509,8 @@ List<CharacterChoiceData>? _normalizedChoices(
     for (final choice in choices ?? const <CharacterChoiceData>[])
       choice.copyWith(
         id: choice.id ?? createCharacterSyncItemId(),
-        selectedToolKey: _normalizedText(choice.selectedToolKey),
-        selectedText: _normalizedText(choice.selectedText),
+        groupKey: _normalizedText(choice.groupKey),
+        optionKey: _normalizedText(choice.optionKey),
         updatedAt: choice.updatedAt?.toUtc() ?? updatedAt,
       ),
   ];

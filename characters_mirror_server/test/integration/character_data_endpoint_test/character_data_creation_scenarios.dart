@@ -30,12 +30,8 @@ void _registerCharacterDataCreationScenarios(
         useFlexibleAbilityBonuses: false,
         choices: [
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.race,
-            sourceId: fixture.race.id,
             groupKey: fixture.anyBonusGroupKey,
             optionKey: Ability.dexterity.name,
-            selectedAbility: Ability.dexterity,
-            selectedCount: 1,
           ),
         ],
       ),
@@ -70,34 +66,20 @@ void _registerCharacterDataCreationScenarios(
         useFlexibleAbilityBonuses: true,
         choices: [
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.race,
-            sourceId: fixture.race.id,
             groupKey: 'race_bonus_mode',
-            selectedText: 'flexiblePlusTwoOne',
+            optionKey: 'flexible_plus_two_one',
           ),
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.race,
-            sourceId: fixture.race.id,
             groupKey: 'race_flexible_bonus_plus2',
             optionKey: Ability.strength.name,
-            selectedAbility: Ability.strength,
-            selectedCount: 2,
           ),
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.race,
-            sourceId: fixture.race.id,
             groupKey: 'race_flexible_bonus_plus1',
             optionKey: Ability.dexterity.name,
-            selectedAbility: Ability.dexterity,
-            selectedCount: 1,
           ),
           CharacterChoiceData(
-            sourceType: ChoiceSourceType.race,
-            sourceId: fixture.race.id,
             groupKey: fixture.anyBonusGroupKey,
             optionKey: Ability.wisdom.name,
-            selectedAbility: Ability.wisdom,
-            selectedCount: 1,
           ),
         ],
       ),
@@ -107,7 +89,163 @@ void _registerCharacterDataCreationScenarios(
     expect(scores['charisma'], 10);
     expect(scores['strength'], 12);
     expect(scores['dexterity'], 11);
-    expect(scores['wisdom'], 10);
+    expect(scores['wisdom'], 11);
+  });
+
+  test('generic class choice resolves its typed tool grant', () async {
+    final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+    final entry = CharacterClassEntryData(
+      id: 'generic-choice-class-entry',
+      classData: fixture.classData,
+      level: 1,
+      classOrder: 0,
+      isStartingClass: true,
+    );
+    final session = sessionBuilder.build();
+    late ChoiceGroupData group;
+    try {
+      await _ensureToolData(
+        session,
+        referenceKey: 'thieves_tools',
+        name: 'Thieves’ tools',
+        category: ToolCategory.artisan,
+      );
+      group = await ChoiceGroupData.db.insertRow(
+        session,
+        ChoiceGroupData(
+          referenceKey: 'test_class_tool_choice',
+          name: 'Tool choice',
+          sourceClassId: fixture.classData.id,
+          level: 1,
+          selectionCount: 1,
+        ),
+      );
+      await ChoiceOptionData.db.insertRow(
+        session,
+        ChoiceOptionData(
+          choiceGroupId: group.id!,
+          optionKey: 'thieves_tools',
+          name: 'Thieves’ tools',
+          grantedToolKeys: const ['thieves_tools'],
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(412),
+      CharacterData(
+        name: 'Generic class choice',
+        classEntries: [entry],
+        choices: [
+          CharacterChoiceData(
+            classEntry: entry,
+            groupKey: 'test_class_tool_choice',
+            optionKey: 'thieves_tools',
+            selectionIndex: 0,
+          ),
+        ],
+      ),
+    );
+
+    expect(saved.derived!.toolProficiencyKeys, ['thieves_tools']);
+  });
+
+  test('generic racial choice applies its typed ability bonus', () async {
+    final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+    final session = sessionBuilder.build();
+    try {
+      final group = await ChoiceGroupData.db.insertRow(
+        session,
+        ChoiceGroupData(
+          referenceKey: 'test_race_dexterity_choice',
+          sourceRaceId: fixture.race.id,
+          type: ChoiceType.abilityIncrease,
+          selectionCount: 1,
+        ),
+      );
+      await ChoiceOptionData.db.insertRow(
+        session,
+        ChoiceOptionData(
+          choiceGroupId: group.id!,
+          optionKey: 'dexterity_plus_one',
+          name: 'Dexterity +1',
+          grantedAbilityBonuses: const {'dexterity': 1},
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(413),
+      CharacterData(
+        name: 'Generic racial ability choice',
+        race: fixture.race,
+        baseAbilityScores: const {'dexterity': 10},
+        choices: [
+          CharacterChoiceData(
+            groupKey: 'test_race_dexterity_choice',
+            optionKey: 'dexterity_plus_one',
+            selectionIndex: 0,
+          ),
+        ],
+      ),
+    );
+
+    expect(saved.derived!.abilityScores!['dexterity'], 11);
+  });
+
+  test('generic choices reject grants for unknown tool reference keys',
+      () async {
+    final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+    final session = sessionBuilder.build();
+    late ChoiceGroupData group;
+    try {
+      group = await ChoiceGroupData.db.insertRow(
+        session,
+        ChoiceGroupData(
+          referenceKey: 'test_unknown_tool_grant',
+          sourceClassId: fixture.classData.id,
+          selectionCount: 1,
+        ),
+      );
+      await ChoiceOptionData.db.insertRow(
+        session,
+        ChoiceOptionData(
+          choiceGroupId: group.id!,
+          optionKey: 'unknown_tool',
+          grantedToolKeys: const ['not_a_tool_reference'],
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    await expectLater(
+      endpoints.characterData.saveCharacter(
+        authenticatedSession(414),
+        CharacterData(
+          name: 'Unknown generic tool grant',
+          classEntries: [
+            CharacterClassEntryData(
+              id: 'unknown-tool-entry',
+              classData: fixture.classData,
+              level: 1,
+              isStartingClass: true,
+            ),
+          ],
+          choices: [
+            CharacterChoiceData(
+              groupKey: 'test_unknown_tool_grant',
+              optionKey: 'unknown_tool',
+            ),
+          ],
+        ),
+      ),
+      throwsA(isA<InputValidationException>()),
+    );
   });
 
   test(

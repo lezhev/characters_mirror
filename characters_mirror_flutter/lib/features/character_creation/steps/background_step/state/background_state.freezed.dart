@@ -17,7 +17,7 @@ mixin _$BackgroundStateModel {
   List<BackgroundData> get allBackgrounds;
   BackgroundData? get selectedBackground;
   BackgroundStepView? get stepView;
-  Map<String, List<ClassChoiceOptionData>> get selectedOptions;
+  Map<String, List<ChoiceOptionData>> get selectedOptions;
   List<CharacterSkillSelectionData> get selectedSkillSelections;
   List<CharacterStartingEquipmentSelectionData> get startingEquipmentSelections;
 
@@ -75,7 +75,7 @@ abstract mixin class $BackgroundStateModelCopyWith<$Res> {
       {List<BackgroundData> allBackgrounds,
       BackgroundData? selectedBackground,
       BackgroundStepView? stepView,
-      Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      Map<String, List<ChoiceOptionData>> selectedOptions,
       List<CharacterSkillSelectionData> selectedSkillSelections,
       List<CharacterStartingEquipmentSelectionData>
           startingEquipmentSelections});
@@ -117,7 +117,7 @@ class _$BackgroundStateModelCopyWithImpl<$Res>
       selectedOptions: null == selectedOptions
           ? _self.selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<ClassChoiceOptionData>>,
+              as Map<String, List<ChoiceOptionData>>,
       selectedSkillSelections: null == selectedSkillSelections
           ? _self.selectedSkillSelections
           : selectedSkillSelections // ignore: cast_nullable_to_non_nullable
@@ -227,7 +227,7 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
             List<BackgroundData> allBackgrounds,
             BackgroundData? selectedBackground,
             BackgroundStepView? stepView,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            Map<String, List<ChoiceOptionData>> selectedOptions,
             List<CharacterSkillSelectionData> selectedSkillSelections,
             List<CharacterStartingEquipmentSelectionData>
                 startingEquipmentSelections)?
@@ -268,7 +268,7 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
             List<BackgroundData> allBackgrounds,
             BackgroundData? selectedBackground,
             BackgroundStepView? stepView,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            Map<String, List<ChoiceOptionData>> selectedOptions,
             List<CharacterSkillSelectionData> selectedSkillSelections,
             List<CharacterStartingEquipmentSelectionData>
                 startingEquipmentSelections)
@@ -307,7 +307,7 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
             List<BackgroundData> allBackgrounds,
             BackgroundData? selectedBackground,
             BackgroundStepView? stepView,
-            Map<String, List<ClassChoiceOptionData>> selectedOptions,
+            Map<String, List<ChoiceOptionData>> selectedOptions,
             List<CharacterSkillSelectionData> selectedSkillSelections,
             List<CharacterStartingEquipmentSelectionData>
                 startingEquipmentSelections)?
@@ -336,7 +336,7 @@ class _BackgroundStateModel implements BackgroundStateModel {
       {final List<BackgroundData> allBackgrounds = const [],
       this.selectedBackground,
       this.stepView,
-      final Map<String, List<ClassChoiceOptionData>> selectedOptions = const {},
+      final Map<String, List<ChoiceOptionData>> selectedOptions = const {},
       final List<CharacterSkillSelectionData> selectedSkillSelections =
           const [],
       final List<CharacterStartingEquipmentSelectionData>
@@ -359,10 +359,10 @@ class _BackgroundStateModel implements BackgroundStateModel {
   final BackgroundData? selectedBackground;
   @override
   final BackgroundStepView? stepView;
-  final Map<String, List<ClassChoiceOptionData>> _selectedOptions;
+  final Map<String, List<ChoiceOptionData>> _selectedOptions;
   @override
   @JsonKey()
-  Map<String, List<ClassChoiceOptionData>> get selectedOptions {
+  Map<String, List<ChoiceOptionData>> get selectedOptions {
     if (_selectedOptions is EqualUnmodifiableMapView) return _selectedOptions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_selectedOptions);
@@ -447,7 +447,7 @@ abstract mixin class _$BackgroundStateModelCopyWith<$Res>
       {List<BackgroundData> allBackgrounds,
       BackgroundData? selectedBackground,
       BackgroundStepView? stepView,
-      Map<String, List<ClassChoiceOptionData>> selectedOptions,
+      Map<String, List<ChoiceOptionData>> selectedOptions,
       List<CharacterSkillSelectionData> selectedSkillSelections,
       List<CharacterStartingEquipmentSelectionData>
           startingEquipmentSelections});
@@ -489,7 +489,7 @@ class __$BackgroundStateModelCopyWithImpl<$Res>
       selectedOptions: null == selectedOptions
           ? _self._selectedOptions
           : selectedOptions // ignore: cast_nullable_to_non_nullable
-              as Map<String, List<ClassChoiceOptionData>>,
+              as Map<String, List<ChoiceOptionData>>,
       selectedSkillSelections: null == selectedSkillSelections
           ? _self._selectedSkillSelections
           : selectedSkillSelections // ignore: cast_nullable_to_non_nullable

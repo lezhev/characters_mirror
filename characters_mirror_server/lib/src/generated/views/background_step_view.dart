@@ -11,7 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../data/background_data.dart' as _i2;
-import '../views/class_choice_group_view.dart' as _i3;
+import '../views/choice_group_view.dart' as _i3;
 import '../views/skill_selection_group_view.dart' as _i4;
 import '../views/starting_equipment_block_view.dart' as _i5;
 
@@ -26,7 +26,7 @@ abstract class BackgroundStepView
 
   factory BackgroundStepView({
     _i2.BackgroundData? background,
-    List<_i3.ClassChoiceGroupView>? choiceGroups,
+    List<_i3.ChoiceGroupView>? choiceGroups,
     List<_i4.SkillSelectionGroupView>? skillSelectionGroups,
     List<_i5.StartingEquipmentBlockView>? startingEquipmentBlocks,
   }) = _BackgroundStepViewImpl;
@@ -38,8 +38,8 @@ abstract class BackgroundStepView
           : _i2.BackgroundData.fromJson(
               (jsonSerialization['background'] as Map<String, dynamic>)),
       choiceGroups: (jsonSerialization['choiceGroups'] as List?)
-          ?.map((e) =>
-              _i3.ClassChoiceGroupView.fromJson((e as Map<String, dynamic>)))
+          ?.map(
+              (e) => _i3.ChoiceGroupView.fromJson((e as Map<String, dynamic>)))
           .toList(),
       skillSelectionGroups: (jsonSerialization['skillSelectionGroups'] as List?)
           ?.map((e) =>
@@ -55,7 +55,7 @@ abstract class BackgroundStepView
 
   _i2.BackgroundData? background;
 
-  List<_i3.ClassChoiceGroupView>? choiceGroups;
+  List<_i3.ChoiceGroupView>? choiceGroups;
 
   List<_i4.SkillSelectionGroupView>? skillSelectionGroups;
 
@@ -66,7 +66,7 @@ abstract class BackgroundStepView
   @_i1.useResult
   BackgroundStepView copyWith({
     _i2.BackgroundData? background,
-    List<_i3.ClassChoiceGroupView>? choiceGroups,
+    List<_i3.ChoiceGroupView>? choiceGroups,
     List<_i4.SkillSelectionGroupView>? skillSelectionGroups,
     List<_i5.StartingEquipmentBlockView>? startingEquipmentBlocks,
   });
@@ -112,7 +112,7 @@ class _Undefined {}
 class _BackgroundStepViewImpl extends BackgroundStepView {
   _BackgroundStepViewImpl({
     _i2.BackgroundData? background,
-    List<_i3.ClassChoiceGroupView>? choiceGroups,
+    List<_i3.ChoiceGroupView>? choiceGroups,
     List<_i4.SkillSelectionGroupView>? skillSelectionGroups,
     List<_i5.StartingEquipmentBlockView>? startingEquipmentBlocks,
   }) : super._(
@@ -136,7 +136,7 @@ class _BackgroundStepViewImpl extends BackgroundStepView {
       background: background is _i2.BackgroundData?
           ? background
           : this.background?.copyWith(),
-      choiceGroups: choiceGroups is List<_i3.ClassChoiceGroupView>?
+      choiceGroups: choiceGroups is List<_i3.ChoiceGroupView>?
           ? choiceGroups
           : this.choiceGroups?.map((e0) => e0.copyWith()).toList(),
       skillSelectionGroups:

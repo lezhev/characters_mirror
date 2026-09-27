@@ -168,34 +168,19 @@ Future<_GrantedEquipmentAccumulator> _resolveArmorCategorySelection(
 
 List<DamageType> _collectDamageTypes(
   CharacterData character,
-  List<CharacterChoiceData> choices,
+  List<ChoiceOptionData> options,
 ) {
   final values = <DamageType>{};
   values.addAll([
     ...?character.race?.resistances,
     ...?character.subrace?.resistances,
   ]);
-  for (final option in _selectedRaceChoiceOptions(character, choices)) {
+  for (final option in options) {
     if (option.damageType != null) {
       values.add(option.damageType!);
     }
   }
   return values.toList()..sort((a, b) => a.name.compareTo(b.name));
-}
-
-bool _isClassOrBackgroundChoice(CharacterChoiceData choice) {
-  switch (choice.sourceType) {
-    case ChoiceSourceType.background:
-    case ChoiceSourceType.classData:
-    case ChoiceSourceType.subclass:
-    case ChoiceSourceType.classFeature:
-    case ChoiceSourceType.subclassFeature:
-      return true;
-    case ChoiceSourceType.race:
-    case ChoiceSourceType.subrace:
-    case null:
-      return false;
-  }
 }
 
 int _normalizedPositiveQuantity(
@@ -204,12 +189,4 @@ int _normalizedPositiveQuantity(
 }) {
   final candidate = value ?? fallback ?? 1;
   return candidate > 0 ? candidate : 1;
-}
-
-String _classChoiceGroupKey(ClassChoiceGroupData group) {
-  final explicitKey = _normalizedTextOrNull(group.exclusiveKey);
-  if (explicitKey != null) {
-    return explicitKey;
-  }
-  return 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
 }

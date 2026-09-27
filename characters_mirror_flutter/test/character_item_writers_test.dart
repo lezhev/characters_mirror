@@ -16,7 +16,7 @@ void main() {
     expect(result.single.text, 'B');
   });
 
-  test('editing one inventory item preserves sibling data', () {
+  test('inventory text is stored as one custom text value', () {
     final items = [
       CharacterInventoryItemData(
         id: 'item-a',
@@ -32,19 +32,15 @@ void main() {
       ),
     ];
 
-    final result = upsertCharacterInventoryItem(
-      items,
-      id: 'item-a',
-      name: 'Silk rope',
+    final result = inventoryItemsFromText(
+      'Silk rope x2, Torch x4',
+      previous: items,
     );
 
-    expect(result, hasLength(2));
-    expect(result![0].id, 'item-a');
-    expect(result[0].name, 'Silk rope');
-    expect(result[0].quantity, 2);
-    expect(result[0].type, CharacterInventoryItemType.item);
-    expect(result[1].id, 'item-b');
-    expect(result[1].name, 'Torch');
-    expect(result[1].quantity, 4);
+    expect(result, hasLength(1));
+    expect(result!.single.id, 'item-a');
+    expect(result.single.name, 'Silk rope x2, Torch x4');
+    expect(result.single.quantity, 1);
+    expect(result.single.type, CharacterInventoryItemType.custom);
   });
 }

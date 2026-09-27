@@ -24,6 +24,7 @@ fields:
   characterValue: CharacterData?
   noteValue: CharacterNoteData?
   equipmentValue: CharacterInventoryItemData?
+  equipmentSelectionValue: CharacterEquipmentSelectionData?
   attackValue: CharacterAttackData?
   featureOverrideValue: CharacterFeatureOverrideData?
   resourceStateValue: CharacterResourceStateData?

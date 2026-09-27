@@ -686,26 +686,19 @@ void _registerCharacterDataEndpointTests() {
           choices: [
             CharacterChoiceData(
               classEntry: primaryEntry,
-              sourceType: ChoiceSourceType.subclassFeature,
-              sourceId: fixture.subclassFeature.id,
-              groupKey: 'subclass_tool_pick',
+              groupKey: 'fixture_subclass_tool_pick',
               optionKey: 'smith_tools',
               selectionIndex: 0,
             ),
             CharacterChoiceData(
-              sourceType: ChoiceSourceType.background,
-              sourceId: fixture.background.id,
               groupKey: 'background_language_pick',
               optionKey: 'celestial_language',
               selectionIndex: 0,
             ),
             CharacterChoiceData(
-              sourceType: ChoiceSourceType.race,
-              sourceId: fixture.race.id,
-              groupKey: 'race_choice_${fixture.raceChoiceSet.id}',
+              groupKey: fixture.raceChoiceGroup.referenceKey,
               optionKey: 'skilled_feat',
               selectionIndex: 0,
-              selectedFeatId: fixture.feat.id,
             ),
           ],
           skillSelections: [
@@ -860,7 +853,7 @@ void _registerCharacterDataEndpointTests() {
       );
 
       final backgroundChoices = loaded.choices!
-          .where((choice) => choice.sourceType == ChoiceSourceType.background)
+          .where((choice) => choice.groupKey == 'background_language_pick')
           .toList();
       expect(backgroundChoices.map((choice) => choice.groupKey).toSet(), {
         'background_language_pick',
@@ -883,10 +876,9 @@ void _registerCharacterDataEndpointTests() {
       );
 
       final raceFeatChoice = loaded.choices!.singleWhere(
-        (choice) =>
-            choice.groupKey == 'race_choice_${fixture.raceChoiceSet.id}',
+        (choice) => choice.groupKey == fixture.raceChoiceGroup.referenceKey,
       );
-      expect(raceFeatChoice.selectedFeatId, fixture.feat.id);
+      expect(raceFeatChoice.optionKey, 'skilled_feat');
 
       final derived = loaded.derived;
       expect(derived, isNotNull);
@@ -918,7 +910,6 @@ void _registerCharacterDataEndpointTests() {
         (entry) => entry.referenceKey == 'dagger',
       );
       expect(daggerEntry.quantity, 2);
-      expect(derived.featIds, contains(fixture.feat.id));
       expect(
           derived.featureTags,
           containsAll([
@@ -1023,22 +1014,17 @@ void _registerCharacterDataEndpointTests() {
       expect(raceFeatureView.isCustomized, isFalse);
 
       expect(loaded.equipment, isNotNull);
-      final loadedEquipment = loaded.equipment!;
+      expect(loaded.equipment, hasLength(1));
+      final inventoryText = loaded.equipment!.single.name!;
       expect(
-        loadedEquipment.singleWhere((item) => item.name == 'Club').quantity,
-        2,
-      );
-      expect(
-        loadedEquipment.singleWhere((item) => item.name == 'Dagger').quantity,
-        2,
-      );
-      expect(
-        loadedEquipment.map((item) => item.name),
-        containsAll([
+        inventoryText.split(', ').toSet(),
+        containsAll({
           'Leather Armor',
           'Holy Symbol',
           'Crystal Focus',
-        ]),
+          'Club x2',
+          'Dagger x2',
+        }),
       );
 
       expect(loaded.attacks, hasLength(3));

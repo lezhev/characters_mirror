@@ -7,7 +7,7 @@ fields:
   currentSubclassFeatures: List<SubclassFeatureData>?
   futureSubclassFeatures: List<SubclassFeatureData>?
   subclassChoice: ClassStepSubclassChoiceView?
-  choiceGroups: List<ClassChoiceGroupView>?
+  choiceGroups: List<ChoiceGroupView>?
   skillSelectionGroups: List<SkillSelectionGroupView>?
   spellSelectionGroups: List<ClassSpellSelectionGroupView>?
   startingEquipmentBlocks: List<StartingEquipmentBlockView>?

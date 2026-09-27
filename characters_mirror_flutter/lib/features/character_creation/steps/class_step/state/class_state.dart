@@ -20,7 +20,7 @@ sealed class ClassStateModel with _$ClassStateModel {
     ClassData? selectedClass,
     ClassStepView? stepView,
     SubclassData? selectedSubclass,
-    @Default({}) Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    @Default({}) Map<String, List<ChoiceOptionData>> selectedOptions,
     @Default([]) List<CharacterSkillSelectionData> selectedSkillSelections,
     @Default([]) List<CharacterSpellSelectionData> selectedSpellSelections,
     @Default([])
@@ -167,19 +167,17 @@ class ClassState extends _$ClassState {
     return null;
   }
 
-  Map<String, List<ClassChoiceOptionData>> _restoreSelectedOptions(
-    List<ClassChoiceGroupView>? groups,
+  Map<String, List<ChoiceOptionData>> _restoreSelectedOptions(
+    List<ChoiceGroupView>? groups,
     List<CharacterChoiceData> savedChoices,
   ) {
     final optionsByGroupKey = _availableOptionsByGroup(groups);
-    final restored = <String, List<ClassChoiceOptionData>>{};
+    final restored = <String, List<ChoiceOptionData>>{};
     final sortedChoices = [
       ...savedChoices
     ]..sort((a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
 
     for (final choice in sortedChoices) {
-      if (!_isClassChoiceSource(choice.sourceType)) continue;
-
       final groupKey = choice.groupKey;
       final optionKey = choice.optionKey?.trim();
       if (groupKey == null || optionKey == null || optionKey.isEmpty) continue;
@@ -187,7 +185,7 @@ class ClassState extends _$ClassState {
       final option = optionsByGroupKey[groupKey]?[optionKey];
       if (option == null) continue;
 
-      restored.putIfAbsent(groupKey, () => <ClassChoiceOptionData>[]);
+      restored.putIfAbsent(groupKey, () => <ChoiceOptionData>[]);
       restored[groupKey]!.add(option);
     }
 
@@ -310,17 +308,17 @@ class ClassState extends _$ClassState {
         false;
   }
 
-  Map<String, List<ClassChoiceOptionData>> _normalizeSelectedOptions(
-    Map<String, List<ClassChoiceOptionData>> selections,
-    List<ClassChoiceGroupView>? groups,
+  Map<String, List<ChoiceOptionData>> _normalizeSelectedOptions(
+    Map<String, List<ChoiceOptionData>> selections,
+    List<ChoiceGroupView>? groups,
   ) {
     final choiceGroups = {
-      for (final groupView in groups ?? const <ClassChoiceGroupView>[])
+      for (final groupView in groups ?? const <ChoiceGroupView>[])
         if (groupView.group != null)
           _groupKey(groupView.group!): groupView.group!,
     };
     final availableOptions = _availableOptionsByGroup(groups);
-    final normalized = <String, List<ClassChoiceOptionData>>{};
+    final normalized = <String, List<ChoiceOptionData>>{};
 
     for (final entry in selections.entries) {
       final group = choiceGroups[entry.key];
@@ -329,12 +327,12 @@ class ClassState extends _$ClassState {
       final selectionCount = group.selectionCount ?? 1;
       final allowDuplicates = group.allowDuplicates == true;
       final canonicalOptions = availableOptions[entry.key] ?? const {};
-      final selected = <ClassChoiceOptionData>[];
+      final selected = <ChoiceOptionData>[];
       final seen = <String>{};
 
       for (final option in entry.value) {
-        final optionKey = option.optionKey?.trim();
-        if (optionKey == null || optionKey.isEmpty) continue;
+        final optionKey = option.optionKey.trim();
+        if (optionKey.isEmpty) continue;
 
         final canonical = canonicalOptions[optionKey];
         if (canonical == null) continue;
@@ -356,39 +354,24 @@ class ClassState extends _$ClassState {
     return normalized;
   }
 
-  Map<String, Map<String, ClassChoiceOptionData>> _availableOptionsByGroup(
-    List<ClassChoiceGroupView>? groups,
+  Map<String, Map<String, ChoiceOptionData>> _availableOptionsByGroup(
+    List<ChoiceGroupView>? groups,
   ) {
-    final result = <String, Map<String, ClassChoiceOptionData>>{};
+    final result = <String, Map<String, ChoiceOptionData>>{};
 
-    for (final groupView in groups ?? const <ClassChoiceGroupView>[]) {
+    for (final groupView in groups ?? const <ChoiceGroupView>[]) {
       final group = groupView.group;
       if (group == null) continue;
 
       result[_groupKey(group)] = {
         for (final option
-            in groupView.options ?? const <ClassChoiceOptionData>[])
-          if (option.optionKey?.trim().isNotEmpty == true)
-            option.optionKey!.trim(): option,
+            in groupView.options ?? const <ChoiceOptionData>[])
+          if (option.optionKey.trim().isNotEmpty)
+            option.optionKey.trim(): option,
       };
     }
 
     return result;
-  }
-
-  bool _isClassChoiceSource(ChoiceSourceType? sourceType) {
-    switch (sourceType) {
-      case ChoiceSourceType.classData:
-      case ChoiceSourceType.subclass:
-      case ChoiceSourceType.classFeature:
-      case ChoiceSourceType.subclassFeature:
-        return true;
-      case ChoiceSourceType.race:
-      case ChoiceSourceType.subrace:
-      case ChoiceSourceType.background:
-      case null:
-        return false;
-    }
   }
 
   CharacterClassEntryData? _resolvePrimaryEntry(
@@ -424,18 +407,5 @@ class ClassState extends _$ClassState {
     }
   }
 
-  String _groupKey(ClassChoiceGroupData group) => group.exclusiveKey
-              ?.trim()
-              .isNotEmpty ==
-          true
-      ? group.exclusiveKey!
-      : 'group_${group.id ?? group.name ?? _safeEnumToken(group.type) ?? 'unknown'}';
-
-  String? _safeEnumToken(Object? value) {
-    if (value == null) return null;
-    final raw = value.toString();
-    if (raw.trim().isEmpty) return null;
-    final parts = raw.split('.');
-    return parts.isEmpty ? raw : parts.last;
-  }
+  String _groupKey(ChoiceGroupData group) => group.referenceKey;
 }

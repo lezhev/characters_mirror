@@ -328,7 +328,7 @@ ClassStepView _buildStepView({
   required List<SubclassFeatureData> futureSubclassFeatures,
   required List<ClassLevelData> progression,
   ClassStepSubclassChoiceView? subclassChoice,
-  List<ClassChoiceGroupView>? choiceGroups,
+  List<ChoiceGroupView>? choiceGroups,
 }) {
   return ClassStepView(
     classData: ClassData(

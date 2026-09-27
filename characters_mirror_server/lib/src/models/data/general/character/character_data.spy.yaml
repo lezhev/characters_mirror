@@ -54,6 +54,8 @@ fields:
   exhaustionLevel: int?
   inspiration: bool?
   equipment: List<CharacterInventoryItemData>?
+  equippedArmor: CharacterEquipmentSelectionData?
+  equippedShield: CharacterEquipmentSelectionData?
   manualSkillProficiencies: List<CharacterSkillProficiencyState>?
   manualSavingThrowProficiencies: List<Ability>?
   manualSkillProficiencyOverrides: List<CharacterSkillProficiencyState>?

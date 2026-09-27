@@ -11,30 +11,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() {
   test('creation step providers restore draft selections from character state',
       () async {
-    final raceChoiceSet = RaceChoiceSetData(
-      id: 11,
-      featureId: 101,
-      kind: RaceChoiceKind.featChoice,
-      pickCount: 1,
-      mustBeDistinct: true,
-    );
-    final raceOption = RaceChoiceOptionData(
-      id: 12,
-      choiceSetId: raceChoiceSet.id!,
-      optionKey: 'skilled_feat',
-      name: 'Skilled',
-      featId: 501,
-    );
     final raceFeature = RaceFeatureData(
       id: 101,
       raceId: 1,
       name: 'Variant Human Bonus Feat',
       level: 1,
-      choiceSets: [
-        raceChoiceSet.copyWith(
-          choiceOptions: [raceOption],
-        ),
-      ],
     );
     final race = RaceData(
       id: 1,
@@ -43,6 +24,19 @@ void main() {
       speed: 30,
       visionType: SenseType.darkvision,
       features: [raceFeature],
+    );
+    final raceChoiceGroup = ChoiceGroupData(
+      id: 11,
+      referenceKey: 'variant_human_bonus_feat',
+      sourceRaceFeatureId: raceFeature.id,
+      type: ChoiceType.feat,
+      selectionCount: 1,
+      allowDuplicates: false,
+    );
+    final raceChoiceOption = ChoiceOptionData(
+      choiceGroupId: raceChoiceGroup.id!,
+      optionKey: 'skilled_feat',
+      name: 'Skilled',
     );
 
     final subclass = SubclassData(
@@ -69,10 +63,11 @@ void main() {
       ],
       skillCount: 2,
     );
-    final subclassToolGroup = ClassChoiceGroupData(
+    final subclassToolGroup = ChoiceGroupData(
+      referenceKey: 'warlock_tool_choice',
       id: 32,
       sourceSubclassFeatureId: subclassFeature.id,
-      type: ClassChoiceType.tool,
+      type: ChoiceType.tool,
       selectionCount: 1,
       exclusiveKey: 'subclass_tool_pick',
       allowDuplicates: false,
@@ -98,10 +93,10 @@ void main() {
         ),
       ],
       choiceGroups: [
-        ClassChoiceGroupView(
+        ChoiceGroupView(
           group: subclassToolGroup,
           options: [
-            ClassChoiceOptionData(
+            ChoiceOptionData(
               choiceGroupId: 32,
               optionKey: 'smith_tools',
               name: 'Smith tools',
@@ -116,10 +111,11 @@ void main() {
       name: 'Acolyte',
       feature: 'Shelter of the Faithful',
     );
-    final backgroundGroup = ClassChoiceGroupData(
+    final backgroundGroup = ChoiceGroupData(
+      referenceKey: 'acolyte_language_choice',
       id: 41,
       sourceBackgroundId: background.id,
-      type: ClassChoiceType.language,
+      type: ChoiceType.language,
       selectionCount: 1,
       exclusiveKey: 'background_language_pick',
       allowDuplicates: false,
@@ -127,10 +123,10 @@ void main() {
     final backgroundStepView = BackgroundStepView(
       background: background,
       choiceGroups: [
-        ClassChoiceGroupView(
+        ChoiceGroupView(
           group: backgroundGroup,
           options: [
-            ClassChoiceOptionData(
+            ChoiceOptionData(
               choiceGroupId: 41,
               optionKey: 'celestial_language',
               name: 'Celestial',
@@ -146,7 +142,16 @@ void main() {
           _FakeRaceRepository(
             races: [race],
             stepViews: {
-              race.id!: RaceStepView(race: race, features: [raceFeature])
+              race.id!: RaceStepView(
+                race: race,
+                features: [raceFeature],
+                choiceGroups: [
+                  ChoiceGroupView(
+                    group: raceChoiceGroup,
+                    options: [raceChoiceOption],
+                  ),
+                ],
+              )
             },
           ),
         ),
@@ -172,14 +177,17 @@ void main() {
     final creation = container.read(characterCreationProvider.notifier);
     creation.syncRaceDraft(
       selectedRace: race,
+      choiceGroups: [
+        ChoiceGroupView(
+          group: raceChoiceGroup,
+          options: [raceChoiceOption],
+        ),
+      ],
       raceChoices: [
         CharacterChoiceData(
-          sourceType: ChoiceSourceType.race,
-          sourceId: race.id,
-          groupKey: 'race_choice_${raceChoiceSet.id}',
-          optionKey: raceOption.optionKey,
+          groupKey: raceChoiceGroup.referenceKey,
+          optionKey: raceChoiceOption.optionKey,
           selectionIndex: 0,
-          selectedFeatId: raceOption.featId,
         ),
       ],
     );
@@ -203,9 +211,7 @@ void main() {
       ],
       choices: [
         CharacterChoiceData(
-          sourceType: ChoiceSourceType.subclassFeature,
-          sourceId: 22,
-          groupKey: 'subclass_tool_pick',
+          groupKey: subclassToolGroup.referenceKey,
           optionKey: 'smith_tools',
           selectionIndex: 0,
         ),
@@ -215,8 +221,8 @@ void main() {
       selectedBackground: background,
       choiceGroups: backgroundStepView.choiceGroups ?? const [],
       selectedOptions: {
-        'background_language_pick': [
-          ClassChoiceOptionData(
+        'acolyte_language_choice': [
+          ChoiceOptionData(
             choiceGroupId: 41,
             optionKey: 'celestial_language',
             name: 'Celestial',
@@ -230,9 +236,62 @@ void main() {
     final backgroundState =
         await container.read(backgroundStateProvider.future);
 
+    expect(backgroundState.selectedBackground?.id, background.id);
+    expect(
+      backgroundState
+          .selectedOptions['acolyte_language_choice']?.single.optionKey,
+      'celestial_language',
+    );
+
+    final nextBackground = BackgroundData(
+      id: 4,
+      name: 'Soldier',
+      feature: 'Military Rank',
+    );
+    final nextBackgroundGroup = ChoiceGroupData(
+      referenceKey: 'soldier_tool_choice',
+      id: 42,
+      sourceBackgroundId: nextBackground.id,
+      type: ChoiceType.tool,
+      selectionCount: 1,
+      allowDuplicates: false,
+    );
+    creation.syncBackgroundDraft(
+      selectedBackground: nextBackground,
+      choiceGroups: [
+        ChoiceGroupView(
+          group: nextBackgroundGroup,
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: nextBackgroundGroup.id!,
+              optionKey: 'dice_set',
+              name: 'Dice set',
+              grantedToolKeys: const ['dice_set'],
+            ),
+          ],
+        ),
+      ],
+      selectedOptions: {
+        'soldier_tool_choice': [
+          ChoiceOptionData(
+            choiceGroupId: nextBackgroundGroup.id!,
+            optionKey: 'dice_set',
+            name: 'Dice set',
+            grantedToolKeys: const ['dice_set'],
+          ),
+        ],
+      },
+    );
+
+    final remainingChoiceKeys = creation.state.character.choices!
+        .map((choice) => choice.groupKey)
+        .toSet();
+    expect(remainingChoiceKeys, contains('soldier_tool_choice'));
+    expect(remainingChoiceKeys, isNot(contains('acolyte_language_choice')));
+
     expect(raceState.selectedRace?.id, race.id);
     expect(
-      raceState.selectedChoiceOptionsByGroup['race_choice_${raceChoiceSet.id}']
+      raceState.selectedChoiceOptionsByGroup[raceChoiceGroup.referenceKey]
           ?.single.optionKey,
       'skilled_feat',
     );
@@ -244,16 +303,11 @@ void main() {
       [Skill.acrobatics, Skill.athletics],
     );
     expect(
-      classState.selectedOptions['subclass_tool_pick']?.single.optionKey,
+      classState.selectedOptions[subclassToolGroup.referenceKey]
+          ?.single.optionKey,
       'smith_tools',
     );
 
-    expect(backgroundState.selectedBackground?.id, background.id);
-    expect(
-      backgroundState
-          .selectedOptions['background_language_pick']?.single.optionKey,
-      'celestial_language',
-    );
   });
 }
 

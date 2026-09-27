@@ -83,11 +83,55 @@ class RaceDataEndpoint extends Endpoint {
       ...raceFeatures,
       ...subraceFeatures,
     ]..sort(_compareRaceFeatures);
+    final featureIds =
+        allFeatures.map((feature) => feature.id).whereType<int>().toSet();
+    final genericGroupsById = <int, ChoiceGroupData>{};
+    final raceGroups = await ChoiceGroupData.db.find(
+      session,
+      where: (t) => t.sourceRaceId.equals(raceId),
+    );
+    for (final group in raceGroups) {
+      if (group.id != null) genericGroupsById[group.id!] = group;
+    }
+    if (subraceIds.isNotEmpty) {
+      final subraceGroups = await ChoiceGroupData.db.find(
+        session,
+        where: (t) => t.sourceSubraceId.inSet(subraceIds.toSet()),
+      );
+      for (final group in subraceGroups) {
+        if (group.id != null) genericGroupsById[group.id!] = group;
+      }
+    }
+    if (featureIds.isNotEmpty) {
+      final featureGroups = await ChoiceGroupData.db.find(
+        session,
+        where: (t) => t.sourceRaceFeatureId.inSet(featureIds),
+      );
+      for (final group in featureGroups) {
+        if (group.id != null) genericGroupsById[group.id!] = group;
+      }
+    }
+    final genericGroups = genericGroupsById.values.toList()
+      ..sort((a, b) {
+        final sortCompare = (a.sortOrder ?? 0).compareTo(b.sortOrder ?? 0);
+        if (sortCompare != 0) return sortCompare;
+        return a.referenceKey.compareTo(b.referenceKey);
+      });
+    final genericGroupViews = <ChoiceGroupView>[];
+    for (final group in genericGroups) {
+      final options = await ChoiceOptionData.db.find(
+        session,
+        where: (t) => t.choiceGroupId.equals(group.id),
+        orderBy: (t) => t.sortOrder,
+      );
+      genericGroupViews.add(ChoiceGroupView(group: group, options: options));
+    }
 
     return RaceStepView(
       race: enrichedRace,
       subraces: enrichedSubraces,
       features: allFeatures,
+      choiceGroups: genericGroupViews,
     );
   }
 

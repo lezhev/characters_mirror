@@ -33,22 +33,24 @@ import '../../../data/general/character/character_data.dart' as _i14;
 import '../../../data/general/character/character_note_data.dart' as _i15;
 import '../../../data/general/character/character_inventory_item_data.dart'
     as _i16;
-import '../../../data/general/character/character_attack_data.dart' as _i17;
+import '../../../data/general/character/character_equipment_selection_data.dart'
+    as _i17;
+import '../../../data/general/character/character_attack_data.dart' as _i18;
 import '../../../data/general/character/character_feature_override_data.dart'
-    as _i18;
-import '../../../data/general/character/character_resource_state_data.dart'
     as _i19;
-import '../../../data/general/character/character_class_entry_data.dart'
+import '../../../data/general/character/character_resource_state_data.dart'
     as _i20;
-import '../../../data/general/character/character_choice_data.dart' as _i21;
+import '../../../data/general/character/character_class_entry_data.dart'
+    as _i21;
+import '../../../data/general/character/character_choice_data.dart' as _i22;
 import '../../../data/general/character/character_skill_selection_data.dart'
-    as _i22;
-import '../../../data/general/character/character_spell_selection_data.dart'
     as _i23;
-import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+import '../../../data/general/character/character_spell_selection_data.dart'
     as _i24;
-import '../../../data/general/character/character_starting_equipment_resolution_data.dart'
+import '../../../data/general/character/character_starting_equipment_selection_data.dart'
     as _i25;
+import '../../../data/general/character/character_starting_equipment_resolution_data.dart'
+    as _i26;
 
 abstract class CharacterSyncValueData implements _i1.SerializableModel {
   CharacterSyncValueData._({
@@ -76,6 +78,7 @@ abstract class CharacterSyncValueData implements _i1.SerializableModel {
     this.characterValue,
     this.noteValue,
     this.equipmentValue,
+    this.equipmentSelectionValue,
     this.attackValue,
     this.featureOverrideValue,
     this.resourceStateValue,
@@ -114,16 +117,17 @@ abstract class CharacterSyncValueData implements _i1.SerializableModel {
     _i14.CharacterData? characterValue,
     _i15.CharacterNoteData? noteValue,
     _i16.CharacterInventoryItemData? equipmentValue,
-    _i17.CharacterAttackData? attackValue,
-    _i18.CharacterFeatureOverrideData? featureOverrideValue,
-    _i19.CharacterResourceStateData? resourceStateValue,
-    _i20.CharacterClassEntryData? classEntryValue,
-    _i21.CharacterChoiceData? choiceValue,
-    _i22.CharacterSkillSelectionData? skillSelectionValue,
-    _i23.CharacterSpellSelectionData? spellSelectionValue,
-    _i24.CharacterStartingEquipmentSelectionData?
+    _i17.CharacterEquipmentSelectionData? equipmentSelectionValue,
+    _i18.CharacterAttackData? attackValue,
+    _i19.CharacterFeatureOverrideData? featureOverrideValue,
+    _i20.CharacterResourceStateData? resourceStateValue,
+    _i21.CharacterClassEntryData? classEntryValue,
+    _i22.CharacterChoiceData? choiceValue,
+    _i23.CharacterSkillSelectionData? skillSelectionValue,
+    _i24.CharacterSpellSelectionData? spellSelectionValue,
+    _i25.CharacterStartingEquipmentSelectionData?
         startingEquipmentSelectionValue,
-    _i25.CharacterStartingEquipmentResolutionData?
+    _i26.CharacterStartingEquipmentResolutionData?
         startingEquipmentResolutionValue,
   }) = _CharacterSyncValueDataImpl;
 
@@ -227,48 +231,54 @@ abstract class CharacterSyncValueData implements _i1.SerializableModel {
           ? null
           : _i16.CharacterInventoryItemData.fromJson(
               (jsonSerialization['equipmentValue'] as Map<String, dynamic>)),
+      equipmentSelectionValue:
+          jsonSerialization['equipmentSelectionValue'] == null
+              ? null
+              : _i17.CharacterEquipmentSelectionData.fromJson(
+                  (jsonSerialization['equipmentSelectionValue']
+                      as Map<String, dynamic>)),
       attackValue: jsonSerialization['attackValue'] == null
           ? null
-          : _i17.CharacterAttackData.fromJson(
+          : _i18.CharacterAttackData.fromJson(
               (jsonSerialization['attackValue'] as Map<String, dynamic>)),
       featureOverrideValue: jsonSerialization['featureOverrideValue'] == null
           ? null
-          : _i18.CharacterFeatureOverrideData.fromJson(
+          : _i19.CharacterFeatureOverrideData.fromJson(
               (jsonSerialization['featureOverrideValue']
                   as Map<String, dynamic>)),
       resourceStateValue: jsonSerialization['resourceStateValue'] == null
           ? null
-          : _i19.CharacterResourceStateData.fromJson(
+          : _i20.CharacterResourceStateData.fromJson(
               (jsonSerialization['resourceStateValue']
                   as Map<String, dynamic>)),
       classEntryValue: jsonSerialization['classEntryValue'] == null
           ? null
-          : _i20.CharacterClassEntryData.fromJson(
+          : _i21.CharacterClassEntryData.fromJson(
               (jsonSerialization['classEntryValue'] as Map<String, dynamic>)),
       choiceValue: jsonSerialization['choiceValue'] == null
           ? null
-          : _i21.CharacterChoiceData.fromJson(
+          : _i22.CharacterChoiceData.fromJson(
               (jsonSerialization['choiceValue'] as Map<String, dynamic>)),
       skillSelectionValue: jsonSerialization['skillSelectionValue'] == null
           ? null
-          : _i22.CharacterSkillSelectionData.fromJson(
+          : _i23.CharacterSkillSelectionData.fromJson(
               (jsonSerialization['skillSelectionValue']
                   as Map<String, dynamic>)),
       spellSelectionValue: jsonSerialization['spellSelectionValue'] == null
           ? null
-          : _i23.CharacterSpellSelectionData.fromJson(
+          : _i24.CharacterSpellSelectionData.fromJson(
               (jsonSerialization['spellSelectionValue']
                   as Map<String, dynamic>)),
       startingEquipmentSelectionValue:
           jsonSerialization['startingEquipmentSelectionValue'] == null
               ? null
-              : _i24.CharacterStartingEquipmentSelectionData.fromJson(
+              : _i25.CharacterStartingEquipmentSelectionData.fromJson(
                   (jsonSerialization['startingEquipmentSelectionValue']
                       as Map<String, dynamic>)),
       startingEquipmentResolutionValue:
           jsonSerialization['startingEquipmentResolutionValue'] == null
               ? null
-              : _i25.CharacterStartingEquipmentResolutionData.fromJson(
+              : _i26.CharacterStartingEquipmentResolutionData.fromJson(
                   (jsonSerialization['startingEquipmentResolutionValue']
                       as Map<String, dynamic>)),
     );
@@ -323,23 +333,25 @@ abstract class CharacterSyncValueData implements _i1.SerializableModel {
 
   _i16.CharacterInventoryItemData? equipmentValue;
 
-  _i17.CharacterAttackData? attackValue;
+  _i17.CharacterEquipmentSelectionData? equipmentSelectionValue;
 
-  _i18.CharacterFeatureOverrideData? featureOverrideValue;
+  _i18.CharacterAttackData? attackValue;
 
-  _i19.CharacterResourceStateData? resourceStateValue;
+  _i19.CharacterFeatureOverrideData? featureOverrideValue;
 
-  _i20.CharacterClassEntryData? classEntryValue;
+  _i20.CharacterResourceStateData? resourceStateValue;
 
-  _i21.CharacterChoiceData? choiceValue;
+  _i21.CharacterClassEntryData? classEntryValue;
 
-  _i22.CharacterSkillSelectionData? skillSelectionValue;
+  _i22.CharacterChoiceData? choiceValue;
 
-  _i23.CharacterSpellSelectionData? spellSelectionValue;
+  _i23.CharacterSkillSelectionData? skillSelectionValue;
 
-  _i24.CharacterStartingEquipmentSelectionData? startingEquipmentSelectionValue;
+  _i24.CharacterSpellSelectionData? spellSelectionValue;
 
-  _i25.CharacterStartingEquipmentResolutionData?
+  _i25.CharacterStartingEquipmentSelectionData? startingEquipmentSelectionValue;
+
+  _i26.CharacterStartingEquipmentResolutionData?
       startingEquipmentResolutionValue;
 
   /// Returns a shallow copy of this [CharacterSyncValueData]
@@ -372,16 +384,17 @@ abstract class CharacterSyncValueData implements _i1.SerializableModel {
     _i14.CharacterData? characterValue,
     _i15.CharacterNoteData? noteValue,
     _i16.CharacterInventoryItemData? equipmentValue,
-    _i17.CharacterAttackData? attackValue,
-    _i18.CharacterFeatureOverrideData? featureOverrideValue,
-    _i19.CharacterResourceStateData? resourceStateValue,
-    _i20.CharacterClassEntryData? classEntryValue,
-    _i21.CharacterChoiceData? choiceValue,
-    _i22.CharacterSkillSelectionData? skillSelectionValue,
-    _i23.CharacterSpellSelectionData? spellSelectionValue,
-    _i24.CharacterStartingEquipmentSelectionData?
+    _i17.CharacterEquipmentSelectionData? equipmentSelectionValue,
+    _i18.CharacterAttackData? attackValue,
+    _i19.CharacterFeatureOverrideData? featureOverrideValue,
+    _i20.CharacterResourceStateData? resourceStateValue,
+    _i21.CharacterClassEntryData? classEntryValue,
+    _i22.CharacterChoiceData? choiceValue,
+    _i23.CharacterSkillSelectionData? skillSelectionValue,
+    _i24.CharacterSpellSelectionData? spellSelectionValue,
+    _i25.CharacterStartingEquipmentSelectionData?
         startingEquipmentSelectionValue,
-    _i25.CharacterStartingEquipmentResolutionData?
+    _i26.CharacterStartingEquipmentResolutionData?
         startingEquipmentResolutionValue,
   });
   @override
@@ -428,6 +441,8 @@ abstract class CharacterSyncValueData implements _i1.SerializableModel {
       if (characterValue != null) 'characterValue': characterValue?.toJson(),
       if (noteValue != null) 'noteValue': noteValue?.toJson(),
       if (equipmentValue != null) 'equipmentValue': equipmentValue?.toJson(),
+      if (equipmentSelectionValue != null)
+        'equipmentSelectionValue': equipmentSelectionValue?.toJson(),
       if (attackValue != null) 'attackValue': attackValue?.toJson(),
       if (featureOverrideValue != null)
         'featureOverrideValue': featureOverrideValue?.toJson(),
@@ -484,16 +499,17 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
     _i14.CharacterData? characterValue,
     _i15.CharacterNoteData? noteValue,
     _i16.CharacterInventoryItemData? equipmentValue,
-    _i17.CharacterAttackData? attackValue,
-    _i18.CharacterFeatureOverrideData? featureOverrideValue,
-    _i19.CharacterResourceStateData? resourceStateValue,
-    _i20.CharacterClassEntryData? classEntryValue,
-    _i21.CharacterChoiceData? choiceValue,
-    _i22.CharacterSkillSelectionData? skillSelectionValue,
-    _i23.CharacterSpellSelectionData? spellSelectionValue,
-    _i24.CharacterStartingEquipmentSelectionData?
+    _i17.CharacterEquipmentSelectionData? equipmentSelectionValue,
+    _i18.CharacterAttackData? attackValue,
+    _i19.CharacterFeatureOverrideData? featureOverrideValue,
+    _i20.CharacterResourceStateData? resourceStateValue,
+    _i21.CharacterClassEntryData? classEntryValue,
+    _i22.CharacterChoiceData? choiceValue,
+    _i23.CharacterSkillSelectionData? skillSelectionValue,
+    _i24.CharacterSpellSelectionData? spellSelectionValue,
+    _i25.CharacterStartingEquipmentSelectionData?
         startingEquipmentSelectionValue,
-    _i25.CharacterStartingEquipmentResolutionData?
+    _i26.CharacterStartingEquipmentResolutionData?
         startingEquipmentResolutionValue,
   }) : super._(
           stringValue: stringValue,
@@ -521,6 +537,7 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
           characterValue: characterValue,
           noteValue: noteValue,
           equipmentValue: equipmentValue,
+          equipmentSelectionValue: equipmentSelectionValue,
           attackValue: attackValue,
           featureOverrideValue: featureOverrideValue,
           resourceStateValue: resourceStateValue,
@@ -561,6 +578,7 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
     Object? characterValue = _Undefined,
     Object? noteValue = _Undefined,
     Object? equipmentValue = _Undefined,
+    Object? equipmentSelectionValue = _Undefined,
     Object? attackValue = _Undefined,
     Object? featureOverrideValue = _Undefined,
     Object? resourceStateValue = _Undefined,
@@ -659,36 +677,40 @@ class _CharacterSyncValueDataImpl extends CharacterSyncValueData {
       equipmentValue: equipmentValue is _i16.CharacterInventoryItemData?
           ? equipmentValue
           : this.equipmentValue?.copyWith(),
-      attackValue: attackValue is _i17.CharacterAttackData?
+      equipmentSelectionValue:
+          equipmentSelectionValue is _i17.CharacterEquipmentSelectionData?
+              ? equipmentSelectionValue
+              : this.equipmentSelectionValue?.copyWith(),
+      attackValue: attackValue is _i18.CharacterAttackData?
           ? attackValue
           : this.attackValue?.copyWith(),
       featureOverrideValue:
-          featureOverrideValue is _i18.CharacterFeatureOverrideData?
+          featureOverrideValue is _i19.CharacterFeatureOverrideData?
               ? featureOverrideValue
               : this.featureOverrideValue?.copyWith(),
-      resourceStateValue: resourceStateValue is _i19.CharacterResourceStateData?
+      resourceStateValue: resourceStateValue is _i20.CharacterResourceStateData?
           ? resourceStateValue
           : this.resourceStateValue?.copyWith(),
-      classEntryValue: classEntryValue is _i20.CharacterClassEntryData?
+      classEntryValue: classEntryValue is _i21.CharacterClassEntryData?
           ? classEntryValue
           : this.classEntryValue?.copyWith(),
-      choiceValue: choiceValue is _i21.CharacterChoiceData?
+      choiceValue: choiceValue is _i22.CharacterChoiceData?
           ? choiceValue
           : this.choiceValue?.copyWith(),
       skillSelectionValue:
-          skillSelectionValue is _i22.CharacterSkillSelectionData?
+          skillSelectionValue is _i23.CharacterSkillSelectionData?
               ? skillSelectionValue
               : this.skillSelectionValue?.copyWith(),
       spellSelectionValue:
-          spellSelectionValue is _i23.CharacterSpellSelectionData?
+          spellSelectionValue is _i24.CharacterSpellSelectionData?
               ? spellSelectionValue
               : this.spellSelectionValue?.copyWith(),
       startingEquipmentSelectionValue: startingEquipmentSelectionValue
-              is _i24.CharacterStartingEquipmentSelectionData?
+              is _i25.CharacterStartingEquipmentSelectionData?
           ? startingEquipmentSelectionValue
           : this.startingEquipmentSelectionValue?.copyWith(),
       startingEquipmentResolutionValue: startingEquipmentResolutionValue
-              is _i25.CharacterStartingEquipmentResolutionData?
+              is _i26.CharacterStartingEquipmentResolutionData?
           ? startingEquipmentResolutionValue
           : this.startingEquipmentResolutionValue?.copyWith(),
     );

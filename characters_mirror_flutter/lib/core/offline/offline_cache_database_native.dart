@@ -106,7 +106,7 @@ class OfflineCacheDatabase {
     final directory = await getApplicationSupportDirectory();
     await Directory(directory.path).create(recursive: true);
     return openAt(
-      p.join(directory.path, 'characters_mirror_offline_v6.sqlite'),
+      p.join(directory.path, 'characters_mirror_offline_v8.sqlite'),
     );
   }
 
@@ -514,42 +514,11 @@ VALUES (?, ?, ?)
   }
 
   Map<String, dynamic> _decodeCachedPayload(String payloadJson) {
-    final payload = jsonDecode(payloadJson) as Map<String, dynamic>;
-    _normalizeLegacyClassChoiceTypes(payload);
-    return payload;
+    return jsonDecode(payloadJson) as Map<String, dynamic>;
   }
 
   List<dynamic> _decodeCachedListPayload(String payloadJson) {
-    final payload = jsonDecode(payloadJson) as List<dynamic>;
-    _normalizeLegacyClassChoiceTypes(payload);
-    return payload;
-  }
-
-  void _normalizeLegacyClassChoiceTypes(Object? value) {
-    if (value is List<dynamic>) {
-      for (final item in value) {
-        _normalizeLegacyClassChoiceTypes(item);
-      }
-      return;
-    }
-    if (value is! Map<String, dynamic>) return;
-
-    if (value['type'] == 'skill' && _looksLikeClassChoiceGroup(value)) {
-      value['type'] = null;
-    }
-    for (final item in value.values) {
-      _normalizeLegacyClassChoiceTypes(item);
-    }
-  }
-
-  bool _looksLikeClassChoiceGroup(Map<String, dynamic> value) {
-    return value.containsKey('selectionCount') ||
-        value.containsKey('exclusiveKey') ||
-        value.containsKey('allowDuplicates') ||
-        value.containsKey('sourceClassId') ||
-        value.containsKey('sourceBackgroundId') ||
-        value.containsKey('sourceFeatureId') ||
-        value.containsKey('sourceSubclassId');
+    return jsonDecode(payloadJson) as List<dynamic>;
   }
 
   String _generateLegacyId(String seed) {

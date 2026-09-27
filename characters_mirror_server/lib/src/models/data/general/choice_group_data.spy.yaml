@@ -1,0 +1,29 @@
+class: ChoiceGroupData
+table: choice_group_data
+fields:
+  referenceKey: String
+  name: String?
+  description: String?
+  sourceClass: ClassData?, relation(optional)
+  sourceSubclass: SubclassData?, relation(optional)
+  sourceFeature: ClassFeatureData?, relation(optional)
+  sourceSubclassFeature: SubclassFeatureData?, relation(optional)
+  sourceRace: RaceData?, relation(optional)
+  sourceSubrace: SubraceData?, relation(optional)
+  sourceRaceFeature: RaceFeatureData?, relation(optional)
+  sourceBackground: BackgroundData?, relation(optional)
+  level: int?
+  type: ChoiceType?
+  selectionCount: int?
+  appliesAtCharacterLevel: bool?
+  exclusiveKey: String?
+  allowDuplicates: bool?
+  sortOrder: int?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+indexes:
+  choice_group_reference_key_idx:
+    fields: referenceKey
+    unique: true

@@ -499,6 +499,12 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
   CharacterData appliedCharacter;
   try {
     appliedCharacter = _applyOperationToCharacter(current, operation);
+    appliedCharacter =
+        await CharacterEquipmentSelectionValidator.normalizeAndValidate(
+      session,
+      appliedCharacter,
+      transaction: transaction,
+    );
   } on _SemanticActionFailure catch (failure) {
     return _OperationApplyResult(
       rejection: CharacterRejectedChangeData(
@@ -578,9 +584,15 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
     next,
     transaction: transaction,
   );
+  final hydratedRecord = await _requireOwnedCharacterRecord(
+    session,
+    savedRecord.id!,
+    userId: userId,
+    transaction: transaction,
+  );
   final saved = await _buildCharacterAggregate(
     session,
-    savedRecord,
+    hydratedRecord,
     transaction: transaction,
     resolveContext: resolveContext,
   );
@@ -1567,6 +1579,9 @@ Object? _encodedValueForField(String field, CharacterSyncValueData? value) {
       return value.weaponProficiencyOverridesValue?.toJson();
     case 'manualArmorTrainingOverrides':
       return value.armorTrainingOverridesValue?.toJson();
+    case 'equippedArmor':
+    case 'equippedShield':
+      return value.equipmentSelectionValue?.toJson();
     case 'race':
       return value.intValue == null ? null : {'id': value.intValue};
     case 'subrace':

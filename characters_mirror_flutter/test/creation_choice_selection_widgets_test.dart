@@ -143,26 +143,27 @@ void main() {
           home: Scaffold(
             body: SingleChildScrollView(
               child: _ChoiceGroupHarness(
-                group: ClassChoiceGroupData(
+                group: ChoiceGroupData(
+                  referenceKey: 'artisan_tool_choice',
                   id: 2,
                   name: 'Инструменты',
-                  type: ClassChoiceType.tool,
+                  type: ChoiceType.tool,
                   selectionCount: 2,
                   allowDuplicates: false,
                   exclusiveKey: 'skills_multi',
                 ),
                 options: [
-                  ClassChoiceOptionData(
+                  ChoiceOptionData(
                     choiceGroupId: 2,
                     optionKey: 'a',
                     name: 'A',
                   ),
-                  ClassChoiceOptionData(
+                  ChoiceOptionData(
                     choiceGroupId: 2,
                     optionKey: 'b',
                     name: 'B',
                   ),
-                  ClassChoiceOptionData(
+                  ChoiceOptionData(
                     choiceGroupId: 2,
                     optionKey: 'c',
                     name: 'C',
@@ -191,7 +192,8 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: _ChoiceGroupHarness(
-              group: ClassChoiceGroupData(
+              group: ChoiceGroupData(
+                referenceKey: 'artisan_tool_choice_multi',
                 id: 4,
                 name: 'Инструменты',
                 selectionCount: 2,
@@ -199,7 +201,7 @@ void main() {
                 exclusiveKey: 'dup_group',
               ),
               options: [
-                ClassChoiceOptionData(
+                ChoiceOptionData(
                   choiceGroupId: 4,
                   optionKey: 'tool_a',
                   name: 'Инструмент A',
@@ -220,7 +222,7 @@ void main() {
   });
 
   group('RaceChoiceSetCard', () {
-    testWidgets('adapts race cantrip choices to shared selector',
+    testWidgets('adapts generic race choices to shared selector',
         (tester) async {
       final container = ProviderContainer(
         overrides: [
@@ -239,27 +241,29 @@ void main() {
                   children: [
                     Consumer(
                       builder: (context, ref, _) {
-                        final choiceSet = RaceChoiceSetData(
+                        final group = ChoiceGroupData(
+                          referenceKey: 'variant_human_bonus_feat',
                           id: 20,
-                          featureId: 200,
-                          kind: RaceChoiceKind.cantripChoice,
-                          pickCount: 1,
-                          choiceOptions: [
-                            RaceChoiceOptionData(
-                              choiceSetId: 20,
-                              optionKey: 'light',
-                              name: 'Свет',
-                            ),
-                          ],
+                          sourceRaceFeatureId: 200,
+                          type: ChoiceType.feat,
+                          selectionCount: 1,
+                        );
+                        final option = ChoiceOptionData(
+                          choiceGroupId: 20,
+                          optionKey: 'skilled',
+                          name: 'Skilled',
                         );
                         final selectedOptions = ref
                                     .watch(raceStateProvider)
                                     .value
                                     ?.selectedChoiceOptionsByGroup[
-                                'race_choice_20'] ??
-                            const <RaceChoiceOptionData>[];
+                                'variant_human_bonus_feat'] ??
+                            const <ChoiceOptionData>[];
                         return RaceChoiceSetCard(
-                          choiceSet: choiceSet,
+                          groupView: ChoiceGroupView(
+                            group: group,
+                            options: [option],
+                          ),
                           selectedOptions: selectedOptions,
                         );
                       },
@@ -269,12 +273,12 @@ void main() {
                         final state = ref.watch(raceStateProvider);
                         final selected =
                             state.value?.selectedChoiceOptionsByGroup[
-                                    'race_choice_20'] ??
-                                const <RaceChoiceOptionData>[];
+                                    'variant_human_bonus_feat'] ??
+                                const <ChoiceOptionData>[];
                         final label = selected.isEmpty
                             ? '-'
                             : selected
-                                .map((option) => option.optionKey ?? '-')
+                                .map((option) => option.optionKey)
                                 .join(',');
                         return Text('selected: $label');
                       },
@@ -289,10 +293,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await _expandSelector(tester);
-      await tester.tap(find.byKey(const ValueKey('choice-card-light')));
+      await tester.tap(find.byKey(const ValueKey('choice-card-skilled')));
       await tester.pump();
 
-      expect(find.text('selected: light'), findsOneWidget);
+      expect(find.text('selected: skilled'), findsOneWidget);
     });
   });
 
@@ -547,15 +551,15 @@ class _ChoiceGroupHarness extends StatefulWidget {
     required this.options,
   });
 
-  final ClassChoiceGroupData group;
-  final List<ClassChoiceOptionData> options;
+  final ChoiceGroupData group;
+  final List<ChoiceOptionData> options;
 
   @override
   State<_ChoiceGroupHarness> createState() => _ChoiceGroupHarnessState();
 }
 
 class _ChoiceGroupHarnessState extends State<_ChoiceGroupHarness> {
-  List<ClassChoiceOptionData> _selectedOptions = const [];
+  List<ChoiceOptionData> _selectedOptions = const [];
 
   @override
   Widget build(BuildContext context) {
@@ -563,7 +567,7 @@ class _ChoiceGroupHarnessState extends State<_ChoiceGroupHarness> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         CreationChoiceGroupCard(
-          groupView: ClassChoiceGroupView(
+          groupView: ChoiceGroupView(
             group: widget.group,
             options: widget.options,
           ),
@@ -571,14 +575,14 @@ class _ChoiceGroupHarnessState extends State<_ChoiceGroupHarness> {
           onToggleOption: (group, option) {
             setState(() {
               final selected = [..._selectedOptions];
-              final optionKey = option.optionKey?.trim();
-              if (optionKey == null || optionKey.isEmpty) {
+              final optionKey = option.optionKey.trim();
+              if (optionKey.isEmpty) {
                 return;
               }
 
               final selectionCount = group.selectionCount ?? 1;
               final existingIndex = selected.indexWhere(
-                (item) => item.optionKey?.trim() == optionKey,
+                (item) => item.optionKey.trim() == optionKey,
               );
 
               if (selectionCount <= 1) {
@@ -743,32 +747,27 @@ class _FakeRaceState extends RaceState {
 
   @override
   void toggleChoiceOption(
-    RaceChoiceSetData choiceSet,
-    RaceChoiceOptionData option,
+    ChoiceGroupData group,
+    ChoiceOptionData option,
   ) {
     final current = state.value ?? const RaceStateModel();
-    final groupKey = choiceSetGroupKey(choiceSet.id);
-    if (groupKey == null) {
-      return;
-    }
+    final groupKey = group.referenceKey;
 
-    final selectedByGroup = Map<String, List<RaceChoiceOptionData>>.from(
+    final selectedByGroup = Map<String, List<ChoiceOptionData>>.from(
       current.selectedChoiceOptionsByGroup,
     );
     final selected = [...?selectedByGroup[groupKey]];
-    final optionKey = option.optionKey?.trim();
-    if (optionKey == null || optionKey.isEmpty) {
-      return;
-    }
+    final optionKey = option.optionKey.trim();
+    if (optionKey.isEmpty) return;
 
     final existingIndex = selected.indexWhere(
-      (item) => item.optionKey?.trim() == optionKey,
+      (item) => item.optionKey == optionKey,
     );
 
     if (existingIndex != -1) {
       selected.removeAt(existingIndex);
     } else {
-      final pickCount = choiceSet.pickCount ?? 1;
+      final pickCount = group.selectionCount ?? 1;
       if (pickCount <= 1) {
         selected
           ..clear()

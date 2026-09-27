@@ -104,7 +104,7 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
     super.key,
   });
 
-  final List<ClassChoiceGroupView> choiceGroups;
+  final List<ChoiceGroupView> choiceGroups;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -137,7 +137,7 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
                           groupView: groupView,
                           selectedOptions: data.selectedOptions[
                                   classChoiceGroupKey(groupView.group!)] ??
-                              const <ClassChoiceOptionData>[],
+                              const <ChoiceOptionData>[],
                           onToggleOption: ref
                               .read(classStateProvider.notifier)
                               .toggleOption,

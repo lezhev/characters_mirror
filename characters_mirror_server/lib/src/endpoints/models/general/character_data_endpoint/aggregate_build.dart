@@ -184,7 +184,9 @@ CharacterData _toCharacterData(CharacterRecord record) {
     activeConditions: _normalizedActiveConditions(record.activeConditions),
     exhaustionLevel: _normalizedExhaustionLevel(record.exhaustionLevel),
     inspiration: record.inspiration,
-    equipment: record.equipment,
+    equipment: _normalizedInventoryItems(record.equipment, record.updatedAt),
+    equippedArmor: record.equippedArmor,
+    equippedShield: record.equippedShield,
     manualSkillProficiencies: record.manualSkillProficiencies,
     manualSavingThrowProficiencies: record.manualSavingThrowProficiencies,
     manualSkillProficiencyOverrides: record.manualSkillProficiencyOverrides,
@@ -227,17 +229,9 @@ CharacterChoiceData _toCharacterChoiceData(
     classEntry: record.classEntry?.syncId == null
         ? null
         : entriesById[record.classEntry!.syncId!],
-    sourceType: record.sourceType,
-    sourceId: record.sourceId,
     groupKey: record.groupKey,
     optionKey: record.optionKey,
     selectionIndex: record.selectionIndex,
-    selectedAbility: record.selectedAbility,
-    selectedLanguage: record.selectedLanguage,
-    selectedToolKey: record.selectedToolKey,
-    selectedFeatId: record.selectedFeatId,
-    selectedText: record.selectedText,
-    selectedCount: record.selectedCount,
     updatedAt: record.updatedAt,
   );
 }

@@ -43,6 +43,7 @@ class RaceStep extends HookConsumerWidget {
             notifier.syncRaceDraft(
               selectedRace: data.selectedRace,
               selectedSubrace: data.selectedSubrace,
+              choiceGroups: data.choiceGroups,
               raceChoices:
                   ref.read(raceStateProvider.notifier).buildRaceChoices(),
             );
@@ -87,6 +88,7 @@ void _syncAndGo({
   notifier.syncRaceDraft(
     selectedRace: data.selectedRace,
     selectedSubrace: data.selectedSubrace,
+    choiceGroups: data.choiceGroups,
     raceChoices: ref.read(raceStateProvider.notifier).buildRaceChoices(),
   );
   notifier.goToStep(context, target);

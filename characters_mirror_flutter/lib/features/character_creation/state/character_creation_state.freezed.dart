@@ -18,6 +18,10 @@ mixin _$CharacterCreationState {
   Step get step;
   bool get hasSpellCreationStep;
   int get draftRevision;
+  List<ChoiceGroupView> get raceChoiceGroups;
+  List<ChoiceGroupView> get classChoiceGroups;
+  List<ChoiceGroupView> get backgroundChoiceGroups;
+  List<String> get backgroundChoiceGroupKeys;
 
   /// Create a copy of CharacterCreationState
   /// with the given fields replaced by the non-null parameter values.
@@ -38,16 +42,32 @@ mixin _$CharacterCreationState {
             (identical(other.hasSpellCreationStep, hasSpellCreationStep) ||
                 other.hasSpellCreationStep == hasSpellCreationStep) &&
             (identical(other.draftRevision, draftRevision) ||
-                other.draftRevision == draftRevision));
+                other.draftRevision == draftRevision) &&
+            const DeepCollectionEquality()
+                .equals(other.raceChoiceGroups, raceChoiceGroups) &&
+            const DeepCollectionEquality()
+                .equals(other.classChoiceGroups, classChoiceGroups) &&
+            const DeepCollectionEquality()
+                .equals(other.backgroundChoiceGroups, backgroundChoiceGroups) &&
+            const DeepCollectionEquality().equals(
+                other.backgroundChoiceGroupKeys, backgroundChoiceGroupKeys));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, character, step, hasSpellCreationStep, draftRevision);
+      runtimeType,
+      character,
+      step,
+      hasSpellCreationStep,
+      draftRevision,
+      const DeepCollectionEquality().hash(raceChoiceGroups),
+      const DeepCollectionEquality().hash(classChoiceGroups),
+      const DeepCollectionEquality().hash(backgroundChoiceGroups),
+      const DeepCollectionEquality().hash(backgroundChoiceGroupKeys));
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step, hasSpellCreationStep: $hasSpellCreationStep, draftRevision: $draftRevision)';
+    return 'CharacterCreationState(character: $character, step: $step, hasSpellCreationStep: $hasSpellCreationStep, draftRevision: $draftRevision, raceChoiceGroups: $raceChoiceGroups, classChoiceGroups: $classChoiceGroups, backgroundChoiceGroups: $backgroundChoiceGroups, backgroundChoiceGroupKeys: $backgroundChoiceGroupKeys)';
   }
 }
 
@@ -61,7 +81,11 @@ abstract mixin class $CharacterCreationStateCopyWith<$Res> {
       {CharacterData character,
       Step step,
       bool hasSpellCreationStep,
-      int draftRevision});
+      int draftRevision,
+      List<ChoiceGroupView> raceChoiceGroups,
+      List<ChoiceGroupView> classChoiceGroups,
+      List<ChoiceGroupView> backgroundChoiceGroups,
+      List<String> backgroundChoiceGroupKeys});
 }
 
 /// @nodoc
@@ -81,6 +105,10 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
     Object? step = null,
     Object? hasSpellCreationStep = null,
     Object? draftRevision = null,
+    Object? raceChoiceGroups = null,
+    Object? classChoiceGroups = null,
+    Object? backgroundChoiceGroups = null,
+    Object? backgroundChoiceGroupKeys = null,
   }) {
     return _then(_self.copyWith(
       character: null == character
@@ -99,6 +127,22 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.draftRevision
           : draftRevision // ignore: cast_nullable_to_non_nullable
               as int,
+      raceChoiceGroups: null == raceChoiceGroups
+          ? _self.raceChoiceGroups
+          : raceChoiceGroups // ignore: cast_nullable_to_non_nullable
+              as List<ChoiceGroupView>,
+      classChoiceGroups: null == classChoiceGroups
+          ? _self.classChoiceGroups
+          : classChoiceGroups // ignore: cast_nullable_to_non_nullable
+              as List<ChoiceGroupView>,
+      backgroundChoiceGroups: null == backgroundChoiceGroups
+          ? _self.backgroundChoiceGroups
+          : backgroundChoiceGroups // ignore: cast_nullable_to_non_nullable
+              as List<ChoiceGroupView>,
+      backgroundChoiceGroupKeys: null == backgroundChoiceGroupKeys
+          ? _self.backgroundChoiceGroupKeys
+          : backgroundChoiceGroupKeys // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -194,16 +238,30 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step,
-            bool hasSpellCreationStep, int draftRevision)?
+    TResult Function(
+            CharacterData character,
+            Step step,
+            bool hasSpellCreationStep,
+            int draftRevision,
+            List<ChoiceGroupView> raceChoiceGroups,
+            List<ChoiceGroupView> classChoiceGroups,
+            List<ChoiceGroupView> backgroundChoiceGroups,
+            List<String> backgroundChoiceGroupKeys)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step, _that.hasSpellCreationStep,
-            _that.draftRevision);
+        return $default(
+            _that.character,
+            _that.step,
+            _that.hasSpellCreationStep,
+            _that.draftRevision,
+            _that.raceChoiceGroups,
+            _that.classChoiceGroups,
+            _that.backgroundChoiceGroups,
+            _that.backgroundChoiceGroupKeys);
       case _:
         return orElse();
     }
@@ -224,15 +282,29 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(CharacterData character, Step step,
-            bool hasSpellCreationStep, int draftRevision)
+    TResult Function(
+            CharacterData character,
+            Step step,
+            bool hasSpellCreationStep,
+            int draftRevision,
+            List<ChoiceGroupView> raceChoiceGroups,
+            List<ChoiceGroupView> classChoiceGroups,
+            List<ChoiceGroupView> backgroundChoiceGroups,
+            List<String> backgroundChoiceGroupKeys)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState():
-        return $default(_that.character, _that.step, _that.hasSpellCreationStep,
-            _that.draftRevision);
+        return $default(
+            _that.character,
+            _that.step,
+            _that.hasSpellCreationStep,
+            _that.draftRevision,
+            _that.raceChoiceGroups,
+            _that.classChoiceGroups,
+            _that.backgroundChoiceGroups,
+            _that.backgroundChoiceGroupKeys);
     }
   }
 
@@ -250,15 +322,29 @@ extension CharacterCreationStatePatterns on CharacterCreationState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(CharacterData character, Step step,
-            bool hasSpellCreationStep, int draftRevision)?
+    TResult? Function(
+            CharacterData character,
+            Step step,
+            bool hasSpellCreationStep,
+            int draftRevision,
+            List<ChoiceGroupView> raceChoiceGroups,
+            List<ChoiceGroupView> classChoiceGroups,
+            List<ChoiceGroupView> backgroundChoiceGroups,
+            List<String> backgroundChoiceGroupKeys)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CharacterCreationState() when $default != null:
-        return $default(_that.character, _that.step, _that.hasSpellCreationStep,
-            _that.draftRevision);
+        return $default(
+            _that.character,
+            _that.step,
+            _that.hasSpellCreationStep,
+            _that.draftRevision,
+            _that.raceChoiceGroups,
+            _that.classChoiceGroups,
+            _that.backgroundChoiceGroups,
+            _that.backgroundChoiceGroupKeys);
       case _:
         return null;
     }
@@ -272,7 +358,15 @@ class _CharacterCreationState implements CharacterCreationState {
       {required this.character,
       required this.step,
       this.hasSpellCreationStep = false,
-      this.draftRevision = 0});
+      this.draftRevision = 0,
+      final List<ChoiceGroupView> raceChoiceGroups = const [],
+      final List<ChoiceGroupView> classChoiceGroups = const [],
+      final List<ChoiceGroupView> backgroundChoiceGroups = const [],
+      final List<String> backgroundChoiceGroupKeys = const []})
+      : _raceChoiceGroups = raceChoiceGroups,
+        _classChoiceGroups = classChoiceGroups,
+        _backgroundChoiceGroups = backgroundChoiceGroups,
+        _backgroundChoiceGroupKeys = backgroundChoiceGroupKeys;
 
   @override
   final CharacterData character;
@@ -284,6 +378,45 @@ class _CharacterCreationState implements CharacterCreationState {
   @override
   @JsonKey()
   final int draftRevision;
+  final List<ChoiceGroupView> _raceChoiceGroups;
+  @override
+  @JsonKey()
+  List<ChoiceGroupView> get raceChoiceGroups {
+    if (_raceChoiceGroups is EqualUnmodifiableListView)
+      return _raceChoiceGroups;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_raceChoiceGroups);
+  }
+
+  final List<ChoiceGroupView> _classChoiceGroups;
+  @override
+  @JsonKey()
+  List<ChoiceGroupView> get classChoiceGroups {
+    if (_classChoiceGroups is EqualUnmodifiableListView)
+      return _classChoiceGroups;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_classChoiceGroups);
+  }
+
+  final List<ChoiceGroupView> _backgroundChoiceGroups;
+  @override
+  @JsonKey()
+  List<ChoiceGroupView> get backgroundChoiceGroups {
+    if (_backgroundChoiceGroups is EqualUnmodifiableListView)
+      return _backgroundChoiceGroups;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_backgroundChoiceGroups);
+  }
+
+  final List<String> _backgroundChoiceGroupKeys;
+  @override
+  @JsonKey()
+  List<String> get backgroundChoiceGroupKeys {
+    if (_backgroundChoiceGroupKeys is EqualUnmodifiableListView)
+      return _backgroundChoiceGroupKeys;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_backgroundChoiceGroupKeys);
+  }
 
   /// Create a copy of CharacterCreationState
   /// with the given fields replaced by the non-null parameter values.
@@ -305,16 +438,32 @@ class _CharacterCreationState implements CharacterCreationState {
             (identical(other.hasSpellCreationStep, hasSpellCreationStep) ||
                 other.hasSpellCreationStep == hasSpellCreationStep) &&
             (identical(other.draftRevision, draftRevision) ||
-                other.draftRevision == draftRevision));
+                other.draftRevision == draftRevision) &&
+            const DeepCollectionEquality()
+                .equals(other._raceChoiceGroups, _raceChoiceGroups) &&
+            const DeepCollectionEquality()
+                .equals(other._classChoiceGroups, _classChoiceGroups) &&
+            const DeepCollectionEquality().equals(
+                other._backgroundChoiceGroups, _backgroundChoiceGroups) &&
+            const DeepCollectionEquality().equals(
+                other._backgroundChoiceGroupKeys, _backgroundChoiceGroupKeys));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, character, step, hasSpellCreationStep, draftRevision);
+      runtimeType,
+      character,
+      step,
+      hasSpellCreationStep,
+      draftRevision,
+      const DeepCollectionEquality().hash(_raceChoiceGroups),
+      const DeepCollectionEquality().hash(_classChoiceGroups),
+      const DeepCollectionEquality().hash(_backgroundChoiceGroups),
+      const DeepCollectionEquality().hash(_backgroundChoiceGroupKeys));
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step, hasSpellCreationStep: $hasSpellCreationStep, draftRevision: $draftRevision)';
+    return 'CharacterCreationState(character: $character, step: $step, hasSpellCreationStep: $hasSpellCreationStep, draftRevision: $draftRevision, raceChoiceGroups: $raceChoiceGroups, classChoiceGroups: $classChoiceGroups, backgroundChoiceGroups: $backgroundChoiceGroups, backgroundChoiceGroupKeys: $backgroundChoiceGroupKeys)';
   }
 }
 
@@ -330,7 +479,11 @@ abstract mixin class _$CharacterCreationStateCopyWith<$Res>
       {CharacterData character,
       Step step,
       bool hasSpellCreationStep,
-      int draftRevision});
+      int draftRevision,
+      List<ChoiceGroupView> raceChoiceGroups,
+      List<ChoiceGroupView> classChoiceGroups,
+      List<ChoiceGroupView> backgroundChoiceGroups,
+      List<String> backgroundChoiceGroupKeys});
 }
 
 /// @nodoc
@@ -350,6 +503,10 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
     Object? step = null,
     Object? hasSpellCreationStep = null,
     Object? draftRevision = null,
+    Object? raceChoiceGroups = null,
+    Object? classChoiceGroups = null,
+    Object? backgroundChoiceGroups = null,
+    Object? backgroundChoiceGroupKeys = null,
   }) {
     return _then(_CharacterCreationState(
       character: null == character
@@ -368,6 +525,22 @@ class __$CharacterCreationStateCopyWithImpl<$Res>
           ? _self.draftRevision
           : draftRevision // ignore: cast_nullable_to_non_nullable
               as int,
+      raceChoiceGroups: null == raceChoiceGroups
+          ? _self._raceChoiceGroups
+          : raceChoiceGroups // ignore: cast_nullable_to_non_nullable
+              as List<ChoiceGroupView>,
+      classChoiceGroups: null == classChoiceGroups
+          ? _self._classChoiceGroups
+          : classChoiceGroups // ignore: cast_nullable_to_non_nullable
+              as List<ChoiceGroupView>,
+      backgroundChoiceGroups: null == backgroundChoiceGroups
+          ? _self._backgroundChoiceGroups
+          : backgroundChoiceGroups // ignore: cast_nullable_to_non_nullable
+              as List<ChoiceGroupView>,
+      backgroundChoiceGroupKeys: null == backgroundChoiceGroupKeys
+          ? _self._backgroundChoiceGroupKeys
+          : backgroundChoiceGroupKeys // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }

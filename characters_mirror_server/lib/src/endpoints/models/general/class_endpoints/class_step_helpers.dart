@@ -1,12 +1,5 @@
 part of '../class_endpoints.dart';
 
-bool _isMigratedSkillGroup(ClassChoiceGroupData group) {
-  return group.type == null &&
-      (group.sourceClassId != null || group.sourceBackgroundId != null) &&
-      (group.exclusiveKey?.contains('skill') == true ||
-          group.name?.toLowerCase().contains('skill') == true);
-}
-
 const _standardSpellSlotTableKey = 'standard';
 const _pactMagicSpellSlotTableKey = 'pact_magic';
 

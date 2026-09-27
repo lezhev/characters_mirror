@@ -14,7 +14,7 @@ abstract class BackgroundStateModel with _$BackgroundStateModel {
     @Default([]) List<BackgroundData> allBackgrounds,
     BackgroundData? selectedBackground,
     BackgroundStepView? stepView,
-    @Default({}) Map<String, List<ClassChoiceOptionData>> selectedOptions,
+    @Default({}) Map<String, List<ChoiceOptionData>> selectedOptions,
     @Default([]) List<CharacterSkillSelectionData> selectedSkillSelections,
     @Default([])
     List<CharacterStartingEquipmentSelectionData> startingEquipmentSelections,
@@ -79,14 +79,14 @@ class BackgroundState extends _$BackgroundState {
     );
   }
 
-  void toggleOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+  void toggleOption(ChoiceGroupData group, ChoiceOptionData option) {
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     final groupKey = _groupKey(group);
     final selected = [...?current[groupKey]];
-    final optionKey = option.optionKey?.trim();
-    if (optionKey == null || optionKey.isEmpty) return;
+    final optionKey = option.optionKey.trim();
+    if (optionKey.isEmpty) return;
 
     if (group.allowDuplicates == true) {
       return;
@@ -94,7 +94,7 @@ class BackgroundState extends _$BackgroundState {
 
     final selectionCount = group.selectionCount ?? 1;
     final existingIndex = selected.indexWhere(
-      (item) => item.optionKey?.trim() == optionKey,
+      (item) => item.optionKey.trim() == optionKey,
     );
 
     if (selectionCount <= 1) {
@@ -125,10 +125,10 @@ class BackgroundState extends _$BackgroundState {
   }
 
   void incrementOption(
-      ClassChoiceGroupData group, ClassChoiceOptionData option) {
+      ChoiceGroupData group, ChoiceOptionData option) {
     if (group.allowDuplicates != true) return;
 
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     final groupKey = _groupKey(group);
@@ -145,17 +145,17 @@ class BackgroundState extends _$BackgroundState {
   }
 
   void decrementOption(
-      ClassChoiceGroupData group, ClassChoiceOptionData option) {
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+      ChoiceGroupData group, ChoiceOptionData option) {
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     final groupKey = _groupKey(group);
     final selected = [...?current[groupKey]];
-    final optionKey = option.optionKey?.trim();
-    if (optionKey == null || optionKey.isEmpty) return;
+    final optionKey = option.optionKey.trim();
+    if (optionKey.isEmpty) return;
 
     final existingIndex = selected.indexWhere(
-      (item) => item.optionKey?.trim() == optionKey,
+      (item) => item.optionKey.trim() == optionKey,
     );
     if (existingIndex == -1) return;
 
@@ -171,8 +171,8 @@ class BackgroundState extends _$BackgroundState {
     );
   }
 
-  void clearGroup(ClassChoiceGroupData group) {
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+  void clearGroup(ChoiceGroupData group) {
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     current.remove(_groupKey(group));
@@ -495,19 +495,17 @@ class BackgroundState extends _$BackgroundState {
     );
   }
 
-  Map<String, List<ClassChoiceOptionData>> _restoreSelectedOptions(
-    List<ClassChoiceGroupView>? groups,
+  Map<String, List<ChoiceOptionData>> _restoreSelectedOptions(
+    List<ChoiceGroupView>? groups,
     List<CharacterChoiceData> savedChoices,
   ) {
     final optionsByGroupKey = _availableOptionsByGroup(groups);
-    final restored = <String, List<ClassChoiceOptionData>>{};
+    final restored = <String, List<ChoiceOptionData>>{};
     final sortedChoices = [
       ...savedChoices
     ]..sort((a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
 
     for (final choice in sortedChoices) {
-      if (choice.sourceType != ChoiceSourceType.background) continue;
-
       final groupKey = choice.groupKey;
       final optionKey = choice.optionKey?.trim();
       if (groupKey == null || optionKey == null || optionKey.isEmpty) continue;
@@ -515,7 +513,7 @@ class BackgroundState extends _$BackgroundState {
       final option = optionsByGroupKey[groupKey]?[optionKey];
       if (option == null) continue;
 
-      restored.putIfAbsent(groupKey, () => <ClassChoiceOptionData>[]);
+      restored.putIfAbsent(groupKey, () => <ChoiceOptionData>[]);
       restored[groupKey]!.add(option);
     }
 
@@ -571,17 +569,17 @@ class BackgroundState extends _$BackgroundState {
     return normalized;
   }
 
-  Map<String, List<ClassChoiceOptionData>> _normalizeSelectedOptions(
-    Map<String, List<ClassChoiceOptionData>> selections,
-    List<ClassChoiceGroupView>? groups,
+  Map<String, List<ChoiceOptionData>> _normalizeSelectedOptions(
+    Map<String, List<ChoiceOptionData>> selections,
+    List<ChoiceGroupView>? groups,
   ) {
     final choiceGroups = {
-      for (final groupView in groups ?? const <ClassChoiceGroupView>[])
+      for (final groupView in groups ?? const <ChoiceGroupView>[])
         if (groupView.group != null)
           _groupKey(groupView.group!): groupView.group!,
     };
     final availableOptions = _availableOptionsByGroup(groups);
-    final normalized = <String, List<ClassChoiceOptionData>>{};
+    final normalized = <String, List<ChoiceOptionData>>{};
 
     for (final entry in selections.entries) {
       final group = choiceGroups[entry.key];
@@ -590,12 +588,12 @@ class BackgroundState extends _$BackgroundState {
       final selectionCount = group.selectionCount ?? 1;
       final allowDuplicates = group.allowDuplicates == true;
       final canonicalOptions = availableOptions[entry.key] ?? const {};
-      final selected = <ClassChoiceOptionData>[];
+      final selected = <ChoiceOptionData>[];
       final seen = <String>{};
 
       for (final option in entry.value) {
-        final optionKey = option.optionKey?.trim();
-        if (optionKey == null || optionKey.isEmpty) continue;
+        final optionKey = option.optionKey.trim();
+        if (optionKey.isEmpty) continue;
 
         final canonical = canonicalOptions[optionKey];
         if (canonical == null) continue;
@@ -617,20 +615,20 @@ class BackgroundState extends _$BackgroundState {
     return normalized;
   }
 
-  Map<String, Map<String, ClassChoiceOptionData>> _availableOptionsByGroup(
-    List<ClassChoiceGroupView>? groups,
+  Map<String, Map<String, ChoiceOptionData>> _availableOptionsByGroup(
+    List<ChoiceGroupView>? groups,
   ) {
-    final result = <String, Map<String, ClassChoiceOptionData>>{};
+    final result = <String, Map<String, ChoiceOptionData>>{};
 
-    for (final groupView in groups ?? const <ClassChoiceGroupView>[]) {
+    for (final groupView in groups ?? const <ChoiceGroupView>[]) {
       final group = groupView.group;
       if (group == null) continue;
 
       result[_groupKey(group)] = {
         for (final option
-            in groupView.options ?? const <ClassChoiceOptionData>[])
-          if (option.optionKey?.trim().isNotEmpty == true)
-            option.optionKey!.trim(): option,
+            in groupView.options ?? const <ChoiceOptionData>[])
+          if (option.optionKey.trim().isNotEmpty)
+            option.optionKey.trim(): option,
       };
     }
 
@@ -671,8 +669,5 @@ class BackgroundState extends _$BackgroundState {
     }
   }
 
-  String _groupKey(ClassChoiceGroupData group) =>
-      group.exclusiveKey?.trim().isNotEmpty == true
-          ? group.exclusiveKey!
-          : 'group_${group.id ?? group.name ?? group.type?.name ?? 'unknown'}';
+  String _groupKey(ChoiceGroupData group) => group.referenceKey;
 }

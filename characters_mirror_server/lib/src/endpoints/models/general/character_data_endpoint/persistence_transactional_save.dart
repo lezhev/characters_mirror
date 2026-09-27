@@ -59,6 +59,11 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
   String? syncChangeId,
   _CharacterResolveContext? resolveContext,
 }) async {
+  character = await CharacterEquipmentSelectionValidator.normalizeAndValidate(
+    session,
+    character,
+    transaction: transaction,
+  );
   CharacterProficiencyOverrideValidator.validate(character);
   character = CharacterProficiencyOverrideValidator.normalize(character);
   final context = resolveContext ?? _CharacterResolveContext(session);

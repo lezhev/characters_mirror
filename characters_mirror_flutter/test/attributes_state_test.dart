@@ -8,7 +8,63 @@ import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+ChoiceGroupView _abilityChoiceGroup(
+  List<ChoiceOptionData> options, {
+  int raceId = 1,
+}) {
+  return ChoiceGroupView(
+    group: ChoiceGroupData(
+      id: 11,
+      referenceKey: 'half_elf_ability_score_increase',
+      sourceRaceId: raceId,
+      type: ChoiceType.abilityIncrease,
+      selectionCount: 1,
+      allowDuplicates: false,
+    ),
+    options: options,
+  );
+}
+
 void main() {
+  test('attribute state resolves choices from generic option bonuses', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final creation = container.read(characterCreationProvider.notifier);
+    final group = ChoiceGroupData(
+      id: 70,
+      referenceKey: 'half_elf_ability_score_increase',
+      sourceRaceId: 7,
+      type: ChoiceType.abilityIncrease,
+      selectionCount: 1,
+      allowDuplicates: false,
+    );
+    creation.syncRaceDraft(
+      selectedRace: RaceData(id: 7, name: 'Half-Elf'),
+      choiceGroups: [
+        ChoiceGroupView(
+          group: group,
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 70,
+              optionKey: 'strength_plus_one',
+              grantedAbilityBonuses: const {'strength': 1},
+            ),
+          ],
+        ),
+      ],
+    );
+
+    final attributes = container.read(attributeStateProvider.notifier);
+
+    expect(
+      attributes.isBonusAvailable(
+        attribute: Attribute.strength,
+        bonusValue: 1,
+      ),
+      isTrue,
+    );
+  });
+
   test('attribute state keeps draft values while moving between steps', () {
     final container = ProviderContainer();
     addTearDown(container.dispose);
@@ -170,6 +226,50 @@ void main() {
         strengthBonus: 2,
         dexterityBonus: 1,
       ),
+      choiceGroups: [
+        ChoiceGroupView(
+          group: ChoiceGroupData(
+            id: 13,
+            referenceKey: 'race_flexible_bonus_plus2_dwarf',
+            sourceRaceId: 1,
+            type: ChoiceType.abilityIncrease,
+            selectionCount: 1,
+          ),
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 13,
+              optionKey: 'charisma_plus_two',
+              grantedAbilityBonuses: const {'charisma': 2},
+            ),
+            ChoiceOptionData(
+              choiceGroupId: 13,
+              optionKey: 'strength_plus_two',
+              grantedAbilityBonuses: const {'strength': 2},
+            ),
+          ],
+        ),
+        ChoiceGroupView(
+          group: ChoiceGroupData(
+            id: 14,
+            referenceKey: 'race_flexible_bonus_plus1_dwarf',
+            sourceRaceId: 1,
+            type: ChoiceType.abilityIncrease,
+            selectionCount: 1,
+          ),
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 14,
+              optionKey: 'wisdom_plus_one',
+              grantedAbilityBonuses: const {'wisdom': 1},
+            ),
+            ChoiceOptionData(
+              choiceGroupId: 14,
+              optionKey: 'dexterity_plus_one',
+              grantedAbilityBonuses: const {'dexterity': 1},
+            ),
+          ],
+        ),
+      ],
     );
     creation.setUseFlexibleAbilityBonuses(true);
 
@@ -202,33 +302,17 @@ void main() {
     addTearDown(container.dispose);
 
     container.read(characterCreationProvider.notifier).syncRaceDraft(
-          selectedRace: RaceData(
-            id: 1,
-            features: [
-              RaceFeatureData(
-                id: 10,
-                raceId: 1,
-                level: 1,
-                choiceSets: [
-                  RaceChoiceSetData(
-                    id: 11,
-                    featureId: 10,
-                    kind: RaceChoiceKind.abilityBonusChoice,
-                    pickCount: 1,
-                    mustBeDistinct: true,
-                    choiceOptions: [
-                      RaceChoiceOptionData(
-                        choiceSetId: 11,
-                        ability: Ability.charisma,
-                        bonusValue: 2,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+      selectedRace: RaceData(id: 1),
+      choiceGroups: [
+        _abilityChoiceGroup([
+          ChoiceOptionData(
+            choiceGroupId: 11,
+            optionKey: 'charisma_plus_two',
+            grantedAbilityBonuses: const {'charisma': 2},
           ),
-        );
+        ]),
+      ],
+    );
 
     final attributes = container.read(attributeStateProvider.notifier);
     attributes.changeType(SelectType.manual);
@@ -254,33 +338,17 @@ void main() {
     addTearDown(container.dispose);
 
     container.read(characterCreationProvider.notifier).syncRaceDraft(
-          selectedRace: RaceData(
-            id: 1,
-            features: [
-              RaceFeatureData(
-                id: 10,
-                raceId: 1,
-                level: 1,
-                choiceSets: [
-                  RaceChoiceSetData(
-                    id: 11,
-                    featureId: 10,
-                    kind: RaceChoiceKind.abilityBonusChoice,
-                    pickCount: 1,
-                    mustBeDistinct: true,
-                    choiceOptions: [
-                      RaceChoiceOptionData(
-                        choiceSetId: 11,
-                        ability: Ability.charisma,
-                        bonusValue: 2,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+      selectedRace: RaceData(id: 1),
+      choiceGroups: [
+        _abilityChoiceGroup([
+          ChoiceOptionData(
+            choiceGroupId: 11,
+            optionKey: 'charisma_plus_two',
+            grantedAbilityBonuses: const {'charisma': 2},
           ),
-        );
+        ]),
+      ],
+    );
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -308,37 +376,17 @@ void main() {
 
     final choiceOptions = [
       for (final ability in Ability.values)
-        RaceChoiceOptionData(
-          choiceSetId: 11,
+        ChoiceOptionData(
+          choiceGroupId: 11,
           optionKey: ability.name,
-          ability: ability,
-          bonusValue: 1,
+          grantedAbilityBonuses: {ability.name: 1},
         ),
     ];
 
     container.read(characterCreationProvider.notifier).syncRaceDraft(
-          selectedRace: RaceData(
-            id: 1,
-            charismaBonus: 2,
-            features: [
-              RaceFeatureData(
-                id: 10,
-                raceId: 1,
-                level: 1,
-                choiceSets: [
-                  RaceChoiceSetData(
-                    id: 11,
-                    featureId: 10,
-                    kind: RaceChoiceKind.abilityBonusChoice,
-                    pickCount: 1,
-                    mustBeDistinct: true,
-                    choiceOptions: choiceOptions,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+      selectedRace: RaceData(id: 1, charismaBonus: 2),
+      choiceGroups: [_abilityChoiceGroup(choiceOptions)],
+    );
 
     final attributes = container.read(attributeStateProvider.notifier);
     attributes.toggleBonus(
@@ -371,34 +419,77 @@ void main() {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    final choiceSet = RaceChoiceSetData(
-      id: 11,
-      featureId: 10,
-      kind: RaceChoiceKind.abilityBonusChoice,
-      pickCount: 1,
-      mustBeDistinct: true,
-      choiceOptions: [
-        RaceChoiceOptionData(
-          choiceSetId: 11,
-          ability: Ability.strength,
-          bonusValue: 1,
-        ),
-      ],
-    );
-
     final creation = container.read(characterCreationProvider.notifier);
     creation.syncRaceDraft(
-      selectedRace: RaceData(
-        id: 1,
-        features: [
-          RaceFeatureData(
-            id: 10,
-            raceId: 1,
-            level: 1,
-            choiceSets: [choiceSet],
+      selectedRace: RaceData(id: 1),
+      choiceGroups: [
+        _abilityChoiceGroup([
+          ChoiceOptionData(
+            choiceGroupId: 11,
+            optionKey: 'strength_plus_one',
+            grantedAbilityBonuses: const {'strength': 1},
           ),
-        ],
-      ),
+        ]),
+        ChoiceGroupView(
+          group: ChoiceGroupData(
+            id: 12,
+            referenceKey: 'half_elf_ability_bonus_mode',
+            sourceRaceId: 1,
+            type: ChoiceType.custom,
+            selectionCount: 1,
+          ),
+          options: [
+            for (final mode in AttributeBonusMode.values)
+              ChoiceOptionData(
+                choiceGroupId: 12,
+                optionKey: mode.name,
+                name: mode.name,
+            ),
+          ],
+        ),
+        ChoiceGroupView(
+          group: ChoiceGroupData(
+            id: 13,
+            referenceKey: 'race_flexible_bonus_plus2_half_elf',
+            sourceRaceId: 1,
+            type: ChoiceType.abilityIncrease,
+            selectionCount: 1,
+          ),
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 13,
+              optionKey: 'strength_plus_two',
+              grantedAbilityBonuses: const {'strength': 2},
+            ),
+            ChoiceOptionData(
+              choiceGroupId: 13,
+              optionKey: 'charisma_plus_two',
+              grantedAbilityBonuses: const {'charisma': 2},
+            ),
+          ],
+        ),
+        ChoiceGroupView(
+          group: ChoiceGroupData(
+            id: 14,
+            referenceKey: 'race_flexible_bonus_plus1_half_elf',
+            sourceRaceId: 1,
+            type: ChoiceType.abilityIncrease,
+            selectionCount: 1,
+          ),
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 14,
+              optionKey: 'wisdom_plus_one',
+              grantedAbilityBonuses: const {'wisdom': 1},
+            ),
+            ChoiceOptionData(
+              choiceGroupId: 14,
+              optionKey: 'charisma_plus_one',
+              grantedAbilityBonuses: const {'charisma': 1},
+            ),
+          ],
+        ),
+      ],
     );
     creation.setUseFlexibleAbilityBonuses(true);
 
@@ -418,16 +509,26 @@ void main() {
     final choices = attributes.buildRacialAttributeChoices();
 
     expect(
-      choices.where((choice) => choice.selectedAbility == Ability.strength),
+      choices.where((choice) => choice.optionKey == Ability.strength.name),
       isEmpty,
     );
     expect(
-      choices.where((choice) => choice.selectedAbility == Ability.charisma),
+      choices.where(
+        (choice) =>
+            choice.groupKey == 'race_flexible_bonus_plus2_half_elf' &&
+            choice.optionKey == 'charisma_plus_two',
+      ),
       hasLength(1),
     );
     expect(
       choices.where(
-        (choice) => choice.groupKey == AttributeState.bonusModeGroupKey,
+        (choice) => choice.groupKey?.startsWith('race_flexible_bonus') == true,
+      ),
+      hasLength(1),
+    );
+    expect(
+      choices.where(
+        (choice) => choice.groupKey == 'half_elf_ability_bonus_mode',
       ),
       hasLength(1),
     );

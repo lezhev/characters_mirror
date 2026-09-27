@@ -24,7 +24,6 @@ abstract class BackgroundData implements _i1.SerializableModel {
     this.skillProficiencies,
     this.availableSkills,
     this.skillCount,
-    this.toolProficiencies,
     this.toolProficiencyKeys,
     this.languageCount,
     this.items,
@@ -47,7 +46,6 @@ abstract class BackgroundData implements _i1.SerializableModel {
     List<_i2.Skill>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
-    List<String>? toolProficiencies,
     List<String>? toolProficiencyKeys,
     int? languageCount,
     List<String>? items,
@@ -79,9 +77,6 @@ abstract class BackgroundData implements _i1.SerializableModel {
           ?.map((e) => _i2.Skill.fromJson((e as String)))
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
-      toolProficiencies: (jsonSerialization['toolProficiencies'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
       toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -129,8 +124,6 @@ abstract class BackgroundData implements _i1.SerializableModel {
 
   int? skillCount;
 
-  List<String>? toolProficiencies;
-
   List<String>? toolProficiencyKeys;
 
   int? languageCount;
@@ -163,7 +156,6 @@ abstract class BackgroundData implements _i1.SerializableModel {
     List<_i2.Skill>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
-    List<String>? toolProficiencies,
     List<String>? toolProficiencyKeys,
     int? languageCount,
     List<String>? items,
@@ -191,8 +183,6 @@ abstract class BackgroundData implements _i1.SerializableModel {
         'availableSkills':
             availableSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (skillCount != null) 'skillCount': skillCount,
-      if (toolProficiencies != null)
-        'toolProficiencies': toolProficiencies?.toJson(),
       if (toolProficiencyKeys != null)
         'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
       if (languageCount != null) 'languageCount': languageCount,
@@ -227,7 +217,6 @@ class _BackgroundDataImpl extends BackgroundData {
     List<_i2.Skill>? skillProficiencies,
     List<_i2.Skill>? availableSkills,
     int? skillCount,
-    List<String>? toolProficiencies,
     List<String>? toolProficiencyKeys,
     int? languageCount,
     List<String>? items,
@@ -248,7 +237,6 @@ class _BackgroundDataImpl extends BackgroundData {
           skillProficiencies: skillProficiencies,
           availableSkills: availableSkills,
           skillCount: skillCount,
-          toolProficiencies: toolProficiencies,
           toolProficiencyKeys: toolProficiencyKeys,
           languageCount: languageCount,
           items: items,
@@ -275,7 +263,6 @@ class _BackgroundDataImpl extends BackgroundData {
     Object? skillProficiencies = _Undefined,
     Object? availableSkills = _Undefined,
     Object? skillCount = _Undefined,
-    Object? toolProficiencies = _Undefined,
     Object? toolProficiencyKeys = _Undefined,
     Object? languageCount = _Undefined,
     Object? items = _Undefined,
@@ -301,9 +288,6 @@ class _BackgroundDataImpl extends BackgroundData {
           ? availableSkills
           : this.availableSkills?.map((e0) => e0).toList(),
       skillCount: skillCount is int? ? skillCount : this.skillCount,
-      toolProficiencies: toolProficiencies is List<String>?
-          ? toolProficiencies
-          : this.toolProficiencies?.map((e0) => e0).toList(),
       toolProficiencyKeys: toolProficiencyKeys is List<String>?
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),

@@ -6,6 +6,8 @@ import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.d
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:sqlite3/sqlite3.dart';
 
 void main() {
@@ -19,6 +21,25 @@ void main() {
     cache.close();
   });
 
+  test('openDefault creates the v8 offline cache file', () async {
+    final directory = await Directory.systemTemp.createTemp('offline-cache-');
+    final previousPlatform = PathProviderPlatform.instance;
+    PathProviderPlatform.instance = _FakePathProviderPlatform(directory.path);
+    addTearDown(() async {
+      PathProviderPlatform.instance = previousPlatform;
+      await directory.delete(recursive: true);
+    });
+
+    final defaultCache = await OfflineCacheDatabase.openDefault();
+    addTearDown(defaultCache.close);
+
+    expect(
+      File(p.join(directory.path, 'characters_mirror_offline_v8.sqlite'))
+          .existsSync(),
+      isTrue,
+    );
+  });
+
   test('allocates negative local ids for offline-created characters', () async {
     final first = await cache.saveLocal(7, CharacterData(name: 'First'));
     final second = await cache.saveLocal(7, CharacterData(name: 'Second'));
@@ -29,6 +50,34 @@ void main() {
     expect(second.character.id, -2);
     expect(first.status, OfflineCharacterSyncStatus.dirty);
     expect(first.operation, OfflineCharacterSyncOperation.upsert);
+  });
+
+  test('equipment selection survives offline cache close and reopen', () async {
+    final directory =
+        await Directory.systemTemp.createTemp('offline-equipment-');
+    addTearDown(() => directory.delete(recursive: true));
+    final path = '${directory.path}/cache.sqlite';
+    final persistent = await OfflineCacheDatabase.openAt(path);
+    final saved = await persistent.saveLocal(
+      7,
+      CharacterData(
+        name: 'Offline equipment',
+        equippedArmor: CharacterEquipmentSelectionData(
+          referenceKey: 'leather_armor',
+          name: 'Leather Armor',
+        ),
+        equippedShield: CharacterEquipmentSelectionData(name: 'Wooden shield'),
+      ),
+    );
+    persistent.close();
+
+    final reopened = await OfflineCacheDatabase.openAt(path);
+    addTearDown(reopened.close);
+    final restored = (await reopened.getCharacter(7, saved.localId))!.character;
+    expect(restored.equippedArmor?.referenceKey, 'leather_armor');
+    expect(restored.equippedArmor?.name, 'Leather Armor');
+    expect(restored.equippedShield?.referenceKey, isNull);
+    expect(restored.equippedShield?.name, 'Wooden shield');
   });
 
   test('saveLocal enqueues granular upsert operation for server characters',
@@ -449,8 +498,7 @@ INSERT INTO characters_cache(
     expect(item?.type, CharacterInventoryItemType.custom);
   });
 
-  test('reads legacy skill class choice group type from reference cache',
-      () async {
+  test('reads generic choice group from reference cache', () async {
     final directory = await Directory.systemTemp.createTemp('offline-cache-');
     addTearDown(() => directory.delete(recursive: true));
     final path = '${directory.path}/cache.sqlite';
@@ -472,9 +520,10 @@ VALUES (?, ?, ?, ?)
               {
                 'group': {
                   'id': 1,
+                  'referenceKey': 'background_language_choice',
                   'name': 'Skills',
                   'sourceBackgroundId': 42,
-                  'type': 'skill',
+                  'type': 'language',
                   'selectionCount': 2,
                   'exclusiveKey': 'background_42_skill_pick',
                 },
@@ -498,7 +547,10 @@ VALUES (?, ?, ?, ?)
       BackgroundStepView.fromJson,
     );
 
-    expect(cached?.choiceGroups?.single.group?.type, isNull);
+    expect(
+      cached?.choiceGroups?.single.group?.type,
+      ChoiceType.language,
+    );
   });
 
   test('reads legacy queued snapshot rows after operation migration', () async {
@@ -742,4 +794,13 @@ INSERT INTO character_changes(
     expect(record?.status, OfflineCharacterSyncStatus.dirty);
     expect(record?.lastSyncError, 'Validation failed');
   });
+}
+
+class _FakePathProviderPlatform extends PathProviderPlatform {
+  _FakePathProviderPlatform(this.applicationSupportPath);
+
+  final String applicationSupportPath;
+
+  @override
+  Future<String?> getApplicationSupportPath() async => applicationSupportPath;
 }

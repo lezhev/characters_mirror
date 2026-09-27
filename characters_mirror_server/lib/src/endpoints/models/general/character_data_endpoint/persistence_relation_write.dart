@@ -159,17 +159,9 @@ Future<void> _upsertChoiceRecords(
       character: characterRecord,
       classEntryId: matchedEntry?.id,
       classEntry: matchedEntry,
-      sourceType: choice.sourceType,
-      sourceId: choice.sourceId,
       groupKey: choice.groupKey,
       optionKey: choice.optionKey,
       selectionIndex: choice.selectionIndex,
-      selectedAbility: choice.selectedAbility,
-      selectedLanguage: choice.selectedLanguage,
-      selectedToolKey: choice.selectedToolKey,
-      selectedFeatId: choice.selectedFeatId,
-      selectedText: choice.selectedText,
-      selectedCount: choice.selectedCount,
       updatedAt: choice.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
     final saved = existingRecord == null

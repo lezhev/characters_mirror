@@ -32,7 +32,7 @@ class ClassFeatures extends HookConsumerWidget {
     }
 
     final choiceGroups =
-        currentStepView.choiceGroups ?? const <ClassChoiceGroupView>[];
+        currentStepView.choiceGroups ?? const <ChoiceGroupView>[];
     final currentLevelEntries = [
       for (final feature
           in currentStepView.currentLevelFeatures ?? const <ClassFeatureData>[])
