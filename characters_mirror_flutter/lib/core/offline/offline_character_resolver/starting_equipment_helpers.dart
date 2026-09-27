@@ -84,6 +84,7 @@ void _applyStartingEquipmentLines(
   List<WeaponData> weapons,
   List<ItemData> items,
   List<ArmorData> armor,
+  List<ToolData> tools,
   Map<String, _GrantedEquipmentAccumulator> accumulated,
 ) {
   final resolutionsByLineEntryId = {
@@ -108,6 +109,7 @@ void _applyStartingEquipmentLines(
             weapons,
             items,
             armor,
+            tools,
           ),
           quantity: _positiveQuantity(line.quantity),
         );
@@ -183,6 +185,35 @@ void _applyStartingEquipmentLines(
           continue;
         }
 
+        if (expectedType == EquipmentCatalogType.tool) {
+          final tool = tools
+              .where((item) =>
+                  _normalizedTextOrNull(item.referenceKey) == referenceKey)
+              .firstOrNull;
+          if (tool == null) continue;
+          final allowed = {
+            for (final value in line.allowedItemCategories ?? const <String>[])
+              if (_normalizedTextOrNull(value) != null)
+                _normalizedTextOrNull(value)!,
+          };
+          if (allowed.isNotEmpty &&
+              (tool.category == null ||
+                  !allowed.contains(tool.category!.name))) {
+            continue;
+          }
+          _accumulateGrantedEquipment(
+            accumulated,
+            catalogType: EquipmentCatalogType.tool,
+            referenceKey: referenceKey,
+            displayText: _normalizedTextOrNull(tool.name) ?? referenceKey,
+            quantity: _positiveQuantity(
+              resolution?.quantity,
+              fallback: line.quantity,
+            ),
+          );
+          continue;
+        }
+
         if (expectedType != EquipmentCatalogType.item) {
           continue;
         }
@@ -249,6 +280,7 @@ String _catalogRefDisplayText(
   List<WeaponData> weapons,
   List<ItemData> items,
   List<ArmorData> armor,
+  List<ToolData> tools,
 ) {
   switch (catalogType) {
     case EquipmentCatalogType.weapon:
@@ -265,6 +297,12 @@ String _catalogRefDisplayText(
           )
           .firstOrNull;
       return _normalizedTextOrNull(armorItem?.name) ?? referenceKey;
+    case EquipmentCatalogType.tool:
+      final tool = tools
+          .where((item) =>
+              _normalizedTextOrNull(item.referenceKey) == referenceKey)
+          .firstOrNull;
+      return _normalizedTextOrNull(tool?.name) ?? referenceKey;
     case EquipmentCatalogType.item:
     case EquipmentCatalogType.magicItem:
       final item = items

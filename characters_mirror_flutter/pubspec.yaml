@@ -84,6 +84,7 @@ flutter:
     - assets/svg/feature_tags/
     - assets/svg/races/
     - assets/svg/classes/
+    - assets/svg/damage_types/
     - assets/svg/rest/
     - assets/svg/tab_bar/
     

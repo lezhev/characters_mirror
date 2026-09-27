@@ -51,6 +51,9 @@ class StartingEquipmentSection extends ConsumerWidget {
       EquipmentCatalogType.item: buildStartingEquipmentItemLabels(
         ref.watch(itemCatalogProvider).valueOrNull ?? const <ItemData>[],
       ),
+      EquipmentCatalogType.tool: buildStartingEquipmentToolLabels(
+        ref.watch(toolCatalogProvider).valueOrNull ?? const <ToolData>[],
+      ),
     };
     final orderedBlocks = _orderedStartingEquipmentBlocks(blocks);
 
@@ -191,8 +194,7 @@ Future<void> _showRequiredResolutionDialogs({
       context: context,
       ref: ref,
       line: line,
-      selectedReferenceKey: selectedReferenceKeysByLine[
-          line.entryId],
+      selectedReferenceKey: selectedReferenceKeysByLine[line.entryId],
     );
     if (choice == null) {
       return;

@@ -16,6 +16,23 @@ void main() {
   _registerCharacterDataEndpointTests();
 }
 
+Future<ItemData> _ensureItemData(
+  Session session, {
+  required String referenceKey,
+  required String name,
+}) async {
+  final existing = await ItemData.db.find(
+    session,
+    where: (t) => t.referenceKey.equals(referenceKey),
+    limit: 1,
+  );
+  if (existing.isNotEmpty) return existing.first;
+  return ItemData.db.insertRow(
+    session,
+    ItemData(referenceKey: referenceKey, name: name),
+  );
+}
+
 Future<ToolData> _ensureToolData(
   Session session, {
   required String referenceKey,

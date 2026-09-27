@@ -156,7 +156,7 @@ String damageTypeLabel(DamageType damageType) {
     case DamageType.lightning:
       return 'Молния';
     case DamageType.necrotic:
-      return 'Некротический';
+      return 'Некротик';
     case DamageType.piercing:
       return 'Колющий';
     case DamageType.poison:

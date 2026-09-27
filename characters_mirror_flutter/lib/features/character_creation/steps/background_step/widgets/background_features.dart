@@ -66,7 +66,6 @@ class BackgroundFeatures extends ConsumerWidget {
       for (final key in selectedBackground.toolProficiencyKeys ?? const [])
         if (toolsByKey[key] case final name?) name,
     ];
-    final hasStructuredEquipment = startingEquipmentBlocks.isNotEmpty;
     final hasProficienciesOrLanguages = _hasAnyValues([
           fixedSkillLabels,
           toolProficiencyLabels,
@@ -94,18 +93,12 @@ class BackgroundFeatures extends ConsumerWidget {
             textAlign: TextAlign.justify,
           ),
         ),
-      if ((!hasStructuredEquipment && _hasTextList(selectedBackground.items)) ||
-          selectedBackground.coins != null)
+      if (selectedBackground.coins != null)
         BackgroundFeatureCard(
-          title: hasStructuredEquipment ? 'Ресурсы' : 'Снаряжение и ресурсы',
+          title: 'Ресурсы',
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!hasStructuredEquipment)
-                BackgroundItemCards(
-                  label: 'Предметы',
-                  values: selectedBackground.items,
-                ),
               if (selectedBackground.coins != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -400,46 +393,6 @@ class BackgroundFeatureCard extends StatelessWidget {
 
 class BackgroundValueGroup extends StatelessWidget {
   const BackgroundValueGroup({
-    required this.label,
-    required this.values,
-    super.key,
-  });
-
-  final String label;
-  final List<dynamic>? values;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_hasTextList(values)) {
-      return const SizedBox.shrink();
-    }
-
-    final items = values!
-        .map(_displayValue)
-        .where((value) => value.trim().isNotEmpty)
-        .toList();
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: CreationChoiceSelector.fixed(
-        title: label,
-        switchKey: label,
-        items: [
-          for (final item in items)
-            CreationChoiceSelectorItem(
-              id: item,
-              title: item,
-              isSelected: true,
-              isEnabled: false,
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class BackgroundItemCards extends StatelessWidget {
-  const BackgroundItemCards({
     required this.label,
     required this.values,
     super.key,

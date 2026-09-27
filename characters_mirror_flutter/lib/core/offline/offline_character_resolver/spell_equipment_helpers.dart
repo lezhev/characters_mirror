@@ -11,8 +11,7 @@ List<String> _collectGrantedSpellKeys(
 ) {
   return _uniqueStrings([
     ...alwaysPreparedSpellKeys,
-    for (final option in selectedOptions)
-      ...?option.grantedSpellKeys,
+    for (final option in selectedOptions) ...?option.grantedSpellKeys,
     for (final selection
         in character.spellSelections ?? const <CharacterSpellSelectionData>[])
       if (_spellSelectionKey(selection) != null) _spellSelectionKey(selection)!,
@@ -47,6 +46,12 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
         ArmorData.fromJson,
       ) ??
       const <ArmorData>[];
+  final tools = await cache.getReferenceList(
+        'tool',
+        offlineAllKey,
+        ToolData.fromJson,
+      ) ??
+      const <ToolData>[];
 
   final startingEntry = _startingClassEntry(
     character.classEntries ?? const <CharacterClassEntryData>[],
@@ -120,6 +125,7 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
         weapons,
         items,
         armor,
+        tools,
         accumulated,
       );
       for (final selection in sourceSelections) {
@@ -136,6 +142,7 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
           weapons,
           items,
           armor,
+          tools,
           accumulated,
         );
       }
@@ -151,6 +158,7 @@ Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(
       weapons,
       items,
       armor,
+      tools,
       accumulated,
     );
   }
