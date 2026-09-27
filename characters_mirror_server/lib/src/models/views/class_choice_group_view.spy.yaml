@@ -1,4 +1,0 @@
-class: ClassChoiceGroupView
-fields:
-  group: ClassChoiceGroupData?
-  options: List<ClassChoiceOptionData>?

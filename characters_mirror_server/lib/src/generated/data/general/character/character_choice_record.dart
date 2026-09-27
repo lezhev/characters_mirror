@@ -15,9 +15,6 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/character/character_record.dart' as _i2;
 import '../../../data/general/character/character_class_entry_record.dart'
     as _i3;
-import '../../../enums/choice_source_type.dart' as _i4;
-import '../../../enums/ability.dart' as _i5;
-import '../../../enums/language.dart' as _i6;
 
 abstract class CharacterChoiceRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -28,17 +25,9 @@ abstract class CharacterChoiceRecord
     this.character,
     this.classEntryId,
     this.classEntry,
-    this.sourceType,
-    this.sourceId,
     this.groupKey,
     this.optionKey,
     this.selectionIndex,
-    this.selectedAbility,
-    this.selectedLanguage,
-    this.selectedToolKey,
-    this.selectedFeatId,
-    this.selectedText,
-    this.selectedCount,
     this.updatedAt,
   });
 
@@ -49,17 +38,9 @@ abstract class CharacterChoiceRecord
     _i2.CharacterRecord? character,
     int? classEntryId,
     _i3.CharacterClassEntryRecord? classEntry,
-    _i4.ChoiceSourceType? sourceType,
-    int? sourceId,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
-    _i5.Ability? selectedAbility,
-    _i6.Language? selectedLanguage,
-    String? selectedToolKey,
-    int? selectedFeatId,
-    String? selectedText,
-    int? selectedCount,
     DateTime? updatedAt,
   }) = _CharacterChoiceRecordImpl;
 
@@ -78,26 +59,9 @@ abstract class CharacterChoiceRecord
           ? null
           : _i3.CharacterClassEntryRecord.fromJson(
               (jsonSerialization['classEntry'] as Map<String, dynamic>)),
-      sourceType: jsonSerialization['sourceType'] == null
-          ? null
-          : _i4.ChoiceSourceType.fromJson(
-              (jsonSerialization['sourceType'] as String)),
-      sourceId: jsonSerialization['sourceId'] as int?,
       groupKey: jsonSerialization['groupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
-      selectedAbility: jsonSerialization['selectedAbility'] == null
-          ? null
-          : _i5.Ability.fromJson(
-              (jsonSerialization['selectedAbility'] as String)),
-      selectedLanguage: jsonSerialization['selectedLanguage'] == null
-          ? null
-          : _i6.Language.fromJson(
-              (jsonSerialization['selectedLanguage'] as String)),
-      selectedToolKey: jsonSerialization['selectedToolKey'] as String?,
-      selectedFeatId: jsonSerialization['selectedFeatId'] as int?,
-      selectedText: jsonSerialization['selectedText'] as String?,
-      selectedCount: jsonSerialization['selectedCount'] as int?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
@@ -121,27 +85,11 @@ abstract class CharacterChoiceRecord
 
   _i3.CharacterClassEntryRecord? classEntry;
 
-  _i4.ChoiceSourceType? sourceType;
-
-  int? sourceId;
-
   String? groupKey;
 
   String? optionKey;
 
   int? selectionIndex;
-
-  _i5.Ability? selectedAbility;
-
-  _i6.Language? selectedLanguage;
-
-  String? selectedToolKey;
-
-  int? selectedFeatId;
-
-  String? selectedText;
-
-  int? selectedCount;
 
   DateTime? updatedAt;
 
@@ -158,17 +106,9 @@ abstract class CharacterChoiceRecord
     _i2.CharacterRecord? character,
     int? classEntryId,
     _i3.CharacterClassEntryRecord? classEntry,
-    _i4.ChoiceSourceType? sourceType,
-    int? sourceId,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
-    _i5.Ability? selectedAbility,
-    _i6.Language? selectedLanguage,
-    String? selectedToolKey,
-    int? selectedFeatId,
-    String? selectedText,
-    int? selectedCount,
     DateTime? updatedAt,
   });
   @override
@@ -180,18 +120,9 @@ abstract class CharacterChoiceRecord
       if (character != null) 'character': character?.toJson(),
       if (classEntryId != null) 'classEntryId': classEntryId,
       if (classEntry != null) 'classEntry': classEntry?.toJson(),
-      if (sourceType != null) 'sourceType': sourceType?.toJson(),
-      if (sourceId != null) 'sourceId': sourceId,
       if (groupKey != null) 'groupKey': groupKey,
       if (optionKey != null) 'optionKey': optionKey,
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
-      if (selectedAbility != null) 'selectedAbility': selectedAbility?.toJson(),
-      if (selectedLanguage != null)
-        'selectedLanguage': selectedLanguage?.toJson(),
-      if (selectedToolKey != null) 'selectedToolKey': selectedToolKey,
-      if (selectedFeatId != null) 'selectedFeatId': selectedFeatId,
-      if (selectedText != null) 'selectedText': selectedText,
-      if (selectedCount != null) 'selectedCount': selectedCount,
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
@@ -247,17 +178,9 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     _i2.CharacterRecord? character,
     int? classEntryId,
     _i3.CharacterClassEntryRecord? classEntry,
-    _i4.ChoiceSourceType? sourceType,
-    int? sourceId,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
-    _i5.Ability? selectedAbility,
-    _i6.Language? selectedLanguage,
-    String? selectedToolKey,
-    int? selectedFeatId,
-    String? selectedText,
-    int? selectedCount,
     DateTime? updatedAt,
   }) : super._(
           id: id,
@@ -266,17 +189,9 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
           character: character,
           classEntryId: classEntryId,
           classEntry: classEntry,
-          sourceType: sourceType,
-          sourceId: sourceId,
           groupKey: groupKey,
           optionKey: optionKey,
           selectionIndex: selectionIndex,
-          selectedAbility: selectedAbility,
-          selectedLanguage: selectedLanguage,
-          selectedToolKey: selectedToolKey,
-          selectedFeatId: selectedFeatId,
-          selectedText: selectedText,
-          selectedCount: selectedCount,
           updatedAt: updatedAt,
         );
 
@@ -291,17 +206,9 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
     Object? character = _Undefined,
     Object? classEntryId = _Undefined,
     Object? classEntry = _Undefined,
-    Object? sourceType = _Undefined,
-    Object? sourceId = _Undefined,
     Object? groupKey = _Undefined,
     Object? optionKey = _Undefined,
     Object? selectionIndex = _Undefined,
-    Object? selectedAbility = _Undefined,
-    Object? selectedLanguage = _Undefined,
-    Object? selectedToolKey = _Undefined,
-    Object? selectedFeatId = _Undefined,
-    Object? selectedText = _Undefined,
-    Object? selectedCount = _Undefined,
     Object? updatedAt = _Undefined,
   }) {
     return CharacterChoiceRecord(
@@ -315,25 +222,10 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
       classEntry: classEntry is _i3.CharacterClassEntryRecord?
           ? classEntry
           : this.classEntry?.copyWith(),
-      sourceType:
-          sourceType is _i4.ChoiceSourceType? ? sourceType : this.sourceType,
-      sourceId: sourceId is int? ? sourceId : this.sourceId,
       groupKey: groupKey is String? ? groupKey : this.groupKey,
       optionKey: optionKey is String? ? optionKey : this.optionKey,
       selectionIndex:
           selectionIndex is int? ? selectionIndex : this.selectionIndex,
-      selectedAbility: selectedAbility is _i5.Ability?
-          ? selectedAbility
-          : this.selectedAbility,
-      selectedLanguage: selectedLanguage is _i6.Language?
-          ? selectedLanguage
-          : this.selectedLanguage,
-      selectedToolKey:
-          selectedToolKey is String? ? selectedToolKey : this.selectedToolKey,
-      selectedFeatId:
-          selectedFeatId is int? ? selectedFeatId : this.selectedFeatId,
-      selectedText: selectedText is String? ? selectedText : this.selectedText,
-      selectedCount: selectedCount is int? ? selectedCount : this.selectedCount,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
@@ -354,15 +246,6 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
       'classEntryId',
       this,
     );
-    sourceType = _i1.ColumnEnum(
-      'sourceType',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    sourceId = _i1.ColumnInt(
-      'sourceId',
-      this,
-    );
     groupKey = _i1.ColumnString(
       'groupKey',
       this,
@@ -373,32 +256,6 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
     );
     selectionIndex = _i1.ColumnInt(
       'selectionIndex',
-      this,
-    );
-    selectedAbility = _i1.ColumnEnum(
-      'selectedAbility',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    selectedLanguage = _i1.ColumnEnum(
-      'selectedLanguage',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    selectedToolKey = _i1.ColumnString(
-      'selectedToolKey',
-      this,
-    );
-    selectedFeatId = _i1.ColumnInt(
-      'selectedFeatId',
-      this,
-    );
-    selectedText = _i1.ColumnString(
-      'selectedText',
-      this,
-    );
-    selectedCount = _i1.ColumnInt(
-      'selectedCount',
       this,
     );
     updatedAt = _i1.ColumnDateTime(
@@ -417,27 +274,11 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
 
   _i3.CharacterClassEntryRecordTable? _classEntry;
 
-  late final _i1.ColumnEnum<_i4.ChoiceSourceType> sourceType;
-
-  late final _i1.ColumnInt sourceId;
-
   late final _i1.ColumnString groupKey;
 
   late final _i1.ColumnString optionKey;
 
   late final _i1.ColumnInt selectionIndex;
-
-  late final _i1.ColumnEnum<_i5.Ability> selectedAbility;
-
-  late final _i1.ColumnEnum<_i6.Language> selectedLanguage;
-
-  late final _i1.ColumnString selectedToolKey;
-
-  late final _i1.ColumnInt selectedFeatId;
-
-  late final _i1.ColumnString selectedText;
-
-  late final _i1.ColumnInt selectedCount;
 
   late final _i1.ColumnDateTime updatedAt;
 
@@ -473,17 +314,9 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
         syncId,
         characterId,
         classEntryId,
-        sourceType,
-        sourceId,
         groupKey,
         optionKey,
         selectionIndex,
-        selectedAbility,
-        selectedLanguage,
-        selectedToolKey,
-        selectedFeatId,
-        selectedText,
-        selectedCount,
         updatedAt,
       ];
 

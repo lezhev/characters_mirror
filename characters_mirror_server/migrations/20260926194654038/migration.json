@@ -1,0 +1,51 @@
+{
+  "actions": [
+    {
+      "type": "deleteTable",
+      "deleteTable": "race_choice_set_data"
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "race_choice_option_data"
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "class_choice_option_data"
+    },
+    {
+      "type": "deleteTable",
+      "deleteTable": "class_choice_group_data"
+    }
+  ],
+  "warnings": [
+    {
+      "type": "tableDropped",
+      "message": "Table \"race_choice_set_data\" will be dropped.",
+      "table": "race_choice_set_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "Table \"race_choice_option_data\" will be dropped.",
+      "table": "race_choice_option_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "Table \"class_choice_option_data\" will be dropped.",
+      "table": "class_choice_option_data",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "type": "tableDropped",
+      "message": "Table \"class_choice_group_data\" will be dropped.",
+      "table": "class_choice_group_data",
+      "columns": [],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

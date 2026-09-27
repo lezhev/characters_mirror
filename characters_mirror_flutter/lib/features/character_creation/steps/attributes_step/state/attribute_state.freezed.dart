@@ -22,6 +22,8 @@ mixin _$AttributeBonusRule {
   int get pickCount;
   bool get mustBeDistinct;
   Set<Attribute> get allowedAttributes;
+  Map<String, String> get optionKeyByAttribute;
+  Map<String, String> get attributeKeyByOption;
   Set<Attribute> get defaultAttributes;
 
   /// Create a copy of AttributeBonusRule
@@ -54,6 +56,10 @@ mixin _$AttributeBonusRule {
             const DeepCollectionEquality()
                 .equals(other.allowedAttributes, allowedAttributes) &&
             const DeepCollectionEquality()
+                .equals(other.optionKeyByAttribute, optionKeyByAttribute) &&
+            const DeepCollectionEquality()
+                .equals(other.attributeKeyByOption, attributeKeyByOption) &&
+            const DeepCollectionEquality()
                 .equals(other.defaultAttributes, defaultAttributes));
   }
 
@@ -68,11 +74,13 @@ mixin _$AttributeBonusRule {
       pickCount,
       mustBeDistinct,
       const DeepCollectionEquality().hash(allowedAttributes),
+      const DeepCollectionEquality().hash(optionKeyByAttribute),
+      const DeepCollectionEquality().hash(attributeKeyByOption),
       const DeepCollectionEquality().hash(defaultAttributes));
 
   @override
   String toString() {
-    return 'AttributeBonusRule(groupKey: $groupKey, choiceSetId: $choiceSetId, sourceType: $sourceType, sourceId: $sourceId, bonusValue: $bonusValue, pickCount: $pickCount, mustBeDistinct: $mustBeDistinct, allowedAttributes: $allowedAttributes, defaultAttributes: $defaultAttributes)';
+    return 'AttributeBonusRule(groupKey: $groupKey, choiceSetId: $choiceSetId, sourceType: $sourceType, sourceId: $sourceId, bonusValue: $bonusValue, pickCount: $pickCount, mustBeDistinct: $mustBeDistinct, allowedAttributes: $allowedAttributes, optionKeyByAttribute: $optionKeyByAttribute, attributeKeyByOption: $attributeKeyByOption, defaultAttributes: $defaultAttributes)';
   }
 }
 
@@ -91,6 +99,8 @@ abstract mixin class $AttributeBonusRuleCopyWith<$Res> {
       int pickCount,
       bool mustBeDistinct,
       Set<Attribute> allowedAttributes,
+      Map<String, String> optionKeyByAttribute,
+      Map<String, String> attributeKeyByOption,
       Set<Attribute> defaultAttributes});
 }
 
@@ -115,6 +125,8 @@ class _$AttributeBonusRuleCopyWithImpl<$Res>
     Object? pickCount = null,
     Object? mustBeDistinct = null,
     Object? allowedAttributes = null,
+    Object? optionKeyByAttribute = null,
+    Object? attributeKeyByOption = null,
     Object? defaultAttributes = null,
   }) {
     return _then(_self.copyWith(
@@ -150,6 +162,14 @@ class _$AttributeBonusRuleCopyWithImpl<$Res>
           ? _self.allowedAttributes
           : allowedAttributes // ignore: cast_nullable_to_non_nullable
               as Set<Attribute>,
+      optionKeyByAttribute: null == optionKeyByAttribute
+          ? _self.optionKeyByAttribute
+          : optionKeyByAttribute // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+      attributeKeyByOption: null == attributeKeyByOption
+          ? _self.attributeKeyByOption
+          : attributeKeyByOption // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       defaultAttributes: null == defaultAttributes
           ? _self.defaultAttributes
           : defaultAttributes // ignore: cast_nullable_to_non_nullable
@@ -258,6 +278,8 @@ extension AttributeBonusRulePatterns on AttributeBonusRule {
             int pickCount,
             bool mustBeDistinct,
             Set<Attribute> allowedAttributes,
+            Map<String, String> optionKeyByAttribute,
+            Map<String, String> attributeKeyByOption,
             Set<Attribute> defaultAttributes)?
         $default, {
     required TResult orElse(),
@@ -274,6 +296,8 @@ extension AttributeBonusRulePatterns on AttributeBonusRule {
             _that.pickCount,
             _that.mustBeDistinct,
             _that.allowedAttributes,
+            _that.optionKeyByAttribute,
+            _that.attributeKeyByOption,
             _that.defaultAttributes);
       case _:
         return orElse();
@@ -304,6 +328,8 @@ extension AttributeBonusRulePatterns on AttributeBonusRule {
             int pickCount,
             bool mustBeDistinct,
             Set<Attribute> allowedAttributes,
+            Map<String, String> optionKeyByAttribute,
+            Map<String, String> attributeKeyByOption,
             Set<Attribute> defaultAttributes)
         $default,
   ) {
@@ -319,6 +345,8 @@ extension AttributeBonusRulePatterns on AttributeBonusRule {
             _that.pickCount,
             _that.mustBeDistinct,
             _that.allowedAttributes,
+            _that.optionKeyByAttribute,
+            _that.attributeKeyByOption,
             _that.defaultAttributes);
     }
   }
@@ -346,6 +374,8 @@ extension AttributeBonusRulePatterns on AttributeBonusRule {
             int pickCount,
             bool mustBeDistinct,
             Set<Attribute> allowedAttributes,
+            Map<String, String> optionKeyByAttribute,
+            Map<String, String> attributeKeyByOption,
             Set<Attribute> defaultAttributes)?
         $default,
   ) {
@@ -361,6 +391,8 @@ extension AttributeBonusRulePatterns on AttributeBonusRule {
             _that.pickCount,
             _that.mustBeDistinct,
             _that.allowedAttributes,
+            _that.optionKeyByAttribute,
+            _that.attributeKeyByOption,
             _that.defaultAttributes);
       case _:
         return null;
@@ -380,8 +412,12 @@ class _AttributeBonusRule implements AttributeBonusRule {
       required this.pickCount,
       required this.mustBeDistinct,
       required final Set<Attribute> allowedAttributes,
+      final Map<String, String> optionKeyByAttribute = const {},
+      final Map<String, String> attributeKeyByOption = const {},
       final Set<Attribute> defaultAttributes = const {}})
       : _allowedAttributes = allowedAttributes,
+        _optionKeyByAttribute = optionKeyByAttribute,
+        _attributeKeyByOption = attributeKeyByOption,
         _defaultAttributes = defaultAttributes;
 
   @override
@@ -405,6 +441,26 @@ class _AttributeBonusRule implements AttributeBonusRule {
       return _allowedAttributes;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableSetView(_allowedAttributes);
+  }
+
+  final Map<String, String> _optionKeyByAttribute;
+  @override
+  @JsonKey()
+  Map<String, String> get optionKeyByAttribute {
+    if (_optionKeyByAttribute is EqualUnmodifiableMapView)
+      return _optionKeyByAttribute;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_optionKeyByAttribute);
+  }
+
+  final Map<String, String> _attributeKeyByOption;
+  @override
+  @JsonKey()
+  Map<String, String> get attributeKeyByOption {
+    if (_attributeKeyByOption is EqualUnmodifiableMapView)
+      return _attributeKeyByOption;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_attributeKeyByOption);
   }
 
   final Set<Attribute> _defaultAttributes;
@@ -447,6 +503,10 @@ class _AttributeBonusRule implements AttributeBonusRule {
             const DeepCollectionEquality()
                 .equals(other._allowedAttributes, _allowedAttributes) &&
             const DeepCollectionEquality()
+                .equals(other._optionKeyByAttribute, _optionKeyByAttribute) &&
+            const DeepCollectionEquality()
+                .equals(other._attributeKeyByOption, _attributeKeyByOption) &&
+            const DeepCollectionEquality()
                 .equals(other._defaultAttributes, _defaultAttributes));
   }
 
@@ -461,11 +521,13 @@ class _AttributeBonusRule implements AttributeBonusRule {
       pickCount,
       mustBeDistinct,
       const DeepCollectionEquality().hash(_allowedAttributes),
+      const DeepCollectionEquality().hash(_optionKeyByAttribute),
+      const DeepCollectionEquality().hash(_attributeKeyByOption),
       const DeepCollectionEquality().hash(_defaultAttributes));
 
   @override
   String toString() {
-    return 'AttributeBonusRule(groupKey: $groupKey, choiceSetId: $choiceSetId, sourceType: $sourceType, sourceId: $sourceId, bonusValue: $bonusValue, pickCount: $pickCount, mustBeDistinct: $mustBeDistinct, allowedAttributes: $allowedAttributes, defaultAttributes: $defaultAttributes)';
+    return 'AttributeBonusRule(groupKey: $groupKey, choiceSetId: $choiceSetId, sourceType: $sourceType, sourceId: $sourceId, bonusValue: $bonusValue, pickCount: $pickCount, mustBeDistinct: $mustBeDistinct, allowedAttributes: $allowedAttributes, optionKeyByAttribute: $optionKeyByAttribute, attributeKeyByOption: $attributeKeyByOption, defaultAttributes: $defaultAttributes)';
   }
 }
 
@@ -486,6 +548,8 @@ abstract mixin class _$AttributeBonusRuleCopyWith<$Res>
       int pickCount,
       bool mustBeDistinct,
       Set<Attribute> allowedAttributes,
+      Map<String, String> optionKeyByAttribute,
+      Map<String, String> attributeKeyByOption,
       Set<Attribute> defaultAttributes});
 }
 
@@ -510,6 +574,8 @@ class __$AttributeBonusRuleCopyWithImpl<$Res>
     Object? pickCount = null,
     Object? mustBeDistinct = null,
     Object? allowedAttributes = null,
+    Object? optionKeyByAttribute = null,
+    Object? attributeKeyByOption = null,
     Object? defaultAttributes = null,
   }) {
     return _then(_AttributeBonusRule(
@@ -545,6 +611,14 @@ class __$AttributeBonusRuleCopyWithImpl<$Res>
           ? _self._allowedAttributes
           : allowedAttributes // ignore: cast_nullable_to_non_nullable
               as Set<Attribute>,
+      optionKeyByAttribute: null == optionKeyByAttribute
+          ? _self._optionKeyByAttribute
+          : optionKeyByAttribute // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+      attributeKeyByOption: null == attributeKeyByOption
+          ? _self._attributeKeyByOption
+          : attributeKeyByOption // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       defaultAttributes: null == defaultAttributes
           ? _self._defaultAttributes
           : defaultAttributes // ignore: cast_nullable_to_non_nullable

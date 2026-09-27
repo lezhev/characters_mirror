@@ -28,8 +28,6 @@ List<CharacterInventoryItemData>? inventoryItemsFromText(
   String? value, {
   List<CharacterInventoryItemData>? previous,
 }) {
-  // TODO(op-sync): replace this text bridge with a structured inventory editor
-  // so item-level add/remove/update operations can be queued separately.
   final trimmed = value?.trim();
   if (trimmed == null || trimmed.isEmpty) {
     return null;
@@ -40,47 +38,11 @@ List<CharacterInventoryItemData>? inventoryItemsFromText(
     CharacterInventoryItemData(
       id: previousItem?.id,
       name: trimmed,
-      quantity: previousItem?.quantity ?? 1,
-      type: previousItem?.type ?? CharacterInventoryItemType.custom,
+      quantity: 1,
+      type: CharacterInventoryItemType.custom,
       updatedAt: previousItem?.updatedAt,
     ),
   ];
-}
-
-List<CharacterInventoryItemData>? upsertCharacterInventoryItem(
-  List<CharacterInventoryItemData>? items, {
-  required String id,
-  required String? name,
-}) {
-  final normalizedName = name?.trim();
-  final result = [...?items];
-  final index = result.indexWhere((item) => item.id == id);
-  if (normalizedName == null || normalizedName.isEmpty) {
-    if (index != -1) result.removeAt(index);
-  } else if (index == -1) {
-    result.add(
-      CharacterInventoryItemData(
-        id: id,
-        name: normalizedName,
-        quantity: 1,
-        type: CharacterInventoryItemType.custom,
-      ),
-    );
-  } else {
-    result[index] = result[index].copyWith(name: normalizedName);
-  }
-  return result.isEmpty ? null : result;
-}
-
-List<CharacterInventoryItemData>? removeCharacterInventoryItem(
-  List<CharacterInventoryItemData>? items,
-  String id,
-) {
-  final result = [
-    for (final item in items ?? const <CharacterInventoryItemData>[])
-      if (item.id != id) item,
-  ];
-  return result.isEmpty ? null : result;
 }
 
 List<CharacterNoteData>? notesFromTexts(

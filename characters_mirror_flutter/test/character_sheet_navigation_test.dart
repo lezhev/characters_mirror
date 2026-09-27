@@ -1127,6 +1127,45 @@ void main() {
       expect(find.text('Факел'), findsOneWidget);
     });
 
+    testWidgets('inventory is one comma-separated text field', (tester) async {
+      final repository = _FakeCharacterRepository(
+        charactersById: {
+          1: protocol.CharacterData(
+            id: 1,
+            name: 'Тестовый герой',
+            equipment: [
+              protocol.CharacterInventoryItemData(
+                id: 'rope',
+                name: 'Верёвка',
+                quantity: 2,
+                type: protocol.CharacterInventoryItemType.item,
+              ),
+              protocol.CharacterInventoryItemData(
+                id: 'torch',
+                name: 'Факел',
+                quantity: 1,
+                type: protocol.CharacterInventoryItemType.item,
+              ),
+            ],
+          ),
+        },
+      );
+
+      await _pumpCharacterListToSheetRouter(tester, repository);
+      await tester.tap(find.text('Open sheet'));
+      await tester.pumpAndSettle();
+      await _tapSheetTab(tester, 'Инвентарь');
+
+      expect(_textField('Снаряжение'), findsOneWidget);
+      expect(find.byType(TextField), findsOneWidget);
+      expect(
+        tester.widget<TextField>(_textField('Снаряжение')).controller!.text,
+        'Верёвка x2, Факел',
+      );
+      expect(find.byTooltip('Добавить предмет'), findsNothing);
+      expect(find.byTooltip('Удалить предмет'), findsNothing);
+    });
+
     testWidgets('app bar back waits for a pending equipment save',
         (tester) async {
       final saveGate = Completer<void>();

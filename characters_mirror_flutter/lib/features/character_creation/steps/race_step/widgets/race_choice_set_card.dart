@@ -8,32 +8,27 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class RaceChoiceSetCard extends ConsumerWidget {
   const RaceChoiceSetCard({
-    required this.choiceSet,
+    required this.groupView,
     required this.selectedOptions,
     super.key,
   });
 
-  final RaceChoiceSetData choiceSet;
-  final List<RaceChoiceOptionData> selectedOptions;
+  final ChoiceGroupView groupView;
+  final List<ChoiceOptionData> selectedOptions;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final options = [...?choiceSet.choiceOptions]..sort(compareChoiceOptions);
-    if (options.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    final group = groupView.group;
+    if (group == null) return const SizedBox.shrink();
+    final options = [...?groupView.options]..sort(compareChoiceOptions);
+    if (options.isEmpty) return const SizedBox.shrink();
 
-    final isAbilityChoice = choiceSet.kind == RaceChoiceKind.abilityBonusChoice;
     final selectedKeys = {
-      for (final option in selectedOptions)
-        if (option.optionKey?.trim().isNotEmpty == true)
-          option.optionKey!.trim(),
+      for (final option in selectedOptions) option.optionKey,
     };
-
-    if (isAbilityChoice) {
+    if (group.type == ChoiceType.abilityIncrease) {
       final colorScheme = Theme.of(context).colorScheme;
       final textTheme = Theme.of(context).textTheme;
-
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(10),
@@ -44,16 +39,11 @@ class RaceChoiceSetCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              raceChoiceKindLabel(choiceSet.kind),
-              style: textTheme.titleSmall,
-            ),
-            if ((choiceSet.description ?? '').trim().isNotEmpty) ...[
+            Text(group.name ?? 'Бонусы к характеристикам',
+                style: textTheme.titleSmall),
+            if ((group.description ?? '').trim().isNotEmpty) ...[
               const Gap(6),
-              Text(
-                choiceSet.description!,
-                style: textTheme.bodyMedium,
-              ),
+              Text(group.description!, style: textTheme.bodyMedium),
             ],
             const Gap(8),
             Text(
@@ -68,16 +58,15 @@ class RaceChoiceSetCard extends ConsumerWidget {
     }
 
     final items = options.map((option) {
-      final optionKey = option.optionKey?.trim();
       final title = choiceOptionLabel(option);
       return CreationChoiceSelectorItem(
-        id: optionKey ?? title,
+        id: option.optionKey,
         title: title,
         subtitle: option.description,
-        isSelected: optionKey != null && selectedKeys.contains(optionKey),
+        isSelected: selectedKeys.contains(option.optionKey),
         onTap: () => ref
             .read(raceStateProvider.notifier)
-            .toggleChoiceOption(choiceSet, option),
+            .toggleChoiceOption(group, option),
         onInfoTap: () => showChoiceOptionPlaceholderDialog(
           context: context,
           title: title,
@@ -85,110 +74,42 @@ class RaceChoiceSetCard extends ConsumerWidget {
         ),
       );
     }).toList();
-    final pickCount = choiceSet.pickCount ?? 1;
 
+    final pickCount = group.selectionCount ?? 1;
     if (pickCount <= 1) {
       return CreationChoiceSelector.single(
-        title: raceChoiceKindLabel(choiceSet.kind),
-        description: choiceSet.description,
-        switchKey: choiceSet.id ?? choiceSet.kind?.name ?? 'race',
-        autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(choiceSet.kind),
+        title: group.name ?? 'Выбор',
+        description: group.description,
+        switchKey: group.referenceKey,
+        autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(group.type),
         items: items,
       );
     }
-
     return CreationChoiceSelector.multi(
-      title: raceChoiceKindLabel(choiceSet.kind),
-      description: choiceSet.description,
-      switchKey: choiceSet.id ?? choiceSet.kind?.name ?? 'race',
+      title: group.name ?? 'Выбор',
+      description: group.description,
+      switchKey: group.referenceKey,
       selectionLimit: pickCount,
-      autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(choiceSet.kind),
+      autoScrollOnExpand: !_shouldDisableChoiceAutoScroll(group.type),
       items: items,
     );
   }
 }
 
-bool _shouldDisableChoiceAutoScroll(RaceChoiceKind? kind) {
-  switch (kind) {
-    case RaceChoiceKind.skillProficiencyChoice:
-    case RaceChoiceKind.cantripChoice:
-      return true;
-    case RaceChoiceKind.abilityBonusChoice:
-    case RaceChoiceKind.languageChoice:
-    case RaceChoiceKind.toolProficiencyChoice:
-    case RaceChoiceKind.dragonbornAncestryChoice:
-    case RaceChoiceKind.featChoice:
-    case null:
-      return false;
-  }
+bool _shouldDisableChoiceAutoScroll(ChoiceType? type) {
+  return type == ChoiceType.language;
 }
 
-int compareChoiceOptions(RaceChoiceOptionData a, RaceChoiceOptionData b) {
+int compareChoiceOptions(ChoiceOptionData a, ChoiceOptionData b) {
   final sortCompare = (a.sortOrder ?? 0).compareTo(b.sortOrder ?? 0);
-  if (sortCompare != 0) {
-    return sortCompare;
-  }
+  if (sortCompare != 0) return sortCompare;
   return choiceOptionLabel(a).compareTo(choiceOptionLabel(b));
 }
 
-String raceChoiceKindLabel(RaceChoiceKind? kind) {
-  switch (kind) {
-    case RaceChoiceKind.abilityBonusChoice:
-      return 'Бонусы к характеристикам';
-    case RaceChoiceKind.skillProficiencyChoice:
-      return 'Навыки';
-    case RaceChoiceKind.languageChoice:
-      return 'Языки';
-    case RaceChoiceKind.toolProficiencyChoice:
-      return 'Инструменты';
-    case RaceChoiceKind.cantripChoice:
-      return 'Заговоры';
-    case RaceChoiceKind.dragonbornAncestryChoice:
-      return 'Драконье наследие';
-    default:
-      return 'Выбор';
-  }
-}
-
-String? choiceSetGroupKey(int? choiceSetId) {
-  if (choiceSetId == null) {
-    return null;
-  }
-  return 'race_choice_$choiceSetId';
-}
-
-String choiceOptionLabel(RaceChoiceOptionData option) {
-  if (option.language != null) {
-    return languageLabel(option.language!);
-  }
-
-  final explicitName = option.name?.trim();
-  if (explicitName != null && explicitName.isNotEmpty) {
-    return explicitName;
-  }
-
-  if (option.spell?.name?.trim().isNotEmpty == true) {
-    return option.spell!.name!.trim();
-  }
-  if (option.skill != null) {
-    return formatRaceName(enumToken(option.skill));
-  }
-  if (option.ability != null && option.bonusValue != null) {
-    return '${formatRaceName(enumToken(option.ability))} +${option.bonusValue}';
-  }
-  if (option.ability != null) {
-    return formatRaceName(enumToken(option.ability));
-  }
-  if (option.damageType != null) {
-    return formatRaceName(enumToken(option.damageType));
-  }
-  if ((option.toolKey ?? '').trim().isNotEmpty) {
-    return option.toolKey!.trim();
-  }
-  if ((option.optionKey ?? '').trim().isNotEmpty) {
-    return option.optionKey!.trim();
-  }
-  return 'Выбор';
+String choiceOptionLabel(ChoiceOptionData option) {
+  final languages = option.grantedLanguages ?? const <Language>[];
+  if (languages.length == 1) return languageLabel(languages.single);
+  return option.name ?? option.optionKey;
 }
 
 String spellGrantLabel(RaceFeatureSpellGrantData grant) {
@@ -198,31 +119,8 @@ String spellGrantLabel(RaceFeatureSpellGrantData grant) {
     if (grant.freeCastsFormula?.trim().isNotEmpty == true)
       'бесплатно: ${grant.freeCastsFormula}',
     if (grant.freeCastsPerRest != null)
-      'за ${formatRaceName(enumToken(grant.freeCastsPerRest))}',
+      'за ${grant.freeCastsPerRest!.name}',
     if (grant.canAlsoCastWithSpellSlots == true) 'можно через ячейки',
   ];
   return parts.join(' • ');
-}
-
-String enumToken(Object? value) {
-  if (value == null) {
-    return 'unknown';
-  }
-  final raw = value.toString();
-  if (raw.trim().isEmpty) {
-    return 'unknown';
-  }
-  final parts = raw.split('.');
-  return parts.isEmpty ? raw : parts.last;
-}
-
-String formatRaceName(String value) {
-  final normalized = value.replaceAllMapped(
-    RegExp(r'([a-z])([A-Z])'),
-    (match) => '${match.group(1)} ${match.group(2)}',
-  );
-  if (normalized.isEmpty) {
-    return normalized;
-  }
-  return normalized[0].toUpperCase() + normalized.substring(1);
 }

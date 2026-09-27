@@ -2,15 +2,7 @@ class: CharacterChoiceData
 fields:
   id: String?
   classEntry: CharacterClassEntryData?
-  sourceType: ChoiceSourceType?
-  sourceId: int?
   groupKey: String?
   optionKey: String?
   selectionIndex: int?
-  selectedAbility: Ability?
-  selectedLanguage: Language?
-  selectedToolKey: String?
-  selectedFeatId: int?
-  selectedText: String?
-  selectedCount: int?
   updatedAt: DateTime?

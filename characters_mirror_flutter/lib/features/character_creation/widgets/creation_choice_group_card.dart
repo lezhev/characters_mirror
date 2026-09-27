@@ -14,15 +14,15 @@ class CreationChoiceGroupCard extends StatelessWidget {
     super.key,
   });
 
-  final ClassChoiceGroupView groupView;
-  final List<ClassChoiceOptionData> selectedOptions;
-  final void Function(ClassChoiceGroupData group, ClassChoiceOptionData option)
+  final ChoiceGroupView groupView;
+  final List<ChoiceOptionData> selectedOptions;
+  final void Function(ChoiceGroupData group, ChoiceOptionData option)
       onToggleOption;
-  final void Function(ClassChoiceGroupData group, ClassChoiceOptionData option)
+  final void Function(ChoiceGroupData group, ChoiceOptionData option)
       onIncrementOption;
-  final void Function(ClassChoiceGroupData group, ClassChoiceOptionData option)
+  final void Function(ChoiceGroupData group, ChoiceOptionData option)
       onDecrementOption;
-  final void Function(ClassChoiceGroupData group) onClearGroup;
+  final void Function(ChoiceGroupData group) onClearGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +35,8 @@ class CreationChoiceGroupCard extends StatelessWidget {
     final allowDuplicates = group.allowDuplicates == true;
     final selectedCountByOptionKey = <String, int>{};
     for (final option in selectedOptions) {
-      final optionKey = option.optionKey?.trim();
-      if (optionKey == null || optionKey.isEmpty) continue;
+      final optionKey = option.optionKey.trim();
+      if (optionKey.isEmpty) continue;
       selectedCountByOptionKey[optionKey] =
           (selectedCountByOptionKey[optionKey] ?? 0) + 1;
     }
@@ -46,12 +46,12 @@ class CreationChoiceGroupCard extends StatelessWidget {
 
     if (!allowDuplicates) {
       final items = options.map((option) {
-        final optionKey = option.optionKey?.trim();
+        final optionKey = option.optionKey.trim();
         final isSelected =
-            optionKey != null && (selectedCountByOptionKey[optionKey] ?? 0) > 0;
+            optionKey.isNotEmpty && (selectedCountByOptionKey[optionKey] ?? 0) > 0;
         final title = _choiceOptionTitle(group, option);
         return CreationChoiceSelectorItem(
-          id: optionKey ?? title,
+          id: optionKey.isEmpty ? title : optionKey,
           title: title,
           subtitle: option.description,
           isSelected: isSelected,
@@ -94,12 +94,12 @@ class CreationChoiceGroupCard extends StatelessWidget {
       selectionLimit: selectionCount,
       onClear: selectedOptions.isNotEmpty ? () => onClearGroup(group) : null,
       items: options.map((option) {
-        final optionKey = option.optionKey?.trim();
+        final optionKey = option.optionKey.trim();
         final title = _choiceOptionTitle(group, option);
         final count =
-            optionKey == null ? 0 : (selectedCountByOptionKey[optionKey] ?? 0);
+            optionKey.isEmpty ? 0 : (selectedCountByOptionKey[optionKey] ?? 0);
         return CreationChoiceSelectorItem(
-          id: optionKey ?? title,
+          id: optionKey.isEmpty ? title : optionKey,
           title: title,
           count: count,
           onIncrement: () => onIncrementOption(group, option),
@@ -111,31 +111,31 @@ class CreationChoiceGroupCard extends StatelessWidget {
 }
 
 String _choiceOptionTitle(
-  ClassChoiceGroupData group,
-  ClassChoiceOptionData option,
+  ChoiceGroupData group,
+  ChoiceOptionData option,
 ) {
-  if (group.type == ClassChoiceType.language) {
+  if (group.type == ChoiceType.language) {
     final languages = option.grantedLanguages ?? const <Language>[];
     if (languages.length == 1) {
       return languageLabel(languages.single);
     }
   }
-  return option.name ?? option.optionKey ?? 'Опция';
+  return option.name ?? (option.optionKey.isEmpty ? 'Опция' : option.optionKey);
 }
 
-bool _shouldDisableChoiceAutoScroll(ClassChoiceType? type) {
+bool _shouldDisableChoiceAutoScroll(ChoiceType? type) {
   switch (type) {
-    case ClassChoiceType.language:
+    case ChoiceType.language:
       return true;
-    case ClassChoiceType.tool:
-    case ClassChoiceType.fightingStyle:
-    case ClassChoiceType.expertise:
-    case ClassChoiceType.subclassFeature:
-    case ClassChoiceType.featureOption:
-    case ClassChoiceType.invocation:
-    case ClassChoiceType.abilityIncrease:
-    case ClassChoiceType.feat:
-    case ClassChoiceType.custom:
+    case ChoiceType.tool:
+    case ChoiceType.fightingStyle:
+    case ChoiceType.expertise:
+    case ChoiceType.subclassFeature:
+    case ChoiceType.featureOption:
+    case ChoiceType.invocation:
+    case ChoiceType.abilityIncrease:
+    case ChoiceType.feat:
+    case ChoiceType.custom:
     case null:
       return false;
   }

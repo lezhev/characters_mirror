@@ -1,0 +1,34 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "equippedArmor",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:CharacterEquipmentSelectionData?"
+          },
+          {
+            "name": "equippedShield",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:CharacterEquipmentSelectionData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

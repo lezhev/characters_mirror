@@ -1,0 +1,28 @@
+class: ChoiceOptionData
+table: choice_option_data
+fields:
+  choiceGroup: ChoiceGroupData?, relation
+  optionKey: String
+  name: String?
+  description: String?
+  sortOrder: int?
+  grantedAbilityBonuses: Map<String, int>?
+  grantedSkills: List<Skill>?
+  grantedLanguages: List<Language>?
+  grantedArmorTraining: List<ArmorCategory>?
+  grantedWeaponTraining: List<WeaponCategory>?
+  grantedToolKeys: List<String>?
+  grantedSpellKeys: List<String>?
+  grantedFeatureTags: List<FeatureTag>?
+  damageType: DamageType?
+  areaOfEffectType: AreaOfEffectType?
+  areaText: String?
+  damageByLevel: Map<String, String>?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+indexes:
+  choice_option_group_key_idx:
+    fields: choiceGroupId, optionKey
+    unique: true

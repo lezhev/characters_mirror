@@ -144,6 +144,8 @@ CharacterRecord _toCharacterRecord(
     exhaustionLevel: _normalizedExhaustionLevel(character.exhaustionLevel),
     inspiration: character.inspiration,
     equipment: character.equipment,
+    equippedArmor: character.equippedArmor,
+    equippedShield: character.equippedShield,
     manualSkillProficiencies: character.manualSkillProficiencies,
     manualSavingThrowProficiencies: character.manualSavingThrowProficiencies,
     manualSkillProficiencyOverrides: character.manualSkillProficiencyOverrides,

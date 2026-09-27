@@ -1,6 +1,9 @@
 part of '../offline_character_resolver.dart';
 
-Map<String, int> _abilityScores(CharacterData character) {
+Map<String, int> _abilityScores(
+  CharacterData character,
+  List<ChoiceOptionData> selectedOptions,
+) {
   final scores = {
     for (final ability in Ability.values) ability.name: 10,
     ...?character.baseAbilityScores,
@@ -20,6 +23,16 @@ Map<String, int> _abilityScores(CharacterData character) {
         scores, Ability.intelligence, character.subrace?.intelligenceBonus);
     _addBonus(scores, Ability.wisdom, character.subrace?.wisdomBonus);
     _addBonus(scores, Ability.charisma, character.subrace?.charismaBonus);
+  }
+  for (final option in selectedOptions) {
+    for (final bonus in option.grantedAbilityBonuses?.entries ??
+        const <MapEntry<String, int>>[]) {
+      if (!Ability.values.any((ability) => ability.name == bonus.key) ||
+          bonus.value == 0) {
+        continue;
+      }
+      scores[bonus.key] = (scores[bonus.key] ?? 10) + bonus.value;
+    }
   }
   for (final entry in character.customAbilityBonuses?.entries ??
       const Iterable<MapEntry<String, int>>.empty()) {
@@ -62,6 +75,7 @@ Set<Ability> _savingThrowProficiencies(CharacterData character) {
 
 Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
   CharacterData character,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   final result = {
     for (final skill in Skill.values)
@@ -78,6 +92,11 @@ Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
       in character.skillSelections ?? const <CharacterSkillSelectionData>[]) {
     final skill = selection.skill;
     if (skill != null) {
+      result[skill] = CharacterSkillProficiencyLevel.proficient;
+    }
+  }
+  for (final option in selectedOptions) {
+    for (final skill in option.grantedSkills ?? const <Skill>[]) {
       result[skill] = CharacterSkillProficiencyLevel.proficient;
     }
   }

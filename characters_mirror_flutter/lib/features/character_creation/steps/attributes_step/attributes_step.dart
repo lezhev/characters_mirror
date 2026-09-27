@@ -88,6 +88,7 @@ Future<void> _syncAndGo({
   final abilityScores = buildCharacterCreationAbilityScores(
     character,
     choices,
+    choiceGroups: ref.read(characterCreationProvider).raceChoiceGroups,
   );
   await ref
       .read(classStateProvider.notifier)

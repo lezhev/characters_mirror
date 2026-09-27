@@ -1,5 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/character_model_extensions.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
@@ -8,6 +8,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/weapon_attack_builder.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/inventory/inventory_selection_actions.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/attack_dialog_controller.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,10 @@ class InventoryPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(characterSheetControllerProvider(characterId));
     final weapons = ref.watch(weaponCatalogProvider).valueOrNull;
+    final armors = ref.watch(armorCatalogProvider).valueOrNull;
+    final tools = ref.watch(toolCatalogProvider).valueOrNull;
+    final items = ref.watch(itemCatalogProvider).valueOrNull;
+    final magicItems = ref.watch(magicItemCatalogProvider).valueOrNull;
 
     return state.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -37,22 +42,25 @@ class InventoryPage extends ConsumerWidget {
           child: _EquipmentEditor(
             character: character,
             weapons: weapons,
-            onItemChanged: (id, value) {
+            armors: armors,
+            tools: tools,
+            items: items,
+            magicItems: magicItems,
+            catalogsReady: weapons != null &&
+                armors != null &&
+                tools != null &&
+                items != null &&
+                magicItems != null,
+            onInventoryChanged: (value) {
               runCharacterSheetSave(
                 context,
                 ref
                     .read(
                       characterSheetControllerProvider(characterId).notifier,
                     )
-                    .saveEquipmentItem(id, value),
+                    .saveEquipmentText(value),
               );
             },
-            onItemDelete: (id) => ref
-                .read(characterSheetControllerProvider(characterId).notifier)
-                .deleteEquipmentItem(id),
-            onAddAttack: (attack) => ref
-                .read(characterSheetControllerProvider(characterId).notifier)
-                .addAttack(attack),
             onCreateAttack: (initialAttack) =>
                 AttackDialogController.createAttack(
               context: context,
@@ -60,6 +68,20 @@ class InventoryPage extends ConsumerWidget {
               characterId: characterId,
               initialAttack: initialAttack,
             ),
+            onEquipArmor: (selection) {
+              final save = ref
+                  .read(characterSheetControllerProvider(characterId).notifier)
+                  .saveEquippedArmor(selection);
+              runCharacterSheetSave(context, save);
+              return save;
+            },
+            onEquipShield: (selection) {
+              final save = ref
+                  .read(characterSheetControllerProvider(characterId).notifier)
+                  .saveEquippedShield(selection);
+              runCharacterSheetSave(context, save);
+              return save;
+            },
           ),
         ),
       ),
@@ -70,47 +92,62 @@ class InventoryPage extends ConsumerWidget {
 class _EquipmentEditor extends StatefulWidget {
   const _EquipmentEditor({
     required this.character,
-    required this.onItemChanged,
-    required this.onItemDelete,
-    required this.onAddAttack,
+    required this.onInventoryChanged,
     required this.onCreateAttack,
+    required this.onEquipArmor,
+    required this.onEquipShield,
     this.weapons,
+    this.armors,
+    this.tools,
+    this.items,
+    this.magicItems,
+    this.catalogsReady = false,
   });
 
   final CharacterData character;
   final List<WeaponData>? weapons;
-  final void Function(String id, String? value) onItemChanged;
-  final Future<void> Function(String id) onItemDelete;
-  final Future<void> Function(CharacterAttackData attack) onAddAttack;
+  final List<ArmorData>? armors;
+  final List<ToolData>? tools;
+  final List<ItemData>? items;
+  final List<MagicItemData>? magicItems;
+  final bool catalogsReady;
+  final ValueChanged<String> onInventoryChanged;
   final Future<void> Function(CharacterAttackData initialAttack) onCreateAttack;
+  final Future<void> Function(CharacterEquipmentSelectionData? selection)
+      onEquipArmor;
+  final Future<void> Function(CharacterEquipmentSelectionData? selection)
+      onEquipShield;
 
   @override
   State<_EquipmentEditor> createState() => _EquipmentEditorState();
 }
 
 class _EquipmentEditorState extends State<_EquipmentEditor> {
-  final List<TextEditingController> _controllers = [];
-  final List<FocusNode> _focusNodes = [];
-  final List<String> _itemIds = [];
+  late final TextEditingController _controller;
+  final FocusNode _focusNode = FocusNode();
   String? _selectedText;
 
   @override
   void initState() {
     super.initState();
-    _syncItems(widget.character.equipment);
+    _controller = TextEditingController(
+      text: widget.character.equipmentText ?? '',
+    )..addListener(_handleControllerChanged);
   }
 
   @override
   void didUpdateWidget(_EquipmentEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!_hasAnyFocus && !_matchesIncoming(widget.character.equipment)) {
-      _syncItems(widget.character.equipment);
+    if (!_focusNode.hasFocus &&
+        widget.character.equipmentText != _controller.text) {
+      _controller.text = widget.character.equipmentText ?? '';
     }
   }
 
   @override
   void dispose() {
-    _disposeEditors();
+    _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -121,63 +158,45 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
         AppSectionHeader(
           title: 'Инвентарь',
           showDivider: false,
-          trailing: IconButton(
-            tooltip: 'Добавить предмет',
-            onPressed: _addItem,
-            icon: const Icon(Icons.add),
-          ),
         ),
         const SizedBox(height: 12),
-        if (_controllers.isEmpty)
-          const AppSurfaceCard(
-            padding: EdgeInsets.all(16),
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            child: Text('Инвентарь пока пуст'),
-          )
-        else
-          for (var index = 0; index < _controllers.length; index++) ...[
-            AppSurfaceCard(
-              padding: const EdgeInsets.all(16),
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppAutosizeTextField(
-                    label: index == 0 ? 'Снаряжение' : 'Предмет ${index + 1}',
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    minLines: 2,
-                    onChanged: (value) => _queueSave(index, value),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      tooltip: 'Удалить предмет',
-                      onPressed: () => _deleteItem(index),
-                      icon: const Icon(Icons.delete_outline),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (index + 1 < _controllers.length) const SizedBox(height: 12),
-          ],
-        if (_selectedText != null) ...[
+        AppSurfaceCard(
+          padding: const EdgeInsets.all(16),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          child: AppAutosizeTextField(
+            label: 'Снаряжение',
+            controller: _controller,
+            focusNode: _focusNode,
+            minLines: 6,
+            onChanged: widget.onInventoryChanged,
+          ),
+        ),
+        if (_selectedText != null && widget.catalogsReady) ...[
           const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: FilledButton(
-              onPressed: () => _addSelectedTextToAttacks(_selectedText!),
-              child: const Text('Добавить в атаки'),
+          InventorySelectionActions(
+            selectedText: _selectedText,
+            character: widget.character,
+            weapons: widget.weapons ?? const [],
+            armors: widget.armors ?? const [],
+            tools: widget.tools ?? const [],
+            items: widget.items ?? const [],
+            magicItems: widget.magicItems ?? const [],
+            onAddWeapon: (weapon) => _addWeaponToAttacks(weapon),
+            onCreateManualAttack: (name) => widget.onCreateAttack(
+              buildAttackDraftFromSelection(name),
             ),
+            onEquipArmor: widget.onEquipArmor,
+            onEquipShield: widget.onEquipShield,
+            onUnequipArmor: () => widget.onEquipArmor(null),
+            onUnequipShield: () => widget.onEquipShield(null),
           ),
         ],
       ],
     );
   }
 
-  void _handleControllerChanged(int index) {
-    final selectedText = _selectedEquipmentText(_controllers[index]);
+  void _handleControllerChanged() {
+    final selectedText = _selectedEquipmentText(_controller);
     if (selectedText == _selectedText) {
       return;
     }
@@ -205,9 +224,8 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
     );
   }
 
-  Future<void> _addSelectedTextToAttacks(String selectedText) async {
-    final weapon = findWeaponByExactName(widget.weapons, selectedText);
-    final attackName = weapon?.name ?? selectedText;
+  Future<void> _addWeaponToAttacks(WeaponData weapon) async {
+    final attackName = weapon.name;
     if (_hasAttackNamed(attackName)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -217,24 +235,11 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
       return;
     }
 
-    if (weapon == null) {
-      await widget.onCreateAttack(buildAttackDraftFromSelection(selectedText));
-      return;
-    }
-
     try {
-      await widget.onAddAttack(
+      await widget.onCreateAttack(
         buildAttackFromWeapon(
           weapon: weapon,
           character: widget.character,
-        ),
-      );
-      if (!mounted) {
-        return;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Атака добавлена: ${weapon.name ?? selectedText}'),
         ),
       );
     } catch (error) {
@@ -262,87 +267,4 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
           normalizedName,
     );
   }
-
-  void _queueSave(int index, String value) {
-    widget.onItemChanged(_itemIds[index], value);
-  }
-
-  void _addItem() {
-    final ids = [..._itemIds, createCharacterSyncItemId()];
-    final names = [..._controllers.map((controller) => controller.text), ''];
-    setState(() => _setEditors(ids, names));
-    _focusNodes.last.requestFocus();
-  }
-
-  void _deleteItem(int index) {
-    final id = _itemIds[index];
-    final ids = [
-      for (var i = 0; i < _itemIds.length; i++)
-        if (i != index) _itemIds[i],
-    ];
-    final names = [
-      for (var i = 0; i < _controllers.length; i++)
-        if (i != index) _controllers[i].text,
-    ];
-    setState(() {
-      _selectedText = null;
-      _setEditors(ids, names);
-    });
-    runCharacterSheetSave(context, widget.onItemDelete(id));
-  }
-
-  void _syncItems(List<CharacterInventoryItemData>? items) {
-    final values = items ?? const <CharacterInventoryItemData>[];
-    if (values.isEmpty) {
-      _setEditors([createCharacterSyncItemId()], ['']);
-      return;
-    }
-    _setEditors(
-      [for (final item in values) item.id ?? createCharacterSyncItemId()],
-      [for (final item in values) item.name ?? ''],
-    );
-  }
-
-  void _setEditors(List<String> ids, List<String> names) {
-    _disposeEditors();
-    _itemIds
-      ..clear()
-      ..addAll(ids);
-    for (var index = 0; index < names.length; index++) {
-      final controller = TextEditingController(text: names[index]);
-      controller.addListener(() => _handleControllerChanged(index));
-      _controllers.add(controller);
-      _focusNodes.add(FocusNode());
-    }
-  }
-
-  void _disposeEditors() {
-    for (final controller in _controllers) {
-      controller.dispose();
-    }
-    for (final focusNode in _focusNodes) {
-      focusNode.dispose();
-    }
-    _controllers.clear();
-    _focusNodes.clear();
-  }
-
-  bool _matchesIncoming(List<CharacterInventoryItemData>? items) {
-    final values = items ?? const <CharacterInventoryItemData>[];
-    if (values.isEmpty &&
-        _controllers.length == 1 &&
-        _controllers.single.text.isEmpty) {
-      return true;
-    }
-    if (values.length != _controllers.length) return false;
-    for (var index = 0; index < values.length; index++) {
-      if (values[index].id != _itemIds[index] ||
-          (values[index].name ?? '') != _controllers[index].text) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool get _hasAnyFocus => _focusNodes.any((node) => node.hasFocus);
 }

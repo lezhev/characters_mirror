@@ -7,9 +7,12 @@ List<String> _collectAlwaysPreparedSpellKeys(CharacterData character) {
 List<String> _collectGrantedSpellKeys(
   CharacterData character,
   List<String> alwaysPreparedSpellKeys,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   return _uniqueStrings([
     ...alwaysPreparedSpellKeys,
+    for (final option in selectedOptions)
+      ...?option.grantedSpellKeys,
     for (final selection
         in character.spellSelections ?? const <CharacterSpellSelectionData>[])
       if (_spellSelectionKey(selection) != null) _spellSelectionKey(selection)!,

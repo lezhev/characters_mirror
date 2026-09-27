@@ -24,6 +24,8 @@ Future<void> showArmorClassSettingsSheet({
   required BuildContext context,
   required CharacterData character,
   required Future<void> Function(int bonus) onSave,
+  Future<void> Function()? onUnequipArmor,
+  Future<void> Function()? onUnequipShield,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -31,6 +33,8 @@ Future<void> showArmorClassSettingsSheet({
     builder: (context) => ArmorClassSettingsSheet(
       character: character,
       onSave: onSave,
+      onUnequipArmor: onUnequipArmor,
+      onUnequipShield: onUnequipShield,
     ),
   );
 }
@@ -134,11 +138,15 @@ class ArmorClassSettingsSheet extends StatefulWidget {
   const ArmorClassSettingsSheet({
     required this.character,
     required this.onSave,
+    this.onUnequipArmor,
+    this.onUnequipShield,
     super.key,
   });
 
   final CharacterData character;
   final Future<void> Function(int bonus) onSave;
+  final Future<void> Function()? onUnequipArmor;
+  final Future<void> Function()? onUnequipShield;
 
   @override
   State<ArmorClassSettingsSheet> createState() =>
@@ -149,11 +157,15 @@ class _ArmorClassSettingsSheetState extends State<ArmorClassSettingsSheet> {
   late final TextEditingController _controller;
   late final DebouncedAutosave<int> _autosave;
   bool _isSaving = false;
+  CharacterEquipmentSelectionData? _equippedArmor;
+  CharacterEquipmentSelectionData? _equippedShield;
 
   @override
   void initState() {
     super.initState();
     final bonus = widget.character.customArmorClassBonus ?? 0;
+    _equippedArmor = widget.character.equippedArmor;
+    _equippedShield = widget.character.equippedShield;
     _controller = TextEditingController(text: '$bonus');
     _autosave = DebouncedAutosave<int>(
       delay: characterSheetAutosaveDelay,
@@ -170,6 +182,43 @@ class _ArmorClassSettingsSheetState extends State<ArmorClassSettingsSheet> {
       },
     );
     _controller.addListener(_scheduleSave);
+  }
+
+  @override
+  void didUpdateWidget(ArmorClassSettingsSheet oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.character.equippedArmor != widget.character.equippedArmor) {
+      _equippedArmor = widget.character.equippedArmor;
+    }
+    if (oldWidget.character.equippedShield != widget.character.equippedShield) {
+      _equippedShield = widget.character.equippedShield;
+    }
+  }
+
+  Future<void> _removeArmor() async {
+    try {
+      await widget.onUnequipArmor?.call();
+      if (mounted) setState(() => _equippedArmor = null);
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(humanReadableError(error))),
+        );
+      }
+    }
+  }
+
+  Future<void> _removeShield() async {
+    try {
+      await widget.onUnequipShield?.call();
+      if (mounted) setState(() => _equippedShield = null);
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(humanReadableError(error))),
+        );
+      }
+    }
   }
 
   @override
@@ -205,6 +254,33 @@ class _ArmorClassSettingsSheetState extends State<ArmorClassSettingsSheet> {
         ),
         const SizedBox(height: 12),
         Text('Итоговая КД: ${base + currentBonus}'),
+        if (_equippedArmor != null || _equippedShield != null) ...[
+          const SizedBox(height: 20),
+          const Text('Экипировано'),
+          if (_equippedArmor case final armor?)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(armor.name),
+              subtitle: const Text('Доспех'),
+              trailing: IconButton(
+                tooltip: 'Снять доспех',
+                onPressed: widget.onUnequipArmor == null ? null : _removeArmor,
+                icon: const Icon(Icons.remove_circle_outline),
+              ),
+            ),
+          if (_equippedShield case final shield?)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(shield.name),
+              subtitle: const Text('Щит'),
+              trailing: IconButton(
+                tooltip: 'Снять щит',
+                onPressed:
+                    widget.onUnequipShield == null ? null : _removeShield,
+                icon: const Icon(Icons.remove_circle_outline),
+              ),
+            ),
+        ],
       ],
     );
   }

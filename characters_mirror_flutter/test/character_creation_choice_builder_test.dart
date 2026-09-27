@@ -3,15 +3,16 @@ import 'package:characters_mirror_flutter/features/character_creation/applicatio
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('buildGroupedChoices stores selectedLanguage for language choices', () {
-    final group = ClassChoiceGroupData(
+  test('buildGroupedChoices stores stable group and option identities', () {
+    final group = ChoiceGroupData(
+      referenceKey: 'acolyte_extra_language',
       id: 1,
       sourceBackgroundId: 3,
-      type: ClassChoiceType.language,
+      type: ChoiceType.language,
       selectionCount: 1,
       exclusiveKey: 'background_3_language_pick',
     );
-    final option = ClassChoiceOptionData(
+    final option = ChoiceOptionData(
       choiceGroupId: 1,
       optionKey: 'celestial',
       name: 'celestial',
@@ -20,10 +21,10 @@ void main() {
 
     final choices = buildGroupedChoices(
       selectedOptions: {
-        'background_3_language_pick': [option],
+        'acolyte_extra_language': [option],
       },
       groups: [
-        ClassChoiceGroupView(
+        ChoiceGroupView(
           group: group,
           options: [option],
         ),
@@ -31,7 +32,8 @@ void main() {
     );
 
     expect(choices, hasLength(1));
-    expect(choices.single.selectedLanguage, Language.celestial);
-    expect(choices.single.selectedText, 'celestial');
+    expect(choices.single.groupKey, 'acolyte_extra_language');
+    expect(choices.single.optionKey, 'celestial');
+    expect(choices.single.selectionIndex, 0);
   });
 }

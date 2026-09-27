@@ -27,6 +27,10 @@ characterData:
   - getCharacter:
   - syncDeleteCharacter:
   - delete:
+choiceGroupData:
+  - getAll:
+choiceOptionData:
+  - getAll:
 classData:
   - getAll:
   - add:
@@ -58,16 +62,6 @@ subclassData:
   - add:
   - upsert:
   - delete:
-classChoiceGroupData:
-  - getAll:
-  - add:
-  - upsert:
-  - delete:
-classChoiceOptionData:
-  - getAll:
-  - add:
-  - upsert:
-  - delete:
 subclassFeatureData:
   - getAll:
   - add:
@@ -85,16 +79,6 @@ raceFeature:
   - upsert:
   - delete:
 subraceData:
-  - getAll:
-  - add:
-  - upsert:
-  - delete:
-raceChoiceSetData:
-  - getAll:
-  - add:
-  - upsert:
-  - delete:
-raceChoiceOptionData:
   - getAll:
   - add:
   - upsert:

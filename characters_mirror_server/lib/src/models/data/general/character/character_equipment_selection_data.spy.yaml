@@ -1,0 +1,4 @@
+class: CharacterEquipmentSelectionData
+fields:
+  referenceKey: String?
+  name: String

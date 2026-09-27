@@ -14,7 +14,7 @@ import '../data/general/class/class_data.dart' as _i2;
 import '../data/general/class/class_feature_data.dart' as _i3;
 import '../data/general/class/subclass_feature_data.dart' as _i4;
 import '../views/class_step_subclass_choice_view.dart' as _i5;
-import '../views/class_choice_group_view.dart' as _i6;
+import '../views/choice_group_view.dart' as _i6;
 import '../views/skill_selection_group_view.dart' as _i7;
 import '../views/class_spell_selection_group_view.dart' as _i8;
 import '../views/starting_equipment_block_view.dart' as _i9;
@@ -48,7 +48,7 @@ abstract class ClassStepView
     List<_i4.SubclassFeatureData>? currentSubclassFeatures,
     List<_i4.SubclassFeatureData>? futureSubclassFeatures,
     _i5.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i6.ClassChoiceGroupView>? choiceGroups,
+    List<_i6.ChoiceGroupView>? choiceGroups,
     List<_i7.SkillSelectionGroupView>? skillSelectionGroups,
     List<_i8.ClassSpellSelectionGroupView>? spellSelectionGroups,
     List<_i9.StartingEquipmentBlockView>? startingEquipmentBlocks,
@@ -87,8 +87,8 @@ abstract class ClassStepView
           : _i5.ClassStepSubclassChoiceView.fromJson(
               (jsonSerialization['subclassChoice'] as Map<String, dynamic>)),
       choiceGroups: (jsonSerialization['choiceGroups'] as List?)
-          ?.map((e) =>
-              _i6.ClassChoiceGroupView.fromJson((e as Map<String, dynamic>)))
+          ?.map(
+              (e) => _i6.ChoiceGroupView.fromJson((e as Map<String, dynamic>)))
           .toList(),
       skillSelectionGroups: (jsonSerialization['skillSelectionGroups'] as List?)
           ?.map((e) =>
@@ -132,7 +132,7 @@ abstract class ClassStepView
 
   _i5.ClassStepSubclassChoiceView? subclassChoice;
 
-  List<_i6.ClassChoiceGroupView>? choiceGroups;
+  List<_i6.ChoiceGroupView>? choiceGroups;
 
   List<_i7.SkillSelectionGroupView>? skillSelectionGroups;
 
@@ -157,7 +157,7 @@ abstract class ClassStepView
     List<_i4.SubclassFeatureData>? currentSubclassFeatures,
     List<_i4.SubclassFeatureData>? futureSubclassFeatures,
     _i5.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i6.ClassChoiceGroupView>? choiceGroups,
+    List<_i6.ChoiceGroupView>? choiceGroups,
     List<_i7.SkillSelectionGroupView>? skillSelectionGroups,
     List<_i8.ClassSpellSelectionGroupView>? spellSelectionGroups,
     List<_i9.StartingEquipmentBlockView>? startingEquipmentBlocks,
@@ -261,7 +261,7 @@ class _ClassStepViewImpl extends ClassStepView {
     List<_i4.SubclassFeatureData>? currentSubclassFeatures,
     List<_i4.SubclassFeatureData>? futureSubclassFeatures,
     _i5.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i6.ClassChoiceGroupView>? choiceGroups,
+    List<_i6.ChoiceGroupView>? choiceGroups,
     List<_i7.SkillSelectionGroupView>? skillSelectionGroups,
     List<_i8.ClassSpellSelectionGroupView>? spellSelectionGroups,
     List<_i9.StartingEquipmentBlockView>? startingEquipmentBlocks,
@@ -326,7 +326,7 @@ class _ClassStepViewImpl extends ClassStepView {
       subclassChoice: subclassChoice is _i5.ClassStepSubclassChoiceView?
           ? subclassChoice
           : this.subclassChoice?.copyWith(),
-      choiceGroups: choiceGroups is List<_i6.ClassChoiceGroupView>?
+      choiceGroups: choiceGroups is List<_i6.ChoiceGroupView>?
           ? choiceGroups
           : this.choiceGroups?.map((e0) => e0.copyWith()).toList(),
       skillSelectionGroups:

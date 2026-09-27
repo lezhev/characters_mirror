@@ -59,14 +59,6 @@ int _featureSourceOrder(CharacterFeatureSourceType sourceType) {
   }
 }
 
-String? _safeEnumToken(Object? value) {
-  if (value == null) return null;
-  final raw = value.toString();
-  if (raw.trim().isEmpty) return null;
-  final parts = raw.split('.');
-  return parts.isEmpty ? raw : parts.last;
-}
-
 int? _resolveHitDie(ClassData? classData) {
   if (classData == null) return null;
   return classData.hitDieValue;
@@ -140,49 +132,6 @@ Map<String, int> _abilityBonusesFromSubrace(SubraceData? subrace) {
     if (subrace?.charismaBonus != null)
       Ability.charisma.name: subrace!.charismaBonus!,
   };
-}
-
-List<RaceChoiceOptionData> _selectedRaceChoiceOptions(
-  CharacterData character,
-  List<CharacterChoiceData> choices,
-) {
-  final optionsByGroupKey = <String, Map<String, RaceChoiceOptionData>>{};
-
-  void registerFeatures(List<RaceFeatureData>? features) {
-    for (final feature in features ?? const <RaceFeatureData>[]) {
-      for (final choiceSet
-          in feature.choiceSets ?? const <RaceChoiceSetData>[]) {
-        final groupKey = _choiceSetGroupKey(choiceSet.id);
-        if (groupKey == null) continue;
-
-        optionsByGroupKey[groupKey] = {
-          for (final option
-              in choiceSet.choiceOptions ?? const <RaceChoiceOptionData>[])
-            if (option.optionKey?.trim().isNotEmpty == true)
-              option.optionKey!.trim(): option,
-        };
-      }
-    }
-  }
-
-  registerFeatures(character.race?.features);
-  registerFeatures(character.subrace?.features);
-
-  final selected = <RaceChoiceOptionData>[];
-  for (final choice in choices) {
-    final groupKey = choice.groupKey;
-    final optionKey = choice.optionKey?.trim();
-    if (groupKey == null || optionKey == null || optionKey.isEmpty) {
-      continue;
-    }
-
-    final option = optionsByGroupKey[groupKey]?[optionKey];
-    if (option != null) {
-      selected.add(option);
-    }
-  }
-
-  return selected;
 }
 
 int _compareCharacterChoices(CharacterChoiceData a, CharacterChoiceData b) {
@@ -294,11 +243,6 @@ int _compareStartingEquipmentResolutions(
   return (a.id ?? '').compareTo(b.id ?? '');
 }
 
-String? _choiceSetGroupKey(int? choiceSetId) {
-  if (choiceSetId == null) return null;
-  return 'race_choice_$choiceSetId';
-}
-
 CharacterRecordInclude _characterRecordInclude() {
   return CharacterRecord.include(
     race: _raceDataInclude(),
@@ -332,16 +276,6 @@ RaceFeatureDataInclude _raceFeatureInclude() {
     spellGrants: RaceFeatureSpellGrantData.includeList(
       include: RaceFeatureSpellGrantData.include(
         spell: SpellData.include(),
-      ),
-    ),
-    choiceSets: RaceChoiceSetData.includeList(
-      include: RaceChoiceSetData.include(
-        choiceOptions: RaceChoiceOptionData.includeList(
-          include: RaceChoiceOptionData.include(
-            spell: SpellData.include(),
-            feat: FeatData.include(),
-          ),
-        ),
       ),
     ),
   );

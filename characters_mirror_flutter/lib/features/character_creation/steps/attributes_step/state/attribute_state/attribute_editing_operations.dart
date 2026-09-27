@@ -295,18 +295,24 @@ extension AttributeStateEditingOperations on AttributeState {
 
   List<CharacterChoiceData> buildRacialAttributeChoices() {
     final result = <CharacterChoiceData>[];
-    final raceId =
-        ref.read(characterCreationProvider.select((c) => c.character.race?.id));
+    final creationState = ref.read(characterCreationProvider);
+    final raceId = creationState.character.race?.id;
     final hasFlexibleModes =
         state.resolvedBonusRules.any((rule) => _isFlexibleRule(rule));
+    final modeGroup = creationState.raceChoiceGroups
+        .map((view) => view.group)
+        .where(
+          (group) =>
+              group?.sourceRaceId == raceId &&
+              group?.referenceKey.endsWith('_ability_bonus_mode') == true,
+        )
+        .firstOrNull;
 
-    if (raceId != null && hasFlexibleModes) {
+    if (raceId != null && hasFlexibleModes && modeGroup != null) {
       result.add(
         CharacterChoiceData(
-          sourceType: ChoiceSourceType.race,
-          sourceId: raceId,
-          groupKey: AttributeState.bonusModeGroupKey,
-          selectedText: state.bonusMode.name,
+          groupKey: modeGroup.referenceKey,
+          optionKey: state.bonusMode.name,
         ),
       );
     }
@@ -315,21 +321,16 @@ extension AttributeStateEditingOperations on AttributeState {
       rules: state.resolvedBonusRules,
       mode: state.bonusMode,
     )) {
-      if (rule.sourceId <= 0) continue;
-
       final attributes = state.selectedBonusAttributesByRule[rule.groupKey] ??
           const <Attribute>{};
 
       for (final attribute in attributes) {
         result.add(
           CharacterChoiceData(
-            sourceType: rule.sourceType,
-            sourceId: rule.sourceId,
             groupKey: rule.groupKey,
             selectionIndex: result.length,
-            optionKey: attribute.name,
-            selectedAbility: _abilityFromAttribute(attribute),
-            selectedCount: rule.bonusValue,
+            optionKey:
+                rule.optionKeyByAttribute[attribute.name] ?? attribute.name,
           ),
         );
       }

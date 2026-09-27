@@ -54,8 +54,10 @@ class RaceFeatureCard extends HookConsumerWidget {
 
     return ref.watch(raceStateProvider).when(
           data: (data) {
-            final choiceSets =
-                feature.choiceSets ?? const <RaceChoiceSetData>[];
+            final choiceGroups = data.choiceGroups
+                .where((view) =>
+                    view.group?.sourceRaceFeatureId == feature.id)
+                .toList();
             final spellGrants =
                 feature.spellGrants ?? const <RaceFeatureSpellGrantData>[];
             final description = feature.shortDescription ?? feature.description;
@@ -113,20 +115,20 @@ class RaceFeatureCard extends HookConsumerWidget {
                             ),
                           ),
                         ],
-                        if (choiceSets.isNotEmpty) ...[
+                        if (choiceGroups.isNotEmpty) ...[
                           const Gap(12),
                           Text('Выборы', style: textTheme.titleSmall),
                           const Gap(8),
-                          ...choiceSets.map(
-                            (choiceSet) => Padding(
+                          ...choiceGroups.map(
+                            (groupView) => Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: RaceChoiceSetCard(
-                                choiceSet: choiceSet,
+                                groupView: groupView,
                                 selectedOptions:
                                     data.selectedChoiceOptionsByGroup[
-                                            choiceSetGroupKey(choiceSet.id) ??
+                                            groupView.group?.referenceKey ??
                                                 ''] ??
-                                        const <RaceChoiceOptionData>[],
+                                        const <ChoiceOptionData>[],
                               ),
                             ),
                           ),

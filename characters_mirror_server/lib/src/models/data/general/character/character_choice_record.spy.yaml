@@ -5,15 +5,7 @@ fields:
   syncId: String?
   character: CharacterRecord?, relation
   classEntry: CharacterClassEntryRecord?, relation(optional)
-  sourceType: ChoiceSourceType?
-  sourceId: int?
   groupKey: String?
   optionKey: String?
   selectionIndex: int?
-  selectedAbility: Ability?
-  selectedLanguage: Language?
-  selectedToolKey: String?
-  selectedFeatId: int?
-  selectedText: String?
-  selectedCount: int?
   updatedAt: DateTime?

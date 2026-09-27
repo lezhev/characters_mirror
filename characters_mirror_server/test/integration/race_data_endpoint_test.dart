@@ -52,26 +52,27 @@ void main() {
         ),
       );
 
-      final choiceSet = await endpoints.raceChoiceSetData.upsert(
-        sessionBuilder,
-        RaceChoiceSetData(
-          featureId: raceFeature.id!,
-          kind: RaceChoiceKind.dragonbornAncestryChoice,
-          pickCount: 1,
-          mustBeDistinct: true,
-          description: 'Choose a legacy.',
+      final session = sessionBuilder.build();
+      final choiceGroup = await ChoiceGroupData.db.insertRow(
+        session,
+        ChoiceGroupData(
+          referenceKey: 'test_draconic_ancestry',
+          sourceRaceId: race.id,
+          type: ChoiceType.custom,
+          selectionCount: 1,
+          allowDuplicates: false,
+          description: 'Choose a lineage.',
         ),
       );
-      await endpoints.raceChoiceOptionData.upsert(
-        sessionBuilder,
-        RaceChoiceOptionData(
-          choiceSetId: choiceSet.id!,
+      await ChoiceOptionData.db.insertRow(
+        session,
+        ChoiceOptionData(
+          choiceGroupId: choiceGroup.id!,
           optionKey: 'red_dragon',
           name: 'Red Dragon',
           damageType: DamageType.fire,
           areaOfEffectType: AreaOfEffectType.cone,
           areaText: '15 ft.',
-          saveAbility: Ability.dexterity,
           damageByLevel: const {'1': '2d6', '5': '3d6'},
         ),
       );
@@ -102,9 +103,9 @@ void main() {
       expect(nestedRaceFeature?.spellGrants, hasLength(1));
       expect(nestedRaceFeature?.spellGrants?.single.spell?.name,
           'Test Thaumaturgy');
-      expect(nestedRaceFeature?.choiceSets, hasLength(1));
+      expect(stepView.choiceGroups, hasLength(1));
       expect(
-        nestedRaceFeature?.choiceSets?.single.choiceOptions?.single.damageType,
+        stepView.choiceGroups?.single.options?.single.damageType,
         DamageType.fire,
       );
 
@@ -148,64 +149,6 @@ void main() {
           predicate(
             (error) => error.toString().contains('exactly one owner'),
           ),
-        ),
-      );
-    });
-
-    test('rejects race choice sets without a feature owner', () async {
-      await expectLater(
-        endpoints.raceChoiceSetData.upsert(
-          sessionBuilder,
-          RaceChoiceSetData(
-            featureId: 0,
-            kind: RaceChoiceKind.languageChoice,
-            pickCount: 1,
-            mustBeDistinct: true,
-          ),
-        ),
-        throwsA(
-          predicate((error) => error.toString().contains('featureId')),
-        ),
-      );
-    });
-
-    test(
-        'rejects race choice options whose payload does not match the choice kind',
-        () async {
-      final race = await endpoints.raceData.upsert(
-        sessionBuilder,
-        RaceData(name: 'Choice Race'),
-      );
-      final feature = await endpoints.raceFeature.upsert(
-        sessionBuilder,
-        RaceFeatureData(
-          raceId: race.id,
-          name: 'Choice Feature',
-          level: 1,
-        ),
-      );
-      final choiceSet = await endpoints.raceChoiceSetData.upsert(
-        sessionBuilder,
-        RaceChoiceSetData(
-          featureId: feature.id!,
-          kind: RaceChoiceKind.languageChoice,
-          pickCount: 1,
-          mustBeDistinct: true,
-        ),
-      );
-
-      await expectLater(
-        endpoints.raceChoiceOptionData.upsert(
-          sessionBuilder,
-          RaceChoiceOptionData(
-            choiceSetId: choiceSet.id!,
-            optionKey: 'bad_option',
-            name: 'Bad Option',
-            skill: Skill.arcana,
-          ),
-        ),
-        throwsA(
-          predicate((error) => error.toString().contains('require language')),
         ),
       );
     });

@@ -31,17 +31,13 @@ Future<List<Language>> _languages(
   List<CharacterClassEntryData> entries,
 ) async {
   final values = <Language>{...?character.race?.languages};
-  final options = await _selectedClassBackgroundChoiceOptions(
+  final options = await _selectedChoiceOptions(
     cache,
     character,
     entries,
   );
   for (final option in options) {
     values.addAll(option.grantedLanguages ?? const <Language>[]);
-  }
-  for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
-    final language = choice.selectedLanguage;
-    if (language != null) values.add(language);
   }
   return values.toList()..sort((left, right) => left.name.compareTo(right.name));
 }
@@ -60,7 +56,7 @@ Future<List<ArmorCategory>> _armorTraining(
           : entry.classData?.multiclassArmorTraining ??
               const <ArmorCategory>[]),
   };
-  final options = await _selectedClassBackgroundChoiceOptions(
+  final options = await _selectedChoiceOptions(
     cache,
     character,
     entries,
@@ -84,7 +80,7 @@ Future<List<WeaponCategory>> _weaponTraining(
               const <WeaponCategory>[]),
   };
 
-  final selectedOptions = await _selectedClassBackgroundChoiceOptions(
+  final selectedOptions = await _selectedChoiceOptions(
     cache,
     character,
     entries,
@@ -109,12 +105,9 @@ Future<List<String>> _toolProficiencyKeys(
       ...((entry.isStartingClass ?? false)
           ? entry.classData?.toolTrainingKeys ?? const <String>[]
           : entry.classData?.multiclassToolTrainingKeys ?? const <String>[]),
-    for (final choice in character.choices ?? const <CharacterChoiceData>[])
-      if (choice.selectedToolKey?.trim().isNotEmpty == true)
-        choice.selectedToolKey!.trim(),
   };
 
-  final selectedOptions = await _selectedClassBackgroundChoiceOptions(
+  final selectedOptions = await _selectedChoiceOptions(
     cache,
     character,
     entries,
@@ -126,23 +119,23 @@ Future<List<String>> _toolProficiencyKeys(
   return values.toList()..sort();
 }
 
-Future<List<ClassChoiceOptionData>> _selectedClassBackgroundChoiceOptions(
+Future<List<ChoiceOptionData>> _selectedChoiceOptions(
   OfflineCacheDatabase cache,
   CharacterData character,
   List<CharacterClassEntryData> entries,
 ) async {
   final groups = await cache.getReferenceList(
-        'class_choice_group',
+        'choice_group',
         offlineAllKey,
-        ClassChoiceGroupData.fromJson,
+        ChoiceGroupData.fromJson,
       ) ??
-      const <ClassChoiceGroupData>[];
+      const <ChoiceGroupData>[];
   final options = await cache.getReferenceList(
-        'class_choice_option',
+        'choice_option',
         offlineAllKey,
-        ClassChoiceOptionData.fromJson,
+        ChoiceOptionData.fromJson,
       ) ??
-      const <ClassChoiceOptionData>[];
+      const <ChoiceOptionData>[];
   final classFeatures = await cache.getReferenceList(
         'class_feature',
         offlineAllKey,
@@ -155,28 +148,32 @@ Future<List<ClassChoiceOptionData>> _selectedClassBackgroundChoiceOptions(
         SubclassFeatureData.fromJson,
       ) ??
       const <SubclassFeatureData>[];
+  final raceFeatureIds = {
+    ...?character.race?.features?.map((feature) => feature.id),
+    ...?character.subrace?.features?.map((feature) => feature.id),
+  };
   final groupsByKey = {
     for (final group in groups)
-      if (_isSupportedClassBackgroundChoiceGroup(
+      if (_isChoiceGroupAvailable(
         group,
         character,
         entries,
         classFeatures,
         subclassFeatures,
+        raceFeatureIds,
       ))
-        _classChoiceGroupKey(group): group,
+        group.referenceKey: group,
   };
-  final optionsByGroupId = <int, Map<String, ClassChoiceOptionData>>{};
+  final optionsByGroupId = <int, Map<String, ChoiceOptionData>>{};
   for (final option in options) {
     final groupId = option.choiceGroupId;
-    final optionKey = option.optionKey?.trim();
-    if (optionKey == null || optionKey.isEmpty) continue;
+    final optionKey = option.optionKey.trim();
+    if (optionKey.isEmpty) continue;
     optionsByGroupId.putIfAbsent(groupId, () => {})[optionKey] = option;
   }
 
-  final selected = <ClassChoiceOptionData>[];
+  final selected = <ChoiceOptionData>[];
   for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
-    if (!_isClassOrBackgroundChoice(choice.sourceType)) continue;
     final groupKey = choice.groupKey?.trim();
     final optionKey = choice.optionKey?.trim();
     if (groupKey == null ||
@@ -194,12 +191,13 @@ Future<List<ClassChoiceOptionData>> _selectedClassBackgroundChoiceOptions(
   return selected;
 }
 
-bool _isSupportedClassBackgroundChoiceGroup(
-  ClassChoiceGroupData group,
+bool _isChoiceGroupAvailable(
+  ChoiceGroupData group,
   CharacterData character,
   List<CharacterClassEntryData> entries,
   List<ClassFeatureData> classFeatures,
   List<SubclassFeatureData> subclassFeatures,
+  Set<int?> raceFeatureIds,
 ) {
   final requiredLevel = group.level ?? 1;
   final sourceClassId = group.sourceClassId;
@@ -242,27 +240,13 @@ bool _isSupportedClassBackgroundChoiceGroup(
           ),
     );
   }
-  return group.sourceBackgroundId != null &&
-      group.sourceBackgroundId == character.background?.id;
-}
-
-bool _isClassOrBackgroundChoice(ChoiceSourceType? sourceType) {
-  switch (sourceType) {
-    case ChoiceSourceType.background:
-    case ChoiceSourceType.classData:
-    case ChoiceSourceType.subclass:
-    case ChoiceSourceType.classFeature:
-    case ChoiceSourceType.subclassFeature:
-      return true;
-    case ChoiceSourceType.race:
-    case ChoiceSourceType.subrace:
-    case null:
-      return false;
-  }
-}
-
-String _classChoiceGroupKey(ClassChoiceGroupData group) {
-  final exclusiveKey = group.exclusiveKey?.trim();
-  if (exclusiveKey != null && exclusiveKey.isNotEmpty) return exclusiveKey;
-  return 'group_${group.id ?? group.name ?? group.type?.name ?? 'unknown'}';
+  final sourceRaceId = group.sourceRaceId;
+  if (sourceRaceId != null) return sourceRaceId == character.race?.id;
+  final sourceSubraceId = group.sourceSubraceId;
+  if (sourceSubraceId != null) return sourceSubraceId == character.subrace?.id;
+  final sourceRaceFeatureId = group.sourceRaceFeatureId;
+  if (sourceRaceFeatureId != null) return raceFeatureIds.contains(sourceRaceFeatureId);
+  final sourceBackgroundId = group.sourceBackgroundId;
+  return sourceBackgroundId != null &&
+      sourceBackgroundId == character.background?.id;
 }

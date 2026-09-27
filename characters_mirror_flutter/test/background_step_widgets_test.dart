@@ -49,17 +49,17 @@ void main() {
       id: 3,
       name: 'Народный герой',
       skillProficiencies: const [Skill.animalHandling],
-      toolProficiencies: ['Инструменты ремесленника'],
       languageCount: 1,
       items: ['Комплект путешественника'],
       suggestedPersonality: const [
         'Я всегда сначала смеюсь. Потом задаю вопросы.',
       ],
     );
-    final languageGroup = ClassChoiceGroupData(
+    final languageGroup = ChoiceGroupData(
+      referenceKey: 'folk_hero_language',
       id: 42,
       sourceBackgroundId: background.id,
-      type: ClassChoiceType.language,
+      type: ChoiceType.language,
       name: 'Языки',
       selectionCount: 1,
       exclusiveKey: 'background_language_pick',
@@ -76,14 +76,33 @@ void main() {
         ),
       ],
       choiceGroups: [
-        ClassChoiceGroupView(
+        ChoiceGroupView(
           group: languageGroup,
           options: [
-            ClassChoiceOptionData(
+            ChoiceOptionData(
               choiceGroupId: 42,
               optionKey: 'celestial',
               name: 'celestial',
               grantedLanguages: const [Language.celestial],
+            ),
+          ],
+        ),
+        ChoiceGroupView(
+          group: ChoiceGroupData(
+            id: 43,
+            referenceKey: 'folk_hero_artisan_tool',
+            sourceBackgroundId: background.id,
+            type: ChoiceType.tool,
+            name: 'Инструменты ремесленника',
+            selectionCount: 1,
+            allowDuplicates: false,
+          ),
+          options: [
+            ChoiceOptionData(
+              choiceGroupId: 43,
+              optionKey: 'smith_tools',
+              name: 'Инструменты ремесленника',
+              grantedToolKeys: const ['smith_tools'],
             ),
           ],
         ),
@@ -119,13 +138,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Владения предыстории'), findsNothing);
+    expect(find.text('Владения предыстории'), findsOneWidget);
     expect(find.text('Владения и языки'), findsOneWidget);
     expect(find.text('Навыки'), findsOneWidget);
     expect(find.text('Языки'), findsOneWidget);
     expect(find.byType(CreationChoiceSelector), findsWidgets);
     expect(find.text('Уход за животными'), findsOneWidget);
-    expect(find.text('Инструменты ремесленника'), findsOneWidget);
+    expect(find.text('Инструменты ремесленника'), findsNWidgets(2));
     expect(find.text('Языков на выбор: 1'), findsNothing);
     expect(find.text('Небесный'), findsOneWidget);
     expect(find.text('Комплект путешественника'), findsOneWidget);
@@ -133,7 +152,8 @@ void main() {
 
     final skillTop = tester.getTopLeft(find.text('Владение навыками')).dy;
     final languageTop = tester.getTopLeft(find.text('Языки')).dy;
-    final toolTop = tester.getTopLeft(find.text('Владение инструментами')).dy;
+    final toolTop =
+        tester.getTopLeft(find.text('Инструменты ремесленника').first).dy;
     expect(skillTop, lessThan(languageTop));
     expect(languageTop, lessThan(toolTop));
 

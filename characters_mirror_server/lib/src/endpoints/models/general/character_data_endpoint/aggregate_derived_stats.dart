@@ -23,7 +23,13 @@ Future<CharacterDerivedData> _buildDerivedData(
   );
   final currentRaceFeatures =
       _currentRaceFeaturesBySource(character, totalLevel);
-  final scores = _buildAbilityScores(character, choices);
+  final scores = _buildAbilityScores(
+    character,
+    [
+      ...resolvedSources.classBackgroundOptions,
+      ...resolvedSources.raceOptions,
+    ],
+  );
   final abilityModifiers = {
     for (final ability in Ability.values)
       ability.name: _abilityModifier(scores[ability.name] ?? 10),
@@ -86,7 +92,6 @@ Future<CharacterDerivedData> _buildDerivedData(
   final languages = _applyProficiencyOverrides<Language>(
     automatic: _collectLanguages(
       character,
-      choices,
       resolvedSources.classBackgroundOptions,
       resolvedSources.raceOptions,
     ),
@@ -98,7 +103,6 @@ Future<CharacterDerivedData> _buildDerivedData(
     automatic: _collectToolProficiencyKeys(
       character,
       entries,
-      choices,
       resolvedSources.classBackgroundOptions,
       resolvedSources.raceOptions,
     ),
@@ -131,18 +135,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     removed: character.manualWeaponProficiencyOverrides?.removedKeys,
     sortKey: (value) => value,
   );
-  final featIds = _collectFeatIds(choices, resolvedSources.raceOptions);
-  final featTags = await _loadFeatTags(
-    session,
-    featIds,
-    transaction: transaction,
-    resolveContext: context,
-  );
   final featureTags = _collectFeatureTags(
     character: character,
     resolvedSources: resolvedSources,
     currentRaceFeatures: currentRaceFeatures,
-    featTags: featTags,
   );
   final activeFeatures = _buildActiveFeatures(
     character: character,
@@ -170,7 +166,10 @@ Future<CharacterDerivedData> _buildDerivedData(
   final senses = <String>[
     if (character.race?.visionType != null) character.race!.visionType!.name,
   ];
-  final resistances = _collectDamageTypes(character, choices);
+  final resistances = _collectDamageTypes(
+    character,
+    resolvedSources.raceOptions,
+  );
   final movementSpeeds = _effectiveMovementSpeeds(character);
 
   return CharacterDerivedData(
@@ -210,7 +209,7 @@ Future<CharacterDerivedData> _buildDerivedData(
       character.manualArmorTrainingOverrides?.custom,
     ),
     featureTags: featureTags,
-    featIds: featIds,
+    featIds: const <int>[],
     grantedSpellKeys: grantedSpellKeys,
     alwaysPreparedSpellKeys: resolvedSources.alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
@@ -259,57 +258,39 @@ Map<Skill, CharacterSkillProficiencyLevel> _effectiveSkillProficiencyLevels(
 
 Map<String, int> _buildAbilityScores(
   CharacterData character,
-  List<CharacterChoiceData> choices,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   final scores = <String, int>{
     for (final ability in Ability.values) ability.name: 10,
     ...?character.baseAbilityScores,
   };
 
-  final raceChoices = _racialChoicesForSource(
-    choices,
-    ChoiceSourceType.race,
-    character.race?.id,
-  );
-  final subraceChoices = _racialChoicesForSource(
-    choices,
-    ChoiceSourceType.subrace,
-    character.subrace?.id,
-  );
-  final activeBonusMode = _resolveActiveBonusMode(raceChoices);
-  final activeRaceChoices = _filterChoicesForActiveBonusMode(
-    raceChoices,
-    activeBonusMode,
-  );
-  final activeSubraceChoices = _filterChoicesForActiveBonusMode(
-    subraceChoices,
-    activeBonusMode,
-  );
-  final usesFlexibleBonuses =
-      activeBonusMode == _BonusMode.flexiblePlusTwoOne ||
-          activeBonusMode == _BonusMode.flexibleThreePlusOne;
-
-  if (!usesFlexibleBonuses) {
-    _applyFixedRaceBonuses(
-      scores,
-      _abilityBonusesFromRace(character.race),
-    );
-  }
-  _applyRacialChoiceBonuses(scores, activeRaceChoices);
-
-  if (usesFlexibleBonuses) {
-    // Flexible +2/+1 replaces both the race and subrace default bonuses.
-  } else {
+  if (character.useFlexibleAbilityBonuses != true) {
+    _applyFixedRaceBonuses(scores, _abilityBonusesFromRace(character.race));
     _applyFixedRaceBonuses(
       scores,
       _abilityBonusesFromSubrace(character.subrace),
     );
   }
-  _applyRacialChoiceBonuses(scores, activeSubraceChoices);
+  _applyChoiceAbilityBonuses(scores, selectedOptions);
 
   _applyCustomAbilityBonuses(scores, character.customAbilityBonuses);
 
   return scores;
+}
+
+void _applyChoiceAbilityBonuses(
+  Map<String, int> scores,
+  List<ChoiceOptionData> selectedOptions,
+) {
+  for (final option in selectedOptions) {
+    for (final entry in option.grantedAbilityBonuses?.entries ??
+        const <MapEntry<String, int>>[]) {
+      final ability = _normalizeAbilityKey(entry.key);
+      if (ability == null || entry.value == 0) continue;
+      scores[ability] = (scores[ability] ?? 10) + entry.value;
+    }
+  }
 }
 
 void _applyCustomAbilityBonuses(
@@ -329,81 +310,6 @@ void _applyCustomAbilityBonuses(
   }
 }
 
-enum _BonusMode { racial, flexiblePlusTwoOne, flexibleThreePlusOne }
-
-_BonusMode _resolveActiveBonusMode(List<CharacterChoiceData> raceChoices) {
-  for (final choice in raceChoices) {
-    if (choice.groupKey != 'race_bonus_mode') continue;
-
-    switch (choice.selectedText) {
-      case 'flexiblePlusTwoOne':
-        return _BonusMode.flexiblePlusTwoOne;
-      case 'flexibleThreePlusOne':
-        return _BonusMode.flexibleThreePlusOne;
-      case 'racial':
-      default:
-        return _BonusMode.racial;
-    }
-  }
-
-  return _BonusMode.racial;
-}
-
-List<CharacterChoiceData> _filterChoicesForActiveBonusMode(
-  List<CharacterChoiceData> choices,
-  _BonusMode activeMode,
-) {
-  return choices.where((choice) {
-    final groupKey = choice.groupKey;
-    if (groupKey == null || groupKey == 'race_bonus_mode') {
-      return false;
-    }
-
-    final isFlexible = groupKey.startsWith('race_flexible_bonus');
-    switch (activeMode) {
-      case _BonusMode.racial:
-        return !isFlexible;
-      case _BonusMode.flexiblePlusTwoOne:
-        return groupKey == 'race_flexible_bonus_plus2' ||
-            groupKey == 'race_flexible_bonus_plus1';
-      case _BonusMode.flexibleThreePlusOne:
-        return groupKey == 'race_flexible_bonus_three_plus1';
-    }
-  }).toList();
-}
-
-List<CharacterChoiceData> _racialChoicesForSource(
-  List<CharacterChoiceData> choices,
-  ChoiceSourceType sourceType,
-  int? sourceId,
-) {
-  if (sourceId == null) {
-    return const [];
-  }
-
-  return choices.where((choice) {
-    return choice.sourceType == sourceType && choice.sourceId == sourceId;
-  }).toList();
-}
-
-void _applyRacialChoiceBonuses(
-  Map<String, int> scores,
-  List<CharacterChoiceData> choices,
-) {
-  for (final choice in choices) {
-    final bonus = choice.selectedCount ?? 0;
-    final key = choice.selectedAbility?.name ?? choice.optionKey?.trim();
-    if (key == null || key.isEmpty || bonus == 0) {
-      continue;
-    }
-
-    final abilityKey = _normalizeAbilityKey(key);
-    if (abilityKey == null) continue;
-
-    scores[abilityKey] = (scores[abilityKey] ?? 10) + bonus;
-  }
-}
-
 String? _normalizeAbilityKey(String raw) {
   for (final ability in Ability.values) {
     if (ability.name == raw) {
@@ -416,8 +322,8 @@ String? _normalizeAbilityKey(String raw) {
 Set<Skill> _collectSkillProficiencies(
   CharacterData character,
   List<CharacterSkillSelectionData> skillSelections,
-  List<ClassChoiceOptionData> classBackgroundOptions,
-  List<RaceChoiceOptionData> raceOptions,
+  List<ChoiceOptionData> classBackgroundOptions,
+  List<ChoiceOptionData> raceOptions,
 ) {
   final skills = <Skill>{};
   skills.addAll(character.race?.skillProficiencies ?? const <Skill>[]);
@@ -436,9 +342,7 @@ Set<Skill> _collectSkillProficiencies(
   }
 
   for (final option in raceOptions) {
-    if (option.skill != null) {
-      skills.add(option.skill!);
-    }
+    skills.addAll(option.grantedSkills ?? const <Skill>[]);
   }
 
   return skills;

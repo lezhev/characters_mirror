@@ -17,6 +17,15 @@ class SummaryStep extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isSaving = useState(false);
     final state = ref.watch(characterCreationProvider);
+    final choiceGroups = [
+      ...state.raceChoiceGroups,
+      ...state.classChoiceGroups,
+      ...state.backgroundChoiceGroups,
+    ];
+    final groupsByKey = {
+      for (final view in choiceGroups)
+        if (view.group case final group?) group.referenceKey: group,
+    };
     final classEntries =
         state.character.classEntries ?? const <CharacterClassEntryData>[];
     final choices = state.character.choices ?? const <CharacterChoiceData>[];
@@ -25,8 +34,10 @@ class SummaryStep extends HookConsumerWidget {
     final spellSelections = state.character.spellSelections ??
         const <CharacterSpellSelectionData>[];
     final classEntry = classEntries.isNotEmpty ? classEntries.first : null;
-    final classChoiceSummary =
-        formatChoiceSummary(choices.where(isClassChoice).toList());
+    final classChoiceSummary = formatChoiceSummary(
+      choices.where((choice) => isClassChoice(choice, choiceGroups)).toList(),
+      choiceGroups,
+    );
     final classSpellSummary = formatSpellSelectionSummary(spellSelections);
     final classSkillSummary = formatSkillSelectionSummary(
       skillSelections
@@ -38,8 +49,11 @@ class SummaryStep extends HookConsumerWidget {
     );
     final backgroundChoiceSummary = formatChoiceSummary(
       choices
-          .where((choice) => choice.sourceType == ChoiceSourceType.background)
+          .where((choice) =>
+              groupsByKey[choice.groupKey]?.sourceBackgroundId ==
+              state.character.background?.id)
           .toList(),
+      choiceGroups,
     );
     final backgroundSkillSummary = formatSkillSelectionSummary(
       skillSelections
@@ -53,10 +67,11 @@ class SummaryStep extends HookConsumerWidget {
       choices
           .where(
             (choice) =>
-                choice.sourceType == ChoiceSourceType.race ||
-                choice.sourceType == ChoiceSourceType.subrace,
+                groupsByKey[choice.groupKey]?.sourceRaceId != null ||
+                groupsByKey[choice.groupKey]?.sourceSubraceId != null,
           )
           .toList(),
+      choiceGroups,
     );
 
     return CreationStepScaffold(
@@ -94,8 +109,11 @@ class SummaryStep extends HookConsumerWidget {
           ),
           const Gap(24),
           SummaryAbilitiesSection(
-            baseAbilityScores:
-                buildSummaryAbilityScores(state.character, choices),
+            baseAbilityScores: buildSummaryAbilityScores(
+              state.character,
+              choices,
+              choiceGroups,
+            ),
           ),
         ],
       ),

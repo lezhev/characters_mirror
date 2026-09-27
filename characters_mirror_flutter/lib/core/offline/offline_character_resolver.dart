@@ -63,13 +63,14 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)),
   );
   final proficiencyBonus = 2 + ((totalLevel - 1) ~/ 4);
-  final abilityScores = _abilityScores(character);
+  final selectedOptions = await _selectedChoiceOptions(cache, character, entries);
+  final abilityScores = _abilityScores(character, selectedOptions);
   final abilityModifiers = {
     for (final entry in abilityScores.entries)
       entry.key: _modifier(entry.value),
   };
   final savingThrowProficiencies = _savingThrowProficiencies(character);
-  final skillLevels = _skillProficiencyLevels(character);
+  final skillLevels = _skillProficiencyLevels(character, selectedOptions);
   final savingThrowBonuses = {
     for (final ability in Ability.values)
       ability.name: (abilityModifiers[ability.name] ?? 0) +
@@ -99,6 +100,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   final grantedSpellKeys = _collectGrantedSpellKeys(
     character,
     alwaysPreparedSpellKeys,
+    selectedOptions,
   );
   final automaticLanguages = await _languages(cache, character, entries);
   final languages = _effectiveProficiencyValues<Language>(

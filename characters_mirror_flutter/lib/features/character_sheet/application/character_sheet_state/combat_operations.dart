@@ -70,25 +70,21 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
     await _saveCharacter(current.copyWith(attacks: attacks));
   }
 
-  Future<void> saveEquipmentItem(String id, String? name) async {
+  Future<void> saveEquipmentText(String? text) async {
     final current = _requireCharacter();
-    await _saveCharacter(
-      current.copyWith(
-        equipment: upsertCharacterInventoryItem(
-          current.equipment,
-          id: id,
-          name: name,
-        ),
-      ),
+    final parsed = inventoryItemsFromText(
+      text,
+      previous: current.equipment,
     );
-  }
-
-  Future<void> deleteEquipmentItem(String id) async {
-    final current = _requireCharacter();
+    final equipment = parsed == null
+        ? null
+        : [
+            parsed.single.copyWith(
+              id: parsed.single.id ?? createCharacterSyncItemId(),
+            ),
+          ];
     await _saveCharacter(
-      current.copyWith(
-        equipment: removeCharacterInventoryItem(current.equipment, id),
-      ),
+      current.copyWith(equipment: equipment),
     );
   }
 
@@ -215,6 +211,26 @@ extension CharacterSheetControllerCombat on CharacterSheetController {
     final current = _requireCharacter();
     await _saveCharacter(
       current.copyWith(customArmorClassBonus: bonus == 0 ? null : bonus),
+      debounce: false,
+    );
+  }
+
+  Future<void> saveEquippedArmor(
+    CharacterEquipmentSelectionData? selection,
+  ) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(equippedArmor: selection),
+      debounce: false,
+    );
+  }
+
+  Future<void> saveEquippedShield(
+    CharacterEquipmentSelectionData? selection,
+  ) async {
+    final current = _requireCharacter();
+    await _saveCharacter(
+      current.copyWith(equippedShield: selection),
       debounce: false,
     );
   }

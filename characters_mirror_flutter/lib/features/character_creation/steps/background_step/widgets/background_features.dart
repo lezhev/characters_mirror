@@ -40,15 +40,15 @@ class BackgroundFeatures extends ConsumerWidget {
     );
     final creationNotifier = ref.read(characterCreationProvider.notifier);
     final choiceGroups =
-        stepView?.choiceGroups ?? const <ClassChoiceGroupView>[];
+        stepView?.choiceGroups ?? const <ChoiceGroupView>[];
     final languageChoiceGroups = choiceGroups
-        .where((groupView) => groupView.group?.type == ClassChoiceType.language)
+        .where((groupView) => groupView.group?.type == ChoiceType.language)
         .toList();
     final otherChoiceGroups = choiceGroups
-        .where((groupView) => groupView.group?.type != ClassChoiceType.language)
+        .where((groupView) => groupView.group?.type != ChoiceType.language)
         .toList();
     final hasLanguageChoiceGroup = choiceGroups.any(
-      (groupView) => groupView.group?.type == ClassChoiceType.language,
+      (groupView) => groupView.group?.type == ChoiceType.language,
     );
     final startingEquipmentBlocks = stepView?.startingEquipmentBlocks ??
         const <StartingEquipmentBlockView>[];
@@ -63,7 +63,6 @@ class BackgroundFeatures extends ConsumerWidget {
         tool.referenceKey: tool.name,
     };
     final toolProficiencyLabels = [
-      ...?selectedBackground.toolProficiencies,
       for (final key in selectedBackground.toolProficiencyKeys ?? const [])
         if (toolsByKey[key] case final name?) name,
     ];
@@ -295,7 +294,7 @@ class BackgroundChoiceGroupsSection extends ConsumerWidget {
     super.key,
   });
 
-  final List<ClassChoiceGroupView> choiceGroups;
+  final List<ChoiceGroupView> choiceGroups;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -326,7 +325,7 @@ class BackgroundChoiceGroupCards extends ConsumerWidget {
     super.key,
   });
 
-  final List<ClassChoiceGroupView> choiceGroups;
+  final List<ChoiceGroupView> choiceGroups;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -348,7 +347,7 @@ class BackgroundChoiceGroupCards extends ConsumerWidget {
                           groupView: groupView,
                           selectedOptions: data.selectedOptions[
                                   classChoiceGroupKey(groupView.group!)] ??
-                              const <ClassChoiceOptionData>[],
+                              const <ChoiceOptionData>[],
                           onToggleOption: ref
                               .read(backgroundStateProvider.notifier)
                               .toggleOption,

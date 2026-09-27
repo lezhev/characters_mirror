@@ -1,6 +1,8 @@
 part of '../character_data_endpoint.dart';
 
 const _characterScalarSyncFields = <String>[
+  'equippedArmor',
+  'equippedShield',
   'name',
   'age',
   'height',

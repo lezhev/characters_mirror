@@ -144,6 +144,18 @@ class FightPage extends ConsumerWidget {
                   onArmorClassPressed: () => showArmorClassSettingsSheet(
                     context: context,
                     character: character,
+                    onUnequipArmor: () => ref
+                        .read(
+                          characterSheetControllerProvider(characterId)
+                              .notifier,
+                        )
+                        .saveEquippedArmor(null),
+                    onUnequipShield: () => ref
+                        .read(
+                          characterSheetControllerProvider(characterId)
+                              .notifier,
+                        )
+                        .saveEquippedShield(null),
                     onSave: (bonus) {
                       return ref
                           .read(

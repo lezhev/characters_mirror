@@ -79,7 +79,7 @@ class ClassDataEndpoint extends Endpoint {
       progression,
       selectedLevel,
     );
-    final groups = await ClassChoiceGroupData.db.find(session);
+    final groups = await ChoiceGroupData.db.find(session);
     final currentFeatureIds = features
         .where((feature) => feature.level <= selectedLevel)
         .map((feature) => feature.id)
@@ -91,11 +91,8 @@ class ClassDataEndpoint extends Endpoint {
         .whereType<int>()
         .toSet();
 
-    final currentGroups = <ClassChoiceGroupView>[];
+    final currentGroups = <ChoiceGroupView>[];
     for (final group in groups.where((group) {
-      if (_isMigratedSkillGroup(group)) {
-        return false;
-      }
       final byClass = group.sourceClassId == classId;
       final byFeature = group.sourceFeatureId != null &&
           currentFeatureIds.contains(group.sourceFeatureId);
@@ -107,12 +104,13 @@ class ClassDataEndpoint extends Endpoint {
       return unlocked &&
           (byClass || byFeature || bySubclass || bySubclassFeature);
     })) {
-      final options = await ClassChoiceOptionData.db.find(
+      final options = await ChoiceOptionData.db.find(
         session,
         where: (t) => t.choiceGroupId.equals(group.id),
+        orderBy: (t) => t.sortOrder,
       );
       currentGroups.add(
-        ClassChoiceGroupView(
+        ChoiceGroupView(
           group: group,
           options: options,
         ),

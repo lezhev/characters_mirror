@@ -479,6 +479,9 @@ Object? _encodedFieldValue(String field, CharacterSyncValueData? value) {
       value.weaponProficiencyOverridesValue?.toJson(),
     'manualArmorTrainingOverrides' =>
       value.armorTrainingOverridesValue?.toJson(),
+    'equippedArmor' ||
+    'equippedShield' =>
+      value.equipmentSelectionValue?.toJson(),
     'race' ||
     'subrace' ||
     'background' =>

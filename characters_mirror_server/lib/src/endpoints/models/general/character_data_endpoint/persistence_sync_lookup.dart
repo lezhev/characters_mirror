@@ -76,22 +76,6 @@ Future<List<CharacterData>> _loadCharactersUpdatedAfter(
   );
 }
 
-CharacterInventoryItemType _inventoryItemTypeForCatalog(
-  EquipmentCatalogType? catalogType,
-) {
-  switch (catalogType) {
-    case EquipmentCatalogType.weapon:
-      return CharacterInventoryItemType.weapon;
-    case EquipmentCatalogType.armor:
-      return CharacterInventoryItemType.armor;
-    case EquipmentCatalogType.magicItem:
-      return CharacterInventoryItemType.magicItem;
-    case EquipmentCatalogType.item:
-    case null:
-      return CharacterInventoryItemType.item;
-  }
-}
-
 String _generateSyncId() {
   final random = Random.secure();
   final chunks = [

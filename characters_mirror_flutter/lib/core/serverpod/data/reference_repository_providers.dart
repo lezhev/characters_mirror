@@ -30,6 +30,10 @@ final toolDataRepositoryProvider = Provider<ToolDataRepository>((ref) {
   return ToolDataRepository();
 });
 
+final magicItemRepositoryProvider = Provider<MagicItemRepository>((ref) {
+  return MagicItemRepository();
+});
+
 final itemCatalogProvider = FutureProvider<List<ItemData>>((ref) {
   return ref.watch(itemRepositoryProvider).getAll();
 });
@@ -44,4 +48,8 @@ final armorCatalogProvider = FutureProvider<List<ArmorData>>((ref) {
 
 final toolCatalogProvider = FutureProvider<List<ToolData>>((ref) {
   return ref.watch(toolDataRepositoryProvider).getAll();
+});
+
+final magicItemCatalogProvider = FutureProvider<List<MagicItemData>>((ref) {
+  return ref.watch(magicItemRepositoryProvider).getAll();
 });

@@ -13,6 +13,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../data/general/race/race_data.dart' as _i2;
 import '../data/general/race/subrace_data.dart' as _i3;
 import '../data/general/race/race_feature_data.dart' as _i4;
+import '../views/choice_group_view.dart' as _i5;
 
 abstract class RaceStepView
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -20,12 +21,14 @@ abstract class RaceStepView
     this.race,
     this.subraces,
     this.features,
+    this.choiceGroups,
   });
 
   factory RaceStepView({
     _i2.RaceData? race,
     List<_i3.SubraceData>? subraces,
     List<_i4.RaceFeatureData>? features,
+    List<_i5.ChoiceGroupView>? choiceGroups,
   }) = _RaceStepViewImpl;
 
   factory RaceStepView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -41,6 +44,10 @@ abstract class RaceStepView
           ?.map(
               (e) => _i4.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      choiceGroups: (jsonSerialization['choiceGroups'] as List?)
+          ?.map(
+              (e) => _i5.ChoiceGroupView.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -50,6 +57,8 @@ abstract class RaceStepView
 
   List<_i4.RaceFeatureData>? features;
 
+  List<_i5.ChoiceGroupView>? choiceGroups;
+
   /// Returns a shallow copy of this [RaceStepView]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -57,6 +66,7 @@ abstract class RaceStepView
     _i2.RaceData? race,
     List<_i3.SubraceData>? subraces,
     List<_i4.RaceFeatureData>? features,
+    List<_i5.ChoiceGroupView>? choiceGroups,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -66,6 +76,8 @@ abstract class RaceStepView
         'subraces': subraces?.toJson(valueToJson: (v) => v.toJson()),
       if (features != null)
         'features': features?.toJson(valueToJson: (v) => v.toJson()),
+      if (choiceGroups != null)
+        'choiceGroups': choiceGroups?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -77,6 +89,9 @@ abstract class RaceStepView
         'subraces': subraces?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (features != null)
         'features': features?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (choiceGroups != null)
+        'choiceGroups':
+            choiceGroups?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -93,10 +108,12 @@ class _RaceStepViewImpl extends RaceStepView {
     _i2.RaceData? race,
     List<_i3.SubraceData>? subraces,
     List<_i4.RaceFeatureData>? features,
+    List<_i5.ChoiceGroupView>? choiceGroups,
   }) : super._(
           race: race,
           subraces: subraces,
           features: features,
+          choiceGroups: choiceGroups,
         );
 
   /// Returns a shallow copy of this [RaceStepView]
@@ -107,6 +124,7 @@ class _RaceStepViewImpl extends RaceStepView {
     Object? race = _Undefined,
     Object? subraces = _Undefined,
     Object? features = _Undefined,
+    Object? choiceGroups = _Undefined,
   }) {
     return RaceStepView(
       race: race is _i2.RaceData? ? race : this.race?.copyWith(),
@@ -116,6 +134,9 @@ class _RaceStepViewImpl extends RaceStepView {
       features: features is List<_i4.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
+      choiceGroups: choiceGroups is List<_i5.ChoiceGroupView>?
+          ? choiceGroups
+          : this.choiceGroups?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

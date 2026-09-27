@@ -16,14 +16,12 @@ class OfflineReferencePrewarmer {
     SpellRepository? spellRepository,
     SubclassRepository? subclassRepository,
     RaceFeatureRepository? raceFeatureRepository,
-    RaceChoiceSetRepository? raceChoiceSetRepository,
-    RaceChoiceOptionRepository? raceChoiceOptionRepository,
     RaceFeatureSpellGrantRepository? raceFeatureSpellGrantRepository,
     ClassFeatureRepository? classFeatureRepository,
     ClassLevelRepository? classLevelRepository,
-    ClassChoiceGroupRepository? classChoiceGroupRepository,
-    ClassChoiceOptionRepository? classChoiceOptionRepository,
     SubclassFeatureRepository? subclassFeatureRepository,
+    ChoiceGroupRepository? choiceGroupRepository,
+    ChoiceOptionRepository? choiceOptionRepository,
   })  : _raceRepository = raceRepository ?? RaceRepository(),
         _classRepository = classRepository ?? ClassRepository(),
         _backgroundRepository = backgroundRepository ?? BackgroundRepository(),
@@ -37,21 +35,15 @@ class OfflineReferencePrewarmer {
         _subclassRepository = subclassRepository ?? SubclassRepository(),
         _raceFeatureRepository =
             raceFeatureRepository ?? RaceFeatureRepository(),
-        _raceChoiceSetRepository =
-            raceChoiceSetRepository ?? RaceChoiceSetRepository(),
-        _raceChoiceOptionRepository =
-            raceChoiceOptionRepository ?? RaceChoiceOptionRepository(),
         _raceFeatureSpellGrantRepository = raceFeatureSpellGrantRepository ??
             RaceFeatureSpellGrantRepository(),
         _classFeatureRepository =
             classFeatureRepository ?? ClassFeatureRepository(),
         _classLevelRepository = classLevelRepository ?? ClassLevelRepository(),
-        _classChoiceGroupRepository =
-            classChoiceGroupRepository ?? ClassChoiceGroupRepository(),
-        _classChoiceOptionRepository =
-            classChoiceOptionRepository ?? ClassChoiceOptionRepository(),
         _subclassFeatureRepository =
-            subclassFeatureRepository ?? SubclassFeatureRepository();
+            subclassFeatureRepository ?? SubclassFeatureRepository(),
+        _choiceGroupRepository = choiceGroupRepository ?? ChoiceGroupRepository(),
+        _choiceOptionRepository = choiceOptionRepository ?? ChoiceOptionRepository();
 
   final RaceRepository _raceRepository;
   final ClassRepository _classRepository;
@@ -65,14 +57,12 @@ class OfflineReferencePrewarmer {
   final SpellRepository _spellRepository;
   final SubclassRepository _subclassRepository;
   final RaceFeatureRepository _raceFeatureRepository;
-  final RaceChoiceSetRepository _raceChoiceSetRepository;
-  final RaceChoiceOptionRepository _raceChoiceOptionRepository;
   final RaceFeatureSpellGrantRepository _raceFeatureSpellGrantRepository;
   final ClassFeatureRepository _classFeatureRepository;
   final ClassLevelRepository _classLevelRepository;
-  final ClassChoiceGroupRepository _classChoiceGroupRepository;
-  final ClassChoiceOptionRepository _classChoiceOptionRepository;
   final SubclassFeatureRepository _subclassFeatureRepository;
+  final ChoiceGroupRepository _choiceGroupRepository;
+  final ChoiceOptionRepository _choiceOptionRepository;
 
   bool _isRunning = false;
 
@@ -93,14 +83,12 @@ class OfflineReferencePrewarmer {
         _featRepository.getAll(),
         _spellRepository.getAll(),
         _raceFeatureRepository.getAll(),
-        _raceChoiceSetRepository.getAll(),
-        _raceChoiceOptionRepository.getAll(),
         _raceFeatureSpellGrantRepository.getAll(),
         _classFeatureRepository.getAll(),
         _classLevelRepository.getAll(),
-        _classChoiceGroupRepository.getAll(),
-        _classChoiceOptionRepository.getAll(),
         _subclassFeatureRepository.getAll(),
+        _choiceGroupRepository.getAll(),
+        _choiceOptionRepository.getAll(),
       ]);
 
       await Future.wait([

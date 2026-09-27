@@ -17,16 +17,6 @@ Future<List<RaceFeatureData>> _findRaceFeatures(
           spell: SpellData.include(),
         ),
       ),
-      choiceSets: RaceChoiceSetData.includeList(
-        include: RaceChoiceSetData.include(
-          choiceOptions: RaceChoiceOptionData.includeList(
-            include: RaceChoiceOptionData.include(
-              spell: SpellData.include(),
-              feat: FeatData.include(),
-            ),
-          ),
-        ),
-      ),
     ),
   );
 
@@ -41,14 +31,10 @@ RaceFeatureData _normalizeRaceFeature(RaceFeatureData feature) {
   final spellGrants = [
     ...?feature.spellGrants,
   ]..sort(_compareRaceFeatureSpellGrants);
-  final choiceSets = choiceSetsOrNormalized(feature.choiceSets)
-    ..sort(_compareRaceChoiceSets);
-
   return feature.copyWith(
     resources: resources,
     resourceEffects: resourceEffects,
     spellGrants: spellGrants,
-    choiceSets: choiceSets,
   );
 }
 
@@ -112,25 +98,6 @@ int _compareFeatureResourceEffects(
   return (a.targetResourceKey ?? '').compareTo(b.targetResourceKey ?? '');
 }
 
-List<RaceChoiceSetData> choiceSetsOrNormalized(
-  List<RaceChoiceSetData>? choiceSets,
-) {
-  return [
-    for (final choiceSet in choiceSets ?? const <RaceChoiceSetData>[])
-      _normalizeRaceChoiceSet(choiceSet),
-  ];
-}
-
-RaceChoiceSetData _normalizeRaceChoiceSet(RaceChoiceSetData choiceSet) {
-  final choiceOptions = [
-    ...?choiceSet.choiceOptions,
-  ]..sort(_compareRaceChoiceOptions);
-
-  return choiceSet.copyWith(
-    choiceOptions: choiceOptions,
-  );
-}
-
 void _stampForInsert(dynamic row) {
   final now = DateTime.now();
   row.version ??= 1;
@@ -172,98 +139,6 @@ void _validateRaceFeature(RaceFeatureData item) {
   }
 }
 
-void _validateRaceChoiceSet(RaceChoiceSetData item) {
-  final featureId = item.featureId;
-  if (featureId <= 0) {
-    throw ArgumentError(
-      'RaceChoiceSetData.featureId must reference a RaceFeatureData row.',
-    );
-  }
-
-  if ((item.pickCount ?? 0) <= 0) {
-    throw ArgumentError(
-      'RaceChoiceSetData.pickCount must be greater than zero.',
-    );
-  }
-}
-
-Future<void> _validateRaceChoiceOption(
-  Session session,
-  RaceChoiceOptionData item,
-) async {
-  final choiceSetId = item.choiceSetId;
-  if (choiceSetId <= 0) {
-    throw ArgumentError(
-      'RaceChoiceOptionData.choiceSetId must reference a RaceChoiceSetData row.',
-    );
-  }
-
-  final optionKey = item.optionKey?.trim();
-  if (optionKey == null || optionKey.isEmpty) {
-    throw ArgumentError(
-      'RaceChoiceOptionData.optionKey is required.',
-    );
-  }
-
-  final kind = await _resolveRaceChoiceKind(session, item);
-  switch (kind) {
-    case RaceChoiceKind.abilityBonusChoice:
-      if (item.ability == null || (item.bonusValue ?? 0) <= 0) {
-        throw ArgumentError(
-          'Ability bonus options require ability and a positive bonusValue.',
-        );
-      }
-      break;
-    case RaceChoiceKind.skillProficiencyChoice:
-      if (item.skill == null) {
-        throw ArgumentError(
-          'Skill proficiency options require skill.',
-        );
-      }
-      break;
-    case RaceChoiceKind.languageChoice:
-      if (item.language == null) {
-        throw ArgumentError(
-          'Language choice options require language.',
-        );
-      }
-      break;
-    case RaceChoiceKind.toolProficiencyChoice:
-      if (item.toolKey?.trim().isEmpty ?? true) {
-        throw ArgumentError(
-          'Tool proficiency options require toolKey.',
-        );
-      }
-      break;
-    case RaceChoiceKind.cantripChoice:
-      if (item.spellId == null || item.spellId! <= 0) {
-        throw ArgumentError(
-          'Cantrip choice options require spellId.',
-        );
-      }
-      break;
-    case RaceChoiceKind.featChoice:
-      if (item.featId == null || item.featId! <= 0) {
-        throw ArgumentError(
-          'Feat choice options require featId.',
-        );
-      }
-      break;
-    case RaceChoiceKind.dragonbornAncestryChoice:
-      if (item.damageType == null ||
-          item.areaOfEffectType == null ||
-          item.areaText == null ||
-          item.areaText!.trim().isEmpty ||
-          item.saveAbility == null ||
-          item.damageByLevel?.isEmpty != false) {
-        throw ArgumentError(
-          'Dragonborn ancestry options require damageType, areaOfEffectType, areaText, saveAbility, and damageByLevel.',
-        );
-      }
-      break;
-  }
-}
-
 void _validateRaceFeatureSpellGrant(RaceFeatureSpellGrantData item) {
   if (item.featureId <= 0) {
     throw ArgumentError(
@@ -278,42 +153,9 @@ void _validateRaceFeatureSpellGrant(RaceFeatureSpellGrantData item) {
   }
 }
 
-Future<RaceChoiceKind> _resolveRaceChoiceKind(
-  Session session,
-  RaceChoiceOptionData item,
-) async {
-  if (item.choiceSet?.kind != null) {
-    return item.choiceSet!.kind!;
-  }
-
-  final rows = await RaceChoiceSetData.db.find(
-    session,
-    where: (t) => t.id.equals(item.choiceSetId),
-    limit: 1,
-  );
-  if (rows.isEmpty || rows.first.kind == null) {
-    throw ArgumentError(
-      'RaceChoiceOptionData.choiceSetId must reference a RaceChoiceSetData row with kind.',
-    );
-  }
-  return rows.first.kind!;
-}
-
 int _compareRaceFeatures(RaceFeatureData a, RaceFeatureData b) {
   final levelCompare = (a.level ?? 1).compareTo(b.level ?? 1);
   if (levelCompare != 0) return levelCompare;
-  return (a.name ?? '').compareTo(b.name ?? '');
-}
-
-int _compareRaceChoiceSets(RaceChoiceSetData a, RaceChoiceSetData b) {
-  final kindCompare = (a.kind?.name ?? '').compareTo(b.kind?.name ?? '');
-  if (kindCompare != 0) return kindCompare;
-  return (a.description ?? '').compareTo(b.description ?? '');
-}
-
-int _compareRaceChoiceOptions(RaceChoiceOptionData a, RaceChoiceOptionData b) {
-  final sortCompare = (a.sortOrder ?? 0).compareTo(b.sortOrder ?? 0);
-  if (sortCompare != 0) return sortCompare;
   return (a.name ?? '').compareTo(b.name ?? '');
 }
 

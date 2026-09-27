@@ -189,67 +189,6 @@ class SubclassRepository implements Repository<SubclassData> {
   Future<void> delete(int id) => client.subclassData.delete(id);
 }
 
-class ClassChoiceGroupRepository implements Repository<ClassChoiceGroupData> {
-  @override
-  Future<List<ClassChoiceGroupData>> getAll() => cachedListFallback(
-        cache: offlineCacheDatabase,
-        kind: 'class_choice_group',
-        loadRemote: client.classChoiceGroupData.getAll,
-        toJson: (value) => value.toJson(),
-        fromJson: ClassChoiceGroupData.fromJson,
-      );
-
-  @override
-  Future<ClassChoiceGroupData?> getById(int id) async {
-    final all = await getAll();
-    try {
-      return all.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  @override
-  Future<ClassChoiceGroupData> upsert(ClassChoiceGroupData entity) =>
-      client.classChoiceGroupData.upsert(entity);
-
-  @override
-  Future<void> delete(int id) => client.classChoiceGroupData.delete(id);
-}
-
-class ClassChoiceOptionRepository implements Repository<ClassChoiceOptionData> {
-  @override
-  Future<List<ClassChoiceOptionData>> getAll() => cachedListFallback(
-        cache: offlineCacheDatabase,
-        kind: 'class_choice_option',
-        loadRemote: client.classChoiceOptionData.getAll,
-        toJson: (value) => value.toJson(),
-        fromJson: ClassChoiceOptionData.fromJson,
-      );
-
-  @override
-  Future<ClassChoiceOptionData?> getById(int id) async {
-    final all = await getAll();
-    try {
-      return all.firstWhere((e) => e.id == id);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  Future<List<ClassChoiceOptionData>> getAllByGroupId(int groupId) async {
-    final all = await getAll();
-    return all.where((e) => e.choiceGroupId == groupId).toList();
-  }
-
-  @override
-  Future<ClassChoiceOptionData> upsert(ClassChoiceOptionData entity) =>
-      client.classChoiceOptionData.upsert(entity);
-
-  @override
-  Future<void> delete(int id) => client.classChoiceOptionData.delete(id);
-}
-
 class ClassSpellGrantRepository implements Repository<ClassSpellGrantData> {
   @override
   Future<List<ClassSpellGrantData>> getAll() => cachedListFallback(

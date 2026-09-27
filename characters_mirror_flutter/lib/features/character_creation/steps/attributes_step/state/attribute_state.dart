@@ -27,6 +27,8 @@ sealed class AttributeBonusRule with _$AttributeBonusRule {
     required int pickCount,
     required bool mustBeDistinct,
     required Set<Attribute> allowedAttributes,
+    @Default({}) Map<String, String> optionKeyByAttribute,
+    @Default({}) Map<String, String> attributeKeyByOption,
     @Default({}) Set<Attribute> defaultAttributes,
   }) = _AttributeBonusRule;
 }
@@ -51,11 +53,12 @@ sealed class AttributeStateModel with _$AttributeStateModel {
 @Riverpod(keepAlive: true)
 class AttributeState extends _$AttributeState {
   static const _flexibleGroupKeyPrefix = 'race_flexible_bonus';
-  static const _flexiblePlusTwoGroupKey = '${_flexibleGroupKeyPrefix}_plus2';
-  static const _flexiblePlusOneGroupKey = '${_flexibleGroupKeyPrefix}_plus1';
-  static const _flexibleThreePlusOneGroupKey =
-      '${_flexibleGroupKeyPrefix}_three_plus1';
-  static const bonusModeGroupKey = 'race_bonus_mode';
+  static const _flexiblePlusTwoGroupKeyPrefix =
+      '${_flexibleGroupKeyPrefix}_plus2_';
+  static const _flexiblePlusOneGroupKeyPrefix =
+      '${_flexibleGroupKeyPrefix}_plus1_';
+  static const _flexibleThreePlusOneGroupKeyPrefix =
+      '${_flexibleGroupKeyPrefix}_three_plus1_';
   AttributeStateModel? _previousState;
   int? _draftRevision;
   bool _isListeningToSelf = false;
@@ -92,18 +95,24 @@ class AttributeState extends _$AttributeState {
           ),
         ) ??
         const <String, int>{};
+    final choiceGroups = ref.watch(
+      characterCreationProvider.select((c) => c.raceChoiceGroups),
+    );
 
     final fixedRaceBonuses =
         _resolveFixedRaceBonuses(race: race, subrace: subrace);
     final resolvedBonusRules = _resolveSelectableBonusRules(
-      race: race,
-      subrace: subrace,
+      choiceGroups: choiceGroups,
+      raceId: race?.id,
+      subraceId: subrace?.id,
       includeFlexibleRules: useFlexibleAbilityBonuses,
     );
     final restoredBonusMode = _restoreBonusMode(
       fixedRaceBonuses: fixedRaceBonuses,
       rules: resolvedBonusRules,
       savedChoices: savedChoices,
+      choiceGroups: choiceGroups,
+      raceId: race?.id,
     );
     final bonusMode = previous != null &&
             _isBonusModeAvailable(
@@ -194,81 +203,68 @@ class AttributeState extends _$AttributeState {
   }
 
   List<AttributeBonusRule> _resolveSelectableBonusRules({
-    RaceData? race,
-    SubraceData? subrace,
+    required List<ChoiceGroupView> choiceGroups,
+    required int? raceId,
+    required int? subraceId,
     required bool includeFlexibleRules,
   }) {
     final rules = <AttributeBonusRule>[];
+    for (final view in choiceGroups) {
+      final group = view.group;
+      if (group == null ||
+          group.type != ChoiceType.abilityIncrease ||
+          group.referenceKey.isEmpty) {
+        continue;
+      }
+      if (!includeFlexibleRules &&
+          group.referenceKey.startsWith(_flexibleGroupKeyPrefix)) {
+        continue;
+      }
+      final isRaceGroup = raceId != null && group.sourceRaceId == raceId;
+      final isSubraceGroup =
+          subraceId != null && group.sourceSubraceId == subraceId;
+      if (!isRaceGroup && !isSubraceGroup) continue;
 
-    void addRules({
-      required List<RaceFeatureData>? features,
-      required ChoiceSourceType sourceType,
-      required int? sourceId,
-    }) {
-      if (sourceId == null) return;
-      for (final feature in _creationFeatures(features)) {
-        for (final choiceSet
-            in feature.choiceSets ?? const <RaceChoiceSetData>[]) {
-          if (choiceSet.kind != RaceChoiceKind.abilityBonusChoice) continue;
-
-          final allowedAttributesByBonus = <int, Set<Attribute>>{};
-          for (final option
-              in choiceSet.choiceOptions ?? const <RaceChoiceOptionData>[]) {
-            final attribute = _attributeFromAbility(option.ability);
-            final bonusValue = option.bonusValue ?? 0;
-            if (attribute == null || bonusValue == 0) {
-              continue;
-            }
-
-            allowedAttributesByBonus
-                .putIfAbsent(bonusValue, () => <Attribute>{})
-                .add(attribute);
-          }
-
-          final choiceSetId = choiceSet.id ?? 0;
-          final pickCount = choiceSet.pickCount ?? 0;
-          if (choiceSetId <= 0 || pickCount <= 0) continue;
-
-          for (final entry in allowedAttributesByBonus.entries) {
-            if (entry.value.isEmpty) continue;
-
-            rules.add(
-              AttributeBonusRule(
-                groupKey: _choiceSetGroupKey(
-                  choiceSetId,
-                  bonusValue: entry.key,
-                ),
-                choiceSetId: choiceSetId,
-                sourceType: sourceType,
-                sourceId: sourceId,
-                bonusValue: entry.key,
-                pickCount: pickCount,
-                mustBeDistinct: choiceSet.mustBeDistinct ?? true,
-                allowedAttributes: entry.value,
-                defaultAttributes: _defaultAttributesForRule(
-                  allowedAttributes: entry.value,
-                  pickCount: pickCount,
-                ),
-              ),
-            );
-          }
+      final optionKeysByAttribute = <String, String>{};
+      final attributesByOptionKey = <String, String>{};
+      final bonuses = <int, Set<Attribute>>{};
+      for (final option in view.options ?? const <ChoiceOptionData>[]) {
+        final optionBonuses = option.grantedAbilityBonuses;
+        if (optionBonuses == null) continue;
+        for (final effect in optionBonuses.entries) {
+          final ability =
+              Ability.values.where((item) => item.name == effect.key);
+          if (ability.isEmpty || effect.value == 0) continue;
+          final attribute = _attributeFromAbility(ability.single);
+          if (attribute == null) continue;
+          bonuses.putIfAbsent(effect.value, () => <Attribute>{}).add(attribute);
+          optionKeysByAttribute[attribute.name] = option.optionKey;
+          attributesByOptionKey[option.optionKey] = attribute.name;
         }
       }
-    }
+      if (bonuses.length != 1) continue;
+      final bonus = bonuses.entries.single;
+      final pickCount = group.selectionCount ?? 0;
+      if (pickCount <= 0 || bonus.value.isEmpty) continue;
 
-    addRules(
-      features: race?.features,
-      sourceType: ChoiceSourceType.race,
-      sourceId: race?.id,
-    );
-    addRules(
-      features: subrace?.features,
-      sourceType: ChoiceSourceType.subrace,
-      sourceId: subrace?.id,
-    );
-    if (includeFlexibleRules) {
-      rules.addAll(
-        _buildFlexibleRules(raceId: race?.id),
+      rules.add(
+        AttributeBonusRule(
+          groupKey: group.referenceKey,
+          choiceSetId: group.id ?? 0,
+          sourceType:
+              isRaceGroup ? ChoiceSourceType.race : ChoiceSourceType.subrace,
+          sourceId: group.sourceRaceId ?? group.sourceSubraceId!,
+          bonusValue: bonus.key,
+          pickCount: pickCount,
+          mustBeDistinct: group.allowDuplicates != true,
+          allowedAttributes: bonus.value,
+          optionKeyByAttribute: optionKeysByAttribute,
+          attributeKeyByOption: attributesByOptionKey,
+          defaultAttributes: _defaultAttributesForRule(
+            allowedAttributes: bonus.value,
+            pickCount: pickCount,
+          ),
+        ),
       );
     }
     return rules;
@@ -278,10 +274,20 @@ class AttributeState extends _$AttributeState {
     required Map<Attribute, int> fixedRaceBonuses,
     required List<AttributeBonusRule> rules,
     required List<CharacterChoiceData> savedChoices,
+    required List<ChoiceGroupView> choiceGroups,
+    required int? raceId,
   }) {
     for (final choice in savedChoices) {
-      if (choice.groupKey != bonusModeGroupKey) continue;
-      final parsedMode = _bonusModeFromRaw(choice.selectedText);
+      final group = choiceGroups
+          .map((view) => view.group)
+          .where((item) => item?.referenceKey == choice.groupKey)
+          .firstOrNull;
+      if (group == null ||
+          group.sourceRaceId != raceId ||
+          !group.referenceKey.endsWith('_ability_bonus_mode')) {
+        continue;
+      }
+      final parsedMode = _bonusModeFromRaw(choice.optionKey);
       if (parsedMode != null &&
           (parsedMode == AttributeBonusMode.racial ||
               _activeRules(rules: rules, mode: parsedMode).isNotEmpty)) {
@@ -292,7 +298,11 @@ class AttributeState extends _$AttributeState {
     final hasFlexibleThreePlusOneChoice =
         rules.any(_isFlexibleThreePlusOneRule) &&
             savedChoices.any(
-              (choice) => choice.groupKey == _flexibleThreePlusOneGroupKey,
+              (choice) =>
+                  choice.groupKey?.startsWith(
+                    _flexibleThreePlusOneGroupKeyPrefix,
+                  ) ==
+                  true,
             );
     if (hasFlexibleThreePlusOneChoice) {
       return AttributeBonusMode.flexibleThreePlusOne;
@@ -326,9 +336,7 @@ class AttributeState extends _$AttributeState {
 
     for (final rule in rules) {
       final matchingChoices = savedChoices.where((choice) {
-        return choice.sourceType == rule.sourceType &&
-            choice.sourceId == rule.sourceId &&
-            choice.groupKey == rule.groupKey;
+        return choice.groupKey == rule.groupKey;
       }).toList();
 
       final previousSelected = previousSelections?[rule.groupKey];
@@ -347,8 +355,9 @@ class AttributeState extends _$AttributeState {
 
       final selected = <Attribute>{};
       for (final choice in matchingChoices) {
-        final attribute = _attributeFromAbility(choice.selectedAbility) ??
-            _attributeFromKey(choice.optionKey);
+        final attribute = _attributeFromKey(
+          rule.attributeKeyByOption[choice.optionKey] ?? choice.optionKey,
+        );
         if (attribute == null || !rule.allowedAttributes.contains(attribute)) {
           continue;
         }
@@ -517,45 +526,6 @@ class AttributeState extends _$AttributeState {
     return (bonusesPlusOne, bonusesPlusTwo);
   }
 
-  List<AttributeBonusRule> _buildFlexibleRules({
-    required int? raceId,
-  }) {
-    final sourceId = raceId ?? 0;
-
-    return [
-      AttributeBonusRule(
-        groupKey: _flexiblePlusTwoGroupKey,
-        choiceSetId: -2,
-        sourceType: ChoiceSourceType.race,
-        sourceId: sourceId,
-        bonusValue: 2,
-        pickCount: 1,
-        mustBeDistinct: true,
-        allowedAttributes: Attribute.values.toSet(),
-      ),
-      AttributeBonusRule(
-        groupKey: _flexiblePlusOneGroupKey,
-        choiceSetId: -1,
-        sourceType: ChoiceSourceType.race,
-        sourceId: sourceId,
-        bonusValue: 1,
-        pickCount: 1,
-        mustBeDistinct: true,
-        allowedAttributes: Attribute.values.toSet(),
-      ),
-      AttributeBonusRule(
-        groupKey: _flexibleThreePlusOneGroupKey,
-        choiceSetId: -3,
-        sourceType: ChoiceSourceType.race,
-        sourceId: sourceId,
-        bonusValue: 1,
-        pickCount: 3,
-        mustBeDistinct: true,
-        allowedAttributes: Attribute.values.toSet(),
-      ),
-    ];
-  }
-
   Map<String, Set<Attribute>> _cloneSelections(
     Map<String, Set<Attribute>> source,
   ) {
@@ -614,19 +584,16 @@ class AttributeState extends _$AttributeState {
 
   int _oppositeBonusValue(int bonusValue) => bonusValue == 2 ? 1 : 2;
 
-  String _choiceSetGroupKey(int choiceSetId, {required int bonusValue}) =>
-      'race_choice_${choiceSetId}_bonus_$bonusValue';
-
   bool _isFlexibleRule(AttributeBonusRule rule) =>
       rule.groupKey.startsWith(_flexibleGroupKeyPrefix);
 
   bool _isFlexiblePlusTwoOneRule(AttributeBonusRule rule) {
-    return rule.groupKey == _flexiblePlusTwoGroupKey ||
-        rule.groupKey == _flexiblePlusOneGroupKey;
+    return rule.groupKey.startsWith(_flexiblePlusTwoGroupKeyPrefix) ||
+        rule.groupKey.startsWith(_flexiblePlusOneGroupKeyPrefix);
   }
 
   bool _isFlexibleThreePlusOneRule(AttributeBonusRule rule) {
-    return rule.groupKey == _flexibleThreePlusOneGroupKey;
+    return rule.groupKey.startsWith(_flexibleThreePlusOneGroupKeyPrefix);
   }
 
   List<AttributeBonusRule> _activeRules({
@@ -681,29 +648,6 @@ class AttributeState extends _$AttributeState {
       case null:
         return null;
     }
-  }
-
-  Ability? _abilityFromAttribute(Attribute attribute) {
-    switch (attribute) {
-      case Attribute.strength:
-        return Ability.strength;
-      case Attribute.dexterity:
-        return Ability.dexterity;
-      case Attribute.constitution:
-        return Ability.constitution;
-      case Attribute.intelligence:
-        return Ability.intelligence;
-      case Attribute.wisdom:
-        return Ability.wisdom;
-      case Attribute.charisma:
-        return Ability.charisma;
-    }
-  }
-
-  List<RaceFeatureData> _creationFeatures(List<RaceFeatureData>? features) {
-    return (features ?? const <RaceFeatureData>[])
-        .where((feature) => (feature.level ?? 1) <= 1)
-        .toList();
   }
 
   AttributeBonusMode? _bonusModeFromRaw(String? raw) {

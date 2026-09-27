@@ -3,14 +3,14 @@
 part of '../class_state.dart';
 
 extension ClassStateChoiceEquipmentOperations on ClassState {
-  void toggleOption(ClassChoiceGroupData group, ClassChoiceOptionData option) {
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+  void toggleOption(ChoiceGroupData group, ChoiceOptionData option) {
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     final groupKey = _groupKey(group);
     final selected = [...?current[groupKey]];
-    final optionKey = option.optionKey?.trim();
-    if (optionKey == null || optionKey.isEmpty) return;
+    final optionKey = option.optionKey.trim();
+    if (optionKey.isEmpty) return;
 
     if (group.allowDuplicates == true) {
       return;
@@ -18,7 +18,7 @@ extension ClassStateChoiceEquipmentOperations on ClassState {
 
     final selectedCount = group.selectionCount ?? 1;
     final existingIndex = selected.indexWhere(
-      (item) => item.optionKey?.trim() == optionKey,
+      (item) => item.optionKey.trim() == optionKey,
     );
 
     if (selectedCount <= 1) {
@@ -49,10 +49,10 @@ extension ClassStateChoiceEquipmentOperations on ClassState {
   }
 
   void incrementOption(
-      ClassChoiceGroupData group, ClassChoiceOptionData option) {
+      ChoiceGroupData group, ChoiceOptionData option) {
     if (group.allowDuplicates != true) return;
 
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     final groupKey = _groupKey(group);
@@ -69,17 +69,17 @@ extension ClassStateChoiceEquipmentOperations on ClassState {
   }
 
   void decrementOption(
-      ClassChoiceGroupData group, ClassChoiceOptionData option) {
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+      ChoiceGroupData group, ChoiceOptionData option) {
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     final groupKey = _groupKey(group);
     final selected = [...?current[groupKey]];
-    final optionKey = option.optionKey?.trim();
-    if (optionKey == null || optionKey.isEmpty) return;
+    final optionKey = option.optionKey.trim();
+    if (optionKey.isEmpty) return;
 
     final existingIndex = selected.indexWhere(
-      (item) => item.optionKey?.trim() == optionKey,
+      (item) => item.optionKey.trim() == optionKey,
     );
     if (existingIndex == -1) return;
 
@@ -95,8 +95,8 @@ extension ClassStateChoiceEquipmentOperations on ClassState {
     );
   }
 
-  void clearGroup(ClassChoiceGroupData group) {
-    final current = Map<String, List<ClassChoiceOptionData>>.from(
+  void clearGroup(ChoiceGroupData group) {
+    final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );
     current.remove(_groupKey(group));
