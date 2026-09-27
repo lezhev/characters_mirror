@@ -49,8 +49,7 @@ List<String> _collectAlwaysPreparedSpellKeys(
       continue;
     }
 
-    final spellKey = _normalizedTextOrNull(grant.spell?.referenceKey) ??
-        _normalizedTextOrNull(grant.spell?.name);
+    final spellKey = _normalizedTextOrNull(grant.spell?.referenceKey);
     if (spellKey != null) {
       values.add(spellKey);
     }
@@ -105,8 +104,7 @@ bool _isClassSpellGrantActive(
 
 List<Language> _collectLanguages(
   CharacterData character,
-  List<ChoiceOptionData> classBackgroundOptions,
-  List<ChoiceOptionData> raceOptions,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   final values = <Language>{};
   values.addAll([
@@ -114,13 +112,7 @@ List<Language> _collectLanguages(
       language,
   ]);
 
-  for (final option in classBackgroundOptions) {
-    values.addAll([
-      for (final language in option.grantedLanguages ?? const <Language>[])
-        language,
-    ]);
-  }
-  for (final option in raceOptions) {
+  for (final option in selectedOptions) {
     values.addAll(option.grantedLanguages ?? const <Language>[]);
   }
   return values.toList()..sort((a, b) => a.name.compareTo(b.name));
@@ -129,8 +121,7 @@ List<Language> _collectLanguages(
 List<String> _collectToolProficiencyKeys(
   CharacterData character,
   List<CharacterClassEntryData> entries,
-  List<ChoiceOptionData> classBackgroundOptions,
-  List<ChoiceOptionData> raceOptions,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   final values = <String>{};
   values.addAll(_normalizedTexts(character.race?.toolProficiencyKeys));
@@ -147,10 +138,7 @@ List<String> _collectToolProficiencyKeys(
           : classData.multiclassToolTrainingKeys,
     ));
   }
-  for (final option in classBackgroundOptions) {
-    values.addAll(_normalizedTexts(option.grantedToolKeys));
-  }
-  for (final option in raceOptions) {
+  for (final option in selectedOptions) {
     values.addAll(_normalizedTexts(option.grantedToolKeys));
   }
   return values.toList()..sort();
@@ -159,7 +147,7 @@ List<String> _collectToolProficiencyKeys(
 List<ArmorCategory> _collectArmorTraining(
   CharacterData character,
   List<CharacterClassEntryData> entries,
-  List<ChoiceOptionData> classBackgroundOptions,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   final values = <ArmorCategory>{};
   values.addAll([
@@ -181,7 +169,7 @@ List<ArmorCategory> _collectArmorTraining(
       ...?source,
     ]);
   }
-  for (final option in classBackgroundOptions) {
+  for (final option in selectedOptions) {
     values.addAll([
       for (final training
           in option.grantedArmorTraining ?? const <ArmorCategory>[])
@@ -194,7 +182,7 @@ List<ArmorCategory> _collectArmorTraining(
 
 List<WeaponCategory> _collectWeaponTraining(
   List<CharacterClassEntryData> entries,
-  List<ChoiceOptionData> classBackgroundOptions,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   final values = <WeaponCategory>{};
 
@@ -206,7 +194,7 @@ List<WeaponCategory> _collectWeaponTraining(
         : classData.multiclassWeaponTraining;
     values.addAll(source ?? const <WeaponCategory>[]);
   }
-  for (final option in classBackgroundOptions) {
+  for (final option in selectedOptions) {
     values.addAll(option.grantedWeaponTraining ?? const <WeaponCategory>[]);
   }
 
@@ -221,32 +209,9 @@ List<String> _collectWeaponProficiencyKeys(CharacterData character) {
   return values.toList()..sort();
 }
 
-List<FeatureTag> _collectFeatureTags({
-  required CharacterData character,
-  required _ResolvedDerivedSources resolvedSources,
-  required _CurrentRaceFeatures currentRaceFeatures,
-}) {
-  final values = <FeatureTag>{
-    for (final feature in resolvedSources.currentClassFeatures)
-      ...?feature.tags,
-    for (final feature in resolvedSources.currentSubclassFeatures)
-      ...?feature.tags,
-    for (final feature in currentRaceFeatures.raceFeatures) ...?feature.tags,
-    for (final feature in currentRaceFeatures.subraceFeatures) ...?feature.tags,
-    for (final option in resolvedSources.classBackgroundOptions)
-      ...?option.grantedFeatureTags,
-    for (final option in resolvedSources.raceOptions)
-      ...?option.grantedFeatureTags,
-  };
-
-  final list = values.toList()..sort((a, b) => a.name.compareTo(b.name));
-  return list;
-}
-
 List<String> _collectGrantedSpellKeys(
   List<CharacterSpellSelectionData> spellSelections,
-  List<ChoiceOptionData> classBackgroundOptions,
-  List<ChoiceOptionData> raceOptions,
+  List<ChoiceOptionData> selectedOptions,
   _CurrentRaceFeatures currentRaceFeatures,
   List<String> alwaysPreparedSpellKeys,
 ) {
@@ -254,16 +219,12 @@ List<String> _collectGrantedSpellKeys(
   values.addAll(alwaysPreparedSpellKeys);
   for (final selection in spellSelections) {
     final spellKey = _normalizedTextOrNull(selection.spellKey) ??
-        _normalizedTextOrNull(selection.spell?.referenceKey) ??
-        _normalizedTextOrNull(selection.spell?.name);
+        _normalizedTextOrNull(selection.spell?.referenceKey);
     if (spellKey != null) {
       values.add(spellKey);
     }
   }
-  for (final option in classBackgroundOptions) {
-    values.addAll(_normalizedTexts(option.grantedSpellKeys));
-  }
-  for (final option in raceOptions) {
+  for (final option in selectedOptions) {
     values.addAll(_normalizedTexts(option.grantedSpellKeys));
   }
   for (final feature in [
@@ -272,9 +233,9 @@ List<String> _collectGrantedSpellKeys(
   ]) {
     for (final grant
         in feature.spellGrants ?? const <RaceFeatureSpellGrantData>[]) {
-      final spellName = _normalizedTextOrNull(grant.spell?.name);
-      if (spellName != null) {
-        values.add(spellName);
+      final spellKey = _normalizedTextOrNull(grant.spell?.referenceKey);
+      if (spellKey != null) {
+        values.add(spellKey);
       }
     }
   }

@@ -1,5 +1,6 @@
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/attributes_step.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/state/attribute_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/widgets/drag_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,7 +46,7 @@ void main() {
           (widget) => widget is DragBox && widget.value == 15,
         )
         .first;
-    final target = find.byType(DragTarget<int>).first;
+    final target = find.byType(DragTarget<AttributeDragData>).first;
     final dragOffset = tester.getCenter(target) - tester.getCenter(source);
 
     expect(dragOffset.dx.abs(), greaterThan(80));

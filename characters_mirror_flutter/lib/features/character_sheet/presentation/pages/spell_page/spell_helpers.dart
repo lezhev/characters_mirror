@@ -53,7 +53,7 @@ _SpellStats _spellStats(CharacterData character) {
   }
 
   final proficiencyBonus = character.derived?.proficiencyBonus ?? 0;
-  final abilityModifier = character.derived?.abilityModifiers?[ability.name] ??
+  final abilityModifier = character.derived?.abilityModifiers?[ability] ??
       _abilityModifier(character.baseAbilityScores?[ability.name] ?? 10);
   final baseAttackBonus = proficiencyBonus + abilityModifier;
   final baseSaveDc = 8 + baseAttackBonus;
@@ -383,7 +383,7 @@ int? _preparedSpellCount(
   if (ability == null || !normalizedFormula.contains('level')) {
     return null;
   }
-  final score = character.derived?.abilityScores?[ability.name] ??
+  final score = character.derived?.abilityScores?[ability] ??
       character.baseAbilityScores?[ability.name] ??
       10;
   final count = _abilityModifier(score) + classLevel;

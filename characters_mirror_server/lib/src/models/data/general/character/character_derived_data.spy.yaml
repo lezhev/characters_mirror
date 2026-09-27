@@ -2,8 +2,8 @@ class: CharacterDerivedData
 fields:
   totalLevel: int?
   proficiencyBonus: int?
-  abilityScores: Map<String, int>?
-  abilityModifiers: Map<String, int>?
+  abilityScores: Map<Ability, int>?
+  abilityModifiers: Map<Ability, int>?
   activeFeatures: List<CharacterFeatureViewData>?
   armorClass: int?
   initiative: int?
@@ -12,8 +12,8 @@ fields:
   passivePerception: int?
   passiveInvestigation: int? 
   passiveInsight: int?
-  savingThrowBonuses: Map<String, int>?
-  skillBonuses: Map<String, int>?
+  savingThrowBonuses: Map<Ability, int>?
+  skillBonuses: Map<Skill, int>?
   skillProficiencyLevels: List<CharacterSkillProficiencyState>?
   savingThrowProficiencies: List<Ability>?
   spellSlots: Map<int, int>?
@@ -28,11 +28,7 @@ fields:
   customToolProficiencies: List<String>?
   customWeaponProficiencies: List<String>?
   customArmorTraining: List<String>?
-  featureTags: List<FeatureTag>?
-  featIds: List<int>?
   grantedSpellKeys: List<String>?
   alwaysPreparedSpellKeys: List<String>?
   grantedEquipment: List<CharacterEquipmentEntryView>?
-  senses: List<String>?
   resistances: List<DamageType>?
-  rebuiltAt: DateTime?

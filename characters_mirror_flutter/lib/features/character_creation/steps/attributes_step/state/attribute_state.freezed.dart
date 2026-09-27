@@ -13,6 +13,407 @@ part of 'attribute_state.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
+mixin _$AttributeModeDraft {
+  Map<Attribute, int> get assignedAttributes;
+  List<int?> get remainingValues;
+  List<RollBoxState> get boxStates;
+  int get purchacePoints;
+
+  /// Create a copy of AttributeModeDraft
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $AttributeModeDraftCopyWith<AttributeModeDraft> get copyWith =>
+      _$AttributeModeDraftCopyWithImpl<AttributeModeDraft>(
+          this as AttributeModeDraft, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is AttributeModeDraft &&
+            const DeepCollectionEquality()
+                .equals(other.assignedAttributes, assignedAttributes) &&
+            const DeepCollectionEquality()
+                .equals(other.remainingValues, remainingValues) &&
+            const DeepCollectionEquality().equals(other.boxStates, boxStates) &&
+            (identical(other.purchacePoints, purchacePoints) ||
+                other.purchacePoints == purchacePoints));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(assignedAttributes),
+      const DeepCollectionEquality().hash(remainingValues),
+      const DeepCollectionEquality().hash(boxStates),
+      purchacePoints);
+
+  @override
+  String toString() {
+    return 'AttributeModeDraft(assignedAttributes: $assignedAttributes, remainingValues: $remainingValues, boxStates: $boxStates, purchacePoints: $purchacePoints)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $AttributeModeDraftCopyWith<$Res> {
+  factory $AttributeModeDraftCopyWith(
+          AttributeModeDraft value, $Res Function(AttributeModeDraft) _then) =
+      _$AttributeModeDraftCopyWithImpl;
+  @useResult
+  $Res call(
+      {Map<Attribute, int> assignedAttributes,
+      List<int?> remainingValues,
+      List<RollBoxState> boxStates,
+      int purchacePoints});
+}
+
+/// @nodoc
+class _$AttributeModeDraftCopyWithImpl<$Res>
+    implements $AttributeModeDraftCopyWith<$Res> {
+  _$AttributeModeDraftCopyWithImpl(this._self, this._then);
+
+  final AttributeModeDraft _self;
+  final $Res Function(AttributeModeDraft) _then;
+
+  /// Create a copy of AttributeModeDraft
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? assignedAttributes = null,
+    Object? remainingValues = null,
+    Object? boxStates = null,
+    Object? purchacePoints = null,
+  }) {
+    return _then(_self.copyWith(
+      assignedAttributes: null == assignedAttributes
+          ? _self.assignedAttributes
+          : assignedAttributes // ignore: cast_nullable_to_non_nullable
+              as Map<Attribute, int>,
+      remainingValues: null == remainingValues
+          ? _self.remainingValues
+          : remainingValues // ignore: cast_nullable_to_non_nullable
+              as List<int?>,
+      boxStates: null == boxStates
+          ? _self.boxStates
+          : boxStates // ignore: cast_nullable_to_non_nullable
+              as List<RollBoxState>,
+      purchacePoints: null == purchacePoints
+          ? _self.purchacePoints
+          : purchacePoints // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [AttributeModeDraft].
+extension AttributeModeDraftPatterns on AttributeModeDraft {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_AttributeModeDraft value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _AttributeModeDraft() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_AttributeModeDraft value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AttributeModeDraft():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_AttributeModeDraft value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AttributeModeDraft() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            Map<Attribute, int> assignedAttributes,
+            List<int?> remainingValues,
+            List<RollBoxState> boxStates,
+            int purchacePoints)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _AttributeModeDraft() when $default != null:
+        return $default(_that.assignedAttributes, _that.remainingValues,
+            _that.boxStates, _that.purchacePoints);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            Map<Attribute, int> assignedAttributes,
+            List<int?> remainingValues,
+            List<RollBoxState> boxStates,
+            int purchacePoints)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AttributeModeDraft():
+        return $default(_that.assignedAttributes, _that.remainingValues,
+            _that.boxStates, _that.purchacePoints);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            Map<Attribute, int> assignedAttributes,
+            List<int?> remainingValues,
+            List<RollBoxState> boxStates,
+            int purchacePoints)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _AttributeModeDraft() when $default != null:
+        return $default(_that.assignedAttributes, _that.remainingValues,
+            _that.boxStates, _that.purchacePoints);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class _AttributeModeDraft implements AttributeModeDraft {
+  const _AttributeModeDraft(
+      {final Map<Attribute, int> assignedAttributes = const {},
+      final List<int?> remainingValues = const [],
+      final List<RollBoxState> boxStates = const [],
+      this.purchacePoints = 27})
+      : _assignedAttributes = assignedAttributes,
+        _remainingValues = remainingValues,
+        _boxStates = boxStates;
+
+  final Map<Attribute, int> _assignedAttributes;
+  @override
+  @JsonKey()
+  Map<Attribute, int> get assignedAttributes {
+    if (_assignedAttributes is EqualUnmodifiableMapView)
+      return _assignedAttributes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_assignedAttributes);
+  }
+
+  final List<int?> _remainingValues;
+  @override
+  @JsonKey()
+  List<int?> get remainingValues {
+    if (_remainingValues is EqualUnmodifiableListView) return _remainingValues;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_remainingValues);
+  }
+
+  final List<RollBoxState> _boxStates;
+  @override
+  @JsonKey()
+  List<RollBoxState> get boxStates {
+    if (_boxStates is EqualUnmodifiableListView) return _boxStates;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_boxStates);
+  }
+
+  @override
+  @JsonKey()
+  final int purchacePoints;
+
+  /// Create a copy of AttributeModeDraft
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$AttributeModeDraftCopyWith<_AttributeModeDraft> get copyWith =>
+      __$AttributeModeDraftCopyWithImpl<_AttributeModeDraft>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _AttributeModeDraft &&
+            const DeepCollectionEquality()
+                .equals(other._assignedAttributes, _assignedAttributes) &&
+            const DeepCollectionEquality()
+                .equals(other._remainingValues, _remainingValues) &&
+            const DeepCollectionEquality()
+                .equals(other._boxStates, _boxStates) &&
+            (identical(other.purchacePoints, purchacePoints) ||
+                other.purchacePoints == purchacePoints));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_assignedAttributes),
+      const DeepCollectionEquality().hash(_remainingValues),
+      const DeepCollectionEquality().hash(_boxStates),
+      purchacePoints);
+
+  @override
+  String toString() {
+    return 'AttributeModeDraft(assignedAttributes: $assignedAttributes, remainingValues: $remainingValues, boxStates: $boxStates, purchacePoints: $purchacePoints)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$AttributeModeDraftCopyWith<$Res>
+    implements $AttributeModeDraftCopyWith<$Res> {
+  factory _$AttributeModeDraftCopyWith(
+          _AttributeModeDraft value, $Res Function(_AttributeModeDraft) _then) =
+      __$AttributeModeDraftCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {Map<Attribute, int> assignedAttributes,
+      List<int?> remainingValues,
+      List<RollBoxState> boxStates,
+      int purchacePoints});
+}
+
+/// @nodoc
+class __$AttributeModeDraftCopyWithImpl<$Res>
+    implements _$AttributeModeDraftCopyWith<$Res> {
+  __$AttributeModeDraftCopyWithImpl(this._self, this._then);
+
+  final _AttributeModeDraft _self;
+  final $Res Function(_AttributeModeDraft) _then;
+
+  /// Create a copy of AttributeModeDraft
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? assignedAttributes = null,
+    Object? remainingValues = null,
+    Object? boxStates = null,
+    Object? purchacePoints = null,
+  }) {
+    return _then(_AttributeModeDraft(
+      assignedAttributes: null == assignedAttributes
+          ? _self._assignedAttributes
+          : assignedAttributes // ignore: cast_nullable_to_non_nullable
+              as Map<Attribute, int>,
+      remainingValues: null == remainingValues
+          ? _self._remainingValues
+          : remainingValues // ignore: cast_nullable_to_non_nullable
+              as List<int?>,
+      boxStates: null == boxStates
+          ? _self._boxStates
+          : boxStates // ignore: cast_nullable_to_non_nullable
+              as List<RollBoxState>,
+      purchacePoints: null == purchacePoints
+          ? _self.purchacePoints
+          : purchacePoints // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
 mixin _$AttributeBonusRule {
   String get groupKey;
   int get choiceSetId;
@@ -630,13 +1031,10 @@ class __$AttributeBonusRuleCopyWithImpl<$Res>
 /// @nodoc
 mixin _$AttributeStateModel {
   SelectType get selectionType;
+  Map<SelectType, AttributeModeDraft> get drafts;
   AttributeBonusMode get bonusMode;
-  Map<Attribute, int> get assignedAttributes;
   Map<Attribute, bool> get bonusesPlusOne;
   Map<Attribute, bool> get bonusesPlusTwo;
-  List<int?> get remainingValues;
-  List<RollBoxState> get boxStates;
-  int get purchacePoints;
   Map<Attribute, int> get fixedRaceBonuses;
   List<AttributeBonusRule> get resolvedBonusRules;
   Map<String, Set<Attribute>> get selectedBonusAttributesByRule;
@@ -656,19 +1054,13 @@ mixin _$AttributeStateModel {
             other is AttributeStateModel &&
             (identical(other.selectionType, selectionType) ||
                 other.selectionType == selectionType) &&
+            const DeepCollectionEquality().equals(other.drafts, drafts) &&
             (identical(other.bonusMode, bonusMode) ||
                 other.bonusMode == bonusMode) &&
-            const DeepCollectionEquality()
-                .equals(other.assignedAttributes, assignedAttributes) &&
             const DeepCollectionEquality()
                 .equals(other.bonusesPlusOne, bonusesPlusOne) &&
             const DeepCollectionEquality()
                 .equals(other.bonusesPlusTwo, bonusesPlusTwo) &&
-            const DeepCollectionEquality()
-                .equals(other.remainingValues, remainingValues) &&
-            const DeepCollectionEquality().equals(other.boxStates, boxStates) &&
-            (identical(other.purchacePoints, purchacePoints) ||
-                other.purchacePoints == purchacePoints) &&
             const DeepCollectionEquality()
                 .equals(other.fixedRaceBonuses, fixedRaceBonuses) &&
             const DeepCollectionEquality()
@@ -682,20 +1074,17 @@ mixin _$AttributeStateModel {
   int get hashCode => Object.hash(
       runtimeType,
       selectionType,
+      const DeepCollectionEquality().hash(drafts),
       bonusMode,
-      const DeepCollectionEquality().hash(assignedAttributes),
       const DeepCollectionEquality().hash(bonusesPlusOne),
       const DeepCollectionEquality().hash(bonusesPlusTwo),
-      const DeepCollectionEquality().hash(remainingValues),
-      const DeepCollectionEquality().hash(boxStates),
-      purchacePoints,
       const DeepCollectionEquality().hash(fixedRaceBonuses),
       const DeepCollectionEquality().hash(resolvedBonusRules),
       const DeepCollectionEquality().hash(selectedBonusAttributesByRule));
 
   @override
   String toString() {
-    return 'AttributeStateModel(selectionType: $selectionType, bonusMode: $bonusMode, assignedAttributes: $assignedAttributes, bonusesPlusOne: $bonusesPlusOne, bonusesPlusTwo: $bonusesPlusTwo, remainingValues: $remainingValues, boxStates: $boxStates, purchacePoints: $purchacePoints, fixedRaceBonuses: $fixedRaceBonuses, resolvedBonusRules: $resolvedBonusRules, selectedBonusAttributesByRule: $selectedBonusAttributesByRule)';
+    return 'AttributeStateModel(selectionType: $selectionType, drafts: $drafts, bonusMode: $bonusMode, bonusesPlusOne: $bonusesPlusOne, bonusesPlusTwo: $bonusesPlusTwo, fixedRaceBonuses: $fixedRaceBonuses, resolvedBonusRules: $resolvedBonusRules, selectedBonusAttributesByRule: $selectedBonusAttributesByRule)';
   }
 }
 
@@ -707,13 +1096,10 @@ abstract mixin class $AttributeStateModelCopyWith<$Res> {
   @useResult
   $Res call(
       {SelectType selectionType,
+      Map<SelectType, AttributeModeDraft> drafts,
       AttributeBonusMode bonusMode,
-      Map<Attribute, int> assignedAttributes,
       Map<Attribute, bool> bonusesPlusOne,
       Map<Attribute, bool> bonusesPlusTwo,
-      List<int?> remainingValues,
-      List<RollBoxState> boxStates,
-      int purchacePoints,
       Map<Attribute, int> fixedRaceBonuses,
       List<AttributeBonusRule> resolvedBonusRules,
       Map<String, Set<Attribute>> selectedBonusAttributesByRule});
@@ -733,13 +1119,10 @@ class _$AttributeStateModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? selectionType = null,
+    Object? drafts = null,
     Object? bonusMode = null,
-    Object? assignedAttributes = null,
     Object? bonusesPlusOne = null,
     Object? bonusesPlusTwo = null,
-    Object? remainingValues = null,
-    Object? boxStates = null,
-    Object? purchacePoints = null,
     Object? fixedRaceBonuses = null,
     Object? resolvedBonusRules = null,
     Object? selectedBonusAttributesByRule = null,
@@ -749,14 +1132,14 @@ class _$AttributeStateModelCopyWithImpl<$Res>
           ? _self.selectionType
           : selectionType // ignore: cast_nullable_to_non_nullable
               as SelectType,
+      drafts: null == drafts
+          ? _self.drafts
+          : drafts // ignore: cast_nullable_to_non_nullable
+              as Map<SelectType, AttributeModeDraft>,
       bonusMode: null == bonusMode
           ? _self.bonusMode
           : bonusMode // ignore: cast_nullable_to_non_nullable
               as AttributeBonusMode,
-      assignedAttributes: null == assignedAttributes
-          ? _self.assignedAttributes
-          : assignedAttributes // ignore: cast_nullable_to_non_nullable
-              as Map<Attribute, int>,
       bonusesPlusOne: null == bonusesPlusOne
           ? _self.bonusesPlusOne
           : bonusesPlusOne // ignore: cast_nullable_to_non_nullable
@@ -765,18 +1148,6 @@ class _$AttributeStateModelCopyWithImpl<$Res>
           ? _self.bonusesPlusTwo
           : bonusesPlusTwo // ignore: cast_nullable_to_non_nullable
               as Map<Attribute, bool>,
-      remainingValues: null == remainingValues
-          ? _self.remainingValues
-          : remainingValues // ignore: cast_nullable_to_non_nullable
-              as List<int?>,
-      boxStates: null == boxStates
-          ? _self.boxStates
-          : boxStates // ignore: cast_nullable_to_non_nullable
-              as List<RollBoxState>,
-      purchacePoints: null == purchacePoints
-          ? _self.purchacePoints
-          : purchacePoints // ignore: cast_nullable_to_non_nullable
-              as int,
       fixedRaceBonuses: null == fixedRaceBonuses
           ? _self.fixedRaceBonuses
           : fixedRaceBonuses // ignore: cast_nullable_to_non_nullable
@@ -886,13 +1257,10 @@ extension AttributeStateModelPatterns on AttributeStateModel {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             SelectType selectionType,
+            Map<SelectType, AttributeModeDraft> drafts,
             AttributeBonusMode bonusMode,
-            Map<Attribute, int> assignedAttributes,
             Map<Attribute, bool> bonusesPlusOne,
             Map<Attribute, bool> bonusesPlusTwo,
-            List<int?> remainingValues,
-            List<RollBoxState> boxStates,
-            int purchacePoints,
             Map<Attribute, int> fixedRaceBonuses,
             List<AttributeBonusRule> resolvedBonusRules,
             Map<String, Set<Attribute>> selectedBonusAttributesByRule)?
@@ -904,13 +1272,10 @@ extension AttributeStateModelPatterns on AttributeStateModel {
       case _AttributeStateModel() when $default != null:
         return $default(
             _that.selectionType,
+            _that.drafts,
             _that.bonusMode,
-            _that.assignedAttributes,
             _that.bonusesPlusOne,
             _that.bonusesPlusTwo,
-            _that.remainingValues,
-            _that.boxStates,
-            _that.purchacePoints,
             _that.fixedRaceBonuses,
             _that.resolvedBonusRules,
             _that.selectedBonusAttributesByRule);
@@ -936,13 +1301,10 @@ extension AttributeStateModelPatterns on AttributeStateModel {
   TResult when<TResult extends Object?>(
     TResult Function(
             SelectType selectionType,
+            Map<SelectType, AttributeModeDraft> drafts,
             AttributeBonusMode bonusMode,
-            Map<Attribute, int> assignedAttributes,
             Map<Attribute, bool> bonusesPlusOne,
             Map<Attribute, bool> bonusesPlusTwo,
-            List<int?> remainingValues,
-            List<RollBoxState> boxStates,
-            int purchacePoints,
             Map<Attribute, int> fixedRaceBonuses,
             List<AttributeBonusRule> resolvedBonusRules,
             Map<String, Set<Attribute>> selectedBonusAttributesByRule)
@@ -953,13 +1315,10 @@ extension AttributeStateModelPatterns on AttributeStateModel {
       case _AttributeStateModel():
         return $default(
             _that.selectionType,
+            _that.drafts,
             _that.bonusMode,
-            _that.assignedAttributes,
             _that.bonusesPlusOne,
             _that.bonusesPlusTwo,
-            _that.remainingValues,
-            _that.boxStates,
-            _that.purchacePoints,
             _that.fixedRaceBonuses,
             _that.resolvedBonusRules,
             _that.selectedBonusAttributesByRule);
@@ -982,13 +1341,10 @@ extension AttributeStateModelPatterns on AttributeStateModel {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             SelectType selectionType,
+            Map<SelectType, AttributeModeDraft> drafts,
             AttributeBonusMode bonusMode,
-            Map<Attribute, int> assignedAttributes,
             Map<Attribute, bool> bonusesPlusOne,
             Map<Attribute, bool> bonusesPlusTwo,
-            List<int?> remainingValues,
-            List<RollBoxState> boxStates,
-            int purchacePoints,
             Map<Attribute, int> fixedRaceBonuses,
             List<AttributeBonusRule> resolvedBonusRules,
             Map<String, Set<Attribute>> selectedBonusAttributesByRule)?
@@ -999,13 +1355,10 @@ extension AttributeStateModelPatterns on AttributeStateModel {
       case _AttributeStateModel() when $default != null:
         return $default(
             _that.selectionType,
+            _that.drafts,
             _that.bonusMode,
-            _that.assignedAttributes,
             _that.bonusesPlusOne,
             _that.bonusesPlusTwo,
-            _that.remainingValues,
-            _that.boxStates,
-            _that.purchacePoints,
             _that.fixedRaceBonuses,
             _that.resolvedBonusRules,
             _that.selectedBonusAttributesByRule);
@@ -1018,24 +1371,19 @@ extension AttributeStateModelPatterns on AttributeStateModel {
 /// @nodoc
 
 class _AttributeStateModel implements AttributeStateModel {
-  _AttributeStateModel(
+  const _AttributeStateModel(
       {this.selectionType = SelectType.defaultType,
+      final Map<SelectType, AttributeModeDraft> drafts = const {},
       this.bonusMode = AttributeBonusMode.racial,
-      final Map<Attribute, int> assignedAttributes = const {},
       final Map<Attribute, bool> bonusesPlusOne = const {},
       final Map<Attribute, bool> bonusesPlusTwo = const {},
-      final List<int?> remainingValues = const [],
-      final List<RollBoxState> boxStates = const [],
-      this.purchacePoints = 27,
       final Map<Attribute, int> fixedRaceBonuses = const {},
       final List<AttributeBonusRule> resolvedBonusRules = const [],
       final Map<String, Set<Attribute>> selectedBonusAttributesByRule =
           const {}})
-      : _assignedAttributes = assignedAttributes,
+      : _drafts = drafts,
         _bonusesPlusOne = bonusesPlusOne,
         _bonusesPlusTwo = bonusesPlusTwo,
-        _remainingValues = remainingValues,
-        _boxStates = boxStates,
         _fixedRaceBonuses = fixedRaceBonuses,
         _resolvedBonusRules = resolvedBonusRules,
         _selectedBonusAttributesByRule = selectedBonusAttributesByRule;
@@ -1043,19 +1391,18 @@ class _AttributeStateModel implements AttributeStateModel {
   @override
   @JsonKey()
   final SelectType selectionType;
+  final Map<SelectType, AttributeModeDraft> _drafts;
+  @override
+  @JsonKey()
+  Map<SelectType, AttributeModeDraft> get drafts {
+    if (_drafts is EqualUnmodifiableMapView) return _drafts;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_drafts);
+  }
+
   @override
   @JsonKey()
   final AttributeBonusMode bonusMode;
-  final Map<Attribute, int> _assignedAttributes;
-  @override
-  @JsonKey()
-  Map<Attribute, int> get assignedAttributes {
-    if (_assignedAttributes is EqualUnmodifiableMapView)
-      return _assignedAttributes;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_assignedAttributes);
-  }
-
   final Map<Attribute, bool> _bonusesPlusOne;
   @override
   @JsonKey()
@@ -1074,27 +1421,6 @@ class _AttributeStateModel implements AttributeStateModel {
     return EqualUnmodifiableMapView(_bonusesPlusTwo);
   }
 
-  final List<int?> _remainingValues;
-  @override
-  @JsonKey()
-  List<int?> get remainingValues {
-    if (_remainingValues is EqualUnmodifiableListView) return _remainingValues;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_remainingValues);
-  }
-
-  final List<RollBoxState> _boxStates;
-  @override
-  @JsonKey()
-  List<RollBoxState> get boxStates {
-    if (_boxStates is EqualUnmodifiableListView) return _boxStates;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_boxStates);
-  }
-
-  @override
-  @JsonKey()
-  final int purchacePoints;
   final Map<Attribute, int> _fixedRaceBonuses;
   @override
   @JsonKey()
@@ -1140,20 +1466,13 @@ class _AttributeStateModel implements AttributeStateModel {
             other is _AttributeStateModel &&
             (identical(other.selectionType, selectionType) ||
                 other.selectionType == selectionType) &&
+            const DeepCollectionEquality().equals(other._drafts, _drafts) &&
             (identical(other.bonusMode, bonusMode) ||
                 other.bonusMode == bonusMode) &&
-            const DeepCollectionEquality()
-                .equals(other._assignedAttributes, _assignedAttributes) &&
             const DeepCollectionEquality()
                 .equals(other._bonusesPlusOne, _bonusesPlusOne) &&
             const DeepCollectionEquality()
                 .equals(other._bonusesPlusTwo, _bonusesPlusTwo) &&
-            const DeepCollectionEquality()
-                .equals(other._remainingValues, _remainingValues) &&
-            const DeepCollectionEquality()
-                .equals(other._boxStates, _boxStates) &&
-            (identical(other.purchacePoints, purchacePoints) ||
-                other.purchacePoints == purchacePoints) &&
             const DeepCollectionEquality()
                 .equals(other._fixedRaceBonuses, _fixedRaceBonuses) &&
             const DeepCollectionEquality()
@@ -1167,20 +1486,17 @@ class _AttributeStateModel implements AttributeStateModel {
   int get hashCode => Object.hash(
       runtimeType,
       selectionType,
+      const DeepCollectionEquality().hash(_drafts),
       bonusMode,
-      const DeepCollectionEquality().hash(_assignedAttributes),
       const DeepCollectionEquality().hash(_bonusesPlusOne),
       const DeepCollectionEquality().hash(_bonusesPlusTwo),
-      const DeepCollectionEquality().hash(_remainingValues),
-      const DeepCollectionEquality().hash(_boxStates),
-      purchacePoints,
       const DeepCollectionEquality().hash(_fixedRaceBonuses),
       const DeepCollectionEquality().hash(_resolvedBonusRules),
       const DeepCollectionEquality().hash(_selectedBonusAttributesByRule));
 
   @override
   String toString() {
-    return 'AttributeStateModel(selectionType: $selectionType, bonusMode: $bonusMode, assignedAttributes: $assignedAttributes, bonusesPlusOne: $bonusesPlusOne, bonusesPlusTwo: $bonusesPlusTwo, remainingValues: $remainingValues, boxStates: $boxStates, purchacePoints: $purchacePoints, fixedRaceBonuses: $fixedRaceBonuses, resolvedBonusRules: $resolvedBonusRules, selectedBonusAttributesByRule: $selectedBonusAttributesByRule)';
+    return 'AttributeStateModel(selectionType: $selectionType, drafts: $drafts, bonusMode: $bonusMode, bonusesPlusOne: $bonusesPlusOne, bonusesPlusTwo: $bonusesPlusTwo, fixedRaceBonuses: $fixedRaceBonuses, resolvedBonusRules: $resolvedBonusRules, selectedBonusAttributesByRule: $selectedBonusAttributesByRule)';
   }
 }
 
@@ -1194,13 +1510,10 @@ abstract mixin class _$AttributeStateModelCopyWith<$Res>
   @useResult
   $Res call(
       {SelectType selectionType,
+      Map<SelectType, AttributeModeDraft> drafts,
       AttributeBonusMode bonusMode,
-      Map<Attribute, int> assignedAttributes,
       Map<Attribute, bool> bonusesPlusOne,
       Map<Attribute, bool> bonusesPlusTwo,
-      List<int?> remainingValues,
-      List<RollBoxState> boxStates,
-      int purchacePoints,
       Map<Attribute, int> fixedRaceBonuses,
       List<AttributeBonusRule> resolvedBonusRules,
       Map<String, Set<Attribute>> selectedBonusAttributesByRule});
@@ -1220,13 +1533,10 @@ class __$AttributeStateModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? selectionType = null,
+    Object? drafts = null,
     Object? bonusMode = null,
-    Object? assignedAttributes = null,
     Object? bonusesPlusOne = null,
     Object? bonusesPlusTwo = null,
-    Object? remainingValues = null,
-    Object? boxStates = null,
-    Object? purchacePoints = null,
     Object? fixedRaceBonuses = null,
     Object? resolvedBonusRules = null,
     Object? selectedBonusAttributesByRule = null,
@@ -1236,14 +1546,14 @@ class __$AttributeStateModelCopyWithImpl<$Res>
           ? _self.selectionType
           : selectionType // ignore: cast_nullable_to_non_nullable
               as SelectType,
+      drafts: null == drafts
+          ? _self._drafts
+          : drafts // ignore: cast_nullable_to_non_nullable
+              as Map<SelectType, AttributeModeDraft>,
       bonusMode: null == bonusMode
           ? _self.bonusMode
           : bonusMode // ignore: cast_nullable_to_non_nullable
               as AttributeBonusMode,
-      assignedAttributes: null == assignedAttributes
-          ? _self._assignedAttributes
-          : assignedAttributes // ignore: cast_nullable_to_non_nullable
-              as Map<Attribute, int>,
       bonusesPlusOne: null == bonusesPlusOne
           ? _self._bonusesPlusOne
           : bonusesPlusOne // ignore: cast_nullable_to_non_nullable
@@ -1252,18 +1562,6 @@ class __$AttributeStateModelCopyWithImpl<$Res>
           ? _self._bonusesPlusTwo
           : bonusesPlusTwo // ignore: cast_nullable_to_non_nullable
               as Map<Attribute, bool>,
-      remainingValues: null == remainingValues
-          ? _self._remainingValues
-          : remainingValues // ignore: cast_nullable_to_non_nullable
-              as List<int?>,
-      boxStates: null == boxStates
-          ? _self._boxStates
-          : boxStates // ignore: cast_nullable_to_non_nullable
-              as List<RollBoxState>,
-      purchacePoints: null == purchacePoints
-          ? _self.purchacePoints
-          : purchacePoints // ignore: cast_nullable_to_non_nullable
-              as int,
       fixedRaceBonuses: null == fixedRaceBonuses
           ? _self._fixedRaceBonuses
           : fixedRaceBonuses // ignore: cast_nullable_to_non_nullable

@@ -29,6 +29,7 @@ part 'character_data_endpoint/sync_target_keys.dart';
 part 'character_data_endpoint/sync_target_revisions.dart';
 part 'character_data_endpoint/aggregate_build.dart';
 part 'character_data_endpoint/aggregate_derived_stats.dart';
+part 'character_data_endpoint/derived_armor_class.dart';
 part 'character_data_endpoint/aggregate_spell_slots.dart';
 part 'character_data_endpoint/derived_resolve_context.dart';
 part 'character_data_endpoint/derived_source_resolution.dart';

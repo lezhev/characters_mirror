@@ -96,9 +96,9 @@ CharacterData withOptimisticSkillProficiency({
   for (final value in manualSkillProficiencies) {
     skillLevels[value.skill] = value.level;
   }
-  final skillBonuses = {
+  final skillBonuses = <Skill, int>{
     for (final skill in Skill.values)
-      skill.name: optimisticSkillBonus(
+      skill: optimisticSkillBonus(
         character: character,
         skill: skill,
         level: skillLevels[skill] ?? CharacterSkillProficiencyLevel.none,
@@ -123,9 +123,9 @@ CharacterData withOptimisticSkillProficiency({
             level: skillLevels[skill] ?? CharacterSkillProficiencyLevel.none,
           ),
       ],
-      passivePerception: 10 + (skillBonuses[Skill.perception.name] ?? 0),
-      passiveInvestigation: 10 + (skillBonuses[Skill.investigation.name] ?? 0),
-      passiveInsight: 10 + (skillBonuses[Skill.insight.name] ?? 0),
+      passivePerception: 10 + skillBonuses[Skill.perception]!,
+      passiveInvestigation: 10 + skillBonuses[Skill.investigation]!,
+      passiveInsight: 10 + skillBonuses[Skill.insight]!,
     ),
   );
 }
@@ -157,9 +157,9 @@ CharacterData withOptimisticSavingThrowProficiency({
       proficiencies.remove(value.ability);
     }
   }
-  final savingThrowBonuses = {
+  final savingThrowBonuses = <Ability, int>{
     for (final ability in Ability.values)
-      ability.name: optimisticSavingThrowBonus(
+      ability: optimisticSavingThrowBonus(
         character: character,
         ability: ability,
         proficient: proficiencies.contains(ability),
@@ -188,7 +188,7 @@ int optimisticSkillBonus({
   required CharacterSkillProficiencyLevel level,
 }) {
   final modifier =
-      character.derived?.abilityModifiers?[abilityForSkill(skill).name] ?? 0;
+      character.derived?.abilityModifiers?[abilityForSkill(skill)] ?? 0;
   return modifier +
       characterProficiencyBonus(character) * _skillMultiplier(level);
 }
@@ -198,7 +198,7 @@ int optimisticSavingThrowBonus({
   required Ability ability,
   required bool proficient,
 }) {
-  final modifier = character.derived?.abilityModifiers?[ability.name] ?? 0;
+  final modifier = character.derived?.abilityModifiers?[ability] ?? 0;
   return modifier + (proficient ? characterProficiencyBonus(character) : 0);
 }
 

@@ -1,16 +1,169 @@
 part of '../offline_character_resolver.dart';
 
-List<String> _collectAlwaysPreparedSpellKeys(CharacterData character) {
-  return _uniqueStrings(character.derived?.alwaysPreparedSpellKeys ?? const []);
+Future<List<String>> _collectAlwaysPreparedSpellKeys(
+  OfflineCacheDatabase cache,
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  int totalLevel,
+) async {
+  final grants = await cache.getReferenceList(
+        'class_spell_grant',
+        offlineAllKey,
+        ClassSpellGrantData.fromJson,
+      ) ??
+      const <ClassSpellGrantData>[];
+  final classLevels = <int, int>{};
+  final subclassLevels = <int, int>{};
+  for (final entry in entries) {
+    final level = entry.level ?? 0;
+    final classId = entry.classData?.id;
+    final subclassId = entry.subclass?.id;
+    if (classId != null) {
+      classLevels[classId] = max(classLevels[classId] ?? 0, level);
+    }
+    if (subclassId != null) {
+      subclassLevels[subclassId] = max(subclassLevels[subclassId] ?? 0, level);
+    }
+  }
+  final classFeatures = await cache.getReferenceList(
+        'class_feature',
+        offlineAllKey,
+        ClassFeatureData.fromJson,
+      ) ??
+      const <ClassFeatureData>[];
+  final subclassFeatures = await cache.getReferenceList(
+        'subclass_feature',
+        offlineAllKey,
+        SubclassFeatureData.fromJson,
+      ) ??
+      const <SubclassFeatureData>[];
+  final currentClassFeatures = {
+    for (final feature in classFeatures)
+      if (feature.id != null &&
+          (classLevels[feature.parentClassId] ?? 0) >= feature.level)
+        feature.id!: classLevels[feature.parentClassId] ?? feature.level,
+  };
+  final currentSubclassFeatures = {
+    for (final feature in subclassFeatures)
+      if (feature.id != null &&
+          (subclassLevels[feature.parentSubclassId] ?? 0) >= feature.level)
+        feature.id!: subclassLevels[feature.parentSubclassId] ?? feature.level,
+  };
+  final values = <String>{};
+  for (final grant in grants) {
+    if (grant.alwaysPrepared != true) continue;
+    final requiredLevel = grant.grantedAtLevel ?? 1;
+    final sourceClassId = grant.sourceClassId ?? grant.sourceClass?.id;
+    final sourceSubclassId = grant.sourceSubclassId ?? grant.sourceSubclass?.id;
+    final sourceFeatureId = grant.sourceFeatureId ?? grant.sourceFeature?.id;
+    final sourceSubclassFeatureId =
+        grant.sourceSubclassFeatureId ?? grant.sourceSubclassFeature?.id;
+    final isActive = (sourceClassId != null &&
+            (classLevels[sourceClassId] ?? 0) >= requiredLevel) ||
+        (sourceSubclassId != null &&
+            (subclassLevels[sourceSubclassId] ?? 0) >= requiredLevel) ||
+        (sourceFeatureId != null &&
+            (currentClassFeatures[sourceFeatureId] ?? 0) >= requiredLevel) ||
+        (sourceSubclassFeatureId != null &&
+            (currentSubclassFeatures[sourceSubclassFeatureId] ?? 0) >=
+                requiredLevel);
+    final key = _normalizedTextOrNull(grant.spell?.referenceKey);
+    if (isActive && key != null) values.add(key);
+  }
+  return values.toList()..sort();
+}
+
+Future<(Map<int, int>?, Map<int, int>?)> _spellSlots(
+  OfflineCacheDatabase cache,
+  List<CharacterClassEntryData> entries,
+) async {
+  final progressions = await cache.getReferenceList(
+        'spell_slot_progression',
+        offlineAllKey,
+        SpellSlotProgressionData.fromJson,
+      ) ??
+      const <SpellSlotProgressionData>[];
+  final standardEntries = [
+    for (final entry in entries)
+      if (_isStandardCasterProgression(
+        entry.classData?.spellcastingProgression,
+      ))
+        entry,
+  ];
+  final singleClassRounding = standardEntries.length == 1;
+  var standardLevel = 0;
+  var pactLevel = 0;
+  for (final entry in entries) {
+    final level = entry.level ?? 0;
+    switch (entry.classData?.spellcastingProgression) {
+      case SpellcastingProgression.full:
+        standardLevel += level;
+        break;
+      case SpellcastingProgression.half:
+        standardLevel += singleClassRounding ? (level + 1) ~/ 2 : level ~/ 2;
+        break;
+      case SpellcastingProgression.third:
+        standardLevel += singleClassRounding ? (level + 2) ~/ 3 : level ~/ 3;
+        break;
+      case SpellcastingProgression.pactMagic:
+        pactLevel = max(pactLevel, level);
+        break;
+      case SpellcastingProgression.none:
+      case null:
+        break;
+    }
+  }
+  Map<int, int>? forLevel(String tableKey, int level) {
+    if (level <= 0) return null;
+    final row = progressions
+        .where(
+          (item) => item.tableKey == tableKey && item.level == min(level, 20),
+        )
+        .firstOrNull;
+    final slots = row?.spellSlots;
+    if (slots == null) return null;
+    final result = {
+      for (final entry in slots.entries)
+        if (entry.key > 0 && entry.value > 0) entry.key: entry.value,
+    };
+    return result.isEmpty ? null : result;
+  }
+
+  return (
+    forLevel('standard', standardLevel),
+    forLevel('pact_magic', pactLevel),
+  );
+}
+
+bool _isStandardCasterProgression(SpellcastingProgression? progression) =>
+    progression == SpellcastingProgression.full ||
+    progression == SpellcastingProgression.half ||
+    progression == SpellcastingProgression.third;
+
+List<String> _racialSpellKeys(CharacterData character, int totalLevel) {
+  final characterLevel = max(totalLevel, 1);
+  return _uniqueStrings([
+    for (final feature in [
+      ...?character.race?.features,
+      ...?character.subrace?.features,
+    ])
+      if ((feature.level ?? 1) <= characterLevel)
+        for (final grant
+            in feature.spellGrants ?? const <RaceFeatureSpellGrantData>[])
+          if (_normalizedTextOrNull(grant.spell?.referenceKey) != null)
+            grant.spell!.referenceKey!,
+  ]);
 }
 
 List<String> _collectGrantedSpellKeys(
   CharacterData character,
   List<String> alwaysPreparedSpellKeys,
+  List<String> racialSpellKeys,
   List<ChoiceOptionData> selectedOptions,
 ) {
   return _uniqueStrings([
     ...alwaysPreparedSpellKeys,
+    ...racialSpellKeys,
     for (final option in selectedOptions) ...?option.grantedSpellKeys,
     for (final selection
         in character.spellSelections ?? const <CharacterSpellSelectionData>[])
@@ -20,8 +173,7 @@ List<String> _collectGrantedSpellKeys(
 
 String? _spellSelectionKey(CharacterSpellSelectionData selection) {
   return _normalizedTextOrNull(selection.spellKey) ??
-      _normalizedTextOrNull(selection.spell?.referenceKey) ??
-      _normalizedTextOrNull(selection.spell?.name);
+      _normalizedTextOrNull(selection.spell?.referenceKey);
 }
 
 Future<List<CharacterEquipmentEntryView>> _collectGrantedEquipment(

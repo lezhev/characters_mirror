@@ -106,7 +106,7 @@ class OfflineCacheDatabase {
     final directory = await getApplicationSupportDirectory();
     await Directory(directory.path).create(recursive: true);
     return openAt(
-      p.join(directory.path, 'characters_mirror_offline_v8.sqlite'),
+      p.join(directory.path, 'characters_mirror_offline_v9.sqlite'),
     );
   }
 

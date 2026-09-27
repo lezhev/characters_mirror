@@ -49,8 +49,8 @@ void main() {
         character: CharacterData(
           derived: CharacterDerivedData(
             abilityModifiers: const {
-              'strength': 1,
-              'dexterity': 3,
+              Ability.strength: 1,
+              Ability.dexterity: 3,
             },
           ),
         ),

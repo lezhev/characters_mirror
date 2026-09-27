@@ -53,8 +53,8 @@ class RollOrDragBox extends HookConsumerWidget {
         if (rollValue == null) {
           return const SizedBox.shrink();
         }
-        return Draggable<int>(
-          data: rollValue,
+        return Draggable<AttributeDragData>(
+          data: AttributeDragData(value: rollValue),
           onDragStarted: () {
             ref.read(creationStepSwipeLockedProvider.notifier).state = true;
           },

@@ -61,7 +61,7 @@ void main() {
                 ],
                 derived: CharacterDerivedData(
                   proficiencyBonus: 2,
-                  abilityModifiers: const {'wisdom': 3},
+                  abilityModifiers: const {Ability.wisdom: 3},
                   spellSlots: const {1: 2, 2: 1},
                 ),
                 spellSelections: [
@@ -219,7 +219,7 @@ void main() {
               ],
               derived: CharacterDerivedData(
                 proficiencyBonus: 2,
-                abilityModifiers: const {'wisdom': 3},
+                abilityModifiers: const {Ability.wisdom: 3},
               ),
             ),
           ),
@@ -269,7 +269,7 @@ void main() {
               ],
               derived: CharacterDerivedData(
                 proficiencyBonus: 2,
-                abilityModifiers: const {'wisdom': 3},
+                abilityModifiers: const {Ability.wisdom: 3},
                 spellSlots: const {1: 2},
               ),
               spellSelections: [
@@ -416,7 +416,7 @@ void main() {
                   ],
                   derived: CharacterDerivedData(
                     proficiencyBonus: 2,
-                    abilityModifiers: const {'wisdom': 3},
+                    abilityModifiers: const {Ability.wisdom: 3},
                     spellSlots: const {1: 2},
                   ),
                   spellSelections: [

@@ -41,7 +41,10 @@
             "cwd": "characters_mirror_flutter",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "toolArgs": [
+                "--web-hostname=127.0.0.1"
+            ]
         },
         {
             "name": "Flutter debug local Serverpod",

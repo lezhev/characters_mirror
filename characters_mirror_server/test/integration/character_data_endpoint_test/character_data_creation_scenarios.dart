@@ -320,8 +320,8 @@ void _registerCharacterDataCreationScenarios(
     );
 
     final scores = saved.derived!.abilityScores!;
-    expect(scores['charisma'], 12);
-    expect(scores['dexterity'], 11);
+    expect(scores[Ability.charisma], 12);
+    expect(scores[Ability.dexterity], 11);
   });
 
   test('flexible ability bonus mode replaces fixed race ability bonuses',
@@ -368,10 +368,10 @@ void _registerCharacterDataCreationScenarios(
     );
 
     final scores = saved.derived!.abilityScores!;
-    expect(scores['charisma'], 10);
-    expect(scores['strength'], 12);
-    expect(scores['dexterity'], 11);
-    expect(scores['wisdom'], 11);
+    expect(scores[Ability.charisma], 10);
+    expect(scores[Ability.strength], 12);
+    expect(scores[Ability.dexterity], 11);
+    expect(scores[Ability.wisdom], 11);
   });
 
   test('generic class choice resolves its typed tool grant', () async {
@@ -434,6 +434,189 @@ void _registerCharacterDataCreationScenarios(
     expect(saved.derived!.toolProficiencyKeys, ['thieves_tools']);
   });
 
+  test('racial granted spell uses canonical SpellData referenceKey', () async {
+    final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+    await endpoints.raceFeatureSpellGrantData.upsert(
+      sessionBuilder,
+      RaceFeatureSpellGrantData(
+        featureId: fixture.raceFeature.id!,
+        spellId: fixture.lightSpell.id!,
+        grantedAtLevel: 1,
+      ),
+    );
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(413),
+      CharacterData(
+        name: 'Canonical racial spell grant',
+        race: fixture.race,
+      ),
+    );
+
+    expect(
+      saved.derived?.grantedSpellKeys,
+      contains(fixture.lightSpell.referenceKey),
+    );
+    expect(
+      saved.derived?.grantedSpellKeys,
+      isNot(contains(fixture.lightSpell.name)),
+    );
+  });
+
+  test('background choice effects include armor training and resistance',
+      () async {
+    final background = await endpoints.backgroundData.upsert(
+      sessionBuilder,
+      BackgroundData(name: 'Derived parity background choice'),
+    );
+    final session = sessionBuilder.build();
+    late ChoiceGroupData group;
+    try {
+      await _ensureToolData(
+        session,
+        referenceKey: 'smith_tools',
+        name: 'Smith tools',
+      );
+      group = await ChoiceGroupData.db.insertRow(
+        session,
+        ChoiceGroupData(
+          referenceKey: 'derived_parity_background_choice',
+          sourceBackgroundId: background.id,
+          type: ChoiceType.custom,
+          selectionCount: 1,
+        ),
+      );
+      await ChoiceOptionData.db.insertRow(
+        session,
+        ChoiceOptionData(
+          choiceGroupId: group.id!,
+          optionKey: 'fire_guard',
+          grantedArmorTraining: const [ArmorCategory.light],
+          grantedToolKeys: const ['smith_tools'],
+          damageType: DamageType.fire,
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(414),
+      CharacterData(
+        name: 'Background choice derived parity',
+        background: background,
+        choices: [
+          CharacterChoiceData(
+            groupKey: 'derived_parity_background_choice',
+            optionKey: 'fire_guard',
+          ),
+        ],
+      ),
+    );
+
+    expect(
+      {
+        'armorTraining':
+            saved.derived!.armorTraining!.map((value) => value.name).toList(),
+        'resistances':
+            saved.derived!.resistances!.map((value) => value.name).toList(),
+        'toolProficiencyKeys': saved.derived!.toolProficiencyKeys,
+      },
+      backgroundChoiceDerivedParityContract,
+    );
+  });
+
+  test('active feature resource effects match the derived resource contract',
+      () async {
+    final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+    final resourceFeature = await endpoints.classFeatureData.upsert(
+      sessionBuilder,
+      ClassFeatureData(
+        parentClassId: fixture.classData.id!,
+        name: 'Parity resource feature',
+        level: 1,
+      ),
+    );
+    final resourceSession = sessionBuilder.build();
+    try {
+      await FeatureResourceDefinitionData.db.insertRow(
+        resourceSession,
+        FeatureResourceDefinitionData(
+          classFeatureId: resourceFeature.id,
+          key: 'uses',
+          kind: FeatureResourceKind.uses,
+          maxRule: FeatureResourceMaxRule.fixed,
+          maxValue: 1,
+        ),
+      );
+      await FeatureResourceEffectData.db.insertRow(
+        resourceSession,
+        FeatureResourceEffectData(
+          classFeatureId: resourceFeature.id,
+          type: FeatureResourceEffectType.modify,
+          targetResourceKey: 'uses',
+          addMaxValue: 2,
+        ),
+      );
+    } finally {
+      await resourceSession.close();
+    }
+
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(415),
+      CharacterData(
+        name: 'Derived resource effect parity',
+        classEntries: [
+          CharacterClassEntryData(
+            classData: fixture.classData,
+            level: 1,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+        ],
+      ),
+    );
+
+    final feature = saved.derived!.activeFeatures!.singleWhere(
+      (value) => value.sourceId == resourceFeature.id,
+    );
+    final resource = feature.resources!.single;
+    expect((resource.key, resource.max, resource.current), ('uses', 3, 1));
+  });
+
+  test('feature override equal to defaults is not customized', () async {
+    final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+    final saved = await endpoints.characterData.saveCharacter(
+      authenticatedSession(416),
+      CharacterData(
+        name: 'Unchanged feature override',
+        classEntries: [
+          CharacterClassEntryData(
+            classData: fixture.classData,
+            level: 1,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+        ],
+        featureOverrides: [
+          CharacterFeatureOverrideData(
+            sourceType: CharacterFeatureSourceType.classFeature,
+            sourceId: fixture.classFeature.id!,
+            name: fixture.classFeature.name,
+            description: fixture.classFeature.shortDescription ??
+                fixture.classFeature.description,
+            tags: fixture.classFeature.tags,
+          ),
+        ],
+      ),
+    );
+
+    final feature = saved.derived!.activeFeatures!.singleWhere(
+      (value) => value.sourceId == fixture.classFeature.id,
+    );
+    expect(feature.isCustomized, isFalse);
+  });
+
   test('generic racial choice applies its typed ability bonus', () async {
     final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
     final session = sessionBuilder.build();
@@ -476,7 +659,7 @@ void _registerCharacterDataCreationScenarios(
       ),
     );
 
-    expect(saved.derived!.abilityScores!['dexterity'], 11);
+      expect(saved.derived!.abilityScores![Ability.dexterity], 11);
   });
 
   test('generic choices reject grants for unknown tool reference keys',

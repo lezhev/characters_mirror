@@ -444,7 +444,7 @@ void main() {
                 choiceGroupId: 12,
                 optionKey: mode.name,
                 name: mode.name,
-            ),
+              ),
           ],
         ),
         ChoiceGroupView(
@@ -548,6 +548,163 @@ void main() {
     expect(state.selectionType, SelectType.defaultType);
     expect(state.assignedAttributes[Attribute.strength], 0);
     expect(state.remainingValues, [15, 14, 13, 12, 10, 8]);
+  });
+
+  test('allocation methods keep independent drafts while switching', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final attributes = container.read(attributeStateProvider.notifier);
+    attributes.onAcceptWithDetailes(
+      DragTargetDetails(data: 15, offset: Offset.zero),
+      Attribute.strength,
+    );
+    attributes.onAcceptWithDetailes(
+      DragTargetDetails(data: 14, offset: Offset.zero),
+      Attribute.dexterity,
+    );
+    final defaultDraft = container.read(attributeStateProvider).activeDraft;
+
+    attributes.changeType(SelectType.manual);
+    attributes.updateManualAttribute(Attribute.strength, 16);
+    attributes.updateManualAttribute(Attribute.wisdom, 12);
+    attributes.changeType(SelectType.defaultType);
+
+    final restoredDefault = container.read(attributeStateProvider);
+    expect(restoredDefault.assignedAttributes[Attribute.strength], 15);
+    expect(restoredDefault.assignedAttributes[Attribute.dexterity], 14);
+    expect(restoredDefault.activeDraft.remainingValues,
+        defaultDraft.remainingValues);
+
+    attributes.changeType(SelectType.manual);
+    expect(container.read(attributeStateProvider).assignedAttributes,
+        containsPair(Attribute.strength, 16));
+    expect(container.read(attributeStateProvider).assignedAttributes,
+        containsPair(Attribute.wisdom, 12));
+
+    attributes.changeType(SelectType.defaultType);
+    attributes.changeType(SelectType.manual);
+    expect(container.read(attributeStateProvider).assignedAttributes,
+        containsPair(Attribute.strength, 16));
+  });
+
+  test('optional rule changes preserve the active draft and selected mode', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final attributes = container.read(attributeStateProvider.notifier);
+    attributes.changeType(SelectType.manual);
+    attributes.updateManualAttribute(Attribute.strength, 16);
+    final creation = container.read(characterCreationProvider.notifier);
+
+    creation.setUseFlexibleAbilityBonuses(true);
+    creation.setUseFlexibleAbilityBonuses(false);
+    creation.setUseFlexibleAbilityBonuses(true);
+
+    final state = container.read(attributeStateProvider);
+    expect(state.selectionType, SelectType.manual);
+    expect(state.assignedAttributes[Attribute.strength], 16);
+  });
+
+  test('pending random roll completes in its own draft after switching mode',
+      () async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final attributes = container.read(attributeStateProvider.notifier);
+    attributes.changeType(SelectType.random);
+    attributes.rollValueAt(0);
+    attributes.changeType(SelectType.manual);
+    await Future<void>.delayed(const Duration(milliseconds: 550));
+    attributes.changeType(SelectType.random);
+
+    final state = container.read(attributeStateProvider);
+    expect(state.boxStates.first, RollBoxState.filled);
+    expect(state.remainingValues.first, isNotNull);
+  });
+
+  test('active allocation is saved without resetting any method draft', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final attributes = container.read(attributeStateProvider.notifier);
+    attributes.onAcceptWithDetailes(
+      DragTargetDetails(data: 15, offset: Offset.zero),
+      Attribute.strength,
+    );
+    attributes.changeType(SelectType.manual);
+    attributes.updateManualAttribute(Attribute.strength, 16);
+
+    attributes.syncActiveDraftToCharacter();
+
+    final savedCharacter = container.read(characterCreationProvider).character;
+    final stateAfterSave = container.read(attributeStateProvider);
+    expect(savedCharacter.baseAbilityScores?['strength'], 16);
+    expect(stateAfterSave.selectionType, SelectType.manual);
+    expect(stateAfterSave.assignedAttributes[Attribute.strength], 16);
+    expect(
+      stateAfterSave.drafts[SelectType.defaultType]!
+          .assignedAttributes[Attribute.strength],
+      15,
+    );
+
+    container.read(characterCreationProvider.notifier).syncStep(Step.personal);
+    container
+        .read(characterCreationProvider.notifier)
+        .syncStep(Step.attributes);
+    final restored = container.read(attributeStateProvider);
+    expect(restored.selectionType, SelectType.manual);
+    expect(restored.assignedAttributes[Attribute.strength], 16);
+    expect(
+      restored.drafts[SelectType.defaultType]!
+          .assignedAttributes[Attribute.strength],
+      15,
+    );
+  });
+
+  test('assigned scores move and swap without changing the remaining pool', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final attributes = container.read(attributeStateProvider.notifier);
+    attributes.onAcceptWithDetailes(
+      DragTargetDetails(data: 15, offset: Offset.zero),
+      Attribute.strength,
+    );
+    attributes.onAcceptWithDetailes(
+      DragTargetDetails(data: 14, offset: Offset.zero),
+      Attribute.dexterity,
+    );
+    final remaining = container.read(attributeStateProvider).remainingValues;
+
+    attributes.moveAssignedAttribute(Attribute.strength, Attribute.dexterity);
+    var state = container.read(attributeStateProvider);
+    expect(state.assignedAttributes[Attribute.strength], 14);
+    expect(state.assignedAttributes[Attribute.dexterity], 15);
+    expect(state.remainingValues, remaining);
+
+    attributes.moveAssignedAttribute(Attribute.dexterity, Attribute.wisdom);
+    state = container.read(attributeStateProvider);
+    expect(state.assignedAttributes[Attribute.dexterity], 0);
+    expect(state.assignedAttributes[Attribute.wisdom], 15);
+    expect(state.remainingValues, remaining);
+    expect(state.assignedAttributes.values.where((value) => value == 15),
+        hasLength(1));
+  });
+
+  test('manual values above twenty are saved to the creation character', () {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final attributes = container.read(attributeStateProvider.notifier);
+    attributes.changeType(SelectType.manual);
+    attributes.updateManualAttribute(Attribute.strength, 25);
+    attributes.syncActiveDraftToCharacter();
+
+    expect(
+      container.read(characterCreationProvider).character.baseAbilityScores,
+      containsPair('strength', 25),
+    );
   });
 }
 

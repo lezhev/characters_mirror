@@ -334,6 +334,50 @@ INSERT OR REPLACE INTO characters_cache(
   ) async {
     final serverId = serverCharacter.id;
     if (serverId == null) return;
+    final localRecord = await getCharacter(userId, oldLocalId);
+    if (localRecord != null && localRecord.localId == oldLocalId) {
+      final now = DateTime.now().toUtc();
+      final payload = jsonEncode(serverCharacter.toJson());
+      _runTransaction(() {
+        final deleteCanonical = _db.prepare('''
+DELETE FROM characters_cache
+WHERE user_id = ? AND server_id = ? AND local_id != ?
+''');
+        try {
+          deleteCanonical.execute([userId, serverId, oldLocalId]);
+        } finally {
+          deleteCanonical.dispose();
+        }
+
+        final updateLocal = _db.prepare('''
+UPDATE characters_cache
+SET server_id = ?, payload_json = ?, base_payload_json = ?, base_version = ?,
+    base_updated_at = ?, sync_status = ?, sync_operation = NULL,
+    local_updated_at = ?, server_updated_at = ?, last_sync_error = NULL,
+    conflict_payload_json = NULL
+WHERE user_id = ? AND local_id = ?
+''');
+        try {
+          updateLocal.execute([
+            serverId,
+            payload,
+            payload,
+            serverCharacter.version,
+            serverCharacter.updatedAt?.toUtc().toIso8601String(),
+            OfflineCharacterSyncStatus.clean.name,
+            now.toIso8601String(),
+            serverCharacter.updatedAt?.toUtc().toIso8601String() ??
+                now.toIso8601String(),
+            userId,
+            oldLocalId,
+          ]);
+        } finally {
+          updateLocal.dispose();
+        }
+      });
+      return;
+    }
+
     final deleteStmt = _db.prepare('''
 DELETE FROM characters_cache
 WHERE user_id = ? AND local_id = ? AND local_id != ?

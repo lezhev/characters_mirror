@@ -8,6 +8,7 @@ class PurchaceColumn extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(attributeStateProvider);
     final notifier = ref.read(attributeStateProvider.notifier);
     final textTheme = Theme.of(context).textTheme;
     return SizedBox(
@@ -39,6 +40,7 @@ class PurchaceColumn extends ConsumerWidget {
                     alignment: Alignment.center,
                     child: Text(
                       value.toString(),
+                      key: ValueKey('attribute-score-${attribute.name}'),
                       style: textTheme.titleMedium,
                     ),
                   ),

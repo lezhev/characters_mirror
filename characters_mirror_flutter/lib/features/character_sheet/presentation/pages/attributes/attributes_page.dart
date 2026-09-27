@@ -56,17 +56,18 @@ class AttributesPage extends ConsumerWidget {
             character.manualSkillProficiencies ??
                 character.derived?.skillProficiencyLevels,
           );
-          final skillBonuses = character.derived?.skillBonuses ?? const {};
+          final skillBonuses =
+              character.derived?.skillBonuses ?? const <Skill, int>{};
           final proficiencyButtonWidth = _measureCompactButtonWidth(
             context,
             [
               for (final ability in Ability.values)
                 signedBonus(
-                  character.derived?.savingThrowBonuses?[ability.name] ??
+                  character.derived?.savingThrowBonuses?[ability] ??
                       _abilityModifierFor(character, ability),
                 ),
               for (final skill in Skill.values)
-                signedBonus(skillBonuses[skill.name] ?? 0),
+                signedBonus(skillBonuses[skill] ?? 0),
             ],
           );
 
@@ -175,7 +176,7 @@ class _AttributeCard extends StatelessWidget {
   final CharacterData character;
   final Ability ability;
   final Map<Skill, CharacterSkillProficiencyLevel> skillLevels;
-  final Map<String, int> skillBonuses;
+  final Map<Skill, int> skillBonuses;
   final double scoreValueWidth;
   final double skillButtonWidth;
   final double modifierButtonWidth;
@@ -200,7 +201,7 @@ class _AttributeCard extends StatelessWidget {
     );
     final savingThrowProficient = savingThrowProficiencies.contains(ability);
     final savingThrowBonus =
-        character.derived?.savingThrowBonuses?[ability.name] ?? modifier;
+        character.derived?.savingThrowBonuses?[ability] ?? modifier;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final backgroundColor = theme.scaffoldBackgroundColor;
@@ -348,7 +349,7 @@ class _AttributeCard extends StatelessWidget {
                     ),
                     child: _SkillRow(
                       skill: skills[index],
-                      bonus: skillBonuses[skills[index].name] ?? 0,
+                      bonus: skillBonuses[skills[index]] ?? 0,
                       level: skillLevels[skills[index]] ??
                           CharacterSkillProficiencyLevel.none,
                       skillButtonWidth: skillButtonWidth,
@@ -501,13 +502,13 @@ class _AttributesErrorState extends StatelessWidget {
 }
 
 int _attributeScore(CharacterData character, Ability ability) {
-  return character.derived?.abilityScores?[ability.name] ??
+  return character.derived?.abilityScores?[ability] ??
       character.baseAbilityScores?[ability.name] ??
       10;
 }
 
 int _abilityModifierFor(CharacterData character, Ability ability) {
-  return character.derived?.abilityModifiers?[ability.name] ??
+  return character.derived?.abilityModifiers?[ability] ??
       _abilityModifier(_attributeScore(character, ability));
 }
 

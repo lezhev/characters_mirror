@@ -14,7 +14,24 @@ part 'attribute_state/attribute_editing_operations.dart';
 
 enum RollBoxState { initial, rolling, filled, empty }
 
+class AttributeDragData {
+  const AttributeDragData({required this.value, this.sourceAttribute});
+
+  final int value;
+  final Attribute? sourceAttribute;
+}
+
 enum AttributeBonusMode { racial, flexiblePlusTwoOne, flexibleThreePlusOne }
+
+@freezed
+sealed class AttributeModeDraft with _$AttributeModeDraft {
+  const factory AttributeModeDraft({
+    @Default({}) Map<Attribute, int> assignedAttributes,
+    @Default([]) List<int?> remainingValues,
+    @Default([]) List<RollBoxState> boxStates,
+    @Default(27) int purchacePoints,
+  }) = _AttributeModeDraft;
+}
 
 @freezed
 sealed class AttributeBonusRule with _$AttributeBonusRule {
@@ -35,19 +52,28 @@ sealed class AttributeBonusRule with _$AttributeBonusRule {
 
 @freezed
 sealed class AttributeStateModel with _$AttributeStateModel {
-  factory AttributeStateModel({
+  const factory AttributeStateModel({
     @Default(SelectType.defaultType) SelectType selectionType,
+    @Default({}) Map<SelectType, AttributeModeDraft> drafts,
     @Default(AttributeBonusMode.racial) AttributeBonusMode bonusMode,
-    @Default({}) Map<Attribute, int> assignedAttributes,
     @Default({}) Map<Attribute, bool> bonusesPlusOne,
     @Default({}) Map<Attribute, bool> bonusesPlusTwo,
-    @Default([]) List<int?> remainingValues,
-    @Default([]) List<RollBoxState> boxStates,
-    @Default(27) int purchacePoints,
     @Default({}) Map<Attribute, int> fixedRaceBonuses,
     @Default([]) List<AttributeBonusRule> resolvedBonusRules,
     @Default({}) Map<String, Set<Attribute>> selectedBonusAttributesByRule,
   }) = _AttributeStateModel;
+}
+
+extension AttributeStateModelActiveDraft on AttributeStateModel {
+  AttributeModeDraft get activeDraft => drafts[selectionType]!;
+
+  Map<Attribute, int> get assignedAttributes => activeDraft.assignedAttributes;
+
+  List<int?> get remainingValues => activeDraft.remainingValues;
+
+  List<RollBoxState> get boxStates => activeDraft.boxStates;
+
+  int get purchacePoints => activeDraft.purchacePoints;
 }
 
 @Riverpod(keepAlive: true)
@@ -114,14 +140,7 @@ class AttributeState extends _$AttributeState {
       choiceGroups: choiceGroups,
       raceId: race?.id,
     );
-    final bonusMode = previous != null &&
-            _isBonusModeAvailable(
-              previous.bonusMode,
-              fixedRaceBonuses: fixedRaceBonuses,
-              rules: resolvedBonusRules,
-            )
-        ? previous.bonusMode
-        : restoredBonusMode;
+    final bonusMode = previous?.bonusMode ?? restoredBonusMode;
     final selectedBonusAttributesByRule = _restoreSelectedBonusAttributes(
       rules: resolvedBonusRules,
       savedChoices: savedChoices,
@@ -139,37 +158,35 @@ class AttributeState extends _$AttributeState {
         mode: bonusMode,
       ),
     );
-    final restoredAttributes = _restoreAssignedAttributes(savedScores);
-    final assignedAttributes =
-        previous?.assignedAttributes ?? restoredAttributes;
     final selectionType = previous?.selectionType ?? SelectType.defaultType;
-    final remainingValues = previous?.remainingValues ??
-        _initialRemainingValues(
-          selectionType: selectionType,
-          assignedAttributes: assignedAttributes,
-        );
-    final boxStates = previous?.boxStates ??
-        _initialBoxStates(
-          selectionType: selectionType,
-          remainingValues: remainingValues,
-        );
+    final drafts = previous?.drafts ??
+        {
+          SelectType.defaultType: _initialDraft(
+            SelectType.defaultType,
+            assignedAttributes: _restoreAssignedAttributes(savedScores),
+          ),
+        };
+    final activeDraft = drafts[selectionType]!;
+    final normalizedActiveDraft = selectionType == SelectType.random
+        ? activeDraft.copyWith(
+            remainingValues:
+                _normalizedRandomValues(activeDraft.remainingValues),
+            boxStates: _normalizedRandomStates(
+              activeDraft.boxStates,
+              activeDraft.remainingValues,
+            ),
+          )
+        : activeDraft;
 
     final nextState = AttributeStateModel(
       selectionType: selectionType,
+      drafts: {...drafts, selectionType: normalizedActiveDraft},
       bonusMode: bonusMode,
       fixedRaceBonuses: fixedRaceBonuses,
       resolvedBonusRules: resolvedBonusRules,
       selectedBonusAttributesByRule: selectedBonusAttributesByRule,
       bonusesPlusOne: bonusesPlusOne,
       bonusesPlusTwo: bonusesPlusTwo,
-      assignedAttributes: assignedAttributes,
-      remainingValues: selectionType == SelectType.random
-          ? _normalizedRandomValues(remainingValues)
-          : remainingValues,
-      boxStates: selectionType == SelectType.random
-          ? _normalizedRandomStates(boxStates, remainingValues)
-          : boxStates,
-      purchacePoints: previous?.purchacePoints ?? 27,
     );
     _previousState = nextState;
     return nextState;
@@ -331,20 +348,20 @@ class AttributeState extends _$AttributeState {
     Map<String, Set<Attribute>>? previousSelections,
   }) {
     final restored = <String, Set<Attribute>>{
-      for (final rule in rules) rule.groupKey: <Attribute>{},
+      for (final entry in previousSelections?.entries ??
+          const <MapEntry<String, Set<Attribute>>>[])
+        entry.key: {...entry.value},
     };
 
     for (final rule in rules) {
+      restored.putIfAbsent(rule.groupKey, () => <Attribute>{});
       final matchingChoices = savedChoices.where((choice) {
         return choice.groupKey == rule.groupKey;
       }).toList();
 
       final previousSelected = previousSelections?[rule.groupKey];
       if (previousSelected != null) {
-        restored[rule.groupKey] = previousSelected
-            .where((attribute) => rule.allowedAttributes.contains(attribute))
-            .take(rule.pickCount)
-            .toSet();
+        restored[rule.groupKey] = {...previousSelected};
         continue;
       }
 
@@ -369,18 +386,6 @@ class AttributeState extends _$AttributeState {
     }
 
     return restored;
-  }
-
-  bool _isBonusModeAvailable(
-    AttributeBonusMode mode, {
-    required Map<Attribute, int> fixedRaceBonuses,
-    required List<AttributeBonusRule> rules,
-  }) {
-    if (mode == AttributeBonusMode.racial) {
-      return fixedRaceBonuses.isNotEmpty ||
-          rules.any((rule) => !_isFlexibleRule(rule));
-    }
-    return _activeRules(rules: rules, mode: mode).isNotEmpty;
   }
 
   Set<Attribute> _defaultAttributesForRule({
@@ -433,6 +438,29 @@ class AttributeState extends _$AttributeState {
       for (final value in _normalizedRandomValues(remainingValues))
         value == null ? RollBoxState.initial : RollBoxState.filled,
     ];
+  }
+
+  AttributeModeDraft _initialDraft(
+    SelectType type, {
+    Map<Attribute, int>? assignedAttributes,
+  }) {
+    final assigned = assignedAttributes ??
+        (type == SelectType.purchace
+            ? {for (final attribute in Attribute.values) attribute: 8}
+            : {for (final attribute in Attribute.values) attribute: 0});
+    final remainingValues = _initialRemainingValues(
+      selectionType: type,
+      assignedAttributes: assigned,
+    );
+    return AttributeModeDraft(
+      assignedAttributes: assigned,
+      remainingValues: remainingValues,
+      boxStates: _initialBoxStates(
+        selectionType: type,
+        remainingValues: remainingValues,
+      ),
+      purchacePoints: 27,
+    );
   }
 
   List<int?> _normalizedRandomValues(List<int?> values) {

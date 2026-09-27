@@ -10,15 +10,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../../../enums/ability.dart' as _i2;
 import '../../../data/general/character/character_feature_view_data.dart'
-    as _i2;
-import '../../../data/general/character/character_skill_proficiency_state.dart'
     as _i3;
-import '../../../enums/ability.dart' as _i4;
-import '../../../enums/language.dart' as _i5;
-import '../../../enums/armor_category.dart' as _i6;
-import '../../../enums/weapon_category.dart' as _i7;
-import '../../../enums/feature_tag.dart' as _i8;
+import '../../../enums/skill.dart' as _i4;
+import '../../../data/general/character/character_skill_proficiency_state.dart'
+    as _i5;
+import '../../../enums/language.dart' as _i6;
+import '../../../enums/armor_category.dart' as _i7;
+import '../../../enums/weapon_category.dart' as _i8;
 import '../../../views/character_equipment_entry_view.dart' as _i9;
 import '../../../enums/damage_type.dart' as _i10;
 
@@ -53,22 +53,18 @@ abstract class CharacterDerivedData
     this.customToolProficiencies,
     this.customWeaponProficiencies,
     this.customArmorTraining,
-    this.featureTags,
-    this.featIds,
     this.grantedSpellKeys,
     this.alwaysPreparedSpellKeys,
     this.grantedEquipment,
-    this.senses,
     this.resistances,
-    this.rebuiltAt,
   });
 
   factory CharacterDerivedData({
     int? totalLevel,
     int? proficiencyBonus,
-    Map<String, int>? abilityScores,
-    Map<String, int>? abilityModifiers,
-    List<_i2.CharacterFeatureViewData>? activeFeatures,
+    Map<_i2.Ability, int>? abilityScores,
+    Map<_i2.Ability, int>? abilityModifiers,
+    List<_i3.CharacterFeatureViewData>? activeFeatures,
     int? armorClass,
     int? initiative,
     int? speed,
@@ -76,30 +72,26 @@ abstract class CharacterDerivedData
     int? passivePerception,
     int? passiveInvestigation,
     int? passiveInsight,
-    Map<String, int>? savingThrowBonuses,
-    Map<String, int>? skillBonuses,
-    List<_i3.CharacterSkillProficiencyState>? skillProficiencyLevels,
-    List<_i4.Ability>? savingThrowProficiencies,
+    Map<_i2.Ability, int>? savingThrowBonuses,
+    Map<_i4.Skill, int>? skillBonuses,
+    List<_i5.CharacterSkillProficiencyState>? skillProficiencyLevels,
+    List<_i2.Ability>? savingThrowProficiencies,
     Map<int, int>? spellSlots,
     Map<int, int>? pactSlots,
     Map<String, int>? hitDiceSummary,
-    List<_i5.Language>? languages,
+    List<_i6.Language>? languages,
     List<String>? toolProficiencyKeys,
-    List<_i6.ArmorCategory>? armorTraining,
-    List<_i7.WeaponCategory>? weaponTraining,
+    List<_i7.ArmorCategory>? armorTraining,
+    List<_i8.WeaponCategory>? weaponTraining,
     List<String>? weaponProficiencyKeys,
     List<String>? customLanguages,
     List<String>? customToolProficiencies,
     List<String>? customWeaponProficiencies,
     List<String>? customArmorTraining,
-    List<_i8.FeatureTag>? featureTags,
-    List<int>? featIds,
     List<String>? grantedSpellKeys,
     List<String>? alwaysPreparedSpellKeys,
     List<_i9.CharacterEquipmentEntryView>? grantedEquipment,
-    List<String>? senses,
     List<_i10.DamageType>? resistances,
-    DateTime? rebuiltAt,
   }) = _CharacterDerivedDataImpl;
 
   factory CharacterDerivedData.fromJson(
@@ -107,18 +99,22 @@ abstract class CharacterDerivedData
     return CharacterDerivedData(
       totalLevel: jsonSerialization['totalLevel'] as int?,
       proficiencyBonus: jsonSerialization['proficiencyBonus'] as int?,
-      abilityScores:
-          (jsonSerialization['abilityScores'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      abilityModifiers: (jsonSerialization['abilityModifiers'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+      abilityScores: (jsonSerialization['abilityScores'] as List?)
+          ?.fold<Map<_i2.Ability, int>>(
+              {},
+              (t, e) => {
+                    ...t,
+                    _i2.Ability.fromJson((e['k'] as String)): e['v'] as int
+                  }),
+      abilityModifiers: (jsonSerialization['abilityModifiers'] as List?)
+          ?.fold<Map<_i2.Ability, int>>(
+              {},
+              (t, e) => {
+                    ...t,
+                    _i2.Ability.fromJson((e['k'] as String)): e['v'] as int
+                  }),
       activeFeatures: (jsonSerialization['activeFeatures'] as List?)
-          ?.map((e) => _i2.CharacterFeatureViewData.fromJson(
+          ?.map((e) => _i3.CharacterFeatureViewData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       armorClass: jsonSerialization['armorClass'] as int?,
@@ -128,24 +124,28 @@ abstract class CharacterDerivedData
       passivePerception: jsonSerialization['passivePerception'] as int?,
       passiveInvestigation: jsonSerialization['passiveInvestigation'] as int?,
       passiveInsight: jsonSerialization['passiveInsight'] as int?,
-      savingThrowBonuses: (jsonSerialization['savingThrowBonuses'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      skillBonuses:
-          (jsonSerialization['skillBonuses'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+      savingThrowBonuses: (jsonSerialization['savingThrowBonuses'] as List?)
+          ?.fold<Map<_i2.Ability, int>>(
+              {},
+              (t, e) => {
+                    ...t,
+                    _i2.Ability.fromJson((e['k'] as String)): e['v'] as int
+                  }),
+      skillBonuses: (jsonSerialization['skillBonuses'] as List?)
+          ?.fold<Map<_i4.Skill, int>>(
+              {},
+              (t, e) => {
+                    ...t,
+                    _i4.Skill.fromJson((e['k'] as String)): e['v'] as int
+                  }),
       skillProficiencyLevels:
           (jsonSerialization['skillProficiencyLevels'] as List?)
-              ?.map((e) => _i3.CharacterSkillProficiencyState.fromJson(
+              ?.map((e) => _i5.CharacterSkillProficiencyState.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
       savingThrowProficiencies:
           (jsonSerialization['savingThrowProficiencies'] as List?)
-              ?.map((e) => _i4.Ability.fromJson((e as String)))
+              ?.map((e) => _i2.Ability.fromJson((e as String)))
               .toList(),
       spellSlots: (jsonSerialization['spellSlots'] as List?)
           ?.fold<Map<int, int>>(
@@ -158,16 +158,16 @@ abstract class CharacterDerivedData
                 v as int,
               )),
       languages: (jsonSerialization['languages'] as List?)
-          ?.map((e) => _i5.Language.fromJson((e as String)))
+          ?.map((e) => _i6.Language.fromJson((e as String)))
           .toList(),
       toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       armorTraining: (jsonSerialization['armorTraining'] as List?)
-          ?.map((e) => _i6.ArmorCategory.fromJson((e as String)))
+          ?.map((e) => _i7.ArmorCategory.fromJson((e as String)))
           .toList(),
       weaponTraining: (jsonSerialization['weaponTraining'] as List?)
-          ?.map((e) => _i7.WeaponCategory.fromJson((e as String)))
+          ?.map((e) => _i8.WeaponCategory.fromJson((e as String)))
           .toList(),
       weaponProficiencyKeys:
           (jsonSerialization['weaponProficiencyKeys'] as List?)
@@ -187,12 +187,6 @@ abstract class CharacterDerivedData
       customArmorTraining: (jsonSerialization['customArmorTraining'] as List?)
           ?.map((e) => e as String)
           .toList(),
-      featureTags: (jsonSerialization['featureTags'] as List?)
-          ?.map((e) => _i8.FeatureTag.fromJson((e as String)))
-          .toList(),
-      featIds: (jsonSerialization['featIds'] as List?)
-          ?.map((e) => e as int)
-          .toList(),
       grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -204,15 +198,9 @@ abstract class CharacterDerivedData
           ?.map((e) => _i9.CharacterEquipmentEntryView.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
-      senses: (jsonSerialization['senses'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
           ?.map((e) => _i10.DamageType.fromJson((e as String)))
           .toList(),
-      rebuiltAt: jsonSerialization['rebuiltAt'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['rebuiltAt']),
     );
   }
 
@@ -220,11 +208,11 @@ abstract class CharacterDerivedData
 
   int? proficiencyBonus;
 
-  Map<String, int>? abilityScores;
+  Map<_i2.Ability, int>? abilityScores;
 
-  Map<String, int>? abilityModifiers;
+  Map<_i2.Ability, int>? abilityModifiers;
 
-  List<_i2.CharacterFeatureViewData>? activeFeatures;
+  List<_i3.CharacterFeatureViewData>? activeFeatures;
 
   int? armorClass;
 
@@ -240,13 +228,13 @@ abstract class CharacterDerivedData
 
   int? passiveInsight;
 
-  Map<String, int>? savingThrowBonuses;
+  Map<_i2.Ability, int>? savingThrowBonuses;
 
-  Map<String, int>? skillBonuses;
+  Map<_i4.Skill, int>? skillBonuses;
 
-  List<_i3.CharacterSkillProficiencyState>? skillProficiencyLevels;
+  List<_i5.CharacterSkillProficiencyState>? skillProficiencyLevels;
 
-  List<_i4.Ability>? savingThrowProficiencies;
+  List<_i2.Ability>? savingThrowProficiencies;
 
   Map<int, int>? spellSlots;
 
@@ -254,13 +242,13 @@ abstract class CharacterDerivedData
 
   Map<String, int>? hitDiceSummary;
 
-  List<_i5.Language>? languages;
+  List<_i6.Language>? languages;
 
   List<String>? toolProficiencyKeys;
 
-  List<_i6.ArmorCategory>? armorTraining;
+  List<_i7.ArmorCategory>? armorTraining;
 
-  List<_i7.WeaponCategory>? weaponTraining;
+  List<_i8.WeaponCategory>? weaponTraining;
 
   List<String>? weaponProficiencyKeys;
 
@@ -272,21 +260,13 @@ abstract class CharacterDerivedData
 
   List<String>? customArmorTraining;
 
-  List<_i8.FeatureTag>? featureTags;
-
-  List<int>? featIds;
-
   List<String>? grantedSpellKeys;
 
   List<String>? alwaysPreparedSpellKeys;
 
   List<_i9.CharacterEquipmentEntryView>? grantedEquipment;
 
-  List<String>? senses;
-
   List<_i10.DamageType>? resistances;
-
-  DateTime? rebuiltAt;
 
   /// Returns a shallow copy of this [CharacterDerivedData]
   /// with some or all fields replaced by the given arguments.
@@ -294,9 +274,9 @@ abstract class CharacterDerivedData
   CharacterDerivedData copyWith({
     int? totalLevel,
     int? proficiencyBonus,
-    Map<String, int>? abilityScores,
-    Map<String, int>? abilityModifiers,
-    List<_i2.CharacterFeatureViewData>? activeFeatures,
+    Map<_i2.Ability, int>? abilityScores,
+    Map<_i2.Ability, int>? abilityModifiers,
+    List<_i3.CharacterFeatureViewData>? activeFeatures,
     int? armorClass,
     int? initiative,
     int? speed,
@@ -304,39 +284,37 @@ abstract class CharacterDerivedData
     int? passivePerception,
     int? passiveInvestigation,
     int? passiveInsight,
-    Map<String, int>? savingThrowBonuses,
-    Map<String, int>? skillBonuses,
-    List<_i3.CharacterSkillProficiencyState>? skillProficiencyLevels,
-    List<_i4.Ability>? savingThrowProficiencies,
+    Map<_i2.Ability, int>? savingThrowBonuses,
+    Map<_i4.Skill, int>? skillBonuses,
+    List<_i5.CharacterSkillProficiencyState>? skillProficiencyLevels,
+    List<_i2.Ability>? savingThrowProficiencies,
     Map<int, int>? spellSlots,
     Map<int, int>? pactSlots,
     Map<String, int>? hitDiceSummary,
-    List<_i5.Language>? languages,
+    List<_i6.Language>? languages,
     List<String>? toolProficiencyKeys,
-    List<_i6.ArmorCategory>? armorTraining,
-    List<_i7.WeaponCategory>? weaponTraining,
+    List<_i7.ArmorCategory>? armorTraining,
+    List<_i8.WeaponCategory>? weaponTraining,
     List<String>? weaponProficiencyKeys,
     List<String>? customLanguages,
     List<String>? customToolProficiencies,
     List<String>? customWeaponProficiencies,
     List<String>? customArmorTraining,
-    List<_i8.FeatureTag>? featureTags,
-    List<int>? featIds,
     List<String>? grantedSpellKeys,
     List<String>? alwaysPreparedSpellKeys,
     List<_i9.CharacterEquipmentEntryView>? grantedEquipment,
-    List<String>? senses,
     List<_i10.DamageType>? resistances,
-    DateTime? rebuiltAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (totalLevel != null) 'totalLevel': totalLevel,
       if (proficiencyBonus != null) 'proficiencyBonus': proficiencyBonus,
-      if (abilityScores != null) 'abilityScores': abilityScores?.toJson(),
+      if (abilityScores != null)
+        'abilityScores': abilityScores?.toJson(keyToJson: (k) => k.toJson()),
       if (abilityModifiers != null)
-        'abilityModifiers': abilityModifiers?.toJson(),
+        'abilityModifiers':
+            abilityModifiers?.toJson(keyToJson: (k) => k.toJson()),
       if (activeFeatures != null)
         'activeFeatures':
             activeFeatures?.toJson(valueToJson: (v) => v.toJson()),
@@ -349,8 +327,10 @@ abstract class CharacterDerivedData
         'passiveInvestigation': passiveInvestigation,
       if (passiveInsight != null) 'passiveInsight': passiveInsight,
       if (savingThrowBonuses != null)
-        'savingThrowBonuses': savingThrowBonuses?.toJson(),
-      if (skillBonuses != null) 'skillBonuses': skillBonuses?.toJson(),
+        'savingThrowBonuses':
+            savingThrowBonuses?.toJson(keyToJson: (k) => k.toJson()),
+      if (skillBonuses != null)
+        'skillBonuses': skillBonuses?.toJson(keyToJson: (k) => k.toJson()),
       if (skillProficiencyLevels != null)
         'skillProficiencyLevels':
             skillProficiencyLevels?.toJson(valueToJson: (v) => v.toJson()),
@@ -378,9 +358,6 @@ abstract class CharacterDerivedData
         'customWeaponProficiencies': customWeaponProficiencies?.toJson(),
       if (customArmorTraining != null)
         'customArmorTraining': customArmorTraining?.toJson(),
-      if (featureTags != null)
-        'featureTags': featureTags?.toJson(valueToJson: (v) => v.toJson()),
-      if (featIds != null) 'featIds': featIds?.toJson(),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (alwaysPreparedSpellKeys != null)
@@ -388,10 +365,8 @@ abstract class CharacterDerivedData
       if (grantedEquipment != null)
         'grantedEquipment':
             grantedEquipment?.toJson(valueToJson: (v) => v.toJson()),
-      if (senses != null) 'senses': senses?.toJson(),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
-      if (rebuiltAt != null) 'rebuiltAt': rebuiltAt?.toJson(),
     };
   }
 
@@ -400,9 +375,11 @@ abstract class CharacterDerivedData
     return {
       if (totalLevel != null) 'totalLevel': totalLevel,
       if (proficiencyBonus != null) 'proficiencyBonus': proficiencyBonus,
-      if (abilityScores != null) 'abilityScores': abilityScores?.toJson(),
+      if (abilityScores != null)
+        'abilityScores': abilityScores?.toJson(keyToJson: (k) => k.toJson()),
       if (abilityModifiers != null)
-        'abilityModifiers': abilityModifiers?.toJson(),
+        'abilityModifiers':
+            abilityModifiers?.toJson(keyToJson: (k) => k.toJson()),
       if (activeFeatures != null)
         'activeFeatures':
             activeFeatures?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -415,8 +392,10 @@ abstract class CharacterDerivedData
         'passiveInvestigation': passiveInvestigation,
       if (passiveInsight != null) 'passiveInsight': passiveInsight,
       if (savingThrowBonuses != null)
-        'savingThrowBonuses': savingThrowBonuses?.toJson(),
-      if (skillBonuses != null) 'skillBonuses': skillBonuses?.toJson(),
+        'savingThrowBonuses':
+            savingThrowBonuses?.toJson(keyToJson: (k) => k.toJson()),
+      if (skillBonuses != null)
+        'skillBonuses': skillBonuses?.toJson(keyToJson: (k) => k.toJson()),
       if (skillProficiencyLevels != null)
         'skillProficiencyLevels': skillProficiencyLevels?.toJson(
             valueToJson: (v) => v.toJsonForProtocol()),
@@ -444,9 +423,6 @@ abstract class CharacterDerivedData
         'customWeaponProficiencies': customWeaponProficiencies?.toJson(),
       if (customArmorTraining != null)
         'customArmorTraining': customArmorTraining?.toJson(),
-      if (featureTags != null)
-        'featureTags': featureTags?.toJson(valueToJson: (v) => v.toJson()),
-      if (featIds != null) 'featIds': featIds?.toJson(),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (alwaysPreparedSpellKeys != null)
@@ -454,10 +430,8 @@ abstract class CharacterDerivedData
       if (grantedEquipment != null)
         'grantedEquipment':
             grantedEquipment?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (senses != null) 'senses': senses?.toJson(),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
-      if (rebuiltAt != null) 'rebuiltAt': rebuiltAt?.toJson(),
     };
   }
 
@@ -473,9 +447,9 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
   _CharacterDerivedDataImpl({
     int? totalLevel,
     int? proficiencyBonus,
-    Map<String, int>? abilityScores,
-    Map<String, int>? abilityModifiers,
-    List<_i2.CharacterFeatureViewData>? activeFeatures,
+    Map<_i2.Ability, int>? abilityScores,
+    Map<_i2.Ability, int>? abilityModifiers,
+    List<_i3.CharacterFeatureViewData>? activeFeatures,
     int? armorClass,
     int? initiative,
     int? speed,
@@ -483,30 +457,26 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     int? passivePerception,
     int? passiveInvestigation,
     int? passiveInsight,
-    Map<String, int>? savingThrowBonuses,
-    Map<String, int>? skillBonuses,
-    List<_i3.CharacterSkillProficiencyState>? skillProficiencyLevels,
-    List<_i4.Ability>? savingThrowProficiencies,
+    Map<_i2.Ability, int>? savingThrowBonuses,
+    Map<_i4.Skill, int>? skillBonuses,
+    List<_i5.CharacterSkillProficiencyState>? skillProficiencyLevels,
+    List<_i2.Ability>? savingThrowProficiencies,
     Map<int, int>? spellSlots,
     Map<int, int>? pactSlots,
     Map<String, int>? hitDiceSummary,
-    List<_i5.Language>? languages,
+    List<_i6.Language>? languages,
     List<String>? toolProficiencyKeys,
-    List<_i6.ArmorCategory>? armorTraining,
-    List<_i7.WeaponCategory>? weaponTraining,
+    List<_i7.ArmorCategory>? armorTraining,
+    List<_i8.WeaponCategory>? weaponTraining,
     List<String>? weaponProficiencyKeys,
     List<String>? customLanguages,
     List<String>? customToolProficiencies,
     List<String>? customWeaponProficiencies,
     List<String>? customArmorTraining,
-    List<_i8.FeatureTag>? featureTags,
-    List<int>? featIds,
     List<String>? grantedSpellKeys,
     List<String>? alwaysPreparedSpellKeys,
     List<_i9.CharacterEquipmentEntryView>? grantedEquipment,
-    List<String>? senses,
     List<_i10.DamageType>? resistances,
-    DateTime? rebuiltAt,
   }) : super._(
           totalLevel: totalLevel,
           proficiencyBonus: proficiencyBonus,
@@ -536,14 +506,10 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           customToolProficiencies: customToolProficiencies,
           customWeaponProficiencies: customWeaponProficiencies,
           customArmorTraining: customArmorTraining,
-          featureTags: featureTags,
-          featIds: featIds,
           grantedSpellKeys: grantedSpellKeys,
           alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
           grantedEquipment: grantedEquipment,
-          senses: senses,
           resistances: resistances,
-          rebuiltAt: rebuiltAt,
         );
 
   /// Returns a shallow copy of this [CharacterDerivedData]
@@ -579,20 +545,16 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Object? customToolProficiencies = _Undefined,
     Object? customWeaponProficiencies = _Undefined,
     Object? customArmorTraining = _Undefined,
-    Object? featureTags = _Undefined,
-    Object? featIds = _Undefined,
     Object? grantedSpellKeys = _Undefined,
     Object? alwaysPreparedSpellKeys = _Undefined,
     Object? grantedEquipment = _Undefined,
-    Object? senses = _Undefined,
     Object? resistances = _Undefined,
-    Object? rebuiltAt = _Undefined,
   }) {
     return CharacterDerivedData(
       totalLevel: totalLevel is int? ? totalLevel : this.totalLevel,
       proficiencyBonus:
           proficiencyBonus is int? ? proficiencyBonus : this.proficiencyBonus,
-      abilityScores: abilityScores is Map<String, int>?
+      abilityScores: abilityScores is Map<_i2.Ability, int>?
           ? abilityScores
           : this.abilityScores?.map((
                 key0,
@@ -602,7 +564,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
                     key0,
                     value0,
                   )),
-      abilityModifiers: abilityModifiers is Map<String, int>?
+      abilityModifiers: abilityModifiers is Map<_i2.Ability, int>?
           ? abilityModifiers
           : this.abilityModifiers?.map((
                 key0,
@@ -612,7 +574,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
                     key0,
                     value0,
                   )),
-      activeFeatures: activeFeatures is List<_i2.CharacterFeatureViewData>?
+      activeFeatures: activeFeatures is List<_i3.CharacterFeatureViewData>?
           ? activeFeatures
           : this.activeFeatures?.map((e0) => e0.copyWith()).toList(),
       armorClass: armorClass is int? ? armorClass : this.armorClass,
@@ -627,7 +589,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           : this.passiveInvestigation,
       passiveInsight:
           passiveInsight is int? ? passiveInsight : this.passiveInsight,
-      savingThrowBonuses: savingThrowBonuses is Map<String, int>?
+      savingThrowBonuses: savingThrowBonuses is Map<_i2.Ability, int>?
           ? savingThrowBonuses
           : this.savingThrowBonuses?.map((
                 key0,
@@ -637,7 +599,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
                     key0,
                     value0,
                   )),
-      skillBonuses: skillBonuses is Map<String, int>?
+      skillBonuses: skillBonuses is Map<_i4.Skill, int>?
           ? skillBonuses
           : this.skillBonuses?.map((
                 key0,
@@ -648,10 +610,10 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
                     value0,
                   )),
       skillProficiencyLevels: skillProficiencyLevels
-              is List<_i3.CharacterSkillProficiencyState>?
+              is List<_i5.CharacterSkillProficiencyState>?
           ? skillProficiencyLevels
           : this.skillProficiencyLevels?.map((e0) => e0.copyWith()).toList(),
-      savingThrowProficiencies: savingThrowProficiencies is List<_i4.Ability>?
+      savingThrowProficiencies: savingThrowProficiencies is List<_i2.Ability>?
           ? savingThrowProficiencies
           : this.savingThrowProficiencies?.map((e0) => e0).toList(),
       spellSlots: spellSlots is Map<int, int>?
@@ -684,16 +646,16 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
                     key0,
                     value0,
                   )),
-      languages: languages is List<_i5.Language>?
+      languages: languages is List<_i6.Language>?
           ? languages
           : this.languages?.map((e0) => e0).toList(),
       toolProficiencyKeys: toolProficiencyKeys is List<String>?
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),
-      armorTraining: armorTraining is List<_i6.ArmorCategory>?
+      armorTraining: armorTraining is List<_i7.ArmorCategory>?
           ? armorTraining
           : this.armorTraining?.map((e0) => e0).toList(),
-      weaponTraining: weaponTraining is List<_i7.WeaponCategory>?
+      weaponTraining: weaponTraining is List<_i8.WeaponCategory>?
           ? weaponTraining
           : this.weaponTraining?.map((e0) => e0).toList(),
       weaponProficiencyKeys: weaponProficiencyKeys is List<String>?
@@ -711,12 +673,6 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
       customArmorTraining: customArmorTraining is List<String>?
           ? customArmorTraining
           : this.customArmorTraining?.map((e0) => e0).toList(),
-      featureTags: featureTags is List<_i8.FeatureTag>?
-          ? featureTags
-          : this.featureTags?.map((e0) => e0).toList(),
-      featIds: featIds is List<int>?
-          ? featIds
-          : this.featIds?.map((e0) => e0).toList(),
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
@@ -727,13 +683,9 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           grantedEquipment is List<_i9.CharacterEquipmentEntryView>?
               ? grantedEquipment
               : this.grantedEquipment?.map((e0) => e0.copyWith()).toList(),
-      senses: senses is List<String>?
-          ? senses
-          : this.senses?.map((e0) => e0).toList(),
       resistances: resistances is List<_i10.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      rebuiltAt: rebuiltAt is DateTime? ? rebuiltAt : this.rebuiltAt,
     );
   }
 }

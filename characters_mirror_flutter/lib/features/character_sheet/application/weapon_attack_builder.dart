@@ -55,9 +55,10 @@ CharacterAttackData buildAttackFromWeapon({
 
 Ability weaponAttackAbility(WeaponData weapon, CharacterData character) {
   if (hasWeaponProperty(weapon, WeaponProperty.finesse)) {
-    final modifiers = character.derived?.abilityModifiers ?? const {};
-    final strength = modifiers[Ability.strength.name] ?? 0;
-    final dexterity = modifiers[Ability.dexterity.name] ?? 0;
+    final modifiers =
+        character.derived?.abilityModifiers ?? const <Ability, int>{};
+    final strength = modifiers[Ability.strength] ?? 0;
+    final dexterity = modifiers[Ability.dexterity] ?? 0;
     return dexterity > strength ? Ability.dexterity : Ability.strength;
   }
 

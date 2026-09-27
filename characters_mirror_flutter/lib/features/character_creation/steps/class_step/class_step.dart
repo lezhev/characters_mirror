@@ -17,16 +17,9 @@ class ClassStep extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailsKey = useMemoized(GlobalKey.new);
-    final dismissedSelectionKey = useState<String?>(null);
 
     return ref.watch(classStateProvider).when(
       data: (data) {
-        final selectedClassKey = data.selectedClass == null
-            ? null
-            : '${data.selectedClass!.id ?? data.selectedClass!.name}';
-        final showJumpButton = selectedClassKey != null &&
-            dismissedSelectionKey.value != selectedClassKey;
-
         return CreationSelectionStepScaffold(
           route: 'race',
           onBack: () {
@@ -67,11 +60,8 @@ class ClassStep extends HookConsumerWidget {
                   ],
                 ),
           detailsKey: detailsKey,
-          showJumpButton: showJumpButton,
-          onJumpToDetails: () {
-            dismissedSelectionKey.value = selectedClassKey;
-            _scrollToDetails(detailsKey);
-          },
+          showJumpButton: data.selectedClass != null,
+          onJumpToDetails: () => _scrollToDetails(detailsKey),
         );
       },
       error: (e, s) {

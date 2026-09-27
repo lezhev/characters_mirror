@@ -100,6 +100,7 @@ class RaceTile extends HookConsumerWidget {
             return Align(
               alignment: Alignment.center,
               child: SizedBox(
+                key: ValueKey('race-tile-${race.id ?? race.name}'),
                 width: isGrid ? _gridTileSize : double.infinity,
                 height: isGrid ? _gridTileSize : _listTileHeight,
                 child: Material(
@@ -138,7 +139,7 @@ class RaceTile extends HookConsumerWidget {
                             color: isHovered.value || isSelected
                                 ? colorScheme.outline
                                 : Colors.transparent,
-                            width: isSelected ? 2 : 1,
+                            width: 1,
                           ),
                         ),
                         child: Padding(
@@ -202,6 +203,7 @@ class _RaceTileContent extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  key: ValueKey('race-title-${race.id ?? title}'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: textTheme.labelLarge,
@@ -235,6 +237,7 @@ class _RaceTileContent extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           title,
+          key: ValueKey('race-title-${race.id ?? title}'),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: textTheme.labelLarge,

@@ -13,7 +13,7 @@ int calculateMaxHpForCharacter(
       const <CharacterClassEntryData>[];
   final descriptors = hitPointLevelDescriptors(entries);
   final constitutionModifier =
-      character.derived?.abilityModifiers?[Ability.constitution.name] ?? 0;
+      character.derived?.abilityModifiers?[Ability.constitution] ?? 0;
   var total = 0;
   for (final descriptor in descriptors) {
     total += descriptor.value + constitutionModifier;

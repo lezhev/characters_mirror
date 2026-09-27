@@ -786,7 +786,7 @@ void main() {
     expect(record?.status, OfflineCharacterSyncStatus.clean);
   });
 
-  test('edit during an in-flight create is remapped to an update', () async {
+  test('edit during an in-flight create keeps its local identity', () async {
     final local = await cache.saveLocal(7, CharacterData(name: 'A'));
     final firstRequestStarted = Completer<void>();
     final releaseFirstRequest = Completer<void>();
@@ -809,7 +809,11 @@ void main() {
             pullCursor: 1,
           );
         }
-        final updated = CharacterData(id: 123, name: 'B', version: 2);
+        final updated = CharacterData(
+          id: 123,
+          name: requests.length == 2 ? 'B' : 'C',
+          version: requests.length,
+        );
         return CharacterSyncResponse(
           acknowledgedChangeIds: [operation.id],
           changedCharacters: {operation.id: updated},
@@ -823,6 +827,10 @@ void main() {
     final firstSync = coordinator.syncNow();
     await firstRequestStarted.future;
     await cache.saveLocal(7, local.character.copyWith(name: 'B'));
+    await cache.upsertCleanFromServer(
+      7,
+      CharacterData(id: 123, name: 'A', version: 1),
+    );
     await coordinator.syncNow();
     releaseFirstRequest.complete();
     await firstSync;
@@ -837,10 +845,36 @@ void main() {
       CharacterSyncOperationType.setField,
     );
     expect(requests.last.operations!.single.characterId, 123);
-    expect(await cache.getCharacter(7, local.localId), isNull);
+    final byLocalId = await cache.getCharacter(7, local.localId);
+    expect(byLocalId?.localId, local.localId);
+    expect(byLocalId?.serverId, 123);
     final record = await cache.getCharacter(7, 123);
+    expect(record?.localId, local.localId);
     expect(record?.character.name, 'B');
     expect(record?.status, OfflineCharacterSyncStatus.clean);
+
+    await cache.saveLocal(7, local.character.copyWith(name: 'C'));
+    final afterEdit = await cache.getCharacter(7, local.localId);
+    expect(afterEdit?.localId, local.localId);
+    expect(afterEdit?.serverId, 123);
+    expect(afterEdit?.character.name, 'C');
+    expect(await cache.getCharacters(7), hasLength(1));
+    final edit = (await cache.getPendingChanges(7)).single.operationData!;
+    expect(edit.type, CharacterSyncOperationType.setField);
+    expect(edit.characterId, 123);
+
+    await coordinator.syncNow();
+    expect(requests, hasLength(3));
+    expect(
+      requests.last.operations!.single.type,
+      CharacterSyncOperationType.setField,
+    );
+    expect(requests.last.operations!.single.characterId, 123);
+    expect(await cache.getCharacters(7), hasLength(1));
+    expect(
+      (await cache.getCharacter(7, local.localId))?.character.name,
+      'C',
+    );
   });
 
   test('keeps the highest version when ack and pull overlap', () async {

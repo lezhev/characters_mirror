@@ -18,16 +18,9 @@ class BackgroundStep extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailsKey = useMemoized(GlobalKey.new);
-    final dismissedSelectionKey = useState<String?>(null);
 
     return ref.watch(backgroundStateProvider).when(
       data: (data) {
-        final selectedBackgroundKey = data.selectedBackground == null
-            ? null
-            : '${data.selectedBackground!.id ?? data.selectedBackground!.name}';
-        final showJumpButton = selectedBackgroundKey != null &&
-            dismissedSelectionKey.value != selectedBackgroundKey;
-
         return CreationSelectionStepScaffold(
           route: 'attributes',
           onBack: () {
@@ -59,11 +52,8 @@ class BackgroundStep extends HookConsumerWidget {
                   stepView: data.stepView,
                 ),
           detailsKey: detailsKey,
-          showJumpButton: showJumpButton,
-          onJumpToDetails: () {
-            dismissedSelectionKey.value = selectedBackgroundKey;
-            _scrollToDetails(detailsKey);
-          },
+          showJumpButton: data.selectedBackground != null,
+          onJumpToDetails: () => _scrollToDetails(detailsKey),
         );
       },
       error: (e, s) {

@@ -1,6 +1,5 @@
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/jump_to_details_button.dart';
 import 'package:flutter/material.dart' hide Step;
 
 class CreationSelectionStepScaffold extends StatelessWidget {
@@ -34,9 +33,7 @@ class CreationSelectionStepScaffold extends StatelessWidget {
       onBack: onBack,
       onStepTap: onStepTap,
       onPressedNext: onPressedNext,
-      floatingActionButton: showJumpButton && onJumpToDetails != null
-          ? JumpToDetailsButton(onPressed: onJumpToDetails!)
-          : null,
+      scrollHintAction: showJumpButton ? onJumpToDetails : null,
       body: Column(
         children: [
           selection,

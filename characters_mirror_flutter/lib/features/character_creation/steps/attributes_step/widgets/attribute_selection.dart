@@ -116,8 +116,7 @@ class AttributeSelection extends ConsumerWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const AttributeNamesColumn(),
-                      const Spacer(),
+                      const Expanded(child: AttributeNamesColumn()),
                       _buildAssignedAttributesBlock(state.selectionType),
                     ],
                   ),
@@ -152,8 +151,8 @@ class AttributeSelection extends ConsumerWidget {
             spacing: 8,
             runSpacing: 8,
             children: remainingValues.map((value) {
-              return Draggable<int>(
-                data: value!,
+              return Draggable<AttributeDragData>(
+                data: AttributeDragData(value: value!),
                 onDragStarted: () {
                   ref.read(creationStepSwipeLockedProvider.notifier).state =
                       true;

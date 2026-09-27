@@ -31,12 +31,12 @@ void main() {
     await android.pull();
     expect(server.characters, hasLength(1));
     expect(await android.characters(), hasLength(1));
-    expect(
-        await windows.store.getCharacter(
-          _LogicalClient.userId,
-          localCreate.localId,
-        ),
-        isNull);
+    final syncedLocal = await windows.store.getCharacter(
+      _LogicalClient.userId,
+      localCreate.localId,
+    );
+    expect(syncedLocal?.localId, localCreate.localId);
+    expect(syncedLocal?.serverId, isNotNull);
 
     await windows.semantic(
       CharacterSyncOperationType.applyDamage,

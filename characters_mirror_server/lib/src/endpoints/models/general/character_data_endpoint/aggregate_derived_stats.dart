@@ -25,17 +25,17 @@ Future<CharacterDerivedData> _buildDerivedData(
       _currentRaceFeaturesBySource(character, totalLevel);
   final scores = _buildAbilityScores(
     character,
-    [
-      ...resolvedSources.classBackgroundOptions,
-      ...resolvedSources.raceOptions,
-    ],
+    resolvedSources.selectedOptions,
   );
-  final abilityModifiers = {
-    for (final ability in Ability.values)
-      ability.name: _abilityModifier(scores[ability.name] ?? 10),
+  final abilityScores = <Ability, int>{
+    for (final ability in Ability.values) ability: scores[ability.name] ?? 10,
   };
-  final dexMod = _abilityModifier(scores['dexterity'] ?? 10);
-  final conMod = _abilityModifier(scores['constitution'] ?? 10);
+  final abilityModifiers = <Ability, int>{
+    for (final ability in Ability.values)
+      ability: _abilityModifier(abilityScores[ability]!),
+  };
+  final dexMod = abilityModifiers[Ability.dexterity]!;
+  final conMod = abilityModifiers[Ability.constitution]!;
 
   final startingEntry = _resolveStartingEntry(entries);
   final defaultSavingThrowAbilities = {
@@ -55,34 +55,31 @@ Future<CharacterDerivedData> _buildDerivedData(
   final skillProficiencies = _collectSkillProficiencies(
     character,
     character.skillSelections ?? const <CharacterSkillSelectionData>[],
-    resolvedSources.classBackgroundOptions,
-    resolvedSources.raceOptions,
+    resolvedSources.selectedOptions,
   );
   final skillProficiencyLevels = _effectiveSkillProficiencyLevels(
     character,
     _defaultSkillProficiencyLevels(skillProficiencies),
   );
-  final skillBonuses = <String, int>{};
+  final skillBonuses = <Skill, int>{};
   for (final skill in Skill.values) {
-    final base = _abilityModifier(scores[_abilityForSkill(skill).name] ?? 10);
+    final base = abilityModifiers[_abilityForSkill(skill)]!;
     final multiplier =
         _skillProficiencyMultiplier(skillProficiencyLevels[skill]);
-    skillBonuses[skill.name] = base + (proficiencyBonus * multiplier);
+    skillBonuses[skill] = base + (proficiencyBonus * multiplier);
   }
 
-  final savingThrowBonuses = <String, int>{};
+  final savingThrowBonuses = <Ability, int>{};
   for (final ability in Ability.values) {
-    final base = _abilityModifier(scores[ability.name] ?? 10);
+    final base = abilityModifiers[ability]!;
     final proficient = savingThrowAbilities.contains(ability.name);
-    savingThrowBonuses[ability.name] =
-        base + (proficient ? proficiencyBonus : 0);
+    savingThrowBonuses[ability] = base + (proficient ? proficiencyBonus : 0);
   }
 
   final maxHp = _calculateMaxHp(character, entries, conMod);
-  final passivePerception = 10 + (skillBonuses[Skill.perception.name] ?? 0);
-  final passiveInvestigation =
-      10 + (skillBonuses[Skill.investigation.name] ?? 0);
-  final passiveInsight = 10 + (skillBonuses[Skill.insight.name] ?? 0);
+  final passivePerception = 10 + skillBonuses[Skill.perception]!;
+  final passiveInvestigation = 10 + skillBonuses[Skill.investigation]!;
+  final passiveInsight = 10 + skillBonuses[Skill.insight]!;
   final spellData = await _resolveSpellSlots(
     session,
     entries,
@@ -92,8 +89,7 @@ Future<CharacterDerivedData> _buildDerivedData(
   final languages = _applyProficiencyOverrides<Language>(
     automatic: _collectLanguages(
       character,
-      resolvedSources.classBackgroundOptions,
-      resolvedSources.raceOptions,
+      resolvedSources.selectedOptions,
     ),
     added: character.manualLanguageOverrides?.added,
     removed: character.manualLanguageOverrides?.removed,
@@ -103,8 +99,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     automatic: _collectToolProficiencyKeys(
       character,
       entries,
-      resolvedSources.classBackgroundOptions,
-      resolvedSources.raceOptions,
+      resolvedSources.selectedOptions,
     ),
     added: character.manualToolProficiencyOverrides?.addedKeys,
     removed: character.manualToolProficiencyOverrides?.removedKeys,
@@ -114,7 +109,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     automatic: _collectArmorTraining(
       character,
       entries,
-      resolvedSources.classBackgroundOptions,
+      resolvedSources.selectedOptions,
     ),
     added: character.manualArmorTrainingOverrides?.addedCategories,
     removed: character.manualArmorTrainingOverrides?.removedCategories,
@@ -123,7 +118,7 @@ Future<CharacterDerivedData> _buildDerivedData(
   final weaponTraining = _applyProficiencyOverrides<WeaponCategory>(
     automatic: _collectWeaponTraining(
       entries,
-      resolvedSources.classBackgroundOptions,
+      resolvedSources.selectedOptions,
     ),
     added: character.manualWeaponProficiencyOverrides?.addedCategories,
     removed: character.manualWeaponProficiencyOverrides?.removedCategories,
@@ -135,11 +130,6 @@ Future<CharacterDerivedData> _buildDerivedData(
     removed: character.manualWeaponProficiencyOverrides?.removedKeys,
     sortKey: (value) => value,
   );
-  final featureTags = _collectFeatureTags(
-    character: character,
-    resolvedSources: resolvedSources,
-    currentRaceFeatures: currentRaceFeatures,
-  );
   final activeFeatures = _buildActiveFeatures(
     character: character,
     resolvedSources: resolvedSources,
@@ -150,8 +140,7 @@ Future<CharacterDerivedData> _buildDerivedData(
   );
   final grantedSpellKeys = _collectGrantedSpellKeys(
     character.spellSelections ?? const <CharacterSpellSelectionData>[],
-    resolvedSources.classBackgroundOptions,
-    resolvedSources.raceOptions,
+    resolvedSources.selectedOptions,
     currentRaceFeatures,
     resolvedSources.alwaysPreparedSpellKeys,
   );
@@ -163,22 +152,25 @@ Future<CharacterDerivedData> _buildDerivedData(
   );
   final hitDiceSummary = _hitDiceSummary(character, entries);
 
-  final senses = <String>[
-    if (character.race?.visionType != null) character.race!.visionType!.name,
-  ];
   final resistances = _collectDamageTypes(
     character,
-    resolvedSources.raceOptions,
+    resolvedSources.selectedOptions,
   );
   final movementSpeeds = _effectiveMovementSpeeds(character);
+  final armorClass = await _calculateArmorClass(
+    character,
+    dexMod,
+    resolveContext: context,
+    transaction: transaction,
+  );
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
     proficiencyBonus: proficiencyBonus,
-    abilityScores: scores,
+    abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: 10 + dexMod + (character.customArmorClassBonus ?? 0),
+    armorClass: armorClass,
     initiative: dexMod + (character.customInitiativeBonus ?? 0),
     speed: _displayedSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
@@ -208,14 +200,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     customArmorTraining: _normalizedCustomValues(
       character.manualArmorTrainingOverrides?.custom,
     ),
-    featureTags: featureTags,
-    featIds: const <int>[],
     grantedSpellKeys: grantedSpellKeys,
     alwaysPreparedSpellKeys: resolvedSources.alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
-    senses: senses,
     resistances: resistances,
-    rebuiltAt: DateTime.now(),
   );
 }
 
@@ -322,8 +310,7 @@ String? _normalizeAbilityKey(String raw) {
 Set<Skill> _collectSkillProficiencies(
   CharacterData character,
   List<CharacterSkillSelectionData> skillSelections,
-  List<ChoiceOptionData> classBackgroundOptions,
-  List<ChoiceOptionData> raceOptions,
+  List<ChoiceOptionData> selectedOptions,
 ) {
   final skills = <Skill>{};
   skills.addAll(character.race?.skillProficiencies ?? const <Skill>[]);
@@ -337,11 +324,7 @@ Set<Skill> _collectSkillProficiencies(
     }
   }
 
-  for (final option in classBackgroundOptions) {
-    skills.addAll(option.grantedSkills ?? const <Skill>[]);
-  }
-
-  for (final option in raceOptions) {
+  for (final option in selectedOptions) {
     skills.addAll(option.grantedSkills ?? const <Skill>[]);
   }
 

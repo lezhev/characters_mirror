@@ -6,7 +6,7 @@ String formatAttackBonus(CharacterData character, CharacterAttackData attack) {
   final proficiencyBonus = character.derived?.proficiencyBonus ?? 0;
   final abilityModifier = attack.leadingAbility == null
       ? 0
-      : character.derived?.abilityModifiers?[attack.leadingAbility!.name] ?? 0;
+      : character.derived?.abilityModifiers?[attack.leadingAbility!] ?? 0;
   final customBonus = attack.customAttackBonus ?? 0;
   final total = proficiencyBonus + abilityModifier + customBonus;
   return total >= 0 ? '+$total' : '$total';
