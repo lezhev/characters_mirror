@@ -607,10 +607,10 @@ class OfflineSyncCoordinator extends ChangeNotifier {
   }) async {
     final serverId = canonical.id;
     if (serverId == null) return;
-    final existing = await _cache.getCharacterByServerId(userId, serverId) ??
-        (localIdHint == null
+    final existing = (localIdHint == null
             ? null
-            : await _cache.getCharacter(userId, localIdHint));
+            : await _cache.getCharacter(userId, localIdHint)) ??
+        await _cache.getCharacterByServerId(userId, serverId);
     final pending = [
       for (final change in await _cache.getPendingChanges(userId))
         if (_changesReferToSameCharacter(

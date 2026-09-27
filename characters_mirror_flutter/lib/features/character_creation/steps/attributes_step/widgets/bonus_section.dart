@@ -15,26 +15,24 @@ class BounsSection extends ConsumerWidget {
     final notifier = ref.read(attributeStateProvider.notifier);
     final hasRules = notifier.hasSelectableBonusRules(bonus);
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 12.0),
-      child: Container(
-        height: 416,
-        width: 50,
-        color: Colors.transparent,
-        child: ListView(
-          physics: NeverScrollableScrollPhysics(),
-          children: Attribute.values.map((attribute) {
-            final isAvailable = notifier.isBonusAvailable(
-              attribute: attribute,
-              bonusValue: bonus,
-            );
-            final isEditable = notifier.isBonusEditable(
-              attribute: attribute,
-              bonusValue: bonus,
-            );
+    return SizedBox(
+      width: 50,
+      child: ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: Attribute.values.map((attribute) {
+          final isAvailable = notifier.isBonusAvailable(
+            attribute: attribute,
+            bonusValue: bonus,
+          );
+          final isEditable = notifier.isBonusEditable(
+            attribute: attribute,
+            bonusValue: bonus,
+          );
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 28.0),
+          return SizedBox(
+            height: 68,
+            child: Center(
               child: Checkbox(
                 value: bonus == 1
                     ? state.bonusesPlusOne[attribute]
@@ -49,9 +47,9 @@ class BounsSection extends ConsumerWidget {
                       }
                     : null,
               ),
-            );
-          }).toList(),
-        ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

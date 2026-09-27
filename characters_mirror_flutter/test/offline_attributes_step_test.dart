@@ -99,14 +99,14 @@ void main() {
     );
     await initialCache.saveLocal(
       7,
-      local.character.copyWith(baseAbilityScores: const {'strength': 16}),
+      local.character.copyWith(baseAbilityScores: const {'strength': 25}),
     );
     initialCache.close();
 
     final cache = await OfflineCacheDatabase.openAt(path);
     addTearDown(cache.close);
     final reloaded = await cache.getCharacter(7, local.localId);
-    expect(reloaded?.character.baseAbilityScores, const {'strength': 16});
+    expect(reloaded?.character.baseAbilityScores, const {'strength': 25});
 
     var createRequests = 0;
     final coordinator = OfflineSyncCoordinator(
@@ -119,13 +119,13 @@ void main() {
         expect(operation.type, CharacterSyncOperationType.createCharacter);
         expect(
           operation.itemPayload?.characterValue?.baseAbilityScores,
-          const {'strength': 16},
+          const {'strength': 25},
         );
         createRequests += 1;
         final canonical = CharacterData(
           id: 42,
           name: 'Offline hero',
-          baseAbilityScores: const {'strength': 16},
+          baseAbilityScores: const {'strength': 25},
           version: 1,
         );
         return CharacterSyncResponse(
@@ -141,10 +141,11 @@ void main() {
     await coordinator.syncNow();
 
     expect(createRequests, 1);
-    expect(await cache.getCharacter(7, local.localId), isNull);
+    final byLocalId = await cache.getCharacter(7, local.localId);
+    expect(byLocalId?.serverId, 42);
     final synced = await cache.getCharacter(7, 42);
     expect(synced?.status, OfflineCharacterSyncStatus.clean);
-    expect(synced?.character.baseAbilityScores, const {'strength': 16});
+    expect(synced?.character.baseAbilityScores, const {'strength': 25});
     expect(await cache.getPendingChanges(7), isEmpty);
   });
 }

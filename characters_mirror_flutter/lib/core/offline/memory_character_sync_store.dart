@@ -272,7 +272,29 @@ class MemoryCharacterSyncStore implements CharacterSyncStore {
     int oldLocalId,
     CharacterData serverCharacter,
   ) async {
-    _userCharacters(userId).remove(oldLocalId);
+    final serverId = serverCharacter.id;
+    if (serverId == null) return;
+    final characters = _userCharacters(userId);
+    final localRecord = characters[oldLocalId];
+    if (localRecord != null) {
+      characters.removeWhere(
+        (localId, record) =>
+            record.serverId == serverId && localId != oldLocalId,
+      );
+      characters[oldLocalId] = OfflineCharacterRecord(
+        userId: userId,
+        localId: oldLocalId,
+        serverId: serverId,
+        character: serverCharacter,
+        baseVersion: serverCharacter.version,
+        baseUpdatedAt: serverCharacter.updatedAt,
+        baseCharacter: serverCharacter,
+        status: OfflineCharacterSyncStatus.clean,
+        lastSyncError: localRecord.lastSyncError,
+      );
+      return;
+    }
+
     await upsertCleanFromServer(
       userId,
       serverCharacter,

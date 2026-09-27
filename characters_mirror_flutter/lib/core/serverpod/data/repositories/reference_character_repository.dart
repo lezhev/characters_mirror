@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character/armor_class_calculator.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
@@ -11,6 +12,8 @@ import 'package:characters_mirror_flutter/core/serverpod/data/repositories/repos
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 
 class CharacterRepository implements Repository<CharacterData> {
+  List<ArmorData>? _armorCatalogWithoutOfflineCache;
+
   @override
   Future<List<CharacterData>> getAll() async {
     final store = characterSyncStore;
@@ -180,7 +183,26 @@ class CharacterRepository implements Repository<CharacterData> {
 
   Future<CharacterData> _resolveForLocalStore(CharacterData character) async {
     final cache = offlineCacheDatabase;
-    if (cache == null) return character;
+    if (cache == null) {
+      final hasCatalogArmorSelection = [
+        character.equippedArmor?.referenceKey,
+        character.equippedShield?.referenceKey,
+      ].any((key) => key?.trim().isNotEmpty == true);
+      if (!hasCatalogArmorSelection) {
+        return recalculateArmorClassFromCatalog(character, const []);
+      }
+
+      try {
+        _armorCatalogWithoutOfflineCache ??= await client.armorData.getAll();
+        return recalculateArmorClassFromCatalog(
+          character,
+          _armorCatalogWithoutOfflineCache!,
+        );
+      } catch (_) {
+        // Keep the local edit available if reference data cannot be loaded.
+        return character;
+      }
+    }
     return resolveOfflineCharacter(cache, character);
   }
 }

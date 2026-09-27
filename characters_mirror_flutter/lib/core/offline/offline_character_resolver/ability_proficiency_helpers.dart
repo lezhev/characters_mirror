@@ -36,6 +36,7 @@ Map<String, int> _abilityScores(
   }
   for (final entry in character.customAbilityBonuses?.entries ??
       const Iterable<MapEntry<String, int>>.empty()) {
+    if (!Ability.values.any((ability) => ability.name == entry.key)) continue;
     scores[entry.key] = (scores[entry.key] ?? 10) + entry.value;
   }
   return scores;

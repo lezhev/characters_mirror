@@ -910,21 +910,23 @@ void _registerCharacterDataEndpointTests() {
         (entry) => entry.referenceKey == 'dagger',
       );
       expect(daggerEntry.quantity, 2);
-      expect(
-          derived.featureTags,
-          containsAll([
-            FeatureTag.combat,
-            FeatureTag.exploration,
-            FeatureTag.utility,
-          ]));
-      expect(derived.abilityScores?['strength'], 10);
-      expect(derived.abilityModifiers?['strength'], 0);
-      expect(derived.skillBonuses?['acrobatics'], 5);
-      expect(derived.skillBonuses?['athletics'], 2);
-      expect(derived.skillBonuses?['insight'], 2);
-      expect(derived.skillBonuses?['perception'], 2);
-      expect(derived.skillBonuses?['religion'], 2);
-      expect(derived.skillBonuses?['survival'], 2);
+      final serializedDerived = derived.toJson();
+      for (final removedField in [
+        'featureTags',
+        'featIds',
+        'senses',
+        'rebuiltAt',
+      ]) {
+        expect(serializedDerived, isNot(contains(removedField)));
+      }
+      expect(derived.abilityScores?[Ability.strength], 10);
+      expect(derived.abilityModifiers?[Ability.strength], 0);
+      expect(derived.skillBonuses?[Skill.acrobatics], 5);
+      expect(derived.skillBonuses?[Skill.athletics], 2);
+      expect(derived.skillBonuses?[Skill.insight], 2);
+      expect(derived.skillBonuses?[Skill.perception], 2);
+      expect(derived.skillBonuses?[Skill.religion], 2);
+      expect(derived.skillBonuses?[Skill.survival], 2);
       expect(
         derived.armorTraining,
         containsAll([
@@ -1193,15 +1195,15 @@ void _registerCharacterDataEndpointTests() {
       );
 
       final derived = saved.derived!;
-      expect(derived.abilityScores?['strength'], 18);
-      expect(derived.abilityModifiers?['strength'], 4);
-      expect(derived.skillBonuses?['athletics'], 8);
-      expect(derived.skillBonuses?['stealth'], 4);
-      expect(derived.skillBonuses?['insight'], 0);
-      expect(derived.skillBonuses?['religion'], 0);
-      expect(derived.savingThrowBonuses?['strength'], 4);
-      expect(derived.savingThrowBonuses?['constitution'], 0);
-      expect(derived.savingThrowBonuses?['dexterity'], 4);
+      expect(derived.abilityScores?[Ability.strength], 18);
+      expect(derived.abilityModifiers?[Ability.strength], 4);
+      expect(derived.skillBonuses?[Skill.athletics], 8);
+      expect(derived.skillBonuses?[Skill.stealth], 4);
+      expect(derived.skillBonuses?[Skill.insight], 0);
+      expect(derived.skillBonuses?[Skill.religion], 0);
+      expect(derived.savingThrowBonuses?[Ability.strength], 4);
+      expect(derived.savingThrowBonuses?[Ability.constitution], 0);
+      expect(derived.savingThrowBonuses?[Ability.dexterity], 4);
       expect(derived.passivePerception, 10);
       expect(derived.savingThrowProficiencies, [Ability.dexterity]);
 

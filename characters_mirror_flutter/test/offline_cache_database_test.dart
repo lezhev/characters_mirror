@@ -21,7 +21,7 @@ void main() {
     cache.close();
   });
 
-  test('openDefault creates the v8 offline cache file', () async {
+  test('openDefault creates the v9 offline cache file', () async {
     final directory = await Directory.systemTemp.createTemp('offline-cache-');
     final previousPlatform = PathProviderPlatform.instance;
     PathProviderPlatform.instance = _FakePathProviderPlatform(directory.path);
@@ -34,7 +34,7 @@ void main() {
     addTearDown(defaultCache.close);
 
     expect(
-      File(p.join(directory.path, 'characters_mirror_offline_v8.sqlite'))
+      File(p.join(directory.path, 'characters_mirror_offline_v9.sqlite'))
           .existsSync(),
       isTrue,
     );
@@ -132,7 +132,7 @@ void main() {
     );
   });
 
-  test('remaps a negative local id to the synced server id', () async {
+  test('keeps the local id addressable after syncing to a server id', () async {
     final local = await cache.saveLocal(7, CharacterData(name: 'Local'));
 
     await cache.markSynced(
@@ -141,10 +141,13 @@ void main() {
       CharacterData(id: 42, name: 'Remote', version: 3),
     );
 
-    expect(await cache.getCharacter(7, local.localId), isNull);
+    final byLocalId = await cache.getCharacter(7, local.localId);
+    expect(byLocalId, isNotNull);
+    expect(byLocalId!.localId, local.localId);
+    expect(byLocalId.serverId, 42);
     final synced = await cache.getCharacter(7, 42);
     expect(synced, isNotNull);
-    expect(synced!.localId, 42);
+    expect(synced!.localId, local.localId);
     expect(synced.serverId, 42);
     expect(synced.character.name, 'Remote');
     expect(synced.baseCharacter?.name, 'Remote');

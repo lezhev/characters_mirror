@@ -51,12 +51,12 @@ Map<String, int> characterRollVariables(CharacterData character) {
 }
 
 int _abilityModifierFor(CharacterData character, Ability ability) {
-  return character.derived?.abilityModifiers?[ability.name] ??
+  return character.derived?.abilityModifiers?[ability] ??
       _abilityModifier(_abilityScore(character, ability));
 }
 
 int _abilityScore(CharacterData character, Ability ability) {
-  return character.derived?.abilityScores?[ability.name] ??
+  return character.derived?.abilityScores?[ability] ??
       character.baseAbilityScores?[ability.name] ??
       10;
 }

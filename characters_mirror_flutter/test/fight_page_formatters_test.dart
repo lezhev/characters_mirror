@@ -9,7 +9,7 @@ void main() {
       final character = CharacterData(
         derived: CharacterDerivedData(
           proficiencyBonus: 2,
-          abilityModifiers: const {'strength': 3},
+          abilityModifiers: const {Ability.strength: 3},
         ),
       );
       final attack = CharacterAttackData(

@@ -4,6 +4,8 @@ import 'package:characters_mirror_flutter/core/offline/offline_character_resolve
 import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../test_fixtures/derived_parity_contract.dart';
+
 void main() {
   late OfflineCacheDatabase cache;
 
@@ -13,6 +15,16 @@ void main() {
 
   tearDown(() {
     cache.close();
+  });
+
+  test('offline derived payload omits redundant aggregate metadata', () async {
+    final derived = await buildOfflineDerivedData(cache, CharacterData());
+    final serializedKeys = derived.toJson().keys;
+
+    expect(serializedKeys, isNot(contains('featureTags')));
+    expect(serializedKeys, isNot(contains('featIds')));
+    expect(serializedKeys, isNot(contains('senses')));
+    expect(serializedKeys, isNot(contains('rebuiltAt')));
   });
 
   test('ToolData preserves nullable and available category identities', () {
@@ -368,6 +380,8 @@ void main() {
           choiceGroupId: 7,
           optionKey: 'smith_tools',
           grantedToolKeys: const ['smith_tools'],
+          grantedArmorTraining: const [ArmorCategory.light],
+          damageType: DamageType.fire,
         ),
       ],
       (value) => value.toJson(),
@@ -386,7 +400,15 @@ void main() {
       ),
     );
 
-    expect(derived.toolProficiencyKeys, ['smith_tools']);
+    expect(
+      {
+        'armorTraining':
+            derived.armorTraining!.map((value) => value.name).toList(),
+        'resistances': derived.resistances!.map((value) => value.name).toList(),
+        'toolProficiencyKeys': derived.toolProficiencyKeys,
+      },
+      backgroundChoiceDerivedParityContract,
+    );
   });
 
   test('offline proficiency overrides preserve canonical identities and deltas',
@@ -585,21 +607,554 @@ void main() {
     );
   });
 
-  test('local resolve preserves server spell-slot progression', () async {
+  test('offline saving throw proficiency order follows Ability values',
+      () async {
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(
+              savingThrowProficiencies: const [
+                Ability.charisma,
+                Ability.dexterity,
+              ],
+            ),
+            isStartingClass: true,
+            level: 1,
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.savingThrowProficiencies, [
+      Ability.dexterity,
+      Ability.charisma,
+    ]);
+  });
+
+  test('offline resolve recalculates spell slots from local class levels',
+      () async {
+    await cache.putReferenceList(
+      'spell_slot_progression',
+      offlineAllKey,
+      [
+        SpellSlotProgressionData(
+          tableKey: 'standard',
+          level: 1,
+          spellSlots: const {1: 2},
+        ),
+        SpellSlotProgressionData(
+          tableKey: 'standard',
+          level: 2,
+          spellSlots: const {1: 3},
+        ),
+        SpellSlotProgressionData(
+          tableKey: 'pact_magic',
+          level: 3,
+          spellSlots: const {2: 2},
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
     final resolved = await resolveOfflineCharacter(
       cache,
       CharacterData(
-        currentSpellSlots: const {1: 0},
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(
+              id: 10,
+              spellcastingProgression: SpellcastingProgression.full,
+            ),
+            level: 2,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+          CharacterClassEntryData(
+            classData: ClassData(
+              id: 11,
+              spellcastingProgression: SpellcastingProgression.pactMagic,
+            ),
+            level: 3,
+            classOrder: 1,
+          ),
+        ],
         derived: CharacterDerivedData(
-          spellSlots: const {1: 2},
-          pactSlots: const {2: 1},
+          spellSlots: const {1: 99},
+          pactSlots: const {9: 99},
         ),
       ),
     );
 
-    expect(resolved.currentSpellSlots, const {1: 0});
-    expect(resolved.derived?.spellSlots, const {1: 2});
-    expect(resolved.derived?.pactSlots, const {2: 1});
+    expect(resolved.derived?.spellSlots, const {1: 3});
+    expect(resolved.derived?.pactSlots, const {2: 2});
+  });
+
+  test('offline always-prepared spells follow local class level', () async {
+    await cache.putReferenceList(
+      'class_spell_grant',
+      offlineAllKey,
+      [
+        ClassSpellGrantData(
+          spell: SpellData(referenceKey: 'bless', name: 'Bless'),
+          sourceClass: ClassData(id: 20),
+          grantedAtLevel: 3,
+          alwaysPrepared: true,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: 20),
+            level: 3,
+            isStartingClass: true,
+          ),
+        ],
+        derived: CharacterDerivedData(
+          alwaysPreparedSpellKeys: const ['stale_spell'],
+        ),
+      ),
+    );
+
+    expect(derived.alwaysPreparedSpellKeys, ['bless']);
+    expect(derived.grantedSpellKeys, contains('bless'));
+    expect(derived.grantedSpellKeys, isNot(contains('stale_spell')));
+  });
+
+  test('offline always-prepared feature grants use the active class level',
+      () async {
+    const classId = 90;
+    const featureId = 91;
+    final feature = ClassFeatureData(
+      id: featureId,
+      parentClassId: classId,
+      name: 'Feature grant source',
+      level: 1,
+    );
+    await cache.putReferenceList(
+      'class_feature',
+      offlineAllKey,
+      [feature],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'class_spell_grant',
+      offlineAllKey,
+      [
+        ClassSpellGrantData(
+          spell: SpellData(referenceKey: 'shield', name: 'Shield'),
+          sourceFeatureId: featureId,
+          sourceFeature: feature,
+          grantedAtLevel: 3,
+          alwaysPrepared: true,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId),
+            level: 3,
+            isStartingClass: true,
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.alwaysPreparedSpellKeys, ['shield']);
+  });
+
+  test('offline multiclass slot progression rounds each class down', () async {
+    await cache.putReferenceList(
+      'spell_slot_progression',
+      offlineAllKey,
+      [
+        SpellSlotProgressionData(
+          tableKey: 'standard',
+          level: 1,
+          spellSlots: const {1: 4},
+        ),
+        SpellSlotProgressionData(
+          tableKey: 'standard',
+          level: 2,
+          spellSlots: const {1: 4, 2: 2},
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(
+              id: 70,
+              spellcastingProgression: SpellcastingProgression.half,
+            ),
+            level: 3,
+            isStartingClass: true,
+          ),
+          CharacterClassEntryData(
+            classData: ClassData(
+              id: 71,
+              spellcastingProgression: SpellcastingProgression.third,
+            ),
+            level: 2,
+            isStartingClass: false,
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.spellSlots, const {1: 4});
+  });
+
+  test('offline racial spell grants use canonical reference keys', () async {
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        race: RaceData(
+          features: [
+            RaceFeatureData(
+              id: 31,
+              name: 'Gift',
+              spellGrants: [
+                RaceFeatureSpellGrantData(
+                  featureId: 31,
+                  spellId: 32,
+                  spell: SpellData(
+                    referenceKey: 'false_life',
+                    name: 'Псевдожизнь',
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(derived.grantedSpellKeys, ['false_life']);
+  });
+
+  test('offline ignores noncanonical custom ability bonus keys', () async {
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(customAbilityBonuses: const {'strength': 1, 'STR': 5}),
+    );
+
+    expect(derived.abilityScores, hasLength(Ability.values.length));
+    expect(derived.abilityScores?[Ability.strength], 11);
+    expect(derived.abilityScores?.keys, containsAll(Ability.values));
+  });
+
+  test('offline total level is zero without class entries', () async {
+    final derived = await buildOfflineDerivedData(cache, CharacterData());
+
+    expect(derived.totalLevel, 0);
+    expect(derived.proficiencyBonus, 2);
+  });
+
+  test('offline omits hit dice for a class entry with no level', () async {
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(hitDieValue: 8),
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.hitDiceSummary, isEmpty);
+  });
+
+  test('offline applies active feature resource max effects', () async {
+    const classId = 50;
+    const featureId = 51;
+    final feature = ClassFeatureData(
+      id: featureId,
+      parentClassId: classId,
+      name: 'Second Wind',
+      level: 1,
+      resources: [
+        FeatureResourceDefinitionData(
+          key: 'uses',
+          kind: FeatureResourceKind.uses,
+          maxRule: FeatureResourceMaxRule.fixed,
+          maxValue: 1,
+        ),
+      ],
+      resourceEffects: [
+        FeatureResourceEffectData(
+          type: FeatureResourceEffectType.modify,
+          targetResourceKey: 'uses',
+          addMaxValue: 2,
+        ),
+      ],
+    );
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(classId),
+      ClassStepView(
+        classData: ClassData(id: classId, name: 'Fighter'),
+        selectedLevel: 1,
+        currentLevelFeatures: [feature],
+      ),
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId, name: 'Fighter'),
+            level: 1,
+            isStartingClass: true,
+          ),
+        ],
+      ),
+    );
+
+    final resource = derived.activeFeatures!.single.resources!.single;
+    expect((resource.key, resource.max, resource.current), ('uses', 3, 1));
+  });
+
+  test('offline equal feature override is not customized', () async {
+    const classId = 60;
+    const featureId = 61;
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(classId),
+      ClassStepView(
+        classData: ClassData(id: classId, name: 'Rogue'),
+        selectedLevel: 1,
+        currentLevelFeatures: [
+          ClassFeatureData(
+            id: featureId,
+            parentClassId: classId,
+            name: 'Expertise',
+            description: 'Default description',
+            level: 1,
+            tags: const [FeatureTag.utility],
+          ),
+        ],
+      ),
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId, name: 'Rogue'),
+            level: 1,
+            isStartingClass: true,
+          ),
+        ],
+        featureOverrides: [
+          CharacterFeatureOverrideData(
+            sourceType: CharacterFeatureSourceType.classFeature,
+            sourceId: featureId,
+            name: 'Expertise',
+            description: 'Default description',
+            tags: const [FeatureTag.utility],
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.activeFeatures!.single.isCustomized, isFalse);
+  });
+
+  test('offline active feature ordering follows source then level then name',
+      () async {
+    const classId = 100;
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(classId),
+      ClassStepView(
+        classData: ClassData(id: classId),
+        selectedLevel: 1,
+        currentLevelFeatures: [
+          ClassFeatureData(
+            id: 102,
+            parentClassId: classId,
+            name: 'Zulu class feature',
+            level: 1,
+          ),
+        ],
+      ),
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        race: RaceData(
+          features: [
+            RaceFeatureData(id: 101, name: 'Alpha race feature', level: 1),
+          ],
+        ),
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId),
+            level: 1,
+            isStartingClass: true,
+          ),
+        ],
+      ),
+    );
+
+    expect(
+      derived.activeFeatures!.map((feature) => feature.name),
+      ['Zulu class feature', 'Alpha race feature'],
+    );
+  });
+
+  test('offline does not activate class features when entry level is null',
+      () async {
+    const classId = 110;
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(classId, selectedLevel: 1),
+      ClassStepView(
+        classData: ClassData(id: classId),
+        selectedLevel: 1,
+        currentLevelFeatures: [
+          ClassFeatureData(
+            id: 111,
+            parentClassId: classId,
+            name: 'Level one feature',
+            level: 1,
+          ),
+        ],
+      ),
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(classData: ClassData(id: classId)),
+        ],
+      ),
+    );
+
+    expect(derived.activeFeatures, isEmpty);
+  });
+
+  test('offline includes selected choice damage type in resistances', () async {
+    await cache.putReferenceList(
+      'choice_group',
+      offlineAllKey,
+      [
+        ChoiceGroupData(
+          id: 40,
+          referenceKey: 'race_resistance_choice',
+          sourceRaceId: 40,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_option',
+      offlineAllKey,
+      [
+        ChoiceOptionData(
+          id: 41,
+          choiceGroupId: 40,
+          optionKey: 'fire',
+          damageType: DamageType.fire,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        race: RaceData(id: 40),
+        choices: [
+          CharacterChoiceData(
+            groupKey: 'race_resistance_choice',
+            optionKey: 'fire',
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.resistances, [DamageType.fire]);
+  });
+
+  test('offline does not apply a locked race-feature choice', () async {
+    await cache.putReferenceList(
+      'choice_group',
+      offlineAllKey,
+      [
+        ChoiceGroupData(
+          id: 80,
+          referenceKey: 'level_three_race_feature_choice',
+          sourceRaceFeatureId: 81,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_option',
+      offlineAllKey,
+      [
+        ChoiceOptionData(
+          id: 82,
+          choiceGroupId: 80,
+          optionKey: 'athletics',
+          grantedSkills: const [Skill.athletics],
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        race: RaceData(
+          id: 83,
+          features: [
+            RaceFeatureData(id: 81, name: 'Future trait', level: 3),
+          ],
+        ),
+        choices: [
+          CharacterChoiceData(
+            groupKey: 'level_three_race_feature_choice',
+            optionKey: 'athletics',
+          ),
+        ],
+      ),
+    );
+
+    expect(
+      derived.skillProficiencyLevels!
+          .singleWhere(
+            (state) => state.skill == Skill.athletics,
+          )
+          .level,
+      CharacterSkillProficiencyLevel.none,
+    );
   });
 
   test('racial weapon proficiency keys stay separate offline', () async {
@@ -787,14 +1342,14 @@ void main() {
       ),
     );
 
-    expect(derived.abilityScores?['strength'], 12);
+    expect(derived.abilityScores?[Ability.strength], 12);
     expect(
       derived.skillProficiencyLevels
           ?.firstWhere((state) => state.skill == Skill.athletics)
           .level,
       CharacterSkillProficiencyLevel.proficient,
     );
-    expect(derived.skillBonuses?['athletics'], 3);
+    expect(derived.skillBonuses?[Skill.athletics], 3);
     expect(derived.grantedSpellKeys, contains('false_life'));
   });
 }

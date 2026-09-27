@@ -65,21 +65,62 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(path: '/settings', builder: (_, __) => const SettingsPage()),
-      GoRoute(path: '/create', builder: (_, __) => const ClassStep()),
-      GoRoute(path: '/create/race', builder: (_, __) => const RaceStep()),
-      GoRoute(path: '/create/classStep', builder: (_, __) => const ClassStep()),
+      GoRoute(
+        path: '/create',
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const ClassStep(),
+        ),
+      ),
+      GoRoute(
+        path: '/create/race',
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const RaceStep(),
+        ),
+      ),
+      GoRoute(
+        path: '/create/classStep',
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const ClassStep(),
+        ),
+      ),
       GoRoute(
         path: '/create/background',
-        builder: (_, __) => const BackgroundStep(),
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const BackgroundStep(),
+        ),
       ),
       GoRoute(
         path: '/create/attributes',
-        builder: (_, __) => const AttributesStep(),
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const AttributesStep(),
+        ),
       ),
-      GoRoute(path: '/create/spells', builder: (_, __) => const SpellsStep()),
       GoRoute(
-          path: '/create/personal', builder: (_, __) => const PersonalStep()),
-      GoRoute(path: '/create/summary', builder: (_, __) => const SummaryStep()),
+        path: '/create/spells',
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const SpellsStep(),
+        ),
+      ),
+      GoRoute(
+        path: '/create/personal',
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const PersonalStep(),
+        ),
+      ),
+      GoRoute(
+        path: '/create/summary',
+        pageBuilder: (_, state) => _creationStepPage(
+          state,
+          const SummaryStep(),
+        ),
+      ),
     ],
     errorBuilder: (context, state) {
       return Scaffold(
@@ -90,3 +131,18 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
   );
 });
+
+CustomTransitionPage<void> _creationStepPage(
+  GoRouterState state,
+  Widget child,
+) {
+  const duration = Duration(milliseconds: 280);
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
+    child: child,
+    transitionDuration: duration,
+    reverseTransitionDuration: duration,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        child,
+  );
+}

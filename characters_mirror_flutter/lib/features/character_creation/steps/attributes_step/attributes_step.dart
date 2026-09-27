@@ -62,27 +62,13 @@ class AttributesStep extends ConsumerWidget {
   }
 }
 
-Map<String, int> _baseAttributes(WidgetRef ref) {
-  return ref
-      .read(attributeStateProvider)
-      .assignedAttributes
-      .map((key, value) => MapEntry(key.name, value));
-}
-
-List<CharacterChoiceData> _racialAttributeChoices(WidgetRef ref) {
-  return ref
-      .read(attributeStateProvider.notifier)
-      .buildRacialAttributeChoices();
-}
-
 Future<void> _syncAndGo({
   required BuildContext context,
   required WidgetRef ref,
   required Step? target,
 }) async {
   final notifier = ref.read(characterCreationProvider.notifier);
-  notifier.syncAttributesDraft(_baseAttributes(ref));
-  notifier.syncRacialAttributeChoicesDraft(_racialAttributeChoices(ref));
+  ref.read(attributeStateProvider.notifier).syncActiveDraftToCharacter();
   final character = ref.read(characterCreationProvider).character;
   final choices = character.choices ?? const <CharacterChoiceData>[];
   final abilityScores = buildCharacterCreationAbilityScores(

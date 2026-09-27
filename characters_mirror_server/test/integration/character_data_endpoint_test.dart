@@ -5,6 +5,7 @@ import 'package:characters_mirror_server/src/validation/validation_exception.dar
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 
+import '../../../test_fixtures/derived_parity_contract.dart';
 import 'test_tools/serverpod_test_tools.dart';
 
 part 'character_data_endpoint_test/character_data_endpoint_scenarios.dart';

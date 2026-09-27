@@ -107,12 +107,12 @@ void main() {
         derived: CharacterDerivedData(
           proficiencyBonus: 3,
           abilityModifiers: const {
-            'strength': 1,
-            'wisdom': 2,
+            Ability.strength: 1,
+            Ability.wisdom: 2,
           },
           skillBonuses: const {
-            'athletics': 1,
-            'perception': 2,
+            Skill.athletics: 1,
+            Skill.perception: 2,
           },
         ),
       );
@@ -127,8 +127,8 @@ void main() {
         manualSkillProficiencies: manual,
       );
 
-      expect(updated.derived?.skillBonuses?[Skill.athletics.name], 7);
-      expect(updated.derived?.skillBonuses?[Skill.perception.name], 2);
+      expect(updated.derived?.skillBonuses?[Skill.athletics], 7);
+      expect(updated.derived?.skillBonuses?[Skill.perception], 2);
       expect(
         skillProficiencyLevelMap(
             updated.derived?.skillProficiencyLevels)[Skill.athletics],
@@ -141,12 +141,12 @@ void main() {
         derived: CharacterDerivedData(
           proficiencyBonus: 2,
           abilityModifiers: const {
-            'strength': 1,
-            'dexterity': 3,
+            Ability.strength: 1,
+            Ability.dexterity: 3,
           },
           savingThrowBonuses: const {
-            'strength': 1,
-            'dexterity': 3,
+            Ability.strength: 1,
+            Ability.dexterity: 3,
           },
         ),
       );
@@ -161,8 +161,8 @@ void main() {
         manualSavingThrowProficiencies: manual,
       );
 
-      expect(updated.derived?.savingThrowBonuses?[Ability.strength.name], 1);
-      expect(updated.derived?.savingThrowBonuses?[Ability.dexterity.name], 5);
+      expect(updated.derived?.savingThrowBonuses?[Ability.strength], 1);
+      expect(updated.derived?.savingThrowBonuses?[Ability.dexterity], 5);
       expect(updated.derived?.savingThrowProficiencies, [Ability.dexterity]);
     });
 
@@ -171,8 +171,8 @@ void main() {
         derived: CharacterDerivedData(
           proficiencyBonus: 2,
           abilityModifiers: const {
-            'intelligence': 1,
-            'wisdom': 2,
+            Ability.intelligence: 1,
+            Ability.wisdom: 2,
           },
         ),
       );

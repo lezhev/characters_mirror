@@ -124,7 +124,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
   required _CurrentRaceFeatures currentRaceFeatures,
   required int totalLevel,
   required int proficiencyBonus,
-  required Map<String, int> abilityModifiers,
+  required Map<Ability, int> abilityModifiers,
 }) {
   final normalizedOverrides = _normalizedFeatureOverrides(
     character.featureOverrides,

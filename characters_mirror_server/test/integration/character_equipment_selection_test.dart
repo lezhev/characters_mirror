@@ -76,6 +76,192 @@ void main() {
       expect(loadedCustom.equippedArmor?.name, 'Custom armor');
     });
 
+    test('derived AC uses equipped catalog armor and shield statistics',
+        () async {
+      final session = owner.build();
+      try {
+        for (final armor in [
+          ArmorData(
+            referenceKey: 'stage8_leather_armor',
+            name: 'Leather Armor',
+            categoryValue: ArmorCategory.light,
+            baseAC: 11,
+            dexBonus: true,
+          ),
+          ArmorData(
+            referenceKey: 'stage8_scale_mail',
+            name: 'Scale Mail',
+            categoryValue: ArmorCategory.medium,
+            baseAC: 14,
+            dexBonus: true,
+            dexBonusMax: 2,
+          ),
+          ArmorData(
+            referenceKey: 'stage8_chain_mail',
+            name: 'Chain Mail',
+            categoryValue: ArmorCategory.heavy,
+            baseAC: 16,
+            dexBonus: false,
+          ),
+          ArmorData(
+            referenceKey: 'stage8_shield',
+            name: 'Shield',
+            categoryValue: ArmorCategory.shield,
+            bonusAC: 3,
+          ),
+        ]) {
+          await ArmorData.db.insertRow(session, armor);
+        }
+      } finally {
+        await session.close();
+      }
+
+      Future<int?> derivedArmorClass({
+        int dexterity = 16,
+        String? armorKey,
+        String? shieldKey,
+        int? customBonus,
+      }) async {
+        final saved = await endpoints.characterData.saveCharacter(
+          owner,
+          CharacterData(
+            name: 'Stage 8 AC fixture',
+            baseAbilityScores: {'dexterity': dexterity},
+            equippedArmor: armorKey == null
+                ? null
+                : CharacterEquipmentSelectionData(
+                    referenceKey: armorKey,
+                    name: 'Client armor name',
+                  ),
+            equippedShield: shieldKey == null
+                ? null
+                : CharacterEquipmentSelectionData(
+                    referenceKey: shieldKey,
+                    name: 'Client shield name',
+                  ),
+            customArmorClassBonus: customBonus,
+          ),
+        );
+        final loaded = await endpoints.characterData.getCharacter(
+          owner,
+          saved.id!,
+        );
+        return loaded.derived?.armorClass;
+      }
+
+      expect(await derivedArmorClass(dexterity: 16), 13);
+      expect(await derivedArmorClass(dexterity: 8), 9);
+      expect(
+        await derivedArmorClass(
+          dexterity: 18,
+          armorKey: 'stage8_leather_armor',
+        ),
+        15,
+      );
+      expect(
+        await derivedArmorClass(
+          dexterity: 18,
+          armorKey: 'stage8_scale_mail',
+        ),
+        16,
+      );
+      expect(
+        await derivedArmorClass(
+          dexterity: 8,
+          armorKey: 'stage8_scale_mail',
+        ),
+        13,
+      );
+      expect(
+        await derivedArmorClass(
+          dexterity: 18,
+          armorKey: 'stage8_chain_mail',
+        ),
+        16,
+      );
+      expect(
+        await derivedArmorClass(
+          dexterity: 14,
+          shieldKey: 'stage8_shield',
+        ),
+        15,
+      );
+      expect(
+        await derivedArmorClass(
+          dexterity: 18,
+          armorKey: 'stage8_leather_armor',
+          shieldKey: 'stage8_shield',
+        ),
+        18,
+      );
+      expect(
+        await derivedArmorClass(
+          dexterity: 18,
+          armorKey: 'stage8_scale_mail',
+          shieldKey: 'stage8_shield',
+          customBonus: 2,
+        ),
+        21,
+      );
+    });
+
+    test('unknown armor key is not resolved by a matching display name',
+        () async {
+      final session = owner.build();
+      late ArmorData leatherArmor;
+      try {
+        leatherArmor = await ArmorData.db.insertRow(
+          session,
+          ArmorData(
+            referenceKey: 'stage8_name_match_armor',
+            name: 'Leather Armor',
+            categoryValue: ArmorCategory.light,
+            baseAC: 11,
+            dexBonus: true,
+          ),
+        );
+      } finally {
+        await session.close();
+      }
+
+      final saved = await endpoints.characterData.saveCharacter(
+        owner,
+        CharacterData(
+          name: 'Unknown armor key fallback',
+          baseAbilityScores: const {'dexterity': 16},
+          equippedArmor: CharacterEquipmentSelectionData(
+            referenceKey: leatherArmor.referenceKey,
+            name: leatherArmor.name!,
+          ),
+        ),
+      );
+      final mutationSession = owner.build();
+      try {
+        final record = await CharacterRecord.db.findById(
+          mutationSession,
+          saved.id!,
+        );
+        expect(record, isNotNull);
+        await CharacterRecord.db.updateRow(
+          mutationSession,
+          record!.copyWith(
+            equippedArmor: CharacterEquipmentSelectionData(
+              referenceKey: 'missing_stage8_reference',
+              name: leatherArmor.name!,
+            ),
+          ),
+        );
+      } finally {
+        await mutationSession.close();
+      }
+
+      final loaded = await endpoints.characterData.getCharacter(
+        owner,
+        saved.id!,
+      );
+      expect(loaded.derived?.armorClass, 13);
+    });
+
     test('body armor rejects a shield reference', () async {
       final session = owner.build();
       try {

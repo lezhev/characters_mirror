@@ -75,7 +75,7 @@ void _registerHitPointsCalculatorTests() {
         hpPerLevelBonus: 1,
         hpFlatBonus: 2,
         derived: protocol.CharacterDerivedData(
-          abilityModifiers: const {'constitution': 2},
+          abilityModifiers: const {protocol.Ability.constitution: 2},
         ),
         classEntries: [
           protocol.CharacterClassEntryData(
@@ -548,7 +548,7 @@ void _registerHitPointsCalculatorTests() {
         currentSpellSlots: const {1: 0},
         currentHitDice: const {'d10': 2},
         derived: protocol.CharacterDerivedData(
-          abilityModifiers: const {'constitution': 0},
+          abilityModifiers: const {protocol.Ability.constitution: 0},
           spellSlots: const {1: 2},
         ),
         classEntries: [
@@ -606,7 +606,7 @@ void _registerHitPointsCalculatorTests() {
           ),
         ],
         derived: protocol.CharacterDerivedData(
-          abilityModifiers: const {'constitution': 0},
+          abilityModifiers: const {protocol.Ability.constitution: 0},
           spellSlots: const {1: 2},
           activeFeatures: [
             protocol.CharacterFeatureViewData(
@@ -664,7 +664,7 @@ void _registerHitPointsCalculatorTests() {
         id: 1,
         currentHitDice: const {'d8': 0},
         derived: protocol.CharacterDerivedData(
-          abilityModifiers: const {'constitution': 0},
+          abilityModifiers: const {protocol.Ability.constitution: 0},
         ),
         classEntries: [
           protocol.CharacterClassEntryData(
@@ -701,7 +701,7 @@ void _registerHitPointsCalculatorTests() {
         id: 1,
         currentHitDice: const {'d6': 0, 'd10': 0},
         derived: protocol.CharacterDerivedData(
-          abilityModifiers: const {'constitution': 0},
+          abilityModifiers: const {protocol.Ability.constitution: 0},
         ),
         classEntries: [
           protocol.CharacterClassEntryData(

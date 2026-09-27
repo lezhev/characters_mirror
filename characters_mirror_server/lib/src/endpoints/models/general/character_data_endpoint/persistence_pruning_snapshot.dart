@@ -27,13 +27,12 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
   final scores = _buildAbilityScores(
     character,
     [
-      ...resolvedSources.classBackgroundOptions,
-      ...resolvedSources.raceOptions,
+      ...resolvedSources.selectedOptions,
     ],
   );
-  final abilityModifiers = {
+  final abilityModifiers = <Ability, int>{
     for (final ability in Ability.values)
-      ability.name: _abilityModifier(scores[ability.name] ?? 10),
+      ability: _abilityModifier(scores[ability.name] ?? 10),
   };
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
   final currentRaceFeatures =
@@ -254,9 +253,9 @@ Ability _startingWeaponAbility(
   CharacterDerivedData? derived,
 ) {
   if (_hasWeaponProperty(weapon, WeaponProperty.finesse)) {
-    final modifiers = derived?.abilityModifiers ?? const <String, int>{};
-    final strength = modifiers[Ability.strength.name] ?? 0;
-    final dexterity = modifiers[Ability.dexterity.name] ?? 0;
+    final modifiers = derived?.abilityModifiers ?? const <Ability, int>{};
+    final strength = modifiers[Ability.strength] ?? 0;
+    final dexterity = modifiers[Ability.dexterity] ?? 0;
     return dexterity > strength ? Ability.dexterity : Ability.strength;
   }
 

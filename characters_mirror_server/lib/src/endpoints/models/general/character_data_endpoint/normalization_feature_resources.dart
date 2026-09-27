@@ -8,7 +8,7 @@ List<CharacterResourceViewData>? _buildFeatureResources({
   required int sourceClassLevel,
   required int totalLevel,
   required int proficiencyBonus,
-  required Map<String, int> abilityModifiers,
+  required Map<Ability, int> abilityModifiers,
   required Map<String, CharacterResourceStateData> resourceStatesByKey,
 }) {
   if (resourceDefinitions == null || resourceDefinitions.isEmpty) {
@@ -45,7 +45,7 @@ CharacterResourceViewData? _buildFeatureResource({
   required int sourceClassLevel,
   required int totalLevel,
   required int proficiencyBonus,
-  required Map<String, int> abilityModifiers,
+  required Map<Ability, int> abilityModifiers,
   required Map<String, CharacterResourceStateData> resourceStatesByKey,
 }) {
   final isUnlimited = _isResourceUnlimited(definition, sourceClassLevel);
@@ -90,7 +90,7 @@ int _featureResourceMax({
   required int sourceClassLevel,
   required int totalLevel,
   required int proficiencyBonus,
-  required Map<String, int> abilityModifiers,
+  required Map<Ability, int> abilityModifiers,
 }) {
   final normalizedValue = max(value ?? 1, 1);
   final additiveValue = value ?? 0;
@@ -100,12 +100,12 @@ int _featureResourceMax({
     case FeatureResourceMaxRule.proficiencyBonus:
       return proficiencyBonus;
     case FeatureResourceMaxRule.abilityModifier:
-      return (ability == null ? 0 : abilityModifiers[ability.name] ?? 0) +
+      return (ability == null ? 0 : abilityModifiers[ability] ?? 0) +
           additiveValue;
     case FeatureResourceMaxRule.abilityModifierMinOne:
       return max(
         1,
-        (ability == null ? 0 : abilityModifiers[ability.name] ?? 0) +
+        (ability == null ? 0 : abilityModifiers[ability] ?? 0) +
             additiveValue,
       );
     case FeatureResourceMaxRule.sourceClassLevel:
@@ -148,7 +148,7 @@ List<CharacterFeatureViewData> _applyFeatureResourceModifiers(
   List<_ActiveFeatureResourceEffect> effects, {
   required int totalLevel,
   required int proficiencyBonus,
-  required Map<String, int> abilityModifiers,
+  required Map<Ability, int> abilityModifiers,
 }) {
   var result = features;
   for (final activeEffect in effects) {
@@ -179,7 +179,7 @@ List<CharacterResourceViewData>? _modifiedFeatureResources(
   _ActiveFeatureResourceEffect activeEffect, {
   required int totalLevel,
   required int proficiencyBonus,
-  required Map<String, int> abilityModifiers,
+  required Map<Ability, int> abilityModifiers,
 }) {
   if (resources == null || resources.isEmpty) {
     return resources;
@@ -219,7 +219,7 @@ CharacterResourceViewData _modifiedResource(
   _ActiveFeatureResourceEffect activeEffect, {
   required int totalLevel,
   required int proficiencyBonus,
-  required Map<String, int> abilityModifiers,
+  required Map<Ability, int> abilityModifiers,
 }) {
   final effect = activeEffect.effect;
   final becomesUnlimitedAtLevel = effect.becomesUnlimitedAtLevel;

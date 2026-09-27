@@ -5,8 +5,11 @@ import 'package:characters_mirror_flutter/features/character_creation/state/char
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_swipe_lock.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_nav_bar.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/jump_to_details_button.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+const _creationStepContentHeroTag = 'creation-step-content';
 
 class CreationStepScaffold extends ConsumerStatefulWidget {
   const CreationStepScaffold({
@@ -19,6 +22,7 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
     this.title = 'Создание персонажа',
     this.scrollableBody = true,
     this.floatingActionButton,
+    this.scrollHintAction,
     this.contentPadding =
         const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
   });
@@ -31,6 +35,7 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
   final String title;
   final bool scrollableBody;
   final Widget? floatingActionButton;
+  final VoidCallback? scrollHintAction;
   final EdgeInsetsGeometry contentPadding;
 
   @override
@@ -39,8 +44,43 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
 }
 
 class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
+  late final ScrollController _bodyScrollController;
+  bool _showScrollHint = false;
   Offset? _swipeStart;
   bool _lockedCurrentSwipe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bodyScrollController = ScrollController()
+      ..addListener(_updateScrollHintVisibility);
+  }
+
+  @override
+  void dispose() {
+    _bodyScrollController
+      ..removeListener(_updateScrollHintVisibility)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _scheduleScrollHintUpdate() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _updateScrollHintVisibility();
+    });
+  }
+
+  void _updateScrollHintVisibility() {
+    final shouldShow = widget.scrollHintAction != null &&
+        widget.scrollableBody &&
+        _bodyScrollController.hasClients &&
+        _bodyScrollController.position.hasContentDimensions &&
+        _bodyScrollController.position.maxScrollExtent -
+                _bodyScrollController.position.pixels >
+            64;
+    if (_showScrollHint == shouldShow || !mounted) return;
+    setState(() => _showScrollHint = shouldShow);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +97,7 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
     final currentStep = routeStep ?? providerStep;
     final notifier = ref.read(characterCreationProvider.notifier);
     final swipeLocked = ref.watch(creationStepSwipeLockedProvider);
+    _scheduleScrollHintUpdate();
 
     Future<void> navigateToStep(Step target) async {
       FocusScope.of(context).unfocus();
@@ -115,6 +156,7 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(CreationAppBar.height),
+          key: const ValueKey('creation-app-bar'),
           child: CreationAppBar(
             title: widget.title,
             onBack: widget.onBack,
@@ -136,9 +178,26 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
           child: PageSizeLimiter(
             child: Padding(
               padding: widget.contentPadding,
-              child: widget.scrollableBody
-                  ? SingleChildScrollView(child: widget.body)
-                  : widget.body,
+              child: Hero(
+                tag: _creationStepContentHeroTag,
+                createRectTween: (begin, end) => RectTween(
+                  begin: begin,
+                  end: end,
+                ),
+                flightShuttleBuilder: _creationStepFlightShuttle,
+                child: widget.scrollableBody
+                    ? NotificationListener<ScrollMetricsNotification>(
+                        onNotification: (_) {
+                          _scheduleScrollHintUpdate();
+                          return false;
+                        },
+                        child: SingleChildScrollView(
+                          controller: _bodyScrollController,
+                          child: widget.body,
+                        ),
+                      )
+                    : widget.body,
+              ),
             ),
           ),
         ),
@@ -152,8 +211,48 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
             ),
           ),
         ),
-        floatingActionButton: widget.floatingActionButton,
+        floatingActionButton: widget.scrollHintAction == null
+            ? widget.floatingActionButton
+            : JumpToDetailsButton(
+                onPressed: widget.scrollHintAction!,
+                isVisible: _showScrollHint,
+              ),
+        floatingActionButtonLocation: widget.scrollHintAction == null
+            ? null
+            : FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
+}
+
+Widget _creationStepFlightShuttle(
+  BuildContext flightContext,
+  Animation<double> animation,
+  HeroFlightDirection flightDirection,
+  BuildContext fromHeroContext,
+  BuildContext toHeroContext,
+) {
+  final fromStep = CreationStepX.fromContext(fromHeroContext);
+  final toStep = CreationStepX.fromContext(toHeroContext);
+  final isMovingForward =
+      fromStep == null || toStep == null || toStep.index >= fromStep.index;
+  final horizontalOffset = isMovingForward ? 1.0 : -1.0;
+  final progress = flightDirection == HeroFlightDirection.push
+      ? animation
+      : ReverseAnimation(animation);
+  final position = Tween<Offset>(
+    begin: Offset(horizontalOffset, 0),
+    end: Offset.zero,
+  ).animate(
+    CurvedAnimation(parent: progress, curve: Curves.easeInOutCubic),
+  );
+  final destinationHero = toHeroContext.widget as Hero;
+
+  return SlideTransition(
+    position: position,
+    child: Material(
+      color: Colors.transparent,
+      child: destinationHero.child,
+    ),
+  );
 }

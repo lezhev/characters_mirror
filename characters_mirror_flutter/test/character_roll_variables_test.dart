@@ -18,12 +18,12 @@ void main() {
           derived: CharacterDerivedData(
             proficiencyBonus: 3,
             abilityModifiers: const {
-              'strength': 4,
-              'dexterity': -1,
-              'constitution': 0,
-              'intelligence': 1,
-              'wisdom': 2,
-              'charisma': 5,
+              Ability.strength: 4,
+              Ability.dexterity: -1,
+              Ability.constitution: 0,
+              Ability.intelligence: 1,
+              Ability.wisdom: 2,
+              Ability.charisma: 5,
             },
           ),
         ),

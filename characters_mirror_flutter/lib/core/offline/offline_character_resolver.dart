@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character/armor_class_calculator.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
@@ -8,6 +9,7 @@ import 'package:characters_mirror_flutter/features/character_sheet/application/c
 part 'offline_character_resolver/spell_equipment_helpers.dart';
 part 'offline_character_resolver/ability_proficiency_helpers.dart';
 part 'offline_character_resolver/feature_helpers.dart';
+part 'offline_character_resolver/armor_class_helpers.dart';
 part 'offline_character_resolver/starting_equipment_helpers.dart';
 part 'offline_character_resolver/offline_keys.dart';
 part 'offline_character_resolver/weapon_proficiency_helpers.dart';
@@ -16,13 +18,7 @@ Future<CharacterData> resolveOfflineCharacter(
   OfflineCacheDatabase cache,
   CharacterData character,
 ) async {
-  final locallyDerived = await buildOfflineDerivedData(cache, character);
-  // Spell-slot progression is currently calculated authoritatively by the
-  // server. Preserve that immutable progression through local mutations.
-  final derived = locallyDerived.copyWith(
-    spellSlots: character.derived?.spellSlots,
-    pactSlots: character.derived?.pactSlots,
-  );
+  final derived = await buildOfflineDerivedData(cache, character);
   return character.copyWith(
     derived: derived,
     currentHp: character.currentHp ?? derived.maxHp,
@@ -58,27 +54,30 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   CharacterData character,
 ) async {
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
-  final totalLevel = max(
-    1,
-    entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)),
-  );
+  final totalLevel =
+      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
   final proficiencyBonus = 2 + ((totalLevel - 1) ~/ 4);
-  final selectedOptions = await _selectedChoiceOptions(cache, character, entries);
-  final abilityScores = _abilityScores(character, selectedOptions);
-  final abilityModifiers = {
+  final selectedOptions =
+      await _selectedChoiceOptions(cache, character, entries);
+  final abilityScoreValues = _abilityScores(character, selectedOptions);
+  final abilityScores = <Ability, int>{
+    for (final ability in Ability.values)
+      ability: abilityScoreValues[ability.name] ?? 10,
+  };
+  final abilityModifiers = <Ability, int>{
     for (final entry in abilityScores.entries)
       entry.key: _modifier(entry.value),
   };
   final savingThrowProficiencies = _savingThrowProficiencies(character);
   final skillLevels = _skillProficiencyLevels(character, selectedOptions);
-  final savingThrowBonuses = {
+  final savingThrowBonuses = <Ability, int>{
     for (final ability in Ability.values)
-      ability.name: (abilityModifiers[ability.name] ?? 0) +
+      ability: (abilityModifiers[ability] ?? 0) +
           (savingThrowProficiencies.contains(ability) ? proficiencyBonus : 0),
   };
-  final skillBonuses = {
+  final skillBonuses = <Skill, int>{
     for (final skill in Skill.values)
-      skill.name: (abilityModifiers[abilityForSkill(skill).name] ?? 0) +
+      skill: (abilityModifiers[abilityForSkill(skill)] ?? 0) +
           _skillMultiplier(skillLevels[skill]!) * proficiencyBonus,
   };
   final activeFeatures = await _activeFeatures(
@@ -89,17 +88,30 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityModifiers,
   );
   final hitDice = _hitDiceSummary(character, entries);
+  final spellSlots = await _spellSlots(cache, entries);
   final maxHp = _maxHp(
     character,
     entries,
-    abilityModifiers[Ability.constitution.name] ?? 0,
+    abilityModifiers[Ability.constitution] ?? 0,
   );
-  final dexterityModifier = abilityModifiers[Ability.dexterity.name] ?? 0;
+  final dexterityModifier = abilityModifiers[Ability.dexterity] ?? 0;
+  final armorClass = await _calculateArmorClass(
+    cache,
+    character,
+    dexterityModifier,
+  );
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
-  final alwaysPreparedSpellKeys = _collectAlwaysPreparedSpellKeys(character);
+  final alwaysPreparedSpellKeys = await _collectAlwaysPreparedSpellKeys(
+    cache,
+    character,
+    entries,
+    totalLevel,
+  );
+  final racialSpellKeys = _racialSpellKeys(character, totalLevel);
   final grantedSpellKeys = _collectGrantedSpellKeys(
     character,
     alwaysPreparedSpellKeys,
+    racialSpellKeys,
     selectedOptions,
   );
   final automaticLanguages = await _languages(cache, character, entries);
@@ -157,13 +169,13 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: 10 + dexterityModifier + (character.customArmorClassBonus ?? 0),
+    armorClass: armorClass,
     initiative: dexterityModifier + (character.customInitiativeBonus ?? 0),
     speed: displayedMovementSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
-    passivePerception: 10 + (skillBonuses[Skill.perception.name] ?? 0),
-    passiveInvestigation: 10 + (skillBonuses[Skill.investigation.name] ?? 0),
-    passiveInsight: 10 + (skillBonuses[Skill.insight.name] ?? 0),
+    passivePerception: 10 + skillBonuses[Skill.perception]!,
+    passiveInvestigation: 10 + skillBonuses[Skill.investigation]!,
+    passiveInsight: 10 + skillBonuses[Skill.insight]!,
     savingThrowBonuses: savingThrowBonuses,
     skillBonuses: skillBonuses,
     skillProficiencyLevels: [
@@ -172,7 +184,10 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
             skill: skill, level: skillLevels[skill]!),
     ],
     savingThrowProficiencies: savingThrowProficiencies.toList()
-      ..sort((a, b) => a.name.compareTo(b.name)),
+      ..sort((a, b) =>
+          Ability.values.indexOf(a).compareTo(Ability.values.indexOf(b))),
+    spellSlots: spellSlots.$1,
+    pactSlots: spellSlots.$2,
     hitDiceSummary: hitDice,
     languages: languages,
     toolProficiencyKeys: toolProficiencyKeys,
@@ -191,21 +206,14 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     customArmorTraining: _normalizedCustomValues(
       character.manualArmorTrainingOverrides?.custom,
     ),
-    featureTags: _featureTags(activeFeatures),
     grantedSpellKeys: grantedSpellKeys,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
-    senses: _uniqueStrings([
-      if (character.race?.visionType != null)
-        _senseLabel(
-          character.race!.visionType!,
-          character.subrace?.visionRangeOverride ?? character.race?.visionRange,
-        ),
-    ]),
     resistances: _uniqueDamageTypes([
       ...?character.race?.resistances,
       ...?character.subrace?.resistances,
+      for (final option in selectedOptions)
+        if (option.damageType != null) option.damageType!,
     ]),
-    rebuiltAt: DateTime.now().toUtc(),
   );
 }

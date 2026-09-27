@@ -44,6 +44,7 @@ class ManualInputColumn extends ConsumerWidget {
                       width: 44,
                       height: 36,
                       child: TextFormField(
+                        key: ValueKey('manual-input-${attribute.name}'),
                         initialValue: value == 0 ? '' : value.toString(),
                         textAlign: TextAlign.center,
                         inputFormatters: [
@@ -58,10 +59,9 @@ class ManualInputColumn extends ConsumerWidget {
                         ),
                         onChanged: (text) {
                           final intValue = int.tryParse(text) ?? 0;
-                          final newValue = intValue.clamp(1, 20);
                           ref
                               .read(attributeStateProvider.notifier)
-                              .updateManualAttribute(attribute, newValue);
+                              .updateManualAttribute(attribute, intValue);
                         },
                       ),
                     ),

@@ -39,7 +39,8 @@ Future<List<Language>> _languages(
   for (final option in options) {
     values.addAll(option.grantedLanguages ?? const <Language>[]);
   }
-  return values.toList()..sort((left, right) => left.name.compareTo(right.name));
+  return values.toList()
+    ..sort((left, right) => left.name.compareTo(right.name));
 }
 
 Future<List<ArmorCategory>> _armorTraining(
@@ -64,7 +65,8 @@ Future<List<ArmorCategory>> _armorTraining(
   for (final option in options) {
     values.addAll(option.grantedArmorTraining ?? const <ArmorCategory>[]);
   }
-  return values.toList()..sort((left, right) => left.name.compareTo(right.name));
+  return values.toList()
+    ..sort((left, right) => left.name.compareTo(right.name));
 }
 
 Future<List<WeaponCategory>> _weaponTraining(
@@ -148,9 +150,14 @@ Future<List<ChoiceOptionData>> _selectedChoiceOptions(
         SubclassFeatureData.fromJson,
       ) ??
       const <SubclassFeatureData>[];
+  final totalLevel =
+      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
   final raceFeatureIds = {
-    ...?character.race?.features?.map((feature) => feature.id),
-    ...?character.subrace?.features?.map((feature) => feature.id),
+    for (final feature in [
+      ...?character.race?.features,
+      ...?character.subrace?.features,
+    ])
+      if ((feature.level ?? 1) <= max(totalLevel, 1)) feature.id,
   };
   final groupsByKey = {
     for (final group in groups)
@@ -245,7 +252,9 @@ bool _isChoiceGroupAvailable(
   final sourceSubraceId = group.sourceSubraceId;
   if (sourceSubraceId != null) return sourceSubraceId == character.subrace?.id;
   final sourceRaceFeatureId = group.sourceRaceFeatureId;
-  if (sourceRaceFeatureId != null) return raceFeatureIds.contains(sourceRaceFeatureId);
+  if (sourceRaceFeatureId != null) {
+    return raceFeatureIds.contains(sourceRaceFeatureId);
+  }
   final sourceBackgroundId = group.sourceBackgroundId;
   return sourceBackgroundId != null &&
       sourceBackgroundId == character.background?.id;

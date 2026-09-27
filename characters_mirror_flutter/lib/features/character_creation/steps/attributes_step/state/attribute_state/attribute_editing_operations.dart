@@ -11,6 +11,52 @@ extension AttributeStateEditingOperations on AttributeState {
   Map<Attribute, bool> get falseAttributeMap =>
       {for (var attr in Attribute.values) attr: false};
 
+  void syncActiveDraftToCharacter() {
+    final creationNotifier = ref.read(characterCreationProvider.notifier);
+    final baseScores = state.assignedAttributes.map(
+      (attribute, value) => MapEntry(attribute.name, value),
+    );
+    final racialChoices = buildRacialAttributeChoices();
+
+    // The first write rebuilds this provider through its Character dependency.
+    creationNotifier.syncAttributesDraft(baseScores);
+    creationNotifier.syncRacialAttributeChoicesDraft(racialChoices);
+  }
+
+  void _updateActiveDraft({
+    Map<Attribute, int>? assignedAttributes,
+    List<int?>? remainingValues,
+    List<RollBoxState>? boxStates,
+    int? purchacePoints,
+  }) {
+    _updateDraft(
+      state.selectionType,
+      assignedAttributes: assignedAttributes,
+      remainingValues: remainingValues,
+      boxStates: boxStates,
+      purchacePoints: purchacePoints,
+    );
+  }
+
+  void _updateDraft(
+    SelectType type, {
+    Map<Attribute, int>? assignedAttributes,
+    List<int?>? remainingValues,
+    List<RollBoxState>? boxStates,
+    int? purchacePoints,
+  }) {
+    final activeDraft = state.drafts[type] ?? _initialDraft(type);
+    final draft = activeDraft.copyWith(
+      assignedAttributes: assignedAttributes ?? activeDraft.assignedAttributes,
+      remainingValues: remainingValues ?? activeDraft.remainingValues,
+      boxStates: boxStates ?? activeDraft.boxStates,
+      purchacePoints: purchacePoints ?? activeDraft.purchacePoints,
+    );
+    state = state.copyWith(
+      drafts: {...state.drafts, type: draft},
+    );
+  }
+
   bool get hasRacialBonusMode =>
       state.fixedRaceBonuses.isNotEmpty ||
       state.resolvedBonusRules.any((rule) => !_isFlexibleRule(rule));
@@ -41,43 +87,15 @@ extension AttributeStateEditingOperations on AttributeState {
   }
 
   void changeType(SelectType type) {
-    switch (type) {
-      case SelectType.random:
-        state = state.copyWith(
-          selectionType: type,
-          assignedAttributes: emptyAttributeMap,
-          boxStates: List.filled(6, RollBoxState.initial),
-          remainingValues: List.filled(6, null),
-        );
-      case SelectType.defaultType:
-        state = state.copyWith(
-          selectionType: type,
-          assignedAttributes: emptyAttributeMap,
-          remainingValues: defaultAttributes,
-          boxStates: List.filled(6, RollBoxState.initial),
-        );
-      case SelectType.purchace:
-        state = state.copyWith(
-          selectionType: type,
-          assignedAttributes: {for (var attr in Attribute.values) attr: 8},
-          purchacePoints: 27,
-          remainingValues: const [],
-          boxStates: const [],
-        );
-      case SelectType.manual:
-        state = state.copyWith(
-          selectionType: type,
-          assignedAttributes: emptyAttributeMap,
-          remainingValues: const [],
-          boxStates: const [],
-        );
-    }
+    final drafts = {...state.drafts};
+    drafts.putIfAbsent(type, () => _initialDraft(type));
+    state = state.copyWith(selectionType: type, drafts: drafts);
   }
 
   void updateManualAttribute(Attribute attribute, int value) {
     if (state.selectionType != SelectType.manual) return;
 
-    state = state.copyWith(
+    _updateActiveDraft(
       assignedAttributes: {
         ...state.assignedAttributes,
         attribute: value,
@@ -96,7 +114,7 @@ extension AttributeStateEditingOperations on AttributeState {
     final cost = _calculateCost(newValue) - _calculateCost(currentValue);
     if (state.purchacePoints - cost < 0) return;
 
-    state = state.copyWith(
+    _updateActiveDraft(
       assignedAttributes: {
         ...state.assignedAttributes,
         attribute: newValue,
@@ -145,7 +163,8 @@ extension AttributeStateEditingOperations on AttributeState {
   }
 
   void rollValueAt(int index) async {
-    if (state.selectionType != SelectType.random ||
+    final type = state.selectionType;
+    if (type != SelectType.random ||
         index < 0 ||
         index >= 6 ||
         index >= state.remainingValues.length ||
@@ -153,7 +172,8 @@ extension AttributeStateEditingOperations on AttributeState {
       return;
     }
 
-    state = state.copyWith(
+    _updateDraft(
+      type,
       remainingValues: _normalizedRandomValues(state.remainingValues),
       boxStates: _normalizedRandomStates(
         state.boxStates,
@@ -163,21 +183,23 @@ extension AttributeStateEditingOperations on AttributeState {
 
     await Future.delayed(const Duration(milliseconds: 500));
 
-    final value = _rollDice();
-    if (state.selectionType != SelectType.random ||
+    final draft = state.drafts[type];
+    if (draft == null ||
         index < 0 ||
         index >= 6 ||
-        index >= state.remainingValues.length ||
-        index >= state.boxStates.length) {
+        index >= draft.remainingValues.length ||
+        index >= draft.boxStates.length) {
       return;
     }
 
-    state = state.copyWith(
-      remainingValues: _normalizedRandomValues(state.remainingValues)
+    final value = _rollDice();
+    _updateDraft(
+      type,
+      remainingValues: _normalizedRandomValues(draft.remainingValues)
         ..[index] = value,
       boxStates: _normalizedRandomStates(
-        state.boxStates,
-        state.remainingValues,
+        draft.boxStates,
+        draft.remainingValues,
       )..[index] = RollBoxState.filled,
     );
   }
@@ -369,13 +391,51 @@ extension AttributeStateEditingOperations on AttributeState {
       updatedValues.add(currentValue);
     }
 
-    state = state.copyWith(
+    _updateActiveDraft(
       assignedAttributes: {
         ...state.assignedAttributes,
         attribute: 0,
       },
       remainingValues: updatedValues,
       boxStates: updatedStates,
+    );
+  }
+
+  void moveAssignedAttribute(Attribute source, Attribute target) {
+    if (source == target ||
+        (state.selectionType != SelectType.defaultType &&
+            state.selectionType != SelectType.random)) {
+      return;
+    }
+
+    final sourceValue = state.assignedAttributes[source] ?? 0;
+    if (sourceValue == 0) return;
+
+    final targetValue = state.assignedAttributes[target] ?? 0;
+    _updateActiveDraft(
+      assignedAttributes: {
+        ...state.assignedAttributes,
+        source: targetValue,
+        target: sourceValue,
+      },
+    );
+  }
+
+  void onAcceptAttributeDrag(
+    DragTargetDetails<AttributeDragData> details,
+    Attribute target,
+  ) {
+    final drag = details.data;
+    final source = drag.sourceAttribute;
+    if (source != null) {
+      if ((state.assignedAttributes[source] ?? 0) != drag.value) return;
+      moveAssignedAttribute(source, target);
+      return;
+    }
+
+    onAcceptWithDetailes(
+      DragTargetDetails<int>(data: drag.value, offset: details.offset),
+      target,
     );
   }
 
@@ -418,7 +478,7 @@ extension AttributeStateEditingOperations on AttributeState {
       }
     }
 
-    state = state.copyWith(
+    _updateActiveDraft(
       remainingValues: updatedValues,
       boxStates: updatedStates,
       assignedAttributes: {

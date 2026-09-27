@@ -1,15 +1,13 @@
 part of '../character_data_endpoint.dart';
 
 class _ResolvedDerivedSources {
-  final List<ChoiceOptionData> classBackgroundOptions;
-  final List<ChoiceOptionData> raceOptions;
+  final List<ChoiceOptionData> selectedOptions;
   final List<ClassFeatureData> currentClassFeatures;
   final List<SubclassFeatureData> currentSubclassFeatures;
   final List<String> alwaysPreparedSpellKeys;
 
   const _ResolvedDerivedSources({
-    required this.classBackgroundOptions,
-    required this.raceOptions,
+    required this.selectedOptions,
     required this.currentClassFeatures,
     required this.currentSubclassFeatures,
     required this.alwaysPreparedSpellKeys,
@@ -142,8 +140,8 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     currentSubclassFeatureLevels: currentSubclassFeatureLevels,
   );
 
-  final currentRaceFeatures =
-      _currentRaceFeaturesBySource(character, entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
+  final currentRaceFeatures = _currentRaceFeaturesBySource(character,
+      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
   final raceFeatureIds = {
     for (final feature in [
       ...currentRaceFeatures.raceFeatures,
@@ -166,8 +164,8 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
         currentSubclassFeatureIds.contains(group.sourceSubclassFeatureId);
     final byBackground = group.sourceBackgroundId != null &&
         group.sourceBackgroundId == character.background?.id;
-    final byRace = group.sourceRaceId != null &&
-        group.sourceRaceId == character.race?.id;
+    final byRace =
+        group.sourceRaceId != null && group.sourceRaceId == character.race?.id;
     final bySubrace = group.sourceSubraceId != null &&
         group.sourceSubraceId == character.subrace?.id;
     final byRaceFeature = group.sourceRaceFeatureId != null &&
@@ -206,13 +204,11 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     optionsByGroupKey[group.referenceKey] = {
       for (final option
           in optionsByGroupId[groupId] ?? const <ChoiceOptionData>[])
-        if (option.optionKey.trim().isNotEmpty)
-          option.optionKey.trim(): option,
+        if (option.optionKey.trim().isNotEmpty) option.optionKey.trim(): option,
     };
   }
 
-  final classBackgroundOptions = <ChoiceOptionData>[];
-  final raceOptions = <ChoiceOptionData>[];
+  final selectedOptions = <ChoiceOptionData>[];
   final selectedByGroupKey = <String, List<_SelectedGenericChoice>>{};
   for (final choice in choices) {
     final groupKey = choice.groupKey;
@@ -245,26 +241,21 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
           _SelectedGenericChoice(choice, option),
         );
 
-    if (selectedGroup.sourceClassId != null ||
-        selectedGroup.sourceSubclassId != null ||
-        selectedGroup.sourceFeatureId != null ||
-        selectedGroup.sourceSubclassFeatureId != null) {
-      classBackgroundOptions.add(option);
-    } else {
-      raceOptions.add(option);
-    }
+    selectedOptions.add(option);
   }
 
   _validateGenericChoiceSelectionRules(selectedByGroupKey, relevantGroups);
   await _validateGenericChoiceReferenceKeys(
     session,
-    [for (final selected in selectedByGroupKey.values) ...selected.map((e) => e.option)],
+    [
+      for (final selected in selectedByGroupKey.values)
+        ...selected.map((e) => e.option)
+    ],
     transaction: transaction,
   );
 
   return _ResolvedDerivedSources(
-    classBackgroundOptions: classBackgroundOptions,
-    raceOptions: raceOptions,
+    selectedOptions: selectedOptions,
     currentClassFeatures: currentClassFeatures,
     currentSubclassFeatures: currentSubclassFeatures,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
