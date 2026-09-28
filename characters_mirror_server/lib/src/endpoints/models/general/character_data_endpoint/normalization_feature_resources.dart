@@ -48,6 +48,9 @@ CharacterResourceViewData? _buildFeatureResource({
   required Map<Ability, int> abilityModifiers,
   required Map<String, CharacterResourceStateData> resourceStatesByKey,
 }) {
+  if (definition.maxRule == FeatureResourceMaxRule.special) {
+    return null;
+  }
   final isUnlimited = _isResourceUnlimited(definition, sourceClassLevel);
   final maxValue = isUnlimited
       ? 0
@@ -61,6 +64,9 @@ CharacterResourceViewData? _buildFeatureResource({
           proficiencyBonus: proficiencyBonus,
           abilityModifiers: abilityModifiers,
         );
+  if (maxValue == null) {
+    return null;
+  }
   if (!isUnlimited && maxValue <= 0) {
     return null;
   }
@@ -82,7 +88,7 @@ CharacterResourceViewData? _buildFeatureResource({
   );
 }
 
-int _featureResourceMax({
+int? _featureResourceMax({
   required FeatureResourceMaxRule rule,
   required int? value,
   required Ability? ability,
@@ -118,6 +124,8 @@ int _featureResourceMax({
       return max(totalLevel, 0) * normalizedValue;
     case FeatureResourceMaxRule.sourceClassLevelTable:
       return _featureResourceTableMax(progressionValues, sourceClassLevel);
+    case FeatureResourceMaxRule.special:
+      return null;
   }
 }
 
@@ -229,7 +237,7 @@ CharacterResourceViewData _modifiedResource(
           activeEffect.sourceClassLevel >= becomesUnlimitedAtLevel);
   var maxValue = resource.max;
   if (!isUnlimited && effect.setMaxRule != null) {
-    maxValue = _featureResourceMax(
+    final resolvedMax = _featureResourceMax(
       rule: effect.setMaxRule!,
       value: effect.setMaxValue,
       ability: effect.setMaxAbility,
@@ -239,6 +247,10 @@ CharacterResourceViewData _modifiedResource(
       proficiencyBonus: proficiencyBonus,
       abilityModifiers: abilityModifiers,
     );
+    if (resolvedMax == null) {
+      return resource;
+    }
+    maxValue = resolvedMax;
   }
   if (!isUnlimited && effect.addMaxValue != null) {
     maxValue += effect.addMaxValue!;

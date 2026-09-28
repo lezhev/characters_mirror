@@ -29,6 +29,9 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
     required List<FeatureResourceDefinitionData>? resources,
     required List<FeatureResourceEffectData>? resourceEffects,
     required int sourceClassLevel,
+    List<FeatureDisplayPropertyView> displayProperties =
+        const <FeatureDisplayPropertyView>[],
+    List<String> selectedChoices = const <String>[],
   }) {
     if (sourceId == null) return;
     final override =
@@ -78,6 +81,8 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
           abilityModifiers: abilityModifiers,
           resourceStatesByKey: resourceStatesByKey,
         ),
+        displayProperties: displayProperties,
+        selectedChoices: selectedChoices,
       ),
     );
   }
@@ -126,6 +131,47 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
       ),
       ClassStepView.fromJson,
     );
+    final classDisplayProperties = {
+      for (final view in stepView?.currentLevelFeatureViews ??
+          const <ClassStepFeatureView>[])
+        if (view.classFeature?.id != null)
+          view.classFeature!.id!:
+              view.displayProperties ?? const <FeatureDisplayPropertyView>[],
+    };
+    final subclassDisplayProperties = {
+      for (final view in stepView?.currentSubclassFeatureViews ??
+          const <ClassStepFeatureView>[])
+        if (view.subclassFeature?.id != null)
+          view.subclassFeature!.id!:
+              view.displayProperties ?? const <FeatureDisplayPropertyView>[],
+    };
+    final choiceGroups = await cache.getReferenceList(
+          'choice_group',
+          offlineAllKey,
+          ChoiceGroupData.fromJson,
+        ) ??
+        const <ChoiceGroupData>[];
+    final choiceOptions = await cache.getReferenceList(
+          'choice_option',
+          offlineAllKey,
+          ChoiceOptionData.fromJson,
+        ) ??
+        const <ChoiceOptionData>[];
+    final featureChoiceLabels = _offlineFeatureChoiceLabels(
+      character,
+      choiceGroups,
+      choiceOptions,
+      classFeatureIds: {
+        for (final feature
+            in stepView?.currentLevelFeatures ?? const <ClassFeatureData>[])
+          if (feature.id != null) feature.id!: feature.name ?? '',
+      },
+      subclassFeatureIds: {
+        for (final feature in stepView?.currentSubclassFeatures ??
+            const <SubclassFeatureData>[])
+          if (feature.id != null) feature.id!: feature.name ?? '',
+      },
+    );
     for (final feature
         in stepView?.currentLevelFeatures ?? const <ClassFeatureData>[]) {
       addFeature(
@@ -139,6 +185,13 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         resources: feature.resources,
         resourceEffects: feature.resourceEffects,
         sourceClassLevel: entry.level ?? feature.level,
+        displayProperties: classDisplayProperties[feature.id] ??
+            const <FeatureDisplayPropertyView>[],
+        selectedChoices: featureChoiceLabels[(
+              CharacterFeatureSourceType.classFeature,
+              feature.id!
+            )] ??
+            const <String>[],
       );
     }
     for (final feature
@@ -154,6 +207,13 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         resources: feature.resources,
         resourceEffects: feature.resourceEffects,
         sourceClassLevel: entry.level ?? feature.level,
+        displayProperties: subclassDisplayProperties[feature.id] ??
+            const <FeatureDisplayPropertyView>[],
+        selectedChoices: featureChoiceLabels[(
+              CharacterFeatureSourceType.subclassFeature,
+              feature.id!
+            )] ??
+            const <String>[],
       );
     }
   }
@@ -177,6 +237,57 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
     return a.sourceId.compareTo(b.sourceId);
   });
   return effective;
+}
+
+Map<(CharacterFeatureSourceType, int), List<String>>
+    _offlineFeatureChoiceLabels(
+  CharacterData character,
+  List<ChoiceGroupData> groups,
+  List<ChoiceOptionData> options, {
+  required Map<int, String> classFeatureIds,
+  required Map<int, String> subclassFeatureIds,
+}) {
+  final groupsByKey = {for (final group in groups) group.referenceKey: group};
+  final optionsByGroupId = <int, Map<String, ChoiceOptionData>>{};
+  for (final option in options) {
+    optionsByGroupId.putIfAbsent(
+        option.choiceGroupId, () => {})[option.optionKey] = option;
+  }
+  final result =
+      <(CharacterFeatureSourceType, int), List<(int, int, String)>>{};
+  for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
+    final group = groupsByKey[choice.groupKey];
+    final option =
+        group == null ? null : optionsByGroupId[group.id]?[choice.optionKey];
+    if (group == null || option == null) continue;
+    final featureId = group.sourceFeatureId ?? group.sourceSubclassFeatureId;
+    final sourceType = group.sourceFeatureId != null
+        ? CharacterFeatureSourceType.classFeature
+        : CharacterFeatureSourceType.subclassFeature;
+    final featureName = sourceType == CharacterFeatureSourceType.classFeature
+        ? classFeatureIds[featureId]
+        : subclassFeatureIds[featureId];
+    if (featureId == null || featureName == null) continue;
+    final featureKey = (sourceType, featureId);
+    final optionName = _normalizedTextOrNull(option.name) ?? option.optionKey;
+    final groupName = _normalizedTextOrNull(group.name);
+    final label = groupName == null ? optionName : '$groupName: $optionName';
+    result.putIfAbsent(featureKey, () => []).add((
+      group.sortOrder ?? 0,
+      choice.selectionIndex ?? 0,
+      label,
+    ));
+  }
+  return {
+    for (final entry in result.entries)
+      entry.key: (entry.value
+            ..sort((left, right) {
+              final groupOrder = left.$1.compareTo(right.$1);
+              return groupOrder != 0 ? groupOrder : left.$2.compareTo(right.$2);
+            }))
+          .map((row) => row.$3)
+          .toList(),
+  };
 }
 
 int _featureSourceOrder(CharacterFeatureSourceType sourceType) {
@@ -287,7 +398,7 @@ CharacterResourceViewData _modifiedResource(
       (unlimitedAtLevel != null && sourceClassLevel >= unlimitedAtLevel);
   var maxValue = resource.max;
   if (!isUnlimited && effect.setMaxRule != null) {
-    maxValue = _resourceMax(
+    final resolvedMax = _resourceMax(
       rule: effect.setMaxRule!,
       value: effect.setMaxValue,
       ability: effect.setMaxAbility,
@@ -297,6 +408,8 @@ CharacterResourceViewData _modifiedResource(
       proficiencyBonus: proficiencyBonus,
       abilityModifiers: abilityModifiers,
     );
+    if (resolvedMax == null) return resource;
+    maxValue = resolvedMax;
   }
   if (!isUnlimited && effect.addMaxValue != null) {
     maxValue += effect.addMaxValue!;
@@ -326,6 +439,7 @@ List<CharacterResourceViewData>? _resourceViews({
   final sortedResources = [...resources]
     ..sort((a, b) => a.key.compareTo(b.key));
   for (final resource in sortedResources) {
+    if (resource.maxRule == FeatureResourceMaxRule.special) continue;
     final isUnlimited = _isResourceUnlimited(resource, sourceClassLevel);
     final maxValue = isUnlimited
         ? 0
@@ -339,6 +453,7 @@ List<CharacterResourceViewData>? _resourceViews({
             proficiencyBonus: proficiencyBonus,
             abilityModifiers: abilityModifiers,
           );
+    if (maxValue == null) continue;
     if (!isUnlimited && maxValue <= 0) continue;
     final state = resourceStatesByKey[
         _featureResourceKey(sourceType, sourceId, resource.key)];
@@ -375,7 +490,7 @@ String? _subclassSourceName(SubclassData? subclass) {
   return parts.join(' ');
 }
 
-int _resourceMax({
+int? _resourceMax({
   required FeatureResourceMaxRule rule,
   required int? value,
   required Ability? ability,
@@ -398,8 +513,7 @@ int _resourceMax({
     case FeatureResourceMaxRule.abilityModifierMinOne:
       return max(
         1,
-        (ability == null ? 0 : abilityModifiers[ability] ?? 0) +
-            additiveValue,
+        (ability == null ? 0 : abilityModifiers[ability] ?? 0) + additiveValue,
       );
     case FeatureResourceMaxRule.sourceClassLevel:
       return max(sourceClassLevel, 0);
@@ -419,6 +533,8 @@ int _resourceMax({
         }
       }
       return max(resolved, 0);
+    case FeatureResourceMaxRule.special:
+      return null;
   }
 }
 

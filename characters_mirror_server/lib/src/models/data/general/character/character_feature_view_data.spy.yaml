@@ -12,3 +12,5 @@ fields:
   tags: List<FeatureTag>?
   isCustomized: bool?
   resources: List<CharacterResourceViewData>?
+  displayProperties: List<FeatureDisplayPropertyView>?
+  selectedChoices: List<String>?

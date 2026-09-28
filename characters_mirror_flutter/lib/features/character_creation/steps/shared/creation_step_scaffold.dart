@@ -3,13 +3,12 @@ import 'package:characters_mirror_flutter/core/ui/pointer_swipe_policy.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_swipe_lock.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_transition.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/jump_to_details_button.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-const _creationStepContentHeroTag = 'creation-step-content';
 
 class CreationStepScaffold extends ConsumerStatefulWidget {
   const CreationStepScaffold({
@@ -97,6 +96,12 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
     final currentStep = routeStep ?? providerStep;
     final notifier = ref.read(characterCreationProvider.notifier);
     final swipeLocked = ref.watch(creationStepSwipeLockedProvider);
+    final inferredDirection = routeStep != null && routeStep != providerStep
+        ? (routeStep.index >= providerStep.index ? 1.0 : -1.0)
+        : null;
+    final double transitionDirection =
+        inferredDirection ?? ref.watch(creationStepTransitionDirectionProvider);
+    final transitionScope = CreationStepTransitionScope.maybeOf(context);
     _scheduleScrollHintUpdate();
 
     Future<void> navigateToStep(Step target) async {
@@ -160,6 +165,10 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
           child: CreationAppBar(
             title: widget.title,
             onBack: widget.onBack,
+            backIcon: widget.route == 'character'
+                ? Icons.arrow_back_rounded
+                : Icons.close_rounded,
+            scrollProgression: widget.route == 'character',
             onStepTap: widget.onStepTap,
           ),
         ),
@@ -178,13 +187,9 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
           child: PageSizeLimiter(
             child: Padding(
               padding: widget.contentPadding,
-              child: Hero(
-                tag: _creationStepContentHeroTag,
-                createRectTween: (begin, end) => RectTween(
-                  begin: begin,
-                  end: end,
-                ),
-                flightShuttleBuilder: _creationStepFlightShuttle,
+              child: _buildTransitionBody(
+                transitionScope: transitionScope,
+                direction: transitionDirection,
                 child: widget.scrollableBody
                     ? NotificationListener<ScrollMetricsNotification>(
                         onNotification: (_) {
@@ -225,34 +230,27 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
   }
 }
 
-Widget _creationStepFlightShuttle(
-  BuildContext flightContext,
-  Animation<double> animation,
-  HeroFlightDirection flightDirection,
-  BuildContext fromHeroContext,
-  BuildContext toHeroContext,
-) {
-  final fromStep = CreationStepX.fromContext(fromHeroContext);
-  final toStep = CreationStepX.fromContext(toHeroContext);
-  final isMovingForward =
-      fromStep == null || toStep == null || toStep.index >= fromStep.index;
-  final horizontalOffset = isMovingForward ? 1.0 : -1.0;
-  final progress = flightDirection == HeroFlightDirection.push
-      ? animation
-      : ReverseAnimation(animation);
-  final position = Tween<Offset>(
-    begin: Offset(horizontalOffset, 0),
-    end: Offset.zero,
-  ).animate(
-    CurvedAnimation(parent: progress, curve: Curves.easeInOutCubic),
-  );
-  final destinationHero = toHeroContext.widget as Hero;
+Widget _buildTransitionBody({
+  required CreationStepTransitionScope? transitionScope,
+  required double direction,
+  required Widget child,
+}) {
+  if (transitionScope == null) return child;
 
-  return SlideTransition(
-    position: position,
-    child: Material(
-      color: Colors.transparent,
-      child: destinationHero.child,
-    ),
+  final animation = transitionScope.animation;
+  final secondaryAnimation = transitionScope.secondaryAnimation;
+  return AnimatedBuilder(
+    animation: Listenable.merge([animation, secondaryAnimation]),
+    child: child,
+    builder: (context, child) {
+      final progress = Curves.easeInOutCubic.transform(animation.value) +
+          Curves.easeInOutCubic.transform(secondaryAnimation.value);
+      final horizontalOffset =
+          (1 - progress) * direction * MediaQuery.sizeOf(context).width;
+      return Transform.translate(
+        offset: Offset(horizontalOffset, 0),
+        child: child,
+      );
+    },
   );
 }

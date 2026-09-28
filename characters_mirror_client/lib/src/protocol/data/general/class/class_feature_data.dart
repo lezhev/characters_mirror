@@ -12,9 +12,11 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
-import '../../../data/general/feature_resource_definition_data.dart' as _i4;
-import '../../../data/general/feature_resource_effect_data.dart' as _i5;
-import '../../../data/class_spell_grant_data.dart' as _i6;
+import '../../../enums/language.dart' as _i4;
+import '../../../enums/unarmored_defense_rule.dart' as _i5;
+import '../../../data/general/feature_resource_definition_data.dart' as _i6;
+import '../../../data/general/feature_resource_effect_data.dart' as _i7;
+import '../../../data/class_spell_grant_data.dart' as _i8;
 
 abstract class ClassFeatureData implements _i1.SerializableModel {
   ClassFeatureData._({
@@ -31,6 +33,8 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     this.updatedAt,
     this.tags,
     this.choiceGroupKey,
+    this.grantedLanguages,
+    this.unarmoredDefenseRule,
     this.relatedTable,
     this.resources,
     this.resourceEffects,
@@ -51,10 +55,12 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.Language>? grantedLanguages,
+    _i5.UnarmoredDefenseRule? unarmoredDefenseRule,
     String? relatedTable,
-    List<_i4.FeatureResourceDefinitionData>? resources,
-    List<_i5.FeatureResourceEffectData>? resourceEffects,
-    List<_i6.ClassSpellGrantData>? spellGrants,
+    List<_i6.FeatureResourceDefinitionData>? resources,
+    List<_i7.FeatureResourceEffectData>? resourceEffects,
+    List<_i8.ClassSpellGrantData>? spellGrants,
   }) = _ClassFeatureDataImpl;
 
   factory ClassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -81,18 +87,25 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
           ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
+      grantedLanguages: (jsonSerialization['grantedLanguages'] as List?)
+          ?.map((e) => _i4.Language.fromJson((e as String)))
+          .toList(),
+      unarmoredDefenseRule: jsonSerialization['unarmoredDefenseRule'] == null
+          ? null
+          : _i5.UnarmoredDefenseRule.fromJson(
+              (jsonSerialization['unarmoredDefenseRule'] as String)),
       relatedTable: jsonSerialization['relatedTable'] as String?,
       resources: (jsonSerialization['resources'] as List?)
-          ?.map((e) => _i4.FeatureResourceDefinitionData.fromJson(
+          ?.map((e) => _i6.FeatureResourceDefinitionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       resourceEffects: (jsonSerialization['resourceEffects'] as List?)
-          ?.map((e) => _i5.FeatureResourceEffectData.fromJson(
+          ?.map((e) => _i7.FeatureResourceEffectData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       spellGrants: (jsonSerialization['spellGrants'] as List?)
           ?.map((e) =>
-              _i6.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
+              _i8.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -126,13 +139,17 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
 
   String? choiceGroupKey;
 
+  List<_i4.Language>? grantedLanguages;
+
+  _i5.UnarmoredDefenseRule? unarmoredDefenseRule;
+
   String? relatedTable;
 
-  List<_i4.FeatureResourceDefinitionData>? resources;
+  List<_i6.FeatureResourceDefinitionData>? resources;
 
-  List<_i5.FeatureResourceEffectData>? resourceEffects;
+  List<_i7.FeatureResourceEffectData>? resourceEffects;
 
-  List<_i6.ClassSpellGrantData>? spellGrants;
+  List<_i8.ClassSpellGrantData>? spellGrants;
 
   /// Returns a shallow copy of this [ClassFeatureData]
   /// with some or all fields replaced by the given arguments.
@@ -151,10 +168,12 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.Language>? grantedLanguages,
+    _i5.UnarmoredDefenseRule? unarmoredDefenseRule,
     String? relatedTable,
-    List<_i4.FeatureResourceDefinitionData>? resources,
-    List<_i5.FeatureResourceEffectData>? resourceEffects,
-    List<_i6.ClassSpellGrantData>? spellGrants,
+    List<_i6.FeatureResourceDefinitionData>? resources,
+    List<_i7.FeatureResourceEffectData>? resourceEffects,
+    List<_i8.ClassSpellGrantData>? spellGrants,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -172,6 +191,11 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (grantedLanguages != null)
+        'grantedLanguages':
+            grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
+      if (unarmoredDefenseRule != null)
+        'unarmoredDefenseRule': unarmoredDefenseRule?.toJson(),
       if (relatedTable != null) 'relatedTable': relatedTable,
       if (resources != null)
         'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
@@ -206,10 +230,12 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.Language>? grantedLanguages,
+    _i5.UnarmoredDefenseRule? unarmoredDefenseRule,
     String? relatedTable,
-    List<_i4.FeatureResourceDefinitionData>? resources,
-    List<_i5.FeatureResourceEffectData>? resourceEffects,
-    List<_i6.ClassSpellGrantData>? spellGrants,
+    List<_i6.FeatureResourceDefinitionData>? resources,
+    List<_i7.FeatureResourceEffectData>? resourceEffects,
+    List<_i8.ClassSpellGrantData>? spellGrants,
   }) : super._(
           id: id,
           parentClassId: parentClassId,
@@ -224,6 +250,8 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           updatedAt: updatedAt,
           tags: tags,
           choiceGroupKey: choiceGroupKey,
+          grantedLanguages: grantedLanguages,
+          unarmoredDefenseRule: unarmoredDefenseRule,
           relatedTable: relatedTable,
           resources: resources,
           resourceEffects: resourceEffects,
@@ -248,6 +276,8 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     Object? updatedAt = _Undefined,
     Object? tags = _Undefined,
     Object? choiceGroupKey = _Undefined,
+    Object? grantedLanguages = _Undefined,
+    Object? unarmoredDefenseRule = _Undefined,
     Object? relatedTable = _Undefined,
     Object? resources = _Undefined,
     Object? resourceEffects = _Undefined,
@@ -274,14 +304,20 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           : this.tags?.map((e0) => e0).toList(),
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      grantedLanguages: grantedLanguages is List<_i4.Language>?
+          ? grantedLanguages
+          : this.grantedLanguages?.map((e0) => e0).toList(),
+      unarmoredDefenseRule: unarmoredDefenseRule is _i5.UnarmoredDefenseRule?
+          ? unarmoredDefenseRule
+          : this.unarmoredDefenseRule,
       relatedTable: relatedTable is String? ? relatedTable : this.relatedTable,
-      resources: resources is List<_i4.FeatureResourceDefinitionData>?
+      resources: resources is List<_i6.FeatureResourceDefinitionData>?
           ? resources
           : this.resources?.map((e0) => e0.copyWith()).toList(),
-      resourceEffects: resourceEffects is List<_i5.FeatureResourceEffectData>?
+      resourceEffects: resourceEffects is List<_i7.FeatureResourceEffectData>?
           ? resourceEffects
           : this.resourceEffects?.map((e0) => e0.copyWith()).toList(),
-      spellGrants: spellGrants is List<_i6.ClassSpellGrantData>?
+      spellGrants: spellGrants is List<_i8.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
     );

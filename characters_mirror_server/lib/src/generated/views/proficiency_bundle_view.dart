@@ -23,6 +23,7 @@ abstract class ProficiencyBundleView
     this.skills,
     this.armorTraining,
     this.weaponTraining,
+    this.weaponProficiencyKeys,
     this.toolKeys,
     this.languageChoices,
   });
@@ -32,6 +33,7 @@ abstract class ProficiencyBundleView
     List<_i3.Skill>? skills,
     List<_i4.ArmorCategory>? armorTraining,
     List<_i5.WeaponCategory>? weaponTraining,
+    List<String>? weaponProficiencyKeys,
     List<String>? toolKeys,
     List<_i6.Language>? languageChoices,
   }) = _ProficiencyBundleViewImpl;
@@ -51,6 +53,10 @@ abstract class ProficiencyBundleView
       weaponTraining: (jsonSerialization['weaponTraining'] as List?)
           ?.map((e) => _i5.WeaponCategory.fromJson((e as String)))
           .toList(),
+      weaponProficiencyKeys:
+          (jsonSerialization['weaponProficiencyKeys'] as List?)
+              ?.map((e) => e as String)
+              .toList(),
       toolKeys: (jsonSerialization['toolKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -68,6 +74,8 @@ abstract class ProficiencyBundleView
 
   List<_i5.WeaponCategory>? weaponTraining;
 
+  List<String>? weaponProficiencyKeys;
+
   List<String>? toolKeys;
 
   List<_i6.Language>? languageChoices;
@@ -80,6 +88,7 @@ abstract class ProficiencyBundleView
     List<_i3.Skill>? skills,
     List<_i4.ArmorCategory>? armorTraining,
     List<_i5.WeaponCategory>? weaponTraining,
+    List<String>? weaponProficiencyKeys,
     List<String>? toolKeys,
     List<_i6.Language>? languageChoices,
   });
@@ -95,6 +104,8 @@ abstract class ProficiencyBundleView
       if (weaponTraining != null)
         'weaponTraining':
             weaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (weaponProficiencyKeys != null)
+        'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
       if (toolKeys != null) 'toolKeys': toolKeys?.toJson(),
       if (languageChoices != null)
         'languageChoices':
@@ -114,6 +125,8 @@ abstract class ProficiencyBundleView
       if (weaponTraining != null)
         'weaponTraining':
             weaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (weaponProficiencyKeys != null)
+        'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
       if (toolKeys != null) 'toolKeys': toolKeys?.toJson(),
       if (languageChoices != null)
         'languageChoices':
@@ -135,6 +148,7 @@ class _ProficiencyBundleViewImpl extends ProficiencyBundleView {
     List<_i3.Skill>? skills,
     List<_i4.ArmorCategory>? armorTraining,
     List<_i5.WeaponCategory>? weaponTraining,
+    List<String>? weaponProficiencyKeys,
     List<String>? toolKeys,
     List<_i6.Language>? languageChoices,
   }) : super._(
@@ -142,6 +156,7 @@ class _ProficiencyBundleViewImpl extends ProficiencyBundleView {
           skills: skills,
           armorTraining: armorTraining,
           weaponTraining: weaponTraining,
+          weaponProficiencyKeys: weaponProficiencyKeys,
           toolKeys: toolKeys,
           languageChoices: languageChoices,
         );
@@ -155,6 +170,7 @@ class _ProficiencyBundleViewImpl extends ProficiencyBundleView {
     Object? skills = _Undefined,
     Object? armorTraining = _Undefined,
     Object? weaponTraining = _Undefined,
+    Object? weaponProficiencyKeys = _Undefined,
     Object? toolKeys = _Undefined,
     Object? languageChoices = _Undefined,
   }) {
@@ -171,6 +187,9 @@ class _ProficiencyBundleViewImpl extends ProficiencyBundleView {
       weaponTraining: weaponTraining is List<_i5.WeaponCategory>?
           ? weaponTraining
           : this.weaponTraining?.map((e0) => e0).toList(),
+      weaponProficiencyKeys: weaponProficiencyKeys is List<String>?
+          ? weaponProficiencyKeys
+          : this.weaponProficiencyKeys?.map((e0) => e0).toList(),
       toolKeys: toolKeys is List<String>?
           ? toolKeys
           : this.toolKeys?.map((e0) => e0).toList(),

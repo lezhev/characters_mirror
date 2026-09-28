@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:characters_mirror_server/src/generated/protocol.dart';
+import 'package:characters_mirror_server/src/feature_display_properties.dart';
+import 'package:characters_mirror_server/src/weapon_training_values.dart';
 import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
 import 'package:characters_mirror_server/src/validation/character_quota_validator.dart';
 import 'package:characters_mirror_server/src/validation/character_validator.dart';

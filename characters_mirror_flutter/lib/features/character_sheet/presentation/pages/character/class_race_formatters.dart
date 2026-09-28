@@ -74,6 +74,18 @@ String joinWeaponCategories(List<WeaponCategory> categories) {
   return categories.map(_weaponCategoryLabel).join(', ');
 }
 
+String joinWeaponTraining(
+  List<String> values,
+  Map<String, String> weaponNames,
+) {
+  return values.map((value) {
+    for (final category in WeaponCategory.values) {
+      if (category.name == value) return _weaponCategoryLabel(category);
+    }
+    return weaponNames[value] ?? value;
+  }).join(', ');
+}
+
 String _armorCategoryLabel(ArmorCategory category) {
   switch (category) {
     case ArmorCategory.light:

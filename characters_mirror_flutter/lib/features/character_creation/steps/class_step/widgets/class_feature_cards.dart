@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/feature_display_properties.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/widgets/related_feature_tables.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -8,46 +9,57 @@ class ClassFeatureEntry {
   const ClassFeatureEntry._({
     required this.level,
     required this.isSubclass,
-    this.classFeature,
-    this.subclassFeature,
+    required this.view,
   });
 
   final int level;
   final bool isSubclass;
-  final ClassFeatureData? classFeature;
-  final SubclassFeatureData? subclassFeature;
+  final ClassStepFeatureView view;
+  ClassFeatureData? get classFeature => view.classFeature;
+  SubclassFeatureData? get subclassFeature => view.subclassFeature;
+  int? get featureId => isSubclass ? subclassFeature?.id : classFeature?.id;
 
-  factory ClassFeatureEntry.classFeature(ClassFeatureData feature) {
+  factory ClassFeatureEntry.classFeature(ClassStepFeatureView view) {
     return ClassFeatureEntry._(
-      level: feature.level,
+      level: view.classFeature!.level,
       isSubclass: false,
-      classFeature: feature,
+      view: view,
     );
   }
 
-  factory ClassFeatureEntry.subclassFeature(SubclassFeatureData feature) {
+  factory ClassFeatureEntry.subclassFeature(ClassStepFeatureView view) {
     return ClassFeatureEntry._(
-      level: feature.level,
+      level: view.subclassFeature!.level,
       isSubclass: true,
-      subclassFeature: feature,
+      view: view,
     );
   }
 
   Widget buildCard() {
     if (isSubclass) {
-      return SubclassFeatureCard(feature: subclassFeature!);
+      return SubclassFeatureCard(
+        feature: subclassFeature!,
+        displayProperties:
+            view.displayProperties ?? const <FeatureDisplayPropertyView>[],
+      );
     }
-    return ClassFeatureCard(feature: classFeature!);
+    return ClassFeatureCard(
+      feature: classFeature!,
+      displayProperties:
+          view.displayProperties ?? const <FeatureDisplayPropertyView>[],
+    );
   }
 }
 
 class ClassFeatureCard extends StatelessWidget {
   const ClassFeatureCard({
     required this.feature,
+    this.displayProperties = const <FeatureDisplayPropertyView>[],
     super.key,
   });
 
   final ClassFeatureData feature;
+  final List<FeatureDisplayPropertyView> displayProperties;
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +80,9 @@ class ClassFeatureCard extends StatelessWidget {
             Text(
               displayFeatureText(description!),
               style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.justify,
             ),
           ],
+          FeatureDisplayProperties(properties: displayProperties),
         ],
       ),
     );
@@ -80,10 +92,12 @@ class ClassFeatureCard extends StatelessWidget {
 class SubclassFeatureCard extends StatefulWidget {
   const SubclassFeatureCard({
     required this.feature,
+    this.displayProperties = const <FeatureDisplayPropertyView>[],
     super.key,
   });
 
   final SubclassFeatureData feature;
+  final List<FeatureDisplayPropertyView> displayProperties;
 
   @override
   State<SubclassFeatureCard> createState() => _SubclassFeatureCardState();
@@ -130,9 +144,9 @@ class _SubclassFeatureCardState extends State<SubclassFeatureCard> {
             Text(
               displayFeatureText(description!),
               style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.justify,
             ),
           ],
+          FeatureDisplayProperties(properties: widget.displayProperties),
           RelatedFeatureTables(
             tables: relatedTables,
             isExpanded: _areRelatedTablesExpanded,

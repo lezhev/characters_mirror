@@ -33,20 +33,55 @@ class ClassFeatures extends HookConsumerWidget {
 
     final choiceGroups =
         currentStepView.choiceGroups ?? const <ChoiceGroupView>[];
+    final groupsByClassFeatureId = <int, List<ChoiceGroupView>>{};
+    final groupsBySubclassFeatureId = <int, List<ChoiceGroupView>>{};
+    final standaloneChoiceGroups = <ChoiceGroupView>[];
+    for (final groupView in choiceGroups) {
+      final group = groupView.group;
+      if (group == null) continue;
+      final featureId = group.sourceFeatureId;
+      final subclassFeatureId = group.sourceSubclassFeatureId;
+      if (featureId != null) {
+        groupsByClassFeatureId.putIfAbsent(featureId, () => []).add(groupView);
+      } else if (subclassFeatureId != null) {
+        groupsBySubclassFeatureId
+            .putIfAbsent(subclassFeatureId, () => [])
+            .add(groupView);
+      } else {
+        standaloneChoiceGroups.add(groupView);
+      }
+    }
+    for (final groups in [
+      ...groupsByClassFeatureId.values,
+      ...groupsBySubclassFeatureId.values,
+    ]) {
+      groups.sort((left, right) =>
+          (left.group?.sortOrder ?? 0).compareTo(right.group?.sortOrder ?? 0));
+    }
+    standaloneChoiceGroups.sort((left, right) =>
+        (left.group?.sortOrder ?? 0).compareTo(right.group?.sortOrder ?? 0));
     final currentLevelEntries = [
-      for (final feature
-          in currentStepView.currentLevelFeatures ?? const <ClassFeatureData>[])
+      for (final feature in _classFeaturePresentationViews(
+        currentStepView.currentLevelFeatures,
+        currentStepView.currentLevelFeatureViews,
+      ))
         ClassFeatureEntry.classFeature(feature),
-      for (final feature in currentStepView.currentSubclassFeatures ??
-          const <SubclassFeatureData>[])
+      for (final feature in _subclassFeaturePresentationViews(
+        currentStepView.currentSubclassFeatures,
+        currentStepView.currentSubclassFeatureViews,
+      ))
         ClassFeatureEntry.subclassFeature(feature),
     ]..sort(_compareFeatureEntries);
     final futureProgressionEntries = [
-      for (final feature
-          in currentStepView.futureLevelFeatures ?? const <ClassFeatureData>[])
+      for (final feature in _classFeaturePresentationViews(
+        currentStepView.futureLevelFeatures,
+        currentStepView.futureLevelFeatureViews,
+      ))
         ClassFeatureEntry.classFeature(feature),
-      for (final feature in currentStepView.futureSubclassFeatures ??
-          const <SubclassFeatureData>[])
+      for (final feature in _subclassFeaturePresentationViews(
+        currentStepView.futureSubclassFeatures,
+        currentStepView.futureSubclassFeatureViews,
+      ))
         ClassFeatureEntry.subclassFeature(feature),
     ]..sort(_compareFeatureEntries);
     final subclassChoice = currentStepView.subclassChoice;
@@ -110,9 +145,10 @@ class ClassFeatures extends HookConsumerWidget {
                         .clearSkillSelectionGroup,
                   ),
                 ],
-                if (choiceGroups.isNotEmpty) ...[
+                if (standaloneChoiceGroups.isNotEmpty) ...[
                   const Gap(12),
-                  ClassChoiceGroupsSection(choiceGroups: choiceGroups),
+                  ClassChoiceGroupsSection(
+                      choiceGroups: standaloneChoiceGroups),
                 ],
                 if (subclassChoice != null &&
                     (subclassChoice.requiredLevel ?? 99) <= selectedLevel &&
@@ -126,6 +162,8 @@ class ClassFeatures extends HookConsumerWidget {
                   ClassProgressionSection(
                     currentLevelEntries: currentLevelEntries,
                     futureProgressionEntries: futureProgressionEntries,
+                    groupsByClassFeatureId: groupsByClassFeatureId,
+                    groupsBySubclassFeatureId: groupsBySubclassFeatureId,
                     isFutureExpanded: isFutureExpanded.value,
                     onToggleFuture: () =>
                         isFutureExpanded.value = !isFutureExpanded.value,
@@ -157,6 +195,28 @@ class ClassFeatures extends HookConsumerWidget {
           loading: () => const Center(child: CircularProgressIndicator()),
         );
   }
+}
+
+List<ClassStepFeatureView> _classFeaturePresentationViews(
+  List<ClassFeatureData>? features,
+  List<ClassStepFeatureView>? views,
+) {
+  if (views?.isNotEmpty == true) return views!;
+  return [
+    for (final feature in features ?? const <ClassFeatureData>[])
+      ClassStepFeatureView(classFeature: feature),
+  ];
+}
+
+List<ClassStepFeatureView> _subclassFeaturePresentationViews(
+  List<SubclassFeatureData>? features,
+  List<ClassStepFeatureView>? views,
+) {
+  if (views?.isNotEmpty == true) return views!;
+  return [
+    for (final feature in features ?? const <SubclassFeatureData>[])
+      ClassStepFeatureView(subclassFeature: feature),
+  ];
 }
 
 int _compareFeatureEntries(ClassFeatureEntry left, ClassFeatureEntry right) {

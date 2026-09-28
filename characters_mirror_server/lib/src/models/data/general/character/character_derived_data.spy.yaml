@@ -6,6 +6,8 @@ fields:
   abilityModifiers: Map<Ability, int>?
   activeFeatures: List<CharacterFeatureViewData>?
   armorClass: int?
+  armorClassSource: String?
+  armorClassFormula: String?
   initiative: int?
   speed: int?
   maxHp: int?
@@ -21,6 +23,7 @@ fields:
   hitDiceSummary: Map<String, int>?
   languages: List<Language>?
   toolProficiencyKeys: List<String>?
+  toolExpertiseKeys: List<String>?
   armorTraining: List<ArmorCategory>?
   weaponTraining: List<WeaponCategory>?
   weaponProficiencyKeys: List<String>?

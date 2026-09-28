@@ -24,10 +24,12 @@ enum Language implements _i1.SerializableModel {
   celestial,
   draconic,
   deepSpeech,
+  druidic,
   infernal,
   primordial,
   sylvan,
-  undercommon;
+  undercommon,
+  thievesCant;
 
   static Language fromJson(String name) {
     switch (name) {
@@ -55,6 +57,8 @@ enum Language implements _i1.SerializableModel {
         return Language.draconic;
       case 'deepSpeech':
         return Language.deepSpeech;
+      case 'druidic':
+        return Language.druidic;
       case 'infernal':
         return Language.infernal;
       case 'primordial':
@@ -63,6 +67,8 @@ enum Language implements _i1.SerializableModel {
         return Language.sylvan;
       case 'undercommon':
         return Language.undercommon;
+      case 'thievesCant':
+        return Language.thievesCant;
       default:
         throw ArgumentError('Value "$name" cannot be converted to "Language"');
     }

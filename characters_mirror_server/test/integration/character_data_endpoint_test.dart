@@ -472,8 +472,8 @@ Future<_CreationFixture> _seedCreationFixture(
         ArmorCategory.medium,
       ],
       weaponTraining: const [
-        WeaponCategory.simpleMelee,
-        WeaponCategory.martialMelee,
+        'simpleMelee',
+        'martialMelee',
       ],
       availableSkills: const [
         Skill.acrobatics,

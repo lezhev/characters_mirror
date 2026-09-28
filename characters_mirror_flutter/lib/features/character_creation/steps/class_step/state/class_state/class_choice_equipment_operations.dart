@@ -3,6 +3,38 @@
 part of '../class_state.dart';
 
 extension ClassStateChoiceEquipmentOperations on ClassState {
+  void reconcileExpertiseSelections(
+    Map<String, Set<String>> eligibleOptionKeysByGroup,
+  ) {
+    final currentState = state.value;
+    if (currentState == null) return;
+
+    final selectedOptions = Map<String, List<ChoiceOptionData>>.from(
+      currentState.selectedOptions,
+    );
+    var changed = false;
+    for (final entry in eligibleOptionKeysByGroup.entries) {
+      final selected = selectedOptions[entry.key];
+      if (selected == null) continue;
+      final valid = [
+        for (final option in selected)
+          if (entry.value.contains(option.optionKey.trim())) option,
+      ];
+      if (valid.length == selected.length) continue;
+      changed = true;
+      if (valid.isEmpty) {
+        selectedOptions.remove(entry.key);
+      } else {
+        selectedOptions[entry.key] = valid;
+      }
+    }
+    if (changed) {
+      state = AsyncValue.data(currentState.copyWith(
+        selectedOptions: selectedOptions,
+      ));
+    }
+  }
+
   void toggleOption(ChoiceGroupData group, ChoiceOptionData option) {
     final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
@@ -48,8 +80,7 @@ extension ClassStateChoiceEquipmentOperations on ClassState {
     );
   }
 
-  void incrementOption(
-      ChoiceGroupData group, ChoiceOptionData option) {
+  void incrementOption(ChoiceGroupData group, ChoiceOptionData option) {
     if (group.allowDuplicates != true) return;
 
     final current = Map<String, List<ChoiceOptionData>>.from(
@@ -68,8 +99,7 @@ extension ClassStateChoiceEquipmentOperations on ClassState {
     );
   }
 
-  void decrementOption(
-      ChoiceGroupData group, ChoiceOptionData option) {
+  void decrementOption(ChoiceGroupData group, ChoiceOptionData option) {
     final current = Map<String, List<ChoiceOptionData>>.from(
       state.value!.selectedOptions,
     );

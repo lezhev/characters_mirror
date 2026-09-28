@@ -303,11 +303,10 @@ void main() {
       [Skill.acrobatics, Skill.athletics],
     );
     expect(
-      classState.selectedOptions[subclassToolGroup.referenceKey]
-          ?.single.optionKey,
+      classState
+          .selectedOptions[subclassToolGroup.referenceKey]?.single.optionKey,
       'smith_tools',
     );
-
   });
 }
 

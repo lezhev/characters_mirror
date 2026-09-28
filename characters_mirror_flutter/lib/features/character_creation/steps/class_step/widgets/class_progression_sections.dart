@@ -133,23 +133,7 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
                     .map(
                       (groupView) => Padding(
                         padding: const EdgeInsets.only(bottom: 10),
-                        child: CreationChoiceGroupCard(
-                          groupView: groupView,
-                          selectedOptions: data.selectedOptions[
-                                  classChoiceGroupKey(groupView.group!)] ??
-                              const <ChoiceOptionData>[],
-                          onToggleOption: ref
-                              .read(classStateProvider.notifier)
-                              .toggleOption,
-                          onIncrementOption: ref
-                              .read(classStateProvider.notifier)
-                              .incrementOption,
-                          onDecrementOption: ref
-                              .read(classStateProvider.notifier)
-                              .decrementOption,
-                          onClearGroup:
-                              ref.read(classStateProvider.notifier).clearGroup,
-                        ),
+                        child: ClassChoiceGroupCard(groupView: groupView),
                       ),
                     ),
               ],
@@ -166,10 +150,46 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
   }
 }
 
+class ClassChoiceGroupCard extends ConsumerWidget {
+  const ClassChoiceGroupCard({required this.groupView, super.key});
+
+  final ChoiceGroupView groupView;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final group = groupView.group;
+    if (group == null || group.type == ChoiceType.expertise) {
+      return const SizedBox.shrink();
+    }
+    return ref.watch(classStateProvider).when(
+          data: (data) => CreationChoiceGroupCard(
+            groupView: groupView,
+            selectedOptions: data.selectedOptions[classChoiceGroupKey(group)] ??
+                const <ChoiceOptionData>[],
+            onToggleOption: ref.read(classStateProvider.notifier).toggleOption,
+            onIncrementOption:
+                ref.read(classStateProvider.notifier).incrementOption,
+            onDecrementOption:
+                ref.read(classStateProvider.notifier).decrementOption,
+            onClearGroup: ref.read(classStateProvider.notifier).clearGroup,
+          ),
+          error: (e, s) => errorWidget(
+            e: e,
+            s: s,
+            refresh: () => ref.refresh(classStateProvider),
+            context: context,
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+        );
+  }
+}
+
 class ClassProgressionSection extends StatelessWidget {
   const ClassProgressionSection({
     required this.currentLevelEntries,
     required this.futureProgressionEntries,
+    required this.groupsByClassFeatureId,
+    required this.groupsBySubclassFeatureId,
     required this.isFutureExpanded,
     required this.onToggleFuture,
     super.key,
@@ -177,6 +197,8 @@ class ClassProgressionSection extends StatelessWidget {
 
   final List<ClassFeatureEntry> currentLevelEntries;
   final List<ClassFeatureEntry> futureProgressionEntries;
+  final Map<int, List<ChoiceGroupView>> groupsByClassFeatureId;
+  final Map<int, List<ChoiceGroupView>> groupsBySubclassFeatureId;
   final bool isFutureExpanded;
   final VoidCallback onToggleFuture;
 
@@ -198,7 +220,12 @@ class ClassProgressionSection extends StatelessWidget {
                 ),
           ),
           const Gap(8),
-          ..._buildFeatureLevelGroups(context, currentLevelEntries),
+          ..._buildFeatureLevelGroups(
+            context,
+            currentLevelEntries,
+            groupsByClassFeatureId: groupsByClassFeatureId,
+            groupsBySubclassFeatureId: groupsBySubclassFeatureId,
+          ),
         ],
         if (futureProgressionEntries.isNotEmpty) ...[
           if (currentLevelEntries.isNotEmpty) const Gap(12),
@@ -226,8 +253,12 @@ class ClassProgressionSection extends StatelessWidget {
             expand: isFutureExpanded,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:
-                  _buildFeatureLevelGroups(context, futureProgressionEntries),
+              children: _buildFeatureLevelGroups(
+                context,
+                futureProgressionEntries,
+                groupsByClassFeatureId: groupsByClassFeatureId,
+                groupsBySubclassFeatureId: groupsBySubclassFeatureId,
+              ),
             ),
           ),
         ],
@@ -238,8 +269,10 @@ class ClassProgressionSection extends StatelessWidget {
 
 List<Widget> _buildFeatureLevelGroups(
   BuildContext context,
-  List<ClassFeatureEntry> entries,
-) {
+  List<ClassFeatureEntry> entries, {
+  required Map<int, List<ChoiceGroupView>> groupsByClassFeatureId,
+  required Map<int, List<ChoiceGroupView>> groupsBySubclassFeatureId,
+}) {
   final textTheme = Theme.of(context).textTheme;
   final colorScheme = Theme.of(context).colorScheme;
   final widgets = <Widget>[];
@@ -264,6 +297,21 @@ List<Widget> _buildFeatureLevelGroups(
       );
     }
     widgets.add(entry.buildCard());
+    final featureId = entry.featureId;
+    final featureChoiceGroups = featureId == null
+        ? const <ChoiceGroupView>[]
+        : (entry.isSubclass
+                ? groupsBySubclassFeatureId[featureId]
+                : groupsByClassFeatureId[featureId]) ??
+            const <ChoiceGroupView>[];
+    for (final groupView in featureChoiceGroups) {
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(left: 12, bottom: 8),
+          child: ClassChoiceGroupCard(groupView: groupView),
+        ),
+      );
+    }
   }
 
   return widgets;

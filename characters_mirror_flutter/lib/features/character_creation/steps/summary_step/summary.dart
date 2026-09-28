@@ -1,12 +1,13 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
-import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/widgets/summary_sections.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/application/summary_overview_data.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/summary_step/widgets/summary_overview.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -17,71 +18,26 @@ class SummaryStep extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isSaving = useState(false);
     final state = ref.watch(characterCreationProvider);
-    final choiceGroups = [
-      ...state.raceChoiceGroups,
-      ...state.classChoiceGroups,
-      ...state.backgroundChoiceGroups,
-    ];
-    final groupsByKey = {
-      for (final view in choiceGroups)
-        if (view.group case final group?) group.referenceKey: group,
-    };
-    final classEntries =
-        state.character.classEntries ?? const <CharacterClassEntryData>[];
-    final choices = state.character.choices ?? const <CharacterChoiceData>[];
-    final skillSelections = state.character.skillSelections ??
-        const <CharacterSkillSelectionData>[];
-    final spellSelections = state.character.spellSelections ??
-        const <CharacterSpellSelectionData>[];
-    final classEntry = classEntries.isNotEmpty ? classEntries.first : null;
-    final classChoiceSummary = formatChoiceSummary(
-      choices.where((choice) => isClassChoice(choice, choiceGroups)).toList(),
-      choiceGroups,
-    );
-    final classSpellSummary = formatSpellSelectionSummary(spellSelections);
-    final classSkillSummary = formatSkillSelectionSummary(
-      skillSelections
-          .where(
-            (selection) =>
-                selection.kind == CharacterSkillSelectionKind.classSkill,
-          )
-          .toList(),
-    );
-    final backgroundChoiceSummary = formatChoiceSummary(
-      choices
-          .where((choice) =>
-              groupsByKey[choice.groupKey]?.sourceBackgroundId ==
-              state.character.background?.id)
-          .toList(),
-      choiceGroups,
-    );
-    final backgroundSkillSummary = formatSkillSelectionSummary(
-      skillSelections
-          .where(
-            (selection) =>
-                selection.kind == CharacterSkillSelectionKind.backgroundSkill,
-          )
-          .toList(),
-    );
-    final raceChoiceSummary = formatChoiceSummary(
-      choices
-          .where(
-            (choice) =>
-                groupsByKey[choice.groupKey]?.sourceRaceId != null ||
-                groupsByKey[choice.groupKey]?.sourceSubraceId != null,
-          )
-          .toList(),
-      choiceGroups,
+    final characterRaceId = state.character.race?.id;
+    final raceState = ref.watch(raceStateProvider).valueOrNull;
+    final hasSubraceOptions = characterRaceId != null &&
+        raceState?.selectedRace?.id == characterRaceId &&
+        raceState!.subraces.any(
+          (subrace) => subrace.parentRaceId == characterRaceId,
+        );
+    final data = SummaryOverviewData.fromState(
+      state: state,
+      hasSubraceOptions: hasSubraceOptions,
     );
 
     return CreationStepScaffold(
       route: 'character',
-      onBack: () {
-        ref.read(characterCreationProvider.notifier).reset();
-        context.go('/characters');
-      },
+      onBack: () =>
+          ref.read(characterCreationProvider.notifier).prevStep(context),
       onStepTap: (target) async {
-        ref.read(characterCreationProvider.notifier).goToStep(context, target);
+        ref
+            .read(characterCreationProvider.notifier)
+            .editStepFromSummary(context, target);
       },
       onPressedNext: () {
         _finishCreation(
@@ -91,31 +47,14 @@ class SummaryStep extends HookConsumerWidget {
           isSaving: isSaving,
         );
       },
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SummaryIdentitySection(
-            character: state.character,
-            classEntry: classEntry,
-          ),
-          const Gap(24),
-          SummaryChoicesSection(
-            raceChoiceSummary: raceChoiceSummary,
-            classChoiceSummary: classChoiceSummary,
-            classSkillSummary: classSkillSummary,
-            classSpellSummary: classSpellSummary,
-            backgroundChoiceSummary: backgroundChoiceSummary,
-            backgroundSkillSummary: backgroundSkillSummary,
-          ),
-          const Gap(24),
-          SummaryAbilitiesSection(
-            baseAbilityScores: buildSummaryAbilityScores(
-              state.character,
-              choices,
-              choiceGroups,
-            ),
-          ),
-        ],
+      body: SummaryOverview(
+        data: data,
+        onEdit: (target) => ref
+            .read(characterCreationProvider.notifier)
+            .editStepFromSummary(context, target),
+        onPortraitTap: () => ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Выбор портрета скоро появится.')),
+        ),
       ),
     );
   }

@@ -39,6 +39,20 @@ void main() {
     final opacityFinder =
         find.byKey(const ValueKey('creation-scroll-hint-opacity'));
     expect(tester.widget<AnimatedOpacity>(opacityFinder).opacity, 1);
+    final hintSize = tester.widget<SizedBox>(
+      find.byKey(const ValueKey('creation-scroll-hint-size')),
+    );
+    expect(hintSize.width, 264);
+    expect(hintSize.height, 26);
+    final hintMaterial = tester.widget<Material>(
+      find
+          .ancestor(
+            of: find.byKey(const ValueKey('creation-scroll-hint')),
+            matching: find.byType(Material),
+          )
+          .first,
+    );
+    expect(hintMaterial.color!.a, 1);
 
     await tester.drag(
       find.byType(SingleChildScrollView),

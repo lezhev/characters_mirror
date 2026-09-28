@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:characters_mirror_flutter/core/character/armor_class_calculator.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
@@ -87,6 +86,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     proficiencyBonus,
     abilityModifiers,
   );
+  final currentClassFeatures = await _currentClassFeatures(cache, entries);
   final hitDice = _hitDiceSummary(character, entries);
   final spellSlots = await _spellSlots(cache, entries);
   final maxHp = _maxHp(
@@ -98,7 +98,10 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   final armorClass = await _calculateArmorClass(
     cache,
     character,
-    dexterityModifier,
+    abilityModifiers,
+    currentClassFeatures
+        .map((feature) => feature.unarmoredDefenseRule)
+        .whereType<UnarmoredDefenseRule>(),
   );
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
   final alwaysPreparedSpellKeys = await _collectAlwaysPreparedSpellKeys(
@@ -114,7 +117,11 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     racialSpellKeys,
     selectedOptions,
   );
-  final automaticLanguages = await _languages(cache, character, entries);
+  final automaticLanguages = _languages(
+    character,
+    selectedOptions,
+    currentClassFeatures,
+  );
   final languages = _effectiveProficiencyValues<Language>(
     automaticLanguages,
     character.manualLanguageOverrides?.added,
@@ -132,6 +139,10 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     character.manualToolProficiencyOverrides?.removedKeys,
     (value) => value,
   );
+  final toolExpertiseKeys = {
+    for (final option in selectedOptions) ...?option.grantedExpertiseToolKeys,
+  }.intersection(toolProficiencyKeys.toSet()).toList()
+    ..sort();
   final automaticArmorTraining = await _armorTraining(
     cache,
     character,
@@ -154,6 +165,12 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   final weaponProficiencyKeys = _uniqueStrings([
     ...?character.race?.weaponProficiencyKeys,
     ...?character.subrace?.weaponProficiencyKeys,
+    for (final entry in entries)
+      ..._weaponKeysFromTrainingValues(
+        (entry.isStartingClass ?? false)
+            ? entry.classData?.weaponTraining
+            : entry.classData?.multiclassWeaponTraining,
+      ),
   ]);
   final effectiveWeaponKeys = _effectiveProficiencyValues<String>(
     weaponProficiencyKeys,
@@ -169,7 +186,9 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: armorClass,
+    armorClass: armorClass.value,
+    armorClassSource: armorClass.source,
+    armorClassFormula: armorClass.formula,
     initiative: dexterityModifier + (character.customInitiativeBonus ?? 0),
     speed: displayedMovementSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
@@ -191,6 +210,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     hitDiceSummary: hitDice,
     languages: languages,
     toolProficiencyKeys: toolProficiencyKeys,
+    toolExpertiseKeys: toolExpertiseKeys,
     armorTraining: armorTraining,
     weaponTraining: weaponTraining,
     weaponProficiencyKeys: effectiveWeaponKeys,

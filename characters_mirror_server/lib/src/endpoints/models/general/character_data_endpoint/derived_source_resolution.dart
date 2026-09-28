@@ -2,14 +2,20 @@ part of '../character_data_endpoint.dart';
 
 class _ResolvedDerivedSources {
   final List<ChoiceOptionData> selectedOptions;
+  final Map<int, List<String>> selectedChoicesByClassFeatureId;
+  final Map<int, List<String>> selectedChoicesBySubclassFeatureId;
   final List<ClassFeatureData> currentClassFeatures;
   final List<SubclassFeatureData> currentSubclassFeatures;
+  final List<FeatureDisplayPropertyData> featureDisplayProperties;
   final List<String> alwaysPreparedSpellKeys;
 
   const _ResolvedDerivedSources({
     required this.selectedOptions,
+    required this.selectedChoicesByClassFeatureId,
+    required this.selectedChoicesBySubclassFeatureId,
     required this.currentClassFeatures,
     required this.currentSubclassFeatures,
+    required this.featureDisplayProperties,
     required this.alwaysPreparedSpellKeys,
   });
 }
@@ -139,6 +145,9 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     currentClassFeatureLevels: currentClassFeatureLevels,
     currentSubclassFeatureLevels: currentSubclassFeatureLevels,
   );
+  final featureDisplayProperties = await context.featureDisplayProperties(
+    transaction: transaction,
+  );
 
   final currentRaceFeatures = _currentRaceFeaturesBySource(character,
       entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
@@ -245,6 +254,11 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
   }
 
   _validateGenericChoiceSelectionRules(selectedByGroupKey, relevantGroups);
+  _validateGenericChoiceEligibility(
+    character,
+    selectedByGroupKey,
+    relevantGroups,
+  );
   await _validateGenericChoiceReferenceKeys(
     session,
     [
@@ -254,12 +268,124 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     transaction: transaction,
   );
 
+  final selectedChoicesByClassFeatureId = <int, List<String>>{};
+  final selectedChoicesBySubclassFeatureId = <int, List<String>>{};
+  final orderedGroups = [...relevantGroups]..sort(
+      (left, right) => (left.sortOrder ?? 0).compareTo(right.sortOrder ?? 0));
+  for (final group in orderedGroups) {
+    final selections = [...?selectedByGroupKey[group.referenceKey]]..sort(
+        (left, right) => (left.choice.selectionIndex ?? 0)
+            .compareTo(right.choice.selectionIndex ?? 0));
+    if (selections.isEmpty) continue;
+    final target = group.sourceFeatureId != null
+        ? selectedChoicesByClassFeatureId.putIfAbsent(
+            group.sourceFeatureId!,
+            () => <String>[],
+          )
+        : group.sourceSubclassFeatureId != null
+            ? selectedChoicesBySubclassFeatureId.putIfAbsent(
+                group.sourceSubclassFeatureId!,
+                () => <String>[],
+              )
+            : null;
+    if (target == null) continue;
+    for (final selection in selections) {
+      final optionName = _normalizedTextOrNull(selection.option.name) ??
+          selection.option.optionKey;
+      final groupName = _normalizedTextOrNull(group.name);
+      target.add(groupName == null ? optionName : '$groupName: $optionName');
+    }
+  }
+
   return _ResolvedDerivedSources(
     selectedOptions: selectedOptions,
+    selectedChoicesByClassFeatureId: selectedChoicesByClassFeatureId,
+    selectedChoicesBySubclassFeatureId: selectedChoicesBySubclassFeatureId,
     currentClassFeatures: currentClassFeatures,
     currentSubclassFeatures: currentSubclassFeatures,
+    featureDisplayProperties: featureDisplayProperties,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
   );
+}
+
+void _validateGenericChoiceEligibility(
+  CharacterData character,
+  Map<String, List<_SelectedGenericChoice>> selectedByGroupKey,
+  List<ChoiceGroupData> groups,
+) {
+  final ownedSkills = <Skill>{
+    ...?character.race?.skillProficiencies,
+    ...?character.subrace?.skillProficiencies,
+    ...?character.background?.skillProficiencies,
+    for (final selection
+        in character.skillSelections ?? const <CharacterSkillSelectionData>[])
+      if (selection.skill != null) selection.skill!,
+  };
+  final ownedToolKeys = <String>{
+    ...?character.race?.toolProficiencyKeys,
+    ...?character.subrace?.toolProficiencyKeys,
+    ...?character.background?.toolProficiencyKeys,
+  };
+  for (final entry in character.classEntries ?? const []) {
+    final isStarting = entry.isStartingClass ?? false;
+    ownedToolKeys.addAll(
+      isStarting
+          ? entry.classData?.toolTrainingKeys ?? const <String>[]
+          : entry.classData?.multiclassToolTrainingKeys ?? const <String>[],
+    );
+  }
+
+  final groupsByKey = {for (final group in groups) group.referenceKey: group};
+  for (final entry in selectedByGroupKey.entries) {
+    final currentGroupId = groupsByKey[entry.key]?.id;
+    for (final otherEntry in selectedByGroupKey.entries) {
+      if (groupsByKey[otherEntry.key]?.id == currentGroupId) continue;
+      for (final selected in otherEntry.value) {
+        ownedSkills.addAll(selected.option.grantedSkills ?? const <Skill>[]);
+        ownedToolKeys
+            .addAll(selected.option.grantedToolKeys ?? const <String>[]);
+      }
+    }
+    final manualSkillOverrides = character.manualSkillProficiencyOverrides;
+    final legacySkillOverrides = character.manualSkillProficiencies;
+    if (manualSkillOverrides != null) {
+      for (final state in manualSkillOverrides) {
+        if (state.level == CharacterSkillProficiencyLevel.none) {
+          ownedSkills.remove(state.skill);
+        } else {
+          ownedSkills.add(state.skill);
+        }
+      }
+    } else if (legacySkillOverrides != null) {
+      ownedSkills
+        ..clear()
+        ..addAll([
+          for (final state in legacySkillOverrides)
+            if (state.level != CharacterSkillProficiencyLevel.none) state.skill,
+        ]);
+    }
+    ownedToolKeys
+      ..removeAll(character.manualToolProficiencyOverrides?.removedKeys ?? [])
+      ..addAll(character.manualToolProficiencyOverrides?.addedKeys ?? []);
+    for (final selected in entry.value) {
+      final requiredSkill = selected.option.requiredExistingSkill;
+      if (requiredSkill != null && !ownedSkills.contains(requiredSkill)) {
+        throw InputValidationException(
+          'choices.${entry.key}',
+          'requires an existing proficiency in ${requiredSkill.name}.',
+        );
+      }
+      final requiredToolKey = selected.option.requiredExistingToolKey?.trim();
+      if (requiredToolKey != null &&
+          requiredToolKey.isNotEmpty &&
+          !ownedToolKeys.contains(requiredToolKey)) {
+        throw InputValidationException(
+          'choices.${entry.key}',
+          'requires an existing proficiency in tool "$requiredToolKey".',
+        );
+      }
+    }
+  }
 }
 
 class _SelectedGenericChoice {
@@ -273,17 +399,14 @@ void _validateGenericChoiceSelectionRules(
   Map<String, List<_SelectedGenericChoice>> selectedByGroupKey,
   List<ChoiceGroupData> groups,
 ) {
-  final groupsByKey = {
-    for (final group in groups) group.referenceKey: group,
-  };
   final exclusiveGroups = <String, String>{};
-  for (final entry in selectedByGroupKey.entries) {
-    final group = groupsByKey[entry.key]!;
-    final selections = entry.value;
+  for (final group in groups) {
+    final selections = selectedByGroupKey[group.referenceKey] ??
+        const <_SelectedGenericChoice>[];
     final selectionCount = group.selectionCount ?? 1;
     if (selections.length > selectionCount) {
       throw InputValidationException(
-        'choices.${entry.key}',
+        'choices.${group.referenceKey}',
         'selects ${selections.length} options; maximum is $selectionCount.',
       );
     }
@@ -293,28 +416,31 @@ void _validateGenericChoiceSelectionRules(
       if (group.allowDuplicates != true &&
           !optionKeys.add(selection.option.optionKey)) {
         throw InputValidationException(
-          'choices.${entry.key}',
+          'choices.${group.referenceKey}',
           'does not allow duplicate option keys.',
         );
       }
       final index = selection.choice.selectionIndex;
       if (index != null && !selectionIndices.add(index)) {
         throw InputValidationException(
-          'choices.${entry.key}',
+          'choices.${group.referenceKey}',
           'duplicates selection index $index.',
         );
       }
     }
+    if (selections.isEmpty) continue;
     final exclusiveKey = group.exclusiveKey?.trim();
     if (exclusiveKey == null || exclusiveKey.isEmpty) continue;
     final previous = exclusiveGroups[exclusiveKey];
-    if (previous != null && previous != entry.key) {
+    if (previous != null && previous != group.referenceKey) {
       throw InputValidationException(
-        'choices.${entry.key}',
+        'choices.${group.referenceKey}',
         'conflicts with choice group "$previous".',
       );
     }
-    exclusiveGroups[exclusiveKey] = entry.key;
+    if (selections.isNotEmpty) {
+      exclusiveGroups[exclusiveKey] = group.referenceKey;
+    }
   }
 }
 

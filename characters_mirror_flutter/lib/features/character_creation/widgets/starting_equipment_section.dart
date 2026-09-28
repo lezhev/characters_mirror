@@ -87,31 +87,29 @@ class StartingEquipmentSection extends ConsumerWidget {
                       if (isOptionSelected) {
                         onClearBlock(orderedBlocks[index]);
                         return;
-                      } else {
-                        onSelectOption(orderedBlocks[index], optionView);
                       }
 
                       if (!context.mounted) {
                         return;
                       }
 
-                      await _showRequiredResolutionDialogs(
+                      final resolutions = await _showRequiredResolutionDialogs(
                         context: context,
                         ref: ref,
-                        blockView: orderedBlocks[index],
                         lines: optionView.lines ??
                             const <StartingEquipmentLineData>[],
-                        selectedReferenceKeysByLine:
-                            startingEquipmentResolutionReferenceKeys(
-                          selectionForStartingEquipmentOption(
-                            selection: isOptionSelected ? selection : null,
-                            optionView: optionView,
-                          ),
-                          optionView.lines ??
-                              const <StartingEquipmentLineData>[],
-                        ),
-                        onSetResolution: onSetResolution,
+                        selectedReferenceKeysByLine: const {},
                       );
+                      if (resolutions == null || !context.mounted) return;
+                      onSelectOption(orderedBlocks[index], optionView);
+                      for (final resolution in resolutions) {
+                        onSetResolution(
+                          blockView: orderedBlocks[index],
+                          line: resolution.line,
+                          catalogType: resolution.choice.catalogType,
+                          referenceKey: resolution.choice.referenceKey,
+                        );
+                      }
                     },
                     onShowFixedLineDialog: (line) async {
                       if (!startingEquipmentLineRequiresResolution(line)) {
@@ -173,19 +171,21 @@ List<StartingEquipmentBlockView> _orderedStartingEquipmentBlocks(
   return ordered;
 }
 
-Future<void> _showRequiredResolutionDialogs({
+Future<
+    List<
+        ({
+          StartingEquipmentLineData line,
+          StartingEquipmentCatalogDialogEntry choice
+        })>?> _showRequiredResolutionDialogs({
   required BuildContext context,
   required WidgetRef ref,
-  required StartingEquipmentBlockView blockView,
   required List<StartingEquipmentLineData> lines,
   required Map<int, String> selectedReferenceKeysByLine,
-  required void Function({
-    required StartingEquipmentBlockView blockView,
-    required StartingEquipmentLineData line,
-    required EquipmentCatalogType catalogType,
-    required String referenceKey,
-  }) onSetResolution,
 }) async {
+  final resolutions = <({
+    StartingEquipmentLineData line,
+    StartingEquipmentCatalogDialogEntry choice
+  })>[];
   for (final line in lines) {
     if (!startingEquipmentLineRequiresResolution(line)) {
       continue;
@@ -197,16 +197,12 @@ Future<void> _showRequiredResolutionDialogs({
       selectedReferenceKey: selectedReferenceKeysByLine[line.entryId],
     );
     if (choice == null) {
-      return;
+      return null;
     }
-    onSetResolution(
-      blockView: blockView,
-      line: line,
-      catalogType: choice.catalogType,
-      referenceKey: choice.referenceKey,
-    );
+    resolutions.add((line: line, choice: choice));
     if (!context.mounted) {
-      return;
+      return null;
     }
   }
+  return resolutions;
 }

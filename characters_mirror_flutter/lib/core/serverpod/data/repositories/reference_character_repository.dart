@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/character/armor_class_calculator.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
+import 'package:characters_mirror_flutter/core/offline/character_sync_store.dart';
 import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
@@ -172,6 +173,15 @@ class CharacterRepository implements Repository<CharacterData> {
     final store = characterSyncStore;
     final userId = currentOfflineUserId();
     if (store != null && userId != null) {
+      // A volatile cache cannot confirm that a new character was saved.
+      if (offlineCacheDatabase == null && normalized.id == null) {
+        return persistConfirmedNewCharacter(
+          normalized,
+          userId: userId,
+          store: store,
+          saveRemote: client.characterData.saveCharacter,
+        );
+      }
       final resolved = await _resolveForLocalStore(normalized);
       final record = await store.saveLocal(userId, resolved);
       unawaited(offlineSyncCoordinator?.syncNow());
@@ -205,4 +215,18 @@ class CharacterRepository implements Repository<CharacterData> {
     }
     return resolveOfflineCharacter(cache, character);
   }
+}
+
+Future<CharacterData> persistConfirmedNewCharacter(
+  CharacterData character, {
+  required int userId,
+  required CharacterSyncStore store,
+  required Future<CharacterData> Function(CharacterData) saveRemote,
+}) async {
+  final saved = await saveRemote(character);
+  if (saved.id == null) {
+    throw StateError('Сервер сохранил персонажа без идентификатора.');
+  }
+  await store.upsertCleanFromServer(userId, saved);
+  return saved;
 }

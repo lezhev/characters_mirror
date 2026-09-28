@@ -4,7 +4,6 @@ import 'package:characters_mirror_flutter/features/character_creation/steps/clas
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/class_tile_view.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_selection_step_scaffold.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_shimmer.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -73,7 +72,13 @@ class ClassStep extends HookConsumerWidget {
         );
       },
       loading: () {
-        return const DelayedCreationShimmer();
+        return CreationSelectionStepScaffold.loading(
+          route: 'race',
+          onBack: () {
+            ref.read(characterCreationProvider.notifier).reset();
+            context.go('/characters');
+          },
+        );
       },
     );
   }

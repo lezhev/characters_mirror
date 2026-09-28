@@ -440,9 +440,7 @@ void main() {
                     protocol.Ability.constitution,
                   ],
                   armorTraining: const [protocol.ArmorCategory.heavy],
-                  weaponTraining: const [
-                    protocol.WeaponCategory.martialMelee,
-                  ],
+                  weaponTraining: const ['martialMelee'],
                   toolTrainingKeys: const ['dice_set'],
                 ),
                 subclass: protocol.SubclassData(

@@ -27,6 +27,7 @@ class AttributeSelection extends ConsumerWidget {
       characterCreationProvider.select((value) => value.character),
     );
     final creationNotifier = ref.read(characterCreationProvider.notifier);
+    final hasSelectedRace = character.race?.id != null;
     final useFlexibleAbilityBonuses =
         character.useFlexibleAbilityBonuses ?? false;
 
@@ -36,21 +37,6 @@ class AttributeSelection extends ConsumerWidget {
           child: Column(
             children: [
               const Gap(8),
-              PageSizeLimiter(
-                maxWidth: 560,
-                child: SwitchListTile(
-                  value: useFlexibleAbilityBonuses,
-                  onChanged: (value) {
-                    creationNotifier.setUseFlexibleAbilityBonuses(value);
-                  },
-                  title:
-                      const Text('Опциональные правила выбора характеристик'),
-                  subtitle: const Text(
-                    'По умолчанию используется правила из книги игрока. Включите это, если хотите использовать опциональные правила.',
-                  ),
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.only(top: 12, bottom: 4),
                 child: Wrap(
@@ -122,6 +108,23 @@ class AttributeSelection extends ConsumerWidget {
                   ),
                 ),
               ),
+              if (hasSelectedRace) ...[
+                const Gap(16),
+                PageSizeLimiter(
+                  maxWidth: 560,
+                  child: SwitchListTile(
+                    key: const ValueKey('attribute-optional-rules'),
+                    value: useFlexibleAbilityBonuses,
+                    onChanged: creationNotifier.setUseFlexibleAbilityBonuses,
+                    title:
+                        const Text('Опциональные правила выбора характеристик'),
+                    subtitle: const Text(
+                      'По умолчанию используется правила из книги игрока. Включите это, если хотите использовать опциональные правила.',
+                    ),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ],
             ],
           ),
         ),

@@ -66,15 +66,16 @@ class _JumpToDetailsButtonState extends State<JumpToDetailsButton>
             label: 'Прокрутить вниз',
             button: true,
             child: Material(
-              color: colorScheme.surface.withValues(alpha: 0.72),
-              borderRadius: BorderRadius.circular(22),
+              color: colorScheme.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(16),
               child: InkWell(
                 key: const ValueKey('creation-scroll-hint'),
                 onTap: widget.isVisible ? widget.onPressed : null,
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(16),
                 child: SizedBox(
-                  width: 176,
-                  height: 38,
+                  key: const ValueKey('creation-scroll-hint-size'),
+                  width: 264,
+                  height: 26,
                   child: Center(
                     child: CustomPaint(
                       size: const Size(28, 12),

@@ -45,6 +45,13 @@ class StartingEquipmentBlockCards extends StatelessWidget {
         final title = startingEquipmentOptionTitle(
           optionView: optionView,
           catalogLabels: catalogLabels,
+          selectedReferenceKeysByLine: startingEquipmentResolutionReferenceKeys(
+            selectionForStartingEquipmentOption(
+              selection: selection,
+              optionView: optionView,
+            ),
+            optionView.lines ?? optionView.option?.lines ?? const [],
+          ),
         );
         return CreationChoiceSelectorItem(
           id: '${optionView.option?.entryId ?? title}',

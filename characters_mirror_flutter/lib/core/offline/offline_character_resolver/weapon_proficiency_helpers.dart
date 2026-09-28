@@ -25,22 +25,42 @@ List<String> _normalizedCustomValues(Iterable<String>? values) {
   return unique.values.toList()..sort();
 }
 
-Future<List<Language>> _languages(
-  OfflineCacheDatabase cache,
+List<Language> _languages(
   CharacterData character,
-  List<CharacterClassEntryData> entries,
-) async {
+  List<ChoiceOptionData> options,
+  List<ClassFeatureData> currentClassFeatures,
+) {
   final values = <Language>{...?character.race?.languages};
-  final options = await _selectedChoiceOptions(
-    cache,
-    character,
-    entries,
-  );
   for (final option in options) {
     values.addAll(option.grantedLanguages ?? const <Language>[]);
   }
+  for (final feature in currentClassFeatures) {
+    values.addAll(feature.grantedLanguages ?? const <Language>[]);
+  }
   return values.toList()
     ..sort((left, right) => left.name.compareTo(right.name));
+}
+
+Future<List<ClassFeatureData>> _currentClassFeatures(
+  OfflineCacheDatabase cache,
+  List<CharacterClassEntryData> entries,
+) async {
+  final features = <ClassFeatureData>[];
+  for (final entry in entries) {
+    final classId = entry.classData?.id;
+    if (classId == null) continue;
+    final stepView = await cache.getReference<ClassStepView>(
+      offlineClassStepKind,
+      offlineClassStepKey(
+        classId,
+        selectedLevel: entry.level ?? 0,
+        selectedSubclassId: entry.subclass?.id,
+      ),
+      ClassStepView.fromJson,
+    );
+    features.addAll(stepView?.currentLevelFeatures ?? const <ClassFeatureData>[]);
+  }
+  return features;
 }
 
 Future<List<ArmorCategory>> _armorTraining(
@@ -76,10 +96,11 @@ Future<List<WeaponCategory>> _weaponTraining(
 ) async {
   final values = <WeaponCategory>{
     for (final entry in entries)
-      ...((entry.isStartingClass ?? false)
-          ? entry.classData?.weaponTraining ?? const <WeaponCategory>[]
-          : entry.classData?.multiclassWeaponTraining ??
-              const <WeaponCategory>[]),
+      ..._weaponCategoriesFromTrainingValues(
+        (entry.isStartingClass ?? false)
+            ? entry.classData?.weaponTraining
+            : entry.classData?.multiclassWeaponTraining,
+      ),
   };
 
   final selectedOptions = await _selectedChoiceOptions(
@@ -92,6 +113,24 @@ Future<List<WeaponCategory>> _weaponTraining(
   }
 
   return values.toList()..sort((a, b) => a.name.compareTo(b.name));
+}
+
+List<WeaponCategory> _weaponCategoriesFromTrainingValues(
+  Iterable<String>? values,
+) {
+  return [
+    for (final value in values ?? const <String>[])
+      for (final category in WeaponCategory.values)
+        if (category.name == value) category,
+  ];
+}
+
+List<String> _weaponKeysFromTrainingValues(Iterable<String>? values) {
+  return [
+    for (final value in values ?? const <String>[])
+      if (!WeaponCategory.values.any((category) => category.name == value))
+        value,
+  ];
 }
 
 Future<List<String>> _toolProficiencyKeys(

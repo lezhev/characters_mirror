@@ -135,3 +135,12 @@
 20260927105833200-stage6-background-starting-equipment
 20260927112208460-stage6-charlatan-forgery-kit
 20260927114850990-normalize-background-skill-names
+20260927190202453-class-feature-level1-effects
+20260927190615008-level1-choice-eligibility
+20260927191136832-choice-minimum-selections
+20260927194227389
+20260927195616272
+20260927210000000-arcane-recovery-reference
+20260928090000000-level1-feature-display-properties
+20260928100000000-level1-choice-corrections
+20260928110000000-smoke-level1-reference-fixes

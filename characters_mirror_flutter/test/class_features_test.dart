@@ -11,6 +11,62 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ClassFeatures current level', () {
+    testWidgets(
+        'renders feature choices under their source feature once and '
+        'keeps standalone choices separate', (tester) async {
+      final stepView = _buildStepView(
+        currentFeatures: [
+          ClassFeatureData(
+            id: 39,
+            parentClassId: 1,
+            name: 'Fighting Style feature',
+            level: 1,
+            shortDescription: 'Short feature text',
+            description: 'Full feature text',
+          ),
+        ],
+        currentSubclassFeatures: [
+          SubclassFeatureData(
+            id: 501,
+            parentSubclassId: 10,
+            name: 'Subclass feature',
+            level: 1,
+          ),
+        ],
+        futureFeatures: const [],
+        futureSubclassFeatures: const [],
+        progression: const [],
+        choiceGroups: [
+          _choiceGroup(1, 'second', sourceFeatureId: 39, sortOrder: 2),
+          _choiceGroup(2, 'first', sourceFeatureId: 39, sortOrder: 1),
+          _choiceGroup(3, 'subclass-choice', sourceSubclassFeatureId: 501),
+          _choiceGroup(4, 'standalone', sourceClassId: 1),
+        ],
+      );
+
+      await _pumpClassFeatures(tester, stepView);
+
+      expect(find.text('Short feature text'), findsOneWidget);
+      expect(find.text('Full feature text'), findsNothing);
+      expect(find.text('second'), findsOneWidget);
+      expect(find.text('first'), findsOneWidget);
+      expect(find.text('subclass-choice'), findsOneWidget);
+      expect(find.text('standalone'), findsOneWidget);
+      expect(find.text('Владения класса'), findsOneWidget);
+
+      final featureY =
+          tester.getTopLeft(find.text('Fighting Style feature')).dy;
+      final firstY = tester.getTopLeft(find.text('first')).dy;
+      final secondY = tester.getTopLeft(find.text('second')).dy;
+      final subclassFeatureY =
+          tester.getTopLeft(find.text('Subclass feature')).dy;
+      final subclassChoiceY =
+          tester.getTopLeft(find.text('subclass-choice')).dy;
+      expect(featureY, lessThan(firstY));
+      expect(firstY, lessThan(secondY));
+      expect(subclassFeatureY, lessThan(subclassChoiceY));
+    });
+
     testWidgets('renders subclass features inside current level block',
         (tester) async {
       final stepView = _buildStepView(
@@ -209,6 +265,52 @@ void main() {
     });
   });
 
+  testWidgets('renders resolved display properties below feature description',
+      (tester) async {
+    final stepView = ClassStepView(
+      classData: ClassData(id: 1, name: 'Fighter'),
+      selectedLevel: 5,
+      currentLevelFeatures: [
+        ClassFeatureData(
+          id: 700,
+          parentClassId: 1,
+          name: 'Fixture feature',
+          shortDescription: 'Короткое описание.',
+          level: 1,
+        ),
+      ],
+      currentLevelFeatureViews: [
+        ClassStepFeatureView(
+          classFeature: ClassFeatureData(
+            id: 700,
+            parentClassId: 1,
+            name: 'Fixture feature',
+            shortDescription: 'Короткое описание.',
+            level: 1,
+          ),
+          displayProperties: [
+            FeatureDisplayPropertyView(
+              key: 'value',
+              label: 'Параметр',
+              value: '1к10 + 5',
+              sortOrder: 1,
+            ),
+          ],
+        ),
+      ],
+      currentSubclassFeatures: const [],
+      futureLevelFeatures: const [],
+      futureSubclassFeatures: const [],
+      progression: const [],
+    );
+
+    await _pumpClassFeatures(tester, stepView);
+
+    expect(find.text('Короткое описание.'), findsOneWidget);
+    expect(find.text('Параметр'), findsOneWidget);
+    expect(find.text('1к10 + 5'), findsOneWidget);
+  });
+
   group('ClassFeatures future progression', () {
     testWidgets(
         'renders a single future progression block for class and subclass features',
@@ -293,6 +395,31 @@ void main() {
   });
 }
 
+ChoiceGroupView _choiceGroup(
+  int id,
+  String referenceKey, {
+  int? sourceClassId,
+  int? sourceFeatureId,
+  int? sourceSubclassFeatureId,
+  int? sortOrder,
+}) {
+  return ChoiceGroupView(
+    group: ChoiceGroupData(
+      id: id,
+      referenceKey: referenceKey,
+      name: referenceKey,
+      sourceClassId: sourceClassId,
+      sourceFeatureId: sourceFeatureId,
+      sourceSubclassFeatureId: sourceSubclassFeatureId,
+      level: 1,
+      type: ChoiceType.custom,
+      selectionCount: 1,
+      sortOrder: sortOrder,
+    ),
+    options: const [],
+  );
+}
+
 Future<void> _pumpClassFeatures(
   WidgetTester tester,
   ClassStepView stepView,
@@ -342,6 +469,22 @@ ClassStepView _buildStepView({
     currentSubclassFeatures: currentSubclassFeatures,
     futureLevelFeatures: futureFeatures,
     futureSubclassFeatures: futureSubclassFeatures,
+    currentLevelFeatureViews: [
+      for (final feature in currentFeatures)
+        ClassStepFeatureView(classFeature: feature),
+    ],
+    currentSubclassFeatureViews: [
+      for (final feature in currentSubclassFeatures)
+        ClassStepFeatureView(subclassFeature: feature),
+    ],
+    futureLevelFeatureViews: [
+      for (final feature in futureFeatures)
+        ClassStepFeatureView(classFeature: feature),
+    ],
+    futureSubclassFeatureViews: [
+      for (final feature in futureSubclassFeatures)
+        ClassStepFeatureView(subclassFeature: feature),
+    ],
     subclassChoice: subclassChoice,
     choiceGroups: choiceGroups,
     progression: progression,

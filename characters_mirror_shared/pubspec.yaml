@@ -1,0 +1,7 @@
+name: characters_mirror_shared
+description: Shared pure domain helpers for Character's Mirror.
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+

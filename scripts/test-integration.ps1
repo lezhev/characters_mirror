@@ -57,7 +57,7 @@ try {
         throw "Failed to start postgres_test."
     }
 
-    dart test test/integration
+    dart test test/integration --concurrency=1
 
     if ($LASTEXITCODE -ne 0) {
         throw "Integration tests failed."

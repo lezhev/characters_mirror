@@ -6,6 +6,10 @@ fields:
   futureLevelFeatures: List<ClassFeatureData>?
   currentSubclassFeatures: List<SubclassFeatureData>?
   futureSubclassFeatures: List<SubclassFeatureData>?
+  currentLevelFeatureViews: List<ClassStepFeatureView>?
+  futureLevelFeatureViews: List<ClassStepFeatureView>?
+  currentSubclassFeatureViews: List<ClassStepFeatureView>?
+  futureSubclassFeatureViews: List<ClassStepFeatureView>?
   subclassChoice: ClassStepSubclassChoiceView?
   choiceGroups: List<ChoiceGroupView>?
   skillSelectionGroups: List<SkillSelectionGroupView>?

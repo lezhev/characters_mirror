@@ -1,0 +1,21 @@
+class: FeatureDisplayPropertyData
+table: feature_display_property_data
+fields:
+  sourceClassFeature: ClassFeatureData?, relation(optional)
+  sourceSubclassFeature: SubclassFeatureData?, relation(optional)
+  key: String
+  label: String
+  valueKind: FeatureDisplayPropertyValueKind
+  staticValue: String?
+  progression: Map<int, String>?
+  formula: String?
+  sortOrder: int?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+indexes:
+  feature_display_property_class_feature_key_idx:
+    fields: sourceClassFeatureId, key
+  feature_display_property_subclass_feature_key_idx:
+    fields: sourceSubclassFeatureId, key

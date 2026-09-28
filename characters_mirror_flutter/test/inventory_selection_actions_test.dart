@@ -127,7 +127,7 @@ void main() {
     ));
 
     expect(find.text('Описание'), findsOneWidget);
-    expect(find.text('Добавить ручную атаку'), findsOneWidget);
+    expect(find.text('Добавить в атаки'), findsOneWidget);
     expect(find.text('Экипировать как доспех'), findsOneWidget);
     expect(find.text('Экипировать как щит'), findsOneWidget);
   });

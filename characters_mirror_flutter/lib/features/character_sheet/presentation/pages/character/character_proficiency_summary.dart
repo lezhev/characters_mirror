@@ -67,7 +67,7 @@ class CharacterProficiencySummary extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Знания и подготовка',
+                    Text('Владения персонажа',
                         style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 8),
                     if (sections.isEmpty)

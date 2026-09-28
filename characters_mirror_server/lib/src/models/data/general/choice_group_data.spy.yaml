@@ -15,6 +15,7 @@ fields:
   level: int?
   type: ChoiceType?
   selectionCount: int?
+  minimumSelectionCount: int?
   appliesAtCharacterLevel: bool?
   exclusiveKey: String?
   allowDuplicates: bool?

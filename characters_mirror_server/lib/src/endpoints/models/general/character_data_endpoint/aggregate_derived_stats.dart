@@ -57,9 +57,20 @@ Future<CharacterDerivedData> _buildDerivedData(
     character.skillSelections ?? const <CharacterSkillSelectionData>[],
     resolvedSources.selectedOptions,
   );
+  final automaticSkillProficiencyLevels =
+      _defaultSkillProficiencyLevels(skillProficiencies);
+  for (final option in resolvedSources.selectedOptions) {
+    for (final skill in option.grantedExpertiseSkills ?? const <Skill>[]) {
+      if (automaticSkillProficiencyLevels[skill] !=
+          CharacterSkillProficiencyLevel.none) {
+        automaticSkillProficiencyLevels[skill] =
+            CharacterSkillProficiencyLevel.expertise;
+      }
+    }
+  }
   final skillProficiencyLevels = _effectiveSkillProficiencyLevels(
     character,
-    _defaultSkillProficiencyLevels(skillProficiencies),
+    automaticSkillProficiencyLevels,
   );
   final skillBonuses = <Skill, int>{};
   for (final skill in Skill.values) {
@@ -90,6 +101,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     automatic: _collectLanguages(
       character,
       resolvedSources.selectedOptions,
+      resolvedSources.currentClassFeatures,
     ),
     added: character.manualLanguageOverrides?.added,
     removed: character.manualLanguageOverrides?.removed,
@@ -105,6 +117,11 @@ Future<CharacterDerivedData> _buildDerivedData(
     removed: character.manualToolProficiencyOverrides?.removedKeys,
     sortKey: (value) => value,
   );
+  final toolExpertiseKeys = {
+    for (final option in resolvedSources.selectedOptions)
+      ...?option.grantedExpertiseToolKeys,
+  }.intersection(toolProficiencyKeys.toSet()).toList()
+    ..sort();
   final armorTraining = _applyProficiencyOverrides<ArmorCategory>(
     automatic: _collectArmorTraining(
       character,
@@ -159,7 +176,10 @@ Future<CharacterDerivedData> _buildDerivedData(
   final movementSpeeds = _effectiveMovementSpeeds(character);
   final armorClass = await _calculateArmorClass(
     character,
-    dexMod,
+    abilityModifiers,
+    resolvedSources.currentClassFeatures
+        .map((feature) => feature.unarmoredDefenseRule)
+        .whereType<UnarmoredDefenseRule>(),
     resolveContext: context,
     transaction: transaction,
   );
@@ -170,7 +190,9 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: armorClass,
+    armorClass: armorClass.value,
+    armorClassSource: armorClass.source,
+    armorClassFormula: armorClass.formula,
     initiative: dexMod + (character.customInitiativeBonus ?? 0),
     speed: _displayedSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
@@ -186,6 +208,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     hitDiceSummary: hitDiceSummary,
     languages: languages,
     toolProficiencyKeys: toolProficiencyKeys,
+    toolExpertiseKeys: toolExpertiseKeys,
     armorTraining: armorTraining,
     weaponTraining: weaponTraining,
     weaponProficiencyKeys: weaponProficiencyKeys,

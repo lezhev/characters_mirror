@@ -98,7 +98,7 @@ class _InventorySelectionActionsState extends State<InventorySelectionActions> {
         OutlinedButton.icon(
           onPressed: () => widget.onCreateManualAttack(selected.trim()),
           icon: const Icon(Icons.sports_martial_arts),
-          label: const Text('Добавить ручную атаку'),
+          label: const Text('Добавить в атаки'),
         ),
         OutlinedButton.icon(
           onPressed: () => widget.onEquipArmor(

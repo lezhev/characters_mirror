@@ -4,5 +4,6 @@ fields:
   skills: List<Skill>?
   armorTraining: List<ArmorCategory>?
   weaponTraining: List<WeaponCategory>?
+  weaponProficiencyKeys: List<String>?
   toolKeys: List<String>?
   languageChoices: List<Language>?

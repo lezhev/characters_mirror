@@ -11,7 +11,7 @@ fields:
   primaryAbilities: List<Ability>?
   savingThrowProficiencies: List<Ability>?
   armorTraining: List<ArmorCategory>?
-  weaponTraining: List<WeaponCategory>?
+  weaponTraining: List<String>?
   toolTrainingKeys: List<String>?
   availableSkills: List<Skill>?
   skillCount: int?
@@ -21,7 +21,7 @@ fields:
   spellcastingAbilityValue: Ability?
   multiclassPrerequisites: Map<String, int>?
   multiclassArmorTraining: List<ArmorCategory>?
-  multiclassWeaponTraining: List<WeaponCategory>?
+  multiclassWeaponTraining: List<String>?
   multiclassToolTrainingKeys: List<String>?
 
   imageURL: String?

@@ -1,6 +1,7 @@
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/button.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,7 +24,12 @@ void main() {
             _TransitionStep(
               route: '/create/attributes',
               label: 'attributes marker',
-              onNext: (context) => context.go('/create/personal'),
+              onNext: (context) {
+                ProviderScope.containerOf(context)
+                    .read(creationStepTransitionDirectionProvider.notifier)
+                    .state = 1;
+                context.go('/create/personal');
+              },
             ),
           ),
         ),
@@ -34,7 +40,13 @@ void main() {
             _TransitionStep(
               route: '/create/personal',
               label: 'personal marker',
-              onNext: (context) => context.go('/create/attributes'),
+              onNext: (context) {
+                ProviderScope.containerOf(context)
+                    .read(creationStepTransitionDirectionProvider.notifier)
+                    .state = -1;
+                context.go('/create/attributes');
+              },
+              contentPadding: const EdgeInsets.fromLTRB(16, 80, 16, 8),
             ),
           ),
         ),
@@ -57,6 +69,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 70));
 
     expect(find.text('personal marker'), findsOneWidget);
+    final personalTopDuringTransition =
+        tester.getRect(find.text('personal marker')).top;
     expect(
       tester.getCenter(find.text('personal marker')).dx,
       greaterThan(contentCenterX),
@@ -69,18 +83,28 @@ void main() {
 
     await tester.pumpAndSettle();
     expect(tester.getCenter(find.text('personal marker')).dx, contentCenterX);
+    expect(
+      tester.getRect(find.text('personal marker')).top,
+      closeTo(personalTopDuringTransition, 1),
+    );
 
     await tester.tap(find.byType(Button).last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 70));
 
     expect(find.text('attributes marker'), findsOneWidget);
+    final attributesTopDuringTransition =
+        tester.getRect(find.text('attributes marker')).top;
     expect(
       tester.getCenter(find.text('attributes marker')).dx,
       lessThan(contentCenterX),
     );
     await tester.pumpAndSettle();
     expect(tester.getCenter(find.text('attributes marker')).dx, contentCenterX);
+    expect(
+      tester.getRect(find.text('attributes marker')).top,
+      closeTo(attributesTopDuringTransition, 1),
+    );
 
     router.go('/create/personal');
     await tester.pump(const Duration(milliseconds: 60));
@@ -98,7 +122,12 @@ CustomTransitionPage<void> _stepPage(GoRouterState state, Widget child) {
     child: child,
     transitionDuration: duration,
     reverseTransitionDuration: duration,
-    transitionsBuilder: (_, __, ___, child) => child,
+    transitionsBuilder: (_, animation, secondaryAnimation, child) =>
+        CreationStepTransitionScope(
+      animation: animation,
+      secondaryAnimation: secondaryAnimation,
+      child: child,
+    ),
   );
 }
 
@@ -107,11 +136,14 @@ class _TransitionStep extends StatelessWidget {
     required this.route,
     required this.label,
     required this.onNext,
+    this.contentPadding =
+        const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
   });
 
   final String route;
   final String label;
   final void Function(BuildContext) onNext;
+  final EdgeInsetsGeometry contentPadding;
 
   @override
   Widget build(BuildContext context) => CreationStepScaffold(
@@ -119,6 +151,7 @@ class _TransitionStep extends StatelessWidget {
         onBack: () {},
         onStepTap: null,
         onPressedNext: () => onNext(context),
+        contentPadding: contentPadding,
         body: SizedBox(
           height: 480,
           child: Center(child: Text(label)),

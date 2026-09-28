@@ -1,0 +1,6 @@
+enum: FeatureDisplayPropertyValueKind
+serialized: byName
+values:
+  - staticValue
+  - progression
+  - formula

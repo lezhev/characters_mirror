@@ -1,0 +1,56 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "feature_display_property_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "feature_display_property_class_feature_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "sourceClassFeatureId"
+              },
+              {
+                "type": 0,
+                "definition": "key"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "indexName": "feature_display_property_subclass_feature_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "sourceSubclassFeatureId"
+              },
+              {
+                "type": 0,
+                "definition": "key"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [
+          "feature_display_property_source_key_idx"
+        ],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

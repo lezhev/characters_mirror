@@ -1,0 +1,5 @@
+enum: UnarmoredDefenseRule
+serialized: byName
+values:
+  - dexterityConstitution
+  - dexterityWisdom

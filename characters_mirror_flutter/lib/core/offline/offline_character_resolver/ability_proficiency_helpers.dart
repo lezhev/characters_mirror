@@ -100,6 +100,11 @@ Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
     for (final skill in option.grantedSkills ?? const <Skill>[]) {
       result[skill] = CharacterSkillProficiencyLevel.proficient;
     }
+    for (final skill in option.grantedExpertiseSkills ?? const <Skill>[]) {
+      if (result[skill] != CharacterSkillProficiencyLevel.none) {
+        result[skill] = CharacterSkillProficiencyLevel.expertise;
+      }
+    }
   }
   final overrides = character.manualSkillProficiencyOverrides;
   final legacy = character.manualSkillProficiencies;
