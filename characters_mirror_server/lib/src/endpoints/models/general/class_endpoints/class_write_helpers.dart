@@ -120,6 +120,83 @@ SubclassFeatureData _normalizeSubclassFeature(SubclassFeatureData feature) {
   );
 }
 
+Future<List<ClassStepFeatureView>> _classStepFeatureViews(
+  Session session,
+  Iterable<ClassFeatureData> sourceFeatures, {
+  required int sourceLevel,
+  required Map<String, int> abilityModifiers,
+}) async {
+  final features = sourceFeatures.map(_normalizeClassFeature).toList();
+  final featureIds = {
+    for (final feature in features)
+      if (feature.id != null) feature.id!,
+  };
+  final properties = featureIds.isEmpty
+      ? const <FeatureDisplayPropertyData>[]
+      : await FeatureDisplayPropertyData.db.find(
+          session,
+          where: (t) => t.sourceClassFeatureId.inSet(featureIds),
+          orderBy: (t) => t.sortOrder,
+        );
+  return [
+    for (final feature in features)
+      ClassStepFeatureView(
+        classFeature: feature,
+        displayProperties: resolveDisplayPropertyViews(
+          definitions: properties.where(
+            (property) => property.sourceClassFeatureId == feature.id,
+          ),
+          sourceLevel: sourceLevel,
+          abilityModifiers: abilityModifiers,
+          subclassLevel: sourceLevel,
+        ),
+      ),
+  ];
+}
+
+Future<List<ClassStepFeatureView>> _subclassStepFeatureViews(
+  Session session,
+  Iterable<SubclassFeatureData> sourceFeatures, {
+  required int sourceLevel,
+  required Map<String, int> abilityModifiers,
+}) async {
+  final features = sourceFeatures.map(_normalizeSubclassFeature).toList();
+  final featureIds = {
+    for (final feature in features)
+      if (feature.id != null) feature.id!,
+  };
+  final properties = featureIds.isEmpty
+      ? const <FeatureDisplayPropertyData>[]
+      : await FeatureDisplayPropertyData.db.find(
+          session,
+          where: (t) => t.sourceSubclassFeatureId.inSet(featureIds),
+          orderBy: (t) => t.sortOrder,
+        );
+  return [
+    for (final feature in features)
+      ClassStepFeatureView(
+        subclassFeature: feature,
+        displayProperties: resolveDisplayPropertyViews(
+          definitions: properties.where(
+            (property) => property.sourceSubclassFeatureId == feature.id,
+          ),
+          sourceLevel: sourceLevel,
+          abilityModifiers: abilityModifiers,
+          subclassLevel: sourceLevel,
+        ),
+      ),
+  ];
+}
+
+Map<String, int> _abilityModifiersForScores(Map<String, int>? scores) {
+  if (scores == null) return const {};
+  return {
+    for (final ability in Ability.values)
+      if (scores[ability.name] != null)
+        ability.name: ((scores[ability.name]! - 10) / 2).floor(),
+  };
+}
+
 FeatureResourceDefinitionDataInclude _featureResourceDefinitionInclude() {
   return FeatureResourceDefinitionData.include(
     progressionValues: FeatureResourceProgressionValueData.includeList(),

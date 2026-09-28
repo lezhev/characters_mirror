@@ -1,5 +1,7 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
+import 'package:characters_mirror_server/src/feature_display_properties.dart';
 import 'package:serverpod/serverpod.dart';
+import 'package:characters_mirror_server/src/weapon_training_values.dart';
 
 import 'starting_equipment_endpoints.dart';
 
@@ -147,6 +149,10 @@ class ClassDataEndpoint extends Endpoint {
       }
     }
 
+    final weaponTrainingValues = isStartingClass
+        ? classData.weaponTraining
+        : classData.multiclassWeaponTraining;
+
     return ClassStepView(
       classData: classData,
       selectedLevel: selectedLevel,
@@ -166,6 +172,30 @@ class ClassDataEndpoint extends Endpoint {
           .where((feature) => feature.level > selectedLevel)
           .map(_normalizeSubclassFeature)
           .toList(),
+      currentLevelFeatureViews: await _classStepFeatureViews(
+        session,
+        features.where((feature) => feature.level <= selectedLevel),
+        sourceLevel: selectedLevel,
+        abilityModifiers: _abilityModifiersForScores(abilityScores),
+      ),
+      futureLevelFeatureViews: await _classStepFeatureViews(
+        session,
+        features.where((feature) => feature.level > selectedLevel),
+        sourceLevel: selectedLevel,
+        abilityModifiers: _abilityModifiersForScores(abilityScores),
+      ),
+      currentSubclassFeatureViews: await _subclassStepFeatureViews(
+        session,
+        subclassFeatures.where((feature) => feature.level <= selectedLevel),
+        sourceLevel: selectedLevel,
+        abilityModifiers: _abilityModifiersForScores(abilityScores),
+      ),
+      futureSubclassFeatureViews: await _subclassStepFeatureViews(
+        session,
+        subclassFeatures.where((feature) => feature.level > selectedLevel),
+        sourceLevel: selectedLevel,
+        abilityModifiers: _abilityModifiersForScores(abilityScores),
+      ),
       subclassChoice: ClassStepSubclassChoiceView(
         requiredLevel: classData.subclassChoiceLevel,
         subclasses: subclasses,
@@ -180,9 +210,10 @@ class ClassDataEndpoint extends Endpoint {
         armorTraining: isStartingClass
             ? classData.armorTraining
             : classData.multiclassArmorTraining,
-        weaponTraining: isStartingClass
-            ? classData.weaponTraining
-            : classData.multiclassWeaponTraining,
+        weaponTraining:
+            weaponCategoriesFromTrainingValues(weaponTrainingValues),
+        weaponProficiencyKeys:
+            weaponKeysFromTrainingValues(weaponTrainingValues),
         toolKeys: isStartingClass
             ? classData.toolTrainingKeys
             : classData.multiclassToolTrainingKeys,

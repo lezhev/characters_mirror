@@ -21,6 +21,12 @@ class ClassRaceDetailsPage extends ConsumerWidget {
           const <ToolData>[])
         tool.referenceKey: tool.name,
     };
+    final weaponNames = {
+      for (final weapon in ref.watch(weaponCatalogProvider).valueOrNull ??
+          const <WeaponData>[])
+        if (weapon.referenceKey != null && weapon.name != null)
+          weapon.referenceKey!: weapon.name!,
+    };
     final subclassEntries = [
       for (final entry in classEntries)
         if (normalizedText(entry.subclass?.name) != null) entry,
@@ -50,6 +56,7 @@ class ClassRaceDetailsPage extends ConsumerWidget {
                             _ClassEntryDetails(
                               entry: classEntries[index],
                               toolNames: toolNames,
+                              weaponNames: weaponNames,
                             ),
                             if (index < classEntries.length - 1)
                               const Divider(height: 24),
@@ -117,10 +124,12 @@ class _ClassEntryDetails extends StatelessWidget {
   const _ClassEntryDetails({
     required this.entry,
     required this.toolNames,
+    required this.weaponNames,
   });
 
   final CharacterClassEntryData entry;
   final Map<String, String> toolNames;
+  final Map<String, String> weaponNames;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +167,7 @@ class _ClassEntryDetails extends StatelessWidget {
       if (classData?.weaponTraining?.isNotEmpty ?? false)
         _DetailRow(
           label: 'Оружие',
-          value: joinWeaponCategories(classData!.weaponTraining!),
+          value: joinWeaponTraining(classData!.weaponTraining!, weaponNames),
         ),
       if (toolTrainingLabels.isNotEmpty)
         _DetailRow(

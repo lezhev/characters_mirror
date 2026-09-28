@@ -5,12 +5,15 @@ import 'package:characters_mirror_flutter/features/character_creation/widgets/cr
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
   static const double height = 168;
 
   final String title;
   final VoidCallback? onBack;
+  final IconData backIcon;
+  final bool scrollProgression;
   final VoidCallback? onNext;
   final FutureOr<void> Function(Step target)? onStepTap;
 
@@ -18,6 +21,8 @@ class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
       {super.key,
       required this.title,
       this.onBack,
+      this.backIcon = Icons.close_rounded,
+      this.scrollProgression = false,
       this.onNext,
       this.onStepTap});
 
@@ -37,6 +42,9 @@ class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
     if (routeStep != null && routeStep != providerStep) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) {
+          return;
+        }
+        if (GoRouter.of(context).state.uri.path != routeStep.routePath) {
           return;
         }
         ref.read(characterCreationProvider.notifier).syncStep(routeStep);
@@ -72,7 +80,8 @@ class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   children: [
                     if (onBack != null)
                       _HeaderIconButton(
-                        icon: Icons.close_rounded,
+                        key: const ValueKey('creation-appbar-back'),
+                        icon: backIcon,
                         onPressed: onBack!,
                       ),
                     if (onBack != null) const SizedBox(width: 12),
@@ -128,6 +137,7 @@ class CreationAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   child: CreationProgression(
                     currentStep: currentStep,
                     onStepTap: onStepTap,
+                    scrollable: scrollProgression,
                   ),
                 ),
               ],
@@ -146,6 +156,7 @@ class _HeaderIconButton extends StatelessWidget {
   const _HeaderIconButton({
     required this.icon,
     required this.onPressed,
+    super.key,
   });
 
   @override

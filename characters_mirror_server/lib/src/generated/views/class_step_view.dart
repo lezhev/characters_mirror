@@ -13,13 +13,14 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../data/general/class/class_data.dart' as _i2;
 import '../data/general/class/class_feature_data.dart' as _i3;
 import '../data/general/class/subclass_feature_data.dart' as _i4;
-import '../views/class_step_subclass_choice_view.dart' as _i5;
-import '../views/choice_group_view.dart' as _i6;
-import '../views/skill_selection_group_view.dart' as _i7;
-import '../views/class_spell_selection_group_view.dart' as _i8;
-import '../views/starting_equipment_block_view.dart' as _i9;
-import '../views/proficiency_bundle_view.dart' as _i10;
-import '../data/general/class/class_level_data.dart' as _i11;
+import '../views/class_step_feature_view.dart' as _i5;
+import '../views/class_step_subclass_choice_view.dart' as _i6;
+import '../views/choice_group_view.dart' as _i7;
+import '../views/skill_selection_group_view.dart' as _i8;
+import '../views/class_spell_selection_group_view.dart' as _i9;
+import '../views/starting_equipment_block_view.dart' as _i10;
+import '../views/proficiency_bundle_view.dart' as _i11;
+import '../data/general/class/class_level_data.dart' as _i12;
 
 abstract class ClassStepView
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -30,6 +31,10 @@ abstract class ClassStepView
     this.futureLevelFeatures,
     this.currentSubclassFeatures,
     this.futureSubclassFeatures,
+    this.currentLevelFeatureViews,
+    this.futureLevelFeatureViews,
+    this.currentSubclassFeatureViews,
+    this.futureSubclassFeatureViews,
     this.subclassChoice,
     this.choiceGroups,
     this.skillSelectionGroups,
@@ -47,14 +52,18 @@ abstract class ClassStepView
     List<_i3.ClassFeatureData>? futureLevelFeatures,
     List<_i4.SubclassFeatureData>? currentSubclassFeatures,
     List<_i4.SubclassFeatureData>? futureSubclassFeatures,
-    _i5.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i6.ChoiceGroupView>? choiceGroups,
-    List<_i7.SkillSelectionGroupView>? skillSelectionGroups,
-    List<_i8.ClassSpellSelectionGroupView>? spellSelectionGroups,
-    List<_i9.StartingEquipmentBlockView>? startingEquipmentBlocks,
-    _i10.ProficiencyBundleView? startingProficiencies,
+    List<_i5.ClassStepFeatureView>? currentLevelFeatureViews,
+    List<_i5.ClassStepFeatureView>? futureLevelFeatureViews,
+    List<_i5.ClassStepFeatureView>? currentSubclassFeatureViews,
+    List<_i5.ClassStepFeatureView>? futureSubclassFeatureViews,
+    _i6.ClassStepSubclassChoiceView? subclassChoice,
+    List<_i7.ChoiceGroupView>? choiceGroups,
+    List<_i8.SkillSelectionGroupView>? skillSelectionGroups,
+    List<_i9.ClassSpellSelectionGroupView>? spellSelectionGroups,
+    List<_i10.StartingEquipmentBlockView>? startingEquipmentBlocks,
+    _i11.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
-    List<_i11.ClassLevelData>? progression,
+    List<_i12.ClassLevelData>? progression,
   }) = _ClassStepViewImpl;
 
   factory ClassStepView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -82,30 +91,50 @@ abstract class ClassStepView
               ?.map((e) =>
                   _i4.SubclassFeatureData.fromJson((e as Map<String, dynamic>)))
               .toList(),
+      currentLevelFeatureViews: (jsonSerialization['currentLevelFeatureViews']
+              as List?)
+          ?.map((e) =>
+              _i5.ClassStepFeatureView.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      futureLevelFeatureViews: (jsonSerialization['futureLevelFeatureViews']
+              as List?)
+          ?.map((e) =>
+              _i5.ClassStepFeatureView.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      currentSubclassFeatureViews:
+          (jsonSerialization['currentSubclassFeatureViews'] as List?)
+              ?.map((e) => _i5.ClassStepFeatureView.fromJson(
+                  (e as Map<String, dynamic>)))
+              .toList(),
+      futureSubclassFeatureViews:
+          (jsonSerialization['futureSubclassFeatureViews'] as List?)
+              ?.map((e) => _i5.ClassStepFeatureView.fromJson(
+                  (e as Map<String, dynamic>)))
+              .toList(),
       subclassChoice: jsonSerialization['subclassChoice'] == null
           ? null
-          : _i5.ClassStepSubclassChoiceView.fromJson(
+          : _i6.ClassStepSubclassChoiceView.fromJson(
               (jsonSerialization['subclassChoice'] as Map<String, dynamic>)),
       choiceGroups: (jsonSerialization['choiceGroups'] as List?)
           ?.map(
-              (e) => _i6.ChoiceGroupView.fromJson((e as Map<String, dynamic>)))
+              (e) => _i7.ChoiceGroupView.fromJson((e as Map<String, dynamic>)))
           .toList(),
       skillSelectionGroups: (jsonSerialization['skillSelectionGroups'] as List?)
           ?.map((e) =>
-              _i7.SkillSelectionGroupView.fromJson((e as Map<String, dynamic>)))
+              _i8.SkillSelectionGroupView.fromJson((e as Map<String, dynamic>)))
           .toList(),
       spellSelectionGroups: (jsonSerialization['spellSelectionGroups'] as List?)
-          ?.map((e) => _i8.ClassSpellSelectionGroupView.fromJson(
+          ?.map((e) => _i9.ClassSpellSelectionGroupView.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       startingEquipmentBlocks:
           (jsonSerialization['startingEquipmentBlocks'] as List?)
-              ?.map((e) => _i9.StartingEquipmentBlockView.fromJson(
+              ?.map((e) => _i10.StartingEquipmentBlockView.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
       startingProficiencies: jsonSerialization['startingProficiencies'] == null
           ? null
-          : _i10.ProficiencyBundleView.fromJson(
+          : _i11.ProficiencyBundleView.fromJson(
               (jsonSerialization['startingProficiencies']
                   as Map<String, dynamic>)),
       multiclassWarnings: (jsonSerialization['multiclassWarnings'] as List?)
@@ -113,7 +142,7 @@ abstract class ClassStepView
           .toList(),
       progression: (jsonSerialization['progression'] as List?)
           ?.map(
-              (e) => _i11.ClassLevelData.fromJson((e as Map<String, dynamic>)))
+              (e) => _i12.ClassLevelData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -130,21 +159,29 @@ abstract class ClassStepView
 
   List<_i4.SubclassFeatureData>? futureSubclassFeatures;
 
-  _i5.ClassStepSubclassChoiceView? subclassChoice;
+  List<_i5.ClassStepFeatureView>? currentLevelFeatureViews;
 
-  List<_i6.ChoiceGroupView>? choiceGroups;
+  List<_i5.ClassStepFeatureView>? futureLevelFeatureViews;
 
-  List<_i7.SkillSelectionGroupView>? skillSelectionGroups;
+  List<_i5.ClassStepFeatureView>? currentSubclassFeatureViews;
 
-  List<_i8.ClassSpellSelectionGroupView>? spellSelectionGroups;
+  List<_i5.ClassStepFeatureView>? futureSubclassFeatureViews;
 
-  List<_i9.StartingEquipmentBlockView>? startingEquipmentBlocks;
+  _i6.ClassStepSubclassChoiceView? subclassChoice;
 
-  _i10.ProficiencyBundleView? startingProficiencies;
+  List<_i7.ChoiceGroupView>? choiceGroups;
+
+  List<_i8.SkillSelectionGroupView>? skillSelectionGroups;
+
+  List<_i9.ClassSpellSelectionGroupView>? spellSelectionGroups;
+
+  List<_i10.StartingEquipmentBlockView>? startingEquipmentBlocks;
+
+  _i11.ProficiencyBundleView? startingProficiencies;
 
   List<String>? multiclassWarnings;
 
-  List<_i11.ClassLevelData>? progression;
+  List<_i12.ClassLevelData>? progression;
 
   /// Returns a shallow copy of this [ClassStepView]
   /// with some or all fields replaced by the given arguments.
@@ -156,14 +193,18 @@ abstract class ClassStepView
     List<_i3.ClassFeatureData>? futureLevelFeatures,
     List<_i4.SubclassFeatureData>? currentSubclassFeatures,
     List<_i4.SubclassFeatureData>? futureSubclassFeatures,
-    _i5.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i6.ChoiceGroupView>? choiceGroups,
-    List<_i7.SkillSelectionGroupView>? skillSelectionGroups,
-    List<_i8.ClassSpellSelectionGroupView>? spellSelectionGroups,
-    List<_i9.StartingEquipmentBlockView>? startingEquipmentBlocks,
-    _i10.ProficiencyBundleView? startingProficiencies,
+    List<_i5.ClassStepFeatureView>? currentLevelFeatureViews,
+    List<_i5.ClassStepFeatureView>? futureLevelFeatureViews,
+    List<_i5.ClassStepFeatureView>? currentSubclassFeatureViews,
+    List<_i5.ClassStepFeatureView>? futureSubclassFeatureViews,
+    _i6.ClassStepSubclassChoiceView? subclassChoice,
+    List<_i7.ChoiceGroupView>? choiceGroups,
+    List<_i8.SkillSelectionGroupView>? skillSelectionGroups,
+    List<_i9.ClassSpellSelectionGroupView>? spellSelectionGroups,
+    List<_i10.StartingEquipmentBlockView>? startingEquipmentBlocks,
+    _i11.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
-    List<_i11.ClassLevelData>? progression,
+    List<_i12.ClassLevelData>? progression,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -182,6 +223,18 @@ abstract class ClassStepView
       if (futureSubclassFeatures != null)
         'futureSubclassFeatures':
             futureSubclassFeatures?.toJson(valueToJson: (v) => v.toJson()),
+      if (currentLevelFeatureViews != null)
+        'currentLevelFeatureViews':
+            currentLevelFeatureViews?.toJson(valueToJson: (v) => v.toJson()),
+      if (futureLevelFeatureViews != null)
+        'futureLevelFeatureViews':
+            futureLevelFeatureViews?.toJson(valueToJson: (v) => v.toJson()),
+      if (currentSubclassFeatureViews != null)
+        'currentSubclassFeatureViews':
+            currentSubclassFeatureViews?.toJson(valueToJson: (v) => v.toJson()),
+      if (futureSubclassFeatureViews != null)
+        'futureSubclassFeatureViews':
+            futureSubclassFeatureViews?.toJson(valueToJson: (v) => v.toJson()),
       if (subclassChoice != null) 'subclassChoice': subclassChoice?.toJson(),
       if (choiceGroups != null)
         'choiceGroups': choiceGroups?.toJson(valueToJson: (v) => v.toJson()),
@@ -219,6 +272,18 @@ abstract class ClassStepView
             valueToJson: (v) => v.toJsonForProtocol()),
       if (futureSubclassFeatures != null)
         'futureSubclassFeatures': futureSubclassFeatures?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
+      if (currentLevelFeatureViews != null)
+        'currentLevelFeatureViews': currentLevelFeatureViews?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
+      if (futureLevelFeatureViews != null)
+        'futureLevelFeatureViews': futureLevelFeatureViews?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
+      if (currentSubclassFeatureViews != null)
+        'currentSubclassFeatureViews': currentSubclassFeatureViews?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
+      if (futureSubclassFeatureViews != null)
+        'futureSubclassFeatureViews': futureSubclassFeatureViews?.toJson(
             valueToJson: (v) => v.toJsonForProtocol()),
       if (subclassChoice != null)
         'subclassChoice': subclassChoice?.toJsonForProtocol(),
@@ -260,14 +325,18 @@ class _ClassStepViewImpl extends ClassStepView {
     List<_i3.ClassFeatureData>? futureLevelFeatures,
     List<_i4.SubclassFeatureData>? currentSubclassFeatures,
     List<_i4.SubclassFeatureData>? futureSubclassFeatures,
-    _i5.ClassStepSubclassChoiceView? subclassChoice,
-    List<_i6.ChoiceGroupView>? choiceGroups,
-    List<_i7.SkillSelectionGroupView>? skillSelectionGroups,
-    List<_i8.ClassSpellSelectionGroupView>? spellSelectionGroups,
-    List<_i9.StartingEquipmentBlockView>? startingEquipmentBlocks,
-    _i10.ProficiencyBundleView? startingProficiencies,
+    List<_i5.ClassStepFeatureView>? currentLevelFeatureViews,
+    List<_i5.ClassStepFeatureView>? futureLevelFeatureViews,
+    List<_i5.ClassStepFeatureView>? currentSubclassFeatureViews,
+    List<_i5.ClassStepFeatureView>? futureSubclassFeatureViews,
+    _i6.ClassStepSubclassChoiceView? subclassChoice,
+    List<_i7.ChoiceGroupView>? choiceGroups,
+    List<_i8.SkillSelectionGroupView>? skillSelectionGroups,
+    List<_i9.ClassSpellSelectionGroupView>? spellSelectionGroups,
+    List<_i10.StartingEquipmentBlockView>? startingEquipmentBlocks,
+    _i11.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
-    List<_i11.ClassLevelData>? progression,
+    List<_i12.ClassLevelData>? progression,
   }) : super._(
           classData: classData,
           selectedLevel: selectedLevel,
@@ -275,6 +344,10 @@ class _ClassStepViewImpl extends ClassStepView {
           futureLevelFeatures: futureLevelFeatures,
           currentSubclassFeatures: currentSubclassFeatures,
           futureSubclassFeatures: futureSubclassFeatures,
+          currentLevelFeatureViews: currentLevelFeatureViews,
+          futureLevelFeatureViews: futureLevelFeatureViews,
+          currentSubclassFeatureViews: currentSubclassFeatureViews,
+          futureSubclassFeatureViews: futureSubclassFeatureViews,
           subclassChoice: subclassChoice,
           choiceGroups: choiceGroups,
           skillSelectionGroups: skillSelectionGroups,
@@ -296,6 +369,10 @@ class _ClassStepViewImpl extends ClassStepView {
     Object? futureLevelFeatures = _Undefined,
     Object? currentSubclassFeatures = _Undefined,
     Object? futureSubclassFeatures = _Undefined,
+    Object? currentLevelFeatureViews = _Undefined,
+    Object? futureLevelFeatureViews = _Undefined,
+    Object? currentSubclassFeatureViews = _Undefined,
+    Object? futureSubclassFeatureViews = _Undefined,
     Object? subclassChoice = _Undefined,
     Object? choiceGroups = _Undefined,
     Object? skillSelectionGroups = _Undefined,
@@ -323,32 +400,54 @@ class _ClassStepViewImpl extends ClassStepView {
               is List<_i4.SubclassFeatureData>?
           ? futureSubclassFeatures
           : this.futureSubclassFeatures?.map((e0) => e0.copyWith()).toList(),
-      subclassChoice: subclassChoice is _i5.ClassStepSubclassChoiceView?
+      currentLevelFeatureViews: currentLevelFeatureViews
+              is List<_i5.ClassStepFeatureView>?
+          ? currentLevelFeatureViews
+          : this.currentLevelFeatureViews?.map((e0) => e0.copyWith()).toList(),
+      futureLevelFeatureViews: futureLevelFeatureViews
+              is List<_i5.ClassStepFeatureView>?
+          ? futureLevelFeatureViews
+          : this.futureLevelFeatureViews?.map((e0) => e0.copyWith()).toList(),
+      currentSubclassFeatureViews:
+          currentSubclassFeatureViews is List<_i5.ClassStepFeatureView>?
+              ? currentSubclassFeatureViews
+              : this
+                  .currentSubclassFeatureViews
+                  ?.map((e0) => e0.copyWith())
+                  .toList(),
+      futureSubclassFeatureViews:
+          futureSubclassFeatureViews is List<_i5.ClassStepFeatureView>?
+              ? futureSubclassFeatureViews
+              : this
+                  .futureSubclassFeatureViews
+                  ?.map((e0) => e0.copyWith())
+                  .toList(),
+      subclassChoice: subclassChoice is _i6.ClassStepSubclassChoiceView?
           ? subclassChoice
           : this.subclassChoice?.copyWith(),
-      choiceGroups: choiceGroups is List<_i6.ChoiceGroupView>?
+      choiceGroups: choiceGroups is List<_i7.ChoiceGroupView>?
           ? choiceGroups
           : this.choiceGroups?.map((e0) => e0.copyWith()).toList(),
       skillSelectionGroups:
-          skillSelectionGroups is List<_i7.SkillSelectionGroupView>?
+          skillSelectionGroups is List<_i8.SkillSelectionGroupView>?
               ? skillSelectionGroups
               : this.skillSelectionGroups?.map((e0) => e0.copyWith()).toList(),
       spellSelectionGroups:
-          spellSelectionGroups is List<_i8.ClassSpellSelectionGroupView>?
+          spellSelectionGroups is List<_i9.ClassSpellSelectionGroupView>?
               ? spellSelectionGroups
               : this.spellSelectionGroups?.map((e0) => e0.copyWith()).toList(),
       startingEquipmentBlocks: startingEquipmentBlocks
-              is List<_i9.StartingEquipmentBlockView>?
+              is List<_i10.StartingEquipmentBlockView>?
           ? startingEquipmentBlocks
           : this.startingEquipmentBlocks?.map((e0) => e0.copyWith()).toList(),
       startingProficiencies:
-          startingProficiencies is _i10.ProficiencyBundleView?
+          startingProficiencies is _i11.ProficiencyBundleView?
               ? startingProficiencies
               : this.startingProficiencies?.copyWith(),
       multiclassWarnings: multiclassWarnings is List<String>?
           ? multiclassWarnings
           : this.multiclassWarnings?.map((e0) => e0).toList(),
-      progression: progression is List<_i11.ClassLevelData>?
+      progression: progression is List<_i12.ClassLevelData>?
           ? progression
           : this.progression?.map((e0) => e0.copyWith()).toList(),
     );

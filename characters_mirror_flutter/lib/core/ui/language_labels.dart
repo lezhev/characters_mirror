@@ -26,6 +26,8 @@ String languageLabel(Language language) {
       return 'Драконий';
     case Language.deepSpeech:
       return 'Глубинная речь';
+    case Language.druidic:
+      return 'Друидический';
     case Language.infernal:
       return 'Инфернальный';
     case Language.primordial:
@@ -34,5 +36,7 @@ String languageLabel(Language language) {
       return 'Сильван';
     case Language.undercommon:
       return 'Подземный';
+    case Language.thievesCant:
+      return 'Воровской жаргон';
   }
 }

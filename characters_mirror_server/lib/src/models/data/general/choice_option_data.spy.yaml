@@ -8,10 +8,14 @@ fields:
   sortOrder: int?
   grantedAbilityBonuses: Map<String, int>?
   grantedSkills: List<Skill>?
+  grantedExpertiseSkills: List<Skill>?
   grantedLanguages: List<Language>?
   grantedArmorTraining: List<ArmorCategory>?
   grantedWeaponTraining: List<WeaponCategory>?
   grantedToolKeys: List<String>?
+  grantedExpertiseToolKeys: List<String>?
+  requiredExistingSkill: Skill?
+  requiredExistingToolKey: String?
   grantedSpellKeys: List<String>?
   grantedFeatureTags: List<FeatureTag>?
   damageType: DamageType?

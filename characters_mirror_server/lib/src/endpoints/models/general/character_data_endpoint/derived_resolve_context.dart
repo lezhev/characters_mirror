@@ -10,6 +10,7 @@ class _CharacterResolveContext {
   final void Function(String key)? _onReferenceLoad;
 
   Future<List<ChoiceGroupData>>? _choiceGroups;
+  Future<List<FeatureDisplayPropertyData>>? _featureDisplayProperties;
   Future<List<ClassSpellGrantData>>? _classSpellGrants;
   final Map<int, Future<List<ChoiceOptionData>>> _choiceOptions = {};
   final Map<String, Future<List<ClassFeatureData>>> _classFeatures = {};
@@ -32,6 +33,18 @@ class _CharacterResolveContext {
       () => ChoiceGroupData.db.find(
         session,
         orderBy: (t) => t.referenceKey,
+        transaction: transaction,
+      ),
+    );
+  }
+
+  Future<List<FeatureDisplayPropertyData>> featureDisplayProperties({
+    Transaction? transaction,
+  }) {
+    return _featureDisplayProperties ??= _load(
+      'featureDisplayProperties',
+      () => FeatureDisplayPropertyData.db.find(
+        session,
         transaction: transaction,
       ),
     );

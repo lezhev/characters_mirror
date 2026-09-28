@@ -7,11 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CreationProgression extends ConsumerWidget {
   final Step currentStep;
   final FutureOr<void> Function(Step target)? onStepTap;
+  final bool scrollable;
 
   const CreationProgression({
     super.key,
     required this.currentStep,
     this.onStepTap,
+    this.scrollable = false,
   });
 
   @override
@@ -20,19 +22,46 @@ class CreationProgression extends ConsumerWidget {
       characterCreationProvider.select((state) => state.hasSpellCreationStep),
     );
     final steps = creationVisibleSteps(hasSpellStep: hasSpellStep);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        for (var index = 0; index < steps.length; index++) ...[
-          StepIndicator(
-            step: steps[index],
-            currentStep: currentStep,
-            number: index + 1,
-            onTap: onStepTap,
-          ),
-          if (index < steps.length - 1) Expanded(child: StepLine()),
-        ],
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (scrollable && constraints.maxWidth < 300) {
+          return SingleChildScrollView(
+            key: const ValueKey('creation-progression-scroll'),
+            reverse: true,
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var index = 0; index < steps.length; index++) ...[
+                  StepIndicator(
+                    step: steps[index],
+                    currentStep: currentStep,
+                    number: index + 1,
+                    onTap: onStepTap,
+                  ),
+                  if (index < steps.length - 1)
+                    const SizedBox(width: 12, child: StepLine(width: 12)),
+                ],
+              ],
+            ),
+          );
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (var index = 0; index < steps.length; index++) ...[
+              StepIndicator(
+                step: steps[index],
+                currentStep: currentStep,
+                number: index + 1,
+                onTap: onStepTap,
+              ),
+              if (index < steps.length - 1) Expanded(child: StepLine()),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -98,13 +127,15 @@ class StepIndicator extends StatelessWidget {
 }
 
 class StepLine extends ConsumerWidget {
-  const StepLine({super.key});
+  const StepLine({this.width = 40, super.key});
+
+  final double width;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      width: 40,
+      width: width,
       height: 4,
       color: colorScheme.outline,
     );

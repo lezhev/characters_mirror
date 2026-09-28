@@ -30,10 +30,14 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
     this.sortOrder,
     this.grantedAbilityBonuses,
     this.grantedSkills,
+    this.grantedExpertiseSkills,
     this.grantedLanguages,
     this.grantedArmorTraining,
     this.grantedWeaponTraining,
     this.grantedToolKeys,
+    this.grantedExpertiseToolKeys,
+    this.requiredExistingSkill,
+    this.requiredExistingToolKey,
     this.grantedSpellKeys,
     this.grantedFeatureTags,
     this.damageType,
@@ -56,10 +60,14 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
     List<_i3.Skill>? grantedSkills,
+    List<_i3.Skill>? grantedExpertiseSkills,
     List<_i4.Language>? grantedLanguages,
     List<_i5.ArmorCategory>? grantedArmorTraining,
     List<_i6.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
+    List<String>? grantedExpertiseToolKeys,
+    _i3.Skill? requiredExistingSkill,
+    String? requiredExistingToolKey,
     List<String>? grantedSpellKeys,
     List<_i7.FeatureTag>? grantedFeatureTags,
     _i8.DamageType? damageType,
@@ -93,6 +101,10 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
       grantedSkills: (jsonSerialization['grantedSkills'] as List?)
           ?.map((e) => _i3.Skill.fromJson((e as String)))
           .toList(),
+      grantedExpertiseSkills:
+          (jsonSerialization['grantedExpertiseSkills'] as List?)
+              ?.map((e) => _i3.Skill.fromJson((e as String)))
+              .toList(),
       grantedLanguages: (jsonSerialization['grantedLanguages'] as List?)
           ?.map((e) => _i4.Language.fromJson((e as String)))
           .toList(),
@@ -106,6 +118,16 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
       grantedToolKeys: (jsonSerialization['grantedToolKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
+      grantedExpertiseToolKeys:
+          (jsonSerialization['grantedExpertiseToolKeys'] as List?)
+              ?.map((e) => e as String)
+              .toList(),
+      requiredExistingSkill: jsonSerialization['requiredExistingSkill'] == null
+          ? null
+          : _i3.Skill.fromJson(
+              (jsonSerialization['requiredExistingSkill'] as String)),
+      requiredExistingToolKey:
+          jsonSerialization['requiredExistingToolKey'] as String?,
       grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
@@ -158,6 +180,8 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
 
   List<_i3.Skill>? grantedSkills;
 
+  List<_i3.Skill>? grantedExpertiseSkills;
+
   List<_i4.Language>? grantedLanguages;
 
   List<_i5.ArmorCategory>? grantedArmorTraining;
@@ -165,6 +189,12 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
   List<_i6.WeaponCategory>? grantedWeaponTraining;
 
   List<String>? grantedToolKeys;
+
+  List<String>? grantedExpertiseToolKeys;
+
+  _i3.Skill? requiredExistingSkill;
+
+  String? requiredExistingToolKey;
 
   List<String>? grantedSpellKeys;
 
@@ -199,10 +229,14 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
     List<_i3.Skill>? grantedSkills,
+    List<_i3.Skill>? grantedExpertiseSkills,
     List<_i4.Language>? grantedLanguages,
     List<_i5.ArmorCategory>? grantedArmorTraining,
     List<_i6.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
+    List<String>? grantedExpertiseToolKeys,
+    _i3.Skill? requiredExistingSkill,
+    String? requiredExistingToolKey,
     List<String>? grantedSpellKeys,
     List<_i7.FeatureTag>? grantedFeatureTags,
     _i8.DamageType? damageType,
@@ -228,6 +262,9 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
         'grantedAbilityBonuses': grantedAbilityBonuses?.toJson(),
       if (grantedSkills != null)
         'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedExpertiseSkills != null)
+        'grantedExpertiseSkills':
+            grantedExpertiseSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedLanguages != null)
         'grantedLanguages':
             grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
@@ -238,6 +275,12 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
         'grantedWeaponTraining':
             grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
+      if (grantedExpertiseToolKeys != null)
+        'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
+      if (requiredExistingSkill != null)
+        'requiredExistingSkill': requiredExistingSkill?.toJson(),
+      if (requiredExistingToolKey != null)
+        'requiredExistingToolKey': requiredExistingToolKey,
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (grantedFeatureTags != null)
@@ -274,10 +317,14 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
     List<_i3.Skill>? grantedSkills,
+    List<_i3.Skill>? grantedExpertiseSkills,
     List<_i4.Language>? grantedLanguages,
     List<_i5.ArmorCategory>? grantedArmorTraining,
     List<_i6.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
+    List<String>? grantedExpertiseToolKeys,
+    _i3.Skill? requiredExistingSkill,
+    String? requiredExistingToolKey,
     List<String>? grantedSpellKeys,
     List<_i7.FeatureTag>? grantedFeatureTags,
     _i8.DamageType? damageType,
@@ -298,10 +345,14 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
           sortOrder: sortOrder,
           grantedAbilityBonuses: grantedAbilityBonuses,
           grantedSkills: grantedSkills,
+          grantedExpertiseSkills: grantedExpertiseSkills,
           grantedLanguages: grantedLanguages,
           grantedArmorTraining: grantedArmorTraining,
           grantedWeaponTraining: grantedWeaponTraining,
           grantedToolKeys: grantedToolKeys,
+          grantedExpertiseToolKeys: grantedExpertiseToolKeys,
+          requiredExistingSkill: requiredExistingSkill,
+          requiredExistingToolKey: requiredExistingToolKey,
           grantedSpellKeys: grantedSpellKeys,
           grantedFeatureTags: grantedFeatureTags,
           damageType: damageType,
@@ -328,10 +379,14 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     Object? sortOrder = _Undefined,
     Object? grantedAbilityBonuses = _Undefined,
     Object? grantedSkills = _Undefined,
+    Object? grantedExpertiseSkills = _Undefined,
     Object? grantedLanguages = _Undefined,
     Object? grantedArmorTraining = _Undefined,
     Object? grantedWeaponTraining = _Undefined,
     Object? grantedToolKeys = _Undefined,
+    Object? grantedExpertiseToolKeys = _Undefined,
+    Object? requiredExistingSkill = _Undefined,
+    Object? requiredExistingToolKey = _Undefined,
     Object? grantedSpellKeys = _Undefined,
     Object? grantedFeatureTags = _Undefined,
     Object? damageType = _Undefined,
@@ -366,6 +421,9 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
       grantedSkills: grantedSkills is List<_i3.Skill>?
           ? grantedSkills
           : this.grantedSkills?.map((e0) => e0).toList(),
+      grantedExpertiseSkills: grantedExpertiseSkills is List<_i3.Skill>?
+          ? grantedExpertiseSkills
+          : this.grantedExpertiseSkills?.map((e0) => e0).toList(),
       grantedLanguages: grantedLanguages is List<_i4.Language>?
           ? grantedLanguages
           : this.grantedLanguages?.map((e0) => e0).toList(),
@@ -378,6 +436,15 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
       grantedToolKeys: grantedToolKeys is List<String>?
           ? grantedToolKeys
           : this.grantedToolKeys?.map((e0) => e0).toList(),
+      grantedExpertiseToolKeys: grantedExpertiseToolKeys is List<String>?
+          ? grantedExpertiseToolKeys
+          : this.grantedExpertiseToolKeys?.map((e0) => e0).toList(),
+      requiredExistingSkill: requiredExistingSkill is _i3.Skill?
+          ? requiredExistingSkill
+          : this.requiredExistingSkill,
+      requiredExistingToolKey: requiredExistingToolKey is String?
+          ? requiredExistingToolKey
+          : this.requiredExistingToolKey,
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),

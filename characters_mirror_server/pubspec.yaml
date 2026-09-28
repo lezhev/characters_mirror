@@ -7,6 +7,8 @@ environment:
   sdk: '>=3.5.0 <4.0.0'
 
 dependencies:
+  characters_mirror_shared:
+    path: ../characters_mirror_shared
   serverpod: 2.9.2
   http: ^1.0.0
   postgres: ^3.5.9

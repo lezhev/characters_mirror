@@ -3,6 +3,56 @@ import 'package:characters_mirror_flutter/features/character_creation/applicatio
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('Half-Elf PHB fixed bonus and two selected racial options', () {
+    final character = CharacterData(
+      race: RaceData(id: 7, charismaBonus: 2),
+      baseAbilityScores: const {
+        'strength': 10,
+        'dexterity': 10,
+        'charisma': 10,
+      },
+    );
+    final group = ChoiceGroupView(
+      group: ChoiceGroupData(
+        id: 70,
+        referenceKey: 'half_elf_ability_score_increase',
+        sourceRaceId: 7,
+        type: ChoiceType.abilityIncrease,
+        selectionCount: 2,
+        allowDuplicates: false,
+      ),
+      options: [
+        ChoiceOptionData(
+          choiceGroupId: 70,
+          optionKey: 'strength',
+          grantedAbilityBonuses: const {'strength': 1},
+        ),
+        ChoiceOptionData(
+          choiceGroupId: 70,
+          optionKey: 'dexterity',
+          grantedAbilityBonuses: const {'dexterity': 1},
+        ),
+      ],
+    );
+    final result = buildCharacterCreationAbilityScores(
+      character,
+      [
+        CharacterChoiceData(
+          groupKey: 'half_elf_ability_score_increase',
+          optionKey: 'strength',
+        ),
+        CharacterChoiceData(
+          groupKey: 'half_elf_ability_score_increase',
+          optionKey: 'dexterity',
+        ),
+      ],
+      choiceGroups: [group],
+    );
+    expect(result, containsPair('strength', 11));
+    expect(result, containsPair('dexterity', 11));
+    expect(result, containsPair('charisma', 12));
+  });
+
   test('ability scores resolve selected generic option effects by identity',
       () {
     const groupKey = 'half_elf_ability_score_increase';

@@ -6,6 +6,7 @@ import 'package:characters_mirror_flutter/features/character_creation/applicatio
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:go_router/go_router.dart';
@@ -114,6 +115,8 @@ sealed class CharacterCreationState with _$CharacterCreationState {
 
 @Riverpod(keepAlive: true)
 class CharacterCreation extends _$CharacterCreation {
+  bool _returnToSummaryAfterEdit = false;
+
   @override
   CharacterCreationState build() => CharacterCreationState.initial();
 
@@ -154,6 +157,20 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void goToStep(BuildContext context, Step step) {
+    final target =
+        _returnToSummaryAfterEdit && step != Step.summary ? Step.summary : step;
+    _returnToSummaryAfterEdit = false;
+    _navigateToStep(context, target);
+  }
+
+  void editStepFromSummary(BuildContext context, Step step) {
+    _returnToSummaryAfterEdit = true;
+    _navigateToStep(context, step);
+  }
+
+  void _navigateToStep(BuildContext context, Step step) {
+    ref.read(creationStepTransitionDirectionProvider.notifier).state =
+        step.index >= state.step.index ? 1 : -1;
     context.go(step.routePath);
     state = state.copyWith(step: step);
   }
@@ -579,6 +596,8 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void reset() {
+    _returnToSummaryAfterEdit = false;
+    ref.read(creationStepTransitionDirectionProvider.notifier).state = 1;
     state = CharacterCreationState.initial().copyWith(
       draftRevision: state.draftRevision + 1,
     );

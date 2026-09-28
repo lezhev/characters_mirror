@@ -20,7 +20,8 @@ enum FeatureResourceMaxRule implements _i1.SerializableModel {
   sourceClassLevelTimesValue,
   totalLevel,
   totalLevelTimesValue,
-  sourceClassLevelTable;
+  sourceClassLevelTable,
+  special;
 
   static FeatureResourceMaxRule fromJson(String name) {
     switch (name) {
@@ -42,6 +43,8 @@ enum FeatureResourceMaxRule implements _i1.SerializableModel {
         return FeatureResourceMaxRule.totalLevelTimesValue;
       case 'sourceClassLevelTable':
         return FeatureResourceMaxRule.sourceClassLevelTable;
+      case 'special':
+        return FeatureResourceMaxRule.special;
       default:
         throw ArgumentError(
             'Value "$name" cannot be converted to "FeatureResourceMaxRule"');

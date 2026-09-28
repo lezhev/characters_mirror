@@ -1,0 +1,34 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_feature_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "grantedLanguages",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Language>?"
+          },
+          {
+            "name": "unarmoredDefenseRule",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:UnarmoredDefenseRule?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

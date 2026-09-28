@@ -1,9 +1,11 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/application/background_icon_asset_path.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/application/expertise_owned_proficiencies.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/widgets/background_features.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_selection_step_scaffold.dart';
-import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_shimmer.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:flutter/material.dart' hide Step;
@@ -18,6 +20,8 @@ class BackgroundStep extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailsKey = useMemoized(GlobalKey.new);
+    ref.listen(backgroundStateProvider, (_, __) => _reconcileExpertise(ref));
+    ref.listen(classStateProvider, (_, __) => _reconcileExpertise(ref));
 
     return ref.watch(backgroundStateProvider).when(
       data: (data) {
@@ -34,6 +38,10 @@ class BackgroundStep extends HookConsumerWidget {
             target: target,
           ),
           onPressedNext: () {
+            _reconcileExpertise(ref);
+            ref
+                .read(classStateProvider.notifier)
+                .syncSpellSelectionsToCreationDraft();
             final notifier = ref.read(characterCreationProvider.notifier);
             notifier.syncBackgroundDraft(
               selectedBackground: data.selectedBackground,
@@ -64,7 +72,13 @@ class BackgroundStep extends HookConsumerWidget {
             context: context);
       },
       loading: () {
-        return const DelayedCreationShimmer();
+        return CreationSelectionStepScaffold.loading(
+          route: 'attributes',
+          onBack: () {
+            ref.read(characterCreationProvider.notifier).reset();
+            context.go('/characters');
+          },
+        );
       },
     );
   }
@@ -76,6 +90,8 @@ void _syncAndGo({
   required BackgroundStateModel data,
   required Step target,
 }) {
+  _reconcileExpertise(ref);
+  ref.read(classStateProvider.notifier).syncSpellSelectionsToCreationDraft();
   final notifier = ref.read(characterCreationProvider.notifier);
   notifier.syncBackgroundDraft(
     selectedBackground: data.selectedBackground,
@@ -85,6 +101,37 @@ void _syncAndGo({
     startingEquipmentSelections: data.startingEquipmentSelections,
   );
   notifier.goToStep(context, target);
+}
+
+void _reconcileExpertise(WidgetRef ref) {
+  final classState = ref.read(classStateProvider).valueOrNull;
+  if (classState == null) return;
+  final backgroundAsync = ref.read(backgroundStateProvider);
+  if (!backgroundAsync.hasValue) return;
+  final backgroundState = backgroundAsync.valueOrNull;
+  final creation = ref.read(characterCreationProvider);
+  final otherSelectedOptions = resolveSelectedChoiceOptions(
+    choiceGroups: [
+      ...creation.raceChoiceGroups,
+      ...?backgroundState?.stepView?.choiceGroups,
+    ],
+    savedChoices: creation.character.choices ?? const [],
+    draftSelections: backgroundState?.selectedOptions ?? const {},
+  );
+  final eligibleKeys = resolveExpertiseEligibleOptionKeys(
+    character: creation.character,
+    selectedBackground: backgroundState?.selectedBackground,
+    selectedClass: classState.selectedClass,
+    classSkillSelections: classState.selectedSkillSelections,
+    backgroundSkillSelections:
+        backgroundState?.selectedSkillSelections ?? const [],
+    selectedOptions: classState.selectedOptions,
+    otherSelectedOptions: otherSelectedOptions,
+    choiceGroups: classState.stepView?.choiceGroups ?? const [],
+  );
+  ref
+      .read(classStateProvider.notifier)
+      .reconcileExpertiseSelections(eligibleKeys);
 }
 
 Future<void> _scrollToDetails(GlobalKey key) async {
@@ -215,7 +262,7 @@ class BackgroundTile extends HookConsumerWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: SvgPicture.asset(
-                                  'assets/svg/placeholder.svg',
+                                  backgroundIconAssetPath(background.name),
                                   colorFilter: ColorFilter.mode(
                                     colorScheme.surfaceContainerLowest,
                                     BlendMode.srcIn,

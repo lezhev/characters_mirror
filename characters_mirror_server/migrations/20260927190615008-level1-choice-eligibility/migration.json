@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "choice_option_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "grantedExpertiseSkills",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "grantedExpertiseToolKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "requiredExistingSkill",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Skill?"
+          },
+          {
+            "name": "requiredExistingToolKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

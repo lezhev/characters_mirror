@@ -45,6 +45,7 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
     this.level,
     this.type,
     this.selectionCount,
+    this.minimumSelectionCount,
     this.appliesAtCharacterLevel,
     this.exclusiveKey,
     this.allowDuplicates,
@@ -79,6 +80,7 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
     int? level,
     _i10.ChoiceType? type,
     int? selectionCount,
+    int? minimumSelectionCount,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
     bool? allowDuplicates,
@@ -142,6 +144,7 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
           ? null
           : _i10.ChoiceType.fromJson((jsonSerialization['type'] as String)),
       selectionCount: jsonSerialization['selectionCount'] as int?,
+      minimumSelectionCount: jsonSerialization['minimumSelectionCount'] as int?,
       appliesAtCharacterLevel:
           jsonSerialization['appliesAtCharacterLevel'] as bool?,
       exclusiveKey: jsonSerialization['exclusiveKey'] as String?,
@@ -207,6 +210,8 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
 
   int? selectionCount;
 
+  int? minimumSelectionCount;
+
   bool? appliesAtCharacterLevel;
 
   String? exclusiveKey;
@@ -250,6 +255,7 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
     int? level,
     _i10.ChoiceType? type,
     int? selectionCount,
+    int? minimumSelectionCount,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
     bool? allowDuplicates,
@@ -290,6 +296,8 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
       if (level != null) 'level': level,
       if (type != null) 'type': type?.toJson(),
       if (selectionCount != null) 'selectionCount': selectionCount,
+      if (minimumSelectionCount != null)
+        'minimumSelectionCount': minimumSelectionCount,
       if (appliesAtCharacterLevel != null)
         'appliesAtCharacterLevel': appliesAtCharacterLevel,
       if (exclusiveKey != null) 'exclusiveKey': exclusiveKey,
@@ -335,6 +343,7 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
     int? level,
     _i10.ChoiceType? type,
     int? selectionCount,
+    int? minimumSelectionCount,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
     bool? allowDuplicates,
@@ -367,6 +376,7 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
           level: level,
           type: type,
           selectionCount: selectionCount,
+          minimumSelectionCount: minimumSelectionCount,
           appliesAtCharacterLevel: appliesAtCharacterLevel,
           exclusiveKey: exclusiveKey,
           allowDuplicates: allowDuplicates,
@@ -405,6 +415,7 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
     Object? level = _Undefined,
     Object? type = _Undefined,
     Object? selectionCount = _Undefined,
+    Object? minimumSelectionCount = _Undefined,
     Object? appliesAtCharacterLevel = _Undefined,
     Object? exclusiveKey = _Undefined,
     Object? allowDuplicates = _Undefined,
@@ -464,6 +475,9 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
       type: type is _i10.ChoiceType? ? type : this.type,
       selectionCount:
           selectionCount is int? ? selectionCount : this.selectionCount,
+      minimumSelectionCount: minimumSelectionCount is int?
+          ? minimumSelectionCount
+          : this.minimumSelectionCount,
       appliesAtCharacterLevel: appliesAtCharacterLevel is bool?
           ? appliesAtCharacterLevel
           : this.appliesAtCharacterLevel,

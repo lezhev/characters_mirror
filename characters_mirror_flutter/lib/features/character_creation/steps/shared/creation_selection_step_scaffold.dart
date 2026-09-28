@@ -1,8 +1,21 @@
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
+import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_shimmer.dart';
 import 'package:flutter/material.dart' hide Step;
 
 class CreationSelectionStepScaffold extends StatelessWidget {
+  const CreationSelectionStepScaffold.loading({
+    required this.route,
+    required this.onBack,
+    super.key,
+  })  : selection = const CreationShimmerGrid(),
+        details = null,
+        detailsKey = null,
+        showJumpButton = false,
+        onJumpToDetails = null,
+        onStepTap = null,
+        onPressedNext = _ignoreLoadingNext;
+
   const CreationSelectionStepScaffold({
     required this.selection,
     required this.onBack,
@@ -50,3 +63,5 @@ class CreationSelectionStepScaffold extends StatelessWidget {
     );
   }
 }
+
+void _ignoreLoadingNext() {}

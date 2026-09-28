@@ -32,11 +32,19 @@ CharacterData recalculateArmorClassFromCatalog(
           : 0;
   final armorClass =
       (baseAC ?? 10) + bodyDexterityBonus + (shield?.bonusAC ?? 0);
+  var formula = baseAC != null && bodyArmor?.dexBonus != true
+      ? '$baseAC'
+      : '${baseAC ?? 10} + Ловкость ($bodyDexterityBonus)';
+  if (shield != null) formula += ' + Щит (${shield.bonusAC ?? 0})';
+  final customBonus = character.customArmorClassBonus ?? 0;
+  if (customBonus != 0) formula += ' + Бонус ($customBonus)';
   final derived = character.derived ?? CharacterDerivedData();
 
   return character.copyWith(
     derived: derived.copyWith(
-      armorClass: armorClass + (character.customArmorClassBonus ?? 0),
+      armorClass: armorClass + customBonus,
+      armorClassSource: bodyArmor?.name ?? 'Без доспеха',
+      armorClassFormula: formula,
     ),
   );
 }

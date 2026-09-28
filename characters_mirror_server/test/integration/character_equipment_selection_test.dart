@@ -1,4 +1,5 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
+import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
 import 'package:characters_mirror_server/src/validation/validation_exception.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
@@ -7,6 +8,8 @@ import 'test_tools/serverpod_test_tools.dart';
 
 void main() {
   withServerpod('Character equipment selections', (sessionBuilder, endpoints) {
+    setUp(CharacterSaveRateLimiter.resetForTests);
+
     final owner = sessionBuilder.copyWith(
       authentication: AuthenticationOverride.authenticationInfo(781, <Scope>{}),
     );
@@ -116,14 +119,22 @@ void main() {
         await session.close();
       }
 
+      var derivedArmorClassScenario = 0;
+
       Future<int?> derivedArmorClass({
         int dexterity = 16,
         String? armorKey,
         String? shieldKey,
         int? customBonus,
       }) async {
+        final isolatedOwner = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            78000 + derivedArmorClassScenario++,
+            <Scope>{},
+          ),
+        );
         final saved = await endpoints.characterData.saveCharacter(
-          owner,
+          isolatedOwner,
           CharacterData(
             name: 'Stage 8 AC fixture',
             baseAbilityScores: {'dexterity': dexterity},
@@ -143,7 +154,7 @@ void main() {
           ),
         );
         final loaded = await endpoints.characterData.getCharacter(
-          owner,
+          isolatedOwner,
           saved.id!,
         );
         return loaded.derived?.armorClass;

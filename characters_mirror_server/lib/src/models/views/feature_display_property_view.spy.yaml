@@ -1,0 +1,6 @@
+class: FeatureDisplayPropertyView
+fields:
+  key: String
+  label: String
+  value: String
+  sortOrder: int?

@@ -1,0 +1,165 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "feature_display_property_data",
+        "dartName": "FeatureDisplayPropertyData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('feature_display_property_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceClassFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceSubclassFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "key",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "label",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "valueKind",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:FeatureDisplayPropertyValueKind"
+          },
+          {
+            "name": "staticValue",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "progression",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<int,String>?"
+          },
+          {
+            "name": "formula",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "sortOrder",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "feature_display_property_data_fk_0",
+            "columns": [
+              "sourceClassFeatureId"
+            ],
+            "referenceTable": "class_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "feature_display_property_data_fk_1",
+            "columns": [
+              "sourceSubclassFeatureId"
+            ],
+            "referenceTable": "subclass_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "feature_display_property_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "feature_display_property_source_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "sourceClassFeatureId"
+              },
+              {
+                "type": 0,
+                "definition": "sourceSubclassFeatureId"
+              },
+              {
+                "type": 0,
+                "definition": "key"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

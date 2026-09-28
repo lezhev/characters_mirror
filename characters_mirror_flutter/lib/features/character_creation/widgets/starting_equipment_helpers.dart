@@ -130,6 +130,7 @@ String? selectedStartingEquipmentReferenceKeyForLine(
 String startingEquipmentOptionTitle({
   required StartingEquipmentOptionView optionView,
   StartingEquipmentCatalogLabels catalogLabels = const {},
+  Map<int, String> selectedReferenceKeysByLine = const {},
 }) {
   final lines = optionView.lines ?? optionView.option?.lines ?? const [];
   if (lines.isEmpty) {
@@ -139,6 +140,7 @@ String startingEquipmentOptionTitle({
       .map((line) => startingEquipmentLineTitle(
             line,
             catalogLabels: catalogLabels,
+            selectedReferenceKey: selectedReferenceKeysByLine[line.entryId],
           ))
       .join(' + ');
 }

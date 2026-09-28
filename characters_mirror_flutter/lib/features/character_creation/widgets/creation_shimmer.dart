@@ -66,12 +66,6 @@ class CreationShimmer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final appWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = appWidth > 680
-        ? 4
-        : appWidth > 420
-            ? 3
-            : 2;
     final shimmerBaseColor = colorScheme.primary.withAlpha(80);
     final shimmerHighlightColor = colorScheme.primary.withAlpha(40);
     final providerStep = ref.watch(
@@ -98,47 +92,10 @@ class CreationShimmer extends ConsumerWidget {
           highlightColor: shimmerHighlightColor,
         ),
       ),
-      body: PageSizeLimiter(
+      body: const PageSizeLimiter(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 1,
-            ),
-            itemCount: 12,
-            itemBuilder: (context, index) {
-              return Shimmer.fromColors(
-                baseColor: shimmerBaseColor,
-                highlightColor: shimmerHighlightColor,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary.withAlpha(80),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    Container(
-                      width: 64,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: colorScheme.onSurface.withAlpha(80),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: CreationShimmerGrid(),
         ),
       ),
       bottomNavigationBar: PageSizeLimiter(
@@ -166,6 +123,73 @@ class CreationShimmer extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CreationShimmerGrid extends StatelessWidget {
+  const CreationShimmerGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final appWidth = MediaQuery.of(context).size.width;
+    final crossAxisCount = appWidth > 680
+        ? 4
+        : appWidth > 420
+            ? 3
+            : 2;
+    final shimmerBaseColor = colorScheme.primary.withAlpha(80);
+    final shimmerHighlightColor = colorScheme.primary.withAlpha(40);
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 1,
+      ),
+      itemCount: 12,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: shimmerBaseColor,
+          highlightColor: shimmerHighlightColor,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final iconSize = constraints.maxHeight < 128
+                  ? constraints.maxHeight * 0.45
+                  : 96.0;
+              final labelWidth = constraints.maxWidth < 128
+                  ? constraints.maxWidth * 0.55
+                  : 64.0;
+              final labelHeight = constraints.maxHeight < 128 ? 8.0 : 12.0;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: iconSize,
+                    height: iconSize,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary.withAlpha(80),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Container(
+                    width: labelWidth,
+                    height: labelHeight,
+                    decoration: BoxDecoration(
+                      color: colorScheme.onSurface.withAlpha(80),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

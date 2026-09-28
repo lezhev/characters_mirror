@@ -13,10 +13,12 @@ String languageProficiencyLabel(Language language) => switch (language) {
       Language.celestial => 'Небесный',
       Language.draconic => 'Драконий',
       Language.deepSpeech => 'Глубинная речь',
+      Language.druidic => 'Друидический',
       Language.infernal => 'Инфернальный',
       Language.primordial => 'Первичный',
       Language.sylvan => 'Сильван',
       Language.undercommon => 'Подземный',
+      Language.thievesCant => 'Воровской жаргон',
     };
 
 String weaponCategoryProficiencyLabel(WeaponCategory category) =>

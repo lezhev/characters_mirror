@@ -26,6 +26,89 @@ ChoiceGroupView _abilityChoiceGroup(
 }
 
 void main() {
+  test('Half-Elf racial +2 and two distinct +1 choices survive draft restore',
+      () {
+    final group = ChoiceGroupView(
+      group: ChoiceGroupData(
+        id: 70,
+        referenceKey: 'half_elf_ability_score_increase',
+        sourceRaceId: 7,
+        type: ChoiceType.abilityIncrease,
+        selectionCount: 2,
+        allowDuplicates: false,
+      ),
+      options: [
+        ChoiceOptionData(
+          choiceGroupId: 70,
+          optionKey: 'strength',
+          grantedAbilityBonuses: const {'strength': 1},
+        ),
+        ChoiceOptionData(
+          choiceGroupId: 70,
+          optionKey: 'dexterity',
+          grantedAbilityBonuses: const {'dexterity': 1},
+        ),
+      ],
+    );
+    final race = RaceData(id: 7, name: 'Half-Elf', charismaBonus: 2);
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    container.read(characterCreationProvider.notifier).syncRaceDraft(
+      selectedRace: race,
+      choiceGroups: [group],
+    );
+    final attributes = container.read(attributeStateProvider.notifier);
+    attributes.changeType(SelectType.manual);
+    for (final attribute in [
+      Attribute.strength,
+      Attribute.dexterity,
+      Attribute.charisma,
+    ]) {
+      attributes.updateManualAttribute(attribute, 10);
+    }
+    attributes.toggleBonus(
+      attribute: Attribute.strength,
+      bonusValue: 1,
+      value: true,
+    );
+    attributes.toggleBonus(
+      attribute: Attribute.strength,
+      bonusValue: 1,
+      value: true,
+    );
+    attributes.toggleBonus(
+      attribute: Attribute.dexterity,
+      bonusValue: 1,
+      value: true,
+    );
+    expect(attributes.mergeStatsAndBonuses()[Attribute.strength], 11);
+    expect(attributes.mergeStatsAndBonuses()[Attribute.dexterity], 11);
+    expect(attributes.mergeStatsAndBonuses()[Attribute.charisma], 12);
+    attributes.syncActiveDraftToCharacter();
+    final saved = CharacterData.fromJson(
+      container.read(characterCreationProvider).character.toJson(),
+    );
+    expect(
+        saved.choices?.where(
+            (choice) => choice.groupKey == 'half_elf_ability_score_increase'),
+        hasLength(2));
+
+    final restored = ProviderContainer();
+    addTearDown(restored.dispose);
+    restored.read(characterCreationProvider.notifier).syncRaceDraft(
+          selectedRace: race,
+          choiceGroups: [group],
+          raceChoices: saved.choices!,
+        );
+    restored.read(characterCreationProvider.notifier).syncAttributesDraft(
+          saved.baseAbilityScores!,
+        );
+    final restoredAttributes = restored.read(attributeStateProvider.notifier);
+    expect(restoredAttributes.mergeStatsAndBonuses()[Attribute.strength], 11);
+    expect(restoredAttributes.mergeStatsAndBonuses()[Attribute.dexterity], 11);
+    expect(restoredAttributes.mergeStatsAndBonuses()[Attribute.charisma], 12);
+  });
+
   test('attribute state resolves choices from generic option bonuses', () {
     final container = ProviderContainer();
     addTearDown(container.dispose);

@@ -4,6 +4,8 @@ import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart'
 import 'package:characters_mirror_flutter/features/character_creation/application/character_creation_choice_builder.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/application/expertise_owned_proficiencies.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_group_card.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_choice_selector.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/skill_selection_section.dart';
@@ -35,12 +37,52 @@ class BackgroundFeatures extends ConsumerWidget {
     final backgroundTitle = backgroundName == null || backgroundName.isEmpty
         ? 'Особенности предыстории'
         : backgroundName;
-    final character = ref.watch(
-      characterCreationProvider.select((state) => state.character),
-    );
+    final creationState = ref.watch(characterCreationProvider);
+    final character = creationState.character;
     final creationNotifier = ref.read(characterCreationProvider.notifier);
-    final choiceGroups =
-        stepView?.choiceGroups ?? const <ChoiceGroupView>[];
+    final choiceGroups = stepView?.choiceGroups ?? const <ChoiceGroupView>[];
+    final classState = ref.watch(classStateProvider).valueOrNull;
+    final backgroundState = ref.watch(backgroundStateProvider).valueOrNull;
+    final classChoiceGroups =
+        classState?.stepView?.choiceGroups ?? const <ChoiceGroupView>[];
+    final expertiseChoiceGroups = <ChoiceGroupView>[];
+    if (classState != null) {
+      final otherSelectedOptions = resolveSelectedChoiceOptions(
+        choiceGroups: [
+          ...creationState.raceChoiceGroups,
+          ...choiceGroups,
+        ],
+        savedChoices: character.choices ?? const [],
+        draftSelections: backgroundState?.selectedOptions ?? const {},
+      );
+      final eligibleKeys = resolveExpertiseEligibleOptionKeys(
+        character: character,
+        selectedBackground: backgroundState?.selectedBackground,
+        selectedClass: classState.selectedClass,
+        classSkillSelections: classState.selectedSkillSelections,
+        backgroundSkillSelections:
+            backgroundState?.selectedSkillSelections ?? const [],
+        selectedOptions: classState.selectedOptions,
+        otherSelectedOptions: otherSelectedOptions,
+        choiceGroups: classChoiceGroups,
+      );
+      for (final groupView in classChoiceGroups) {
+        final group = groupView.group;
+        if (group?.type != ChoiceType.expertise) continue;
+        final groupKey = classChoiceGroupKey(group!);
+        final eligibleKeysForGroup = eligibleKeys[groupKey] ?? const <String>{};
+        expertiseChoiceGroups.add(
+          groupView.copyWith(
+            options: [
+              for (final option
+                  in groupView.options ?? const <ChoiceOptionData>[])
+                if (eligibleKeysForGroup.contains(option.optionKey.trim()))
+                  option,
+            ],
+          ),
+        );
+      }
+    }
     final languageChoiceGroups = choiceGroups
         .where((groupView) => groupView.group?.type == ChoiceType.language)
         .toList();
@@ -58,8 +100,8 @@ class BackgroundFeatures extends ConsumerWidget {
         ?.map(skillLabel)
         .toList(growable: false);
     final toolsByKey = {
-      for (final tool in ref.watch(toolCatalogProvider).valueOrNull ??
-          const <ToolData>[])
+      for (final tool
+          in ref.watch(toolCatalogProvider).valueOrNull ?? const <ToolData>[])
         tool.referenceKey: tool.name,
     };
     final toolProficiencyLabels = [
@@ -115,6 +157,7 @@ class BackgroundFeatures extends ConsumerWidget {
     if (cards.isEmpty &&
         !hasProficienciesOrLanguages &&
         choiceGroups.isEmpty &&
+        expertiseChoiceGroups.isEmpty &&
         startingEquipmentBlocks.isEmpty) {
       return Center(
         child: Padding(
@@ -206,6 +249,10 @@ class BackgroundFeatures extends ConsumerWidget {
             },
           ),
         ],
+        if (expertiseChoiceGroups.isNotEmpty) ...[
+          const Gap(12),
+          ExpertiseChoiceGroupsSection(choiceGroups: expertiseChoiceGroups),
+        ],
         if (otherChoiceGroups.isNotEmpty) ...[
           const Gap(12),
           BackgroundChoiceGroupsSection(choiceGroups: otherChoiceGroups),
@@ -252,6 +299,81 @@ class BackgroundFeatures extends ConsumerWidget {
         ],
       ],
     );
+  }
+}
+
+class ExpertiseChoiceGroupsSection extends ConsumerWidget {
+  const ExpertiseChoiceGroupsSection({required this.choiceGroups, super.key});
+
+  final List<ChoiceGroupView> choiceGroups;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(classStateProvider).when(
+          data: (data) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppSectionHeader(
+                title: 'Компетентность',
+                showDivider: false,
+                titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+              ),
+              const Gap(8),
+              for (final groupView in choiceGroups)
+                if (groupView.group case final group?) ...[
+                  Builder(builder: (context) {
+                    final key = classChoiceGroupKey(group);
+                    final eligibleOptionKeys = {
+                      for (final option
+                          in groupView.options ?? const <ChoiceOptionData>[])
+                        option.optionKey.trim(),
+                    };
+                    final selected = [
+                      for (final option in data.selectedOptions[key] ??
+                          const <ChoiceOptionData>[])
+                        if (eligibleOptionKeys
+                            .contains(option.optionKey.trim()))
+                          option,
+                    ];
+                    final selectionCount = group.selectionCount ?? 1;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Выбрано: ${selected.length} из $selectionCount. '
+                          'Можно выбрать ещё ${selectionCount - selected.length}.',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: CreationChoiceGroupCard(
+                            groupView: groupView,
+                            selectedOptions: selected,
+                            onToggleOption: ref
+                                .read(classStateProvider.notifier)
+                                .toggleOption,
+                            onIncrementOption: ref
+                                .read(classStateProvider.notifier)
+                                .incrementOption,
+                            onDecrementOption: ref
+                                .read(classStateProvider.notifier)
+                                .decrementOption,
+                            onClearGroup: ref
+                                .read(classStateProvider.notifier)
+                                .clearGroup,
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+                ],
+            ],
+          ),
+          error: (error, stackTrace) => Text('$error, $stackTrace'),
+          loading: () => const Center(child: CircularProgressIndicator()),
+        );
   }
 }
 

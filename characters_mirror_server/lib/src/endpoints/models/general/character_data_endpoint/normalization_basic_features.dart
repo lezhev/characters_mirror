@@ -152,6 +152,9 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
     required List<FeatureResourceDefinitionData>? resources,
     required List<FeatureResourceEffectData>? resourceEffects,
     required int sourceClassLevel,
+    List<FeatureDisplayPropertyData> displayPropertyDefinitions =
+        const <FeatureDisplayPropertyData>[],
+    List<String> selectedChoices = const <String>[],
   }) {
     if (sourceId == null) {
       return;
@@ -213,6 +216,17 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
         tags: resolvedTags,
         isCustomized: isCustomized,
         resources: featureResources,
+        selectedChoices: selectedChoices,
+        displayProperties: resolveDisplayPropertyViews(
+          definitions: displayPropertyDefinitions,
+          sourceLevel: sourceClassLevel,
+          characterLevel: totalLevel,
+          subclassLevel: sourceClassLevel,
+          abilityModifiers: {
+            for (final entry in abilityModifiers.entries)
+              entry.key.name: entry.value,
+          },
+        ),
       ),
     );
   }
@@ -242,6 +256,12 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       resources: feature.resources,
       resourceEffects: feature.resourceEffects,
       sourceClassLevel: sourceClassLevel,
+      displayPropertyDefinitions: resolvedSources.featureDisplayProperties
+          .where((property) => property.sourceClassFeatureId == feature.id)
+          .toList(),
+      selectedChoices:
+          resolvedSources.selectedChoicesByClassFeatureId[feature.id] ??
+              const <String>[],
     );
   }
   for (final feature in resolvedSources.currentSubclassFeatures) {
@@ -267,6 +287,12 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       resources: feature.resources,
       resourceEffects: feature.resourceEffects,
       sourceClassLevel: sourceClassLevel,
+      displayPropertyDefinitions: resolvedSources.featureDisplayProperties
+          .where((property) => property.sourceSubclassFeatureId == feature.id)
+          .toList(),
+      selectedChoices:
+          resolvedSources.selectedChoicesBySubclassFeatureId[feature.id] ??
+              const <String>[],
     );
   }
   for (final feature in currentRaceFeatures.raceFeatures) {

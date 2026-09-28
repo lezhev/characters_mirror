@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/expandable_section.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/feature_display_properties.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/smooth_switcher.dart';
 import 'package:flutter/material.dart';
@@ -144,27 +145,7 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                                   color: theme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
-                            if (_isExpanded && resources.isNotEmpty) ...[
-                              if (sourceLabel != null)
-                                const SizedBox(height: 8)
-                              else
-                                const SizedBox(height: 4),
-                              for (var index = 0;
-                                  index < resources.length;
-                                  index++) ...[
-                                _FeatureResourceSection(
-                                  resource: resources[index],
-                                  onChanged: (current) => widget.onSetResource(
-                                    resources[index].key,
-                                    current,
-                                  ),
-                                ),
-                                if (index != resources.length - 1)
-                                  const SizedBox(height: 10),
-                              ],
-                              const SizedBox(height: 12),
-                            ] else if (sourceLabel != null)
-                              const SizedBox(height: 8),
+                            if (sourceLabel != null) const SizedBox(height: 8),
                             SmoothSwitcher.ability(
                               title: feature.name,
                               text: feature.description,
@@ -193,6 +174,39 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                               switchKey:
                                   '${feature.sourceType.name}:${feature.sourceId}:text',
                             ),
+                            FeatureDisplayProperties(
+                              properties: feature.displayProperties ??
+                                  const <FeatureDisplayPropertyView>[],
+                            ),
+                            if (feature.selectedChoices case final choices?
+                                when choices.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              for (final choice in choices)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 4),
+                                  child: Text(
+                                    choice,
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                ),
+                            ],
+                            if (_isExpanded && resources.isNotEmpty) ...[
+                              const SizedBox(height: 12),
+                              for (var index = 0;
+                                  index < resources.length;
+                                  index++) ...[
+                                _FeatureResourceSection(
+                                  resource: resources[index],
+                                  onChanged: (current) => widget.onSetResource(
+                                    resources[index].key,
+                                    current,
+                                  ),
+                                ),
+                                if (index != resources.length - 1)
+                                  const SizedBox(height: 10),
+                              ],
+                              const SizedBox(height: 12),
+                            ],
                             if (featureTags != null &&
                                 featureTags.isNotEmpty) ...[
                               const SizedBox(height: 10),

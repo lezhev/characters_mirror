@@ -160,6 +160,13 @@ packages:
       relative: true
     source: path
     version: "0.0.0"
+  characters_mirror_shared:
+    dependency: "direct main"
+    description:
+      path: "../characters_mirror_shared"
+      relative: true
+    source: path
+    version: "0.0.0"
   checked_yaml:
     dependency: transitive
     description:

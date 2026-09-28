@@ -254,6 +254,12 @@ class _ArmorClassSettingsSheetState extends State<ArmorClassSettingsSheet> {
         ),
         const SizedBox(height: 12),
         Text('Итоговая КД: ${base + currentBonus}'),
+        if (widget.character.derived?.armorClassSource case final source?) ...[
+          const SizedBox(height: 8),
+          Text('Источник: $source'),
+        ],
+        if (widget.character.derived?.armorClassFormula case final formula?)
+          Text('Расчёт: $formula'),
         if (_equippedArmor != null || _equippedShield != null) ...[
           const SizedBox(height: 20),
           const Text('Экипировано'),

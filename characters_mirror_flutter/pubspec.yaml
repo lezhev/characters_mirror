@@ -22,6 +22,8 @@ environment:
   flutter: '>=3.24.0'
 
 dependencies:
+  characters_mirror_shared:
+    path: ../characters_mirror_shared
   flutter:
     sdk: flutter
   serverpod_flutter: 2.9.2
@@ -84,6 +86,7 @@ flutter:
     - assets/svg/feature_tags/
     - assets/svg/races/
     - assets/svg/classes/
+    - assets/svg/backgrounds/
     - assets/svg/damage_types/
     - assets/svg/rest/
     - assets/svg/tab_bar/

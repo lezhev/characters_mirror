@@ -27,6 +27,290 @@ void main() {
     expect(serializedKeys, isNot(contains('rebuiltAt')));
   });
 
+  test('offline expertise doubles only selected proficient skills', () async {
+    const classId = 501;
+    const featureId = 502;
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(classId, selectedLevel: 1),
+      ClassStepView(
+        classData: ClassData(id: classId, name: 'Rogue'),
+        selectedLevel: 1,
+        currentLevelFeatures: [
+          ClassFeatureData(
+            id: featureId,
+            parentClassId: classId,
+            name: 'Expertise',
+            level: 1,
+          ),
+        ],
+      ),
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'class_feature',
+      offlineAllKey,
+      [
+        ClassFeatureData(
+          id: featureId,
+          parentClassId: classId,
+          name: 'Expertise',
+          level: 1,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_group',
+      offlineAllKey,
+      [
+        ChoiceGroupData(
+          id: 503,
+          referenceKey: 'expertise',
+          name: 'Компетентность',
+          sourceFeatureId: featureId,
+          type: ChoiceType.expertise,
+          selectionCount: 2,
+          minimumSelectionCount: 2,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_option',
+      offlineAllKey,
+      [
+        for (final skill in [Skill.stealth, Skill.perception, Skill.athletics])
+          ChoiceOptionData(
+            id: 504 + skill.index,
+            choiceGroupId: 503,
+            optionKey: skill.name,
+            name: skill.name,
+            requiredExistingSkill: skill,
+            grantedExpertiseSkills: [skill],
+          ),
+        ChoiceOptionData(
+          id: 510,
+          choiceGroupId: 503,
+          optionKey: 'thieves_tools',
+          name: 'Thieves tools',
+          requiredExistingToolKey: 'thieves_tools',
+          grantedExpertiseToolKeys: const ['thieves_tools'],
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        background: BackgroundData(
+          skillProficiencies: const [
+            Skill.stealth,
+            Skill.perception,
+            Skill.athletics,
+          ],
+        ),
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId, name: 'Rogue'),
+            level: 1,
+            isStartingClass: true,
+          ),
+        ],
+        choices: [
+          CharacterChoiceData(groupKey: 'expertise', optionKey: 'stealth'),
+          CharacterChoiceData(groupKey: 'expertise', optionKey: 'perception'),
+        ],
+      ),
+    );
+
+    expect(
+      derived.skillProficiencyLevels!
+          .singleWhere((state) => state.skill == Skill.stealth)
+          .level,
+      CharacterSkillProficiencyLevel.expertise,
+    );
+    expect(derived.skillBonuses![Skill.stealth], 4);
+    expect(derived.skillBonuses![Skill.perception], 4);
+    expect(
+      derived.skillProficiencyLevels!
+          .singleWhere((state) => state.skill == Skill.athletics)
+          .level,
+      CharacterSkillProficiencyLevel.proficient,
+    );
+    expect(derived.skillBonuses![Skill.athletics], 2);
+
+    final partialDerived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        background: BackgroundData(
+          skillProficiencies: const [
+            Skill.stealth,
+            Skill.perception,
+            Skill.athletics,
+          ],
+        ),
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId, name: 'Rogue'),
+            level: 1,
+            isStartingClass: true,
+          ),
+        ],
+        choices: [
+          CharacterChoiceData(groupKey: 'expertise', optionKey: 'stealth'),
+        ],
+      ),
+    );
+    expect(
+      partialDerived.skillProficiencyLevels!
+          .singleWhere((state) => state.skill == Skill.stealth)
+          .level,
+      CharacterSkillProficiencyLevel.expertise,
+    );
+    expect(
+      partialDerived.skillProficiencyLevels!
+          .singleWhere((state) => state.skill == Skill.perception)
+          .level,
+      CharacterSkillProficiencyLevel.proficient,
+    );
+
+    final toolExpertiseDerived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        background: BackgroundData(
+          skillProficiencies: const [Skill.stealth],
+          toolProficiencyKeys: const ['thieves_tools'],
+        ),
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId, name: 'Rogue'),
+            level: 1,
+            isStartingClass: true,
+          ),
+        ],
+        choices: [
+          CharacterChoiceData(groupKey: 'expertise', optionKey: 'stealth'),
+          CharacterChoiceData(
+            groupKey: 'expertise',
+            optionKey: 'thieves_tools',
+          ),
+        ],
+      ),
+    );
+    expect(toolExpertiseDerived.toolExpertiseKeys, contains('thieves_tools'));
+  });
+
+  test('offline restores favored enemy type and language on active feature',
+      () async {
+    const classId = 511;
+    const featureId = 512;
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(classId, selectedLevel: 1),
+      ClassStepView(
+        classData: ClassData(id: classId, name: 'Ranger'),
+        selectedLevel: 1,
+        currentLevelFeatures: [
+          ClassFeatureData(
+            id: featureId,
+            parentClassId: classId,
+            name: 'Избранный враг',
+            level: 1,
+          ),
+        ],
+      ),
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'class_feature',
+      offlineAllKey,
+      [
+        ClassFeatureData(
+          id: featureId,
+          parentClassId: classId,
+          name: 'Избранный враг',
+          level: 1,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_group',
+      offlineAllKey,
+      [
+        ChoiceGroupData(
+          id: 513,
+          referenceKey: 'favored_enemy',
+          name: 'Избранный враг',
+          sourceFeatureId: featureId,
+          sortOrder: 1,
+          selectionCount: 1,
+          minimumSelectionCount: 1,
+        ),
+        ChoiceGroupData(
+          id: 514,
+          referenceKey: 'favored_enemy_language',
+          name: 'Язык избранного врага',
+          sourceFeatureId: featureId,
+          sortOrder: 2,
+          selectionCount: 1,
+          minimumSelectionCount: 1,
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+    await cache.putReferenceList(
+      'choice_option',
+      offlineAllKey,
+      [
+        ChoiceOptionData(
+          id: 515,
+          choiceGroupId: 513,
+          optionKey: 'undead',
+          name: 'Нежить',
+        ),
+        ChoiceOptionData(
+          id: 516,
+          choiceGroupId: 514,
+          optionKey: 'undercommon',
+          name: 'Подземный',
+          grantedLanguages: [Language.undercommon],
+        ),
+      ],
+      (value) => value.toJson(),
+    );
+
+    final derived = await buildOfflineDerivedData(
+      cache,
+      CharacterData(
+        classEntries: [
+          CharacterClassEntryData(
+            classData: ClassData(id: classId, name: 'Ranger'),
+            level: 1,
+            isStartingClass: true,
+          ),
+        ],
+        choices: [
+          CharacterChoiceData(groupKey: 'favored_enemy', optionKey: 'undead'),
+          CharacterChoiceData(
+            groupKey: 'favored_enemy_language',
+            optionKey: 'undercommon',
+          ),
+        ],
+      ),
+    );
+
+    expect(derived.languages, [Language.undercommon]);
+    expect(
+      derived.activeFeatures!
+          .singleWhere((feature) => feature.sourceId == featureId)
+          .selectedChoices,
+      ['Избранный враг: Нежить', 'Язык избранного врага: Подземный'],
+    );
+  });
+
   test('ToolData preserves nullable and available category identities', () {
     final tools = [
       ToolData(referenceKey: 'thieves_tools', name: 'Воровские инструменты'),
@@ -425,7 +709,7 @@ void main() {
         classEntries: [
           CharacterClassEntryData(
             classData: ClassData(
-              weaponTraining: const [WeaponCategory.martialMelee],
+              weaponTraining: const ['martialMelee'],
             ),
             level: 1,
             isStartingClass: true,
@@ -1187,12 +1471,12 @@ void main() {
   test('offline weapon training uses starting and multiclass semantics',
       () async {
     final startingClass = ClassData(
-      weaponTraining: const [WeaponCategory.martialMelee],
-      multiclassWeaponTraining: const [WeaponCategory.simpleMelee],
+      weaponTraining: const ['martialMelee'],
+      multiclassWeaponTraining: const ['simpleMelee'],
     );
     final multiclass = ClassData(
-      weaponTraining: const [WeaponCategory.simpleRanged],
-      multiclassWeaponTraining: const [WeaponCategory.martialRanged],
+      weaponTraining: const ['simpleRanged'],
+      multiclassWeaponTraining: const ['martialRanged'],
     );
 
     final derived = await buildOfflineDerivedData(
@@ -1233,7 +1517,7 @@ void main() {
         classEntries: [
           CharacterClassEntryData(
             classData: ClassData(
-              weaponTraining: const [WeaponCategory.simpleRanged],
+              weaponTraining: const ['simpleRanged'],
             ),
             isStartingClass: true,
             classOrder: 0,

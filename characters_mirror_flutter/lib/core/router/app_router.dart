@@ -1,5 +1,6 @@
 import 'package:characters_mirror_flutter/features/auth/auth.dart';
 import 'package:characters_mirror_flutter/features/character_creation/character_creation.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_transition.dart';
 import 'package:characters_mirror_flutter/core/router/default_route_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character_sheet_settings_page.dart';
@@ -143,6 +144,10 @@ CustomTransitionPage<void> _creationStepPage(
     transitionDuration: duration,
     reverseTransitionDuration: duration,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        child,
+        CreationStepTransitionScope(
+      animation: animation,
+      secondaryAnimation: secondaryAnimation,
+      child: child,
+    ),
   );
 }

@@ -68,7 +68,7 @@ void main() {
       expect(updates, [3]);
     });
 
-    testWidgets('places resource between source label and description',
+    testWidgets('places the description before the resource section',
         (tester) async {
       await _pumpCard(
         tester,
@@ -96,7 +96,7 @@ void main() {
           tester.getTopLeft(find.text('Описание особенности.')).dy;
 
       expect(resourceTop, greaterThan(sourceTop));
-      expect(descriptionTop, greaterThan(resourceTop));
+      expect(resourceTop, greaterThan(descriptionTop));
     });
 
     testWidgets('uses count without pips for large resources when expanded',
@@ -135,6 +135,45 @@ void main() {
       expect(find.text('Feature'), findsOneWidget);
       expect(find.textContaining('/'), findsNothing);
       expect(find.byTooltip('Потратить ресурс'), findsNothing);
+    });
+
+    testWidgets('renders resolved display properties in the expanded card',
+        (tester) async {
+      await _pumpCard(
+        tester,
+        resource: null,
+        description: 'Feature description.',
+        displayProperties: [
+          FeatureDisplayPropertyView(
+            key: 'healing',
+            label: 'Лечение',
+            value: '1к10 + 5',
+          ),
+        ],
+        onSetResource: (_) async {},
+      );
+
+      await tester.tap(find.byIcon(Icons.expand_more));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Лечение'), findsOneWidget);
+      expect(find.text('1к10 + 5'), findsOneWidget);
+    });
+
+    testWidgets('renders persisted choices in the expanded card',
+        (tester) async {
+      await _pumpCard(
+        tester,
+        resource: null,
+        selectedChoices: const ['Избранный враг: Нежить', 'Язык: Подземный'],
+        onSetResource: (_) async {},
+      );
+
+      await tester.tap(find.byIcon(Icons.expand_more));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Избранный враг: Нежить'), findsOneWidget);
+      expect(find.text('Язык: Подземный'), findsOneWidget);
     });
 
     testWidgets('aligns collapsed feature titles to the left', (tester) async {
@@ -191,6 +230,8 @@ Future<void> _pumpCard(
   int? level,
   String? description,
   List<FeatureTag>? tags,
+  List<FeatureDisplayPropertyView>? displayProperties,
+  List<String>? selectedChoices,
 }) {
   return tester.pumpWidget(
     MaterialApp(
@@ -207,6 +248,8 @@ Future<void> _pumpCard(
               description: description,
               defaultTags: tags,
               resources: resource == null ? null : [resource],
+              displayProperties: displayProperties,
+              selectedChoices: selectedChoices,
             ),
             onSave: ({name, description, tags}) async {},
             onReset: () async {},

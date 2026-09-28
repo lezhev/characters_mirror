@@ -203,7 +203,6 @@ void main() {
       expect(find.text('Вход'), findsOneWidget);
       expect(service.signOutCallCount, 1);
     });
-
   });
 
   group('Creation flow app bar', () {
@@ -377,6 +376,73 @@ void main() {
         find.text('Не удалось подключиться к серверу. Проверьте соединение.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('repeated Rogue and Fighter creation waits for canonical save',
+        (tester) async {
+      _setLargeSurface(tester);
+      for (final (index, className) in [
+        'Rogue',
+        'Rogue',
+        'Rogue',
+        'Fighter',
+      ].indexed) {
+        final service = FakeAuthService.signedIn(
+          _user(email: 'creation-$index@test.dev'),
+        );
+        final saveCompleter = Completer<protocol.CharacterData>();
+        protocol.CharacterData? submitted;
+        final repository = FakeCharacterRepository(
+          onSave: (character) {
+            submitted = character;
+            return saveCompleter.future;
+          },
+        );
+        final container = ProviderContainer(overrides: [
+          authServiceProvider.overrideWithValue(service),
+          characterRepositoryProvider.overrideWithValue(repository),
+        ]);
+        addTearDown(container.dispose);
+        final creation = container.read(characterCreationProvider.notifier);
+        creation.setName('Creation $index');
+        creation.setRace(protocol.RaceData(id: 7, name: 'Half-Elf'));
+        creation.setBackground(
+          protocol.BackgroundData(id: 9, name: 'Background'),
+        );
+        creation.setClassEntries([
+          protocol.CharacterClassEntryData(
+            classData: protocol.ClassData(id: index + 1, name: className),
+            level: 1,
+            isStartingClass: true,
+            classOrder: 0,
+          ),
+        ]);
+        creation.setAttributes(const {'dexterity': 16});
+
+        await _pumpRouterAppWithContainer(tester, container);
+        container.read(routerProvider).go('/create/summary');
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Завершить'));
+        await tester.tap(find.text('Завершить'), warnIfMissed: false);
+        await tester.pump();
+        expect(find.text('Сводка персонажа'), findsOneWidget);
+        expect(repository.saveCallCount, 1);
+        expect(submitted?.classEntries?.single.classData?.name, className);
+        expect(submitted?.race?.id, 7);
+        expect(submitted?.background?.id, 9);
+        expect(submitted?.baseAbilityScores?['dexterity'], 16);
+
+        saveCompleter.complete(submitted!.copyWith(
+          id: 100 + index,
+          derived: protocol.CharacterDerivedData(maxHp: 12),
+        ));
+        await tester.pumpAndSettle();
+        final loaded = await repository.getCharacter(100 + index);
+        expect(loaded.derived?.maxHp, 12);
+        expect(loaded.classEntries?.single.classData?.name, className);
+        expect(find.text('Сводка персонажа'), findsNothing);
+        await tester.pumpWidget(const SizedBox.shrink());
+      }
     });
 
     testWidgets('sheet page loads character by id', (tester) async {

@@ -10,6 +10,7 @@ import 'package:characters_mirror_flutter/features/character_creation/steps/clas
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/race_step.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_step_scaffold.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +18,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  group('Delayed creation shimmer', () {
+  group('Creation step loading UI', () {
     testWidgets('does not appear when loading finishes before delay',
         (tester) async {
       await tester.pumpWidget(
@@ -103,39 +104,41 @@ void main() {
         ),
       );
 
-      expect(find.byType(CreationShimmer), findsNothing);
+      expect(find.byType(CreationShimmerGrid), findsOneWidget);
 
       await tester.pump(const Duration(milliseconds: 181));
 
-      expect(find.byType(CreationShimmer), findsOneWidget);
+      expect(find.byType(CreationShimmerGrid), findsOneWidget);
 
       await tester.pumpAndSettle();
 
       expect(raceRepository.getAllCallCount, 1);
+      expect(find.byType(CreationShimmerGrid), findsNothing);
 
       router.go('/create/classStep');
       await tester.pump();
-      expect(find.byType(CreationShimmer), findsNothing);
+      expect(find.byType(CreationStepScaffold), findsOneWidget);
 
       await tester.pump(const Duration(milliseconds: 181));
-      expect(find.byType(CreationShimmer), findsOneWidget);
+      expect(find.byType(CreationStepScaffold), findsAtLeastNWidgets(1));
 
       await tester.pumpAndSettle();
 
       expect(classRepository.getAllCallCount, 1);
+      expect(find.byType(CreationStepScaffold), findsOneWidget);
 
       router.go('/create/race');
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 250));
 
-      expect(find.byType(CreationShimmer), findsNothing);
+      expect(find.byType(CreationShimmerGrid), findsNothing);
       expect(raceRepository.getAllCallCount, 1);
 
       router.go('/create/classStep');
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 250));
 
-      expect(find.byType(CreationShimmer), findsNothing);
+      expect(find.byType(CreationShimmerGrid), findsNothing);
       expect(classRepository.getAllCallCount, 1);
     });
   });

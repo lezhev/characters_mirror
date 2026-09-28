@@ -24,7 +24,7 @@ class CharacterProficienciesPage extends ConsumerWidget {
         ref.watch(weaponCatalogProvider).valueOrNull ?? const <WeaponData>[];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Знания и подготовка')),
+      appBar: AppBar(title: const Text('Владения персонажа')),
       body: SafeArea(
         child: characterState.when(
           loading: () => const Center(child: CircularProgressIndicator()),

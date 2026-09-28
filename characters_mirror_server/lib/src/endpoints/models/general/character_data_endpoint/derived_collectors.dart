@@ -105,6 +105,7 @@ bool _isClassSpellGrantActive(
 List<Language> _collectLanguages(
   CharacterData character,
   List<ChoiceOptionData> selectedOptions,
+  List<ClassFeatureData> currentClassFeatures,
 ) {
   final values = <Language>{};
   values.addAll([
@@ -114,6 +115,9 @@ List<Language> _collectLanguages(
 
   for (final option in selectedOptions) {
     values.addAll(option.grantedLanguages ?? const <Language>[]);
+  }
+  for (final feature in currentClassFeatures) {
+    values.addAll(feature.grantedLanguages ?? const <Language>[]);
   }
   return values.toList()..sort((a, b) => a.name.compareTo(b.name));
 }
@@ -192,7 +196,7 @@ List<WeaponCategory> _collectWeaponTraining(
     final source = (entry.isStartingClass ?? false)
         ? classData.weaponTraining
         : classData.multiclassWeaponTraining;
-    values.addAll(source ?? const <WeaponCategory>[]);
+    values.addAll(weaponCategoriesFromTrainingValues(source));
   }
   for (final option in selectedOptions) {
     values.addAll(option.grantedWeaponTraining ?? const <WeaponCategory>[]);
@@ -206,6 +210,14 @@ List<String> _collectWeaponProficiencyKeys(CharacterData character) {
     ..._normalizedTexts(character.race?.weaponProficiencyKeys),
     ..._normalizedTexts(character.subrace?.weaponProficiencyKeys),
   };
+  for (final entry in character.classEntries ?? const <CharacterClassEntryData>[]) {
+    final classData = entry.classData;
+    if (classData == null) continue;
+    final source = (entry.isStartingClass ?? false)
+        ? classData.weaponTraining
+        : classData.multiclassWeaponTraining;
+    values.addAll(weaponKeysFromTrainingValues(source));
+  }
   return values.toList()..sort();
 }
 

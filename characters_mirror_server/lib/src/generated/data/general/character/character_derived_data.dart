@@ -31,6 +31,8 @@ abstract class CharacterDerivedData
     this.abilityModifiers,
     this.activeFeatures,
     this.armorClass,
+    this.armorClassSource,
+    this.armorClassFormula,
     this.initiative,
     this.speed,
     this.maxHp,
@@ -46,6 +48,7 @@ abstract class CharacterDerivedData
     this.hitDiceSummary,
     this.languages,
     this.toolProficiencyKeys,
+    this.toolExpertiseKeys,
     this.armorTraining,
     this.weaponTraining,
     this.weaponProficiencyKeys,
@@ -66,6 +69,8 @@ abstract class CharacterDerivedData
     Map<_i2.Ability, int>? abilityModifiers,
     List<_i3.CharacterFeatureViewData>? activeFeatures,
     int? armorClass,
+    String? armorClassSource,
+    String? armorClassFormula,
     int? initiative,
     int? speed,
     int? maxHp,
@@ -81,6 +86,7 @@ abstract class CharacterDerivedData
     Map<String, int>? hitDiceSummary,
     List<_i6.Language>? languages,
     List<String>? toolProficiencyKeys,
+    List<String>? toolExpertiseKeys,
     List<_i7.ArmorCategory>? armorTraining,
     List<_i8.WeaponCategory>? weaponTraining,
     List<String>? weaponProficiencyKeys,
@@ -118,6 +124,8 @@ abstract class CharacterDerivedData
               (e as Map<String, dynamic>)))
           .toList(),
       armorClass: jsonSerialization['armorClass'] as int?,
+      armorClassSource: jsonSerialization['armorClassSource'] as String?,
+      armorClassFormula: jsonSerialization['armorClassFormula'] as String?,
       initiative: jsonSerialization['initiative'] as int?,
       speed: jsonSerialization['speed'] as int?,
       maxHp: jsonSerialization['maxHp'] as int?,
@@ -161,6 +169,9 @@ abstract class CharacterDerivedData
           ?.map((e) => _i6.Language.fromJson((e as String)))
           .toList(),
       toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
+      toolExpertiseKeys: (jsonSerialization['toolExpertiseKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       armorTraining: (jsonSerialization['armorTraining'] as List?)
@@ -216,6 +227,10 @@ abstract class CharacterDerivedData
 
   int? armorClass;
 
+  String? armorClassSource;
+
+  String? armorClassFormula;
+
   int? initiative;
 
   int? speed;
@@ -245,6 +260,8 @@ abstract class CharacterDerivedData
   List<_i6.Language>? languages;
 
   List<String>? toolProficiencyKeys;
+
+  List<String>? toolExpertiseKeys;
 
   List<_i7.ArmorCategory>? armorTraining;
 
@@ -278,6 +295,8 @@ abstract class CharacterDerivedData
     Map<_i2.Ability, int>? abilityModifiers,
     List<_i3.CharacterFeatureViewData>? activeFeatures,
     int? armorClass,
+    String? armorClassSource,
+    String? armorClassFormula,
     int? initiative,
     int? speed,
     int? maxHp,
@@ -293,6 +312,7 @@ abstract class CharacterDerivedData
     Map<String, int>? hitDiceSummary,
     List<_i6.Language>? languages,
     List<String>? toolProficiencyKeys,
+    List<String>? toolExpertiseKeys,
     List<_i7.ArmorCategory>? armorTraining,
     List<_i8.WeaponCategory>? weaponTraining,
     List<String>? weaponProficiencyKeys,
@@ -319,6 +339,8 @@ abstract class CharacterDerivedData
         'activeFeatures':
             activeFeatures?.toJson(valueToJson: (v) => v.toJson()),
       if (armorClass != null) 'armorClass': armorClass,
+      if (armorClassSource != null) 'armorClassSource': armorClassSource,
+      if (armorClassFormula != null) 'armorClassFormula': armorClassFormula,
       if (initiative != null) 'initiative': initiative,
       if (speed != null) 'speed': speed,
       if (maxHp != null) 'maxHp': maxHp,
@@ -344,6 +366,8 @@ abstract class CharacterDerivedData
         'languages': languages?.toJson(valueToJson: (v) => v.toJson()),
       if (toolProficiencyKeys != null)
         'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
+      if (toolExpertiseKeys != null)
+        'toolExpertiseKeys': toolExpertiseKeys?.toJson(),
       if (armorTraining != null)
         'armorTraining': armorTraining?.toJson(valueToJson: (v) => v.toJson()),
       if (weaponTraining != null)
@@ -384,6 +408,8 @@ abstract class CharacterDerivedData
         'activeFeatures':
             activeFeatures?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (armorClass != null) 'armorClass': armorClass,
+      if (armorClassSource != null) 'armorClassSource': armorClassSource,
+      if (armorClassFormula != null) 'armorClassFormula': armorClassFormula,
       if (initiative != null) 'initiative': initiative,
       if (speed != null) 'speed': speed,
       if (maxHp != null) 'maxHp': maxHp,
@@ -409,6 +435,8 @@ abstract class CharacterDerivedData
         'languages': languages?.toJson(valueToJson: (v) => v.toJson()),
       if (toolProficiencyKeys != null)
         'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
+      if (toolExpertiseKeys != null)
+        'toolExpertiseKeys': toolExpertiseKeys?.toJson(),
       if (armorTraining != null)
         'armorTraining': armorTraining?.toJson(valueToJson: (v) => v.toJson()),
       if (weaponTraining != null)
@@ -451,6 +479,8 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Map<_i2.Ability, int>? abilityModifiers,
     List<_i3.CharacterFeatureViewData>? activeFeatures,
     int? armorClass,
+    String? armorClassSource,
+    String? armorClassFormula,
     int? initiative,
     int? speed,
     int? maxHp,
@@ -466,6 +496,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Map<String, int>? hitDiceSummary,
     List<_i6.Language>? languages,
     List<String>? toolProficiencyKeys,
+    List<String>? toolExpertiseKeys,
     List<_i7.ArmorCategory>? armorTraining,
     List<_i8.WeaponCategory>? weaponTraining,
     List<String>? weaponProficiencyKeys,
@@ -484,6 +515,8 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           abilityModifiers: abilityModifiers,
           activeFeatures: activeFeatures,
           armorClass: armorClass,
+          armorClassSource: armorClassSource,
+          armorClassFormula: armorClassFormula,
           initiative: initiative,
           speed: speed,
           maxHp: maxHp,
@@ -499,6 +532,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           hitDiceSummary: hitDiceSummary,
           languages: languages,
           toolProficiencyKeys: toolProficiencyKeys,
+          toolExpertiseKeys: toolExpertiseKeys,
           armorTraining: armorTraining,
           weaponTraining: weaponTraining,
           weaponProficiencyKeys: weaponProficiencyKeys,
@@ -523,6 +557,8 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Object? abilityModifiers = _Undefined,
     Object? activeFeatures = _Undefined,
     Object? armorClass = _Undefined,
+    Object? armorClassSource = _Undefined,
+    Object? armorClassFormula = _Undefined,
     Object? initiative = _Undefined,
     Object? speed = _Undefined,
     Object? maxHp = _Undefined,
@@ -538,6 +574,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Object? hitDiceSummary = _Undefined,
     Object? languages = _Undefined,
     Object? toolProficiencyKeys = _Undefined,
+    Object? toolExpertiseKeys = _Undefined,
     Object? armorTraining = _Undefined,
     Object? weaponTraining = _Undefined,
     Object? weaponProficiencyKeys = _Undefined,
@@ -578,6 +615,12 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           ? activeFeatures
           : this.activeFeatures?.map((e0) => e0.copyWith()).toList(),
       armorClass: armorClass is int? ? armorClass : this.armorClass,
+      armorClassSource: armorClassSource is String?
+          ? armorClassSource
+          : this.armorClassSource,
+      armorClassFormula: armorClassFormula is String?
+          ? armorClassFormula
+          : this.armorClassFormula,
       initiative: initiative is int? ? initiative : this.initiative,
       speed: speed is int? ? speed : this.speed,
       maxHp: maxHp is int? ? maxHp : this.maxHp,
@@ -652,6 +695,9 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
       toolProficiencyKeys: toolProficiencyKeys is List<String>?
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),
+      toolExpertiseKeys: toolExpertiseKeys is List<String>?
+          ? toolExpertiseKeys
+          : this.toolExpertiseKeys?.map((e0) => e0).toList(),
       armorTraining: armorTraining is List<_i7.ArmorCategory>?
           ? armorTraining
           : this.armorTraining?.map((e0) => e0).toList(),

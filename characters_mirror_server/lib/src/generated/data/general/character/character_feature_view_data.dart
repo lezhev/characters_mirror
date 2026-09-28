@@ -14,6 +14,7 @@ import '../../../enums/character_feature_source_type.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
 import '../../../data/general/character/character_resource_view_data.dart'
     as _i4;
+import '../../../views/feature_display_property_view.dart' as _i5;
 
 abstract class CharacterFeatureViewData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -30,6 +31,8 @@ abstract class CharacterFeatureViewData
     this.tags,
     this.isCustomized,
     this.resources,
+    this.displayProperties,
+    this.selectedChoices,
   });
 
   factory CharacterFeatureViewData({
@@ -45,6 +48,8 @@ abstract class CharacterFeatureViewData
     List<_i3.FeatureTag>? tags,
     bool? isCustomized,
     List<_i4.CharacterResourceViewData>? resources,
+    List<_i5.FeatureDisplayPropertyView>? displayProperties,
+    List<String>? selectedChoices,
   }) = _CharacterFeatureViewDataImpl;
 
   factory CharacterFeatureViewData.fromJson(
@@ -69,6 +74,13 @@ abstract class CharacterFeatureViewData
       resources: (jsonSerialization['resources'] as List?)
           ?.map((e) => _i4.CharacterResourceViewData.fromJson(
               (e as Map<String, dynamic>)))
+          .toList(),
+      displayProperties: (jsonSerialization['displayProperties'] as List?)
+          ?.map((e) => _i5.FeatureDisplayPropertyView.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
+      selectedChoices: (jsonSerialization['selectedChoices'] as List?)
+          ?.map((e) => e as String)
           .toList(),
     );
   }
@@ -97,6 +109,10 @@ abstract class CharacterFeatureViewData
 
   List<_i4.CharacterResourceViewData>? resources;
 
+  List<_i5.FeatureDisplayPropertyView>? displayProperties;
+
+  List<String>? selectedChoices;
+
   /// Returns a shallow copy of this [CharacterFeatureViewData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -113,6 +129,8 @@ abstract class CharacterFeatureViewData
     List<_i3.FeatureTag>? tags,
     bool? isCustomized,
     List<_i4.CharacterResourceViewData>? resources,
+    List<_i5.FeatureDisplayPropertyView>? displayProperties,
+    List<String>? selectedChoices,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -131,6 +149,10 @@ abstract class CharacterFeatureViewData
       if (isCustomized != null) 'isCustomized': isCustomized,
       if (resources != null)
         'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
+      if (displayProperties != null)
+        'displayProperties':
+            displayProperties?.toJson(valueToJson: (v) => v.toJson()),
+      if (selectedChoices != null) 'selectedChoices': selectedChoices?.toJson(),
     };
   }
 
@@ -152,6 +174,10 @@ abstract class CharacterFeatureViewData
       if (resources != null)
         'resources':
             resources?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (displayProperties != null)
+        'displayProperties': displayProperties?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
+      if (selectedChoices != null) 'selectedChoices': selectedChoices?.toJson(),
     };
   }
 
@@ -177,6 +203,8 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     List<_i3.FeatureTag>? tags,
     bool? isCustomized,
     List<_i4.CharacterResourceViewData>? resources,
+    List<_i5.FeatureDisplayPropertyView>? displayProperties,
+    List<String>? selectedChoices,
   }) : super._(
           sourceType: sourceType,
           sourceId: sourceId,
@@ -190,6 +218,8 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           tags: tags,
           isCustomized: isCustomized,
           resources: resources,
+          displayProperties: displayProperties,
+          selectedChoices: selectedChoices,
         );
 
   /// Returns a shallow copy of this [CharacterFeatureViewData]
@@ -209,6 +239,8 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     Object? tags = _Undefined,
     Object? isCustomized = _Undefined,
     Object? resources = _Undefined,
+    Object? displayProperties = _Undefined,
+    Object? selectedChoices = _Undefined,
   }) {
     return CharacterFeatureViewData(
       sourceType: sourceType ?? this.sourceType,
@@ -231,6 +263,13 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
       resources: resources is List<_i4.CharacterResourceViewData>?
           ? resources
           : this.resources?.map((e0) => e0.copyWith()).toList(),
+      displayProperties:
+          displayProperties is List<_i5.FeatureDisplayPropertyView>?
+              ? displayProperties
+              : this.displayProperties?.map((e0) => e0.copyWith()).toList(),
+      selectedChoices: selectedChoices is List<String>?
+          ? selectedChoices
+          : this.selectedChoices?.map((e0) => e0).toList(),
     );
   }
 }

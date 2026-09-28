@@ -5,6 +5,116 @@ void _registerCharacterDataCreationScenarios(
   TestEndpoints endpoints,
   TestSessionBuilder Function(int userId) authenticatedSession,
 ) {
+  test('class step resolves feature properties at the selected class level',
+      () async {
+    final session = sessionBuilder.build();
+    late ClassData classData;
+    late SubclassData subclass;
+    late ClassFeatureData classFeature;
+    late SubclassFeatureData subclassFeature;
+    final propertyIds = <int>[];
+    try {
+      classData = await ClassData.db.insertRow(
+        session,
+        ClassData(name: 'Feature property fixture class'),
+      );
+      subclass = await SubclassData.db.insertRow(
+        session,
+        SubclassData(
+          parentClassId: classData.id!,
+          name: 'Feature property fixture subclass',
+        ),
+      );
+      classFeature = await ClassFeatureData.db.insertRow(
+        session,
+        ClassFeatureData(
+          parentClassId: classData.id!,
+          name: 'Class feature fixture',
+          level: 1,
+        ),
+      );
+      subclassFeature = await SubclassFeatureData.db.insertRow(
+        session,
+        SubclassFeatureData(
+          parentSubclassId: subclass.id!,
+          name: 'Subclass feature fixture',
+          level: 3,
+        ),
+      );
+      propertyIds.addAll([
+        (await FeatureDisplayPropertyData.db.insertRow(
+          session,
+          FeatureDisplayPropertyData(
+            sourceClassFeatureId: classFeature.id,
+            key: 'fixture_progression',
+            label: 'Параметр класса',
+            valueKind: FeatureDisplayPropertyValueKind.progression,
+            progression: {1: '+2', 9: '+3', 16: '+4'},
+          ),
+        ))
+            .id!,
+        (await FeatureDisplayPropertyData.db.insertRow(
+          session,
+          FeatureDisplayPropertyData(
+            sourceSubclassFeatureId: subclassFeature.id,
+            key: 'fixture_subclass_level',
+            label: 'Уровень подкласса',
+            valueKind: FeatureDisplayPropertyValueKind.formula,
+            formula: 'subclassLevel',
+          ),
+        ))
+            .id!,
+      ]);
+
+      final view = await endpoints.classData.getStepView(
+        sessionBuilder,
+        classData.id!,
+        selectedLevel: 12,
+        isStartingClass: true,
+        selectedSubclassId: subclass.id,
+      );
+      final classFeatureView = view.currentLevelFeatureViews!.singleWhere(
+        (item) => item.classFeature?.id == classFeature.id,
+      );
+      final subclassFeatureView = view.currentSubclassFeatureViews!.singleWhere(
+        (item) => item.subclassFeature?.id == subclassFeature.id,
+      );
+
+      expect(classFeatureView.displayProperties?.single.value, '+3');
+      expect(subclassFeatureView.displayProperties?.single.value, '12');
+    } finally {
+      await FeatureDisplayPropertyData.db.deleteWhere(
+        session,
+        where: (row) => row.id.inSet(propertyIds.toSet()),
+      );
+      if (classFeature.id != null) {
+        await ClassFeatureData.db.deleteWhere(
+          session,
+          where: (row) => row.id.equals(classFeature.id),
+        );
+      }
+      if (subclassFeature.id != null) {
+        await SubclassFeatureData.db.deleteWhere(
+          session,
+          where: (row) => row.id.equals(subclassFeature.id),
+        );
+      }
+      if (subclass.id != null) {
+        await SubclassData.db.deleteWhere(
+          session,
+          where: (row) => row.id.equals(subclass.id),
+        );
+      }
+      if (classData.id != null) {
+        await ClassData.db.deleteWhere(
+          session,
+          where: (row) => row.id.equals(classData.id),
+        );
+      }
+      await session.close();
+    }
+  });
+
   test('Charlatan background includes its canonical forgery kit grant',
       () async {
     final session = sessionBuilder.build();
@@ -584,6 +694,138 @@ void _registerCharacterDataCreationScenarios(
     expect((resource.key, resource.max, resource.current), ('uses', 3, 1));
   });
 
+  test('Arcane Recovery resource metadata is stable at Wizard levels 1 and 5',
+      () async {
+    final wizard = await endpoints.classData.upsert(
+      sessionBuilder,
+      ClassData(
+        name: 'Wizard',
+        hitDieValue: 6,
+        spellcastingProgression: SpellcastingProgression.full,
+      ),
+    );
+    final feature = await endpoints.classFeatureData.upsert(
+      sessionBuilder,
+      ClassFeatureData(
+        parentClassId: wizard.id!,
+        name: 'Магическое восстановление',
+        level: 1,
+      ),
+    );
+    final resourceSession = sessionBuilder.build();
+    try {
+      await FeatureResourceDefinitionData.db.insertRow(
+        resourceSession,
+        FeatureResourceDefinitionData(
+          classFeatureId: feature.id,
+          key: 'arcaneRecovery',
+          kind: FeatureResourceKind.uses,
+          maxRule: FeatureResourceMaxRule.fixed,
+          maxValue: 1,
+          resetOn: RestType.special,
+          activationTrigger: FeatureResourceTrigger.shortRest,
+          usageResetOn: RestType.longRest,
+        ),
+      );
+      await FeatureResourceDefinitionData.db.insertRow(
+        resourceSession,
+        FeatureResourceDefinitionData(
+          classFeatureId: feature.id,
+          key: 'invalidSpecialMax',
+          kind: FeatureResourceKind.uses,
+          maxRule: FeatureResourceMaxRule.special,
+          maxValue: 5,
+          becomesUnlimitedAtLevel: 1,
+        ),
+      );
+      await FeatureResourceEffectData.db.insertRow(
+        resourceSession,
+        FeatureResourceEffectData(
+          classFeatureId: feature.id,
+          type: FeatureResourceEffectType.restore,
+          targetType: FeatureResourceTargetType.spellSlots,
+          targetResourceKey: 'spellSlots',
+          amountRule: FeatureResourceMaxRule.special,
+        ),
+      );
+      await FeatureResourceEffectData.db.insertRow(
+        resourceSession,
+        FeatureResourceEffectData(
+          classFeatureId: feature.id,
+          type: FeatureResourceEffectType.modify,
+          targetResourceKey: 'arcaneRecovery',
+          setMaxRule: FeatureResourceMaxRule.special,
+        ),
+      );
+    } finally {
+      await resourceSession.close();
+    }
+
+    final classStep = await endpoints.classData.getStepView(
+      sessionBuilder,
+      wizard.id!,
+      selectedLevel: 1,
+      isStartingClass: true,
+    );
+    final structuredEffect = classStep.currentLevelFeatures!
+        .singleWhere((value) => value.id == feature.id)
+        .resourceEffects!
+        .singleWhere(
+            (value) => value.type == FeatureResourceEffectType.restore);
+    expect(
+      (
+        structuredEffect.type,
+        structuredEffect.targetType,
+        structuredEffect.targetResourceKey,
+        structuredEffect.amountRule,
+      ),
+      (
+        FeatureResourceEffectType.restore,
+        FeatureResourceTargetType.spellSlots,
+        'spellSlots',
+        FeatureResourceMaxRule.special,
+      ),
+    );
+
+    for (final level in [1, 5]) {
+      final saved = await endpoints.characterData.saveCharacter(
+        authenticatedSession(419 + level),
+        CharacterData(
+          name: 'Wizard $level Arcane Recovery fixture',
+          classEntries: [
+            CharacterClassEntryData(
+              classData: wizard,
+              level: level,
+              isStartingClass: true,
+              classOrder: 0,
+            ),
+          ],
+        ),
+      );
+
+      final activeFeature = saved.derived!.activeFeatures!.singleWhere(
+        (value) => value.sourceId == feature.id,
+      );
+      final resource = activeFeature.resources!.single;
+      expect(
+        (
+          resource.key,
+          resource.max,
+          resource.resetOn,
+          resource.activationTrigger,
+          resource.usageResetOn,
+        ),
+        (
+          'arcaneRecovery',
+          1,
+          RestType.special,
+          FeatureResourceTrigger.shortRest,
+          RestType.longRest,
+        ),
+      );
+    }
+  });
+
   test('feature override equal to defaults is not customized', () async {
     final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
     final saved = await endpoints.characterData.saveCharacter(
@@ -659,7 +901,7 @@ void _registerCharacterDataCreationScenarios(
       ),
     );
 
-      expect(saved.derived!.abilityScores![Ability.dexterity], 11);
+    expect(saved.derived!.abilityScores![Ability.dexterity], 11);
   });
 
   test('generic choices reject grants for unknown tool reference keys',

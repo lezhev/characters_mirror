@@ -1,8 +1,9 @@
 part of '../character_data_endpoint.dart';
 
-Future<int> _calculateArmorClass(
+Future<({int value, String source, String formula})> _calculateArmorClass(
   CharacterData character,
-  int dexterityModifier, {
+  Map<Ability, int> abilityModifiers,
+  Iterable<UnarmoredDefenseRule> unarmoredDefenseRules, {
   required _CharacterResolveContext resolveContext,
   Transaction? transaction,
 }) async {
@@ -33,15 +34,57 @@ Future<int> _calculateArmorClass(
   );
 
   final baseAC = bodyArmor?.baseAC;
+  final dexterityModifier = abilityModifiers[Ability.dexterity] ?? 0;
   final bodyDexterityBonus = baseAC == null
       ? dexterityModifier
       : bodyArmor?.dexBonus == true
           ? _cappedDexterityBonus(dexterityModifier, bodyArmor?.dexBonusMax)
           : 0;
-  final automaticArmorClass =
+  var automaticArmorClass =
       (baseAC ?? 10) + bodyDexterityBonus + (shield?.bonusAC ?? 0);
+  var source = bodyArmor?.name ?? 'Без доспеха';
+  var formula = '${baseAC ?? 10} + Ловкость ($bodyDexterityBonus)';
+  if (baseAC != null && bodyArmor?.dexBonus != true) {
+    formula = '$baseAC';
+  }
+  if (shield != null) {
+    formula += ' + Щит (${shield.bonusAC ?? 0})';
+  }
+  if (bodyArmor == null) {
+    for (final rule in unarmoredDefenseRules) {
+      if (rule == UnarmoredDefenseRule.dexterityWisdom && shield != null) {
+        continue;
+      }
+      final secondaryAbility =
+          rule == UnarmoredDefenseRule.dexterityConstitution
+              ? Ability.constitution
+              : Ability.wisdom;
+      final formulaAC = 10 +
+          dexterityModifier +
+          (abilityModifiers[secondaryAbility] ?? 0) +
+          (rule == UnarmoredDefenseRule.dexterityConstitution
+              ? shield?.bonusAC ?? 0
+              : 0);
+      if (formulaAC > automaticArmorClass) {
+        automaticArmorClass = formulaAC;
+        source = 'Защита без доспехов';
+        formula = '10 + Ловкость ($dexterityModifier) + '
+            '${secondaryAbility == Ability.constitution ? 'Телосложение' : 'Мудрость'} '
+            '(${abilityModifiers[secondaryAbility] ?? 0})';
+        if (shield != null) {
+          formula += ' + Щит (${shield.bonusAC ?? 0})';
+        }
+      }
+    }
+  }
 
-  return automaticArmorClass + (character.customArmorClassBonus ?? 0);
+  final customBonus = character.customArmorClassBonus ?? 0;
+  if (customBonus != 0) formula += ' + Бонус ($customBonus)';
+  return (
+    value: automaticArmorClass + customBonus,
+    source: source,
+    formula: formula,
+  );
 }
 
 int _cappedDexterityBonus(int dexterityModifier, int? maximum) {
