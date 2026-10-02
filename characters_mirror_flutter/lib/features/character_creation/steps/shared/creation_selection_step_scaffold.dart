@@ -13,6 +13,7 @@ class CreationSelectionStepScaffold extends StatelessWidget {
         detailsKey = null,
         showJumpButton = false,
         onJumpToDetails = null,
+        scrollHintSelection = null,
         onStepTap = null,
         onPressedNext = _ignoreLoadingNext;
 
@@ -27,6 +28,7 @@ class CreationSelectionStepScaffold extends StatelessWidget {
     this.detailsKey,
     this.showJumpButton = false,
     this.onJumpToDetails,
+    this.scrollHintSelection,
   });
 
   final Widget selection;
@@ -34,6 +36,7 @@ class CreationSelectionStepScaffold extends StatelessWidget {
   final GlobalKey? detailsKey;
   final bool showJumpButton;
   final VoidCallback? onJumpToDetails;
+  final Object? scrollHintSelection;
   final VoidCallback onBack;
   final Future<void> Function(Step target)? onStepTap;
   final VoidCallback onPressedNext;
@@ -47,6 +50,8 @@ class CreationSelectionStepScaffold extends StatelessWidget {
       onStepTap: onStepTap,
       onPressedNext: onPressedNext,
       scrollHintAction: showJumpButton ? onJumpToDetails : null,
+      scrollHintTargetKey: detailsKey,
+      scrollHintSelection: scrollHintSelection,
       body: Column(
         children: [
           selection,

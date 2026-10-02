@@ -258,6 +258,7 @@ class _SpellcastingSettingsPanel extends StatelessWidget {
               child: TextField(
                 key: const ValueKey('spell-save-dc-field'),
                 controller: saveDcController,
+                inputFormatters: [nonNegativeIntFormatter()],
                 enabled: canEdit,
                 keyboardType: TextInputType.number,
                 onChanged: (_) => onChanged(),
@@ -272,6 +273,7 @@ class _SpellcastingSettingsPanel extends StatelessWidget {
               child: TextField(
                 key: const ValueKey('spell-attack-bonus-field'),
                 controller: attackController,
+                inputFormatters: [boundedIntFormatter()],
                 enabled: canEdit,
                 keyboardType:
                     const TextInputType.numberWithOptions(signed: true),

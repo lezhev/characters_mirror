@@ -4,6 +4,7 @@ import 'package:characters_mirror_flutter/core/serverpod/data/reference_reposito
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
@@ -168,6 +169,7 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
             controller: _controller,
             focusNode: _focusNode,
             minLines: 6,
+            maxRunes: AppInputLimits.mediumText,
             onChanged: widget.onInventoryChanged,
           ),
         ),

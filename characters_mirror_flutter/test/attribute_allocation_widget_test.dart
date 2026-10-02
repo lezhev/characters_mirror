@@ -81,6 +81,40 @@ void main() {
     );
   });
 
+  testWidgets('manual input rejects values above the technical limit',
+      (tester) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    container
+        .read(attributeStateProvider.notifier)
+        .changeType(SelectType.manual);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          home: Scaffold(body: ManualInputColumn()),
+        ),
+      ),
+    );
+
+    final field = find.byKey(const ValueKey('manual-input-strength'));
+    await tester.enterText(field, '100001');
+    await tester.pump();
+
+    final textField = find.descendant(
+      of: field,
+      matching: find.byType(TextField),
+    );
+    expect(tester.widget<TextField>(textField).controller?.text, '');
+    expect(
+      container
+          .read(attributeStateProvider)
+          .assignedAttributes[Attribute.strength],
+      0,
+    );
+  });
+
   testWidgets('assigned score can be dragged to move or swap', (tester) async {
     final container = ProviderContainer();
     addTearDown(container.dispose);

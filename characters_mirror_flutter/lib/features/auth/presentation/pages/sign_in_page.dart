@@ -20,6 +20,7 @@ class _SignInPageState extends ConsumerState<SignInPage> {
   bool _isLoading = false;
   bool _showValidation = false;
   bool _rememberMe = true;
+  bool _passwordVisible = false;
   String? _feedbackMessage;
   bool _isError = false;
 
@@ -73,98 +74,111 @@ class _SignInPageState extends ConsumerState<SignInPage> {
     }
 
     return AuthScaffold(
-      title: 'Вход в Character`s Mirror',
-      subtitle: 'Продолжайте играть без лишних вычислений.',
-      child: AuthCard(
-        title: 'Вход',
-        description:
-            'Используйте email и пароль от вашего аккаунта Characters Mirror.',
-        footer: Align(
-          alignment: Alignment.center,
-          child: TextButton(
-            onPressed: _isLoading ? null : () => context.push('/sign-up'),
-            child: const Text('Нет аккаунта? Создать'),
+      title: 'Вход',
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FilledButton(
+            onPressed: _isLoading ? null : _submit,
+            child: _isLoading
+                ? const SizedBox(
+                    height: 18,
+                    width: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('Войти'),
           ),
-        ),
-        child: Form(
-          key: _formKey,
-          autovalidateMode: _showValidation
-              ? AutovalidateMode.onUserInteraction
-              : AutovalidateMode.disabled,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_feedbackMessage != null) ...[
-                AuthInlineMessage(
-                  message: _feedbackMessage!,
-                  isError: _isError,
-                ),
-                const SizedBox(height: 16),
-              ],
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'wizard@toril.dev',
-                ),
-                validator: (value) {
-                  final email = value?.trim() ?? '';
-                  if (email.isEmpty) {
-                    return 'Введите email.';
-                  }
-                  if (!EmailValidator.validate(email)) {
-                    return 'Введите корректный email.';
-                  }
-                  return null;
-                },
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.center,
+            child: TextButton(
+              onPressed: _isLoading ? null : () => context.push('/sign-up'),
+              child: const Text('Нет аккаунта? Создать'),
+            ),
+          ),
+        ],
+      ),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: _showValidation
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (_feedbackMessage != null) ...[
+              AuthInlineMessage(
+                message: _feedbackMessage!,
+                isError: _isError,
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) => _submit(),
-                decoration: const InputDecoration(
-                  labelText: 'Пароль',
-                  hintText: 'Введите пароль',
-                ),
-                validator: (value) {
-                  if ((value ?? '').isEmpty) {
-                    return 'Введите пароль.';
-                  }
-                  return null;
-                },
-              ),
-              CheckboxListTile(
-                value: _rememberMe,
-                contentPadding: EdgeInsets.zero,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: const Text('Запомнить меня'),
-                onChanged: _isLoading
-                    ? null
-                    : (value) {
-                        if (value == null) {
-                          return;
-                        }
-
-                        setState(() => _rememberMe = value);
-                      },
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: _isLoading ? null : _submit,
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Войти'),
-              ),
             ],
-          ),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                hintText: 'wizard@toril.dev',
+              ),
+              validator: (value) {
+                final email = value?.trim() ?? '';
+                if (email.isEmpty) {
+                  return 'Введите email.';
+                }
+                if (!EmailValidator.validate(email)) {
+                  return 'Введите корректный email.';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _passwordController,
+              obscureText: !_passwordVisible,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => _submit(),
+              decoration: const InputDecoration(
+                labelText: 'Пароль',
+                hintText: 'Введите пароль',
+              ).copyWith(
+                suffixIcon: IconButton(
+                  tooltip:
+                      _passwordVisible ? 'Скрыть пароль' : 'Показать пароль',
+                  onPressed: () => setState(
+                    () => _passwordVisible = !_passwordVisible,
+                  ),
+                  icon: Icon(
+                    _passwordVisible
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                  ),
+                ),
+              ),
+              validator: (value) {
+                if ((value ?? '').isEmpty) {
+                  return 'Введите пароль.';
+                }
+                return null;
+              },
+            ),
+            CheckboxListTile(
+              value: _rememberMe,
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              title: const Text('Запомнить меня'),
+              onChanged: _isLoading
+                  ? null
+                  : (value) {
+                      if (value == null) {
+                        return;
+                      }
+
+                      setState(() => _rememberMe = value);
+                    },
+            ),
+          ],
         ),
       ),
     );
@@ -177,17 +191,11 @@ class _AuthLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AuthScaffold(
-      title: 'Подключаемся к таверне',
-      subtitle:
-          'Проверяем активную сессию и подготавливаем рабочее пространство.',
-      child: AuthCard(
-        title: 'Почти готово',
-        description: 'Секунду, сверяем состояние аккаунта.',
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: CircularProgressIndicator(),
-          ),
+      title: 'Вход',
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: CircularProgressIndicator(),
         ),
       ),
     );

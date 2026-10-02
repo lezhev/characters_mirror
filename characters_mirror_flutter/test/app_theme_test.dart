@@ -57,8 +57,33 @@ void main() {
       );
       expect(
         lightTheme.textTheme.headlineMedium?.color,
-        lightColorScheme.primary,
+        lightColorScheme.onSurface,
       );
+    });
+
+    test(
+        'dark theme keeps semantic accent, neutral outline, and surface levels',
+        () {
+      expect(darkColorScheme.primary, const Color(0xFFD4A568));
+      expect(
+          darkTheme.textTheme.headlineMedium?.color, darkColorScheme.onSurface);
+      expect(darkColorScheme.outline, const Color(0xFF5A544C));
+      expect(darkColorScheme.outlineVariant, const Color(0xFF34312D));
+      expect(darkColorScheme.outline, isNot(darkColorScheme.primary));
+
+      final levels = [
+        darkColorScheme.surfaceContainerLowest,
+        darkColorScheme.surfaceContainerLow,
+        darkColorScheme.surfaceContainer,
+        darkColorScheme.surfaceContainerHigh,
+        darkColorScheme.surfaceContainerHighest,
+      ];
+      for (var index = 1; index < levels.length; index++) {
+        expect(
+          _relativeLuminance(levels[index]),
+          greaterThan(_relativeLuminance(levels[index - 1])),
+        );
+      }
     });
 
     test('game color pairs meet text contrast requirements', () {

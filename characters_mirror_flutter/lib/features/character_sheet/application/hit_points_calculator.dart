@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 
 enum HitPointAction {
@@ -115,7 +116,7 @@ HitPointTotals applyHitPointChange({
   required int value,
   required HitPointAction action,
 }) {
-  if (value <= 0) {
+  if (value <= 0 || value > AppInputLimits.nonNegativeIntMax) {
     return totals;
   }
 
@@ -350,21 +351,23 @@ Map<String, int>? normalizeHitDiceMaxOverridesForSave(
   return result.isEmpty ? null : _sortedNonNegativeMap(result);
 }
 
-int? evaluateHitPointExpression(String expression) {
+BigInt? evaluateHitPointExpression(String expression) {
   final normalized = expression.trim();
-  if (normalized.isEmpty || !RegExp(r'^\d+([+-]\d+)*$').hasMatch(normalized)) {
+  if (normalized.isEmpty ||
+      normalized.runes.length > AppInputLimits.hitPointExpressionLength ||
+      !RegExp(r'^\d+([+-]\d+)*$').hasMatch(normalized)) {
     return null;
   }
 
-  var result = 0;
-  var currentNumber = 0;
+  var result = BigInt.zero;
+  var currentNumber = BigInt.zero;
   var operation = '+';
 
   for (var index = 0; index < normalized.length; index++) {
     final char = normalized[index];
     final digit = int.tryParse(char);
     if (digit != null) {
-      currentNumber = currentNumber * 10 + digit;
+      currentNumber = currentNumber * BigInt.from(10) + BigInt.from(digit);
     }
 
     if (char == '+' || char == '-' || index == normalized.length - 1) {
@@ -374,7 +377,7 @@ int? evaluateHitPointExpression(String expression) {
         result -= currentNumber;
       }
       operation = char;
-      currentNumber = 0;
+      currentNumber = BigInt.zero;
     }
   }
 

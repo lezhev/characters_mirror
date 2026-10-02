@@ -137,10 +137,13 @@ class CharacterTileCard extends HookWidget {
           highlightColor: Colors.transparent,
           child: AppSurfaceCard(
             padding: EdgeInsets.zero,
-            backgroundColor: colorScheme.surfaceContainerHighest,
+            backgroundColor: isHovered.value
+                ? colorScheme.surfaceContainerHigh
+                : colorScheme.surfaceContainerLow,
             border: Border.all(
-              color:
-                  isHovered.value ? colorScheme.primary : colorScheme.outline,
+              color: isHovered.value
+                  ? colorScheme.outline
+                  : colorScheme.outlineVariant,
               width: 1,
             ),
             child: AnimatedContainer(
@@ -148,14 +151,6 @@ class CharacterTileCard extends HookWidget {
               height: 104,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(8)),
-                boxShadow: [
-                  BoxShadow(
-                    color: colorScheme.inversePrimary
-                        .withValues(alpha: isHovered.value ? 0.2 : 0),
-                    blurRadius: isHovered.value ? 4 : 0,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
               child: child,
             ),

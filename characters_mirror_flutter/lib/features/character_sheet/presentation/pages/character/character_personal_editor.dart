@@ -5,6 +5,8 @@ import 'package:characters_mirror_flutter/core/ui/character_alignment_labels.dar
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:flutter/material.dart';

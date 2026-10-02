@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';

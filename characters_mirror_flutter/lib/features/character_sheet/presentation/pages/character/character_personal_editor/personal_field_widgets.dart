@@ -44,6 +44,7 @@ class _ShortTextField extends StatelessWidget {
       focusNode: spec.focusNode,
       minLines: 1,
       maxLines: 1,
+      inputFormatters: [textLengthFormatter(AppInputLimits.shortText)],
       textInputAction: spec.textInputAction,
       onChanged: onChanged,
       onSubmitted: (_) => spec.onSubmitted(),

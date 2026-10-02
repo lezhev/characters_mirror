@@ -3,6 +3,7 @@ import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.da
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
@@ -131,6 +132,7 @@ class _NotesEditorState extends State<_NotesEditor> {
                     controller: _controllers[index],
                     focusNode: _focusNodes[index],
                     minLines: 4,
+                    maxRunes: AppInputLimits.longText,
                     onChanged: (_) => _handleNoteChanged(index),
                   ),
                   const SizedBox(height: 8),

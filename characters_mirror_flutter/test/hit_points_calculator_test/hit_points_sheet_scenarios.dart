@@ -1,6 +1,88 @@
 part of '../hit_points_calculator_test.dart';
 
 void _registerHitPointsSheetTests() {
+  testWidgets('HP actions clamp the evaluated expression before applying',
+      (tester) async {
+    tester.view.physicalSize = const Size(1000, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final cases = <(String, int)>[
+      ('5000', 5000),
+      ('50000', 10000),
+      ('999999', 10000),
+      ('7000+8000', 10000),
+    ];
+
+    for (final (expression, expectedAmount) in cases) {
+      int? appliedAmount;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: HitPointsCalculatorSheet(
+              character: protocol.CharacterData(
+                derived: protocol.CharacterDerivedData(maxHp: 20),
+              ),
+              onApplyAction: ({required action, required amount}) async {
+                appliedAmount = amount;
+              },
+              onSaveDeathSavingThrows: (
+                  {required successes, required failures}) async {},
+              onSaveSettings: ({
+                required classEntries,
+                required hpPerLevelBonus,
+                required hpFlatBonus,
+                required currentHitDice,
+                required hitDiceMaxOverrides,
+              }) async {},
+            ),
+          ),
+        ),
+      );
+
+      final field = find.byKey(const ValueKey('hit_point_expression_field'));
+      await tester.enterText(field, expression);
+      final damageButton = find.widgetWithText(FilledButton, 'Урон');
+      await tester.ensureVisible(damageButton);
+      await tester.tap(damageButton);
+      await tester.pump();
+
+      expect(appliedAmount, expectedAmount, reason: expression);
+    }
+  });
+
+  testWidgets('HP expression input caps large paste', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HitPointsCalculatorSheet(
+            character: protocol.CharacterData(
+              derived: protocol.CharacterDerivedData(maxHp: 20),
+            ),
+            onApplyAction: ({required action, required amount}) async {},
+            onSaveDeathSavingThrows: (
+                {required successes, required failures}) async {},
+            onSaveSettings: ({
+              required classEntries,
+              required hpPerLevelBonus,
+              required hpFlatBonus,
+              required currentHitDice,
+              required hitDiceMaxOverrides,
+            }) async {},
+          ),
+        ),
+      ),
+    );
+
+    final field = find.byKey(const ValueKey('hit_point_expression_field'));
+    await tester.enterText(field, '1' * 1000);
+    await tester.pump();
+
+    expect(tester.widget<TextField>(field).controller!.text.length, 64);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('HP sheet at 0 hp shows death saves instead of hp summary',
       (tester) async {
     await tester.pumpWidget(

@@ -51,6 +51,49 @@ void main() {
         container.read(characterCreationProvider).character.name, 'Мелифаро');
   });
 
+  testWidgets('personal inputs truncate short and narrative pastes',
+      (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/create/personal',
+            routes: [
+              GoRoute(
+                path: '/create/personal',
+                builder: (_, __) => const PersonalStep(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final nameField = find.byWidgetPredicate(
+      (widget) => widget is TextField && widget.decoration?.labelText == 'Имя',
+    );
+    await tester.enterText(nameField, 'x' * 121);
+    expect(tester.widget<TextField>(nameField).controller!.text.length, 120);
+
+    final narrativeField = find.byWidgetPredicate(
+      (widget) =>
+          widget is TextField && widget.decoration?.labelText == 'Доп. заметки',
+    );
+    await tester.ensureVisible(narrativeField);
+    await tester.enterText(narrativeField, 'x' * 20001);
+    expect(
+      tester.widget<TextField>(narrativeField).controller!.text.length,
+      20000,
+    );
+  });
+
   testWidgets('personal step saves additional notes as first note',
       (tester) async {
     await tester.binding.setSurfaceSize(const Size(1280, 900));

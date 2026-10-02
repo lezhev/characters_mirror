@@ -18,7 +18,7 @@ class SubclassChoiceSection extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final sectionTitleStyle = textTheme.titleLarge?.copyWith(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
     );
 
     return ref.watch(classStateProvider).when(
@@ -114,7 +114,7 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
 
     final theme = Theme.of(context);
     final sectionTitleStyle = theme.textTheme.titleLarge?.copyWith(
-      color: theme.colorScheme.primary,
+      color: theme.colorScheme.onSurface,
     );
 
     return ref.watch(classStateProvider).when(
@@ -216,7 +216,7 @@ class ClassProgressionSection extends StatelessWidget {
             title: 'Умения текущего уровня',
             showDivider: false,
             titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
           ),
           const Gap(8),
@@ -237,12 +237,12 @@ class ClassProgressionSection extends StatelessWidget {
                 Text(
                   'Будущая прогрессия',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                 ),
                 Icon(
                   isFutureExpanded ? Icons.expand_less : Icons.expand_more,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ],
             ),

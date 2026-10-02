@@ -132,7 +132,7 @@ class _CompactStatCard extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.7)),
+        border: Border.all(color: colorScheme.outlineVariant),
         borderRadius: borderRadius,
       ),
       child: ClipRRect(
@@ -143,7 +143,7 @@ class _CompactStatCard extends StatelessWidget {
             onTap: item.onPressed ?? () {},
             onLongPress: item.onLongPress,
             overlayColor: WidgetStatePropertyAll(
-              colorScheme.primary.withValues(alpha: 0.08),
+              colorScheme.surfaceContainerHigh.withValues(alpha: 0.36),
             ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 88),
@@ -227,7 +227,7 @@ class _IconCardSegment extends StatelessWidget {
       children: [
         Icon(
           item.icon,
-          color: colorScheme.primary,
+          color: colorScheme.onSurfaceVariant,
           size: 24,
         ),
         Padding(
@@ -235,7 +235,7 @@ class _IconCardSegment extends StatelessWidget {
           child: Divider(
             height: 1,
             thickness: 1,
-            color: colorScheme.outline,
+            color: colorScheme.outlineVariant,
           ),
         ),
         Text(

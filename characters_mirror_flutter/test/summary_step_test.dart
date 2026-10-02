@@ -68,6 +68,135 @@ void main() {
     );
   });
 
+  for (final (cardKey, target, next) in <(String, Step, Step)>[
+    ('summary-class-card', Step.classStep, Step.race),
+    ('summary-race-card', Step.race, Step.background),
+    ('summary-background-card', Step.background, Step.attributes),
+    ('summary-attributes-card', Step.attributes, Step.personal),
+  ]) {
+    testWidgets('jump to $target keeps ordinary Next to $next', (tester) async {
+      final container = _createContainer();
+      addTearDown(container.dispose);
+      await _pumpSummary(tester, container);
+
+      final card = find.byKey(ValueKey(cardKey));
+      await tester.ensureVisible(card);
+      await tester.tap(card);
+      await tester.pumpAndSettle();
+      _expectStepRoute(tester, container, target);
+
+      await tester.tap(find.byKey(const ValueKey('step-next')));
+      await tester.pumpAndSettle();
+      _expectStepRoute(tester, container, next);
+    });
+  }
+
+  testWidgets('jumped wizard reaches Summary through remaining steps',
+      (tester) async {
+    final container = _createContainer();
+    addTearDown(container.dispose);
+    await _pumpSummary(tester, container);
+
+    final classCard = find.byKey(const ValueKey('summary-class-card'));
+    await tester.ensureVisible(classCard);
+    await tester.tap(classCard);
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.classStep);
+
+    for (final step in <Step>[
+      Step.race,
+      Step.background,
+      Step.attributes,
+      Step.personal,
+      Step.summary,
+    ]) {
+      await tester.tap(find.byKey(const ValueKey('step-next')));
+      await tester.pumpAndSettle();
+      _expectStepRoute(tester, container, step);
+    }
+  });
+
+  testWidgets('Back after a Summary jump follows the ordinary order',
+      (tester) async {
+    final container = _createContainer();
+    addTearDown(container.dispose);
+    await _pumpSummary(tester, container);
+
+    final backgroundCard =
+        find.byKey(const ValueKey('summary-background-card'));
+    await tester.ensureVisible(backgroundCard);
+    await tester.tap(backgroundCard);
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.background);
+
+    await tester.tap(find.byKey(const ValueKey('step-back')));
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.race);
+  });
+
+  testWidgets('missing-info jump keeps ordinary Next', (tester) async {
+    final container = _createContainer();
+    addTearDown(container.dispose);
+    await _pumpSummary(tester, container);
+
+    await tester.tap(find.byKey(const ValueKey('summary-missing-info')));
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.classStep);
+
+    await tester.tap(find.byKey(const ValueKey('step-next')));
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.race);
+  });
+
+  testWidgets('Attributes Next includes Spells when the step is visible',
+      (tester) async {
+    final container = _createContainer();
+    addTearDown(container.dispose);
+    container.read(characterCreationProvider.notifier).syncPrimaryClassDraft(
+          classData: ClassData(id: 3, name: 'Волшебник'),
+          hasSpellCreationStep: true,
+        );
+    await _pumpSummary(tester, container);
+
+    final attributesCard =
+        find.byKey(const ValueKey('summary-attributes-card'));
+    await tester.ensureVisible(attributesCard);
+    await tester.tap(attributesCard);
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.attributes);
+
+    await tester.tap(find.byKey(const ValueKey('step-next')));
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.spells);
+  });
+
+  testWidgets('jump and Next preserve selected character data', (tester) async {
+    final container = _createContainer();
+    addTearDown(container.dispose);
+    final notifier = container.read(characterCreationProvider.notifier);
+    notifier.syncPrimaryClassDraft(
+      classData: ClassData(id: 3, name: 'Волшебник'),
+    );
+    notifier.setRace(RaceData(id: 1, name: 'Человек'));
+    notifier.setBackground(BackgroundData(id: 2, name: 'Путешественник'));
+    notifier.syncAttributesDraft(const {'strength': 17});
+    notifier.setUseFlexibleAbilityBonuses(true);
+    notifier.setName('Мелифаро');
+    final before = container.read(characterCreationProvider).character;
+    await _pumpSummary(tester, container);
+
+    final raceCard = find.byKey(const ValueKey('summary-race-card'));
+    await tester.ensureVisible(raceCard);
+    await tester.tap(raceCard);
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.race);
+
+    await tester.tap(find.byKey(const ValueKey('step-next')));
+    await tester.pumpAndSettle();
+    _expectStepRoute(tester, container, Step.background);
+    expect(container.read(characterCreationProvider).character, before);
+  });
+
   testWidgets('portrait area stays tappable without a select button',
       (tester) async {
     var portraitTapCount = 0;
@@ -364,6 +493,7 @@ Future<void> _pumpSummary(
               '/create/race',
               '/create/background',
               '/create/attributes',
+              '/create/spells',
               '/create/personal',
             ])
               GoRoute(
@@ -373,12 +503,24 @@ Future<void> _pumpSummary(
                   Builder(
                     builder: (context) => Scaffold(
                       body: Center(
-                        child: ElevatedButton(
-                          key: const ValueKey('step-next'),
-                          onPressed: () => container
-                              .read(characterCreationProvider.notifier)
-                              .nextStep(context),
-                          child: const Text('Далее'),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ElevatedButton(
+                              key: const ValueKey('step-back'),
+                              onPressed: () => container
+                                  .read(characterCreationProvider.notifier)
+                                  .prevStep(context),
+                              child: const Text('Назад'),
+                            ),
+                            ElevatedButton(
+                              key: const ValueKey('step-next'),
+                              onPressed: () => container
+                                  .read(characterCreationProvider.notifier)
+                                  .nextStep(context),
+                              child: const Text('Далее'),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -391,6 +533,21 @@ Future<void> _pumpSummary(
     ),
   );
   await tester.pumpAndSettle();
+}
+
+void _expectStepRoute(
+  WidgetTester tester,
+  ProviderContainer container,
+  Step expected,
+) {
+  expect(container.read(characterCreationProvider).step, expected);
+  final routeFinder = expected == Step.summary
+      ? find.byKey(const ValueKey('summary-hero-card'))
+      : find.byKey(const ValueKey('step-next'));
+  expect(
+    GoRouter.of(tester.element(routeFinder)).state.uri.path,
+    expected.routePath,
+  );
 }
 
 Future<void> _pumpOverview(

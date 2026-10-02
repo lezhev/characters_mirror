@@ -31,7 +31,7 @@ class BackgroundFeatures extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final sectionTitleStyle = textTheme.titleLarge?.copyWith(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
     );
     final backgroundName = selectedBackground.name?.trim();
     final backgroundTitle = backgroundName == null || backgroundName.isEmpty
@@ -317,7 +317,7 @@ class ExpertiseChoiceGroupsSection extends ConsumerWidget {
                 title: 'Компетентность',
                 showDivider: false,
                 titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
               ),
               const Gap(8),
@@ -424,7 +424,7 @@ class BackgroundChoiceGroupsSection extends ConsumerWidget {
           title: 'Владения предыстории',
           showDivider: false,
           titleStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
         ),
         const Gap(8),

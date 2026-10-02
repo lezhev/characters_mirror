@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
 import 'package:flutter/material.dart';
 
 class ClassProfileCard extends StatelessWidget {
@@ -13,77 +14,90 @@ class ClassProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final labels = <String>[
-      if (_hitDieLabel(classData) != null)
-        'Кость хитов: ${_hitDieLabel(classData)}',
+    final colors = theme.colorScheme;
+    final description = classData.description;
+    final details = <(String, String)>[
+      if (classData.hitDieValue case final hitDie?) ('Кость хитов', 'd$hitDie'),
       if (classData.primaryAbilities?.isNotEmpty ?? false)
-        'Ключевые характеристики: ${_joinNames(classData.primaryAbilities!)}',
+        (
+          'Ключевые характеристики',
+          classData.primaryAbilities!.map(attributesAbilityLabel).join(', '),
+        ),
       if (classData.savingThrowProficiencies?.isNotEmpty ?? false)
-        'Спасброски: ${_joinNames(classData.savingThrowProficiencies!)}',
-      if (classData.availableSkills?.isNotEmpty ?? false)
-        'Навыки на выбор (${classData.skillCount ?? 0}): ${_joinNames(classData.availableSkills!)}',
-      if (_spellcastingAbilityLabel(classData) != null)
-        'Базовая характеристика заклинаний: ${_spellcastingAbilityLabel(classData)}',
+        (
+          'Спасброски',
+          classData.savingThrowProficiencies!
+              .map(attributesAbilityLabel)
+              .join(', '),
+        ),
+      if (classData.spellcastingAbilityValue case final ability?)
+        ('Магия', attributesAbilityLabel(ability)),
     ];
 
     return AppSurfaceCard(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if ((classData.description ?? '').isNotEmpty) ...[
+          if (description != null && description.trim().isNotEmpty) ...[
             Text(
-              classData.description!,
-              style: theme.textTheme.bodyMedium,
-              textAlign: TextAlign.justify,
+              description,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.start,
             ),
-            const SizedBox(height: 8),
+            if (details.isNotEmpty) const SizedBox(height: 12),
           ],
-          for (final label in labels)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(label, style: theme.textTheme.bodyMedium),
+          for (var index = 0; index < details.length; index++) ...[
+            _ClassProfileDetail(
+              label: details[index].$1,
+              value: details[index].$2,
             ),
+            if (index < details.length - 1) const SizedBox(height: 8),
+          ],
         ],
       ),
     );
   }
 }
 
-String _joinNames(List<dynamic> values) =>
-    values.map((value) => _formatName(_enumToken(value))).join(', ');
+class _ClassProfileDetail extends StatelessWidget {
+  const _ClassProfileDetail({required this.label, required this.value});
 
-String? _hitDieLabel(ClassData classData) {
-  if (classData.hitDieValue != null) {
-    return 'd${classData.hitDieValue}';
-  }
-  return null;
-}
+  final String label;
+  final String value;
 
-String? _spellcastingAbilityLabel(ClassData classData) {
-  if (classData.spellcastingAbilityValue != null) {
-    return _formatName(_enumToken(classData.spellcastingAbilityValue));
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return LayoutBuilder(
+      builder: (context, constraints) => Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width:
+                constraints.maxWidth < 460 ? constraints.maxWidth * 0.46 : 200,
+            child: Text(
+              label,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              value,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colors.onSurface,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
-  return null;
-}
-
-String _enumToken(Object? value) {
-  if (value == null) {
-    return 'unknown';
-  }
-  final raw = value.toString();
-  if (raw.trim().isEmpty) {
-    return 'unknown';
-  }
-  final parts = raw.split('.');
-  return parts.isEmpty ? raw : parts.last;
-}
-
-String _formatName(String value) {
-  final normalized = value.replaceAllMapped(
-    RegExp(r'([a-z])([A-Z])'),
-    (match) => '${match.group(1)} ${match.group(2)}',
-  );
-  return normalized.isEmpty
-      ? normalized
-      : normalized[0].toUpperCase() + normalized.substring(1);
 }

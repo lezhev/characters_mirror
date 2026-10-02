@@ -29,7 +29,7 @@ class UserAvatar extends StatelessWidget {
       child: Material(
         shape: const CircleBorder(),
         clipBehavior: Clip.antiAlias,
-        color: colorScheme.primary.withValues(alpha: 0.16),
+        color: colorScheme.surfaceContainerHigh,
         child: imageUrl == null || imageUrl.isEmpty
             ? fallback
             : Image.network(
@@ -63,7 +63,7 @@ class _UserAvatarFallback extends StatelessWidget {
       child: Text(
         initialsForUser(user),
         style: textTheme.labelLarge?.copyWith(
-          color: colorScheme.primary,
+          color: colorScheme.onSurfaceVariant,
           fontSize: size * 0.38,
         ),
       ),

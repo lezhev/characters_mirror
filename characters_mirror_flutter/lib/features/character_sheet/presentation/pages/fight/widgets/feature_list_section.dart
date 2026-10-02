@@ -41,7 +41,8 @@ class FeatureListSection extends StatelessWidget {
           trailing: IconButton(
             onPressed: onOpenAllAbilities,
             icon: Icon(Icons.tune,
-                size: 20, color: Theme.of(context).colorScheme.primary),
+                size: 20,
+                color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ),
         const SizedBox(height: 12),

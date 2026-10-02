@@ -61,6 +61,8 @@ class BackgroundStep extends HookConsumerWidget {
                 ),
           detailsKey: detailsKey,
           showJumpButton: data.selectedBackground != null,
+          scrollHintSelection:
+              data.selectedBackground?.id ?? data.selectedBackground,
           onJumpToDetails: () => _scrollToDetails(detailsKey),
         );
       },
@@ -259,14 +261,13 @@ class BackgroundTile extends HookConsumerWidget {
                                   ),
                                 ],
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: SvgPicture.asset(
-                                  backgroundIconAssetPath(background.name),
-                                  colorFilter: ColorFilter.mode(
-                                    colorScheme.surfaceContainerLowest,
-                                    BlendMode.srcIn,
-                                  ),
+                              child: SvgPicture.asset(
+                                backgroundIconAssetPath(background.name),
+                                width: 96,
+                                height: 96,
+                                colorFilter: ColorFilter.mode(
+                                  colorScheme.surfaceContainerLowest,
+                                  BlendMode.srcIn,
                                 ),
                               ),
                             ),

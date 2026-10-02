@@ -788,6 +788,21 @@ void main() {
       container.read(characterCreationProvider).character.baseAbilityScores,
       containsPair('strength', 25),
     );
+
+    final serialized = CharacterData.fromJson(
+      container.read(characterCreationProvider).character.toJson(),
+    );
+    final restored = ProviderContainer();
+    addTearDown(restored.dispose);
+    restored
+        .read(characterCreationProvider.notifier)
+        .syncAttributesDraft(serialized.baseAbilityScores!);
+    expect(
+      restored
+          .read(attributeStateProvider)
+          .assignedAttributes[Attribute.strength],
+      25,
+    );
   });
 }
 

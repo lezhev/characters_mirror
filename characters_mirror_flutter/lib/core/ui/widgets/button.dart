@@ -102,15 +102,18 @@ class Button extends HookWidget {
     final bgColor = switch (variant) {
       ButtonVariant.filled => isHovered.value
           ? (color ?? colorScheme.primary)
-          : (color ?? colorScheme.primary).withValues(alpha: 0.92),
+          : (color ?? colorScheme.primary),
+      ButtonVariant.outlined when isHovered.value =>
+        colorScheme.surfaceContainerHigh,
       _ => Colors.transparent,
     };
 
     final border = switch (variant) {
       ButtonVariant.outlined => Border.all(
-          color: isHovered.value
-              ? (color ?? colorScheme.primary)
-              : (color ?? colorScheme.primary).withValues(alpha: 0.7),
+          color: color ??
+              (isHovered.value
+                  ? colorScheme.outline
+                  : colorScheme.outlineVariant),
           width: 1.5,
         ),
       _ => null,
@@ -118,7 +121,8 @@ class Button extends HookWidget {
 
     final txtColor = switch (variant) {
       ButtonVariant.filled => textColor ?? colorScheme.onPrimary,
-      _ => textColor ?? color ?? colorScheme.primary,
+      ButtonVariant.outlined => textColor ?? color ?? colorScheme.onSurface,
+      ButtonVariant.text => textColor ?? color ?? colorScheme.onSurfaceVariant,
     };
 
     return MouseRegion(
@@ -133,7 +137,9 @@ class Button extends HookWidget {
           color: bgColor,
           borderRadius: BorderRadius.circular(8),
           border: border,
-          boxShadow: variant == ButtonVariant.filled && isHovered.value
+          boxShadow: variant == ButtonVariant.filled &&
+                  isHovered.value &&
+                  color != null
               ? [
                   BoxShadow(
                     color:

@@ -8,6 +8,7 @@ import 'package:characters_mirror_flutter/features/character_creation/widgets/cr
 import 'package:characters_mirror_flutter/features/character_creation/widgets/creation_nav_bar.dart';
 import 'package:characters_mirror_flutter/features/character_creation/widgets/jump_to_details_button.dart';
 import 'package:flutter/material.dart' hide Step;
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreationStepScaffold extends ConsumerStatefulWidget {
@@ -22,6 +23,8 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
     this.scrollableBody = true,
     this.floatingActionButton,
     this.scrollHintAction,
+    this.scrollHintTargetKey,
+    this.scrollHintSelection,
     this.contentPadding =
         const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
   });
@@ -35,6 +38,8 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
   final bool scrollableBody;
   final Widget? floatingActionButton;
   final VoidCallback? scrollHintAction;
+  final GlobalKey? scrollHintTargetKey;
+  final Object? scrollHintSelection;
   final EdgeInsetsGeometry contentPadding;
 
   @override
@@ -45,6 +50,7 @@ class CreationStepScaffold extends ConsumerStatefulWidget {
 class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
   late final ScrollController _bodyScrollController;
   bool _showScrollHint = false;
+  bool _scrollHintDismissed = false;
   Offset? _swipeStart;
   bool _lockedCurrentSwipe = false;
 
@@ -63,6 +69,15 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(covariant CreationStepScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.scrollHintSelection != oldWidget.scrollHintSelection) {
+      _scrollHintDismissed = false;
+      _showScrollHint = false;
+    }
+  }
+
   void _scheduleScrollHintUpdate() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _updateScrollHintVisibility();
@@ -70,15 +85,36 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
   }
 
   void _updateScrollHintVisibility() {
-    final shouldShow = widget.scrollHintAction != null &&
+    if (!mounted) return;
+    var shouldShow = false;
+    if (widget.scrollHintAction != null &&
+        widget.scrollHintSelection != null &&
         widget.scrollableBody &&
-        _bodyScrollController.hasClients &&
-        _bodyScrollController.position.hasContentDimensions &&
-        _bodyScrollController.position.maxScrollExtent -
-                _bodyScrollController.position.pixels >
-            64;
-    if (_showScrollHint == shouldShow || !mounted) return;
+        _bodyScrollController.hasClients) {
+      final target =
+          widget.scrollHintTargetKey?.currentContext?.findRenderObject();
+      if (target is RenderBox && target.attached && target.hasSize) {
+        final viewport = RenderAbstractViewport.maybeOf(target);
+        if (viewport case RenderBox viewportBox when viewportBox.hasSize) {
+          final targetTop =
+              target.localToGlobal(Offset.zero, ancestor: viewportBox).dy;
+          if (targetTop <= viewportBox.size.height / 2) {
+            _scrollHintDismissed = true;
+          }
+          shouldShow = !_scrollHintDismissed;
+        }
+      }
+    }
+    if (_showScrollHint == shouldShow) return;
     setState(() => _showScrollHint = shouldShow);
+  }
+
+  void _onScrollHintPressed() {
+    setState(() {
+      _scrollHintDismissed = true;
+      _showScrollHint = false;
+    });
+    widget.scrollHintAction?.call();
   }
 
   @override
@@ -219,7 +255,7 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
         floatingActionButton: widget.scrollHintAction == null
             ? widget.floatingActionButton
             : JumpToDetailsButton(
-                onPressed: widget.scrollHintAction!,
+                onPressed: _onScrollHintPressed,
                 isVisible: _showScrollHint,
               ),
         floatingActionButtonLocation: widget.scrollHintAction == null

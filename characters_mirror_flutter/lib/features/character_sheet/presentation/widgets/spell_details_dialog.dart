@@ -171,7 +171,7 @@ class SpellMetadataItem extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        customIcon ?? Icon(icon, size: 16, color: colorScheme.primary),
+        customIcon ?? Icon(icon, size: 16, color: colorScheme.onSurfaceVariant),
         if (showLabel) ...[
           const SizedBox(width: 6),
           Text(
@@ -247,7 +247,7 @@ class RitualIcon extends StatelessWidget {
     return CustomPaint(
       size: const Size.square(16),
       painter: _RitualIconPainter(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
       ),
     );
   }

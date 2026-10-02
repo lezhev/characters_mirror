@@ -103,7 +103,7 @@ class RollOrDragBox extends HookConsumerWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).colorScheme.outlineVariant,
           width: 1,
         ),
       ),

@@ -31,7 +31,7 @@ class CharacterTileMenuButton extends StatelessWidget {
             height: 18,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: colorScheme.primary,
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ),

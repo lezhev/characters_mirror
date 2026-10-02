@@ -11,6 +11,69 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppGameColors gameColors) {
     scaffoldBackgroundColor: colorScheme.surface,
     textTheme: _buildTextTheme(colorScheme),
     extensions: [gameColors],
+    cardTheme: CardThemeData(
+      color: colorScheme.surfaceContainerLow,
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
+    ),
+    dividerTheme: DividerThemeData(
+      color: colorScheme.outlineVariant,
+      thickness: 1,
+      space: 1,
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: colorScheme.surfaceContainerLow,
+      indicatorColor: colorScheme.primaryContainer,
+      surfaceTintColor: Colors.transparent,
+      labelTextStyle: WidgetStateProperty.resolveWith((states) => TextStyle(
+            color: states.contains(WidgetState.selected)
+                ? colorScheme.onSurface
+                : colorScheme.onSurfaceVariant,
+          )),
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: colorScheme.onSurfaceVariant,
+        hoverColor: colorScheme.surfaceContainerHigh,
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: colorScheme.onSurfaceVariant,
+        overlayColor: colorScheme.surfaceContainerHigh.withValues(alpha: 0.36),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: colorScheme.onSurface,
+        side: BorderSide(color: colorScheme.outlineVariant),
+        overlayColor: colorScheme.surfaceContainerHigh.withValues(alpha: 0.36),
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.outlineVariant),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.primary),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.error),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.error),
+      ),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: colorScheme.surfaceContainerHighest,
+      surfaceTintColor: Colors.transparent,
+    ),
   );
 }
 
@@ -76,23 +139,23 @@ final darkColorScheme = ColorScheme(
   surface: Color(0xFF0F0F12),
   onSurface: Color(0xFFF0E6D2),
   onSurfaceVariant: Color(0xFFC7BBAA),
-  surfaceDim: Color(0xFF0A0A06),
-  surfaceBright: Color(0xFF1C1A16),
-  surfaceContainerLowest: Color(0xFF0B0B0B),
-  surfaceContainerLow: Color(0xFF111111),
-  surfaceContainer: Color(0xFF131313),
-  surfaceContainerHigh: Color(0xFF161618),
-  surfaceContainerHighest: Color(0xFF1A1A1F),
+  surfaceDim: Color(0xFF0B0B0D),
+  surfaceBright: Color(0xFF28282F),
+  surfaceContainerLowest: Color(0xFF0B0B0C),
+  surfaceContainerLow: Color(0xFF141413),
+  surfaceContainer: Color(0xFF191817),
+  surfaceContainerHigh: Color(0xFF1F1D1B),
+  surfaceContainerHighest: Color(0xFF27231F),
 
   primary: Color(0xFFD4A568),
   onPrimary: Color(0xFF16100A),
-  primaryContainer: Color(0xFF3A2A17),
-  onPrimaryContainer: Color(0xFFF7D9A8),
+  primaryContainer: Color(0xFF2E2922),
+  onPrimaryContainer: Color(0xFFF0E2CF),
 
   secondary: Color(0xFFB7A18B),
   onSecondary: Color(0xFF16100A),
-  secondaryContainer: Color(0xFF2B2520),
-  onSecondaryContainer: Color(0xFFE8DCC4),
+  secondaryContainer: Color(0xFF292A24),
+  onSecondaryContainer: Color(0xFFE5DFD2),
 
   tertiary: Color(0xFFD05A66),
   onTertiary: Color(0xFF160607),
@@ -100,14 +163,14 @@ final darkColorScheme = ColorScheme(
   onTertiaryContainer: Color(0xFFFFDADD),
 
   // Ошибки / destructive
-  error: Color(0xFFB83241),
-  onError: Color(0xFFF0E6D2),
+  error: Color(0xFFE06A75),
+  onError: Color(0xFF16100A),
   errorContainer: Color(0xFF93000A),
   onErrorContainer: Color(0xFFFFDAD6),
 
   // Контуры и вспомогательные
-  outline: Color(0x33D4A568),
-  outlineVariant: Color(0xFF958D7A),
+  outline: Color(0xFF5A544C),
+  outlineVariant: Color(0xFF34312D),
   inverseSurface: Color(0xFFF0E6D2),
   onInverseSurface: Color(0xFF0F0F12),
   inversePrimary: Color(0xFF8A5A24),
@@ -169,35 +232,35 @@ TextTheme _buildTextTheme(ColorScheme colorScheme) {
   return TextTheme(
     // Display styles - крупнейший текст
     displayLarge: TextStyle(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
       fontSize: 57,
       fontWeight: FontWeight.w400,
       letterSpacing: -0.25,
     ),
     displayMedium: TextStyle(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
       fontSize: 45,
       fontWeight: FontWeight.w400,
     ),
     displaySmall: TextStyle(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
       fontSize: 36,
       fontWeight: FontWeight.w400,
     ),
 
     // Headline styles - крупные заголовки
     headlineLarge: TextStyle(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
       fontSize: 32,
       fontWeight: FontWeight.w400,
     ),
     headlineMedium: TextStyle(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
       fontSize: 28,
       fontWeight: FontWeight.w400,
     ),
     headlineSmall: TextStyle(
-      color: colorScheme.primary,
+      color: colorScheme.onSurface,
       fontSize: 24,
       fontWeight: FontWeight.w400,
     ),

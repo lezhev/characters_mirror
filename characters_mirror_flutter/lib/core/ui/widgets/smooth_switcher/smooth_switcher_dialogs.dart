@@ -42,6 +42,9 @@ class _SmoothSwitcherEditDialogState extends State<_SmoothSwitcherEditDialog> {
             children: [
               TextFormField(
                 initialValue: _titleValue,
+                inputFormatters: [
+                  textLengthFormatter(AppInputLimits.shortText)
+                ],
                 decoration: InputDecoration(
                   labelText: editConfig.titleFieldLabel,
                 ),
@@ -52,6 +55,7 @@ class _SmoothSwitcherEditDialogState extends State<_SmoothSwitcherEditDialog> {
               const SizedBox(height: 12),
               TextFormField(
                 initialValue: _textValue,
+                inputFormatters: [textLengthFormatter(AppInputLimits.longText)],
                 decoration: InputDecoration(
                   labelText: editConfig.textFieldLabel,
                 ),
@@ -182,6 +186,9 @@ class _SmoothSwitcherAbilityDialogState
             children: [
               TextFormField(
                 initialValue: _titleValue,
+                inputFormatters: [
+                  textLengthFormatter(AppInputLimits.shortText)
+                ],
                 decoration: InputDecoration(
                   labelText: abilityConfig.titleFieldLabel,
                 ),
@@ -192,6 +199,7 @@ class _SmoothSwitcherAbilityDialogState
               const SizedBox(height: 12),
               TextFormField(
                 initialValue: _textValue,
+                inputFormatters: [textLengthFormatter(AppInputLimits.longText)],
                 decoration: InputDecoration(
                   labelText: abilityConfig.textFieldLabel,
                 ),

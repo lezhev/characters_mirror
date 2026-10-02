@@ -485,7 +485,7 @@ class _ChoiceCardList extends StatelessWidget {
   }
 }
 
-class _AdaptiveOrChoicePair extends StatelessWidget {
+class _AdaptiveOrChoicePair extends StatefulWidget {
   const _AdaptiveOrChoicePair({
     required this.first,
     required this.second,
@@ -495,6 +495,13 @@ class _AdaptiveOrChoicePair extends StatelessWidget {
   final CreationChoiceSelectorItem first;
   final CreationChoiceSelectorItem second;
   final bool Function(CreationChoiceSelectorItem item) isCardEnabled;
+
+  @override
+  State<_AdaptiveOrChoicePair> createState() => _AdaptiveOrChoicePairState();
+}
+
+class _AdaptiveOrChoicePairState extends State<_AdaptiveOrChoicePair> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -510,15 +517,15 @@ class _AdaptiveOrChoicePair extends StatelessWidget {
               children: [
                 Expanded(
                   child: _SelectorChoiceCard(
-                    item: first,
-                    enabled: isCardEnabled(first),
+                    item: widget.first,
+                    enabled: widget.isCardEnabled(widget.first),
                   ),
                 ),
                 const Gap(gap),
                 Expanded(
                   child: _SelectorChoiceCard(
-                    item: second,
-                    enabled: isCardEnabled(second),
+                    item: widget.second,
+                    enabled: widget.isCardEnabled(widget.second),
                   ),
                 ),
               ],
@@ -526,27 +533,31 @@ class _AdaptiveOrChoicePair extends StatelessWidget {
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _SelectorChoiceCard(
-                    item: first,
-                    enabled: isCardEnabled(first),
-                  ),
-                  const Gap(gap),
-                  _SelectorChoiceCard(
-                    item: second,
-                    enabled: isCardEnabled(second),
-                  ),
-                ],
-              ),
-              const IgnorePointer(child: _OrPill()),
-            ],
+        return MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _SelectorChoiceCard(
+                      item: widget.first,
+                      enabled: widget.isCardEnabled(widget.first),
+                    ),
+                    const Gap(gap),
+                    _SelectorChoiceCard(
+                      item: widget.second,
+                      enabled: widget.isCardEnabled(widget.second),
+                    ),
+                  ],
+                ),
+                IgnorePointer(child: _OrPill(isHovered: _isHovered)),
+              ],
+            ),
           ),
         );
       },
@@ -555,14 +566,16 @@ class _AdaptiveOrChoicePair extends StatelessWidget {
 }
 
 class _OrPill extends StatelessWidget {
-  const _OrPill();
+  const _OrPill({this.isHovered = false});
+
+  final bool isHovered;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: isHovered ? null : colorScheme.surface,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Padding(

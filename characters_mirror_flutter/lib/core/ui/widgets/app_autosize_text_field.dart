@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 
 class AppAutosizeTextField extends StatelessWidget {
   const AppAutosizeTextField({
@@ -8,6 +9,7 @@ class AppAutosizeTextField extends StatelessWidget {
     this.focusNode,
     this.minLines = 3,
     this.onChanged,
+    this.maxRunes,
   });
 
   final String label;
@@ -15,6 +17,7 @@ class AppAutosizeTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final int minLines;
   final ValueChanged<String>? onChanged;
+  final int? maxRunes;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,8 @@ class AppAutosizeTextField extends StatelessWidget {
       maxLines: null,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.newline,
+      inputFormatters:
+          maxRunes == null ? null : [textLengthFormatter(maxRunes!)],
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,

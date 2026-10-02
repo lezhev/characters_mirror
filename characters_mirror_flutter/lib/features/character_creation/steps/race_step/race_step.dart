@@ -49,6 +49,7 @@ class RaceStep extends HookConsumerWidget {
                 ),
           detailsKey: detailsKey,
           showJumpButton: data.selectedRace != null,
+          scrollHintSelection: data.selectedRace?.id ?? data.selectedRace,
           onJumpToDetails: () => _scrollToDetails(detailsKey),
         );
       },

@@ -35,9 +35,7 @@ class SummaryStep extends HookConsumerWidget {
       onBack: () =>
           ref.read(characterCreationProvider.notifier).prevStep(context),
       onStepTap: (target) async {
-        ref
-            .read(characterCreationProvider.notifier)
-            .editStepFromSummary(context, target);
+        ref.read(characterCreationProvider.notifier).goToStep(context, target);
       },
       onPressedNext: () {
         _finishCreation(
@@ -51,7 +49,7 @@ class SummaryStep extends HookConsumerWidget {
         data: data,
         onEdit: (target) => ref
             .read(characterCreationProvider.notifier)
-            .editStepFromSummary(context, target),
+            .goToStep(context, target),
         onPortraitTap: () => ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Выбор портрета скоро появится.')),
         ),

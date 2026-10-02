@@ -35,7 +35,7 @@ class PurchaceColumn extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                          color: Theme.of(context).colorScheme.secondary),
+                          color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     alignment: Alignment.center,
                     child: Text(
