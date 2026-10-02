@@ -1,21 +1,21 @@
-import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class CharacterSheetAppBar extends StatelessWidget {
   const CharacterSheetAppBar({
     required this.characterName,
+    required this.hasActiveStatus,
     required this.onBackPressed,
-    required this.onRestSelected,
+    required this.onQuickActionsPressed,
     required this.onSettingsPressed,
     required this.onMenuPressed,
     super.key,
   });
 
   final String characterName;
+  final bool hasActiveStatus;
   final VoidCallback onBackPressed;
-  final ValueChanged<RestType> onRestSelected;
+  final VoidCallback onQuickActionsPressed;
   final VoidCallback onSettingsPressed;
   final VoidCallback onMenuPressed;
 
@@ -47,15 +47,15 @@ class CharacterSheetAppBar extends StatelessWidget {
                     style: theme.textTheme.titleLarge,
                   ),
                 ),
-                RestActionButton(
-                  iconPath: 'assets/svg/rest/longRest.svg',
-                  tooltip: 'Долгий отдых',
-                  onPressed: () => onRestSelected(RestType.longRest),
-                ),
-                RestActionButton(
-                  iconPath: 'assets/svg/rest/shortRest.svg',
-                  tooltip: 'Короткий отдых',
-                  onPressed: () => onRestSelected(RestType.shortRest),
+                IconButton(
+                  key: const ValueKey('quick-actions-button'),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  tooltip: 'Быстрые действия',
+                  onPressed: onQuickActionsPressed,
+                  color: hasActiveStatus
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
+                  icon: const Icon(Icons.bolt_outlined),
                 ),
                 SheetAppBarAction(
                   icon: Icons.settings,
@@ -72,49 +72,6 @@ class CharacterSheetAppBar extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class RestActionButton extends StatelessWidget {
-  const RestActionButton({
-    required this.iconPath,
-    required this.onPressed,
-    this.tooltip,
-    super.key,
-  });
-
-  final String iconPath;
-  final VoidCallback onPressed;
-  final String? tooltip;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      tooltip: tooltip,
-      onPressed: onPressed,
-      icon: _RestIcon(iconPath),
-    );
-  }
-}
-
-class _RestIcon extends StatelessWidget {
-  const _RestIcon(this.assetPath);
-
-  final String assetPath;
-
-  @override
-  Widget build(BuildContext context) {
-    final iconColor = IconTheme.of(context).color;
-
-    return SvgPicture.asset(
-      assetPath,
-      width: 28,
-      height: 28,
-      colorFilter: iconColor == null
-          ? null
-          : ColorFilter.mode(iconColor, BlendMode.srcIn),
     );
   }
 }

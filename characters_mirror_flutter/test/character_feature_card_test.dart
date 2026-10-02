@@ -23,6 +23,7 @@ void main() {
         onSetResource: (current) async => updates.add(current),
       );
 
+      expect(find.byType(Card), findsNothing);
       expect(find.text('2/3'), findsOneWidget);
       expect(find.text('Использования'), findsNothing);
       expect(find.text('Короткий отдых'), findsNothing);
@@ -156,8 +157,14 @@ void main() {
       await tester.tap(find.byIcon(Icons.expand_more));
       await tester.pumpAndSettle();
 
-      expect(find.text('Лечение'), findsOneWidget);
-      expect(find.text('1к10 + 5'), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is RichText &&
+              widget.text.toPlainText().contains('Лечение: 1к10 + 5'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders persisted choices in the expanded card',

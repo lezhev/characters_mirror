@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/character_proficiency_labels.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import 'package:flutter/material.dart';
 
 class CharacterProficiencySummary extends StatelessWidget {
@@ -55,38 +56,41 @@ class CharacterProficiencySummary extends StatelessWidget {
       ),
     ].where((section) => section.$2.isNotEmpty).toList();
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
+    final theme = Theme.of(context);
+
+    return SheetOutlineCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Владения персонажа',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    if (sections.isEmpty)
-                      Text('Пока ничего не добавлено.',
-                          style: Theme.of(context).textTheme.bodyMedium)
-                    else
-                      for (final (label, values) in sections)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text('$label: ${values.join(', ')}'),
-                        ),
-                  ],
+                child: Text(
+                  'Владения персонажа',
+                  style: theme.textTheme.titleMedium,
                 ),
               ),
-              Icon(Icons.chevron_right,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(
+                Icons.chevron_right,
+                size: 24,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ],
           ),
-        ),
+          const SizedBox(height: 8),
+          if (sections.isEmpty)
+            Text('Пока ничего не добавлено.', style: theme.textTheme.bodyMedium)
+          else
+            for (var index = 0; index < sections.length; index++) ...[
+              if (index > 0) const Divider(height: 12),
+              _ProficiencyRow(
+                label: sections[index].$1,
+                value: sections[index].$2.join(', '),
+              ),
+            ],
+        ],
       ),
     );
   }
@@ -97,5 +101,39 @@ class CharacterProficiencySummary extends StatelessWidget {
       for (final value in values)
         if (value.trim().isNotEmpty && seen.add(value.toLowerCase())) value,
     ];
+  }
+}
+
+class _ProficiencyRow extends StatelessWidget {
+  const _ProficiencyRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 92,
+            child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(value, style: theme.textTheme.bodyMedium),
+          ),
+        ],
+      ),
+    );
   }
 }

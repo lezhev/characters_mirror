@@ -29,12 +29,12 @@ void main() {
       ),
     );
 
-    expect(find.textContaining('Языки:'), findsOneWidget);
+    expect(find.text('Языки'), findsOneWidget);
     expect(find.textContaining('Дварфийский'), findsOneWidget);
     expect(find.textContaining('River speech'), findsOneWidget);
     expect(find.text('battleaxe'), findsNothing);
     expect(find.textContaining('Battleaxe'), findsOneWidget);
-    expect(find.textContaining('Инструменты:'), findsNothing);
+    expect(find.text('Инструменты'), findsNothing);
   });
 
   testWidgets('empty summary does not show empty categories', (tester) async {
@@ -52,7 +52,7 @@ void main() {
     );
 
     expect(find.text('Пока ничего не добавлено.'), findsOneWidget);
-    expect(find.textContaining('Языки:'), findsNothing);
-    expect(find.textContaining('Инструменты:'), findsNothing);
+    expect(find.text('Языки'), findsNothing);
+    expect(find.text('Инструменты'), findsNothing);
   });
 }
