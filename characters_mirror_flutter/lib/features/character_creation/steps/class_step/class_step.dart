@@ -60,6 +60,7 @@ class ClassStep extends HookConsumerWidget {
                 ),
           detailsKey: detailsKey,
           showJumpButton: data.selectedClass != null,
+          scrollHintSelection: data.selectedClass?.id ?? data.selectedClass,
           onJumpToDetails: () => _scrollToDetails(detailsKey),
         );
       },

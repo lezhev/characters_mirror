@@ -83,6 +83,7 @@ flutter:
   assets:
     - assets/images/
     - assets/svg/
+    - assets/svg/logo/
     - assets/svg/feature_tags/
     - assets/svg/races/
     - assets/svg/classes/

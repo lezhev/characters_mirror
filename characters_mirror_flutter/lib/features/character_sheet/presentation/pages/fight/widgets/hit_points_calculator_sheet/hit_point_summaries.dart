@@ -26,7 +26,7 @@ class _HitPointSummary extends StatelessWidget {
           child: _SummaryValue(
             label: 'Максимум',
             value: '${totals.maxHp}',
-            color: colorScheme.primary,
+            color: colorScheme.onSurface,
           ),
         ),
         Expanded(

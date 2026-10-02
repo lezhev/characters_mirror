@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
+
 class AppFreeSoloOption<T> {
   const AppFreeSoloOption({
     required this.value,
@@ -95,8 +98,7 @@ class _AppFreeSoloAutocompleteState<T>
     ];
     final matches = [
       for (final option in available)
-        if (_normalized(option.label).contains(query))
-          option,
+        if (_normalized(option.label).contains(query)) option,
     ];
     matches.sort((left, right) {
       final leftLabel = _normalized(left.label);
@@ -108,9 +110,8 @@ class _AppFreeSoloAutocompleteState<T>
     });
     _suggestions = matches.take(8).toList();
 
-    final bestLabel = _suggestions.isEmpty
-        ? ''
-        : _suggestions.first.label.trim();
+    final bestLabel =
+        _suggestions.isEmpty ? '' : _suggestions.first.label.trim();
     _controller.ghostSuffix = bestLabel.toLowerCase().startsWith(query) &&
             bestLabel.length > query.length
         ? bestLabel.substring(query.length)
@@ -120,8 +121,9 @@ class _AppFreeSoloAutocompleteState<T>
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
 
-    final hasSuggestions =
-        _focusNode.hasFocus && !_suggestionsDismissed && _suggestions.isNotEmpty;
+    final hasSuggestions = _focusNode.hasFocus &&
+        !_suggestionsDismissed &&
+        _suggestions.isNotEmpty;
     if (event.logicalKey == LogicalKeyboardKey.tab &&
         _controller.ghostSuffix.isNotEmpty) {
       _acceptGhostCompletion();
@@ -184,9 +186,7 @@ class _AppFreeSoloAutocompleteState<T>
     }
 
     final exact = widget.options.where(
-      (option) =>
-          _normalized(option.label) ==
-          _normalized(normalizedValue),
+      (option) => _normalized(option.label) == _normalized(normalizedValue),
     );
     final exactMatch = exact.firstOrNull;
     if (exactMatch != null) {
@@ -239,7 +239,7 @@ class _AppFreeSoloAutocompleteState<T>
           controller: _controller,
           focusNode: _focusNode,
           textInputAction: TextInputAction.done,
-          maxLength: 120,
+          inputFormatters: [textLengthFormatter(AppInputLimits.shortText)],
           onChanged: _handleTextChanged,
           onSubmitted: (_) => _submit(),
           decoration: InputDecoration(

@@ -27,16 +27,18 @@ class AppSurfaceCard extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: backgroundColor ?? colorScheme.surface,
+          color: backgroundColor ?? colorScheme.surfaceContainerLow,
           borderRadius: borderRadius,
           border: border,
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.shadow.withValues(alpha: 0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: colorScheme.brightness == Brightness.dark
+              ? const []
+              : [
+                  BoxShadow(
+                    color: colorScheme.shadow.withValues(alpha: 0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
         ),
         child: Padding(
           padding: padding,

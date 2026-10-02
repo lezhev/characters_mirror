@@ -22,6 +22,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   bool _isLoading = false;
   bool _showValidation = false;
   bool _rememberMe = true;
+  bool _passwordVisible = false;
+  bool _confirmPasswordVisible = false;
   String? _feedbackMessage;
   bool _isError = false;
 
@@ -72,137 +74,163 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return AuthScaffold(
-      title: 'Новый аккаунт без лишних ритуалов',
-      subtitle:
-          'Создайте профиль, сразу попадите в приложение и продолжайте работу с персонажами.',
-      child: AuthCard(
-        title: 'Регистрация',
-        description:
-            'Укажите имя, email и пароль. После успешного создания аккаунта мы авторизуем вас автоматически.',
-        footer: Align(
-          alignment: Alignment.center,
-          child: TextButton(
-            onPressed: _isLoading ? null : () => context.push('/sign-in'),
-            child: const Text('Уже есть аккаунт? Войти'),
+      title: 'Создать аккаунт',
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FilledButton(
+            onPressed: _isLoading ? null : _submit,
+            child: _isLoading
+                ? const SizedBox(
+                    height: 18,
+                    width: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('Создать аккаунт'),
           ),
-        ),
-        child: Form(
-          key: _formKey,
-          autovalidateMode: _showValidation
-              ? AutovalidateMode.onUserInteraction
-              : AutovalidateMode.disabled,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_feedbackMessage != null) ...[
-                AuthInlineMessage(
-                  message: _feedbackMessage!,
-                  isError: _isError,
-                ),
-                const SizedBox(height: 16),
-              ],
-              TextFormField(
-                controller: _userNameController,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Имя пользователя',
-                  hintText: 'Melifaro',
-                ),
-                validator: (value) {
-                  if ((value ?? '').trim().isEmpty) {
-                    return 'Введите имя пользователя.';
-                  }
-                  return null;
-                },
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.center,
+            child: TextButton(
+              onPressed: _isLoading ? null : () => context.push('/sign-in'),
+              child: const Text('Уже есть аккаунт? Войти'),
+            ),
+          ),
+        ],
+      ),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: _showValidation
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (_feedbackMessage != null) ...[
+              AuthInlineMessage(
+                message: _feedbackMessage!,
+                isError: _isError,
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'wizard@toril.dev',
-                ),
-                validator: (value) {
-                  final email = value?.trim() ?? '';
-                  if (email.isEmpty) {
-                    return 'Введите email.';
-                  }
-                  if (!EmailValidator.validate(email)) {
-                    return 'Введите корректный email.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(
-                  labelText: 'Пароль',
-                  hintText: 'Не менее 8 символов',
-                ),
-                validator: (value) {
-                  final password = value ?? '';
-                  if (password.isEmpty) {
-                    return 'Введите пароль.';
-                  }
-                  if (password.length < 8) {
-                    return 'Пароль должен быть не короче 8 символов.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _confirmPasswordController,
-                obscureText: true,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) => _submit(),
-                decoration: const InputDecoration(
-                  labelText: 'Подтвердите пароль',
-                  hintText: 'Повторите пароль',
-                ),
-                validator: (value) {
-                  if ((value ?? '').isEmpty) {
-                    return 'Повторите пароль.';
-                  }
-                  if (value != _passwordController.text) {
-                    return 'Пароли не совпадают.';
-                  }
-                  return null;
-                },
-              ),
-              CheckboxListTile(
-                value: _rememberMe,
-                contentPadding: EdgeInsets.zero,
-                controlAffinity: ListTileControlAffinity.leading,
-                title: const Text('Запомнить меня'),
-                onChanged: _isLoading
-                    ? null
-                    : (value) {
-                        if (value == null) {
-                          return;
-                        }
-
-                        setState(() => _rememberMe = value);
-                      },
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: _isLoading ? null : _submit,
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Создать аккаунт'),
-              ),
             ],
-          ),
+            TextFormField(
+              controller: _userNameController,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: 'Имя пользователя',
+                hintText: 'Melifaro',
+              ),
+              validator: (value) {
+                if ((value ?? '').trim().isEmpty) {
+                  return 'Введите имя пользователя.';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                hintText: 'wizard@toril.dev',
+              ),
+              validator: (value) {
+                final email = value?.trim() ?? '';
+                if (email.isEmpty) {
+                  return 'Введите email.';
+                }
+                if (!EmailValidator.validate(email)) {
+                  return 'Введите корректный email.';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _passwordController,
+              obscureText: !_passwordVisible,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                labelText: 'Пароль',
+                hintText: 'Не менее 8 символов',
+              ).copyWith(
+                suffixIcon: IconButton(
+                  tooltip:
+                      _passwordVisible ? 'Скрыть пароль' : 'Показать пароль',
+                  onPressed: () => setState(
+                    () => _passwordVisible = !_passwordVisible,
+                  ),
+                  icon: Icon(
+                    _passwordVisible
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                  ),
+                ),
+              ),
+              validator: (value) {
+                final password = value ?? '';
+                if (password.isEmpty) {
+                  return 'Введите пароль.';
+                }
+                if (password.length < 8) {
+                  return 'Пароль должен быть не короче 8 символов.';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _confirmPasswordController,
+              obscureText: !_confirmPasswordVisible,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => _submit(),
+              decoration: const InputDecoration(
+                labelText: 'Подтвердите пароль',
+                hintText: 'Повторите пароль',
+              ).copyWith(
+                suffixIcon: IconButton(
+                  tooltip: _confirmPasswordVisible
+                      ? 'Скрыть пароль'
+                      : 'Показать пароль',
+                  onPressed: () => setState(
+                    () => _confirmPasswordVisible = !_confirmPasswordVisible,
+                  ),
+                  icon: Icon(
+                    _confirmPasswordVisible
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                  ),
+                ),
+              ),
+              validator: (value) {
+                if ((value ?? '').isEmpty) {
+                  return 'Повторите пароль.';
+                }
+                if (value != _passwordController.text) {
+                  return 'Пароли не совпадают.';
+                }
+                return null;
+              },
+            ),
+            CheckboxListTile(
+              value: _rememberMe,
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              title: const Text('Запомнить меня'),
+              onChanged: _isLoading
+                  ? null
+                  : (value) {
+                      if (value == null) {
+                        return;
+                      }
+
+                      setState(() => _rememberMe = value);
+                    },
+            ),
+          ],
         ),
       ),
     );

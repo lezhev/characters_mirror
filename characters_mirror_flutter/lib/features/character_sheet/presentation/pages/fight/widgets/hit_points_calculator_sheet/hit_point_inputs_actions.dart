@@ -62,9 +62,7 @@ class _AutosaveNumberFieldState extends State<_AutosaveNumberField> {
       enabled: widget.enabled,
       keyboardType: TextInputType.numberWithOptions(signed: widget.signed),
       inputFormatters: [
-        FilteringTextInputFormatter.allow(
-          widget.signed ? RegExp(r'^-?\d*$') : RegExp(r'^\d*$'),
-        ),
+        if (widget.signed) boundedIntFormatter() else nonNegativeIntFormatter(),
       ],
       decoration: InputDecoration(
         labelText: widget.label,

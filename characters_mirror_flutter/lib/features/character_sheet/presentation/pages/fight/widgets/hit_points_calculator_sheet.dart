@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/hit_points_calculator.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
@@ -125,10 +127,14 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
                 _HitPointSummary(totals: _totals),
               const SizedBox(height: 12),
               TextField(
+                key: const ValueKey('hit_point_expression_field'),
                 controller: _controller,
                 textAlign: TextAlign.right,
                 keyboardType: TextInputType.number,
-                inputFormatters: const [_HitPointExpressionFormatter()],
+                inputFormatters: [
+                  const _HitPointExpressionFormatter(),
+                  textLengthFormatter(AppInputLimits.hitPointExpressionLength),
+                ],
                 decoration: InputDecoration(
                   labelText: 'Значение',
                   border: const OutlineInputBorder(),
@@ -204,19 +210,23 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
 
   void _appendInput(String value) {
     final currentText = _controller.text;
+    late final String nextText;
     if (value == '+' || value == '-') {
       if (currentText.isEmpty) {
         return;
       }
       if (currentText.endsWith('+') || currentText.endsWith('-')) {
-        _controller.text =
-            '${currentText.substring(0, currentText.length - 1)}$value';
+        nextText = '${currentText.substring(0, currentText.length - 1)}$value';
       } else {
-        _controller.text = '$currentText$value';
+        nextText = '$currentText$value';
       }
     } else {
-      _controller.text = '$currentText$value';
+      nextText = '$currentText$value';
     }
+    if (nextText.runes.length > AppInputLimits.hitPointExpressionLength) {
+      return;
+    }
+    _controller.text = nextText;
     _controller.selection = TextSelection.collapsed(
       offset: _controller.text.length,
     );
@@ -235,16 +245,19 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
 
   Future<void> _applyAndSave(HitPointAction action) async {
     final value = evaluateHitPointExpression(_controller.text);
-    if (value == null || value <= 0) {
+    if (value == null || value <= BigInt.zero) {
       return;
     }
+    final maxAmount = BigInt.from(AppInputLimits.hitPointActionMax);
+    final amount =
+        value > maxAmount ? AppInputLimits.hitPointActionMax : value.toInt();
 
     final previousTotals = _totals;
     final previousSuccesses = _deathSaveSuccesses;
     final previousFailures = _deathSaveFailures;
     final nextTotals = applyHitPointChange(
       totals: _totals,
-      value: value,
+      value: amount,
       action: action,
     );
 
@@ -259,7 +272,7 @@ class _HitPointsCalculatorSheetState extends State<HitPointsCalculatorSheet> {
     try {
       await widget.onApplyAction(
         action: action,
-        amount: value,
+        amount: amount,
       );
       _controller.clear();
     } catch (error) {

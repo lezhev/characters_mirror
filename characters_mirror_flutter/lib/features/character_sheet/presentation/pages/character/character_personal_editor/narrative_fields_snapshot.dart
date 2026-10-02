@@ -24,6 +24,7 @@ class _NarrativeTextField extends StatelessWidget {
         controller: controller,
         focusNode: focusNode,
         minLines: 3,
+        maxRunes: AppInputLimits.longText,
         onChanged: onChanged,
       ),
     );

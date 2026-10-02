@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/damage_type_picker_dialog.dart';
@@ -133,6 +135,9 @@ class _AttackDialogState extends State<AttackDialog> {
             children: [
               TextFormField(
                 controller: _nameController,
+                inputFormatters: [
+                  textLengthFormatter(AppInputLimits.shortText)
+                ],
                 decoration: const InputDecoration(
                   labelText: 'Название',
                 ),
@@ -162,10 +167,12 @@ class _AttackDialogState extends State<AttackDialog> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _bonusController,
+                inputFormatters: [boundedIntFormatter()],
                 decoration: const InputDecoration(
                   labelText: 'Доп. модификатор ',
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType:
+                    const TextInputType.numberWithOptions(signed: true),
                 onChanged: (_) => _queueSave(),
               ),
               const SizedBox(height: 12),
@@ -200,6 +207,9 @@ class _AttackDialogState extends State<AttackDialog> {
                   Expanded(
                     child: TextFormField(
                       controller: _tagController,
+                      inputFormatters: [
+                        textLengthFormatter(AppInputLimits.shortText),
+                      ],
                       decoration: const InputDecoration(
                         labelText: 'Добавить тег',
                         hintText: 'Например, фехтовальное',
@@ -238,6 +248,7 @@ class _AttackDialogState extends State<AttackDialog> {
                 label: 'Описание',
                 controller: _descriptionController,
                 minLines: 3,
+                maxRunes: AppInputLimits.mediumText,
                 onChanged: (_) => _queueSave(),
               ),
             ],
@@ -349,6 +360,7 @@ class _AttackDialogState extends State<AttackDialog> {
           flex: 3,
           child: TextFormField(
             controller: part.formulaController,
+            inputFormatters: [textLengthFormatter(AppInputLimits.shortText)],
             decoration: const InputDecoration(
               labelText: 'Формула',
               hintText: 'Например, 1d8 + 3',

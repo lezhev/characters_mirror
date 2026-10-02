@@ -60,7 +60,21 @@ void _registerHitPointsCalculatorTests() {
       expect(evaluateHitPointExpression(''), isNull);
       expect(evaluateHitPointExpression('4+'), isNull);
       expect(evaluateHitPointExpression('-4'), isNull);
-      expect(evaluateHitPointExpression('10-4+2'), 8);
+      expect(evaluateHitPointExpression('10-4+2'), BigInt.from(8));
+    });
+
+    test('HP expressions calculate values beyond the applied amount range', () {
+      expect(evaluateHitPointExpression('50000'), BigInt.from(50000));
+      expect(evaluateHitPointExpression('999999'), BigInt.from(999999));
+      expect(evaluateHitPointExpression('7000+8000'), BigInt.from(15000));
+      expect(evaluateHitPointExpression('99999+1'), BigInt.from(100000));
+      expect(evaluateHitPointExpression('100001'), BigInt.from(100001));
+      expect(evaluateHitPointExpression('9' * 64), BigInt.parse('9' * 64));
+      expect(evaluateHitPointExpression('9' * 1000), isNull);
+      expect(
+        evaluateHitPointExpression('${List.filled(40, '1+').join()}1'),
+        isNull,
+      );
     });
 
     test('death saves normalize to nullable 0..3 values', () {

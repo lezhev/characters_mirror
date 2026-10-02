@@ -115,8 +115,6 @@ sealed class CharacterCreationState with _$CharacterCreationState {
 
 @Riverpod(keepAlive: true)
 class CharacterCreation extends _$CharacterCreation {
-  bool _returnToSummaryAfterEdit = false;
-
   @override
   CharacterCreationState build() => CharacterCreationState.initial();
 
@@ -157,18 +155,6 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void goToStep(BuildContext context, Step step) {
-    final target =
-        _returnToSummaryAfterEdit && step != Step.summary ? Step.summary : step;
-    _returnToSummaryAfterEdit = false;
-    _navigateToStep(context, target);
-  }
-
-  void editStepFromSummary(BuildContext context, Step step) {
-    _returnToSummaryAfterEdit = true;
-    _navigateToStep(context, step);
-  }
-
-  void _navigateToStep(BuildContext context, Step step) {
     ref.read(creationStepTransitionDirectionProvider.notifier).state =
         step.index >= state.step.index ? 1 : -1;
     context.go(step.routePath);
@@ -596,7 +582,6 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void reset() {
-    _returnToSummaryAfterEdit = false;
     ref.read(creationStepTransitionDirectionProvider.notifier).state = 1;
     state = CharacterCreationState.initial().copyWith(
       draftRevision: state.draftRevision + 1,

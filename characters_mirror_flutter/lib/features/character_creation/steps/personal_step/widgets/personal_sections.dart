@@ -2,6 +2,8 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/personal_step/application/personal_form_bindings.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -251,6 +253,7 @@ class PersonalTextField extends StatelessWidget {
               controller: controller,
               focusNode: focusNode,
               minLines: minLines,
+              maxRunes: AppInputLimits.longText,
             )
           : TextField(
               controller: controller,
@@ -258,6 +261,7 @@ class PersonalTextField extends StatelessWidget {
               minLines: minLines,
               maxLines: maxLines,
               textInputAction: textInputAction,
+              inputFormatters: [textLengthFormatter(AppInputLimits.shortText)],
               onSubmitted: onSubmitted,
               decoration: InputDecoration(
                 labelText: label,

@@ -64,6 +64,57 @@ void main() {
       );
     });
 
+    testWidgets('sign in accepts a password shorter than eight characters',
+        (tester) async {
+      final service = FakeAuthService();
+
+      await tester.pumpWidget(_TestRouterApp(service: service));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'user@example.com',
+      );
+      await tester.enterText(find.byType(TextFormField).at(1), 'short');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+
+      expect(service.lastSignInPassword, 'short');
+      expect(find.text('Введите пароль.'), findsNothing);
+    });
+
+    testWidgets('sign in password visibility can be toggled', (tester) async {
+      final service = FakeAuthService();
+
+      await tester.pumpWidget(_TestRouterApp(service: service));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester
+            .widget<TextField>(
+              find.descendant(
+                of: find.byType(TextFormField).at(1),
+                matching: find.byType(TextField),
+              ),
+            )
+            .obscureText,
+        isTrue,
+      );
+      await tester.tap(find.byTooltip('Показать пароль'));
+      await tester.pump();
+      expect(
+        tester
+            .widget<TextField>(
+              find.descendant(
+                of: find.byType(TextFormField).at(1),
+                matching: find.byType(TextField),
+              ),
+            )
+            .obscureText,
+        isFalse,
+      );
+    });
+
     testWidgets('sign in passes remember me choice', (tester) async {
       final service = FakeAuthService();
 
@@ -109,6 +160,36 @@ void main() {
       );
     });
 
+    testWidgets('sign up password visibility toggles independently',
+        (tester) async {
+      final service = FakeAuthService();
+      _setLargeSurface(tester);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [authServiceProvider.overrideWithValue(service)],
+          child: MaterialApp(
+            theme: darkTheme,
+            home: const SignUpPage(),
+          ),
+        ),
+      );
+
+      expect(find.byTooltip('Показать пароль'), findsNWidgets(2));
+      await tester.tap(find.byTooltip('Показать пароль').first);
+      await tester.pump();
+
+      final passwordFields = find.byType(TextFormField);
+      TextField passwordInput(int fieldIndex) => tester.widget<TextField>(
+            find.descendant(
+              of: passwordFields.at(fieldIndex),
+              matching: find.byType(TextField),
+            ),
+          );
+      expect(passwordInput(2).obscureText, isFalse);
+      expect(passwordInput(3).obscureText, isTrue);
+    });
+
     testWidgets('sign up validates username and password confirmation',
         (tester) async {
       final service = FakeAuthService();
@@ -136,12 +217,45 @@ void main() {
         find.byType(TextFormField).at(3),
         'different',
       );
-      await tester.ensureVisible(find.text('Создать аккаунт'));
-      await tester.tap(find.text('Создать аккаунт'), warnIfMissed: false);
+      final submitButton = find.widgetWithText(FilledButton, 'Создать аккаунт');
+      await tester.ensureVisible(submitButton);
+      await tester.tap(submitButton, warnIfMissed: false);
       await tester.pumpAndSettle();
 
       expect(find.text('Введите имя пользователя.'), findsOneWidget);
       expect(find.text('Пароли не совпадают.'), findsOneWidget);
+      expect(service.registerCallCount, 0);
+    });
+
+    testWidgets('sign up rejects passwords shorter than eight characters',
+        (tester) async {
+      final service = FakeAuthService();
+      _setLargeSurface(tester);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [authServiceProvider.overrideWithValue(service)],
+          child: MaterialApp(
+            theme: darkTheme,
+            home: const SignUpPage(),
+          ),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextFormField).at(0), 'Melifaro');
+      await tester.enterText(
+        find.byType(TextFormField).at(1),
+        'user@example.com',
+      );
+      await tester.enterText(find.byType(TextFormField).at(2), 'short');
+      await tester.enterText(find.byType(TextFormField).at(3), 'short');
+      final submitButton = find.widgetWithText(FilledButton, 'Создать аккаунт');
+      await tester.ensureVisible(submitButton);
+      await tester.tap(submitButton, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Пароль должен быть не короче 8 символов.'),
+          findsOneWidget);
       expect(service.registerCallCount, 0);
     });
 
@@ -178,8 +292,9 @@ void main() {
       await tester.tap(find.text('Запомнить меня'));
       await tester.pumpAndSettle();
 
-      await tester.ensureVisible(find.text('Создать аккаунт'));
-      await tester.tap(find.text('Создать аккаунт'), warnIfMissed: false);
+      final submitButton = find.widgetWithText(FilledButton, 'Создать аккаунт');
+      await tester.ensureVisible(submitButton);
+      await tester.tap(submitButton, warnIfMissed: false);
       await tester.pumpAndSettle();
 
       expect(service.lastRegisterRememberMe, isFalse);
@@ -278,10 +393,10 @@ void main() {
       router.go('/create/summary');
       await tester.pumpAndSettle();
 
-      expect(find.text('Сводка персонажа'), findsOneWidget);
+      expect(find.byKey(const ValueKey('summary-hero-card')), findsOneWidget);
 
-      await tester.ensureVisible(find.text('Завершить'));
-      await tester.tap(find.text('Завершить'), warnIfMissed: false);
+      await tester.ensureVisible(find.text('Создать персонажа'));
+      await tester.tap(find.text('Создать персонажа'), warnIfMissed: false);
       await tester.pumpAndSettle();
 
       expect(repository.saveCallCount, 1);
@@ -321,13 +436,13 @@ void main() {
       router.go('/create/summary');
       await tester.pumpAndSettle();
 
-      await tester.ensureVisible(find.text('Завершить'));
-      await tester.tap(find.text('Завершить'), warnIfMissed: false);
-      await tester.tap(find.text('Завершить'), warnIfMissed: false);
+      await tester.ensureVisible(find.text('Создать персонажа'));
+      await tester.tap(find.text('Создать персонажа'), warnIfMissed: false);
+      await tester.tap(find.text('Создать персонажа'), warnIfMissed: false);
       await tester.pump();
 
       expect(repository.saveCallCount, 1);
-      expect(find.text('Сводка персонажа'), findsOneWidget);
+      expect(find.byKey(const ValueKey('summary-hero-card')), findsOneWidget);
 
       saveCompleter.complete(
         protocol.CharacterData(
@@ -367,11 +482,11 @@ void main() {
       router.go('/create/summary');
       await tester.pumpAndSettle();
 
-      await tester.ensureVisible(find.text('Завершить'));
-      await tester.tap(find.text('Завершить'), warnIfMissed: false);
+      await tester.ensureVisible(find.text('Создать персонажа'));
+      await tester.tap(find.text('Создать персонажа'), warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      expect(find.text('Сводка персонажа'), findsOneWidget);
+      expect(find.byKey(const ValueKey('summary-hero-card')), findsOneWidget);
       expect(
         find.text('Не удалось подключиться к серверу. Проверьте соединение.'),
         findsOneWidget,
@@ -422,10 +537,10 @@ void main() {
         await _pumpRouterAppWithContainer(tester, container);
         container.read(routerProvider).go('/create/summary');
         await tester.pumpAndSettle();
-        await tester.ensureVisible(find.text('Завершить'));
-        await tester.tap(find.text('Завершить'), warnIfMissed: false);
+        await tester.ensureVisible(find.text('Создать персонажа'));
+        await tester.tap(find.text('Создать персонажа'), warnIfMissed: false);
         await tester.pump();
-        expect(find.text('Сводка персонажа'), findsOneWidget);
+        expect(find.byKey(const ValueKey('summary-hero-card')), findsOneWidget);
         expect(repository.saveCallCount, 1);
         expect(submitted?.classEntries?.single.classData?.name, className);
         expect(submitted?.race?.id, 7);
@@ -440,7 +555,7 @@ void main() {
         final loaded = await repository.getCharacter(100 + index);
         expect(loaded.derived?.maxHp, 12);
         expect(loaded.classEntries?.single.classData?.name, className);
-        expect(find.text('Сводка персонажа'), findsNothing);
+        expect(find.byKey(const ValueKey('summary-hero-card')), findsNothing);
         await tester.pumpWidget(const SizedBox.shrink());
       }
     });
@@ -600,6 +715,7 @@ class FakeAuthService extends AuthService {
   int signOutCallCount = 0;
   bool? lastRegisterRememberMe;
   bool? lastSignInRememberMe;
+  String? lastSignInPassword;
 
   @override
   auth.UserInfo? get currentUser => _user;
@@ -641,6 +757,7 @@ class FakeAuthService extends AuthService {
   }) async {
     signInCallCount += 1;
     lastSignInRememberMe = rememberMe;
+    lastSignInPassword = password;
     _user = auth.UserInfo(
       userIdentifier: email,
       userName: 'Hero',

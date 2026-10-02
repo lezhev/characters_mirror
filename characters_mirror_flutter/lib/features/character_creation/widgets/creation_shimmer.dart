@@ -66,8 +66,9 @@ class CreationShimmer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final shimmerBaseColor = colorScheme.primary.withAlpha(80);
-    final shimmerHighlightColor = colorScheme.primary.withAlpha(40);
+    final shimmerBaseColor = colorScheme.surfaceContainer.withAlpha(210);
+    final shimmerHighlightColor =
+        colorScheme.surfaceContainerHighest.withAlpha(180);
     final providerStep = ref.watch(
       characterCreationProvider.select((state) => state.step),
     );
@@ -113,7 +114,7 @@ class CreationShimmer extends ConsumerWidget {
                     height: 48,
                     width: 152,
                     decoration: BoxDecoration(
-                      color: colorScheme.primary,
+                      color: colorScheme.surfaceContainerHigh,
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
@@ -139,8 +140,9 @@ class CreationShimmerGrid extends StatelessWidget {
         : appWidth > 420
             ? 3
             : 2;
-    final shimmerBaseColor = colorScheme.primary.withAlpha(80);
-    final shimmerHighlightColor = colorScheme.primary.withAlpha(40);
+    final shimmerBaseColor = colorScheme.surfaceContainer.withAlpha(210);
+    final shimmerHighlightColor =
+        colorScheme.surfaceContainerHighest.withAlpha(180);
 
     return GridView.builder(
       shrinkWrap: true,
@@ -172,7 +174,7 @@ class CreationShimmerGrid extends StatelessWidget {
                     width: iconSize,
                     height: iconSize,
                     decoration: BoxDecoration(
-                      color: colorScheme.primary.withAlpha(80),
+                      color: colorScheme.surfaceContainerHigh,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -208,8 +210,8 @@ class _CreationAppBarShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final neutralBaseColor = colorScheme.surface.withAlpha(40);
-    final neutralHighlightColor = colorScheme.primary.withAlpha(40);
+    final neutralBaseColor = colorScheme.surfaceContainer.withAlpha(210);
+    final neutralHighlightColor = colorScheme.surfaceContainerHighest;
 
     return SafeArea(
       child: Container(
@@ -217,7 +219,7 @@ class _CreationAppBarShimmer extends StatelessWidget {
           color: colorScheme.surfaceContainerHigh,
           border: Border(
             bottom: BorderSide(
-              color: colorScheme.outline,
+              color: colorScheme.outlineVariant,
               width: 1,
             ),
           ),
@@ -437,7 +439,7 @@ class _ShimmerBlock extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(radius),
       ),
     );

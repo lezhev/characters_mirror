@@ -278,10 +278,10 @@ class _ResourceSummaryBadge extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.08),
+        color: colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.34),
+          color: colorScheme.outlineVariant,
         ),
       ),
       child: Padding(
@@ -291,7 +291,7 @@ class _ResourceSummaryBadge extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.labelMedium?.copyWith(
-            color: colorScheme.primary,
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -332,7 +332,7 @@ class _FeatureResourceSection extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.labelLarge?.copyWith(
-                color: colorScheme.primary,
+                color: colorScheme.onSurface,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -376,10 +376,10 @@ class _FeatureResourceControl extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colorScheme.surface.withValues(alpha: 0.72),
+        color: colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: colorScheme.primary.withValues(alpha: 0.42),
+          color: colorScheme.outlineVariant,
         ),
       ),
       child: Padding(
@@ -476,7 +476,7 @@ class _ResourceChargeDots extends StatelessWidget {
             size: 9,
             color: index < resource.current
                 ? colorScheme.primary
-                : colorScheme.outline,
+                : colorScheme.outlineVariant,
           ),
       ],
     );

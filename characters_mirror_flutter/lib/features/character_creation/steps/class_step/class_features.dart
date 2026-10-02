@@ -94,7 +94,7 @@ class ClassFeatures extends HookConsumerWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppSectionHeader(title: classTitle),
+                AppSectionHeader(title: classTitle, showDivider: false),
                 const Gap(8),
                 ClassProfileCard(classData: currentStepView.classData!),
                 if ((currentStepView.startingEquipmentBlocks?.isNotEmpty ??

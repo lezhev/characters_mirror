@@ -62,7 +62,7 @@ class AbilitiesPage extends ConsumerWidget {
                   const SizedBox(height: 8),
                   _FeatureSectionHeader(
                     title: 'Класс',
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   const SizedBox(height: 8),
                   ..._buildFeatureCards(
@@ -76,7 +76,7 @@ class AbilitiesPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   _FeatureSectionHeader(
                     title: 'Раса',
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   const SizedBox(height: 8),
                   ..._buildFeatureCards(

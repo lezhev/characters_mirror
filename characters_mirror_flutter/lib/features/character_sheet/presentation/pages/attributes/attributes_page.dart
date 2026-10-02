@@ -250,7 +250,7 @@ class _AttributeCard extends StatelessWidget {
                           abilityLabel,
                           maxLines: 1,
                           style: theme.textTheme.titleSmall?.copyWith(
-                            color: colorScheme.primary,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                       ),

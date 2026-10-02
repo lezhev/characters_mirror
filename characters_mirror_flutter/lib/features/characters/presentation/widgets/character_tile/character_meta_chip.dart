@@ -18,7 +18,7 @@ class CharacterMetaChip extends StatelessWidget {
         horizontal: 8,
       ),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withValues(alpha: 0.1),
+        color: colorScheme.surfaceContainerHigh,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
@@ -26,7 +26,7 @@ class CharacterMetaChip extends StatelessWidget {
         style: Theme.of(context)
             .textTheme
             .labelMedium
-            ?.copyWith(color: colorScheme.primary),
+            ?.copyWith(color: colorScheme.onSurfaceVariant),
       ),
     );
   }

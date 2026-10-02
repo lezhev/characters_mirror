@@ -27,7 +27,7 @@ List<Widget> buildRaceFeatureSection(
           child: Text(
             'Уровень $currentLevel',
             style: textTheme.titleMedium?.copyWith(
-              color: colorScheme.primary,
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -55,8 +55,7 @@ class RaceFeatureCard extends HookConsumerWidget {
     return ref.watch(raceStateProvider).when(
           data: (data) {
             final choiceGroups = data.choiceGroups
-                .where((view) =>
-                    view.group?.sourceRaceFeatureId == feature.id)
+                .where((view) => view.group?.sourceRaceFeatureId == feature.id)
                 .toList();
             final spellGrants =
                 feature.spellGrants ?? const <RaceFeatureSpellGrantData>[];
@@ -124,11 +123,10 @@ class RaceFeatureCard extends HookConsumerWidget {
                               padding: const EdgeInsets.only(bottom: 10),
                               child: RaceChoiceSetCard(
                                 groupView: groupView,
-                                selectedOptions:
-                                    data.selectedChoiceOptionsByGroup[
-                                            groupView.group?.referenceKey ??
-                                                ''] ??
-                                        const <ChoiceOptionData>[],
+                                selectedOptions: data
+                                            .selectedChoiceOptionsByGroup[
+                                        groupView.group?.referenceKey ?? ''] ??
+                                    const <ChoiceOptionData>[],
                               ),
                             ),
                           ),

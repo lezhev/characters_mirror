@@ -176,7 +176,7 @@ class _HeaderIconButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: colorScheme.outline),
           ),
-          child: Icon(icon, color: colorScheme.primary, size: 20),
+          child: Icon(icon, color: colorScheme.onSurfaceVariant, size: 20),
         ),
       ),
     );

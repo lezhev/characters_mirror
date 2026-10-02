@@ -1,7 +1,7 @@
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/common/attribute_enum.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/state/attribute_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ManualInputColumn extends ConsumerWidget {
@@ -34,7 +34,7 @@ class ManualInputColumn extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                          color: Theme.of(context).colorScheme.secondary),
+                          color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                   ),
                   Positioned(
@@ -47,9 +47,7 @@ class ManualInputColumn extends ConsumerWidget {
                         key: ValueKey('manual-input-${attribute.name}'),
                         initialValue: value == 0 ? '' : value.toString(),
                         textAlign: TextAlign.center,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
+                        inputFormatters: [nonNegativeIntFormatter()],
                         keyboardType: TextInputType.number,
                         style: textTheme.titleMedium,
                         decoration: const InputDecoration(

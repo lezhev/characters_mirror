@@ -45,7 +45,7 @@ class AppSectionHeader extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 2,
-            color: dividerColor ?? theme.colorScheme.primary,
+            color: dividerColor ?? theme.colorScheme.outlineVariant,
           ),
         ],
       ],

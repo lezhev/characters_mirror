@@ -1,9 +1,9 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_resolver.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
+import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 Future<void> showInitiativeSettingsSheet({
   required BuildContext context,
@@ -541,7 +541,7 @@ class _SignedNumberField extends StatelessWidget {
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(signed: true),
       inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
+        boundedIntFormatter(),
       ],
       decoration: InputDecoration(
         labelText: label,
@@ -579,7 +579,7 @@ class _SpeedField extends StatelessWidget {
               key: fieldKey,
               controller: controller,
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [nonNegativeIntFormatter()],
               decoration: InputDecoration(
                 labelText: label,
                 border: const OutlineInputBorder(),

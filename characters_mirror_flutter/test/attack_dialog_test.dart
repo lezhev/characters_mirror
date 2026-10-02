@@ -5,6 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('attack damage formula truncates pastes at short text limit',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: AttackDialog(
+            attack: CharacterAttackData(name: 'Test Attack', damage: '1d8'),
+            isCreating: false,
+            onDraftChanged: (_) async {},
+          ),
+        ),
+      ),
+    );
+
+    final formula = find.widgetWithText(TextFormField, 'Формула');
+    await tester.enterText(formula, '1d8+' * 40);
+
+    expect(tester.widget<TextFormField>(formula).controller!.text.length, 120);
+  });
+
   testWidgets('attack dialog adds and removes damage parts', (tester) async {
     final drafts = <CharacterAttackData>[];
 

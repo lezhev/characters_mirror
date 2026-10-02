@@ -50,7 +50,9 @@ class CreationNavBar extends ConsumerWidget {
                         ? SizedBox.shrink()
                         : Button.outlined(
                             leading: Icon(Icons.arrow_back,
-                                color: Theme.of(context).colorScheme.primary),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant),
                             onPressed: () => notifier.prevStep(context),
                             title: 'Назад',
                           ),
