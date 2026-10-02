@@ -3,7 +3,6 @@ import 'package:characters_mirror_flutter/core/serverpod/data/character_model_ex
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
@@ -161,17 +160,13 @@ class _EquipmentEditorState extends State<_EquipmentEditor> {
           showDivider: false,
         ),
         const SizedBox(height: 12),
-        AppSurfaceCard(
-          padding: const EdgeInsets.all(16),
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          child: AppAutosizeTextField(
-            label: 'Снаряжение',
-            controller: _controller,
-            focusNode: _focusNode,
-            minLines: 6,
-            maxRunes: AppInputLimits.mediumText,
-            onChanged: widget.onInventoryChanged,
-          ),
+        AppAutosizeTextField(
+          label: 'Снаряжение',
+          controller: _controller,
+          focusNode: _focusNode,
+          minLines: 6,
+          maxRunes: AppInputLimits.mediumText,
+          onChanged: widget.onInventoryChanged,
         ),
         if (_selectedText != null && widget.catalogsReady) ...[
           const SizedBox(height: 12),

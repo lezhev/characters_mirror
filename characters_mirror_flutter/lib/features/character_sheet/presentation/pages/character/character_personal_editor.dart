@@ -4,11 +4,11 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/character_alignment_labels.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import 'package:flutter/material.dart';
 
 part 'character_personal_editor/personal_field_widgets.dart';
@@ -247,9 +247,9 @@ class _CharacterPersonalEditorState extends State<CharacterPersonalEditor> {
               : null,
         ),
         const SizedBox(height: 12),
-        AppSurfaceCard(
+        SheetOutlineCard(
           padding: const EdgeInsets.all(16),
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          borderRadius: 12,
           child: LayoutBuilder(
             builder: (context, constraints) {
               final usePairs = constraints.maxWidth >= 360;

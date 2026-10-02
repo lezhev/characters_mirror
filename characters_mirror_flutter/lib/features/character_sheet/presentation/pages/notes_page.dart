@@ -2,7 +2,6 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_autosize_text_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/input/app_input_limits.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
@@ -114,36 +113,36 @@ class _NotesEditorState extends State<_NotesEditor> {
         ),
         const SizedBox(height: 12),
         if (_controllers.isEmpty)
-          const AppSurfaceCard(
-            padding: EdgeInsets.all(16),
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-            child: Text('Заметок пока нет'),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'Заметок пока нет',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
           )
         else
           for (var index = 0; index < _controllers.length; index++) ...[
-            AppSurfaceCard(
-              padding: const EdgeInsets.all(16),
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AppAutosizeTextField(
-                    label: 'Заметка ${index + 1}',
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    minLines: 4,
-                    maxRunes: AppInputLimits.longText,
-                    onChanged: (_) => _handleNoteChanged(index),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                AppAutosizeTextField(
+                  label: 'Заметка ${index + 1}',
+                  controller: _controllers[index],
+                  focusNode: _focusNodes[index],
+                  minLines: 4,
+                  maxRunes: AppInputLimits.longText,
+                  onChanged: (_) => _handleNoteChanged(index),
+                ),
+                const SizedBox(height: 4),
+                TextButton(
+                  onPressed: () => _handleDelete(index),
+                  child: Text(
+                    _confirmDeleteIndex == index ? 'Точно?' : 'Удалить',
                   ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () => _handleDelete(index),
-                    child: Text(
-                      _confirmDeleteIndex == index ? 'Точно?' : 'Удалить',
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
             if (index + 1 < _controllers.length) const SizedBox(height: 12),
           ],

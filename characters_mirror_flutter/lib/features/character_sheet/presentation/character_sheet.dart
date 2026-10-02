@@ -8,7 +8,7 @@ import 'package:characters_mirror_flutter/features/character_sheet/presentation/
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/attributes_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_sheet_app_bar.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_status_stack.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/quick_actions_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +34,6 @@ class CharacterSheet extends HookConsumerWidget {
     ref.watch(characterSheetLocalSavePendingProvider(characterId));
     final characterData = character.valueOrNull;
     final characterName = characterData?.name?.trim();
-    final statusStackMode = useState(CharacterStatusStackMode.hidden);
     final isLeaving = useRef(false);
     final tabs = buildCharacterSheetTabs(characterId);
 
@@ -134,19 +133,66 @@ class CharacterSheet extends HookConsumerWidget {
                   onBackPressed: () {
                     unawaited(handleBackNavigation());
                   },
+                  hasActiveStatus: characterData != null &&
+                      hasActiveCharacterStatus(characterData),
+                  onQuickActionsPressed: () {
+                    final currentCharacter = characterData;
+                    if (currentCharacter == null) return;
+                    showQuickActionsSheet(
+                      context: context,
+                      characterId: characterId,
+                      character: currentCharacter,
+                      onInspirationChanged: (value) async {
+                        runCharacterSheetSave(
+                          context,
+                          ref
+                              .read(
+                                characterSheetControllerProvider(characterId)
+                                    .notifier,
+                              )
+                              .setInspiration(value),
+                        );
+                      },
+                      onSaveConditions: ({
+                        required activeConditions,
+                        exhaustionLevel,
+                      }) {
+                        return ref
+                            .read(
+                              characterSheetControllerProvider(characterId)
+                                  .notifier,
+                            )
+                            .saveConditions(
+                              activeConditions: activeConditions,
+                              exhaustionLevel: exhaustionLevel,
+                            );
+                      },
+                      onCancelConcentration: () async {
+                        runCharacterSheetSave(
+                          context,
+                          ref
+                              .read(
+                                characterSheetControllerProvider(characterId)
+                                    .notifier,
+                              )
+                              .cancelConcentration(),
+                        );
+                      },
+                      onRestSelected: (restType) {
+                        runCharacterSheetSave(
+                          context,
+                          ref
+                              .read(
+                                characterSheetControllerProvider(characterId)
+                                    .notifier,
+                              )
+                              .restoreResources(restType),
+                        );
+                      },
+                    );
+                  },
                   onSettingsPressed: () {
                     context.push('/characters/sheet/$characterId/settings');
-                  },
-                  onRestSelected: (restType) {
-                    runCharacterSheetSave(
-                      context,
-                      ref
-                          .read(
-                            characterSheetControllerProvider(characterId)
-                                .notifier,
-                          )
-                          .restoreResources(restType),
-                    );
                   },
                   onMenuPressed: () {
                     returnPageIndex.value = pageIndex.value;
@@ -154,118 +200,42 @@ class CharacterSheet extends HookConsumerWidget {
                   },
                 ),
               ),
-        body: Stack(
+        body: Column(
           children: [
-            Column(
-              children: [
-                Expanded(
-                  child: isAttributesOpen.value
-                      ? KeyedSubtree(
-                          key: const ValueKey('attributes'),
-                          child: AttributesPage(
-                            characterId: characterId,
-                            onClose: closeAttributes,
-                          ),
-                        )
-                      : Listener(
-                          behavior: HitTestBehavior.translucent,
-                          onPointerDown: (event) {
-                            if (!allowsSwipeNavigationForPointer(event.kind)) {
-                              edgeSwipeStart.value = null;
-                              edgeSwipeStartPage.value = null;
-                              return;
-                            }
-                            edgeSwipeStart.value = event.position;
-                            edgeSwipeStartPage.value = pageIndex.value;
-                          },
-                          onPointerUp: handleEdgePointerUp,
-                          onPointerCancel: (_) {
-                            edgeSwipeStart.value = null;
-                            edgeSwipeStartPage.value = null;
-                          },
-                          child: PageView(
-                            controller: pageController,
-                            onPageChanged: (index) => pageIndex.value = index,
-                            children: [
-                              for (final tab in tabs) tab.builder(),
-                            ],
-                          ),
-                        ),
-                ),
-              ],
+            Expanded(
+              child: isAttributesOpen.value
+                  ? KeyedSubtree(
+                      key: const ValueKey('attributes'),
+                      child: AttributesPage(
+                        characterId: characterId,
+                        onClose: closeAttributes,
+                      ),
+                    )
+                  : Listener(
+                      behavior: HitTestBehavior.translucent,
+                      onPointerDown: (event) {
+                        if (!allowsSwipeNavigationForPointer(event.kind)) {
+                          edgeSwipeStart.value = null;
+                          edgeSwipeStartPage.value = null;
+                          return;
+                        }
+                        edgeSwipeStart.value = event.position;
+                        edgeSwipeStartPage.value = pageIndex.value;
+                      },
+                      onPointerUp: handleEdgePointerUp,
+                      onPointerCancel: (_) {
+                        edgeSwipeStart.value = null;
+                        edgeSwipeStartPage.value = null;
+                      },
+                      child: PageView(
+                        controller: pageController,
+                        onPageChanged: (index) => pageIndex.value = index,
+                        children: [
+                          for (final tab in tabs) tab.builder(),
+                        ],
+                      ),
+                    ),
             ),
-            if (!isAttributesOpen.value && characterData != null)
-              Positioned(
-                left: 0,
-                bottom: 0,
-                child: SafeArea(
-                  minimum: const EdgeInsets.only(left: 16, bottom: 12),
-                  child: CharacterStatusStack(
-                    character: characterData,
-                    mode: statusStackMode.value,
-                    onModePressed: () {
-                      statusStackMode.value = switch (statusStackMode.value) {
-                        CharacterStatusStackMode.hidden =>
-                          CharacterStatusStackMode.icons,
-                        CharacterStatusStackMode.icons =>
-                          CharacterStatusStackMode.labels,
-                        CharacterStatusStackMode.labels =>
-                          CharacterStatusStackMode.hidden,
-                      };
-                    },
-                    onInspirationChanged: (value) {
-                      runCharacterSheetSave(
-                        context,
-                        ref
-                            .read(
-                              characterSheetControllerProvider(characterId)
-                                  .notifier,
-                            )
-                            .setInspiration(value),
-                      );
-                      return Future.value();
-                    },
-                    onSaveConditions: ({
-                      required activeConditions,
-                      exhaustionLevel,
-                    }) {
-                      return ref
-                          .read(
-                            characterSheetControllerProvider(characterId)
-                                .notifier,
-                          )
-                          .saveConditions(
-                            activeConditions: activeConditions,
-                            exhaustionLevel: exhaustionLevel,
-                          );
-                    },
-                    onRemoveCondition: (condition) {
-                      runCharacterSheetSave(
-                        context,
-                        ref
-                            .read(
-                              characterSheetControllerProvider(characterId)
-                                  .notifier,
-                            )
-                            .removeCondition(condition),
-                      );
-                      return Future.value();
-                    },
-                    onCancelConcentration: () {
-                      runCharacterSheetSave(
-                        context,
-                        ref
-                            .read(
-                              characterSheetControllerProvider(characterId)
-                                  .notifier,
-                            )
-                            .cancelConcentration(),
-                      );
-                      return Future.value();
-                    },
-                  ),
-                ),
-              ),
           ],
         ),
         bottomNavigationBar: isAttributesOpen.value

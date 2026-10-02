@@ -3,6 +3,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/expandable_section.dar
 import 'package:characters_mirror_flutter/core/ui/widgets/feature_display_properties.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/smooth_switcher.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import 'package:flutter/material.dart';
 
 class CharacterFeatureCard extends StatefulWidget {
@@ -61,7 +62,8 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
     final resources = feature.resources ?? const <CharacterResourceViewData>[];
     final sourceLabel = _featureSourceLabel(feature);
 
-    return Card(
+    return SheetOutlineCard(
+      padding: EdgeInsets.zero,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
