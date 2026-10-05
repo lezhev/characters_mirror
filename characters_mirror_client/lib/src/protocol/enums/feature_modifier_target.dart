@@ -13,7 +13,10 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
 enum FeatureModifierTarget implements _i1.SerializableModel {
   speed,
-  abilityCheck;
+  abilityCheck,
+  armorClass,
+  attackRoll,
+  damageRoll;
 
   static FeatureModifierTarget fromJson(int index) {
     switch (index) {
@@ -21,6 +24,12 @@ enum FeatureModifierTarget implements _i1.SerializableModel {
         return FeatureModifierTarget.speed;
       case 1:
         return FeatureModifierTarget.abilityCheck;
+      case 2:
+        return FeatureModifierTarget.armorClass;
+      case 3:
+        return FeatureModifierTarget.attackRoll;
+      case 4:
+        return FeatureModifierTarget.damageRoll;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "FeatureModifierTarget"');

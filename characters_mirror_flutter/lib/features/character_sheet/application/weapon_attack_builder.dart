@@ -45,6 +45,7 @@ CharacterAttackData buildAttackFromWeapon({
     name: normalizedEquipmentSelectionText(weapon.name) ??
         normalizedEquipmentSelectionText(weapon.referenceKey),
     leadingAbility: weaponAttackAbility(weapon, character),
+    weaponCategory: weapon.category,
     damage: normalizedEquipmentSelectionText(weapon.damage),
     customAttackBonus: 0,
     damageType: weapon.damageType,

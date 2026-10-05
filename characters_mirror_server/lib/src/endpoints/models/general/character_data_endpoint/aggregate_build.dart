@@ -152,7 +152,7 @@ CharacterData _toCharacterData(CharacterRecord record) {
     syncBarrierTokens: record.syncBarrierTokens,
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
-    experience: record.experience,
+    experience: record.experience ?? 0,
     alignmentValue: record.alignmentValue,
     race: record.race,
     subrace: record.subrace,

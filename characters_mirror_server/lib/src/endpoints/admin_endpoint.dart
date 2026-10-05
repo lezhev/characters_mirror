@@ -259,19 +259,32 @@ class AdminEndpoint extends Endpoint {
   ) {
     if (raw == null) return const [];
     if (raw is! List) throw ArgumentError('conditions must be an array.');
-    return [
-      for (final condition in raw)
-        if (condition is Map<String, dynamic>)
-          FeatureModifierConditionData(
-            type: _featureModifierEnum<FeatureModifierConditionType>(
-              condition['type'],
-              FeatureModifierConditionType.values,
-              'condition.type',
-            ),
-          )
-        else
-          throw ArgumentError('Each condition must be an object.'),
-    ];
+    final result = <FeatureModifierConditionData>[];
+    for (final condition in raw) {
+      if (condition is! Map<String, dynamic>) {
+        throw ArgumentError('Each condition must be an object.');
+      }
+      final type = _featureModifierEnum<FeatureModifierConditionType>(
+        condition['type'],
+        FeatureModifierConditionType.values,
+        'condition.type',
+      );
+      final choiceGroupKey = condition['choiceGroupKey'] as String?;
+      final optionKey = condition['optionKey'] as String?;
+      if (type == FeatureModifierConditionType.selectedChoiceOption &&
+          ((choiceGroupKey?.trim().isEmpty ?? true) ||
+              (optionKey?.trim().isEmpty ?? true))) {
+        throw ArgumentError(
+          'selectedChoiceOption requires choiceGroupKey and optionKey.',
+        );
+      }
+      result.add(FeatureModifierConditionData(
+        type: type,
+        choiceGroupKey: choiceGroupKey?.trim(),
+        optionKey: optionKey?.trim(),
+      ));
+    }
+    return result;
   }
 
   void _validateChoiceRequirement(Object? raw) {

@@ -22,6 +22,7 @@ Future<CharacterData> resolveOfflineCharacter(
 ) async {
   final derived = await buildOfflineDerivedData(cache, character);
   return character.copyWith(
+    experience: character.experience ?? 0,
     derived: derived,
     currentHp: character.currentHp ?? derived.maxHp,
     temporaryHp: character.temporaryHp,
@@ -57,7 +58,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
 ) async {
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
   final totalLevel =
-      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
+      max(1, entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
   final proficiencyBonus = 2 + ((totalLevel - 1) ~/ 4);
   final selectedOptions =
       await _selectedChoiceOptions(cache, character, entries);
@@ -99,6 +100,8 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityModifiers,
   );
   final currentClassFeatures = await _currentClassFeatures(cache, entries);
+  final activeFeatureModifiers =
+      await _offlineCurrentFeatureModifiers(cache, entries);
   final hitDice = _hitDiceSummary(character, entries);
   final spellSlots = await _spellSlots(cache, entries);
   final maxHp = _maxHp(
@@ -107,6 +110,13 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityModifiers[Ability.constitution] ?? 0,
   );
   final dexterityModifier = abilityModifiers[Ability.dexterity] ?? 0;
+  final armorClassBonus = await _offlineFeatureModifierTotal(
+    cache,
+    entries,
+    character,
+    proficiencyBonus: proficiencyBonus,
+    target: FeatureModifierTarget.armorClass,
+  );
   final armorClass = await _calculateArmorClass(
     cache,
     character,
@@ -115,6 +125,9 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
         .map((feature) => feature.unarmoredDefenseRule)
         .whereType<UnarmoredDefenseRule>(),
   );
+  final armorClassFormula = armorClassBonus == 0
+      ? armorClass.formula
+      : '${armorClass.formula} + Эффекты ($armorClassBonus)';
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
   final alwaysPreparedSpellKeys = await _collectAlwaysPreparedSpellKeys(
     cache,
@@ -214,9 +227,10 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: armorClass.value,
+    featureModifiers: activeFeatureModifiers,
+    armorClass: armorClass.value + armorClassBonus,
     armorClassSource: armorClass.source,
-    armorClassFormula: armorClass.formula,
+    armorClassFormula: armorClassFormula,
     initiative: dexterityModifier +
         (character.customInitiativeBonus ?? 0) +
         initiativeBonus,

@@ -3,7 +3,7 @@ import 'package:characters_mirror_flutter/features/character_creation/steps/race
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/race_tile_view.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/race_step/state/race_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_selection_step_scaffold.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/error_page.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -54,11 +54,10 @@ class RaceStep extends HookConsumerWidget {
         );
       },
       error: (e, s) {
-        return errorWidget(
-          e: e,
-          s: s,
-          refresh: () => ref.refresh(raceStateProvider),
-          context: context,
+        return ErrorPage(
+          error: e,
+          stackTrace: s,
+          onRetry: () => ref.refresh(raceStateProvider),
         );
       },
       loading: () {

@@ -1,3 +1,5 @@
 class: FeatureModifierConditionData
 fields:
   type: FeatureModifierConditionType
+  choiceGroupKey: String?
+  optionKey: String?

@@ -398,6 +398,7 @@ CharacterAttackData _normalizedAttack(
     id: attack.id ?? createCharacterSyncItemId(),
     name: _normalizedText(attack.name),
     leadingAbility: attack.leadingAbility,
+    weaponCategory: attack.weaponCategory,
     damage: firstDamagePart?.formula ?? _normalizedText(attack.damage),
     customAttackBonus: attack.customAttackBonus ?? 0,
     damageType: firstDamagePart?.damageType ?? attack.damageType,

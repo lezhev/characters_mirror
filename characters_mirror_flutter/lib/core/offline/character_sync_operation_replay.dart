@@ -152,7 +152,7 @@ CharacterData _replaySemantic(
       if (delta == null) throw StateError('Invalid experience action.');
       final next = (character.experience ?? 0) + delta;
       if (next < 0) throw StateError('Experience bounds.');
-      return character.copyWith(experience: next == 0 ? null : next);
+      return character.copyWith(experience: next);
     case CharacterSyncOperationType.applyRest:
       return _applyRest(character, action.restType);
     default:

@@ -3,3 +3,6 @@ values:
   - unarmored
   - noShield
   - abilityCheckIsNotProficient
+  - armored
+  - rangedWeaponAttack
+  - selectedChoiceOption

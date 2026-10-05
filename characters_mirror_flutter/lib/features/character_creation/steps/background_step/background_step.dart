@@ -7,6 +7,7 @@ import 'package:characters_mirror_flutter/features/character_creation/steps/clas
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/widgets/background_features.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/shared/creation_selection_step_scaffold.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/error_page.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:flutter/material.dart' hide Step;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -67,11 +68,11 @@ class BackgroundStep extends HookConsumerWidget {
         );
       },
       error: (e, s) {
-        return errorWidget(
-            e: e,
-            s: s,
-            refresh: () => ref.refresh(backgroundStateProvider),
-            context: context);
+        return ErrorPage(
+          error: e,
+          stackTrace: s,
+          onRetry: () => ref.refresh(backgroundStateProvider),
+        );
       },
       loading: () {
         return CreationSelectionStepScaffold.loading(

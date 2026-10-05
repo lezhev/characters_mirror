@@ -52,6 +52,12 @@ Future<int> _offlineFeatureModifierTotal(
   }
 
   final specs = <feature_modifiers.FeatureModifierSpec>[];
+  final selectedChoiceOptionKeys = <String>{
+    for (final choice in character.choices ?? const <CharacterChoiceData>[])
+      if ((choice.groupKey?.trim().isNotEmpty ?? false) &&
+          (choice.optionKey?.trim().isNotEmpty ?? false))
+        '${choice.groupKey!.trim()}::${choice.optionKey!.trim()}',
+  };
   for (final modifier in modifiers) {
     final classFeatureId = modifier.classFeatureId;
     final subclassFeatureId = modifier.subclassFeatureId;
@@ -62,6 +68,40 @@ Future<int> _offlineFeatureModifierTotal(
     final sourceId = classFeatureId ?? subclassFeatureId;
     final sourceClassKey = sourceId == null ? null : featureClassKeys[sourceId];
     if (sourceFeatureKey == null || sourceClassKey == null) continue;
+    final simpleConditions = <feature_modifiers.FeatureModifierCondition>{};
+    final requiredChoiceOptions = <String>{};
+    for (final condition
+        in modifier.conditions ?? const <FeatureModifierConditionData>[]) {
+      switch (condition.type) {
+        case FeatureModifierConditionType.unarmored:
+          simpleConditions
+              .add(feature_modifiers.FeatureModifierCondition.unarmored);
+        case FeatureModifierConditionType.noShield:
+          simpleConditions
+              .add(feature_modifiers.FeatureModifierCondition.noShield);
+        case FeatureModifierConditionType.abilityCheckIsNotProficient:
+          simpleConditions.add(
+            feature_modifiers
+                .FeatureModifierCondition.abilityCheckIsNotProficient,
+          );
+        case FeatureModifierConditionType.armored:
+          simpleConditions
+              .add(feature_modifiers.FeatureModifierCondition.armored);
+        case FeatureModifierConditionType.rangedWeaponAttack:
+          simpleConditions.add(
+            feature_modifiers.FeatureModifierCondition.rangedWeaponAttack,
+          );
+        case FeatureModifierConditionType.selectedChoiceOption:
+          final groupKey = condition.choiceGroupKey?.trim();
+          final optionKey = condition.optionKey?.trim();
+          if (groupKey != null &&
+              groupKey.isNotEmpty &&
+              optionKey != null &&
+              optionKey.isNotEmpty) {
+            requiredChoiceOptions.add('$groupKey::$optionKey');
+          }
+      }
+    }
     specs.add(feature_modifiers.FeatureModifierSpec(
       referenceKey: modifier.referenceKey,
       sourceFeatureKey: sourceFeatureKey,
@@ -71,6 +111,12 @@ Future<int> _offlineFeatureModifierTotal(
           feature_modifiers.FeatureModifierTarget.speed,
         FeatureModifierTarget.abilityCheck =>
           feature_modifiers.FeatureModifierTarget.abilityCheck,
+        FeatureModifierTarget.armorClass =>
+          feature_modifiers.FeatureModifierTarget.armorClass,
+        FeatureModifierTarget.attackRoll =>
+          feature_modifiers.FeatureModifierTarget.attackRoll,
+        FeatureModifierTarget.damageRoll =>
+          feature_modifiers.FeatureModifierTarget.damageRoll,
       },
       operation: feature_modifiers.FeatureModifierOperation.add,
       valueKind: switch (modifier.value.kind) {
@@ -88,19 +134,8 @@ Future<int> _offlineFeatureModifierTotal(
       rounding: modifier.value.rounding == FeatureModifierRounding.floor
           ? feature_modifiers.FeatureModifierRounding.floor
           : null,
-      conditions: {
-        for (final condition
-            in modifier.conditions ?? const <FeatureModifierConditionData>[])
-          switch (condition.type) {
-            FeatureModifierConditionType.unarmored =>
-              feature_modifiers.FeatureModifierCondition.unarmored,
-            FeatureModifierConditionType.noShield =>
-              feature_modifiers.FeatureModifierCondition.noShield,
-            FeatureModifierConditionType.abilityCheckIsNotProficient =>
-              feature_modifiers
-                  .FeatureModifierCondition.abilityCheckIsNotProficient,
-          },
-      },
+      conditions: simpleConditions,
+      requiredChoiceOptions: requiredChoiceOptions,
     ));
   }
   final resolved = feature_modifiers.evaluateFeatureModifiers(
@@ -112,6 +147,7 @@ Future<int> _offlineFeatureModifierTotal(
       isArmored: character.equippedArmor != null,
       hasShield: character.equippedShield != null,
       abilityCheckIncludesProficiency: abilityCheckIncludesProficiency,
+      selectedChoiceOptionKeys: selectedChoiceOptionKeys,
     ),
   );
   return feature_modifiers.sumFeatureModifierValues(resolved)[switch (target) {
@@ -119,6 +155,39 @@ Future<int> _offlineFeatureModifierTotal(
           feature_modifiers.FeatureModifierTarget.speed,
         FeatureModifierTarget.abilityCheck =>
           feature_modifiers.FeatureModifierTarget.abilityCheck,
+        FeatureModifierTarget.armorClass =>
+          feature_modifiers.FeatureModifierTarget.armorClass,
+        FeatureModifierTarget.attackRoll =>
+          feature_modifiers.FeatureModifierTarget.attackRoll,
+        FeatureModifierTarget.damageRoll =>
+          feature_modifiers.FeatureModifierTarget.damageRoll,
       }] ??
       0;
+}
+
+Future<List<FeatureModifierData>> _offlineCurrentFeatureModifiers(
+  OfflineCacheDatabase cache,
+  List<CharacterClassEntryData> entries,
+) async {
+  final byKey = <String, FeatureModifierData>{};
+  for (final entry in entries) {
+    final classId = entry.classData?.id;
+    if (classId == null) continue;
+    final view = await cache.getReference<ClassStepView>(
+      offlineClassStepKind,
+      offlineClassStepKey(
+        classId,
+        selectedLevel: entry.level ?? 0,
+        selectedSubclassId: entry.subclass?.id,
+      ),
+      ClassStepView.fromJson,
+    );
+    for (final modifier
+        in view?.featureModifiers ?? const <FeatureModifierData>[]) {
+      byKey.putIfAbsent(modifier.referenceKey, () => modifier);
+    }
+  }
+  final result = byKey.values.toList()
+    ..sort((a, b) => a.referenceKey.compareTo(b.referenceKey));
+  return result;
 }

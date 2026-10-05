@@ -12,7 +12,7 @@ Future<CharacterDerivedData> _buildDerivedData(
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
   final choices = character.choices ?? const <CharacterChoiceData>[];
   final totalLevel =
-      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
+      max(1, entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
   final resolvedSources = await _resolveDerivedSources(
     session,
@@ -206,6 +206,15 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityCheckIncludesProficiency: false,
     target: FeatureModifierTarget.abilityCheck,
   );
+  final armorClassBonus = _featureModifierTotal(
+    resolvedSources.featureModifiers,
+    character,
+    entries,
+    resolvedSources.currentClassFeatures,
+    resolvedSources.currentSubclassFeatures,
+    proficiencyBonus: proficiencyBonus,
+    target: FeatureModifierTarget.armorClass,
+  );
   final armorClass = await _calculateArmorClass(
     character,
     abilityModifiers,
@@ -215,6 +224,9 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolveContext: context,
     transaction: transaction,
   );
+  final armorClassFormula = armorClassBonus == 0
+      ? armorClass.formula
+      : '${armorClass.formula} + Эффекты ($armorClassBonus)';
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
@@ -222,9 +234,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    armorClass: armorClass.value,
+    featureModifiers: resolvedSources.featureModifiers,
+    armorClass: armorClass.value + armorClassBonus,
     armorClassSource: armorClass.source,
-    armorClassFormula: armorClass.formula,
+    armorClassFormula: armorClassFormula,
     initiative:
         dexMod + (character.customInitiativeBonus ?? 0) + initiativeBonus,
     speed: _displayedSpeed(character.displayedSpeedKind, movementSpeeds),
@@ -303,6 +316,12 @@ int _featureModifierTotal(
   }
   final specs = <feature_modifiers.FeatureModifierSpec>[];
   final activeKeys = <String>{};
+  final selectedChoiceOptionKeys = <String>{
+    for (final choice in character.choices ?? const <CharacterChoiceData>[])
+      if ((choice.groupKey?.trim().isNotEmpty ?? false) &&
+          (choice.optionKey?.trim().isNotEmpty ?? false))
+        '${choice.groupKey!.trim()}::${choice.optionKey!.trim()}',
+  };
   for (final feature in classFeatures) {
     if (feature.referenceKey case final key?) activeKeys.add(key);
   }
@@ -326,6 +345,40 @@ int _featureModifierTotal(
     final sourceId = modifier.classFeatureId ?? modifier.subclassFeatureId;
     final classKey = sourceId == null ? null : featureClassKeys[sourceId];
     if (featureKey == null || classKey == null) continue;
+    final simpleConditions = <feature_modifiers.FeatureModifierCondition>{};
+    final requiredChoiceOptions = <String>{};
+    for (final condition
+        in modifier.conditions ?? const <FeatureModifierConditionData>[]) {
+      switch (condition.type) {
+        case FeatureModifierConditionType.unarmored:
+          simpleConditions
+              .add(feature_modifiers.FeatureModifierCondition.unarmored);
+        case FeatureModifierConditionType.noShield:
+          simpleConditions
+              .add(feature_modifiers.FeatureModifierCondition.noShield);
+        case FeatureModifierConditionType.abilityCheckIsNotProficient:
+          simpleConditions.add(
+            feature_modifiers
+                .FeatureModifierCondition.abilityCheckIsNotProficient,
+          );
+        case FeatureModifierConditionType.armored:
+          simpleConditions
+              .add(feature_modifiers.FeatureModifierCondition.armored);
+        case FeatureModifierConditionType.rangedWeaponAttack:
+          simpleConditions.add(
+            feature_modifiers.FeatureModifierCondition.rangedWeaponAttack,
+          );
+        case FeatureModifierConditionType.selectedChoiceOption:
+          final groupKey = condition.choiceGroupKey?.trim();
+          final optionKey = condition.optionKey?.trim();
+          if (groupKey != null &&
+              groupKey.isNotEmpty &&
+              optionKey != null &&
+              optionKey.isNotEmpty) {
+            requiredChoiceOptions.add('$groupKey::$optionKey');
+          }
+      }
+    }
     specs.add(feature_modifiers.FeatureModifierSpec(
       referenceKey: modifier.referenceKey,
       sourceFeatureKey: featureKey,
@@ -335,6 +388,12 @@ int _featureModifierTotal(
           feature_modifiers.FeatureModifierTarget.speed,
         FeatureModifierTarget.abilityCheck =>
           feature_modifiers.FeatureModifierTarget.abilityCheck,
+        FeatureModifierTarget.armorClass =>
+          feature_modifiers.FeatureModifierTarget.armorClass,
+        FeatureModifierTarget.attackRoll =>
+          feature_modifiers.FeatureModifierTarget.attackRoll,
+        FeatureModifierTarget.damageRoll =>
+          feature_modifiers.FeatureModifierTarget.damageRoll,
       },
       operation: feature_modifiers.FeatureModifierOperation.add,
       valueKind: switch (modifier.value.kind) {
@@ -352,19 +411,8 @@ int _featureModifierTotal(
       rounding: modifier.value.rounding == FeatureModifierRounding.floor
           ? feature_modifiers.FeatureModifierRounding.floor
           : null,
-      conditions: {
-        for (final condition
-            in modifier.conditions ?? const <FeatureModifierConditionData>[])
-          switch (condition.type) {
-            FeatureModifierConditionType.unarmored =>
-              feature_modifiers.FeatureModifierCondition.unarmored,
-            FeatureModifierConditionType.noShield =>
-              feature_modifiers.FeatureModifierCondition.noShield,
-            FeatureModifierConditionType.abilityCheckIsNotProficient =>
-              feature_modifiers
-                  .FeatureModifierCondition.abilityCheckIsNotProficient,
-          },
-      },
+      conditions: simpleConditions,
+      requiredChoiceOptions: requiredChoiceOptions,
     ));
   }
   final evaluated = feature_modifiers.evaluateFeatureModifiers(
@@ -376,6 +424,7 @@ int _featureModifierTotal(
       isArmored: character.equippedArmor != null,
       hasShield: character.equippedShield != null,
       abilityCheckIncludesProficiency: abilityCheckIncludesProficiency,
+      selectedChoiceOptionKeys: selectedChoiceOptionKeys,
     ),
   );
   return feature_modifiers.sumFeatureModifierValues(evaluated)[switch (target) {
@@ -383,6 +432,12 @@ int _featureModifierTotal(
           feature_modifiers.FeatureModifierTarget.speed,
         FeatureModifierTarget.abilityCheck =>
           feature_modifiers.FeatureModifierTarget.abilityCheck,
+        FeatureModifierTarget.armorClass =>
+          feature_modifiers.FeatureModifierTarget.armorClass,
+        FeatureModifierTarget.attackRoll =>
+          feature_modifiers.FeatureModifierTarget.attackRoll,
+        FeatureModifierTarget.damageRoll =>
+          feature_modifiers.FeatureModifierTarget.damageRoll,
       }] ??
       0;
 }

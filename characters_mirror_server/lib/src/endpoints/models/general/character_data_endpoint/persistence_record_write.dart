@@ -110,7 +110,7 @@ CharacterRecord _toCharacterRecord(
     createdAt: createdAt,
     updatedAt: updatedAt,
     userId: userId,
-    experience: character.experience,
+    experience: character.experience ?? 0,
     alignmentValue: character.alignmentValue,
     raceId: character.race?.id,
     subraceId: character.subrace?.id,

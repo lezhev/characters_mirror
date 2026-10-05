@@ -5,6 +5,47 @@ void _registerCharacterDataProficiencyScenarios(
   TestEndpoints endpoints,
   TestSessionBuilder Function(int userId) authenticatedSession,
 ) {
+  for (final fixture in <({
+    String name,
+    List<String>? training,
+    List<String>? multiclassTraining,
+  })>[
+    (name: 'null', training: null, multiclassTraining: null),
+    (name: 'empty', training: const [], multiclassTraining: const []),
+    (
+      name: 'mixed categories and keys',
+      training: const ['simpleMelee', 'dagger'],
+      multiclassTraining: const ['martialRanged', 'shortsword'],
+    ),
+  ]) {
+    test('class weapon training persists ${fixture.name}', () async {
+      final inserted = await endpoints.classData.upsert(
+        sessionBuilder,
+        ClassData(
+          name: 'Weapon Training ${fixture.name}',
+          weaponTraining: fixture.training,
+          multiclassWeaponTraining: fixture.multiclassTraining,
+        ),
+      );
+      final loaded = (await endpoints.classData.getAll(sessionBuilder))
+          .singleWhere((classData) => classData.id == inserted.id);
+      expect(loaded.weaponTraining, fixture.training);
+      expect(loaded.multiclassWeaponTraining, fixture.multiclassTraining);
+
+      await endpoints.classData.upsert(
+        sessionBuilder,
+        loaded.copyWith(
+          weaponTraining: fixture.multiclassTraining,
+          multiclassWeaponTraining: fixture.training,
+        ),
+      );
+      final updated = (await endpoints.classData.getAll(sessionBuilder))
+          .singleWhere((classData) => classData.id == inserted.id);
+      expect(updated.weaponTraining, fixture.multiclassTraining);
+      expect(updated.multiclassWeaponTraining, fixture.training);
+    });
+  }
+
   test('multiclass saving throws use only the starting class and overrides',
       () async {
     final fighter = await endpoints.classData.upsert(

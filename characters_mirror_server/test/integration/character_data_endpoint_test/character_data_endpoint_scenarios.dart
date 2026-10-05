@@ -13,6 +13,43 @@ void _registerCharacterDataEndpointTests() {
 
     setUp(CharacterSaveRateLimiter.resetForTests);
 
+    test('missing experience is saved as zero with a starting level', () async {
+      final ownerSession = authenticatedSession(510);
+      final saved = await endpoints.characterData.saveCharacter(
+        ownerSession,
+        CharacterData(name: 'Starting Hero'),
+      );
+      expect(saved.experience, 0);
+      expect(saved.derived?.totalLevel, 1);
+
+      final session = ownerSession.build();
+      try {
+        final record = await CharacterRecord.db.findById(session, saved.id!);
+        expect(record?.experience, 0);
+      } finally {
+        await session.close();
+      }
+    });
+
+    test('legacy null experience is returned as zero', () async {
+      final ownerSession = authenticatedSession(511);
+      final session = ownerSession.build();
+      try {
+        final record = await CharacterRecord.db.insertRow(
+          session,
+          CharacterRecord(name: 'Legacy Hero', userId: 511),
+        );
+        final loaded = await endpoints.characterData.getCharacter(
+          ownerSession,
+          record.id!,
+        );
+        expect(loaded.experience, 0);
+        expect(loaded.derived?.totalLevel, 1);
+      } finally {
+        await session.close();
+      }
+    });
+
     Future<void> seedCoreSpellSlotTables() async {
       const standardRows = <int, Map<int, int>>{
         1: {1: 2},
@@ -288,6 +325,7 @@ void _registerCharacterDataEndpointTests() {
 
       expect(saved.id, isNotNull);
       expect(saved.name, 'Valid Hero');
+      expect(saved.experience, 1200);
       expect(saved.equipment, hasLength(1));
       expect(saved.notes, hasLength(1));
       expect(saved.attacks, hasLength(1));

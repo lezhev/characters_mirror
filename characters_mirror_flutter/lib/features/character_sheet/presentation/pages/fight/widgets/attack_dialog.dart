@@ -275,6 +275,7 @@ class _AttackDialogState extends State<AttackDialog> {
       id: widget.attack.id,
       name: normalizedAttackText(_nameController.text),
       leadingAbility: _leadingAbility,
+      weaponCategory: widget.attack.weaponCategory,
       damage: firstDamagePart?.formula,
       customAttackBonus: int.tryParse(_bonusController.text.trim()) ?? 0,
       damageType: firstDamagePart?.damageType,

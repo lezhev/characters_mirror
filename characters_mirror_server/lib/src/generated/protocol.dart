@@ -7120,6 +7120,13 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<_i65.FeatureModifierData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i65.FeatureModifierData>(e))
+              .toList()
+          : null) as T;
+    }
     if (t == _i1.getType<Map<_i81.Ability, int>?>()) {
       return (data != null
           ? Map.fromEntries((data as List).map((e) => MapEntry(

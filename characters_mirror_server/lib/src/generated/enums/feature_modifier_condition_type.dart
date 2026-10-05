@@ -14,7 +14,10 @@ import 'package:serverpod/serverpod.dart' as _i1;
 enum FeatureModifierConditionType implements _i1.SerializableModel {
   unarmored,
   noShield,
-  abilityCheckIsNotProficient;
+  abilityCheckIsNotProficient,
+  armored,
+  rangedWeaponAttack,
+  selectedChoiceOption;
 
   static FeatureModifierConditionType fromJson(int index) {
     switch (index) {
@@ -24,6 +27,12 @@ enum FeatureModifierConditionType implements _i1.SerializableModel {
         return FeatureModifierConditionType.noShield;
       case 2:
         return FeatureModifierConditionType.abilityCheckIsNotProficient;
+      case 3:
+        return FeatureModifierConditionType.armored;
+      case 4:
+        return FeatureModifierConditionType.rangedWeaponAttack;
+      case 5:
+        return FeatureModifierConditionType.selectedChoiceOption;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "FeatureModifierConditionType"');

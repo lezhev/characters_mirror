@@ -2,3 +2,6 @@ enum: FeatureModifierTarget
 values:
   - speed
   - abilityCheck
+  - armorClass
+  - attackRoll
+  - damageRoll

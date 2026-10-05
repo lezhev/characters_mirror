@@ -103,6 +103,7 @@ sealed class CharacterCreationState with _$CharacterCreationState {
 
   factory CharacterCreationState.initial() => CharacterCreationState(
         character: CharacterData(
+          experience: 0,
           classEntries: const [],
           choices: const [],
           skillSelections: const [],
@@ -404,7 +405,7 @@ class CharacterCreation extends _$CharacterCreation {
       );
 
   void setExperience(int? experience) =>
-      _updateCharacter(state.character.copyWith(experience: experience));
+      _updateCharacter(state.character.copyWith(experience: experience ?? 0));
 
   void setAlignment(CharacterAlignment? alignment) => _updateCharacter(
         state.character.copyWith(

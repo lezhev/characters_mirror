@@ -1143,10 +1143,10 @@ void main() {
     expect(derived.abilityScores?.keys, containsAll(Ability.values));
   });
 
-  test('offline total level is zero without class entries', () async {
+  test('offline total level starts at one without class entries', () async {
     final derived = await buildOfflineDerivedData(cache, CharacterData());
 
-    expect(derived.totalLevel, 0);
+    expect(derived.totalLevel, 1);
     expect(derived.proficiencyBonus, 2);
   });
 

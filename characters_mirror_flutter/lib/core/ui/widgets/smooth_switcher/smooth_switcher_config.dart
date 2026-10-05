@@ -53,7 +53,7 @@ class _SmoothSwitcherAbilityConfig {
   final String titleFieldLabel = 'Название';
   final String textFieldLabel = 'Текст';
   final String tagsLabel = 'Теги';
-  final String resetLabel = 'Вернуть всё как было';
+  final String resetLabel = 'Вернуть значения по умолчанию';
   final int textMinLines = 3;
   final int textMaxLines = 6;
 }

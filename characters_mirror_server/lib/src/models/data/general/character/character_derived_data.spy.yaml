@@ -5,6 +5,7 @@ fields:
   abilityScores: Map<Ability, int>?
   abilityModifiers: Map<Ability, int>?
   activeFeatures: List<CharacterFeatureViewData>?
+  featureModifiers: List<FeatureModifierData>?
   armorClass: int?
   armorClassSource: String?
   armorClassFormula: String?

@@ -275,13 +275,22 @@ void main() {
       final adjusted = await _get(endpoints, session, base.id!);
       expect(adjusted.experience, 125);
 
-      final staleAward = _experienceOperation('stale-award', adjusted, 10);
+      await _sync(
+        endpoints,
+        session,
+        _experienceOperation('xp-zero', adjusted, -125),
+      );
+      final zeroExperience = await _get(endpoints, session, base.id!);
+      expect(zeroExperience.experience, 0);
+
+      final staleAward =
+          _experienceOperation('stale-award', zeroExperience, 10);
       await _sync(
         endpoints,
         session,
         _absoluteField(
           id: 'manual-xp',
-          character: adjusted,
+          character: zeroExperience,
           field: 'experience',
           value: 1200,
         ),
