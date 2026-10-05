@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:characters_mirror_flutter/features/character_portrait/character_portrait.dart';
 import 'package:characters_mirror_flutter/features/character_portrait/presentation/widgets/character_portrait_editor.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import 'package:flutter/material.dart';
 
 class CharacterPortraitTile extends StatelessWidget {
@@ -16,9 +17,10 @@ class CharacterPortraitTile extends StatelessWidget {
       label: 'Изменить портрет',
       child: Tooltip(
         message: 'Изменить портрет',
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+        child: SheetOutlineCard(
           onTap: () => _showPortraitEditor(context, characterId),
+          padding: EdgeInsets.zero,
+          borderRadius: 12,
           child: CharacterPortrait(
             characterId: characterId,
             size: 112,

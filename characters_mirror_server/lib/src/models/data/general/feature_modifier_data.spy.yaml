@@ -1,0 +1,22 @@
+class: FeatureModifierData
+table: feature_modifier_data
+fields:
+  referenceKey: String
+  classFeature: ClassFeatureData?, relation(name=class_feature_modifiers, optional)
+  subclassFeature: SubclassFeatureData?, relation(name=subclass_feature_modifiers, optional)
+  target: FeatureModifierTarget
+  operation: FeatureModifierOperation
+  value: FeatureModifierValueData
+  conditions: List<FeatureModifierConditionData>?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+indexes:
+  feature_modifier_reference_key_idx:
+    fields: referenceKey
+    unique: true
+  feature_modifier_class_feature_idx:
+    fields: classFeatureId
+  feature_modifier_subclass_feature_idx:
+    fields: subclassFeatureId

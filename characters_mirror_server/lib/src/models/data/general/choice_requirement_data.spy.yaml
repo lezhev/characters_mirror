@@ -1,0 +1,9 @@
+class: ChoiceRequirementData
+fields:
+  type: ChoiceRequirementType
+  classKey: String?
+  ability: Ability?
+  value: int?
+  referenceKey: String?
+  choiceGroupKey: String?
+  optionKey: String?

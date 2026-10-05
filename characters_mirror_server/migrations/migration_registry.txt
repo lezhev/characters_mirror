@@ -144,3 +144,6 @@
 20260928090000000-level1-feature-display-properties
 20260928100000000-level1-choice-corrections
 20260928110000000-smoke-level1-reference-fixes
+20261005153915764-spell-stage1
+20261005162354914-choice-eligibility-stage2
+20261005170804912

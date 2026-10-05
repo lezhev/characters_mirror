@@ -1,4 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/choice_option_eligibility.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 
 ChoiceGroupView filterExpertiseChoiceOptions(
   ChoiceGroupView groupView, {
@@ -9,10 +11,13 @@ ChoiceGroupView filterExpertiseChoiceOptions(
   return groupView.copyWith(
     options: [
       for (final option in groupView.options ?? const <ChoiceOptionData>[])
-        if ((option.requiredExistingSkill == null ||
-                ownedSkills.contains(option.requiredExistingSkill)) &&
-            (option.requiredExistingToolKey == null ||
-                ownedToolKeys.contains(option.requiredExistingToolKey)))
+        if (evaluateChoiceOptionData(
+          option,
+          ChoiceEligibilityContext(
+            skillKeys: {for (final skill in ownedSkills) skill.name},
+            toolKeys: ownedToolKeys,
+          ),
+        ).isEligible)
           option,
     ],
   );

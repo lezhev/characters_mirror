@@ -70,111 +70,16 @@ Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
         spell,
   ]..sort(_compareSpells);
 
-  final groups = <ClassSpellSelectionGroupView>[];
-  final knownCantrips = classLevel.knownCantrips ?? 0;
-  if (knownCantrips > 0) {
-    final cantrips = [
-      for (final spell in spells)
-        if ((spell.level ?? -1) == 0) spell,
-    ];
-    if (cantrips.isNotEmpty) {
-      groups.add(
-        ClassSpellSelectionGroupView(
-          kind: CharacterSpellSelectionKind.knownCantrip,
-          selectionCount: knownCantrips,
-          classDataId: classId,
-          classLevel: selectedLevel,
-          options: cantrips,
-        ),
-      );
-    }
-  }
-
-  final knownSpells = classLevel.knownSpells ?? 0;
-  final spellSlots = await _spellSlotsForClassStep(
-    session,
-    classData.spellcastingProgression,
-    selectedLevel,
-  );
-  final maxSpellLevel = _maxKnownSpellLevel(spellSlots);
-  if (knownSpells > 0 && maxSpellLevel > 0) {
-    final knownSpellOptions = [
-      for (final spell in spells)
-        if ((spell.level ?? 0) > 0 && spell.level! <= maxSpellLevel) spell,
-    ];
-    if (knownSpellOptions.isNotEmpty) {
-      groups.add(
-        ClassSpellSelectionGroupView(
-          kind: CharacterSpellSelectionKind.knownSpell,
-          selectionCount: knownSpells,
-          classDataId: classId,
-          classLevel: selectedLevel,
-          options: knownSpellOptions,
-        ),
-      );
-    }
-  }
-
-  final preparedSpellCount = _preparedSpellCount(
-    classLevel.preparedSpellFormula,
-    abilityScores: abilityScores,
-    classLevel: selectedLevel,
-  );
-  if (preparedSpellCount != null && maxSpellLevel > 0) {
-    final preparedSpellOptions = [
-      for (final spell in spells)
-        if ((spell.level ?? 0) > 0 && spell.level! <= maxSpellLevel) spell,
-    ];
-    if (preparedSpellOptions.isNotEmpty) {
-      groups.add(
-        ClassSpellSelectionGroupView(
-          kind: CharacterSpellSelectionKind.preparedSpell,
-          selectionCount: preparedSpellCount,
-          classDataId: classId,
-          classLevel: selectedLevel,
-          options: preparedSpellOptions,
-        ),
-      );
-    }
-  }
-
-  return groups;
+  final slots = await _spellSlotsForClassStep(
+      session, classData.spellcastingProgression, selectedLevel);
+  return buildClassSpellSelectionGroups(
+      classData: classData,
+      classLevel: classLevel,
+      selectedLevel: selectedLevel,
+      maxSpellLevel: _maxKnownSpellLevel(slots),
+      spells: spells,
+      abilityScores: abilityScores ?? const {});
 }
-
-int? _preparedSpellCount(
-  String? formula, {
-  required Map<String, int>? abilityScores,
-  required int classLevel,
-}) {
-  final normalizedFormula = formula?.trim().toLowerCase();
-  if (normalizedFormula == null || normalizedFormula.isEmpty) {
-    return null;
-  }
-  if (abilityScores == null || abilityScores.isEmpty) {
-    return null;
-  }
-
-  Ability? ability;
-  for (final candidate in Ability.values) {
-    if (normalizedFormula.contains('${candidate.name} modifier')) {
-      ability = candidate;
-      break;
-    }
-  }
-  if (ability == null || !normalizedFormula.contains('level')) {
-    return null;
-  }
-
-  final score = abilityScores[ability.name];
-  if (score == null) {
-    return null;
-  }
-
-  final count = _abilityModifier(score) + classLevel;
-  return count < 1 ? 1 : count;
-}
-
-int _abilityModifier(int score) => ((score - 10) / 2).floor();
 
 bool _isSpellAvailableForClassStep(
   SpellData spell, {

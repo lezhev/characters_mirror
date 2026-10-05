@@ -21,6 +21,7 @@ import '../views/class_spell_selection_group_view.dart' as _i9;
 import '../views/starting_equipment_block_view.dart' as _i10;
 import '../views/proficiency_bundle_view.dart' as _i11;
 import '../data/general/class/class_level_data.dart' as _i12;
+import '../data/general/feature_modifier_data.dart' as _i13;
 
 abstract class ClassStepView
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -43,6 +44,7 @@ abstract class ClassStepView
     this.startingProficiencies,
     this.multiclassWarnings,
     this.progression,
+    this.featureModifiers,
   });
 
   factory ClassStepView({
@@ -64,6 +66,7 @@ abstract class ClassStepView
     _i11.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
     List<_i12.ClassLevelData>? progression,
+    List<_i13.FeatureModifierData>? featureModifiers,
   }) = _ClassStepViewImpl;
 
   factory ClassStepView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -144,6 +147,10 @@ abstract class ClassStepView
           ?.map(
               (e) => _i12.ClassLevelData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      featureModifiers: (jsonSerialization['featureModifiers'] as List?)
+          ?.map((e) =>
+              _i13.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -183,6 +190,8 @@ abstract class ClassStepView
 
   List<_i12.ClassLevelData>? progression;
 
+  List<_i13.FeatureModifierData>? featureModifiers;
+
   /// Returns a shallow copy of this [ClassStepView]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -205,6 +214,7 @@ abstract class ClassStepView
     _i11.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
     List<_i12.ClassLevelData>? progression,
+    List<_i13.FeatureModifierData>? featureModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -253,6 +263,9 @@ abstract class ClassStepView
         'multiclassWarnings': multiclassWarnings?.toJson(),
       if (progression != null)
         'progression': progression?.toJson(valueToJson: (v) => v.toJson()),
+      if (featureModifiers != null)
+        'featureModifiers':
+            featureModifiers?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -306,6 +319,9 @@ abstract class ClassStepView
       if (progression != null)
         'progression':
             progression?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (featureModifiers != null)
+        'featureModifiers':
+            featureModifiers?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -337,6 +353,7 @@ class _ClassStepViewImpl extends ClassStepView {
     _i11.ProficiencyBundleView? startingProficiencies,
     List<String>? multiclassWarnings,
     List<_i12.ClassLevelData>? progression,
+    List<_i13.FeatureModifierData>? featureModifiers,
   }) : super._(
           classData: classData,
           selectedLevel: selectedLevel,
@@ -356,6 +373,7 @@ class _ClassStepViewImpl extends ClassStepView {
           startingProficiencies: startingProficiencies,
           multiclassWarnings: multiclassWarnings,
           progression: progression,
+          featureModifiers: featureModifiers,
         );
 
   /// Returns a shallow copy of this [ClassStepView]
@@ -381,6 +399,7 @@ class _ClassStepViewImpl extends ClassStepView {
     Object? startingProficiencies = _Undefined,
     Object? multiclassWarnings = _Undefined,
     Object? progression = _Undefined,
+    Object? featureModifiers = _Undefined,
   }) {
     return ClassStepView(
       classData:
@@ -450,6 +469,9 @@ class _ClassStepViewImpl extends ClassStepView {
       progression: progression is List<_i12.ClassLevelData>?
           ? progression
           : this.progression?.map((e0) => e0.copyWith()).toList(),
+      featureModifiers: featureModifiers is List<_i13.FeatureModifierData>?
+          ? featureModifiers
+          : this.featureModifiers?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

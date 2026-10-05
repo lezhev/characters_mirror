@@ -88,15 +88,21 @@ Map<int, List<_SpellEntry>> _spellEntriesByLevel(
       continue;
     }
     final key = spellKey(spell);
-    if (key == null || !seen.add(key)) {
-      continue;
-    }
+    if (key == null) continue;
     final level = spell.level ?? 0;
     final isPrepared = preparation.preparedKeys.contains(key) ||
         preparation.alwaysPreparedKeys.contains(key);
-    if (preparation.canPrepare && level > 0 && !isPrepared) {
-      continue;
-    }
+    final sourceClass = selection.classEntry?.classData ??
+        spellEntryForClass(character, selection.classDataId)?.classData;
+    final explicitMode = sourceClass?.spellSelectionMode;
+    final requiresPreparation =
+        selection.kind == CharacterSpellSelectionKind.spellbookSpell ||
+            selection.kind == CharacterSpellSelectionKind.preparedSpell ||
+            explicitMode == ClassSpellSelectionMode.prepared ||
+            explicitMode == ClassSpellSelectionMode.spellbook ||
+            (explicitMode == null && preparation.canPrepare);
+    if (requiresPreparation && level > 0 && !isPrepared) continue;
+    if (!seen.add(key)) continue;
     result.putIfAbsent(level, () => <_SpellEntry>[]).add(
           _SpellEntry(
             spell: spell,
@@ -186,7 +192,13 @@ _SpellPreparationState _spellPreparationState(CharacterData character) {
         };
 
   return _SpellPreparationState(
-    canPrepare: defaultPreparedKeys.isNotEmpty || explicitPreparedKeys != null,
+    canPrepare: defaultPreparedKeys.isNotEmpty ||
+        explicitPreparedKeys != null ||
+        (character.classEntries?.any((entry) => {
+                  ClassSpellSelectionMode.prepared,
+                  ClassSpellSelectionMode.spellbook
+                }.contains(entry.classData?.spellSelectionMode)) ??
+            false),
     preparedKeys: preparedKeys,
     alwaysPreparedKeys: alwaysPreparedKeys,
   );
@@ -230,10 +242,6 @@ _SpellManagementData _buildSpellManagementData(
 
   final preparedContexts = _preparedClassContexts(character, classLevels);
   final canPrepare = preparedContexts.isNotEmpty;
-  final isWizard = preparedContexts.any((entry) {
-    final name = entry.classData?.name?.trim().toLowerCase() ?? '';
-    return name.contains('wizard') || name.contains('волшеб');
-  });
   final preparedKeys = _effectivePreparedKeys(character);
   final spellByKey = <String, SpellData>{
     for (final spell in availableSpells)
@@ -246,12 +254,24 @@ _SpellManagementData _buildSpellManagementData(
       if (spellByKey[key] != null && (spellByKey[key]!.level ?? 0) > 0)
         spellByKey[key]!,
   ]..sort(_compareSpells);
-  final preparationPool =
-      (isWizard ? knownSpells : availableSpells).where((spell) {
-    final key = spellKey(spell);
-    return (spell.level ?? 0) > 0 && key != null && !preparedKeys.contains(key);
-  }).toList()
-        ..sort(_compareSpells);
+  final poolByKey = <String, SpellData>{
+    for (final entry in preparedContexts)
+      for (final spell in preparationPoolForEntry(character, entry,
+          _classLevelForEntry(entry, classLevels), availableSpells))
+        if (spellKey(spell) != null && !preparedKeys.contains(spellKey(spell)))
+          spellKey(spell)!: spell,
+  };
+  final preparationClassIds = <String, int?>{};
+  for (final entry in preparedContexts) {
+    for (final spell in preparationPoolForEntry(character, entry,
+        _classLevelForEntry(entry, classLevels), availableSpells)) {
+      final key = spellKey(spell);
+      if (key != null) {
+        preparationClassIds.putIfAbsent(key, () => entry.classData?.id);
+      }
+    }
+  }
+  final preparationPool = poolByKey.values.toList()..sort(_compareSpells);
 
   return _SpellManagementData(
     canPrepare: canPrepare,
@@ -263,6 +283,7 @@ _SpellManagementData _buildSpellManagementData(
           spell,
     ],
     preparedSpells: preparedSpells,
+    preparationClassIds: preparationClassIds,
     preparationSourceSpells: preparationPool,
     preparedCountLimit: _preparedSpellCountLimit(
       character,
@@ -317,11 +338,11 @@ List<CharacterClassEntryData> _preparedClassContexts(
   return [
     for (final entry
         in character.classEntries ?? const <CharacterClassEntryData>[])
-      if (_classLevelForEntry(entry, classLevels)
-              ?.preparedSpellFormula
-              ?.trim()
-              .isNotEmpty ==
-          true)
+      if ({
+        ClassSpellSelectionMode.prepared,
+        ClassSpellSelectionMode.spellbook
+      }.contains(
+          spellMode(entry.classData, _classLevelForEntry(entry, classLevels))))
         entry,
   ];
 }
@@ -350,44 +371,19 @@ int? _preparedSpellCountLimit(
 ) {
   var total = 0;
   for (final entry in entries) {
-    final formula =
-        _classLevelForEntry(entry, classLevels)?.preparedSpellFormula;
-    final count = _preparedSpellCount(
-      formula,
-      character: character,
-      classLevel: entry.level ?? 1,
-    );
+    final row = _classLevelForEntry(entry, classLevels);
+    final scores = {
+      for (final ability in Ability.values)
+        ability.name: character.derived?.abilityScores?[ability] ??
+            character.baseAbilityScores?[ability.name] ??
+            10
+    };
+    final count = row == null ? null : preparedLimit(row, scores);
     if (count != null) {
       total += count;
     }
   }
   return total == 0 ? null : total;
-}
-
-int? _preparedSpellCount(
-  String? formula, {
-  required CharacterData character,
-  required int classLevel,
-}) {
-  final normalizedFormula = formula?.trim().toLowerCase();
-  if (normalizedFormula == null || normalizedFormula.isEmpty) {
-    return null;
-  }
-  Ability? ability;
-  for (final candidate in Ability.values) {
-    if (normalizedFormula.contains('${candidate.name} modifier')) {
-      ability = candidate;
-      break;
-    }
-  }
-  if (ability == null || !normalizedFormula.contains('level')) {
-    return null;
-  }
-  final score = character.derived?.abilityScores?[ability] ??
-      character.baseAbilityScores?[ability.name] ??
-      10;
-  final count = _abilityModifier(score) + classLevel;
-  return count < 1 ? 1 : count;
 }
 
 int? _primarySpellClassId(CharacterData character) {
@@ -422,34 +418,20 @@ Set<String> _effectivePreparedKeys(CharacterData character) {
 }
 
 List<CharacterSpellSelectionData> _addSpellSelection(
-  List<CharacterSpellSelectionData>? selections,
+  CharacterData character,
   SpellData spell,
-  int? classDataId,
-) {
-  final key = spellKey(spell);
-  final next = [...?selections];
-  if (key == null ||
-      next.any((selection) => _spellSelectionKey(selection) == key)) {
-    return next;
+  int? classDataId, {
+  ClassLevelData? classLevel,
+}) {
+  final next = [...?character.spellSelections];
+  final selection = learnedSpellSelection(character, spell, classDataId,
+      classLevel: classLevel);
+  if (selection.spellKey != null &&
+      !next.any(
+          (item) => selectionIdentity(item) == selectionIdentity(selection))) {
+    next.add(selection.copyWith(selectionIndex: next.length));
   }
-  next.add(
-    CharacterSpellSelectionData(
-      classDataId: classDataId,
-      spell: spell,
-      spellId: spell.id,
-      spellKey: key,
-      kind: (spell.level ?? 0) <= 0
-          ? CharacterSpellSelectionKind.knownCantrip
-          : CharacterSpellSelectionKind.knownSpell,
-      selectionIndex: next.length,
-    ),
-  );
   return next;
-}
-
-bool _hasSpell(CharacterData character, String key) {
-  return (character.spellSelections ?? const <CharacterSpellSelectionData>[])
-      .any((selection) => _spellSelectionKey(selection) == key);
 }
 
 String _spellLevelLabel(SpellData spell) {
@@ -502,6 +484,7 @@ class _SpellManagementData {
     required this.knownSpells,
     required this.learnableSpells,
     required this.preparedSpells,
+    required this.preparationClassIds,
     required this.preparationSourceSpells,
     required this.preparedCountLimit,
   });
@@ -511,6 +494,7 @@ class _SpellManagementData {
   final List<SpellData> knownSpells;
   final List<SpellData> learnableSpells;
   final List<SpellData> preparedSpells;
+  final Map<String, int?> preparationClassIds;
   final List<SpellData> preparationSourceSpells;
   final int? preparedCountLimit;
 }

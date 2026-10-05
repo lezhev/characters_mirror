@@ -1,6 +1,7 @@
 class: ClassSpellSelectionGroupView
 fields:
   kind: CharacterSpellSelectionKind?
+  optionSourceSelectionKind: CharacterSpellSelectionKind?
   selectionCount: int?
   classDataId: int?
   classLevel: int?

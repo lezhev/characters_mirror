@@ -1,6 +1,8 @@
 admin:
   - getAllUsers:
   - setAdminRole:
+  - importChoiceOptions:
+  - importFeatureModifiers:
 appAuth:
   - register:
 characterPortrait:
@@ -36,6 +38,7 @@ classData:
   - add:
   - upsert:
   - getStepView:
+  - getSpellDelta:
   - delete:
 classFeatureData:
   - getAll:

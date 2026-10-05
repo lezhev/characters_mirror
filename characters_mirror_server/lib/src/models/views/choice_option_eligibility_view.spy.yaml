@@ -1,0 +1,5 @@
+class: ChoiceOptionEligibilityView
+fields:
+  optionKey: String
+  isEligible: bool
+  failedRequirements: List<ChoiceRequirementFailureView>?

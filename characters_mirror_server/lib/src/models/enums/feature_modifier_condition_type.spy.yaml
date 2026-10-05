@@ -1,0 +1,5 @@
+enum: FeatureModifierConditionType
+values:
+  - unarmored
+  - noShield
+  - abilityCheckIsNotProficient

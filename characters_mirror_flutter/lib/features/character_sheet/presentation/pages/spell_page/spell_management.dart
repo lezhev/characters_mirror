@@ -29,6 +29,7 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
   late final TextEditingController _saveDcController;
   late final TextEditingController _attackController;
   late Future<_SpellManagementData> _dataFuture;
+  List<ClassLevelData> _classLevels = const [];
 
   @override
   void initState() {
@@ -102,12 +103,12 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
                                 onUnprepareSpell: (spell) => _setSpellPrepared(
                                   spell,
                                   false,
-                                  data.primaryClassDataId,
+                                  data.preparationClassIds[spellKey(spell)],
                                 ),
                                 onPrepareSpell: (spell) => _setSpellPrepared(
                                   spell,
                                   true,
-                                  data.primaryClassDataId,
+                                  data.preparationClassIds[spellKey(spell)],
                                 ),
                               ),
                             _KnownSpellsTab(
@@ -136,6 +137,7 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
   Future<_SpellManagementData> _loadData() async {
     final allSpells = await SpellRepository().getAll();
     final classLevels = await ClassLevelRepository().getAll();
+    _classLevels = classLevels;
     return _buildSpellManagementData(_character, allSpells, classLevels);
   }
 
@@ -164,9 +166,11 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
     setState(() {
       _character = _character.copyWith(
         spellSelections: _addSpellSelection(
-          _character.spellSelections,
+          _character,
           spell,
           classDataId,
+          classLevel: spellLevelForEntry(
+              spellEntryForClass(_character, classDataId), _classLevels),
         ),
       );
       _dataFuture = _loadData();
@@ -177,15 +181,16 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
     await widget.onSpellForgotten?.call(spell);
     final key = spellKey(spell);
     setState(() {
+      final selections = forgetSpellSelections(
+          _character, spell, _primarySpellClassId(_character));
       _character = _character.copyWith(
-        spellSelections: [
-          for (final selection in _character.spellSelections ??
-              const <CharacterSpellSelectionData>[])
-            if (_spellSelectionKey(selection) != key) selection,
-        ],
+        spellSelections: selections,
         preparedSpellKeys: [
           for (final preparedKey in _effectivePreparedKeys(_character))
-            if (preparedKey != key) preparedKey,
+            if (preparedKey != key ||
+                selections
+                    .any((selection) => _spellSelectionKey(selection) == key))
+              preparedKey,
         ],
       );
       _dataFuture = _loadData();
@@ -197,6 +202,10 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
     bool prepared,
     int? classDataId,
   ) async {
+    final selections = prepareSpellSelections(
+        _character, spell, classDataId, prepared,
+        classLevel: spellLevelForEntry(
+            spellEntryForClass(_character, classDataId), _classLevels));
     await widget.onSpellPreparedChanged?.call(spell, prepared, classDataId);
     final key = spellKey(spell);
     if (key == null) {
@@ -208,13 +217,7 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
     }
     setState(() {
       _character = _character.copyWith(
-        spellSelections: _hasSpell(_character, key)
-            ? _character.spellSelections
-            : _addSpellSelection(
-                _character.spellSelections,
-                spell,
-                classDataId,
-              ),
+        spellSelections: selections,
         preparedSpellKeys: preparedKeys.toList()..sort(),
       );
       _dataFuture = _loadData();

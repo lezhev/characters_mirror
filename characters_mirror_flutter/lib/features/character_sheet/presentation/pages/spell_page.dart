@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';
 import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
@@ -104,7 +105,8 @@ class SpellPage extends ConsumerWidget {
                 ref
                     .read(
                         characterSheetControllerProvider(characterId).notifier)
-                    .forgetSpell(spell),
+                    .forgetSpell(spell,
+                        classDataId: _primarySpellClassId(character)),
               );
               return Future.value();
             },

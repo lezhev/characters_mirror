@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/features/character_creation/application/starting_equipment_selection_support.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
@@ -244,45 +245,7 @@ class ClassState extends _$ClassState {
     List<CharacterSpellSelectionData> selections,
     List<ClassSpellSelectionGroupView>? groups,
   ) {
-    final groupMap = {
-      for (final group in groups ?? const <ClassSpellSelectionGroupView>[])
-        if (group.kind != null && group.classDataId != null)
-          '${group.classDataId}:${group.kind!.name}': group,
-    };
-    final normalized = <CharacterSpellSelectionData>[];
-
-    for (final entry in groupMap.entries) {
-      final group = entry.value;
-      final available = {
-        for (final spell in group.options ?? const <SpellData>[])
-          if (_spellKey(spell) != null) _spellKey(spell)!: spell,
-      };
-      final selected = [
-        for (final selection in selections)
-          if ('${selection.classDataId}:${selection.kind?.name}' == entry.key &&
-              _selectionSpellKey(selection) != null &&
-              available.containsKey(_selectionSpellKey(selection)))
-            selection,
-      ]..sort(
-          (left, right) =>
-              (left.selectionIndex ?? 0).compareTo(right.selectionIndex ?? 0),
-        );
-
-      final limit = group.selectionCount ?? 1;
-      for (var index = 0; index < selected.length && index < limit; index++) {
-        final spell = available[_selectionSpellKey(selected[index])]!;
-        normalized.add(
-          selected[index].copyWith(
-            spell: spell,
-            spellId: spell.id,
-            spellKey: _spellKey(spell),
-            selectionIndex: index,
-          ),
-        );
-      }
-    }
-
-    return normalized;
+    return normalizeDraftSpells(selections, groups);
   }
 
   String? _selectionSpellKey(CharacterSpellSelectionData selection) {
@@ -364,8 +327,7 @@ class ClassState extends _$ClassState {
       if (group == null) continue;
 
       result[_groupKey(group)] = {
-        for (final option
-            in groupView.options ?? const <ChoiceOptionData>[])
+        for (final option in groupView.options ?? const <ChoiceOptionData>[])
           if (option.optionKey.trim().isNotEmpty)
             option.optionKey.trim(): option,
       };

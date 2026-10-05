@@ -19,6 +19,7 @@ import '../../../enums/unarmored_defense_rule.dart' as _i5;
 import '../../../data/general/feature_resource_definition_data.dart' as _i6;
 import '../../../data/general/feature_resource_effect_data.dart' as _i7;
 import '../../../data/class_spell_grant_data.dart' as _i8;
+import '../../../data/general/feature_modifier_data.dart' as _i9;
 
 abstract class ClassFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -27,6 +28,7 @@ abstract class ClassFeatureData
     required this.parentClassId,
     this.parentClass,
     this.name,
+    this.referenceKey,
     this.description,
     this.shortDescription,
     required this.level,
@@ -42,6 +44,7 @@ abstract class ClassFeatureData
     this.resources,
     this.resourceEffects,
     this.spellGrants,
+    this.featureModifiers,
   });
 
   factory ClassFeatureData({
@@ -49,6 +52,7 @@ abstract class ClassFeatureData
     required int parentClassId,
     _i2.ClassData? parentClass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     required int level,
@@ -64,6 +68,7 @@ abstract class ClassFeatureData
     List<_i6.FeatureResourceDefinitionData>? resources,
     List<_i7.FeatureResourceEffectData>? resourceEffects,
     List<_i8.ClassSpellGrantData>? spellGrants,
+    List<_i9.FeatureModifierData>? featureModifiers,
   }) = _ClassFeatureDataImpl;
 
   factory ClassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -75,6 +80,7 @@ abstract class ClassFeatureData
           : _i2.ClassData.fromJson(
               (jsonSerialization['parentClass'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
       level: jsonSerialization['level'] as int,
@@ -110,6 +116,10 @@ abstract class ClassFeatureData
           ?.map((e) =>
               _i8.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      featureModifiers: (jsonSerialization['featureModifiers'] as List?)
+          ?.map((e) =>
+              _i9.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -125,6 +135,8 @@ abstract class ClassFeatureData
   _i2.ClassData? parentClass;
 
   String? name;
+
+  String? referenceKey;
 
   String? description;
 
@@ -156,6 +168,8 @@ abstract class ClassFeatureData
 
   List<_i8.ClassSpellGrantData>? spellGrants;
 
+  List<_i9.FeatureModifierData>? featureModifiers;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -167,6 +181,7 @@ abstract class ClassFeatureData
     int? parentClassId,
     _i2.ClassData? parentClass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     int? level,
@@ -182,6 +197,7 @@ abstract class ClassFeatureData
     List<_i6.FeatureResourceDefinitionData>? resources,
     List<_i7.FeatureResourceEffectData>? resourceEffects,
     List<_i8.ClassSpellGrantData>? spellGrants,
+    List<_i9.FeatureModifierData>? featureModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -190,6 +206,7 @@ abstract class ClassFeatureData
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
@@ -212,6 +229,9 @@ abstract class ClassFeatureData
             resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
+      if (featureModifiers != null)
+        'featureModifiers':
+            featureModifiers?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -222,6 +242,7 @@ abstract class ClassFeatureData
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJsonForProtocol(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
@@ -246,6 +267,9 @@ abstract class ClassFeatureData
       if (spellGrants != null)
         'spellGrants':
             spellGrants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (featureModifiers != null)
+        'featureModifiers':
+            featureModifiers?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -254,12 +278,14 @@ abstract class ClassFeatureData
     _i6.FeatureResourceDefinitionDataIncludeList? resources,
     _i7.FeatureResourceEffectDataIncludeList? resourceEffects,
     _i8.ClassSpellGrantDataIncludeList? spellGrants,
+    _i9.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     return ClassFeatureDataInclude._(
       parentClass: parentClass,
       resources: resources,
       resourceEffects: resourceEffects,
       spellGrants: spellGrants,
+      featureModifiers: featureModifiers,
     );
   }
 
@@ -297,6 +323,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     required int parentClassId,
     _i2.ClassData? parentClass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     required int level,
@@ -312,11 +339,13 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     List<_i6.FeatureResourceDefinitionData>? resources,
     List<_i7.FeatureResourceEffectData>? resourceEffects,
     List<_i8.ClassSpellGrantData>? spellGrants,
+    List<_i9.FeatureModifierData>? featureModifiers,
   }) : super._(
           id: id,
           parentClassId: parentClassId,
           parentClass: parentClass,
           name: name,
+          referenceKey: referenceKey,
           description: description,
           shortDescription: shortDescription,
           level: level,
@@ -332,6 +361,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           resources: resources,
           resourceEffects: resourceEffects,
           spellGrants: spellGrants,
+          featureModifiers: featureModifiers,
         );
 
   /// Returns a shallow copy of this [ClassFeatureData]
@@ -343,6 +373,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     int? parentClassId,
     Object? parentClass = _Undefined,
     Object? name = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? description = _Undefined,
     Object? shortDescription = _Undefined,
     int? level,
@@ -358,6 +389,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     Object? resources = _Undefined,
     Object? resourceEffects = _Undefined,
     Object? spellGrants = _Undefined,
+    Object? featureModifiers = _Undefined,
   }) {
     return ClassFeatureData(
       id: id is int? ? id : this.id,
@@ -366,6 +398,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           ? parentClass
           : this.parentClass?.copyWith(),
       name: name is String? ? name : this.name,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       description: description is String? ? description : this.description,
       shortDescription: shortDescription is String?
           ? shortDescription
@@ -396,6 +429,9 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
       spellGrants: spellGrants is List<_i8.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
+      featureModifiers: featureModifiers is List<_i9.FeatureModifierData>?
+          ? featureModifiers
+          : this.featureModifiers?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -409,6 +445,10 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
     );
     name = _i1.ColumnString(
       'name',
+      this,
+    );
+    referenceKey = _i1.ColumnString(
+      'referenceKey',
       this,
     );
     description = _i1.ColumnString(
@@ -468,6 +508,8 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString name;
 
+  late final _i1.ColumnString referenceKey;
+
   late final _i1.ColumnString description;
 
   late final _i1.ColumnString shortDescription;
@@ -503,6 +545,10 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
   _i8.ClassSpellGrantDataTable? ___spellGrants;
 
   _i1.ManyRelation<_i8.ClassSpellGrantDataTable>? _spellGrants;
+
+  _i9.FeatureModifierDataTable? ___featureModifiers;
+
+  _i1.ManyRelation<_i9.FeatureModifierDataTable>? _featureModifiers;
 
   _i2.ClassDataTable get parentClass {
     if (_parentClass != null) return _parentClass!;
@@ -555,6 +601,19 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
           _i8.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
     );
     return ___spellGrants!;
+  }
+
+  _i9.FeatureModifierDataTable get __featureModifiers {
+    if (___featureModifiers != null) return ___featureModifiers!;
+    ___featureModifiers = _i1.createRelationTable(
+      relationFieldName: '__featureModifiers',
+      field: ClassFeatureData.t.id,
+      foreignField: _i9.FeatureModifierData.t.classFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i9.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+    );
+    return ___featureModifiers!;
   }
 
   _i1.ManyRelation<_i6.FeatureResourceDefinitionDataTable> get resources {
@@ -612,11 +671,30 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
     return _spellGrants!;
   }
 
+  _i1.ManyRelation<_i9.FeatureModifierDataTable> get featureModifiers {
+    if (_featureModifiers != null) return _featureModifiers!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'featureModifiers',
+      field: ClassFeatureData.t.id,
+      foreignField: _i9.FeatureModifierData.t.classFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i9.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+    );
+    _featureModifiers = _i1.ManyRelation<_i9.FeatureModifierDataTable>(
+      tableWithRelations: relationTable,
+      table: _i9.FeatureModifierDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _featureModifiers!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         parentClassId,
         name,
+        referenceKey,
         description,
         shortDescription,
         level,
@@ -645,6 +723,9 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
     if (relationField == 'spellGrants') {
       return __spellGrants;
     }
+    if (relationField == 'featureModifiers') {
+      return __featureModifiers;
+    }
     return null;
   }
 }
@@ -655,11 +736,13 @@ class ClassFeatureDataInclude extends _i1.IncludeObject {
     _i6.FeatureResourceDefinitionDataIncludeList? resources,
     _i7.FeatureResourceEffectDataIncludeList? resourceEffects,
     _i8.ClassSpellGrantDataIncludeList? spellGrants,
+    _i9.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     _parentClass = parentClass;
     _resources = resources;
     _resourceEffects = resourceEffects;
     _spellGrants = spellGrants;
+    _featureModifiers = featureModifiers;
   }
 
   _i2.ClassDataInclude? _parentClass;
@@ -670,12 +753,15 @@ class ClassFeatureDataInclude extends _i1.IncludeObject {
 
   _i8.ClassSpellGrantDataIncludeList? _spellGrants;
 
+  _i9.FeatureModifierDataIncludeList? _featureModifiers;
+
   @override
   Map<String, _i1.Include?> get includes => {
         'parentClass': _parentClass,
         'resources': _resources,
         'resourceEffects': _resourceEffects,
         'spellGrants': _spellGrants,
+        'featureModifiers': _featureModifiers,
       };
 
   @override
@@ -1006,6 +1092,31 @@ class ClassFeatureDataAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [ClassFeatureData] and the given [FeatureModifierData]s
+  /// by setting each [FeatureModifierData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
+  Future<void> featureModifiers(
+    _i1.Session session,
+    ClassFeatureData classFeatureData,
+    List<_i9.FeatureModifierData> featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+    if (classFeatureData.id == null) {
+      throw ArgumentError.notNull('classFeatureData.id');
+    }
+
+    var $featureModifierData = featureModifierData
+        .map((e) => e.copyWith(classFeatureId: classFeatureData.id))
+        .toList();
+    await session.db.update<_i9.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i9.FeatureModifierData.t.classFeatureId],
+      transaction: transaction,
+    );
+  }
 }
 
 class ClassFeatureDataAttachRowRepository {
@@ -1106,6 +1217,30 @@ class ClassFeatureDataAttachRowRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [ClassFeatureData] and the given [FeatureModifierData]
+  /// by setting the [FeatureModifierData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
+  Future<void> featureModifiers(
+    _i1.Session session,
+    ClassFeatureData classFeatureData,
+    _i9.FeatureModifierData featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.id == null) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+    if (classFeatureData.id == null) {
+      throw ArgumentError.notNull('classFeatureData.id');
+    }
+
+    var $featureModifierData =
+        featureModifierData.copyWith(classFeatureId: classFeatureData.id);
+    await session.db.updateRow<_i9.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i9.FeatureModifierData.t.classFeatureId],
+      transaction: transaction,
+    );
+  }
 }
 
 class ClassFeatureDataDetachRepository {
@@ -1182,6 +1317,30 @@ class ClassFeatureDataDetachRepository {
       transaction: transaction,
     );
   }
+
+  /// Detaches the relation between this [ClassFeatureData] and the given [FeatureModifierData]
+  /// by setting the [FeatureModifierData]'s foreign key `classFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> featureModifiers(
+    _i1.Session session,
+    List<_i9.FeatureModifierData> featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+
+    var $featureModifierData = featureModifierData
+        .map((e) => e.copyWith(classFeatureId: null))
+        .toList();
+    await session.db.update<_i9.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i9.FeatureModifierData.t.classFeatureId],
+      transaction: transaction,
+    );
+  }
 }
 
 class ClassFeatureDataDetachRowRepository {
@@ -1252,6 +1411,29 @@ class ClassFeatureDataDetachRowRepository {
     await session.db.updateRow<_i8.ClassSpellGrantData>(
       $classSpellGrantData,
       columns: [_i8.ClassSpellGrantData.t.sourceFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [ClassFeatureData] and the given [FeatureModifierData]
+  /// by setting the [FeatureModifierData]'s foreign key `classFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> featureModifiers(
+    _i1.Session session,
+    _i9.FeatureModifierData featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.id == null) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+
+    var $featureModifierData =
+        featureModifierData.copyWith(classFeatureId: null);
+    await session.db.updateRow<_i9.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i9.FeatureModifierData.t.classFeatureId],
       transaction: transaction,
     );
   }

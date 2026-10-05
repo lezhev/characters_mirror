@@ -18,6 +18,11 @@ extension ClassStateSpellSkillOperations on ClassState {
       return;
     }
 
+    if (!draftSpellOptions(group, currentState.selectedSpellSelections)
+        .any((option) => _spellKey(option) == spellKey)) {
+      return;
+    }
+
     final selected = [
       for (final selection in currentState.selectedSpellSelections)
         if (selection.classDataId == classId && selection.kind == kind)
@@ -142,11 +147,11 @@ extension ClassStateSpellSkillOperations on ClassState {
 
     state = AsyncValue.data(
       currentState.copyWith(
-        selectedSpellSelections: [
+        selectedSpellSelections: _normalizeSpellSelections([
           for (final selection in currentState.selectedSpellSelections)
             if (!(selection.classDataId == classId && selection.kind == kind))
               selection,
-        ],
+        ], currentState.stepView?.spellSelectionGroups),
       ),
     );
   }

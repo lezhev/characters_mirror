@@ -17,9 +17,10 @@ import '../../enums/skill.dart' as _i3;
 import '../../enums/language.dart' as _i4;
 import '../../enums/armor_category.dart' as _i5;
 import '../../enums/weapon_category.dart' as _i6;
-import '../../enums/feature_tag.dart' as _i7;
-import '../../enums/damage_type.dart' as _i8;
-import '../../enums/spell/area_of_effect_type.dart' as _i9;
+import '../../data/general/choice_requirement_data.dart' as _i7;
+import '../../enums/feature_tag.dart' as _i8;
+import '../../enums/damage_type.dart' as _i9;
+import '../../enums/spell/area_of_effect_type.dart' as _i10;
 
 abstract class ChoiceOptionData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -41,6 +42,7 @@ abstract class ChoiceOptionData
     this.grantedExpertiseToolKeys,
     this.requiredExistingSkill,
     this.requiredExistingToolKey,
+    this.requirements,
     this.grantedSpellKeys,
     this.grantedFeatureTags,
     this.damageType,
@@ -71,10 +73,11 @@ abstract class ChoiceOptionData
     List<String>? grantedExpertiseToolKeys,
     _i3.Skill? requiredExistingSkill,
     String? requiredExistingToolKey,
+    List<_i7.ChoiceRequirementData>? requirements,
     List<String>? grantedSpellKeys,
-    List<_i7.FeatureTag>? grantedFeatureTags,
-    _i8.DamageType? damageType,
-    _i9.AreaOfEffectType? areaOfEffectType,
+    List<_i8.FeatureTag>? grantedFeatureTags,
+    _i9.DamageType? damageType,
+    _i10.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     Map<String, String>? damageByLevel,
     String? source,
@@ -131,19 +134,23 @@ abstract class ChoiceOptionData
               (jsonSerialization['requiredExistingSkill'] as String)),
       requiredExistingToolKey:
           jsonSerialization['requiredExistingToolKey'] as String?,
+      requirements: (jsonSerialization['requirements'] as List?)
+          ?.map((e) =>
+              _i7.ChoiceRequirementData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
       grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
           ?.map((e) => e as String)
           .toList(),
       grantedFeatureTags: (jsonSerialization['grantedFeatureTags'] as List?)
-          ?.map((e) => _i7.FeatureTag.fromJson((e as String)))
+          ?.map((e) => _i8.FeatureTag.fromJson((e as String)))
           .toList(),
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i8.DamageType.fromJson(
+          : _i9.DamageType.fromJson(
               (jsonSerialization['damageType'] as String)),
       areaOfEffectType: jsonSerialization['areaOfEffectType'] == null
           ? null
-          : _i9.AreaOfEffectType.fromJson(
+          : _i10.AreaOfEffectType.fromJson(
               (jsonSerialization['areaOfEffectType'] as String)),
       areaText: jsonSerialization['areaText'] as String?,
       damageByLevel:
@@ -201,13 +208,15 @@ abstract class ChoiceOptionData
 
   String? requiredExistingToolKey;
 
+  List<_i7.ChoiceRequirementData>? requirements;
+
   List<String>? grantedSpellKeys;
 
-  List<_i7.FeatureTag>? grantedFeatureTags;
+  List<_i8.FeatureTag>? grantedFeatureTags;
 
-  _i8.DamageType? damageType;
+  _i9.DamageType? damageType;
 
-  _i9.AreaOfEffectType? areaOfEffectType;
+  _i10.AreaOfEffectType? areaOfEffectType;
 
   String? areaText;
 
@@ -245,10 +254,11 @@ abstract class ChoiceOptionData
     List<String>? grantedExpertiseToolKeys,
     _i3.Skill? requiredExistingSkill,
     String? requiredExistingToolKey,
+    List<_i7.ChoiceRequirementData>? requirements,
     List<String>? grantedSpellKeys,
-    List<_i7.FeatureTag>? grantedFeatureTags,
-    _i8.DamageType? damageType,
-    _i9.AreaOfEffectType? areaOfEffectType,
+    List<_i8.FeatureTag>? grantedFeatureTags,
+    _i9.DamageType? damageType,
+    _i10.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     Map<String, String>? damageByLevel,
     String? source,
@@ -289,6 +299,8 @@ abstract class ChoiceOptionData
         'requiredExistingSkill': requiredExistingSkill?.toJson(),
       if (requiredExistingToolKey != null)
         'requiredExistingToolKey': requiredExistingToolKey,
+      if (requirements != null)
+        'requirements': requirements?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (grantedFeatureTags != null)
@@ -339,6 +351,9 @@ abstract class ChoiceOptionData
         'requiredExistingSkill': requiredExistingSkill?.toJson(),
       if (requiredExistingToolKey != null)
         'requiredExistingToolKey': requiredExistingToolKey,
+      if (requirements != null)
+        'requirements':
+            requirements?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (grantedFeatureTags != null)
@@ -408,10 +423,11 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     List<String>? grantedExpertiseToolKeys,
     _i3.Skill? requiredExistingSkill,
     String? requiredExistingToolKey,
+    List<_i7.ChoiceRequirementData>? requirements,
     List<String>? grantedSpellKeys,
-    List<_i7.FeatureTag>? grantedFeatureTags,
-    _i8.DamageType? damageType,
-    _i9.AreaOfEffectType? areaOfEffectType,
+    List<_i8.FeatureTag>? grantedFeatureTags,
+    _i9.DamageType? damageType,
+    _i10.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     Map<String, String>? damageByLevel,
     String? source,
@@ -436,6 +452,7 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
           grantedExpertiseToolKeys: grantedExpertiseToolKeys,
           requiredExistingSkill: requiredExistingSkill,
           requiredExistingToolKey: requiredExistingToolKey,
+          requirements: requirements,
           grantedSpellKeys: grantedSpellKeys,
           grantedFeatureTags: grantedFeatureTags,
           damageType: damageType,
@@ -470,6 +487,7 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     Object? grantedExpertiseToolKeys = _Undefined,
     Object? requiredExistingSkill = _Undefined,
     Object? requiredExistingToolKey = _Undefined,
+    Object? requirements = _Undefined,
     Object? grantedSpellKeys = _Undefined,
     Object? grantedFeatureTags = _Undefined,
     Object? damageType = _Undefined,
@@ -528,14 +546,17 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
       requiredExistingToolKey: requiredExistingToolKey is String?
           ? requiredExistingToolKey
           : this.requiredExistingToolKey,
+      requirements: requirements is List<_i7.ChoiceRequirementData>?
+          ? requirements
+          : this.requirements?.map((e0) => e0.copyWith()).toList(),
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
-      grantedFeatureTags: grantedFeatureTags is List<_i7.FeatureTag>?
+      grantedFeatureTags: grantedFeatureTags is List<_i8.FeatureTag>?
           ? grantedFeatureTags
           : this.grantedFeatureTags?.map((e0) => e0).toList(),
-      damageType: damageType is _i8.DamageType? ? damageType : this.damageType,
-      areaOfEffectType: areaOfEffectType is _i9.AreaOfEffectType?
+      damageType: damageType is _i9.DamageType? ? damageType : this.damageType,
+      areaOfEffectType: areaOfEffectType is _i10.AreaOfEffectType?
           ? areaOfEffectType
           : this.areaOfEffectType,
       areaText: areaText is String? ? areaText : this.areaText,
@@ -621,6 +642,10 @@ class ChoiceOptionDataTable extends _i1.Table<int?> {
       'requiredExistingToolKey',
       this,
     );
+    requirements = _i1.ColumnSerializable(
+      'requirements',
+      this,
+    );
     grantedSpellKeys = _i1.ColumnSerializable(
       'grantedSpellKeys',
       this,
@@ -697,13 +722,15 @@ class ChoiceOptionDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString requiredExistingToolKey;
 
+  late final _i1.ColumnSerializable requirements;
+
   late final _i1.ColumnSerializable grantedSpellKeys;
 
   late final _i1.ColumnSerializable grantedFeatureTags;
 
-  late final _i1.ColumnEnum<_i8.DamageType> damageType;
+  late final _i1.ColumnEnum<_i9.DamageType> damageType;
 
-  late final _i1.ColumnEnum<_i9.AreaOfEffectType> areaOfEffectType;
+  late final _i1.ColumnEnum<_i10.AreaOfEffectType> areaOfEffectType;
 
   late final _i1.ColumnString areaText;
 
@@ -748,6 +775,7 @@ class ChoiceOptionDataTable extends _i1.Table<int?> {
         grantedExpertiseToolKeys,
         requiredExistingSkill,
         requiredExistingToolKey,
+        requirements,
         grantedSpellKeys,
         grantedFeatureTags,
         damageType,

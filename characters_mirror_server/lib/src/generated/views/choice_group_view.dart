@@ -12,17 +12,20 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../data/general/choice_group_data.dart' as _i2;
 import '../data/general/choice_option_data.dart' as _i3;
+import '../views/choice_option_eligibility_view.dart' as _i4;
 
 abstract class ChoiceGroupView
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   ChoiceGroupView._({
     this.group,
     this.options,
+    this.optionEligibility,
   });
 
   factory ChoiceGroupView({
     _i2.ChoiceGroupData? group,
     List<_i3.ChoiceOptionData>? options,
+    List<_i4.ChoiceOptionEligibilityView>? optionEligibility,
   }) = _ChoiceGroupViewImpl;
 
   factory ChoiceGroupView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -35,6 +38,10 @@ abstract class ChoiceGroupView
           ?.map(
               (e) => _i3.ChoiceOptionData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      optionEligibility: (jsonSerialization['optionEligibility'] as List?)
+          ?.map((e) => _i4.ChoiceOptionEligibilityView.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -42,12 +49,15 @@ abstract class ChoiceGroupView
 
   List<_i3.ChoiceOptionData>? options;
 
+  List<_i4.ChoiceOptionEligibilityView>? optionEligibility;
+
   /// Returns a shallow copy of this [ChoiceGroupView]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   ChoiceGroupView copyWith({
     _i2.ChoiceGroupData? group,
     List<_i3.ChoiceOptionData>? options,
+    List<_i4.ChoiceOptionEligibilityView>? optionEligibility,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -55,6 +65,9 @@ abstract class ChoiceGroupView
       if (group != null) 'group': group?.toJson(),
       if (options != null)
         'options': options?.toJson(valueToJson: (v) => v.toJson()),
+      if (optionEligibility != null)
+        'optionEligibility':
+            optionEligibility?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -64,6 +77,9 @@ abstract class ChoiceGroupView
       if (group != null) 'group': group?.toJsonForProtocol(),
       if (options != null)
         'options': options?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (optionEligibility != null)
+        'optionEligibility': optionEligibility?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -79,9 +95,11 @@ class _ChoiceGroupViewImpl extends ChoiceGroupView {
   _ChoiceGroupViewImpl({
     _i2.ChoiceGroupData? group,
     List<_i3.ChoiceOptionData>? options,
+    List<_i4.ChoiceOptionEligibilityView>? optionEligibility,
   }) : super._(
           group: group,
           options: options,
+          optionEligibility: optionEligibility,
         );
 
   /// Returns a shallow copy of this [ChoiceGroupView]
@@ -91,12 +109,17 @@ class _ChoiceGroupViewImpl extends ChoiceGroupView {
   ChoiceGroupView copyWith({
     Object? group = _Undefined,
     Object? options = _Undefined,
+    Object? optionEligibility = _Undefined,
   }) {
     return ChoiceGroupView(
       group: group is _i2.ChoiceGroupData? ? group : this.group?.copyWith(),
       options: options is List<_i3.ChoiceOptionData>?
           ? options
           : this.options?.map((e0) => e0.copyWith()).toList(),
+      optionEligibility:
+          optionEligibility is List<_i4.ChoiceOptionEligibilityView>?
+              ? optionEligibility
+              : this.optionEligibility?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

@@ -1,0 +1,169 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "feature_modifier_data",
+        "dartName": "FeatureModifierData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('feature_modifier_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "classFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "subclassFeatureId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "target",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "protocol:FeatureModifierTarget"
+          },
+          {
+            "name": "operation",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "protocol:FeatureModifierOperation"
+          },
+          {
+            "name": "value",
+            "columnType": 8,
+            "isNullable": false,
+            "dartType": "protocol:FeatureModifierValueData"
+          },
+          {
+            "name": "conditions",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:FeatureModifierConditionData>?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "constraintName": "feature_modifier_data_fk_0",
+            "columns": [
+              "classFeatureId"
+            ],
+            "referenceTable": "class_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "feature_modifier_data_fk_1",
+            "columns": [
+              "subclassFeatureId"
+            ],
+            "referenceTable": "subclass_feature_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "indexes": [
+          {
+            "indexName": "feature_modifier_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "feature_modifier_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          },
+          {
+            "indexName": "feature_modifier_class_feature_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "classFeatureId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "indexName": "feature_modifier_subclass_feature_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "subclassFeatureId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

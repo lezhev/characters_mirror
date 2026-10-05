@@ -1,0 +1,10 @@
+enum: ChoiceRequirementType
+serialized: byName
+values:
+  - minimumClassLevel
+  - minimumCharacterLevel
+  - abilityScore
+  - knownSpell
+  - knownCantrip
+  - feature
+  - selectedChoiceOption

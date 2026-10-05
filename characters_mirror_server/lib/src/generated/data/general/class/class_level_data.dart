@@ -13,6 +13,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
+import '../../../data/general/class/prepared_spell_rule_data.dart' as _i3;
 
 abstract class ClassLevelData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -23,6 +24,9 @@ abstract class ClassLevelData
     required this.level,
     this.knownCantrips,
     this.knownSpells,
+    this.spellbookSpells,
+    this.knownSpellReplacements,
+    this.preparedSpellRule,
     this.preparedSpellFormula,
     this.resourceSummary,
     this.notes,
@@ -39,6 +43,9 @@ abstract class ClassLevelData
     required int level,
     int? knownCantrips,
     int? knownSpells,
+    int? spellbookSpells,
+    int? knownSpellReplacements,
+    _i3.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -59,6 +66,13 @@ abstract class ClassLevelData
       level: jsonSerialization['level'] as int,
       knownCantrips: jsonSerialization['knownCantrips'] as int?,
       knownSpells: jsonSerialization['knownSpells'] as int?,
+      spellbookSpells: jsonSerialization['spellbookSpells'] as int?,
+      knownSpellReplacements:
+          jsonSerialization['knownSpellReplacements'] as int?,
+      preparedSpellRule: jsonSerialization['preparedSpellRule'] == null
+          ? null
+          : _i3.PreparedSpellRuleData.fromJson(
+              (jsonSerialization['preparedSpellRule'] as Map<String, dynamic>)),
       preparedSpellFormula:
           jsonSerialization['preparedSpellFormula'] as String?,
       resourceSummary: jsonSerialization['resourceSummary'] as String?,
@@ -91,6 +105,12 @@ abstract class ClassLevelData
 
   int? knownSpells;
 
+  int? spellbookSpells;
+
+  int? knownSpellReplacements;
+
+  _i3.PreparedSpellRuleData? preparedSpellRule;
+
   String? preparedSpellFormula;
 
   String? resourceSummary;
@@ -118,6 +138,9 @@ abstract class ClassLevelData
     int? level,
     int? knownCantrips,
     int? knownSpells,
+    int? spellbookSpells,
+    int? knownSpellReplacements,
+    _i3.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -135,6 +158,11 @@ abstract class ClassLevelData
       'level': level,
       if (knownCantrips != null) 'knownCantrips': knownCantrips,
       if (knownSpells != null) 'knownSpells': knownSpells,
+      if (spellbookSpells != null) 'spellbookSpells': spellbookSpells,
+      if (knownSpellReplacements != null)
+        'knownSpellReplacements': knownSpellReplacements,
+      if (preparedSpellRule != null)
+        'preparedSpellRule': preparedSpellRule?.toJson(),
       if (preparedSpellFormula != null)
         'preparedSpellFormula': preparedSpellFormula,
       if (resourceSummary != null) 'resourceSummary': resourceSummary,
@@ -155,6 +183,11 @@ abstract class ClassLevelData
       'level': level,
       if (knownCantrips != null) 'knownCantrips': knownCantrips,
       if (knownSpells != null) 'knownSpells': knownSpells,
+      if (spellbookSpells != null) 'spellbookSpells': spellbookSpells,
+      if (knownSpellReplacements != null)
+        'knownSpellReplacements': knownSpellReplacements,
+      if (preparedSpellRule != null)
+        'preparedSpellRule': preparedSpellRule?.toJsonForProtocol(),
       if (preparedSpellFormula != null)
         'preparedSpellFormula': preparedSpellFormula,
       if (resourceSummary != null) 'resourceSummary': resourceSummary,
@@ -206,6 +239,9 @@ class _ClassLevelDataImpl extends ClassLevelData {
     required int level,
     int? knownCantrips,
     int? knownSpells,
+    int? spellbookSpells,
+    int? knownSpellReplacements,
+    _i3.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -220,6 +256,9 @@ class _ClassLevelDataImpl extends ClassLevelData {
           level: level,
           knownCantrips: knownCantrips,
           knownSpells: knownSpells,
+          spellbookSpells: spellbookSpells,
+          knownSpellReplacements: knownSpellReplacements,
+          preparedSpellRule: preparedSpellRule,
           preparedSpellFormula: preparedSpellFormula,
           resourceSummary: resourceSummary,
           notes: notes,
@@ -240,6 +279,9 @@ class _ClassLevelDataImpl extends ClassLevelData {
     int? level,
     Object? knownCantrips = _Undefined,
     Object? knownSpells = _Undefined,
+    Object? spellbookSpells = _Undefined,
+    Object? knownSpellReplacements = _Undefined,
+    Object? preparedSpellRule = _Undefined,
     Object? preparedSpellFormula = _Undefined,
     Object? resourceSummary = _Undefined,
     Object? notes = _Undefined,
@@ -256,6 +298,14 @@ class _ClassLevelDataImpl extends ClassLevelData {
       level: level ?? this.level,
       knownCantrips: knownCantrips is int? ? knownCantrips : this.knownCantrips,
       knownSpells: knownSpells is int? ? knownSpells : this.knownSpells,
+      spellbookSpells:
+          spellbookSpells is int? ? spellbookSpells : this.spellbookSpells,
+      knownSpellReplacements: knownSpellReplacements is int?
+          ? knownSpellReplacements
+          : this.knownSpellReplacements,
+      preparedSpellRule: preparedSpellRule is _i3.PreparedSpellRuleData?
+          ? preparedSpellRule
+          : this.preparedSpellRule?.copyWith(),
       preparedSpellFormula: preparedSpellFormula is String?
           ? preparedSpellFormula
           : this.preparedSpellFormula,
@@ -287,6 +337,18 @@ class ClassLevelDataTable extends _i1.Table<int?> {
     );
     knownSpells = _i1.ColumnInt(
       'knownSpells',
+      this,
+    );
+    spellbookSpells = _i1.ColumnInt(
+      'spellbookSpells',
+      this,
+    );
+    knownSpellReplacements = _i1.ColumnInt(
+      'knownSpellReplacements',
+      this,
+    );
+    preparedSpellRule = _i1.ColumnSerializable(
+      'preparedSpellRule',
       this,
     );
     preparedSpellFormula = _i1.ColumnString(
@@ -329,6 +391,12 @@ class ClassLevelDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt knownSpells;
 
+  late final _i1.ColumnInt spellbookSpells;
+
+  late final _i1.ColumnInt knownSpellReplacements;
+
+  late final _i1.ColumnSerializable preparedSpellRule;
+
   late final _i1.ColumnString preparedSpellFormula;
 
   late final _i1.ColumnString resourceSummary;
@@ -363,6 +431,9 @@ class ClassLevelDataTable extends _i1.Table<int?> {
         level,
         knownCantrips,
         knownSpells,
+        spellbookSpells,
+        knownSpellReplacements,
+        preparedSpellRule,
         preparedSpellFormula,
         resourceSummary,
         notes,

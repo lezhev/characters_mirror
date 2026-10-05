@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';
 import 'package:characters_mirror_flutter/core/offline/character_mutation_stamper.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_item_id.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_dev_log.dart';

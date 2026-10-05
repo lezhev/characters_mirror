@@ -4,3 +4,4 @@ values:
   - knownCantrip
   - knownSpell
   - preparedSpell
+  - spellbookSpell

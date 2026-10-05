@@ -17,6 +17,7 @@ import '../../../enums/feature_tag.dart' as _i3;
 import '../../../data/general/feature_resource_definition_data.dart' as _i4;
 import '../../../data/general/feature_resource_effect_data.dart' as _i5;
 import '../../../data/class_spell_grant_data.dart' as _i6;
+import '../../../data/general/feature_modifier_data.dart' as _i7;
 
 abstract class SubclassFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -25,6 +26,7 @@ abstract class SubclassFeatureData
     required this.parentSubclassId,
     this.parentSubclass,
     this.name,
+    this.referenceKey,
     this.description,
     this.shortDescription,
     required this.level,
@@ -38,6 +40,7 @@ abstract class SubclassFeatureData
     this.resources,
     this.resourceEffects,
     this.spellGrants,
+    this.featureModifiers,
   });
 
   factory SubclassFeatureData({
@@ -45,6 +48,7 @@ abstract class SubclassFeatureData
     required int parentSubclassId,
     _i2.SubclassData? parentSubclass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     required int level,
@@ -58,6 +62,7 @@ abstract class SubclassFeatureData
     List<_i4.FeatureResourceDefinitionData>? resources,
     List<_i5.FeatureResourceEffectData>? resourceEffects,
     List<_i6.ClassSpellGrantData>? spellGrants,
+    List<_i7.FeatureModifierData>? featureModifiers,
   }) = _SubclassFeatureDataImpl;
 
   factory SubclassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -69,6 +74,7 @@ abstract class SubclassFeatureData
           : _i2.SubclassData.fromJson(
               (jsonSerialization['parentSubclass'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
       level: jsonSerialization['level'] as int,
@@ -97,6 +103,10 @@ abstract class SubclassFeatureData
           ?.map((e) =>
               _i6.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      featureModifiers: (jsonSerialization['featureModifiers'] as List?)
+          ?.map((e) =>
+              _i7.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -112,6 +122,8 @@ abstract class SubclassFeatureData
   _i2.SubclassData? parentSubclass;
 
   String? name;
+
+  String? referenceKey;
 
   String? description;
 
@@ -139,6 +151,8 @@ abstract class SubclassFeatureData
 
   List<_i6.ClassSpellGrantData>? spellGrants;
 
+  List<_i7.FeatureModifierData>? featureModifiers;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -150,6 +164,7 @@ abstract class SubclassFeatureData
     int? parentSubclassId,
     _i2.SubclassData? parentSubclass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     int? level,
@@ -163,6 +178,7 @@ abstract class SubclassFeatureData
     List<_i4.FeatureResourceDefinitionData>? resources,
     List<_i5.FeatureResourceEffectData>? resourceEffects,
     List<_i6.ClassSpellGrantData>? spellGrants,
+    List<_i7.FeatureModifierData>? featureModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -171,6 +187,7 @@ abstract class SubclassFeatureData
       'parentSubclassId': parentSubclassId,
       if (parentSubclass != null) 'parentSubclass': parentSubclass?.toJson(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
@@ -188,6 +205,9 @@ abstract class SubclassFeatureData
             resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
+      if (featureModifiers != null)
+        'featureModifiers':
+            featureModifiers?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -199,6 +219,7 @@ abstract class SubclassFeatureData
       if (parentSubclass != null)
         'parentSubclass': parentSubclass?.toJsonForProtocol(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
@@ -218,6 +239,9 @@ abstract class SubclassFeatureData
       if (spellGrants != null)
         'spellGrants':
             spellGrants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (featureModifiers != null)
+        'featureModifiers':
+            featureModifiers?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -226,12 +250,14 @@ abstract class SubclassFeatureData
     _i4.FeatureResourceDefinitionDataIncludeList? resources,
     _i5.FeatureResourceEffectDataIncludeList? resourceEffects,
     _i6.ClassSpellGrantDataIncludeList? spellGrants,
+    _i7.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     return SubclassFeatureDataInclude._(
       parentSubclass: parentSubclass,
       resources: resources,
       resourceEffects: resourceEffects,
       spellGrants: spellGrants,
+      featureModifiers: featureModifiers,
     );
   }
 
@@ -269,6 +295,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     required int parentSubclassId,
     _i2.SubclassData? parentSubclass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     required int level,
@@ -282,11 +309,13 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     List<_i4.FeatureResourceDefinitionData>? resources,
     List<_i5.FeatureResourceEffectData>? resourceEffects,
     List<_i6.ClassSpellGrantData>? spellGrants,
+    List<_i7.FeatureModifierData>? featureModifiers,
   }) : super._(
           id: id,
           parentSubclassId: parentSubclassId,
           parentSubclass: parentSubclass,
           name: name,
+          referenceKey: referenceKey,
           description: description,
           shortDescription: shortDescription,
           level: level,
@@ -300,6 +329,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           resources: resources,
           resourceEffects: resourceEffects,
           spellGrants: spellGrants,
+          featureModifiers: featureModifiers,
         );
 
   /// Returns a shallow copy of this [SubclassFeatureData]
@@ -311,6 +341,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     int? parentSubclassId,
     Object? parentSubclass = _Undefined,
     Object? name = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? description = _Undefined,
     Object? shortDescription = _Undefined,
     int? level,
@@ -324,6 +355,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     Object? resources = _Undefined,
     Object? resourceEffects = _Undefined,
     Object? spellGrants = _Undefined,
+    Object? featureModifiers = _Undefined,
   }) {
     return SubclassFeatureData(
       id: id is int? ? id : this.id,
@@ -332,6 +364,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           ? parentSubclass
           : this.parentSubclass?.copyWith(),
       name: name is String? ? name : this.name,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       description: description is String? ? description : this.description,
       shortDescription: shortDescription is String?
           ? shortDescription
@@ -356,6 +389,9 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
       spellGrants: spellGrants is List<_i6.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
+      featureModifiers: featureModifiers is List<_i7.FeatureModifierData>?
+          ? featureModifiers
+          : this.featureModifiers?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -369,6 +405,10 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
     );
     name = _i1.ColumnString(
       'name',
+      this,
+    );
+    referenceKey = _i1.ColumnString(
+      'referenceKey',
       this,
     );
     description = _i1.ColumnString(
@@ -419,6 +459,8 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString name;
 
+  late final _i1.ColumnString referenceKey;
+
   late final _i1.ColumnString description;
 
   late final _i1.ColumnString shortDescription;
@@ -450,6 +492,10 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
   _i6.ClassSpellGrantDataTable? ___spellGrants;
 
   _i1.ManyRelation<_i6.ClassSpellGrantDataTable>? _spellGrants;
+
+  _i7.FeatureModifierDataTable? ___featureModifiers;
+
+  _i1.ManyRelation<_i7.FeatureModifierDataTable>? _featureModifiers;
 
   _i2.SubclassDataTable get parentSubclass {
     if (_parentSubclass != null) return _parentSubclass!;
@@ -502,6 +548,19 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
           _i6.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
     );
     return ___spellGrants!;
+  }
+
+  _i7.FeatureModifierDataTable get __featureModifiers {
+    if (___featureModifiers != null) return ___featureModifiers!;
+    ___featureModifiers = _i1.createRelationTable(
+      relationFieldName: '__featureModifiers',
+      field: SubclassFeatureData.t.id,
+      foreignField: _i7.FeatureModifierData.t.subclassFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i7.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+    );
+    return ___featureModifiers!;
   }
 
   _i1.ManyRelation<_i4.FeatureResourceDefinitionDataTable> get resources {
@@ -559,11 +618,30 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
     return _spellGrants!;
   }
 
+  _i1.ManyRelation<_i7.FeatureModifierDataTable> get featureModifiers {
+    if (_featureModifiers != null) return _featureModifiers!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'featureModifiers',
+      field: SubclassFeatureData.t.id,
+      foreignField: _i7.FeatureModifierData.t.subclassFeatureId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i7.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+    );
+    _featureModifiers = _i1.ManyRelation<_i7.FeatureModifierDataTable>(
+      tableWithRelations: relationTable,
+      table: _i7.FeatureModifierDataTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _featureModifiers!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         parentSubclassId,
         name,
+        referenceKey,
         description,
         shortDescription,
         level,
@@ -590,6 +668,9 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
     if (relationField == 'spellGrants') {
       return __spellGrants;
     }
+    if (relationField == 'featureModifiers') {
+      return __featureModifiers;
+    }
     return null;
   }
 }
@@ -600,11 +681,13 @@ class SubclassFeatureDataInclude extends _i1.IncludeObject {
     _i4.FeatureResourceDefinitionDataIncludeList? resources,
     _i5.FeatureResourceEffectDataIncludeList? resourceEffects,
     _i6.ClassSpellGrantDataIncludeList? spellGrants,
+    _i7.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     _parentSubclass = parentSubclass;
     _resources = resources;
     _resourceEffects = resourceEffects;
     _spellGrants = spellGrants;
+    _featureModifiers = featureModifiers;
   }
 
   _i2.SubclassDataInclude? _parentSubclass;
@@ -615,12 +698,15 @@ class SubclassFeatureDataInclude extends _i1.IncludeObject {
 
   _i6.ClassSpellGrantDataIncludeList? _spellGrants;
 
+  _i7.FeatureModifierDataIncludeList? _featureModifiers;
+
   @override
   Map<String, _i1.Include?> get includes => {
         'parentSubclass': _parentSubclass,
         'resources': _resources,
         'resourceEffects': _resourceEffects,
         'spellGrants': _spellGrants,
+        'featureModifiers': _featureModifiers,
       };
 
   @override
@@ -951,6 +1037,31 @@ class SubclassFeatureDataAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [SubclassFeatureData] and the given [FeatureModifierData]s
+  /// by setting each [FeatureModifierData]'s foreign key `subclassFeatureId` to refer to this [SubclassFeatureData].
+  Future<void> featureModifiers(
+    _i1.Session session,
+    SubclassFeatureData subclassFeatureData,
+    List<_i7.FeatureModifierData> featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+    if (subclassFeatureData.id == null) {
+      throw ArgumentError.notNull('subclassFeatureData.id');
+    }
+
+    var $featureModifierData = featureModifierData
+        .map((e) => e.copyWith(subclassFeatureId: subclassFeatureData.id))
+        .toList();
+    await session.db.update<_i7.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
 }
 
 class SubclassFeatureDataAttachRowRepository {
@@ -1051,6 +1162,30 @@ class SubclassFeatureDataAttachRowRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [SubclassFeatureData] and the given [FeatureModifierData]
+  /// by setting the [FeatureModifierData]'s foreign key `subclassFeatureId` to refer to this [SubclassFeatureData].
+  Future<void> featureModifiers(
+    _i1.Session session,
+    SubclassFeatureData subclassFeatureData,
+    _i7.FeatureModifierData featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.id == null) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+    if (subclassFeatureData.id == null) {
+      throw ArgumentError.notNull('subclassFeatureData.id');
+    }
+
+    var $featureModifierData =
+        featureModifierData.copyWith(subclassFeatureId: subclassFeatureData.id);
+    await session.db.updateRow<_i7.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
 }
 
 class SubclassFeatureDataDetachRepository {
@@ -1127,6 +1262,30 @@ class SubclassFeatureDataDetachRepository {
       transaction: transaction,
     );
   }
+
+  /// Detaches the relation between this [SubclassFeatureData] and the given [FeatureModifierData]
+  /// by setting the [FeatureModifierData]'s foreign key `subclassFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> featureModifiers(
+    _i1.Session session,
+    List<_i7.FeatureModifierData> featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+
+    var $featureModifierData = featureModifierData
+        .map((e) => e.copyWith(subclassFeatureId: null))
+        .toList();
+    await session.db.update<_i7.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
+      transaction: transaction,
+    );
+  }
 }
 
 class SubclassFeatureDataDetachRowRepository {
@@ -1197,6 +1356,29 @@ class SubclassFeatureDataDetachRowRepository {
     await session.db.updateRow<_i6.ClassSpellGrantData>(
       $classSpellGrantData,
       columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [SubclassFeatureData] and the given [FeatureModifierData]
+  /// by setting the [FeatureModifierData]'s foreign key `subclassFeatureId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> featureModifiers(
+    _i1.Session session,
+    _i7.FeatureModifierData featureModifierData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureModifierData.id == null) {
+      throw ArgumentError.notNull('featureModifierData.id');
+    }
+
+    var $featureModifierData =
+        featureModifierData.copyWith(subclassFeatureId: null);
+    await session.db.updateRow<_i7.FeatureModifierData>(
+      $featureModifierData,
+      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
       transaction: transaction,
     );
   }

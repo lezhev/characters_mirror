@@ -1,0 +1,62 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellSelectionMode",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:ClassSpellSelectionMode?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_level_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellbookSpells",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "knownSpellReplacements",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "preparedSpellRule",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:PreparedSpellRuleData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

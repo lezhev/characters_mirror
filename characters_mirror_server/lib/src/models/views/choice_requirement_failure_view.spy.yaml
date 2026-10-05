@@ -1,0 +1,5 @@
+class: ChoiceRequirementFailureView
+fields:
+  requirement: ChoiceRequirementData?
+  reason: String
+  actualValue: int?

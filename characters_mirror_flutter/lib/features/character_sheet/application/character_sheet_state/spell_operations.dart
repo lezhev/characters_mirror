@@ -37,42 +37,39 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
   Future<void> learnSpell(SpellData spell, {int? classDataId}) async {
     final current = _requireCharacter();
     final key = _spellKey(spell);
-    if (key == null || _hasSpellSelection(current, key)) {
+    if (key == null) return;
+    final entry = spellEntryForClass(current, classDataId);
+    final row = entry != null && entry.classData?.spellSelectionMode == null
+        ? spellLevelForEntry(entry, await ClassLevelRepository().getAll())
+        : null;
+    final selection =
+        learnedSpellSelection(current, spell, classDataId, classLevel: row);
+    final selections = [...?current.spellSelections];
+    if (selections.any(
+        (item) => selectionIdentity(item) == selectionIdentity(selection))) {
       return;
     }
-
-    final selections = [...?current.spellSelections];
-    selections.add(
-      CharacterSpellSelectionData(
-        classDataId: classDataId,
-        spell: spell,
-        spellId: spell.id,
-        spellKey: key,
-        kind: (spell.level ?? 0) <= 0
-            ? CharacterSpellSelectionKind.knownCantrip
-            : CharacterSpellSelectionKind.knownSpell,
-        selectionIndex: selections.length,
-      ),
-    );
+    selections.add(selection.copyWith(selectionIndex: selections.length));
 
     await _saveCharacter(
       current.copyWith(spellSelections: _normalizedSpellSelections(selections)),
     );
   }
 
-  Future<void> forgetSpell(SpellData spell) async {
+  Future<void> forgetSpell(SpellData spell, {int? classDataId}) async {
     final current = _requireCharacter();
     final key = _spellKey(spell);
     if (key == null) {
       return;
     }
 
-    final selections = [
-      for (final selection
-          in current.spellSelections ?? const <CharacterSpellSelectionData>[])
-        if (_spellSelectionKey(selection) != key) selection,
-    ];
-    final preparedKeys = _effectivePreparedSpellKeys(current)..remove(key);
+    final sourceId =
+        classDataId ?? current.classEntries?.firstOrNull?.classData?.id;
+    final selections = forgetSpellSelections(current, spell, sourceId);
+    final preparedKeys = _effectivePreparedSpellKeys(current);
+    if (!selections.any((selection) => _spellSelectionKey(selection) == key)) {
+      preparedKeys.remove(key);
+    }
 
     await _saveCharacter(
       current.copyWith(
@@ -96,25 +93,18 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
       return;
     }
 
+    final entry = spellEntryForClass(current, classDataId);
+    final row = entry != null && entry.classData?.spellSelectionMode == null
+        ? spellLevelForEntry(entry, await ClassLevelRepository().getAll())
+        : null;
+    final selections = prepareSpellSelections(
+        current, spell, classDataId, prepared,
+        classLevel: row);
     final defaultKeys = _defaultPreparedSpellKeys(current);
     final preparedKeys = _effectivePreparedSpellKeys(current)..remove(key);
     if (prepared) {
       preparedKeys.add(key);
     }
-    final selections = _hasSpellSelection(current, key)
-        ? current.spellSelections
-        : [
-            ...?current.spellSelections,
-            CharacterSpellSelectionData(
-              classDataId: classDataId,
-              spell: spell,
-              spellId: spell.id,
-              spellKey: key,
-              kind: CharacterSpellSelectionKind.knownSpell,
-              selectionIndex: current.spellSelections?.length ?? 0,
-            ),
-          ];
-
     await _saveCharacter(
       current.copyWith(
         spellSelections: _normalizedSpellSelections(selections),

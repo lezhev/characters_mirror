@@ -55,11 +55,6 @@ List<CharacterSpellSelectionData>? _normalizedSpellSelections(
   return normalized.isEmpty ? null : normalized;
 }
 
-bool _hasSpellSelection(CharacterData character, String key) {
-  return (character.spellSelections ?? const <CharacterSpellSelectionData>[])
-      .any((selection) => _spellSelectionKey(selection) == key);
-}
-
 List<String> _defaultPreparedSpellKeys(CharacterData character) {
   final keys = {
     for (final selection

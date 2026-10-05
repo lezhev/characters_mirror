@@ -22,35 +22,30 @@ class CharacterPortrait extends ConsumerWidget {
       characterPortraitControllerProvider(characterId),
     );
 
-    final colorScheme = Theme.of(context).colorScheme;
-
     return SizedBox.square(
       dimension: size,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
-        child: ColoredBox(
-          color: colorScheme.surfaceContainerHighest,
-          child: portrait.when(
-            data: (url) {
-              if (url == null) {
-                return const _PortraitPlaceholder();
-              }
+        child: portrait.when(
+          data: (url) {
+            if (url == null) {
+              return const _PortraitPlaceholder();
+            }
 
-              return Image.network(
-                url.toString(),
-                fit: fit,
-                width: size,
-                height: size,
-                errorBuilder: (_, __, ___) {
-                  return const _PortraitError();
-                },
-              );
-            },
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            error: (_, __) => const _PortraitError(),
+            return Image.network(
+              url.toString(),
+              fit: fit,
+              width: size,
+              height: size,
+              errorBuilder: (_, __, ___) {
+                return const _PortraitError();
+              },
+            );
+          },
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
           ),
+          error: (_, __) => const _PortraitError(),
         ),
       ),
     );
