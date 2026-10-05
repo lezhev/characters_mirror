@@ -1,0 +1,8 @@
+class: ClassSpellDeltaView
+fields:
+  cantripsToAdd: int
+  knownSpellsToAdd: int
+  knownSpellReplacements: int
+  spellbookSpellsToAdd: int
+  preparedSpellLimitBefore: int?
+  preparedSpellLimitAfter: int?

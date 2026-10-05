@@ -3,6 +3,7 @@ table: subclass_feature_data
 fields:
   parentSubclass: SubclassData?, relation
   name: String?
+  referenceKey: String?
   description: String?
   shortDescription: String?
   level: int
@@ -16,3 +17,4 @@ fields:
   resources: List<FeatureResourceDefinitionData>?, relation(name=subclass_feature_resource_definitions)
   resourceEffects: List<FeatureResourceEffectData>?, relation(name=subclass_feature_resource_effects)
   spellGrants: List<ClassSpellGrantData>?, relation(name=subclass_feature_spell_grants)
+  featureModifiers: List<FeatureModifierData>?, relation(name=subclass_feature_modifiers)

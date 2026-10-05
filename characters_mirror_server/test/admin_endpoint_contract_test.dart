@@ -19,9 +19,15 @@ void main() {
           endpoint.getAllUsers;
       final Future<void> Function(Session, int, bool) setAdminRole =
           endpoint.setAdminRole;
+      final Future<int> Function(Session, String) importChoiceOptions =
+          endpoint.importChoiceOptions;
+      final Future<int> Function(Session, String) importFeatureModifiers =
+          endpoint.importFeatureModifiers;
 
       expect(getAllUsers, isA<Function>());
       expect(setAdminRole, isA<Function>());
+      expect(importChoiceOptions, isA<Function>());
+      expect(importFeatureModifiers, isA<Function>());
     });
   });
 }

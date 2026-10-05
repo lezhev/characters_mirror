@@ -1246,6 +1246,11 @@ void _registerCharacterDataEndpointTests() {
       authenticatedSession,
       seedCoreSpellSlotTables,
     );
+    _registerFeatureModifierScenarios(
+      sessionBuilder,
+      endpoints,
+      authenticatedSession,
+    );
   });
 }
 

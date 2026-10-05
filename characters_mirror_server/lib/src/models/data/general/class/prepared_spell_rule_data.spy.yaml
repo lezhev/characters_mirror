@@ -1,0 +1,8 @@
+class: PreparedSpellRuleData
+fields:
+  ability: Ability
+  classLevelNumerator: int, default=1
+  classLevelDenominator: int, default=1
+  rounding: PreparedSpellRounding
+  flatBonus: int, default=0
+  minimum: int, default=1

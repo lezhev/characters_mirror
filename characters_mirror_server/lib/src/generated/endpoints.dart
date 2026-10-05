@@ -266,6 +266,42 @@ class Endpoints extends _i1.EndpointDispatch {
             params['isAdmin'],
           ),
         ),
+        'importChoiceOptions': _i1.MethodConnector(
+          name: 'importChoiceOptions',
+          params: {
+            'json': _i1.ParameterDescription(
+              name: 'json',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).importChoiceOptions(
+            session,
+            params['json'],
+          ),
+        ),
+        'importFeatureModifiers': _i1.MethodConnector(
+          name: 'importFeatureModifiers',
+          params: {
+            'json': _i1.ParameterDescription(
+              name: 'json',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['admin'] as _i2.AdminEndpoint).importFeatureModifiers(
+            session,
+            params['json'],
+          ),
+        ),
       },
     );
     connectors['appAuth'] = _i1.EndpointConnector(
@@ -808,6 +844,42 @@ class Endpoints extends _i1.EndpointDispatch {
             isStartingClass: params['isStartingClass'],
             selectedSubclassId: params['selectedSubclassId'],
             abilityScores: params['abilityScores'],
+          ),
+        ),
+        'getSpellDelta': _i1.MethodConnector(
+          name: 'getSpellDelta',
+          params: {
+            'classId': _i1.ParameterDescription(
+              name: 'classId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'fromLevel': _i1.ParameterDescription(
+              name: 'fromLevel',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'toLevel': _i1.ParameterDescription(
+              name: 'toLevel',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'abilityScores': _i1.ParameterDescription(
+              name: 'abilityScores',
+              type: _i1.getType<Map<String, int>>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['classData'] as _i9.ClassDataEndpoint).getSpellDelta(
+            session,
+            params['classId'],
+            params['fromLevel'],
+            params['toLevel'],
+            params['abilityScores'],
           ),
         ),
         'delete': _i1.MethodConnector(

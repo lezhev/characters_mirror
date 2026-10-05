@@ -77,7 +77,18 @@ Future<CharacterDerivedData> _buildDerivedData(
     final base = abilityModifiers[_abilityForSkill(skill)]!;
     final multiplier =
         _skillProficiencyMultiplier(skillProficiencyLevels[skill]);
-    skillBonuses[skill] = base + (proficiencyBonus * multiplier);
+    final abilityCheckBonus = _featureModifierTotal(
+      resolvedSources.featureModifiers,
+      character,
+      entries,
+      resolvedSources.currentClassFeatures,
+      resolvedSources.currentSubclassFeatures,
+      proficiencyBonus: proficiencyBonus,
+      abilityCheckIncludesProficiency: multiplier > 0,
+      target: FeatureModifierTarget.abilityCheck,
+    );
+    skillBonuses[skill] =
+        base + (proficiencyBonus * multiplier) + abilityCheckBonus;
   }
 
   final savingThrowBonuses = <Ability, int>{};
@@ -174,6 +185,27 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.selectedOptions,
   );
   final movementSpeeds = _effectiveMovementSpeeds(character);
+  movementSpeeds[CharacterSpeedKind.walking] =
+      (movementSpeeds[CharacterSpeedKind.walking] ?? 30) +
+          _featureModifierTotal(
+            resolvedSources.featureModifiers,
+            character,
+            entries,
+            resolvedSources.currentClassFeatures,
+            resolvedSources.currentSubclassFeatures,
+            proficiencyBonus: proficiencyBonus,
+            target: FeatureModifierTarget.speed,
+          );
+  final initiativeBonus = _featureModifierTotal(
+    resolvedSources.featureModifiers,
+    character,
+    entries,
+    resolvedSources.currentClassFeatures,
+    resolvedSources.currentSubclassFeatures,
+    proficiencyBonus: proficiencyBonus,
+    abilityCheckIncludesProficiency: false,
+    target: FeatureModifierTarget.abilityCheck,
+  );
   final armorClass = await _calculateArmorClass(
     character,
     abilityModifiers,
@@ -193,7 +225,8 @@ Future<CharacterDerivedData> _buildDerivedData(
     armorClass: armorClass.value,
     armorClassSource: armorClass.source,
     armorClassFormula: armorClass.formula,
-    initiative: dexMod + (character.customInitiativeBonus ?? 0),
+    initiative:
+        dexMod + (character.customInitiativeBonus ?? 0) + initiativeBonus,
     speed: _displayedSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
     passivePerception: passivePerception,
@@ -228,6 +261,130 @@ Future<CharacterDerivedData> _buildDerivedData(
     grantedEquipment: grantedEquipment,
     resistances: resistances,
   );
+}
+
+int _featureModifierTotal(
+  List<FeatureModifierData> data,
+  CharacterData character,
+  List<CharacterClassEntryData> entries,
+  List<ClassFeatureData> classFeatures,
+  List<SubclassFeatureData> subclassFeatures, {
+  required int proficiencyBonus,
+  required FeatureModifierTarget target,
+  bool abilityCheckIncludesProficiency = false,
+}) {
+  final featureClassKeys = <int, String>{};
+  for (final feature in classFeatures) {
+    final classKey = entries
+        .where((entry) => entry.classData?.id == feature.parentClassId)
+        .map((entry) => entry.classData?.referenceKey)
+        .whereType<String>()
+        .firstOrNull;
+    if (feature.id != null && classKey != null) {
+      featureClassKeys[feature.id!] = classKey;
+    }
+  }
+  for (final feature in subclassFeatures) {
+    final classKey = entries
+        .where((entry) => entry.subclass?.id == feature.parentSubclassId)
+        .map((entry) => entry.classData?.referenceKey)
+        .whereType<String>()
+        .firstOrNull;
+    if (feature.id != null && classKey != null) {
+      featureClassKeys[feature.id!] = classKey;
+    }
+  }
+  final classLevels = <String, int>{};
+  for (final entry in entries) {
+    final key = entry.classData?.referenceKey;
+    if (key != null) {
+      classLevels[key] = (classLevels[key] ?? 0) + (entry.level ?? 0);
+    }
+  }
+  final specs = <feature_modifiers.FeatureModifierSpec>[];
+  final activeKeys = <String>{};
+  for (final feature in classFeatures) {
+    if (feature.referenceKey case final key?) activeKeys.add(key);
+  }
+  for (final feature in subclassFeatures) {
+    if (feature.referenceKey case final key?) activeKeys.add(key);
+  }
+  for (final modifier in data) {
+    if ((modifier.classFeatureId == null) ==
+        (modifier.subclassFeatureId == null)) {
+      continue;
+    }
+    final featureKey = modifier.classFeature?.referenceKey ??
+        classFeatures
+            .where((feature) => feature.id == modifier.classFeatureId)
+            .map((feature) => feature.referenceKey)
+            .firstOrNull ??
+        subclassFeatures
+            .where((feature) => feature.id == modifier.subclassFeatureId)
+            .map((feature) => feature.referenceKey)
+            .firstOrNull;
+    final sourceId = modifier.classFeatureId ?? modifier.subclassFeatureId;
+    final classKey = sourceId == null ? null : featureClassKeys[sourceId];
+    if (featureKey == null || classKey == null) continue;
+    specs.add(feature_modifiers.FeatureModifierSpec(
+      referenceKey: modifier.referenceKey,
+      sourceFeatureKey: featureKey,
+      sourceClassKey: classKey,
+      target: switch (modifier.target) {
+        FeatureModifierTarget.speed =>
+          feature_modifiers.FeatureModifierTarget.speed,
+        FeatureModifierTarget.abilityCheck =>
+          feature_modifiers.FeatureModifierTarget.abilityCheck,
+      },
+      operation: feature_modifiers.FeatureModifierOperation.add,
+      valueKind: switch (modifier.value.kind) {
+        FeatureModifierValueKind.staticValue =>
+          feature_modifiers.FeatureModifierValueKind.staticValue,
+        FeatureModifierValueKind.classLevelProgression =>
+          feature_modifiers.FeatureModifierValueKind.classLevelProgression,
+        FeatureModifierValueKind.proficiencyBonusFraction =>
+          feature_modifiers.FeatureModifierValueKind.proficiencyBonusFraction,
+      },
+      staticValue: modifier.value.staticValue,
+      progression: modifier.value.progression ?? const {},
+      numerator: modifier.value.numerator,
+      denominator: modifier.value.denominator,
+      rounding: modifier.value.rounding == FeatureModifierRounding.floor
+          ? feature_modifiers.FeatureModifierRounding.floor
+          : null,
+      conditions: {
+        for (final condition
+            in modifier.conditions ?? const <FeatureModifierConditionData>[])
+          switch (condition.type) {
+            FeatureModifierConditionType.unarmored =>
+              feature_modifiers.FeatureModifierCondition.unarmored,
+            FeatureModifierConditionType.noShield =>
+              feature_modifiers.FeatureModifierCondition.noShield,
+            FeatureModifierConditionType.abilityCheckIsNotProficient =>
+              feature_modifiers
+                  .FeatureModifierCondition.abilityCheckIsNotProficient,
+          },
+      },
+    ));
+  }
+  final evaluated = feature_modifiers.evaluateFeatureModifiers(
+    modifiers: specs,
+    context: feature_modifiers.FeatureModifierContext(
+      proficiencyBonus: proficiencyBonus,
+      classLevelsByKey: classLevels,
+      activeFeatureKeys: activeKeys,
+      isArmored: character.equippedArmor != null,
+      hasShield: character.equippedShield != null,
+      abilityCheckIncludesProficiency: abilityCheckIncludesProficiency,
+    ),
+  );
+  return feature_modifiers.sumFeatureModifierValues(evaluated)[switch (target) {
+        FeatureModifierTarget.speed =>
+          feature_modifiers.FeatureModifierTarget.speed,
+        FeatureModifierTarget.abilityCheck =>
+          feature_modifiers.FeatureModifierTarget.abilityCheck,
+      }] ??
+      0;
 }
 
 Set<String> _effectiveSavingThrowAbilities(

@@ -7,6 +7,7 @@ class _ResolvedDerivedSources {
   final List<ClassFeatureData> currentClassFeatures;
   final List<SubclassFeatureData> currentSubclassFeatures;
   final List<FeatureDisplayPropertyData> featureDisplayProperties;
+  final List<FeatureModifierData> featureModifiers;
   final List<String> alwaysPreparedSpellKeys;
 
   const _ResolvedDerivedSources({
@@ -16,6 +17,7 @@ class _ResolvedDerivedSources {
     required this.currentClassFeatures,
     required this.currentSubclassFeatures,
     required this.featureDisplayProperties,
+    required this.featureModifiers,
     required this.alwaysPreparedSpellKeys,
   });
 }
@@ -148,6 +150,24 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
   final featureDisplayProperties = await context.featureDisplayProperties(
     transaction: transaction,
   );
+  final classModifierIds = currentClassFeatureIds;
+  final subclassModifierIds = currentSubclassFeatureIds;
+  final featureModifiers = <FeatureModifierData>[
+    if (classModifierIds.isNotEmpty)
+      ...await FeatureModifierData.db.find(
+        session,
+        where: (t) => t.classFeatureId.inSet(classModifierIds),
+        orderBy: (t) => t.referenceKey,
+        transaction: transaction,
+      ),
+    if (subclassModifierIds.isNotEmpty)
+      ...await FeatureModifierData.db.find(
+        session,
+        where: (t) => t.subclassFeatureId.inSet(subclassModifierIds),
+        orderBy: (t) => t.referenceKey,
+        transaction: transaction,
+      ),
+  ];
 
   final currentRaceFeatures = _currentRaceFeaturesBySource(character,
       entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
@@ -258,6 +278,8 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     character,
     selectedByGroupKey,
     relevantGroups,
+    currentClassFeatures,
+    currentSubclassFeatures,
   );
   await _validateGenericChoiceReferenceKeys(
     session,
@@ -304,6 +326,7 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     currentClassFeatures: currentClassFeatures,
     currentSubclassFeatures: currentSubclassFeatures,
     featureDisplayProperties: featureDisplayProperties,
+    featureModifiers: featureModifiers,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
   );
 }
@@ -312,6 +335,8 @@ void _validateGenericChoiceEligibility(
   CharacterData character,
   Map<String, List<_SelectedGenericChoice>> selectedByGroupKey,
   List<ChoiceGroupData> groups,
+  List<ClassFeatureData> currentClassFeatures,
+  List<SubclassFeatureData> currentSubclassFeatures,
 ) {
   final ownedSkills = <Skill>{
     ...?character.race?.skillProficiencies,
@@ -334,6 +359,47 @@ void _validateGenericChoiceEligibility(
           : entry.classData?.multiclassToolTrainingKeys ?? const <String>[],
     );
   }
+
+  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
+  final classLevelsByReferenceKey = <String, int>{};
+  for (final entry in entries) {
+    final key = _normalizedTextOrNull(entry.classData?.referenceKey);
+    if (key == null) continue;
+    classLevelsByReferenceKey[key] =
+        (classLevelsByReferenceKey[key] ?? 0) + (entry.level ?? 0);
+  }
+  final scores = _buildAbilityScores(
+    character,
+    [
+      for (final selected in selectedByGroupKey.values)
+        for (final item in selected) item.option,
+    ],
+  );
+  final selectedOptionKeys = <String>{
+    for (final entry in selectedByGroupKey.entries)
+      for (final selection in entry.value)
+        encodeSelectedChoiceOptionKey(
+          entry.key.trim(),
+          selection.option.optionKey.trim(),
+        ),
+  };
+  final spellFacts = collectChoiceSpellFacts([
+    for (final selection
+        in character.spellSelections ?? const <CharacterSpellSelectionData>[])
+      if (_normalizedTextOrNull(selection.spellKey) ??
+              _normalizedTextOrNull(selection.spell?.referenceKey)
+          case final key?)
+        ChoiceSpellSelectionFact(
+          key: key,
+          kind: selection.kind?.name ?? '',
+        ),
+  ]);
+  final featureKeys = <String>{
+    for (final feature in currentClassFeatures)
+      if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
+    for (final feature in currentSubclassFeatures)
+      if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
+  };
 
   final groupsByKey = {for (final group in groups) group.referenceKey: group};
   for (final entry in selectedByGroupKey.entries) {
@@ -367,25 +433,73 @@ void _validateGenericChoiceEligibility(
     ownedToolKeys
       ..removeAll(character.manualToolProficiencyOverrides?.removedKeys ?? [])
       ..addAll(character.manualToolProficiencyOverrides?.addedKeys ?? []);
+    final context = ChoiceEligibilityContext(
+      totalCharacterLevel:
+          entries.fold<int>(0, (sum, item) => sum + (item.level ?? 0)),
+      classLevelsByReferenceKey: classLevelsByReferenceKey,
+      abilityScores: scores,
+      knownSpellKeys: spellFacts.knownSpellKeys,
+      knownCantripKeys: spellFacts.knownCantripKeys,
+      featureKeys: featureKeys,
+      selectedChoiceOptionKeys: selectedOptionKeys,
+      skillKeys: {for (final skill in ownedSkills) skill.name},
+      toolKeys: ownedToolKeys,
+    );
     for (final selected in entry.value) {
-      final requiredSkill = selected.option.requiredExistingSkill;
-      if (requiredSkill != null && !ownedSkills.contains(requiredSkill)) {
-        throw InputValidationException(
-          'choices.${entry.key}',
-          'requires an existing proficiency in ${requiredSkill.name}.',
-        );
-      }
+      final requirements = <ChoiceRequirement>[
+        for (final data
+            in selected.option.requirements ?? const <ChoiceRequirementData>[])
+          _choiceRequirement(data),
+        if (selected.option.requiredExistingSkill case final skill?)
+          ChoiceRequirement(
+            kind: ChoiceRequirementKind.existingSkill,
+            referenceKey: skill.name,
+          ),
+      ];
       final requiredToolKey = selected.option.requiredExistingToolKey?.trim();
-      if (requiredToolKey != null &&
-          requiredToolKey.isNotEmpty &&
-          !ownedToolKeys.contains(requiredToolKey)) {
+      if (requiredToolKey != null && requiredToolKey.isNotEmpty) {
+        requirements.add(ChoiceRequirement(
+          kind: ChoiceRequirementKind.existingTool,
+          referenceKey: requiredToolKey,
+        ));
+      }
+      final result = evaluateChoiceOptionEligibility(
+        requirements: requirements,
+        context: context,
+      );
+      if (!result.isEligible) {
         throw InputValidationException(
           'choices.${entry.key}',
-          'requires an existing proficiency in tool "$requiredToolKey".',
+          'choice option "${selected.option.optionKey}" is unavailable: '
+              '${result.failedRequirements.map((failure) => failure.reason).join(', ')}.',
         );
       }
     }
   }
+}
+
+ChoiceRequirement _choiceRequirement(ChoiceRequirementData data) {
+  final kind = switch (data.type) {
+    ChoiceRequirementType.minimumClassLevel =>
+      ChoiceRequirementKind.minimumClassLevel,
+    ChoiceRequirementType.minimumCharacterLevel =>
+      ChoiceRequirementKind.minimumCharacterLevel,
+    ChoiceRequirementType.abilityScore => ChoiceRequirementKind.abilityScore,
+    ChoiceRequirementType.knownSpell => ChoiceRequirementKind.knownSpell,
+    ChoiceRequirementType.knownCantrip => ChoiceRequirementKind.knownCantrip,
+    ChoiceRequirementType.feature => ChoiceRequirementKind.feature,
+    ChoiceRequirementType.selectedChoiceOption =>
+      ChoiceRequirementKind.selectedChoiceOption,
+  };
+  return ChoiceRequirement(
+    kind: kind,
+    classKey: data.classKey,
+    ability: data.ability?.name,
+    value: data.value,
+    referenceKey: data.referenceKey,
+    choiceGroupKey: data.choiceGroupKey,
+    optionKey: data.optionKey,
+  );
 }
 
 class _SelectedGenericChoice {

@@ -31,6 +31,11 @@ class CreationChoiceGroupCard extends StatelessWidget {
 
     final options = [...?groupView.options]
       ..sort((a, b) => (a.name ?? '').compareTo(b.name ?? ''));
+    final eligibilityByOptionKey = {
+      for (final eligibility in groupView.optionEligibility ??
+          const <ChoiceOptionEligibilityView>[])
+        eligibility.optionKey: eligibility,
+    };
     final selectionCount = group.selectionCount ?? 1;
     final allowDuplicates = group.allowDuplicates == true;
     final selectedCountByOptionKey = <String, int>{};
@@ -47,15 +52,19 @@ class CreationChoiceGroupCard extends StatelessWidget {
     if (!allowDuplicates) {
       final items = options.map((option) {
         final optionKey = option.optionKey.trim();
-        final isSelected =
-            optionKey.isNotEmpty && (selectedCountByOptionKey[optionKey] ?? 0) > 0;
+        final isSelected = optionKey.isNotEmpty &&
+            (selectedCountByOptionKey[optionKey] ?? 0) > 0;
+        final eligibility = eligibilityByOptionKey[optionKey];
         final title = _choiceOptionTitle(group, option);
         return CreationChoiceSelectorItem(
           id: optionKey.isEmpty ? title : optionKey,
           title: title,
-          subtitle: option.description,
+          subtitle: _optionSubtitle(option.description, eligibility),
           isSelected: isSelected,
-          onTap: () => onToggleOption(group, option),
+          isEnabled: eligibility?.isEligible != false || isSelected,
+          onTap: eligibility?.isEligible == false && !isSelected
+              ? null
+              : () => onToggleOption(group, option),
           onInfoTap: () => showChoiceOptionPlaceholderDialog(
             context: context,
             title: title,
@@ -98,16 +107,50 @@ class CreationChoiceGroupCard extends StatelessWidget {
         final title = _choiceOptionTitle(group, option);
         final count =
             optionKey.isEmpty ? 0 : (selectedCountByOptionKey[optionKey] ?? 0);
+        final eligibility = eligibilityByOptionKey[optionKey];
         return CreationChoiceSelectorItem(
           id: optionKey.isEmpty ? title : optionKey,
           title: title,
           count: count,
-          onIncrement: () => onIncrementOption(group, option),
+          subtitle: _optionSubtitle(option.description, eligibility),
+          onIncrement: eligibility?.isEligible == false
+              ? null
+              : () => onIncrementOption(group, option),
           onDecrement: () => onDecrementOption(group, option),
         );
       }).toList(),
     );
   }
+}
+
+String? _optionSubtitle(
+  String? description,
+  ChoiceOptionEligibilityView? eligibility,
+) {
+  if (eligibility?.isEligible != false) return description;
+  final reasons = eligibility!.failedRequirements
+          ?.map((failure) => switch (failure.reason) {
+                'minimumClassLevel' =>
+                  'Необходимый уровень класса не достигнут',
+                'minimumCharacterLevel' =>
+                  'Необходимый уровень персонажа не достигнут',
+                'abilityScore' => 'Недостаточное значение характеристики',
+                'knownSpell' => 'Необходимо знать указанное заклинание',
+                'knownCantrip' => 'Необходимо знать указанный заговор',
+                'feature' => 'Необходимая особенность отсутствует',
+                'selectedChoiceOption' => 'Сначала выберите зависимый вариант',
+                'existingSkill' => 'Требуется владение указанным навыком',
+                'existingTool' => 'Требуется владение указанным инструментом',
+                _ => 'Требование не выполнено',
+              })
+          .toSet()
+          .join('; ') ??
+      '';
+  final status =
+      'Недоступно: ${reasons.isEmpty ? 'требование не выполнено' : reasons}';
+  return description == null || description.isEmpty
+      ? status
+      : '$description\n$status';
 }
 
 String _choiceOptionTitle(

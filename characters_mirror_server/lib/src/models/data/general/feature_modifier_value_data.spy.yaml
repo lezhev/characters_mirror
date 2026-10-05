@@ -1,0 +1,8 @@
+class: FeatureModifierValueData
+fields:
+  kind: FeatureModifierValueKind
+  staticValue: int?
+  progression: Map<int, int>?
+  numerator: int?
+  denominator: int?
+  rounding: FeatureModifierRounding?

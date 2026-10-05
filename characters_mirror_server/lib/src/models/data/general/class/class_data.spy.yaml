@@ -1,6 +1,7 @@
 class: ClassData
 table: class_data
 fields:
+  referenceKey: String?
   name: String?
   description: String?
   source: String?
@@ -18,6 +19,7 @@ fields:
 
   subclassChoiceLevel: int?
   spellcastingProgression: SpellcastingProgression?
+  spellSelectionMode: ClassSpellSelectionMode?
   spellcastingAbilityValue: Ability?
   multiclassPrerequisites: Map<String, int>?
   multiclassArmorTraining: List<ArmorCategory>?

@@ -17,6 +17,7 @@ abstract class ClassSpellSelectionGroupView
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   ClassSpellSelectionGroupView._({
     this.kind,
+    this.optionSourceSelectionKind,
     this.selectionCount,
     this.classDataId,
     this.classLevel,
@@ -25,6 +26,7 @@ abstract class ClassSpellSelectionGroupView
 
   factory ClassSpellSelectionGroupView({
     _i2.CharacterSpellSelectionKind? kind,
+    _i2.CharacterSpellSelectionKind? optionSourceSelectionKind,
     int? selectionCount,
     int? classDataId,
     int? classLevel,
@@ -38,6 +40,11 @@ abstract class ClassSpellSelectionGroupView
           ? null
           : _i2.CharacterSpellSelectionKind.fromJson(
               (jsonSerialization['kind'] as String)),
+      optionSourceSelectionKind:
+          jsonSerialization['optionSourceSelectionKind'] == null
+              ? null
+              : _i2.CharacterSpellSelectionKind.fromJson(
+                  (jsonSerialization['optionSourceSelectionKind'] as String)),
       selectionCount: jsonSerialization['selectionCount'] as int?,
       classDataId: jsonSerialization['classDataId'] as int?,
       classLevel: jsonSerialization['classLevel'] as int?,
@@ -48,6 +55,8 @@ abstract class ClassSpellSelectionGroupView
   }
 
   _i2.CharacterSpellSelectionKind? kind;
+
+  _i2.CharacterSpellSelectionKind? optionSourceSelectionKind;
 
   int? selectionCount;
 
@@ -62,6 +71,7 @@ abstract class ClassSpellSelectionGroupView
   @_i1.useResult
   ClassSpellSelectionGroupView copyWith({
     _i2.CharacterSpellSelectionKind? kind,
+    _i2.CharacterSpellSelectionKind? optionSourceSelectionKind,
     int? selectionCount,
     int? classDataId,
     int? classLevel,
@@ -71,6 +81,8 @@ abstract class ClassSpellSelectionGroupView
   Map<String, dynamic> toJson() {
     return {
       if (kind != null) 'kind': kind?.toJson(),
+      if (optionSourceSelectionKind != null)
+        'optionSourceSelectionKind': optionSourceSelectionKind?.toJson(),
       if (selectionCount != null) 'selectionCount': selectionCount,
       if (classDataId != null) 'classDataId': classDataId,
       if (classLevel != null) 'classLevel': classLevel,
@@ -83,6 +95,8 @@ abstract class ClassSpellSelectionGroupView
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (kind != null) 'kind': kind?.toJson(),
+      if (optionSourceSelectionKind != null)
+        'optionSourceSelectionKind': optionSourceSelectionKind?.toJson(),
       if (selectionCount != null) 'selectionCount': selectionCount,
       if (classDataId != null) 'classDataId': classDataId,
       if (classLevel != null) 'classLevel': classLevel,
@@ -102,12 +116,14 @@ class _Undefined {}
 class _ClassSpellSelectionGroupViewImpl extends ClassSpellSelectionGroupView {
   _ClassSpellSelectionGroupViewImpl({
     _i2.CharacterSpellSelectionKind? kind,
+    _i2.CharacterSpellSelectionKind? optionSourceSelectionKind,
     int? selectionCount,
     int? classDataId,
     int? classLevel,
     List<_i3.SpellData>? options,
   }) : super._(
           kind: kind,
+          optionSourceSelectionKind: optionSourceSelectionKind,
           selectionCount: selectionCount,
           classDataId: classDataId,
           classLevel: classLevel,
@@ -120,6 +136,7 @@ class _ClassSpellSelectionGroupViewImpl extends ClassSpellSelectionGroupView {
   @override
   ClassSpellSelectionGroupView copyWith({
     Object? kind = _Undefined,
+    Object? optionSourceSelectionKind = _Undefined,
     Object? selectionCount = _Undefined,
     Object? classDataId = _Undefined,
     Object? classLevel = _Undefined,
@@ -127,6 +144,10 @@ class _ClassSpellSelectionGroupViewImpl extends ClassSpellSelectionGroupView {
   }) {
     return ClassSpellSelectionGroupView(
       kind: kind is _i2.CharacterSpellSelectionKind? ? kind : this.kind,
+      optionSourceSelectionKind:
+          optionSourceSelectionKind is _i2.CharacterSpellSelectionKind?
+              ? optionSourceSelectionKind
+              : this.optionSourceSelectionKind,
       selectionCount:
           selectionCount is int? ? selectionCount : this.selectionCount,
       classDataId: classDataId is int? ? classDataId : this.classDataId,

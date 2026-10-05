@@ -2,7 +2,9 @@ import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/feature_display_properties.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:characters_mirror_server/src/weapon_training_values.dart';
+import 'package:characters_mirror_server/src/validation/rules.dart';
 
+import '../../../spells/class_spell_progression.dart';
 import 'starting_equipment_endpoints.dart';
 
 part 'class_endpoints/class_step_helpers.dart';
@@ -92,6 +94,20 @@ class ClassDataEndpoint extends Endpoint {
         .map((feature) => feature.id)
         .whereType<int>()
         .toSet();
+    final featureModifiers = <FeatureModifierData>[
+      if (currentFeatureIds.isNotEmpty)
+        ...await FeatureModifierData.db.find(
+          session,
+          where: (t) => t.classFeatureId.inSet(currentFeatureIds),
+          orderBy: (t) => t.referenceKey,
+        ),
+      if (currentSubclassFeatureIds.isNotEmpty)
+        ...await FeatureModifierData.db.find(
+          session,
+          where: (t) => t.subclassFeatureId.inSet(currentSubclassFeatureIds),
+          orderBy: (t) => t.referenceKey,
+        ),
+    ];
 
     final currentGroups = <ChoiceGroupView>[];
     for (final group in groups.where((group) {
@@ -220,7 +236,43 @@ class ClassDataEndpoint extends Endpoint {
       ),
       multiclassWarnings: warnings,
       progression: progression,
+      featureModifiers: featureModifiers,
     );
+  }
+
+  Future<ClassSpellDeltaView> getSpellDelta(
+    Session session,
+    int classId,
+    int fromLevel,
+    int toLevel,
+    Map<String, int> abilityScores,
+  ) async {
+    if (fromLevel < 1 ||
+        toLevel <= fromLevel ||
+        toLevel > 20 ||
+        abilityScores.length > Ability.values.length ||
+        abilityScores.entries.any((entry) =>
+            !Ability.values.any((ability) => ability.name == entry.key))) {
+      throw ArgumentError('Invalid class levels or ability scores.');
+    }
+    Rules.smallCollection('abilityScores', abilityScores);
+    for (final entry in abilityScores.entries) {
+      Rules.boundedInt('abilityScores.${entry.key}', entry.value,
+          min: 1, max: 30);
+    }
+    final data = await ClassData.db.findById(session, classId);
+    if (data == null) throw StateError('ClassData not found.');
+    final rows = await ClassLevelData.db.find(session,
+        where: (t) =>
+            t.classDataId.equals(classId) &
+            t.level.inSet({fromLevel, toLevel}));
+    final before = rows.where((row) => row.level == fromLevel).firstOrNull;
+    final after = rows.where((row) => row.level == toLevel).firstOrNull;
+    if (before == null || after == null) {
+      throw StateError('Class progression row not found.');
+    }
+    return buildClassSpellDelta(data, before, after,
+        abilityScores: abilityScores);
   }
 
   Future<void> delete(Session session, int id) async {

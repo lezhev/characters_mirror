@@ -4,6 +4,7 @@ import 'package:characters_mirror_flutter/features/character_portrait/character_
 import 'package:characters_mirror_flutter/features/character_portrait/application/character_portrait_controller.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character_page.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,6 +58,34 @@ void main() {
       expect(tester.takeException(), isNull);
     }
     await tester.binding.setSurfaceSize(null);
+  });
+
+  testWidgets('portrait and class summary share height and outline styling',
+      (tester) async {
+    await _pumpPage(tester);
+
+    final portraitCard = find.ancestor(
+      of: find.byType(CharacterPortrait),
+      matching: find.byType(SheetOutlineCard),
+    );
+    final classCard = find.ancestor(
+      of: find.text('Класс и раса'),
+      matching: find.byType(SheetOutlineCard),
+    );
+
+    expect(portraitCard, findsOneWidget);
+    expect(classCard, findsOneWidget);
+    expect(
+      tester.getRect(portraitCard).height,
+      tester.getRect(classCard).height,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(CharacterPortrait),
+        matching: find.byType(ColoredBox),
+      ),
+      findsNothing,
+    );
   });
 
   testWidgets('summary cards keep their class, proficiency and editor routes',

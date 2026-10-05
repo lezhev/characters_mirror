@@ -3,8 +3,11 @@ table: class_level_data
 fields:
   classData: ClassData?, relation
   level: int
-  knownCantrips: int?
-  knownSpells: int?
+  knownCantrips: int? # Total at this class level.
+  knownSpells: int? # Total for known mode only.
+  spellbookSpells: int? # Free class progression total; copied spells are excluded.
+  knownSpellReplacements: int? # Allowance when reaching this level, not cumulative.
+  preparedSpellRule: PreparedSpellRuleData?
   preparedSpellFormula: String?
   resourceSummary: String?
   notes: String?

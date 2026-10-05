@@ -1,0 +1,7 @@
+enum: ClassSpellSelectionMode
+serialized: byName
+values:
+  - none
+  - known
+  - prepared
+  - spellbook

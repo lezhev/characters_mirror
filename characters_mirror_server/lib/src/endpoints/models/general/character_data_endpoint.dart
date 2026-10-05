@@ -11,7 +11,16 @@ import 'package:characters_mirror_server/src/validation/character_proficiency_ov
 import 'package:characters_mirror_server/src/validation/character_equipment_selection_validator.dart';
 import 'package:characters_mirror_server/src/validation/rules.dart';
 import 'package:characters_mirror_server/src/validation/validation_exception.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    as feature_modifiers;
 import 'package:serverpod/serverpod.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    hide
+        FeatureModifierTarget,
+        FeatureModifierOperation,
+        FeatureModifierValueKind,
+        FeatureModifierRounding,
+        FeatureModifierCondition;
 
 import 'starting_equipment_endpoints.dart';
 

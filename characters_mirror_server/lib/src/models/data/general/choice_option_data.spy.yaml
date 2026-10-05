@@ -16,6 +16,7 @@ fields:
   grantedExpertiseToolKeys: List<String>?
   requiredExistingSkill: Skill?
   requiredExistingToolKey: String?
+  requirements: List<ChoiceRequirementData>?
   grantedSpellKeys: List<String>?
   grantedFeatureTags: List<FeatureTag>?
   damageType: DamageType?

@@ -12,6 +12,7 @@ part 'character_data_endpoint_test/character_data_endpoint_scenarios.dart';
 part 'character_data_endpoint_test/character_data_creation_scenarios.dart';
 part 'character_data_endpoint_test/character_data_proficiency_scenarios.dart';
 part 'character_data_endpoint_test/character_data_spell_slot_scenarios.dart';
+part 'character_data_endpoint_test/feature_modifier_scenarios.dart';
 
 void main() {
   _registerCharacterDataEndpointTests();

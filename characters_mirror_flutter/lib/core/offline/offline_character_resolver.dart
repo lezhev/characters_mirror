@@ -4,6 +4,8 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_state.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    as feature_modifiers;
 
 part 'offline_character_resolver/spell_equipment_helpers.dart';
 part 'offline_character_resolver/ability_proficiency_helpers.dart';
@@ -12,6 +14,7 @@ part 'offline_character_resolver/armor_class_helpers.dart';
 part 'offline_character_resolver/starting_equipment_helpers.dart';
 part 'offline_character_resolver/offline_keys.dart';
 part 'offline_character_resolver/weapon_proficiency_helpers.dart';
+part 'offline_character_resolver/feature_modifier_helpers.dart';
 
 Future<CharacterData> resolveOfflineCharacter(
   OfflineCacheDatabase cache,
@@ -74,11 +77,20 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       ability: (abilityModifiers[ability] ?? 0) +
           (savingThrowProficiencies.contains(ability) ? proficiencyBonus : 0),
   };
-  final skillBonuses = <Skill, int>{
-    for (final skill in Skill.values)
-      skill: (abilityModifiers[abilityForSkill(skill)] ?? 0) +
-          _skillMultiplier(skillLevels[skill]!) * proficiencyBonus,
-  };
+  final skillBonuses = <Skill, int>{};
+  for (final skill in Skill.values) {
+    final multiplier = _skillMultiplier(skillLevels[skill]!);
+    skillBonuses[skill] = (abilityModifiers[abilityForSkill(skill)] ?? 0) +
+        multiplier * proficiencyBonus +
+        await _offlineFeatureModifierTotal(
+          cache,
+          entries,
+          character,
+          proficiencyBonus: proficiencyBonus,
+          target: FeatureModifierTarget.abilityCheck,
+          abilityCheckIncludesProficiency: multiplier > 0,
+        );
+  }
   final activeFeatures = await _activeFeatures(
     cache,
     character,
@@ -179,6 +191,22 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     (value) => value,
   );
   final movementSpeeds = effectiveMovementSpeeds(character);
+  movementSpeeds[CharacterSpeedKind.walking] =
+      (movementSpeeds[CharacterSpeedKind.walking] ?? 30) +
+          await _offlineFeatureModifierTotal(
+            cache,
+            entries,
+            character,
+            proficiencyBonus: proficiencyBonus,
+            target: FeatureModifierTarget.speed,
+          );
+  final initiativeBonus = await _offlineFeatureModifierTotal(
+    cache,
+    entries,
+    character,
+    proficiencyBonus: proficiencyBonus,
+    target: FeatureModifierTarget.abilityCheck,
+  );
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
@@ -189,7 +217,9 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     armorClass: armorClass.value,
     armorClassSource: armorClass.source,
     armorClassFormula: armorClass.formula,
-    initiative: dexterityModifier + (character.customInitiativeBonus ?? 0),
+    initiative: dexterityModifier +
+        (character.customInitiativeBonus ?? 0) +
+        initiativeBonus,
     speed: displayedMovementSpeed(character.displayedSpeedKind, movementSpeeds),
     maxHp: maxHp,
     passivePerception: 10 + skillBonuses[Skill.perception]!,

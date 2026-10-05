@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 
@@ -345,6 +346,7 @@ abstract final class CharacterValidator {
     if (selections == null) return;
 
     final logicalSlots = <String>{};
+    final members = <String>{};
     for (var index = 0; index < selections.length; index++) {
       final selection = selections[index];
       final prefix = '$field[$index]';
@@ -358,6 +360,20 @@ abstract final class CharacterValidator {
           '$prefix.spell.referenceKey', selection.spell?.referenceKey);
       Rules.shortText('$prefix.spell.name', selection.spell?.name);
       Rules.nonNegativeInt('$prefix.selectionIndex', selection.selectionIndex);
+      final key = selection.spellKey ??
+          selection.spell?.referenceKey ??
+          selection.spell?.name;
+      if (key != null &&
+          selection.kind != null &&
+          !members.add(spellSelectionIdentity(
+              classEntryId: selection.classEntry?.id,
+              classDataId:
+                  selection.classDataId ?? selection.classEntry?.classData?.id,
+              kind: selection.kind?.name,
+              spellKey: key))) {
+        throw InputValidationException(
+            prefix, 'duplicates spell selection for the same source and kind.');
+      }
       final slotKey = _spellSelectionLogicalKey(selection);
       if (slotKey != null && !logicalSlots.add(slotKey)) {
         throw InputValidationException(
@@ -505,8 +521,10 @@ abstract final class CharacterValidator {
         selection.spell?.name;
     if (kind == null || spellKey == null) return null;
     final source = [
-      selection.classEntry?.id,
-      selection.classDataId ?? selection.classEntry?.classData?.id,
+      selection.classEntry?.id != null ? 'entry' : 'class',
+      selection.classEntry?.id ??
+          selection.classDataId ??
+          selection.classEntry?.classData?.id,
     ];
     if (selection.selectionIndex == null) {
       return _logicalKey([...source, kind.name, 'member', spellKey.trim()]);

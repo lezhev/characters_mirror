@@ -1,0 +1,3 @@
+class: FeatureModifierConditionData
+fields:
+  type: FeatureModifierConditionType

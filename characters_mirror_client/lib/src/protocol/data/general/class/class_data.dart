@@ -14,10 +14,12 @@ import '../../../enums/ability.dart' as _i2;
 import '../../../enums/armor_category.dart' as _i3;
 import '../../../enums/skill.dart' as _i4;
 import '../../../enums/spellcasting_progression.dart' as _i5;
+import '../../../enums/class_spell_selection_mode.dart' as _i6;
 
 abstract class ClassData implements _i1.SerializableModel {
   ClassData._({
     this.id,
+    this.referenceKey,
     this.name,
     this.description,
     this.source,
@@ -34,6 +36,7 @@ abstract class ClassData implements _i1.SerializableModel {
     this.skillCount,
     this.subclassChoiceLevel,
     this.spellcastingProgression,
+    this.spellSelectionMode,
     this.spellcastingAbilityValue,
     this.multiclassPrerequisites,
     this.multiclassArmorTraining,
@@ -44,6 +47,7 @@ abstract class ClassData implements _i1.SerializableModel {
 
   factory ClassData({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -60,6 +64,7 @@ abstract class ClassData implements _i1.SerializableModel {
     int? skillCount,
     int? subclassChoiceLevel,
     _i5.SpellcastingProgression? spellcastingProgression,
+    _i6.ClassSpellSelectionMode? spellSelectionMode,
     _i2.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
@@ -71,6 +76,7 @@ abstract class ClassData implements _i1.SerializableModel {
   factory ClassData.fromJson(Map<String, dynamic> jsonSerialization) {
     return ClassData(
       id: jsonSerialization['id'] as int?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -108,6 +114,10 @@ abstract class ClassData implements _i1.SerializableModel {
               ? null
               : _i5.SpellcastingProgression.fromJson(
                   (jsonSerialization['spellcastingProgression'] as String)),
+      spellSelectionMode: jsonSerialization['spellSelectionMode'] == null
+          ? null
+          : _i6.ClassSpellSelectionMode.fromJson(
+              (jsonSerialization['spellSelectionMode'] as String)),
       spellcastingAbilityValue:
           jsonSerialization['spellcastingAbilityValue'] == null
               ? null
@@ -139,6 +149,8 @@ abstract class ClassData implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  String? referenceKey;
 
   String? name;
 
@@ -172,6 +184,8 @@ abstract class ClassData implements _i1.SerializableModel {
 
   _i5.SpellcastingProgression? spellcastingProgression;
 
+  _i6.ClassSpellSelectionMode? spellSelectionMode;
+
   _i2.Ability? spellcastingAbilityValue;
 
   Map<String, int>? multiclassPrerequisites;
@@ -189,6 +203,7 @@ abstract class ClassData implements _i1.SerializableModel {
   @_i1.useResult
   ClassData copyWith({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -205,6 +220,7 @@ abstract class ClassData implements _i1.SerializableModel {
     int? skillCount,
     int? subclassChoiceLevel,
     _i5.SpellcastingProgression? spellcastingProgression,
+    _i6.ClassSpellSelectionMode? spellSelectionMode,
     _i2.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
@@ -216,6 +232,7 @@ abstract class ClassData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -242,6 +259,8 @@ abstract class ClassData implements _i1.SerializableModel {
         'subclassChoiceLevel': subclassChoiceLevel,
       if (spellcastingProgression != null)
         'spellcastingProgression': spellcastingProgression?.toJson(),
+      if (spellSelectionMode != null)
+        'spellSelectionMode': spellSelectionMode?.toJson(),
       if (spellcastingAbilityValue != null)
         'spellcastingAbilityValue': spellcastingAbilityValue?.toJson(),
       if (multiclassPrerequisites != null)
@@ -268,6 +287,7 @@ class _Undefined {}
 class _ClassDataImpl extends ClassData {
   _ClassDataImpl({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -284,6 +304,7 @@ class _ClassDataImpl extends ClassData {
     int? skillCount,
     int? subclassChoiceLevel,
     _i5.SpellcastingProgression? spellcastingProgression,
+    _i6.ClassSpellSelectionMode? spellSelectionMode,
     _i2.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
     List<_i3.ArmorCategory>? multiclassArmorTraining,
@@ -292,6 +313,7 @@ class _ClassDataImpl extends ClassData {
     String? imageURL,
   }) : super._(
           id: id,
+          referenceKey: referenceKey,
           name: name,
           description: description,
           source: source,
@@ -308,6 +330,7 @@ class _ClassDataImpl extends ClassData {
           skillCount: skillCount,
           subclassChoiceLevel: subclassChoiceLevel,
           spellcastingProgression: spellcastingProgression,
+          spellSelectionMode: spellSelectionMode,
           spellcastingAbilityValue: spellcastingAbilityValue,
           multiclassPrerequisites: multiclassPrerequisites,
           multiclassArmorTraining: multiclassArmorTraining,
@@ -322,6 +345,7 @@ class _ClassDataImpl extends ClassData {
   @override
   ClassData copyWith({
     Object? id = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
@@ -338,6 +362,7 @@ class _ClassDataImpl extends ClassData {
     Object? skillCount = _Undefined,
     Object? subclassChoiceLevel = _Undefined,
     Object? spellcastingProgression = _Undefined,
+    Object? spellSelectionMode = _Undefined,
     Object? spellcastingAbilityValue = _Undefined,
     Object? multiclassPrerequisites = _Undefined,
     Object? multiclassArmorTraining = _Undefined,
@@ -347,6 +372,7 @@ class _ClassDataImpl extends ClassData {
   }) {
     return ClassData(
       id: id is int? ? id : this.id,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,
@@ -380,6 +406,9 @@ class _ClassDataImpl extends ClassData {
           spellcastingProgression is _i5.SpellcastingProgression?
               ? spellcastingProgression
               : this.spellcastingProgression,
+      spellSelectionMode: spellSelectionMode is _i6.ClassSpellSelectionMode?
+          ? spellSelectionMode
+          : this.spellSelectionMode,
       spellcastingAbilityValue: spellcastingAbilityValue is _i2.Ability?
           ? spellcastingAbilityValue
           : this.spellcastingAbilityValue,

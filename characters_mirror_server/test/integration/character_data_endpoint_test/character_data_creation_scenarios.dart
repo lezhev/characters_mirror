@@ -955,6 +955,61 @@ void _registerCharacterDataCreationScenarios(
     );
   });
 
+  test('generic choices reject options that fail declarative requirements',
+      () async {
+    final fixture = await _seedCreationFixture(sessionBuilder, endpoints);
+    final session = sessionBuilder.build();
+    try {
+      final group = await ChoiceGroupData.db.insertRow(
+        session,
+        ChoiceGroupData(
+          referenceKey: 'test_minimum_level_requirement',
+          sourceClassId: fixture.classData.id,
+          selectionCount: 1,
+        ),
+      );
+      await ChoiceOptionData.db.insertRow(
+        session,
+        ChoiceOptionData(
+          choiceGroupId: group.id!,
+          optionKey: 'level_five_option',
+          requirements: [
+            ChoiceRequirementData(
+              type: ChoiceRequirementType.minimumCharacterLevel,
+              value: 5,
+            ),
+          ],
+        ),
+      );
+    } finally {
+      await session.close();
+    }
+
+    await expectLater(
+      endpoints.characterData.saveCharacter(
+        authenticatedSession(415),
+        CharacterData(
+          name: 'Ineligible generic choice',
+          classEntries: [
+            CharacterClassEntryData(
+              id: 'ineligible-choice-entry',
+              classData: fixture.classData,
+              level: 1,
+              isStartingClass: true,
+            ),
+          ],
+          choices: [
+            CharacterChoiceData(
+              groupKey: 'test_minimum_level_requirement',
+              optionKey: 'level_five_option',
+            ),
+          ],
+        ),
+      ),
+      throwsA(isA<InputValidationException>()),
+    );
+  });
+
   test(
       'class step view includes subclass features and subclass feature choice groups when subclass is selected',
       () async {

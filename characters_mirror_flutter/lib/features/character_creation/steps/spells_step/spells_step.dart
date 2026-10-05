@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
@@ -175,7 +176,7 @@ class _SpellSelectionGroupCard extends StatelessWidget {
     final selectedKeys = _selectedKeys(group, selections);
     final limit = group.selectionCount ?? 1;
     final options = [
-      for (final spell in group.options ?? const <SpellData>[])
+      for (final spell in draftSpellOptions(group, selections))
         if (_spellKey(spell) != null) spell,
     ];
 
@@ -282,6 +283,8 @@ String _groupTitle(CharacterSpellSelectionKind? kind) {
       return 'Заговоры';
     case CharacterSpellSelectionKind.knownSpell:
       return 'Известные заклинания';
+    case CharacterSpellSelectionKind.spellbookSpell:
+      return 'Книга заклинаний';
     case CharacterSpellSelectionKind.preparedSpell:
       return 'Подготовленные заклинания';
     case null:

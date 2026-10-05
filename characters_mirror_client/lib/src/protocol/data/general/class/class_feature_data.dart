@@ -17,6 +17,7 @@ import '../../../enums/unarmored_defense_rule.dart' as _i5;
 import '../../../data/general/feature_resource_definition_data.dart' as _i6;
 import '../../../data/general/feature_resource_effect_data.dart' as _i7;
 import '../../../data/class_spell_grant_data.dart' as _i8;
+import '../../../data/general/feature_modifier_data.dart' as _i9;
 
 abstract class ClassFeatureData implements _i1.SerializableModel {
   ClassFeatureData._({
@@ -24,6 +25,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     required this.parentClassId,
     this.parentClass,
     this.name,
+    this.referenceKey,
     this.description,
     this.shortDescription,
     required this.level,
@@ -39,6 +41,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     this.resources,
     this.resourceEffects,
     this.spellGrants,
+    this.featureModifiers,
   });
 
   factory ClassFeatureData({
@@ -46,6 +49,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     required int parentClassId,
     _i2.ClassData? parentClass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     required int level,
@@ -61,6 +65,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     List<_i6.FeatureResourceDefinitionData>? resources,
     List<_i7.FeatureResourceEffectData>? resourceEffects,
     List<_i8.ClassSpellGrantData>? spellGrants,
+    List<_i9.FeatureModifierData>? featureModifiers,
   }) = _ClassFeatureDataImpl;
 
   factory ClassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -72,6 +77,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
           : _i2.ClassData.fromJson(
               (jsonSerialization['parentClass'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
       level: jsonSerialization['level'] as int,
@@ -107,6 +113,10 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
           ?.map((e) =>
               _i8.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
           .toList(),
+      featureModifiers: (jsonSerialization['featureModifiers'] as List?)
+          ?.map((e) =>
+              _i9.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -120,6 +130,8 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
   _i2.ClassData? parentClass;
 
   String? name;
+
+  String? referenceKey;
 
   String? description;
 
@@ -151,6 +163,8 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
 
   List<_i8.ClassSpellGrantData>? spellGrants;
 
+  List<_i9.FeatureModifierData>? featureModifiers;
+
   /// Returns a shallow copy of this [ClassFeatureData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -159,6 +173,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     int? parentClassId,
     _i2.ClassData? parentClass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     int? level,
@@ -174,6 +189,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
     List<_i6.FeatureResourceDefinitionData>? resources,
     List<_i7.FeatureResourceEffectData>? resourceEffects,
     List<_i8.ClassSpellGrantData>? spellGrants,
+    List<_i9.FeatureModifierData>? featureModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -182,6 +198,7 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       'level': level,
@@ -204,6 +221,9 @@ abstract class ClassFeatureData implements _i1.SerializableModel {
             resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
+      if (featureModifiers != null)
+        'featureModifiers':
+            featureModifiers?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -221,6 +241,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     required int parentClassId,
     _i2.ClassData? parentClass,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     required int level,
@@ -236,11 +257,13 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     List<_i6.FeatureResourceDefinitionData>? resources,
     List<_i7.FeatureResourceEffectData>? resourceEffects,
     List<_i8.ClassSpellGrantData>? spellGrants,
+    List<_i9.FeatureModifierData>? featureModifiers,
   }) : super._(
           id: id,
           parentClassId: parentClassId,
           parentClass: parentClass,
           name: name,
+          referenceKey: referenceKey,
           description: description,
           shortDescription: shortDescription,
           level: level,
@@ -256,6 +279,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           resources: resources,
           resourceEffects: resourceEffects,
           spellGrants: spellGrants,
+          featureModifiers: featureModifiers,
         );
 
   /// Returns a shallow copy of this [ClassFeatureData]
@@ -267,6 +291,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     int? parentClassId,
     Object? parentClass = _Undefined,
     Object? name = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? description = _Undefined,
     Object? shortDescription = _Undefined,
     int? level,
@@ -282,6 +307,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     Object? resources = _Undefined,
     Object? resourceEffects = _Undefined,
     Object? spellGrants = _Undefined,
+    Object? featureModifiers = _Undefined,
   }) {
     return ClassFeatureData(
       id: id is int? ? id : this.id,
@@ -290,6 +316,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
           ? parentClass
           : this.parentClass?.copyWith(),
       name: name is String? ? name : this.name,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       description: description is String? ? description : this.description,
       shortDescription: shortDescription is String?
           ? shortDescription
@@ -320,6 +347,9 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
       spellGrants: spellGrants is List<_i8.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
+      featureModifiers: featureModifiers is List<_i9.FeatureModifierData>?
+          ? featureModifiers
+          : this.featureModifiers?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

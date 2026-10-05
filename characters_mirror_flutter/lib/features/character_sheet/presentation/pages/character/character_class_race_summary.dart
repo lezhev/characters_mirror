@@ -19,7 +19,7 @@ class CharacterClassRaceSummary extends StatelessWidget {
 
     return SheetOutlineCard(
       onTap: onTap,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -39,17 +39,17 @@ class CharacterClassRaceSummary extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             classSummary(character.classEntries),
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodySmall,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 1),
           Text(
             raceSummary(character.race, character.subrace),
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodySmall,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

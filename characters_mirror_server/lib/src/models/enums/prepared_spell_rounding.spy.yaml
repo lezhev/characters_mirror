@@ -1,0 +1,6 @@
+enum: PreparedSpellRounding
+serialized: byName
+values:
+  - floor
+  - ceil
+  - nearest

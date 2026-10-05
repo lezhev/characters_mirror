@@ -57,24 +57,27 @@ class CharacterPage extends ConsumerWidget {
                   onTap: null,
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CharacterPortraitTile(characterId: characterId),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: CharacterClassRaceSummary(
-                        character: character,
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (context) => ClassRaceDetailsPage(
-                              character: character,
+                SizedBox(
+                  height: 112,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      CharacterPortraitTile(characterId: characterId),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: CharacterClassRaceSummary(
+                          character: character,
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => ClassRaceDetailsPage(
+                                character: character,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 CharacterProficiencySummary(

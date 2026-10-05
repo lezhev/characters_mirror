@@ -18,3 +18,4 @@ fields:
   startingProficiencies: ProficiencyBundleView?
   multiclassWarnings: List<String>?
   progression: List<ClassLevelData>?
+  featureModifiers: List<FeatureModifierData>?
