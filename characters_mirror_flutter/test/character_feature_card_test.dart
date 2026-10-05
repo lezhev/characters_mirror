@@ -5,6 +5,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  for (final expanded in [false, true]) {
+    testWidgets(
+        'reset is available only in the edit dialog, expanded=$expanded',
+        (tester) async {
+      var resets = 0;
+      await _pumpCard(
+        tester,
+        resource: null,
+        description: 'Custom description',
+        isCustomized: true,
+        onReset: () async => resets++,
+        onSetResource: (_) async {},
+      );
+      if (expanded) {
+        await tester.tap(find.byIcon(Icons.expand_more));
+        await tester.pumpAndSettle();
+      }
+
+      expect(find.text('Вернуть всё как было'), findsNothing);
+      expect(find.text('Вернуть значения по умолчанию'), findsNothing);
+      await tester.tap(find.text('Feature'));
+      await tester.pumpAndSettle();
+
+      final resetButton = find.text('Вернуть значения по умолчанию');
+      expect(resetButton, findsOneWidget);
+      expect(find.text('Вернуть всё как было'), findsNothing);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      await tester.tap(resetButton);
+      await tester.pumpAndSettle();
+
+      expect(resets, 1);
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   group('CharacterFeatureCard resource', () {
     testWidgets('shows compact resource summary while collapsed',
         (tester) async {
@@ -239,6 +275,8 @@ Future<void> _pumpCard(
   List<FeatureTag>? tags,
   List<FeatureDisplayPropertyView>? displayProperties,
   List<String>? selectedChoices,
+  bool isCustomized = false,
+  Future<void> Function()? onReset,
 }) {
   return tester.pumpWidget(
     MaterialApp(
@@ -253,13 +291,14 @@ Future<void> _pumpCard(
               defaultName: 'Feature',
               name: 'Feature',
               description: description,
+              isCustomized: isCustomized,
               defaultTags: tags,
               resources: resource == null ? null : [resource],
               displayProperties: displayProperties,
               selectedChoices: selectedChoices,
             ),
             onSave: ({name, description, tags}) async {},
-            onReset: () async {},
+            onReset: onReset ?? () async {},
             onSetResource: (_, current) => onSetResource(current),
           ),
         ),

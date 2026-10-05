@@ -1,4 +1,10 @@
-enum FeatureModifierTarget { speed, abilityCheck }
+enum FeatureModifierTarget {
+  speed,
+  abilityCheck,
+  armorClass,
+  attackRoll,
+  damageRoll
+}
 
 enum FeatureModifierOperation { add }
 
@@ -12,6 +18,8 @@ enum FeatureModifierCondition {
   unarmored,
   noShield,
   abilityCheckIsNotProficient,
+  armored,
+  rangedWeaponAttack,
 }
 
 enum FeatureModifierRounding { floor }
@@ -30,6 +38,7 @@ class FeatureModifierSpec {
     this.denominator,
     this.rounding,
     this.conditions = const {},
+    this.requiredChoiceOptions = const {},
   });
 
   final String referenceKey;
@@ -44,6 +53,7 @@ class FeatureModifierSpec {
   final int? denominator;
   final FeatureModifierRounding? rounding;
   final Set<FeatureModifierCondition> conditions;
+  final Set<String> requiredChoiceOptions;
 }
 
 class FeatureModifierContext {
@@ -54,6 +64,8 @@ class FeatureModifierContext {
     this.isArmored = false,
     this.hasShield = false,
     this.abilityCheckIncludesProficiency = false,
+    this.isRangedWeaponAttack = false,
+    this.selectedChoiceOptionKeys = const {},
   });
 
   final int proficiencyBonus;
@@ -62,6 +74,8 @@ class FeatureModifierContext {
   final bool isArmored;
   final bool hasShield;
   final bool abilityCheckIncludesProficiency;
+  final bool isRangedWeaponAttack;
+  final Set<String> selectedChoiceOptionKeys;
 }
 
 class ResolvedFeatureModifier {
@@ -92,6 +106,10 @@ List<ResolvedFeatureModifier> evaluateFeatureModifiers({
   for (final modifier in ordered) {
     if (!context.activeFeatureKeys.contains(modifier.sourceFeatureKey))
       continue;
+    if (!context.selectedChoiceOptionKeys
+        .containsAll(modifier.requiredChoiceOptions)) {
+      continue;
+    }
     if (!_conditionsPass(modifier.conditions, context)) continue;
     final value = _resolveValue(modifier, context);
     if (value == null || value == 0) continue;
@@ -112,6 +130,9 @@ Map<FeatureModifierTarget, int> sumFeatureModifierValues(
     switch (modifier.target) {
       case FeatureModifierTarget.speed:
       case FeatureModifierTarget.abilityCheck:
+      case FeatureModifierTarget.armorClass:
+      case FeatureModifierTarget.attackRoll:
+      case FeatureModifierTarget.damageRoll:
         result.update(
           modifier.target,
           (value) => value + modifier.value,
@@ -134,6 +155,10 @@ bool _conditionsPass(
         if (context.hasShield) return false;
       case FeatureModifierCondition.abilityCheckIsNotProficient:
         if (context.abilityCheckIncludesProficiency) return false;
+      case FeatureModifierCondition.armored:
+        if (!context.isArmored) return false;
+      case FeatureModifierCondition.rangedWeaponAttack:
+        if (!context.isRangedWeaponAttack) return false;
     }
   }
   return true;

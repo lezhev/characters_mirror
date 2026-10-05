@@ -3,6 +3,7 @@ fields:
   id: String?
   name: String?
   leadingAbility: Ability?
+  weaponCategory: WeaponCategory?
   damage: String?
   customAttackBonus: int?
   damageType: DamageType?

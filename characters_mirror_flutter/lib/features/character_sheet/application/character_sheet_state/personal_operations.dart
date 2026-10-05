@@ -9,7 +9,7 @@ extension CharacterSheetControllerPersonal on CharacterSheetController {
     final next = (current.experience ?? 0) + delta;
     if (next < 0) return;
     await _saveSemanticAction(
-      current.copyWith(experience: next == 0 ? null : next),
+      current.copyWith(experience: next),
       type: CharacterSyncOperationType.adjustExperience,
       action: CharacterSemanticActionData(delta: delta),
     );

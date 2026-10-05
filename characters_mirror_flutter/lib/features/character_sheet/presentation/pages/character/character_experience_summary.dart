@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +21,14 @@ class CharacterExperienceSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final experience = character.experience;
-    final totalLevel = character.derived?.totalLevel;
-    final hasProgressTarget = experience != null &&
-        currentLevelStartExperience != null &&
+    final experience = character.experience ?? 0;
+    final totalLevel = max(
+      1,
+      character.derived?.totalLevel ??
+          (character.classEntries ?? const <CharacterClassEntryData>[])
+              .fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)),
+    );
+    final hasProgressTarget = currentLevelStartExperience != null &&
         nextLevelExperience != null &&
         nextLevelExperience! > currentLevelStartExperience!;
     final progress = hasProgressTarget
@@ -56,9 +62,7 @@ class CharacterExperienceSummary extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: Text(
-                  totalLevel == null
-                      ? 'Уровень не указан'
-                      : '$totalLevel уровень',
+                  '$totalLevel уровень',
                   style: theme.textTheme.bodyMedium,
                 ),
               ),
@@ -66,11 +70,9 @@ class CharacterExperienceSummary extends StatelessWidget {
               Expanded(
                 flex: 4,
                 child: Text(
-                  experience == null
-                      ? 'Опыт не указан'
-                      : hasProgressTarget
-                          ? '$experience / $nextLevelExperience опыта'
-                          : '$experience опыта · порог не указан',
+                  hasProgressTarget
+                      ? '$experience / $nextLevelExperience опыта'
+                      : '$experience опыта · порог не указан',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

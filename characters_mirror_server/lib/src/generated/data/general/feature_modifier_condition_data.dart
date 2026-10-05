@@ -14,34 +14,58 @@ import '../../enums/feature_modifier_condition_type.dart' as _i2;
 
 abstract class FeatureModifierConditionData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
-  FeatureModifierConditionData._({required this.type});
+  FeatureModifierConditionData._({
+    required this.type,
+    this.choiceGroupKey,
+    this.optionKey,
+  });
 
-  factory FeatureModifierConditionData(
-          {required _i2.FeatureModifierConditionType type}) =
-      _FeatureModifierConditionDataImpl;
+  factory FeatureModifierConditionData({
+    required _i2.FeatureModifierConditionType type,
+    String? choiceGroupKey,
+    String? optionKey,
+  }) = _FeatureModifierConditionDataImpl;
 
   factory FeatureModifierConditionData.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return FeatureModifierConditionData(
-        type: _i2.FeatureModifierConditionType.fromJson(
-            (jsonSerialization['type'] as int)));
+      type: _i2.FeatureModifierConditionType.fromJson(
+          (jsonSerialization['type'] as int)),
+      choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
+      optionKey: jsonSerialization['optionKey'] as String?,
+    );
   }
 
   _i2.FeatureModifierConditionType type;
 
+  String? choiceGroupKey;
+
+  String? optionKey;
+
   /// Returns a shallow copy of this [FeatureModifierConditionData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  FeatureModifierConditionData copyWith(
-      {_i2.FeatureModifierConditionType? type});
+  FeatureModifierConditionData copyWith({
+    _i2.FeatureModifierConditionType? type,
+    String? choiceGroupKey,
+    String? optionKey,
+  });
   @override
   Map<String, dynamic> toJson() {
-    return {'type': type.toJson()};
+    return {
+      'type': type.toJson(),
+      if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (optionKey != null) 'optionKey': optionKey,
+    };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
-    return {'type': type.toJson()};
+    return {
+      'type': type.toJson(),
+      if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (optionKey != null) 'optionKey': optionKey,
+    };
   }
 
   @override
@@ -50,17 +74,33 @@ abstract class FeatureModifierConditionData
   }
 }
 
+class _Undefined {}
+
 class _FeatureModifierConditionDataImpl extends FeatureModifierConditionData {
-  _FeatureModifierConditionDataImpl(
-      {required _i2.FeatureModifierConditionType type})
-      : super._(type: type);
+  _FeatureModifierConditionDataImpl({
+    required _i2.FeatureModifierConditionType type,
+    String? choiceGroupKey,
+    String? optionKey,
+  }) : super._(
+          type: type,
+          choiceGroupKey: choiceGroupKey,
+          optionKey: optionKey,
+        );
 
   /// Returns a shallow copy of this [FeatureModifierConditionData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  FeatureModifierConditionData copyWith(
-      {_i2.FeatureModifierConditionType? type}) {
-    return FeatureModifierConditionData(type: type ?? this.type);
+  FeatureModifierConditionData copyWith({
+    _i2.FeatureModifierConditionType? type,
+    Object? choiceGroupKey = _Undefined,
+    Object? optionKey = _Undefined,
+  }) {
+    return FeatureModifierConditionData(
+      type: type ?? this.type,
+      choiceGroupKey:
+          choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      optionKey: optionKey is String? ? optionKey : this.optionKey,
+    );
   }
 }

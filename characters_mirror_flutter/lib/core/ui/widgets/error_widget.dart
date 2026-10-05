@@ -24,11 +24,16 @@ Widget errorWidget({
         SelectableText(
           humanReadableError(e),
           textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                decoration: TextDecoration.none,
+              ),
         ),
         const SizedBox(height: 8),
-        TextButton(
+        FilledButton.icon(
           onPressed: refresh,
-          child: const Text('Попробовать снова'),
+          icon: const Icon(Icons.refresh),
+          label: const Text('Попробовать снова'),
         ),
       ],
     ),

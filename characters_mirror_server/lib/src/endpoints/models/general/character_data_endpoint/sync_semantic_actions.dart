@@ -479,7 +479,7 @@ CharacterData _adjustServerExperience(
     );
   }
   Rules.nonNegativeInt('experience', next);
-  return character.copyWith(experience: next == 0 ? null : next);
+  return character.copyWith(experience: next);
 }
 
 CharacterData _applyServerRest(

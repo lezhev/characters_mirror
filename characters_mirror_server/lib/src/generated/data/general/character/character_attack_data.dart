@@ -11,8 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../enums/ability.dart' as _i2;
-import '../../../enums/damage_type.dart' as _i3;
-import '../../../data/damage_part_data.dart' as _i4;
+import '../../../enums/weapon_category.dart' as _i3;
+import '../../../enums/damage_type.dart' as _i4;
+import '../../../data/damage_part_data.dart' as _i5;
 
 abstract class CharacterAttackData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -20,6 +21,7 @@ abstract class CharacterAttackData
     this.id,
     this.name,
     this.leadingAbility,
+    this.weaponCategory,
     this.damage,
     this.customAttackBonus,
     this.damageType,
@@ -33,10 +35,11 @@ abstract class CharacterAttackData
     String? id,
     String? name,
     _i2.Ability? leadingAbility,
+    _i3.WeaponCategory? weaponCategory,
     String? damage,
     int? customAttackBonus,
-    _i3.DamageType? damageType,
-    List<_i4.DamagePartData>? damageParts,
+    _i4.DamageType? damageType,
+    List<_i5.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -50,14 +53,18 @@ abstract class CharacterAttackData
           ? null
           : _i2.Ability.fromJson(
               (jsonSerialization['leadingAbility'] as String)),
+      weaponCategory: jsonSerialization['weaponCategory'] == null
+          ? null
+          : _i3.WeaponCategory.fromJson(
+              (jsonSerialization['weaponCategory'] as String)),
       damage: jsonSerialization['damage'] as String?,
       customAttackBonus: jsonSerialization['customAttackBonus'] as int?,
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i3.DamageType.fromJson(
+          : _i4.DamageType.fromJson(
               (jsonSerialization['damageType'] as String)),
       damageParts: (jsonSerialization['damageParts'] as List?)
-          ?.map((e) => _i4.DamagePartData.fromJson((e as Map<String, dynamic>)))
+          ?.map((e) => _i5.DamagePartData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       tags: (jsonSerialization['tags'] as List?)
           ?.map((e) => e as String)
@@ -75,13 +82,15 @@ abstract class CharacterAttackData
 
   _i2.Ability? leadingAbility;
 
+  _i3.WeaponCategory? weaponCategory;
+
   String? damage;
 
   int? customAttackBonus;
 
-  _i3.DamageType? damageType;
+  _i4.DamageType? damageType;
 
-  List<_i4.DamagePartData>? damageParts;
+  List<_i5.DamagePartData>? damageParts;
 
   List<String>? tags;
 
@@ -96,10 +105,11 @@ abstract class CharacterAttackData
     String? id,
     String? name,
     _i2.Ability? leadingAbility,
+    _i3.WeaponCategory? weaponCategory,
     String? damage,
     int? customAttackBonus,
-    _i3.DamageType? damageType,
-    List<_i4.DamagePartData>? damageParts,
+    _i4.DamageType? damageType,
+    List<_i5.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -110,6 +120,7 @@ abstract class CharacterAttackData
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (leadingAbility != null) 'leadingAbility': leadingAbility?.toJson(),
+      if (weaponCategory != null) 'weaponCategory': weaponCategory?.toJson(),
       if (damage != null) 'damage': damage,
       if (customAttackBonus != null) 'customAttackBonus': customAttackBonus,
       if (damageType != null) 'damageType': damageType?.toJson(),
@@ -127,6 +138,7 @@ abstract class CharacterAttackData
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (leadingAbility != null) 'leadingAbility': leadingAbility?.toJson(),
+      if (weaponCategory != null) 'weaponCategory': weaponCategory?.toJson(),
       if (damage != null) 'damage': damage,
       if (customAttackBonus != null) 'customAttackBonus': customAttackBonus,
       if (damageType != null) 'damageType': damageType?.toJson(),
@@ -152,10 +164,11 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
     String? id,
     String? name,
     _i2.Ability? leadingAbility,
+    _i3.WeaponCategory? weaponCategory,
     String? damage,
     int? customAttackBonus,
-    _i3.DamageType? damageType,
-    List<_i4.DamagePartData>? damageParts,
+    _i4.DamageType? damageType,
+    List<_i5.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -163,6 +176,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
           id: id,
           name: name,
           leadingAbility: leadingAbility,
+          weaponCategory: weaponCategory,
           damage: damage,
           customAttackBonus: customAttackBonus,
           damageType: damageType,
@@ -180,6 +194,7 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
     Object? id = _Undefined,
     Object? name = _Undefined,
     Object? leadingAbility = _Undefined,
+    Object? weaponCategory = _Undefined,
     Object? damage = _Undefined,
     Object? customAttackBonus = _Undefined,
     Object? damageType = _Undefined,
@@ -193,12 +208,15 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
       name: name is String? ? name : this.name,
       leadingAbility:
           leadingAbility is _i2.Ability? ? leadingAbility : this.leadingAbility,
+      weaponCategory: weaponCategory is _i3.WeaponCategory?
+          ? weaponCategory
+          : this.weaponCategory,
       damage: damage is String? ? damage : this.damage,
       customAttackBonus: customAttackBonus is int?
           ? customAttackBonus
           : this.customAttackBonus,
-      damageType: damageType is _i3.DamageType? ? damageType : this.damageType,
-      damageParts: damageParts is List<_i4.DamagePartData>?
+      damageType: damageType is _i4.DamageType? ? damageType : this.damageType,
+      damageParts: damageParts is List<_i5.DamagePartData>?
           ? damageParts
           : this.damageParts?.map((e0) => e0.copyWith()).toList(),
       tags: tags is List<String>? ? tags : this.tags?.map((e0) => e0).toList(),

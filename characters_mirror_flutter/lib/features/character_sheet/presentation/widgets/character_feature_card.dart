@@ -124,14 +124,6 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                         ],
                       ],
                     ),
-                    if (feature.isCustomized == true)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: TextButton(
-                          onPressed: widget.onReset,
-                          child: const Text('Вернуть всё как было'),
-                        ),
-                      ),
                     ExpandableSection(
                       extraOffset: 64,
                       expand: _isExpanded,

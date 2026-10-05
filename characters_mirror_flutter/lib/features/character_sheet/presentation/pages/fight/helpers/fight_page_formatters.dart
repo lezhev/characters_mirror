@@ -8,8 +8,61 @@ String formatAttackBonus(CharacterData character, CharacterAttackData attack) {
       ? 0
       : character.derived?.abilityModifiers?[attack.leadingAbility!] ?? 0;
   final customBonus = attack.customAttackBonus ?? 0;
-  final total = proficiencyBonus + abilityModifier + customBonus;
+  final featureBonus = _attackFeatureModifierTotal(
+    character,
+    attack,
+    FeatureModifierTarget.attackRoll,
+  );
+  final total = proficiencyBonus + abilityModifier + customBonus + featureBonus;
   return total >= 0 ? '+$total' : '$total';
+}
+
+int _attackFeatureModifierTotal(
+  CharacterData character,
+  CharacterAttackData attack,
+  FeatureModifierTarget target,
+) {
+  var total = 0;
+  for (final modifier
+      in character.derived?.featureModifiers ?? const <FeatureModifierData>[]) {
+    if (modifier.target != target ||
+        modifier.operation != FeatureModifierOperation.add ||
+        modifier.value.kind != FeatureModifierValueKind.staticValue) {
+      continue;
+    }
+    var matches = true;
+    for (final condition
+        in modifier.conditions ?? const <FeatureModifierConditionData>[]) {
+      switch (condition.type) {
+        case FeatureModifierConditionType.unarmored:
+          matches = character.equippedArmor == null;
+        case FeatureModifierConditionType.noShield:
+          matches = character.equippedShield == null;
+        case FeatureModifierConditionType.abilityCheckIsNotProficient:
+          matches = false;
+        case FeatureModifierConditionType.armored:
+          matches = character.equippedArmor != null;
+        case FeatureModifierConditionType.rangedWeaponAttack:
+          matches = attack.weaponCategory == WeaponCategory.simpleRanged ||
+              attack.weaponCategory == WeaponCategory.martialRanged;
+        case FeatureModifierConditionType.selectedChoiceOption:
+          final groupKey = condition.choiceGroupKey?.trim();
+          final optionKey = condition.optionKey?.trim();
+          matches = groupKey != null &&
+              groupKey.isNotEmpty &&
+              optionKey != null &&
+              optionKey.isNotEmpty &&
+              (character.choices ?? const <CharacterChoiceData>[]).any(
+                (choice) =>
+                    choice.groupKey == groupKey &&
+                    choice.optionKey == optionKey,
+              );
+      }
+      if (!matches) break;
+    }
+    if (matches) total += modifier.value.staticValue ?? 0;
+  }
+  return total;
 }
 
 String formatDamageLabel(CharacterAttackData attack) {
@@ -216,6 +269,7 @@ bool attackEquals(CharacterAttackData? left, CharacterAttackData right) {
 
   return left.name == right.name &&
       left.leadingAbility == right.leadingAbility &&
+      left.weaponCategory == right.weaponCategory &&
       left.damage == right.damage &&
       left.customAttackBonus == right.customAttackBonus &&
       left.damageType == right.damageType &&
