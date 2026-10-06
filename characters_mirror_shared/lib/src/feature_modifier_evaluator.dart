@@ -6,7 +6,7 @@ enum FeatureModifierTarget {
   damageRoll
 }
 
-enum FeatureModifierOperation { add }
+enum FeatureModifierOperation { add, baseArmorClass }
 
 enum FeatureModifierValueKind {
   staticValue,
@@ -39,6 +39,8 @@ class FeatureModifierSpec {
     this.rounding,
     this.conditions = const {},
     this.requiredChoiceOptions = const {},
+    this.abilityModifierKeys = const [],
+    this.sourceName,
   });
 
   final String referenceKey;
@@ -54,6 +56,8 @@ class FeatureModifierSpec {
   final FeatureModifierRounding? rounding;
   final Set<FeatureModifierCondition> conditions;
   final Set<String> requiredChoiceOptions;
+  final List<String> abilityModifierKeys;
+  final String? sourceName;
 }
 
 class FeatureModifierContext {
@@ -66,6 +70,7 @@ class FeatureModifierContext {
     this.abilityCheckIncludesProficiency = false,
     this.isRangedWeaponAttack = false,
     this.selectedChoiceOptionKeys = const {},
+    this.abilityModifiers = const {},
   });
 
   final int proficiencyBonus;
@@ -76,6 +81,7 @@ class FeatureModifierContext {
   final bool abilityCheckIncludesProficiency;
   final bool isRangedWeaponAttack;
   final Set<String> selectedChoiceOptionKeys;
+  final Map<String, int> abilityModifiers;
 }
 
 class ResolvedFeatureModifier {
@@ -83,11 +89,15 @@ class ResolvedFeatureModifier {
     required this.referenceKey,
     required this.target,
     required this.value,
+    this.operation = FeatureModifierOperation.add,
+    this.spec,
   });
 
   final String referenceKey;
   final FeatureModifierTarget target;
   final int value;
+  final FeatureModifierOperation operation;
+  final FeatureModifierSpec? spec;
 }
 
 List<ResolvedFeatureModifier> evaluateFeatureModifiers({
@@ -111,12 +121,23 @@ List<ResolvedFeatureModifier> evaluateFeatureModifiers({
       continue;
     }
     if (!_conditionsPass(modifier.conditions, context)) continue;
-    final value = _resolveValue(modifier, context);
-    if (value == null || value == 0) continue;
+    final baseValue = _resolveValue(modifier, context);
+    if (baseValue == null) continue;
+    if (modifier.operation == FeatureModifierOperation.baseArmorClass &&
+        modifier.target != FeatureModifierTarget.armorClass) continue;
+    final value = baseValue +
+        (modifier.operation == FeatureModifierOperation.baseArmorClass
+            ? modifier.abilityModifierKeys.toSet().fold<int>(
+                0, (sum, key) => sum + (context.abilityModifiers[key] ?? 0))
+            : 0);
+    if (value == 0 && modifier.operation == FeatureModifierOperation.add)
+      continue;
     resolved.add(ResolvedFeatureModifier(
       referenceKey: modifier.referenceKey,
       target: modifier.target,
       value: value,
+      operation: modifier.operation,
+      spec: modifier,
     ));
   }
   return resolved;
@@ -127,6 +148,7 @@ Map<FeatureModifierTarget, int> sumFeatureModifierValues(
 ) {
   final result = <FeatureModifierTarget, int>{};
   for (final modifier in modifiers) {
+    if (modifier.operation != FeatureModifierOperation.add) continue;
     switch (modifier.target) {
       case FeatureModifierTarget.speed:
       case FeatureModifierTarget.abilityCheck:

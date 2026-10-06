@@ -6,3 +6,4 @@ fields:
   numerator: int?
   denominator: int?
   rounding: FeatureModifierRounding?
+  abilityModifiers: List<Ability>?

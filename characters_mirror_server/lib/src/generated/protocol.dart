@@ -8179,6 +8179,11 @@ class Protocol extends _i1.SerializationManagerServer {
               MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
+    if (t == _i1.getType<List<_i83.Ability>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<_i71.FeatureResourceProgressionValueData>?>()) {
       return (data != null
           ? (data as List)

@@ -1,4 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart' as ac;
+import 'armor_class_feature_modifiers.dart';
 
 CharacterData recalculateArmorClassFromCatalog(
     CharacterData character, List<ArmorData> armorCatalog,
@@ -24,29 +26,31 @@ CharacterData recalculateArmorClassFromCatalog(
     matchesSlot: (category) => category == ArmorCategory.shield,
   );
 
-  final baseAC = bodyArmor?.baseAC;
-  final bodyDexterityBonus = baseAC == null
-      ? dexMod
-      : bodyArmor?.dexBonus == true
-          ? _cappedDexterityBonus(dexMod, bodyArmor?.dexBonusMax)
-          : 0;
-  final armorClass =
-      (baseAC ?? 10) + bodyDexterityBonus + (shield?.bonusAC ?? 0);
-  var formula = baseAC != null && bodyArmor?.dexBonus != true
-      ? '$baseAC'
-      : '${baseAC ?? 10} + Ловкость ($bodyDexterityBonus)';
-  if (shield != null) formula += ' + Щит (${shield.bonusAC ?? 0})';
-  final customBonus = character.customArmorClassBonus ?? 0;
-  if (customBonus != 0) formula += ' + Бонус ($customBonus)';
+  final abilityModifiers = <Ability, int>{
+    for (final ability in Ability.values)
+      ability: character.derived?.abilityModifiers?[ability] ??
+          _abilityModifier(character.derived?.abilityScores?[ability] ??
+              character.baseAbilityScores?[ability.name] ??
+              10),
+    Ability.dexterity: dexMod,
+  };
+  final input = armorClassModifierInput(
+      character,
+      character.derived?.featureModifiers ?? const [],
+      abilityModifiers,
+      character.derived?.proficiencyBonus ?? 2);
+  final result = ac.resolveArmorClass(
+      context: input.context,
+      modifiers: input.modifiers,
+      bodyArmor: armorClassEquipment(bodyArmor),
+      shield: armorClassEquipment(shield),
+      customBonus: character.customArmorClassBonus ?? 0);
   final derived = character.derived ?? CharacterDerivedData();
-
   return character.copyWith(
-    derived: derived.copyWith(
-      armorClass: armorClass + customBonus,
-      armorClassSource: bodyArmor?.name ?? 'Без доспеха',
-      armorClassFormula: formula,
-    ),
-  );
+      derived: derived.copyWith(
+          armorClass: result.value,
+          armorClassSource: result.source,
+          armorClassFormula: result.formula));
 }
 
 ArmorData? _resolveArmor(
@@ -66,10 +70,3 @@ ArmorData? _resolveArmor(
 }
 
 int _abilityModifier(int score) => ((score - 10) / 2).floor();
-
-int _cappedDexterityBonus(int dexterityModifier, int? maximum) {
-  if (maximum == null || dexterityModifier <= maximum) {
-    return dexterityModifier;
-  }
-  return maximum;
-}
