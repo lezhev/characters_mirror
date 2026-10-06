@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';
 import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 
 /// Projects the draft from the last confirmed preview, avoiding cumulative drift.
@@ -68,25 +69,42 @@ LevelUpPreview optimisticLevelUpPreview(LevelUpPreview confirmed,
     for (final s in request.spells ?? const <LevelUpSpellChoice>[])
       if (s.replacesSelectionId != null) s.replacesSelectionId
   };
-  final spellSelections = [
+  final spellSelections = <CharacterSpellSelectionData>[
     for (final s in confirmed.before.spellSelections ??
         const <CharacterSpellSelectionData>[])
       if (!replacements.contains(s.id)) s,
-    for (final s in request.spells ?? const <LevelUpSpellChoice>[])
-      () {
-        final spell = confirmed.classStep.spellSelectionGroups
-            ?.where((g) => g.kind == s.kind)
-            .expand((g) => g.options ?? const <SpellData>[])
-            .where((o) => o.id == s.spellId)
-            .firstOrNull;
-        return CharacterSpellSelectionData(
-            classEntry: entry,
-            kind: s.kind,
-            spellId: s.spellId,
-            spellKey: spell?.referenceKey,
-            spell: spell);
-      }(),
   ];
+  for (final choice in request.spells ?? const <LevelUpSpellChoice>[]) {
+    final replaced = choice.replacesSelectionId == null
+        ? null
+        : confirmed.before.spellSelections
+            ?.where((selection) =>
+                selection.id == choice.replacesSelectionId &&
+                selection.classEntry?.id == request.classEntryId &&
+                selection.kind == CharacterSpellSelectionKind.knownSpell)
+            .firstOrNull;
+    final spell = confirmed.classStep.spellSelectionGroups
+        ?.where((group) => group.kind == choice.kind)
+        .expand((group) => group.options ?? const <SpellData>[])
+        .where((option) => option.id == choice.spellId)
+        .firstOrNull;
+    spellSelections.add(CharacterSpellSelectionData(
+      classEntry: entry,
+      kind: choice.kind,
+      spellId: choice.spellId,
+      spellKey: spell?.referenceKey,
+      spell: spell,
+      selectionIndex: replaced?.selectionIndex ??
+          (replaced == null
+              ? nextSpellSelectionIndex(
+                  spellSelections,
+                  classEntry: entry,
+                  classDataId: entry?.classData?.id,
+                  kind: choice.kind,
+                )
+              : null),
+    ));
+  }
   var draft = character.copyWith(
       classEntries: entries,
       choices: choices,

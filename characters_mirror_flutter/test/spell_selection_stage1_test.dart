@@ -220,8 +220,10 @@ void main() {
       wizard,
       bard
     ], spellSelections: [
-      selection(shield, CharacterSpellSelectionKind.spellbookSpell),
+      selection(shield, CharacterSpellSelectionKind.spellbookSpell)
+          .copyWith(selectionIndex: 4),
       selection(shield, CharacterSpellSelectionKind.knownSpell, entry: bard)
+          .copyWith(selectionIndex: 9)
     ]);
     expect(learnedSpellSelection(character, sleep, 1).kind,
         CharacterSpellSelectionKind.spellbookSpell);
@@ -229,6 +231,62 @@ void main() {
         CharacterSpellSelectionKind.knownSpell);
     final kept = forgetSpellSelections(character, shield, 1);
     expect(kept.single.classEntry!.id, bard.id);
+    expect(kept.single.selectionIndex, 9);
+  });
+  test('next spell slot is scoped by class entry and selection kind', () {
+    final otherEntry = CharacterClassEntryData(
+      id: 'other-wizard-entry',
+      classData: wizard.classData,
+    );
+    final selections = [
+      selection(shield, CharacterSpellSelectionKind.knownSpell, entry: wizard)
+          .copyWith(selectionIndex: 9),
+      selection(shield, CharacterSpellSelectionKind.knownCantrip, entry: wizard)
+          .copyWith(selectionIndex: 40),
+      selection(shield, CharacterSpellSelectionKind.spellbookSpell,
+              entry: wizard)
+          .copyWith(selectionIndex: 30),
+      selection(shield, CharacterSpellSelectionKind.knownSpell,
+              entry: otherEntry)
+          .copyWith(selectionIndex: 50),
+    ];
+
+    expect(
+      nextSpellSelectionIndex(
+        selections,
+        classEntry: wizard,
+        classDataId: wizard.classData!.id,
+        kind: CharacterSpellSelectionKind.knownSpell,
+      ),
+      10,
+    );
+    expect(
+      nextSpellSelectionIndex(
+        selections,
+        classEntry: wizard,
+        classDataId: wizard.classData!.id,
+        kind: CharacterSpellSelectionKind.knownCantrip,
+      ),
+      41,
+    );
+    expect(
+      nextSpellSelectionIndex(
+        selections,
+        classEntry: wizard,
+        classDataId: wizard.classData!.id,
+        kind: CharacterSpellSelectionKind.spellbookSpell,
+      ),
+      31,
+    );
+    expect(
+      nextSpellSelectionIndex(
+        selections,
+        classEntry: otherEntry,
+        classDataId: otherEntry.classData!.id,
+        kind: CharacterSpellSelectionKind.knownSpell,
+      ),
+      51,
+    );
   });
   test('preparing creates prepared kind without learning or copying to book',
       () {

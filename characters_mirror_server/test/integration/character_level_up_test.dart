@@ -1,5 +1,6 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
+import 'package:characters_mirror_server/src/validation/character_validator.dart';
 import 'package:characters_mirror_server/src/validation/validation_exception.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
@@ -88,6 +89,172 @@ void main() {
       } finally {
         await session.close();
       }
+    }
+
+    Future<({CharacterData character, List<SpellData> spells})> spellFixture({
+      required int nextKnownSpells,
+      int replacements = 0,
+      bool withOtherScopes = false,
+    }) async {
+      final session = owner.build();
+      late ClassData data;
+      late List<SpellData> spells;
+      late ClassData? otherData;
+      late SpellData? cantrip;
+      late SpellData? spellbookSpell;
+      late SpellData? otherEntrySpell;
+      try {
+        data = await ClassData.db.insertRow(
+          session,
+          ClassData(
+            name: 'Spell slot test class',
+            referenceKey:
+                'spell_slots_${DateTime.now().microsecondsSinceEpoch}',
+            hitDieValue: 8,
+            spellSelectionMode: ClassSpellSelectionMode.known,
+            spellcastingProgression: SpellcastingProgression.full,
+          ),
+        );
+        await ClassLevelData.db.insertRow(
+          session,
+          ClassLevelData(
+            classDataId: data.id!,
+            level: 4,
+            knownSpells: 10,
+          ),
+        );
+        await ClassLevelData.db.insertRow(
+          session,
+          ClassLevelData(
+            classDataId: data.id!,
+            level: 5,
+            knownSpells: nextKnownSpells,
+            knownSpellReplacements: replacements,
+          ),
+        );
+        spells = [
+          for (var i = 0; i < 12; i++)
+            await SpellData.db.insertRow(
+              session,
+              SpellData(
+                referenceKey: 'level_up_slot_spell_$i',
+                name: 'Slot spell $i',
+                level: 1,
+                availableForClassIds: [data.id!],
+              ),
+            ),
+        ];
+        otherData = null;
+        cantrip = null;
+        spellbookSpell = null;
+        otherEntrySpell = null;
+        if (withOtherScopes) {
+          otherData = await ClassData.db.insertRow(
+            session,
+            ClassData(
+              name: 'Other spell slot class',
+              referenceKey:
+                  'other_spell_slots_${DateTime.now().microsecondsSinceEpoch}',
+              hitDieValue: 6,
+            ),
+          );
+          cantrip = await SpellData.db.insertRow(
+            session,
+            SpellData(
+                referenceKey: 'other_kind_cantrip',
+                name: 'Other cantrip',
+                level: 0),
+          );
+          spellbookSpell = await SpellData.db.insertRow(
+            session,
+            SpellData(
+                referenceKey: 'other_kind_book',
+                name: 'Other book spell',
+                level: 1),
+          );
+          otherEntrySpell = await SpellData.db.insertRow(
+            session,
+            SpellData(
+                referenceKey: 'other_entry_spell',
+                name: 'Other entry spell',
+                level: 1),
+          );
+        }
+      } finally {
+        await session.close();
+      }
+      final entry = CharacterClassEntryData(
+        id: 'entry',
+        classData: data,
+        level: 4,
+        isStartingClass: true,
+        hpRolledValues: [8, 5, 5, 5],
+      );
+      final otherEntry = withOtherScopes
+          ? CharacterClassEntryData(
+              id: 'other-entry',
+              classData: otherData,
+              level: 1,
+              isStartingClass: false,
+              hpRolledValues: [4],
+            )
+          : null;
+      final selections = <CharacterSpellSelectionData>[
+        for (var i = 0; i < 10; i++)
+          CharacterSpellSelectionData(
+            id: 'known-$i',
+            classEntry: entry,
+            classDataId: data.id,
+            spell: spells[i],
+            spellId: spells[i].id,
+            spellKey: spells[i].referenceKey,
+            kind: CharacterSpellSelectionKind.knownSpell,
+            selectionIndex: i,
+          ),
+        if (withOtherScopes) ...[
+          CharacterSpellSelectionData(
+            id: 'cantrip-40',
+            classEntry: entry,
+            classDataId: data.id,
+            spell: cantrip,
+            spellId: cantrip!.id,
+            spellKey: cantrip.referenceKey,
+            kind: CharacterSpellSelectionKind.knownCantrip,
+            selectionIndex: 40,
+          ),
+          CharacterSpellSelectionData(
+            id: 'book-30',
+            classEntry: entry,
+            classDataId: data.id,
+            spell: spellbookSpell,
+            spellId: spellbookSpell!.id,
+            spellKey: spellbookSpell.referenceKey,
+            kind: CharacterSpellSelectionKind.spellbookSpell,
+            selectionIndex: 30,
+          ),
+          CharacterSpellSelectionData(
+            id: 'other-entry-50',
+            classEntry: otherEntry,
+            classDataId: otherData!.id,
+            spell: otherEntrySpell,
+            spellId: otherEntrySpell!.id,
+            spellKey: otherEntrySpell.referenceKey,
+            kind: CharacterSpellSelectionKind.knownSpell,
+            selectionIndex: 50,
+          ),
+        ],
+      ];
+      final character = await endpoints.characterData.saveCharacter(
+        owner,
+        CharacterData(
+          name: 'Spell slot test',
+          currentHp: 20,
+          baseAbilityScores: {'charisma': 14},
+          classEntries: [entry, if (otherEntry != null) otherEntry],
+          spellSelections: selections,
+        ),
+      );
+      return (character: character, spells: spells);
     }
 
     LevelUpRequest request(CharacterData c,
@@ -392,6 +559,105 @@ void main() {
       expect(after.spellSelections!.single.spellId, spell.id);
       expect(
           after.spellSelections!.single.spell?.referenceKey, 'level_up_spell');
+    });
+
+    test('replacement inherits a middle known-spell slot without renumbering',
+        () async {
+      final setup = await spellFixture(nextKnownSpells: 10, replacements: 1);
+      final before = setup.character;
+      final after = await endpoints.characterData.applyLevelUp(
+        owner,
+        request(before).copyWith(spells: [
+          LevelUpSpellChoice(
+            spellId: setup.spells[10].id!,
+            kind: CharacterSpellSelectionKind.knownSpell,
+            replacesSelectionId: 'known-4',
+          ),
+        ]),
+      );
+
+      final known = after.spellSelections!
+          .where((s) =>
+              s.classEntry?.id == 'entry' &&
+              s.kind == CharacterSpellSelectionKind.knownSpell)
+          .toList();
+      expect(known, hasLength(10));
+      expect(known.singleWhere((s) => s.selectionIndex == 4).spellKey,
+          setup.spells[10].referenceKey);
+      expect(known.singleWhere((s) => s.selectionIndex == 9).spellKey,
+          setup.spells[9].referenceKey);
+      expect(known.map((s) => s.selectionIndex).toSet(),
+          Set<int>.from(List.generate(10, (i) => i)));
+      CharacterValidator.validate(after);
+    });
+
+    test('replacement of the last known-spell slot retains its index',
+        () async {
+      final setup = await spellFixture(nextKnownSpells: 10, replacements: 1);
+      final after = await endpoints.characterData.applyLevelUp(
+        owner,
+        request(setup.character).copyWith(spells: [
+          LevelUpSpellChoice(
+            spellId: setup.spells[10].id!,
+            kind: CharacterSpellSelectionKind.knownSpell,
+            replacesSelectionId: 'known-9',
+          ),
+        ]),
+      );
+
+      final known = after.spellSelections!
+          .where((s) =>
+              s.classEntry?.id == 'entry' &&
+              s.kind == CharacterSpellSelectionKind.knownSpell)
+          .toList();
+      expect(known, hasLength(10));
+      expect(known.singleWhere((s) => s.selectionIndex == 9).spellKey,
+          setup.spells[10].referenceKey);
+      expect(known.map((s) => s.selectionIndex).toSet(),
+          Set<int>.from(List.generate(10, (i) => i)));
+      CharacterValidator.validate(after);
+    });
+
+    test('new known spell uses max index within its entry and kind', () async {
+      final setup = await spellFixture(
+        nextKnownSpells: 11,
+        withOtherScopes: true,
+      );
+      final after = await endpoints.characterData.applyLevelUp(
+        owner,
+        request(setup.character).copyWith(spells: [
+          LevelUpSpellChoice(
+            spellId: setup.spells[10].id!,
+            kind: CharacterSpellSelectionKind.knownSpell,
+          ),
+        ]),
+      );
+
+      final added = after.spellSelections!.singleWhere(
+        (s) => s.spellKey == setup.spells[10].referenceKey,
+      );
+      expect(added.classEntry?.id, 'entry');
+      expect(added.kind, CharacterSpellSelectionKind.knownSpell);
+      expect(added.selectionIndex, 10);
+      expect(
+        after.spellSelections!
+            .singleWhere((s) => s.id == 'cantrip-40')
+            .selectionIndex,
+        40,
+      );
+      expect(
+        after.spellSelections!
+            .singleWhere((s) => s.id == 'book-30')
+            .selectionIndex,
+        30,
+      );
+      expect(
+        after.spellSelections!
+            .singleWhere((s) => s.id == 'other-entry-50')
+            .selectionIndex,
+        50,
+      );
+      CharacterValidator.validate(after);
     });
   });
 }

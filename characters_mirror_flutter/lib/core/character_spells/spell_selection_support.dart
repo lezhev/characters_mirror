@@ -60,6 +60,28 @@ bool selectionBelongsToEntry(
       entry.classData?.id;
 }
 
+int nextSpellSelectionIndex(
+  Iterable<CharacterSpellSelectionData> selections, {
+  required CharacterClassEntryData? classEntry,
+  required int? classDataId,
+  required CharacterSpellSelectionKind kind,
+}) {
+  final entryId = classEntry?.id;
+  var maxIndex = -1;
+  for (final selection in selections) {
+    if (selection.kind != kind) continue;
+    final selectionEntryId = selection.classEntry?.id;
+    final sameSource = entryId != null
+        ? selectionEntryId == entryId
+        : selectionEntryId == null &&
+            (selection.classDataId ?? selection.classEntry?.classData?.id) ==
+                classDataId;
+    final index = selection.selectionIndex;
+    if (sameSource && index != null && index > maxIndex) maxIndex = index;
+  }
+  return maxIndex + 1;
+}
+
 List<SpellData> draftSpellOptions(ClassSpellSelectionGroupView group,
     List<CharacterSpellSelectionData> selections) {
   final source = group.optionSourceSelectionKind;
@@ -200,7 +222,14 @@ List<CharacterSpellSelectionData> prepareSpellSelections(
       kind: CharacterSpellSelectionKind.preparedSpell);
   if (!selections
       .any((item) => selectionIdentity(item) == selectionIdentity(selection))) {
-    selections.add(selection.copyWith(selectionIndex: selections.length));
+    selections.add(selection.copyWith(
+      selectionIndex: nextSpellSelectionIndex(
+        selections,
+        classEntry: entry,
+        classDataId: classId,
+        kind: selection.kind!,
+      ),
+    ));
   }
   return selections;
 }
