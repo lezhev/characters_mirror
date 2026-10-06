@@ -1,3 +1,5 @@
+param([string]$TestPath = "test/integration")
+
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -57,7 +59,7 @@ try {
         throw "Failed to start postgres_test."
     }
 
-    dart test test/integration --concurrency=1
+    dart test $TestPath --concurrency=1
 
     if ($LASTEXITCODE -ne 0) {
         throw "Integration tests failed."

@@ -5,14 +5,17 @@ import 'package:characters_mirror_flutter/core/character_spells/spell_selection_
 import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
 import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/app_search_field.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/segmented_stat_bar.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/spell_details_dialog.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/spell_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,0 +1,9 @@
+class: LevelUpRequest
+fields:
+  characterId: int
+  expectedVersion: int
+  classEntryId: String
+  hitDieRoll: int?
+  subclassId: int?
+  choices: Map<String, List<String>>?
+  spells: List<LevelUpSpellChoice>?

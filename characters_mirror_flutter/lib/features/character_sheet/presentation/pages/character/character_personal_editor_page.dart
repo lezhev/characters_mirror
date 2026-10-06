@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/character_personal_editor.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class CharacterPersonalEditorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Личные данные')),
+      appBar: const PageSizeAppBar(title: Text('Личные данные')),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(12),

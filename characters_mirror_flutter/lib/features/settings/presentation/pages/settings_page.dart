@@ -1,6 +1,7 @@
 import 'package:characters_mirror_flutter/core/router/navigation_helpers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/features/settings/application/keep_screen_awake.dart';
 import 'package:characters_mirror_flutter/features/settings/application/server_connection_status_provider.dart';
@@ -17,7 +18,8 @@ class SettingsPage extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: PageSizeAppBar(
+        maxWidth: 760,
         title: const Text('Настройки'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

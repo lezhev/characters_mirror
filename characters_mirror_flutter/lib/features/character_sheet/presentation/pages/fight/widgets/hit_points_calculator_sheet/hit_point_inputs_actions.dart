@@ -88,7 +88,8 @@ class _AutosaveNumberFieldState extends State<_AutosaveNumberField> {
   void _commit() {
     _debounceTimer?.cancel();
     _debounceTimer = null;
-    final parsed = int.tryParse(_controller.text);
+    final text = _controller.text.trim();
+    final parsed = text.isEmpty ? 0 : int.tryParse(text);
     if (parsed == null) {
       _controller.text = '${widget.value}';
       return;

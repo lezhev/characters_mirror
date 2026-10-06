@@ -3,6 +3,7 @@ import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/router/navigation_helpers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_surface_card.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/settings/application/keep_screen_awake.dart';
 import 'package:characters_mirror_flutter/features/settings/presentation/pages/settings_page.dart';
@@ -35,7 +36,8 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
         popOrGo(context, '/characters/sheet/$characterId');
       },
       child: Scaffold(
-        appBar: AppBar(
+        appBar: PageSizeAppBar(
+          maxWidth: 760,
           title: const Text('Настройки персонажа'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),

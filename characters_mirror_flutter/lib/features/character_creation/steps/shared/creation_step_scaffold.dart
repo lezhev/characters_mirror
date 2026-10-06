@@ -243,12 +243,14 @@ class _CreationStepScaffoldState extends ConsumerState<CreationStepScaffold> {
           ),
         ),
         bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: CreationNavBar(
-              onPressedNext: widget.onPressedNext,
-              route: widget.route,
+          child: PageSizeLimiter(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              child: CreationNavBar(
+                onPressedNext: widget.onPressedNext,
+                route: widget.route,
+              ),
             ),
           ),
         ),

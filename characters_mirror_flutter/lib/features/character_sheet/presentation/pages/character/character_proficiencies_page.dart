@@ -2,6 +2,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_free_solo_autocomplete.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_proficiency_editor_operations.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/character_proficiency_labels.dart';
@@ -24,7 +25,7 @@ class CharacterProficienciesPage extends ConsumerWidget {
         ref.watch(weaponCatalogProvider).valueOrNull ?? const <WeaponData>[];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Владения персонажа')),
+      appBar: const PageSizeAppBar(title: Text('Владения персонажа')),
       body: SafeArea(
         child: characterState.when(
           loading: () => const Center(child: CircularProgressIndicator()),

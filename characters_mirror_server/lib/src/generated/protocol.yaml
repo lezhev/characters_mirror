@@ -22,6 +22,8 @@ featData:
   - upsert:
   - delete:
 characterData:
+  - previewLevelUp:
+  - applyLevelUp:
   - getAll:
   - saveCharacter:
   - syncSaveCharacter:

@@ -158,6 +158,19 @@ class CharacterSheetController
     }
   }
 
+  Future<CharacterData> prepareLevelUp() async {
+    await flushPendingSave();
+    return _repository.prepareLevelUp(_characterId);
+  }
+
+  void acceptLevelUp(CharacterData saved) {
+    _saveRevision++;
+    _lastPersistedCharacter = saved;
+    state = AsyncValue.data(saved);
+    ref.invalidate(characterSheetProvider(_characterId));
+    ref.invalidate(offlineCharacterRecordProvider(_characterId));
+  }
+
   Future<void> saveProficiencyOverrides(CharacterData updated) async {
     await _saveCharacter(updated, debounce: false);
   }

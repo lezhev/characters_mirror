@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 
 class InvalidCharacterSheetPage extends StatelessWidget {
   const InvalidCharacterSheetPage({super.key});
@@ -6,8 +7,8 @@ class InvalidCharacterSheetPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Лист персонажа'),
+      appBar: const PageSizeAppBar(
+        title: Text('Лист персонажа'),
       ),
       body: const Center(
         child: Padding(

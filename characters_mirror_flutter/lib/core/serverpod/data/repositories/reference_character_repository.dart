@@ -48,6 +48,45 @@ class CharacterRepository implements Repository<CharacterData> {
   Future<CharacterData> saveCharacter(CharacterData character) =>
       _saveCharacter(character);
 
+  /// Progression is committed as one server transaction, after queued edits sync.
+  Future<CharacterData> prepareLevelUp(int characterId) async {
+    await offlineSyncCoordinator?.syncNow();
+    final record = await getOfflineRecord(characterId);
+    if (record != null &&
+        (record.status != OfflineCharacterSyncStatus.clean ||
+            record.serverId == null)) {
+      throw StateError(
+          'Сначала синхронизируйте изменения персонажа с сервером.');
+    }
+    final character = await client.characterData
+        .getCharacter(record?.serverId ?? characterId);
+    final store = characterSyncStore;
+    final userId = currentOfflineUserId();
+    if (store != null && userId != null) {
+      await store.upsertCleanFromServer(userId, character);
+    }
+    return character;
+  }
+
+  Future<CharacterData> applyLevelUp(LevelUpRequest request) async {
+    await offlineSyncCoordinator?.syncNow();
+    final store = characterSyncStore;
+    final userId = currentOfflineUserId();
+    if (store != null && userId != null) {
+      final record =
+          await store.getCharacterByServerId(userId, request.characterId);
+      if (record != null && record.status != OfflineCharacterSyncStatus.clean) {
+        throw StateError(
+            'Персонаж изменился. Синхронизируйте изменения и откройте повышение уровня заново.');
+      }
+    }
+    final saved = await client.characterData.applyLevelUp(request);
+    if (store != null && userId != null) {
+      await store.upsertCleanFromServer(userId, saved);
+    }
+    return saved;
+  }
+
   Future<CharacterData> saveSemanticAction({
     required CharacterData character,
     required CharacterSyncOperationType type,

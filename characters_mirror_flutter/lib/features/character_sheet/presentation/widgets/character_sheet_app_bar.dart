@@ -25,7 +25,7 @@ class CharacterSheetAppBar extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Material(
-      color: theme.appBarTheme.backgroundColor ?? colorScheme.surface,
+      color: colorScheme.surface,
       elevation: theme.appBarTheme.elevation ?? 0,
       child: SafeArea(
         bottom: false,

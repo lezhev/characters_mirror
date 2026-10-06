@@ -1,5 +1,6 @@
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/common/attribute_enum.dart';
 import 'package:characters_mirror_flutter/core/ui/input/app_input_formatters.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/compact_number_input.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/state/attribute_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +11,6 @@ class ManualInputColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attributeStateProvider);
-    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       width: 80,
@@ -24,47 +24,16 @@ class ManualInputColumn extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: SizedBox(
               height: 60,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                          color: Theme.of(context).colorScheme.outlineVariant),
-                    ),
-                  ),
-                  Positioned(
-                    left: 9,
-                    bottom: 8,
-                    child: SizedBox(
-                      width: 44,
-                      height: 36,
-                      child: TextFormField(
-                        key: ValueKey('manual-input-${attribute.name}'),
-                        initialValue: value == 0 ? '' : value.toString(),
-                        textAlign: TextAlign.center,
-                        inputFormatters: [nonNegativeIntFormatter()],
-                        keyboardType: TextInputType.number,
-                        style: textTheme.titleMedium,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                        onChanged: (text) {
-                          final intValue = int.tryParse(text) ?? 0;
-                          ref
-                              .read(attributeStateProvider.notifier)
-                              .updateManualAttribute(attribute, intValue);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+              child: CompactNumberInput(
+                fieldKey: ValueKey('manual-input-${attribute.name}'),
+                initialValue: value == 0 ? '' : value.toString(),
+                inputFormatters: [nonNegativeIntFormatter()],
+                onChanged: (text) {
+                  final intValue = int.tryParse(text) ?? 0;
+                  ref
+                      .read(attributeStateProvider.notifier)
+                      .updateManualAttribute(attribute, intValue);
+                },
               ),
             ),
           );

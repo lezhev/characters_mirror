@@ -477,6 +477,16 @@ class _SpellPreparationState {
   final Set<String> alwaysPreparedKeys;
 }
 
+class _SpellManagementCatalogs {
+  const _SpellManagementCatalogs({
+    required this.allSpells,
+    required this.classLevels,
+  });
+
+  final List<SpellData> allSpells;
+  final List<ClassLevelData> classLevels;
+}
+
 class _SpellManagementData {
   const _SpellManagementData({
     required this.canPrepare,

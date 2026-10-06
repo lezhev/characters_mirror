@@ -1,0 +1,5 @@
+class: LevelUpSpellChoice
+fields:
+  spellId: int
+  kind: CharacterSpellSelectionKind
+  replacesSelectionId: String?

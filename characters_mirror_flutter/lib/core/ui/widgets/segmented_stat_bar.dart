@@ -11,7 +11,7 @@ class SegmentedStatBar extends StatelessWidget {
   static const double _compactBreakpointPerSegment = 132;
   static const double _mediumBreakpointPerSegment = 108;
   static const double _compactGap = 12;
-  static const double _compactMinCardWidth = 92;
+  static const double _compactMinCardWidth = 78;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,11 @@ class _CompactStatCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final columns = _columnCount();
     final cardWidth = (maxWidth - gap * (columns - 1)) / columns;
-    final valueDensity = _valueDensityFor(cardWidth);
+    final fullRowCardWidth =
+        (maxWidth - gap * (segments.length - 1)) / segments.length;
+    final valueDensityWidth =
+        cardWidth < fullRowCardWidth ? cardWidth : fullRowCardWidth;
+    final valueDensity = _valueDensityFor(valueDensityWidth);
 
     return Wrap(
       spacing: gap,
@@ -81,6 +85,9 @@ class _CompactStatCards extends StatelessWidget {
 
   int _columnCount() {
     final fitCount = ((maxWidth + gap) / (minCardWidth + gap)).floor();
+    if (segments.length == 4 && fitCount == 3) {
+      return 2;
+    }
     return fitCount.clamp(1, segments.length);
   }
 }
