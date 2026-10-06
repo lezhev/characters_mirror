@@ -149,6 +149,15 @@ class AdminEndpoint extends Endpoint {
           'operation',
         );
         final value = _parseFeatureModifierValue(raw['value']);
+        if (operation == FeatureModifierOperation.baseArmorClass &&
+            target != FeatureModifierTarget.armorClass) {
+          throw ArgumentError('baseArmorClass requires the armorClass target.');
+        }
+        if (operation == FeatureModifierOperation.add &&
+            value.abilityModifiers?.isNotEmpty == true) {
+          throw ArgumentError(
+              'Ability terms require a baseArmorClass formula.');
+        }
         final conditions = _parseFeatureModifierConditions(raw['conditions']);
         final modifier = FeatureModifierData(
           referenceKey: referenceKey.trim(),
@@ -231,6 +240,21 @@ class AdminEndpoint extends Endpoint {
             FeatureModifierRounding.values,
             'value.rounding',
           );
+    List<Ability>? abilityModifiers;
+    if (raw['abilityModifiers'] != null) {
+      final rawAbilities = raw['abilityModifiers'];
+      if (rawAbilities is! List) {
+        throw ArgumentError('value.abilityModifiers must be an array.');
+      }
+      abilityModifiers = [
+        for (final ability in rawAbilities)
+          _featureModifierEnum<Ability>(
+            ability,
+            Ability.values,
+            'value.abilityModifiers',
+          ),
+      ];
+    }
     final value = FeatureModifierValueData(
       kind: kind,
       staticValue: raw['staticValue'] as int?,
@@ -238,6 +262,7 @@ class AdminEndpoint extends Endpoint {
       numerator: raw['numerator'] as int?,
       denominator: raw['denominator'] as int?,
       rounding: rounding,
+      abilityModifiers: abilityModifiers,
     );
     final valid = switch (kind) {
       FeatureModifierValueKind.staticValue => value.staticValue != null,

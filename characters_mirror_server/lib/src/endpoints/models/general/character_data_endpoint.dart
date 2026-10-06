@@ -28,6 +28,7 @@ import 'class_endpoints.dart';
 import '../../../spells/class_spell_progression.dart';
 import '../../../spells/spellcasting_source.dart';
 import '../../../feature_grants.dart';
+import '../../../armor_class_feature_modifiers.dart';
 
 part 'character_data_endpoint/persistence_pruning_snapshot.dart';
 part 'character_data_endpoint/persistence_record_write.dart';

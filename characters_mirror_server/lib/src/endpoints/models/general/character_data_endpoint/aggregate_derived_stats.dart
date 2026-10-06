@@ -236,27 +236,13 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityCheckIncludesProficiency: false,
     target: FeatureModifierTarget.abilityCheck,
   );
-  final armorClassBonus = _featureModifierTotal(
-    resolvedSources.featureModifiers,
-    character,
-    entries,
-    resolvedSources.currentClassFeatures,
-    resolvedSources.currentSubclassFeatures,
-    proficiencyBonus: proficiencyBonus,
-    target: FeatureModifierTarget.armorClass,
-  );
+  final armorClassModifiers = armorClassFeatureModifiers(
+      resolvedSources.featureModifiers,
+      resolvedSources.currentClassFeatures,
+      resolvedSources.currentSubclassFeatures);
   final armorClass = await _calculateArmorClass(
-    character,
-    abilityModifiers,
-    resolvedSources.currentClassFeatures
-        .map((feature) => feature.unarmoredDefenseRule)
-        .whereType<UnarmoredDefenseRule>(),
-    resolveContext: context,
-    transaction: transaction,
-  );
-  final armorClassFormula = armorClassBonus == 0
-      ? armorClass.formula
-      : '${armorClass.formula} + Эффекты ($armorClassBonus)';
+      character, abilityModifiers, armorClassModifiers, proficiencyBonus,
+      resolveContext: context, transaction: transaction);
 
   return CharacterDerivedData(
     totalLevel: totalLevel,
@@ -264,10 +250,14 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    featureModifiers: resolvedSources.featureModifiers,
-    armorClass: armorClass.value + armorClassBonus,
+    featureModifiers: [
+      ...resolvedSources.featureModifiers.where(
+          (modifier) => modifier.target != FeatureModifierTarget.armorClass),
+      ...armorClassModifiers,
+    ],
+    armorClass: armorClass.value,
     armorClassSource: armorClass.source,
-    armorClassFormula: armorClassFormula,
+    armorClassFormula: armorClass.formula,
     initiative:
         dexMod + (character.customInitiativeBonus ?? 0) + initiativeBonus,
     speed: _displayedSpeed(character.displayedSpeedKind, movementSpeeds),
@@ -359,6 +349,7 @@ int _featureModifierTotal(
     if (feature.referenceKey case final key?) activeKeys.add(key);
   }
   for (final modifier in data) {
+    if (modifier.operation != FeatureModifierOperation.add) continue;
     if ((modifier.classFeatureId == null) ==
         (modifier.subclassFeatureId == null)) {
       continue;

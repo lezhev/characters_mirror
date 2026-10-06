@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:characters_mirror_flutter/core/character/armor_class_feature_modifiers.dart';
 import 'package:characters_mirror_flutter/core/character/feature_grants.dart';
 import 'package:characters_mirror_flutter/core/character_spells/spellcasting_source.dart';
 
@@ -119,24 +120,10 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityModifiers[Ability.constitution] ?? 0,
   );
   final dexterityModifier = abilityModifiers[Ability.dexterity] ?? 0;
-  final armorClassBonus = await _offlineFeatureModifierTotal(
-    cache,
-    entries,
-    character,
-    proficiencyBonus: proficiencyBonus,
-    target: FeatureModifierTarget.armorClass,
-  );
-  final armorClass = await _calculateArmorClass(
-    cache,
-    character,
-    abilityModifiers,
-    currentClassFeatures
-        .map((feature) => feature.unarmoredDefenseRule)
-        .whereType<UnarmoredDefenseRule>(),
-  );
-  final armorClassFormula = armorClassBonus == 0
-      ? armorClass.formula
-      : '${armorClass.formula} + Эффекты ($armorClassBonus)';
+  final armorClassModifiers = armorClassFeatureModifiers(
+      activeFeatureModifiers, currentClassFeatures, currentSubclassFeatures);
+  final armorClass = await _calculateArmorClass(cache, character,
+      abilityModifiers, armorClassModifiers, proficiencyBonus);
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
   final alwaysPreparedSpellKeys = await _collectAlwaysPreparedSpellKeys(
     cache,
@@ -253,10 +240,14 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityScores: abilityScores,
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
-    featureModifiers: activeFeatureModifiers,
-    armorClass: armorClass.value + armorClassBonus,
+    featureModifiers: [
+      ...activeFeatureModifiers.where(
+          (modifier) => modifier.target != FeatureModifierTarget.armorClass),
+      ...armorClassModifiers,
+    ],
+    armorClass: armorClass.value,
     armorClassSource: armorClass.source,
-    armorClassFormula: armorClassFormula,
+    armorClassFormula: armorClass.formula,
     initiative: dexterityModifier +
         (character.customInitiativeBonus ?? 0) +
         initiativeBonus,

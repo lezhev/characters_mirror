@@ -59,6 +59,7 @@ Future<int> _offlineFeatureModifierTotal(
         '${choice.groupKey!.trim()}::${choice.optionKey!.trim()}',
   };
   for (final modifier in modifiers) {
+    if (modifier.operation != FeatureModifierOperation.add) continue;
     final classFeatureId = modifier.classFeatureId;
     final subclassFeatureId = modifier.subclassFeatureId;
     if ((classFeatureId == null) == (subclassFeatureId == null)) continue;

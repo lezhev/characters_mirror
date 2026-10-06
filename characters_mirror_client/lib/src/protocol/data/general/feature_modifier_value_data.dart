@@ -12,6 +12,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../enums/feature_modifier_value_kind.dart' as _i2;
 import '../../enums/feature_modifier_rounding.dart' as _i3;
+import '../../enums/ability.dart' as _i4;
 
 abstract class FeatureModifierValueData implements _i1.SerializableModel {
   FeatureModifierValueData._({
@@ -21,6 +22,7 @@ abstract class FeatureModifierValueData implements _i1.SerializableModel {
     this.numerator,
     this.denominator,
     this.rounding,
+    this.abilityModifiers,
   });
 
   factory FeatureModifierValueData({
@@ -30,6 +32,7 @@ abstract class FeatureModifierValueData implements _i1.SerializableModel {
     int? numerator,
     int? denominator,
     _i3.FeatureModifierRounding? rounding,
+    List<_i4.Ability>? abilityModifiers,
   }) = _FeatureModifierValueDataImpl;
 
   factory FeatureModifierValueData.fromJson(
@@ -47,6 +50,9 @@ abstract class FeatureModifierValueData implements _i1.SerializableModel {
           ? null
           : _i3.FeatureModifierRounding.fromJson(
               (jsonSerialization['rounding'] as int)),
+      abilityModifiers: (jsonSerialization['abilityModifiers'] as List?)
+          ?.map((e) => _i4.Ability.fromJson((e as String)))
+          .toList(),
     );
   }
 
@@ -62,6 +68,8 @@ abstract class FeatureModifierValueData implements _i1.SerializableModel {
 
   _i3.FeatureModifierRounding? rounding;
 
+  List<_i4.Ability>? abilityModifiers;
+
   /// Returns a shallow copy of this [FeatureModifierValueData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -72,6 +80,7 @@ abstract class FeatureModifierValueData implements _i1.SerializableModel {
     int? numerator,
     int? denominator,
     _i3.FeatureModifierRounding? rounding,
+    List<_i4.Ability>? abilityModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -82,6 +91,9 @@ abstract class FeatureModifierValueData implements _i1.SerializableModel {
       if (numerator != null) 'numerator': numerator,
       if (denominator != null) 'denominator': denominator,
       if (rounding != null) 'rounding': rounding?.toJson(),
+      if (abilityModifiers != null)
+        'abilityModifiers':
+            abilityModifiers?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -101,6 +113,7 @@ class _FeatureModifierValueDataImpl extends FeatureModifierValueData {
     int? numerator,
     int? denominator,
     _i3.FeatureModifierRounding? rounding,
+    List<_i4.Ability>? abilityModifiers,
   }) : super._(
           kind: kind,
           staticValue: staticValue,
@@ -108,6 +121,7 @@ class _FeatureModifierValueDataImpl extends FeatureModifierValueData {
           numerator: numerator,
           denominator: denominator,
           rounding: rounding,
+          abilityModifiers: abilityModifiers,
         );
 
   /// Returns a shallow copy of this [FeatureModifierValueData]
@@ -121,6 +135,7 @@ class _FeatureModifierValueDataImpl extends FeatureModifierValueData {
     Object? numerator = _Undefined,
     Object? denominator = _Undefined,
     Object? rounding = _Undefined,
+    Object? abilityModifiers = _Undefined,
   }) {
     return FeatureModifierValueData(
       kind: kind ?? this.kind,
@@ -139,6 +154,9 @@ class _FeatureModifierValueDataImpl extends FeatureModifierValueData {
       denominator: denominator is int? ? denominator : this.denominator,
       rounding:
           rounding is _i3.FeatureModifierRounding? ? rounding : this.rounding,
+      abilityModifiers: abilityModifiers is List<_i4.Ability>?
+          ? abilityModifiers
+          : this.abilityModifiers?.map((e0) => e0).toList(),
     );
   }
 }
