@@ -24,6 +24,8 @@ featData:
 characterData:
   - previewLevelUp:
   - applyLevelUp:
+  - previewLevelDown:
+  - applyLevelDown:
   - getAll:
   - saveCharacter:
   - syncSaveCharacter:

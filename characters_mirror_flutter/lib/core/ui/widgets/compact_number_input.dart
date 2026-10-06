@@ -44,7 +44,9 @@ class CompactNumberInput extends StatelessWidget {
                 minLines: null,
                 maxLines: null,
                 textAlign: TextAlign.center,
-                textAlignVertical: TextAlignVertical.center,
+                // Roboto Mono's visible digit bounds sit below the center of
+                // its line box. Center the ink optically, not just the line.
+                textAlignVertical: const TextAlignVertical(y: -0.15),
                 inputFormatters: inputFormatters,
                 keyboardType: TextInputType.number,
                 style: textStyle.copyWith(height: 1),
@@ -62,7 +64,7 @@ class CompactNumberInput extends StatelessWidget {
                   focusedErrorBorder: InputBorder.none,
                   filled: false,
                   isCollapsed: true,
-                  contentPadding: EdgeInsets.zero,
+                  contentPadding: EdgeInsets.only(left: 2),
                 ),
                 onChanged: onChanged,
               ),

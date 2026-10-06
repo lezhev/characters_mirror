@@ -1,0 +1,7 @@
+class: LevelDownInvalidChoiceView
+fields:
+  groupKey: String
+  selectionIndex: int
+  optionKey: String
+  reason: String
+  eligibleAlternativeOptionKeys: List<String>

@@ -1,8 +1,9 @@
 part of '../character_data_endpoint.dart';
 
-/// Materialize implicit full counters before maxima change. Level-up is not rest.
-CharacterData _preserveLevelUpResources(
-    CharacterData before, CharacterData draft) {
+/// Materialize implicit counters before maxima change. A level change is not rest.
+CharacterData _preserveLevelChangeResources(
+    CharacterData before, CharacterData draft,
+    {bool fillNewResources = true}) {
   Map<int, int> slots(CharacterData c) => {
         for (final key in {
           ...?c.derived?.spellSlots?.keys,
@@ -22,20 +23,28 @@ CharacterData _preserveLevelUpResources(
         _resourceStateKey(feature.sourceType, feature.sourceId, r.key): r
   };
   return draft.copyWith(
-    currentHp: before.currentHp ?? before.derived?.maxHp,
+    currentHp: min(before.currentHp ?? before.derived?.maxHp ?? 0,
+        draft.derived?.maxHp ?? before.currentHp ?? before.derived?.maxHp ?? 0),
     currentSpellSlots: {
       for (final e in newSlots.entries)
         if (e.value > 0)
           e.key: (oldSlots[e.key] ?? 0) > 0
               ? min(
                   before.currentSpellSlots?[e.key] ?? oldSlots[e.key]!, e.value)
-              : e.value
+              : fillNewResources
+                  ? e.value
+                  : min(
+                      before.currentSpellSlots?[e.key] ?? oldSlots[e.key] ?? 0,
+                      e.value)
     },
     currentHitDice: {
       for (final e in newDice.entries)
         e.key: (oldDice[e.key] ?? 0) > 0
             ? min(before.currentHitDice?[e.key] ?? oldDice[e.key]!, e.value)
-            : e.value
+            : fillNewResources
+                ? e.value
+                : min(before.currentHitDice?[e.key] ?? oldDice[e.key] ?? 0,
+                    e.value)
     },
     resourceStates: [
       for (final feature in draft.derived?.activeFeatures ??
@@ -51,7 +60,7 @@ CharacterData _preserveLevelUpResources(
                     oldResources[_resourceStateKey(
                                 feature.sourceType, feature.sourceId, r.key)]
                             ?.current ??
-                        r.max,
+                        (fillNewResources ? r.max : 0),
                     r.max))
     ],
   );

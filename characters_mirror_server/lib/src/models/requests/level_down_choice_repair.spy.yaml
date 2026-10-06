@@ -1,0 +1,6 @@
+class: LevelDownChoiceRepair
+fields:
+  groupKey: String
+  selectionIndex: int
+  currentOptionKey: String
+  replacementOptionKey: String

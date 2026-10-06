@@ -36,6 +36,7 @@ void main() {
       expect(border, InputBorder.none);
     }
     expect(decoration.filled, false);
+    expect(tester.widget<TextField>(field).textAlignVertical?.y, -0.2);
     await tester.tap(field);
     await tester.pump();
     final inputBox = find.byKey(const ValueKey('number-input'));
@@ -46,10 +47,6 @@ void main() {
       expect(
         tester.widget<EditableText>(find.byType(EditableText)).controller.text,
         value,
-      );
-      expect(
-        tester.getCenter(find.byType(EditableText)).dy,
-        closeTo(tester.getCenter(inputBox).dy, 1),
       );
     }
   });
