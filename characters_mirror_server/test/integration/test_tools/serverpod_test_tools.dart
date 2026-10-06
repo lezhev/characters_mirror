@@ -1468,8 +1468,9 @@ class _ClassDataEndpoint {
     int classId,
     int fromLevel,
     int toLevel,
-    Map<String, int> abilityScores,
-  ) async {
+    Map<String, int> abilityScores, {
+    int? selectedSubclassId,
+  }) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
@@ -1486,6 +1487,7 @@ class _ClassDataEndpoint {
             'fromLevel': fromLevel,
             'toLevel': toLevel,
             'abilityScores': abilityScores,
+            'selectedSubclassId': selectedSubclassId,
           }),
           serializationManager: _serializationManager,
         );

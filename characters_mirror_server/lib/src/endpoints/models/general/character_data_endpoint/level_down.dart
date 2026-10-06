@@ -56,8 +56,11 @@ Future<LevelDownPreview> _previewLevelDown(
     selectedSubclassId: entry.subclass?.id,
     abilityScores: scores,
   );
+  final subclassRequiredLevel =
+      entry.subclass?.levelRequired ?? entry.classData!.subclassChoiceLevel;
   final dropsSubclass = entry.subclass != null &&
-      (entry.classData!.subclassChoiceLevel ?? 0) > targetLevel;
+      subclassRequiredLevel != null &&
+      subclassRequiredLevel > targetLevel;
   final subclass = dropsSubclass ? null : entry.subclass;
   final targetStep = await endpoint.getStepView(
     session,
@@ -81,20 +84,123 @@ Future<LevelDownPreview> _previewLevelDown(
   final classChoices = (before.choices ?? const <CharacterChoiceData>[])
       .where((choice) => choice.classEntry?.id == entry.id)
       .toList();
+  final nextEntry = entry.copyWith(
+    level: targetLevel,
+    subclass: subclass,
+    hpRolledValues: (entry.hpRolledValues?.isNotEmpty ?? false)
+        ? entry.hpRolledValues!
+            .take(min(entry.hpRolledValues!.length, targetLevel))
+            .toList()
+        : entry.hpRolledValues,
+  );
+  final targetCharacter = before.copyWith(
+    classEntries: [
+      for (final item in entries) item.id == entry.id ? nextEntry : item,
+    ],
+  );
   final removedChoices = classChoices
       .where((choice) => removedGroupKeys.contains(choice.groupKey))
       .toList();
-  final previousFeatureIds = {
+  final choices = classChoices
+      .where((choice) => !removedGroupKeys.contains(choice.groupKey))
+      .toList();
+  final choicesForEligibility = [
+    for (final choice in before.choices ?? const <CharacterChoiceData>[])
+      if (choice.classEntry?.id != entry.id ||
+          !removedGroupKeys.contains(choice.groupKey))
+        choice,
+  ];
+  final allGroups = await ChoiceGroupData.db.find(
+    session,
+    transaction: transaction,
+  );
+  final groupsByKey = {
+    for (final group in allGroups) group.referenceKey: group
+  };
+  final allOptions = await ChoiceOptionData.db.find(
+    session,
+    transaction: transaction,
+  );
+  final selectedOptionsByGroupKey = <String, List<ChoiceOptionData>>{};
+  for (final choice in choicesForEligibility) {
+    final group = groupsByKey[choice.groupKey];
+    final option = allOptions
+        .where((item) =>
+            item.choiceGroupId == group?.id &&
+            item.optionKey == choice.optionKey)
+        .firstOrNull;
+    if (option != null) {
+      selectedOptionsByGroupKey
+          .putIfAbsent(choice.groupKey!, () => <ChoiceOptionData>[])
+          .add(option);
+    }
+  }
+  final targetOldClassFeatureIds = {
     for (final feature
         in oldStep.currentLevelFeatures ?? const <ClassFeatureData>[])
       if (feature.id != null) feature.id!,
+  };
+  final targetOldSubclassFeatureIds = {
     for (final feature
         in oldStep.currentSubclassFeatures ?? const <SubclassFeatureData>[])
       if (feature.id != null) feature.id!,
   };
-  final choices = classChoices
-      .where((choice) => !removedGroupKeys.contains(choice.groupKey))
-      .toList();
+  final otherClassFeatureIds =
+      (before.derived?.activeFeatures ?? const <CharacterFeatureViewData>[])
+          .where((feature) =>
+              feature.sourceType == CharacterFeatureSourceType.classFeature &&
+              !targetOldClassFeatureIds.contains(feature.sourceId))
+          .map((feature) => feature.sourceId)
+          .toSet();
+  final otherSubclassFeatureIds = (before.derived?.activeFeatures ??
+          const <CharacterFeatureViewData>[])
+      .where((feature) =>
+          feature.sourceType == CharacterFeatureSourceType.subclassFeature &&
+          !targetOldSubclassFeatureIds.contains(feature.sourceId))
+      .map((feature) => feature.sourceId)
+      .toSet();
+  final otherClassFeatures = otherClassFeatureIds.isEmpty
+      ? const <ClassFeatureData>[]
+      : await ClassFeatureData.db.find(
+          session,
+          transaction: transaction,
+          where: (t) => t.id.inSet(otherClassFeatureIds),
+        );
+  final otherSubclassFeatures = otherSubclassFeatureIds.isEmpty
+      ? const <SubclassFeatureData>[]
+      : await SubclassFeatureData.db.find(
+          session,
+          transaction: transaction,
+          where: (t) => t.id.inSet(otherSubclassFeatureIds),
+        );
+  final targetClassFeatures = [
+    ...?targetStep.currentLevelFeatures,
+    ...otherClassFeatures,
+  ];
+  final targetSubclassFeatures = [
+    ...?targetStep.currentSubclassFeatures,
+    ...otherSubclassFeatures,
+  ];
+  final targetSelectedOptions = [
+    for (final selected in selectedOptionsByGroupKey.values) ...selected,
+  ];
+  final targetAbilityScores = _buildAbilityScores(
+    targetCharacter,
+    targetSelectedOptions,
+  );
+  final eligibilityContexts = {
+    for (final groupKey
+        in choices.map((choice) => choice.groupKey).whereType<String>())
+      groupKey: buildChoiceEligibilityContext(
+        character: targetCharacter,
+        evaluatingGroupKey: groupKey,
+        selectedOptionsByGroupKey: selectedOptionsByGroupKey,
+        groups: allGroups,
+        abilityScores: targetAbilityScores,
+        currentClassFeatures: targetClassFeatures,
+        currentSubclassFeatures: targetSubclassFeatures,
+      ),
+  };
   final repairsBySlot = {
     for (final repair in request.repairs ?? const <LevelDownChoiceRepair>[])
       '${repair.groupKey}:${repair.selectionIndex}': repair,
@@ -113,22 +219,11 @@ Future<LevelDownPreview> _previewLevelDown(
       throw InputValidationException(
           'choices.$groupKey', 'Choice is unavailable.');
     }
-    final context = await _levelDownEligibilityContext(
-      session,
-      before,
-      entry: entry,
-      targetLevel: targetLevel,
-      choices: [
-        for (final item in before.choices ?? const <CharacterChoiceData>[])
-          if (item.classEntry?.id != entry.id ||
-              !removedGroupKeys.contains(item.groupKey))
-            item,
-      ],
-      candidate: choice,
-      targetStep: targetStep,
-      replacedFeatureIds: previousFeatureIds,
-      transaction: transaction,
-    );
+    final context = eligibilityContexts[groupKey];
+    if (context == null) {
+      throw InputValidationException(
+          'choices.$groupKey', 'Choice group is unavailable.');
+    }
     final eligibility = _evaluateChoiceOptionData(currentOption, context);
     if (eligibility.isEligible) {
       repairedChoices.add(choice);
@@ -174,13 +269,6 @@ Future<LevelDownPreview> _previewLevelDown(
         'repairs', 'Repair does not match an unavailable choice.');
   }
 
-  final nextEntry = entry.copyWith(
-    level: targetLevel,
-    subclass: subclass,
-    hpRolledValues: (entry.hpRolledValues?.isNotEmpty ?? false)
-        ? entry.hpRolledValues!.take(entry.hpRolledValues!.length - 1).toList()
-        : entry.hpRolledValues,
-  );
   // Invalid choices are omitted from the transient projection so the ordinary
   // derived resolver can still calculate all independent consequences.
   final choicesForProjection = repairedChoices;
@@ -237,151 +325,6 @@ Future<LevelDownPreview> _previewLevelDown(
     oldPactSlots: before.derived?.pactSlots ?? const <int, int>{},
     newPactSlots: draft.derived?.pactSlots ?? const <int, int>{},
     missingDecisions: missing,
-  );
-}
-
-Future<ChoiceEligibilityContext> _levelDownEligibilityContext(
-  Session session,
-  CharacterData before, {
-  required CharacterClassEntryData entry,
-  required int targetLevel,
-  required List<CharacterChoiceData> choices,
-  required CharacterChoiceData candidate,
-  required ClassStepView targetStep,
-  required Set<int> replacedFeatureIds,
-  Transaction? transaction,
-}) async {
-  final levels = <String, int>{};
-  for (final classEntry
-      in before.classEntries ?? const <CharacterClassEntryData>[]) {
-    final key = _normalizedTextOrNull(classEntry.classData?.referenceKey);
-    if (key == null) continue;
-    levels[key] = (levels[key] ?? 0) +
-        (classEntry.id == entry.id ? targetLevel : classEntry.level ?? 0);
-  }
-  final groups =
-      await ChoiceGroupData.db.find(session, transaction: transaction);
-  final groupsByKey = {for (final group in groups) group.referenceKey: group};
-  final options =
-      await ChoiceOptionData.db.find(session, transaction: transaction);
-  final selectedOptions = <ChoiceOptionData>[];
-  for (final choice in choices) {
-    if (identical(choice, candidate)) {
-      continue;
-    }
-    final groupId = groupsByKey[choice.groupKey]?.id;
-    final option = options
-        .where((item) =>
-            item.choiceGroupId == groupId && item.optionKey == choice.optionKey)
-        .firstOrNull;
-    if (option != null) selectedOptions.add(option);
-  }
-  // Include selected options from other class entries as well.
-  final abilityScores = _buildAbilityScores(before, selectedOptions);
-  final selectedKeys = <String>{
-    for (final choice in choices)
-      if (!identical(choice, candidate))
-        encodeSelectedChoiceOptionKey(
-            choice.groupKey ?? '', choice.optionKey ?? ''),
-  };
-  final skillKeys = <String>{
-    ...?before.race?.skillProficiencies?.map((skill) => skill.name),
-    ...?before.subrace?.skillProficiencies?.map((skill) => skill.name),
-    ...?before.background?.skillProficiencies?.map((skill) => skill.name),
-    for (final selection
-        in before.skillSelections ?? const <CharacterSkillSelectionData>[])
-      if (selection.skill != null) selection.skill!.name,
-    for (final option in selectedOptions)
-      ...?option.grantedSkills?.map((skill) => skill.name),
-  };
-  final manualSkills = before.manualSkillProficiencyOverrides;
-  if (manualSkills != null) {
-    for (final state in manualSkills) {
-      if (state.level == CharacterSkillProficiencyLevel.none) {
-        skillKeys.remove(state.skill.name);
-      } else {
-        skillKeys.add(state.skill.name);
-      }
-    }
-  } else if (before.manualSkillProficiencies != null) {
-    skillKeys
-      ..clear()
-      ..addAll([
-        for (final state in before.manualSkillProficiencies!)
-          if (state.level != CharacterSkillProficiencyLevel.none)
-            state.skill.name,
-      ]);
-  }
-  final toolKeys = <String>{
-    ...?before.race?.toolProficiencyKeys,
-    ...?before.subrace?.toolProficiencyKeys,
-    ...?before.background?.toolProficiencyKeys,
-    for (final classEntry
-        in before.classEntries ?? const <CharacterClassEntryData>[])
-      ...(classEntry.isStartingClass == true
-          ? classEntry.classData?.toolTrainingKeys ?? const <String>[]
-          : classEntry.classData?.multiclassToolTrainingKeys ??
-              const <String>[]),
-    for (final option in selectedOptions) ...?option.grantedToolKeys,
-  }
-    ..removeAll(
-        before.manualToolProficiencyOverrides?.removedKeys ?? const <String>[])
-    ..addAll(
-        before.manualToolProficiencyOverrides?.addedKeys ?? const <String>[]);
-  final spellFacts = collectChoiceSpellFacts([
-    for (final selection
-        in before.spellSelections ?? const <CharacterSpellSelectionData>[])
-      if (_normalizedTextOrNull(selection.spellKey) case final key?)
-        ChoiceSpellSelectionFact(key: key, kind: selection.kind?.name ?? ''),
-  ]);
-  final otherActiveFeatureIds =
-      (before.derived?.activeFeatures ?? const <CharacterFeatureViewData>[])
-          .where((feature) =>
-              feature.sourceType == CharacterFeatureSourceType.classFeature ||
-              feature.sourceType == CharacterFeatureSourceType.subclassFeature)
-          .map((feature) => feature.sourceId)
-          .where((id) => !replacedFeatureIds.contains(id))
-          .toSet();
-  final otherActiveFeatureKeys = <String>{};
-  if (otherActiveFeatureIds.isNotEmpty) {
-    final otherClasses = await ClassFeatureData.db.find(
-      session,
-      transaction: transaction,
-      where: (t) => t.id.inSet(otherActiveFeatureIds),
-    );
-    final otherSubclasses = await SubclassFeatureData.db.find(
-      session,
-      transaction: transaction,
-      where: (t) => t.id.inSet(otherActiveFeatureIds),
-    );
-    otherActiveFeatureKeys.addAll([
-      for (final feature in otherClasses)
-        if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
-      for (final feature in otherSubclasses)
-        if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
-    ]);
-  }
-  final featureKeys = <String>{
-    ...otherActiveFeatureKeys,
-    for (final feature
-        in targetStep.currentLevelFeatures ?? const <ClassFeatureData>[])
-      if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
-    for (final feature
-        in targetStep.currentSubclassFeatures ?? const <SubclassFeatureData>[])
-      if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
-  };
-  return ChoiceEligibilityContext(
-    totalCharacterLevel: (before.derived?.totalLevel ?? targetLevel) -
-        (entry.level ?? targetLevel) +
-        targetLevel,
-    classLevelsByReferenceKey: levels,
-    abilityScores: abilityScores,
-    knownSpellKeys: spellFacts.knownSpellKeys,
-    knownCantripKeys: spellFacts.knownCantripKeys,
-    featureKeys: featureKeys,
-    selectedChoiceOptionKeys: selectedKeys,
-    skillKeys: skillKeys,
-    toolKeys: toolKeys,
   );
 }
 

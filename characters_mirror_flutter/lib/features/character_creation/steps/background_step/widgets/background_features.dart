@@ -65,6 +65,7 @@ class BackgroundFeatures extends ConsumerWidget {
         selectedOptions: classState.selectedOptions,
         otherSelectedOptions: otherSelectedOptions,
         choiceGroups: classChoiceGroups,
+        classStep: classState.stepView,
       );
       for (final groupView in classChoiceGroups) {
         final group = groupView.group;

@@ -2162,6 +2162,45 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<_i108.Language>(e)).toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<_i112.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i112.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i112.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i112.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i73.ArmorCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i73.ArmorCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i125.WeaponCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i125.WeaponCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<_i58.FeatureResourceDefinitionData>?>()) {
       return (data != null
           ? (data as List)
@@ -2232,6 +2271,50 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<List<_i106.FeatureTag>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<_i106.FeatureTag>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i112.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i112.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i112.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i112.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i108.Language>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i108.Language>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i73.ArmorCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i73.ArmorCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i125.WeaponCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i125.WeaponCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i58.FeatureResourceDefinitionData>?>()) {

@@ -2665,7 +2665,20 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
+        _i2.IndexDefinition(
+          indexName: 'class_reference_key_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'referenceKey',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -2761,6 +2774,48 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'List<protocol:Language>?',
         ),
         _i2.ColumnDefinition(
+          name: 'grantedSkills',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:Skill>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedExpertiseSkills',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:Skill>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedArmorTraining',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:ArmorCategory>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedWeaponTraining',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:WeaponCategory>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedToolKeys',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedExpertiseToolKeys',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedSpellKeys',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+        _i2.ColumnDefinition(
           name: 'unarmoredDefenseRule',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -2798,7 +2853,20 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
+        _i2.IndexDefinition(
+          indexName: 'class_feature_reference_key_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'referenceKey',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -2820,6 +2888,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'subclassDataId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'level',
@@ -2910,7 +2984,17 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'class_level_data_fk_1',
+          columns: ['subclassDataId'],
+          referenceTable: 'subclass_data',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -2983,6 +3067,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'choiceOptionId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'notes',
@@ -3060,6 +3150,16 @@ class Protocol extends _i1.SerializationManagerServer {
           constraintName: 'class_spell_grant_data_fk_4',
           columns: ['sourceSubclassFeatureId'],
           referenceTable: 'subclass_feature_data',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'class_spell_grant_data_fk_5',
+          columns: ['choiceOptionId'],
+          referenceTable: 'choice_option_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
@@ -3551,6 +3651,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
+          name: 'choiceOptionId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
           name: 'name',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -3642,6 +3748,16 @@ class Protocol extends _i1.SerializationManagerServer {
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
         ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'feature_resource_definition_data_fk_3',
+          columns: ['choiceOptionId'],
+          referenceTable: 'choice_option_data',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -3697,6 +3813,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:FeatureResourceEffectType',
+        ),
+        _i2.ColumnDefinition(
+          name: 'choiceOptionId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
           name: 'targetType',
@@ -3820,6 +3942,16 @@ class Protocol extends _i1.SerializationManagerServer {
           constraintName: 'feature_resource_effect_data_fk_2',
           columns: ['raceFeatureId'],
           referenceTable: 'race_feature_data',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'feature_resource_effect_data_fk_3',
+          columns: ['choiceOptionId'],
+          referenceTable: 'choice_option_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
@@ -5170,6 +5302,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'subclass_data_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
+          name: 'referenceKey',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
           name: 'name',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -5223,6 +5361,30 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'int?',
         ),
+        _i2.ColumnDefinition(
+          name: 'spellcastingStartLevel',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'spellcastingProgression',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:SpellcastingProgression?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'spellSelectionMode',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ClassSpellSelectionMode?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'spellcastingAbilityValue',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:Ability?',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -5249,7 +5411,20 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
+        _i2.IndexDefinition(
+          indexName: 'subclass_reference_key_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'referenceKey',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -5339,6 +5514,54 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
+          name: 'grantedSkills',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:Skill>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedExpertiseSkills',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:Skill>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedLanguages',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:Language>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedArmorTraining',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:ArmorCategory>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedWeaponTraining',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:WeaponCategory>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedToolKeys',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedExpertiseToolKeys',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'grantedSpellKeys',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+        _i2.ColumnDefinition(
           name: 'relatedTable',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -5370,7 +5593,20 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        )
+        ),
+        _i2.IndexDefinition(
+          indexName: 'subclass_feature_reference_key_idx',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'referenceKey',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
       ],
       managed: true,
     ),
@@ -7729,6 +7965,45 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<_i123.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i123.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i136.WeaponCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i136.WeaponCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<_i69.FeatureResourceDefinitionData>?>()) {
       return (data != null
           ? (data as List)
@@ -7811,6 +8086,50 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i123.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i123.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i119.Language>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i136.WeaponCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i136.WeaponCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i69.FeatureResourceDefinitionData>?>()) {

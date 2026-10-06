@@ -9,6 +9,7 @@ class _ResolvedDerivedSources {
   final List<FeatureDisplayPropertyData> featureDisplayProperties;
   final List<FeatureModifierData> featureModifiers;
   final List<String> alwaysPreparedSpellKeys;
+  final List<String> grantedClassSpellKeys;
 
   const _ResolvedDerivedSources({
     required this.selectedOptions,
@@ -19,6 +20,7 @@ class _ResolvedDerivedSources {
     required this.featureDisplayProperties,
     required this.featureModifiers,
     required this.alwaysPreparedSpellKeys,
+    required this.grantedClassSpellKeys,
   });
 }
 
@@ -137,15 +139,6 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
   };
   final classSpellGrants = await context.classSpellGrants(
     transaction: transaction,
-  );
-  final alwaysPreparedSpellKeys = _collectAlwaysPreparedSpellKeys(
-    classSpellGrants,
-    classLevels: classLevels,
-    subclassLevels: subclassLevels,
-    currentClassFeatureIds: currentClassFeatureIds,
-    currentSubclassFeatureIds: currentSubclassFeatureIds,
-    currentClassFeatureLevels: currentClassFeatureLevels,
-    currentSubclassFeatureLevels: currentSubclassFeatureLevels,
   );
   final featureDisplayProperties = await context.featureDisplayProperties(
     transaction: transaction,
@@ -320,6 +313,21 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     }
   }
 
+  List<String> spellGrantKeys({required bool onlyAlwaysPrepared}) =>
+      _collectAlwaysPreparedSpellKeys(
+        classSpellGrants,
+        classLevels: classLevels,
+        subclassLevels: subclassLevels,
+        currentClassFeatureIds: currentClassFeatureIds,
+        currentSubclassFeatureIds: currentSubclassFeatureIds,
+        currentClassFeatureLevels: currentClassFeatureLevels,
+        currentSubclassFeatureLevels: currentSubclassFeatureLevels,
+        selectedOptionIds: {
+          for (final option in selectedOptions)
+            if (option.id != null) option.id!
+        },
+        onlyAlwaysPrepared: onlyAlwaysPrepared,
+      );
   return _ResolvedDerivedSources(
     selectedOptions: selectedOptions,
     selectedChoicesByClassFeatureId: selectedChoicesByClassFeatureId,
@@ -328,7 +336,8 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     currentSubclassFeatures: currentSubclassFeatures,
     featureDisplayProperties: featureDisplayProperties,
     featureModifiers: featureModifiers,
-    alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
+    alwaysPreparedSpellKeys: spellGrantKeys(onlyAlwaysPrepared: true),
+    grantedClassSpellKeys: spellGrantKeys(onlyAlwaysPrepared: false),
   );
 }
 
@@ -339,113 +348,30 @@ void _validateGenericChoiceEligibility(
   List<ClassFeatureData> currentClassFeatures,
   List<SubclassFeatureData> currentSubclassFeatures,
 ) {
-  final ownedSkills = <Skill>{
-    ...?character.race?.skillProficiencies,
-    ...?character.subrace?.skillProficiencies,
-    ...?character.background?.skillProficiencies,
-    for (final selection
-        in character.skillSelections ?? const <CharacterSkillSelectionData>[])
-      if (selection.skill != null) selection.skill!,
+  final selectedOptionsByGroupKey = {
+    for (final entry in selectedByGroupKey.entries)
+      entry.key: [for (final selected in entry.value) selected.option],
   };
-  final ownedToolKeys = <String>{
-    ...?character.race?.toolProficiencyKeys,
-    ...?character.subrace?.toolProficiencyKeys,
-    ...?character.background?.toolProficiencyKeys,
-  };
-  for (final entry in character.classEntries ?? const []) {
-    final isStarting = entry.isStartingClass ?? false;
-    ownedToolKeys.addAll(
-      isStarting
-          ? entry.classData?.toolTrainingKeys ?? const <String>[]
-          : entry.classData?.multiclassToolTrainingKeys ?? const <String>[],
-    );
-  }
-
-  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
-  final classLevelsByReferenceKey = <String, int>{};
-  for (final entry in entries) {
-    final key = _normalizedTextOrNull(entry.classData?.referenceKey);
-    if (key == null) continue;
-    classLevelsByReferenceKey[key] =
-        (classLevelsByReferenceKey[key] ?? 0) + (entry.level ?? 0);
-  }
   final scores = _buildAbilityScores(
     character,
     [
       for (final selected in selectedByGroupKey.values)
-        for (final item in selected) item.option,
+        for (final item in selected) item.option
     ],
   );
-  final selectedOptionKeys = <String>{
-    for (final entry in selectedByGroupKey.entries)
-      for (final selection in entry.value)
-        encodeSelectedChoiceOptionKey(
-          entry.key.trim(),
-          selection.option.optionKey.trim(),
-        ),
+  final contextsByGroupKey = {
+    for (final groupKey in selectedByGroupKey.keys)
+      groupKey: buildChoiceEligibilityContext(
+        character: character,
+        evaluatingGroupKey: groupKey,
+        selectedOptionsByGroupKey: selectedOptionsByGroupKey,
+        groups: groups,
+        abilityScores: scores,
+        currentClassFeatures: currentClassFeatures,
+        currentSubclassFeatures: currentSubclassFeatures,
+      ),
   };
-  final spellFacts = collectChoiceSpellFacts([
-    for (final selection
-        in character.spellSelections ?? const <CharacterSpellSelectionData>[])
-      if (_normalizedTextOrNull(selection.spellKey) ??
-              _normalizedTextOrNull(selection.spell?.referenceKey)
-          case final key?)
-        ChoiceSpellSelectionFact(
-          key: key,
-          kind: selection.kind?.name ?? '',
-        ),
-  ]);
-  final featureKeys = <String>{
-    for (final feature in currentClassFeatures)
-      if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
-    for (final feature in currentSubclassFeatures)
-      if (_normalizedTextOrNull(feature.referenceKey) case final key?) key,
-  };
-
-  final groupsByKey = {for (final group in groups) group.referenceKey: group};
   for (final entry in selectedByGroupKey.entries) {
-    final currentGroupId = groupsByKey[entry.key]?.id;
-    for (final otherEntry in selectedByGroupKey.entries) {
-      if (groupsByKey[otherEntry.key]?.id == currentGroupId) continue;
-      for (final selected in otherEntry.value) {
-        ownedSkills.addAll(selected.option.grantedSkills ?? const <Skill>[]);
-        ownedToolKeys
-            .addAll(selected.option.grantedToolKeys ?? const <String>[]);
-      }
-    }
-    final manualSkillOverrides = character.manualSkillProficiencyOverrides;
-    final legacySkillOverrides = character.manualSkillProficiencies;
-    if (manualSkillOverrides != null) {
-      for (final state in manualSkillOverrides) {
-        if (state.level == CharacterSkillProficiencyLevel.none) {
-          ownedSkills.remove(state.skill);
-        } else {
-          ownedSkills.add(state.skill);
-        }
-      }
-    } else if (legacySkillOverrides != null) {
-      ownedSkills
-        ..clear()
-        ..addAll([
-          for (final state in legacySkillOverrides)
-            if (state.level != CharacterSkillProficiencyLevel.none) state.skill,
-        ]);
-    }
-    ownedToolKeys
-      ..removeAll(character.manualToolProficiencyOverrides?.removedKeys ?? [])
-      ..addAll(character.manualToolProficiencyOverrides?.addedKeys ?? []);
-    final context = ChoiceEligibilityContext(
-      totalCharacterLevel:
-          entries.fold<int>(0, (sum, item) => sum + (item.level ?? 0)),
-      classLevelsByReferenceKey: classLevelsByReferenceKey,
-      abilityScores: scores,
-      knownSpellKeys: spellFacts.knownSpellKeys,
-      knownCantripKeys: spellFacts.knownCantripKeys,
-      featureKeys: featureKeys,
-      selectedChoiceOptionKeys: selectedOptionKeys,
-      skillKeys: {for (final skill in ownedSkills) skill.name},
-      toolKeys: ownedToolKeys,
-    );
     for (final selected in entry.value) {
       final requirements = <ChoiceRequirement>[
         for (final data
@@ -466,7 +392,7 @@ void _validateGenericChoiceEligibility(
       }
       final result = evaluateChoiceOptionEligibility(
         requirements: requirements,
-        context: context,
+        context: contextsByGroupKey[entry.key]!,
       );
       if (!result.isEligible) {
         throw InputValidationException(

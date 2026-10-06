@@ -11,10 +11,14 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
+import '../../../enums/spellcasting_progression.dart' as _i3;
+import '../../../enums/class_spell_selection_mode.dart' as _i4;
+import '../../../enums/ability.dart' as _i5;
 
 abstract class SubclassData implements _i1.SerializableModel {
   SubclassData._({
     this.id,
+    this.referenceKey,
     this.name,
     this.description,
     this.source,
@@ -25,10 +29,15 @@ abstract class SubclassData implements _i1.SerializableModel {
     required this.parentClassId,
     this.parentClass,
     this.levelRequired,
+    this.spellcastingStartLevel,
+    this.spellcastingProgression,
+    this.spellSelectionMode,
+    this.spellcastingAbilityValue,
   });
 
   factory SubclassData({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -39,11 +48,16 @@ abstract class SubclassData implements _i1.SerializableModel {
     required int parentClassId,
     _i2.ClassData? parentClass,
     int? levelRequired,
+    int? spellcastingStartLevel,
+    _i3.SpellcastingProgression? spellcastingProgression,
+    _i4.ClassSpellSelectionMode? spellSelectionMode,
+    _i5.Ability? spellcastingAbilityValue,
   }) = _SubclassDataImpl;
 
   factory SubclassData.fromJson(Map<String, dynamic> jsonSerialization) {
     return SubclassData(
       id: jsonSerialization['id'] as int?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -61,6 +75,22 @@ abstract class SubclassData implements _i1.SerializableModel {
           : _i2.ClassData.fromJson(
               (jsonSerialization['parentClass'] as Map<String, dynamic>)),
       levelRequired: jsonSerialization['levelRequired'] as int?,
+      spellcastingStartLevel:
+          jsonSerialization['spellcastingStartLevel'] as int?,
+      spellcastingProgression:
+          jsonSerialization['spellcastingProgression'] == null
+              ? null
+              : _i3.SpellcastingProgression.fromJson(
+                  (jsonSerialization['spellcastingProgression'] as String)),
+      spellSelectionMode: jsonSerialization['spellSelectionMode'] == null
+          ? null
+          : _i4.ClassSpellSelectionMode.fromJson(
+              (jsonSerialization['spellSelectionMode'] as String)),
+      spellcastingAbilityValue:
+          jsonSerialization['spellcastingAbilityValue'] == null
+              ? null
+              : _i5.Ability.fromJson(
+                  (jsonSerialization['spellcastingAbilityValue'] as String)),
     );
   }
 
@@ -68,6 +98,8 @@ abstract class SubclassData implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  String? referenceKey;
 
   String? name;
 
@@ -89,11 +121,20 @@ abstract class SubclassData implements _i1.SerializableModel {
 
   int? levelRequired;
 
+  int? spellcastingStartLevel;
+
+  _i3.SpellcastingProgression? spellcastingProgression;
+
+  _i4.ClassSpellSelectionMode? spellSelectionMode;
+
+  _i5.Ability? spellcastingAbilityValue;
+
   /// Returns a shallow copy of this [SubclassData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   SubclassData copyWith({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -104,11 +145,16 @@ abstract class SubclassData implements _i1.SerializableModel {
     int? parentClassId,
     _i2.ClassData? parentClass,
     int? levelRequired,
+    int? spellcastingStartLevel,
+    _i3.SpellcastingProgression? spellcastingProgression,
+    _i4.ClassSpellSelectionMode? spellSelectionMode,
+    _i5.Ability? spellcastingAbilityValue,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (source != null) 'source': source,
@@ -119,6 +165,14 @@ abstract class SubclassData implements _i1.SerializableModel {
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
       if (levelRequired != null) 'levelRequired': levelRequired,
+      if (spellcastingStartLevel != null)
+        'spellcastingStartLevel': spellcastingStartLevel,
+      if (spellcastingProgression != null)
+        'spellcastingProgression': spellcastingProgression?.toJson(),
+      if (spellSelectionMode != null)
+        'spellSelectionMode': spellSelectionMode?.toJson(),
+      if (spellcastingAbilityValue != null)
+        'spellcastingAbilityValue': spellcastingAbilityValue?.toJson(),
     };
   }
 
@@ -133,6 +187,7 @@ class _Undefined {}
 class _SubclassDataImpl extends SubclassData {
   _SubclassDataImpl({
     int? id,
+    String? referenceKey,
     String? name,
     String? description,
     String? source,
@@ -143,8 +198,13 @@ class _SubclassDataImpl extends SubclassData {
     required int parentClassId,
     _i2.ClassData? parentClass,
     int? levelRequired,
+    int? spellcastingStartLevel,
+    _i3.SpellcastingProgression? spellcastingProgression,
+    _i4.ClassSpellSelectionMode? spellSelectionMode,
+    _i5.Ability? spellcastingAbilityValue,
   }) : super._(
           id: id,
+          referenceKey: referenceKey,
           name: name,
           description: description,
           source: source,
@@ -155,6 +215,10 @@ class _SubclassDataImpl extends SubclassData {
           parentClassId: parentClassId,
           parentClass: parentClass,
           levelRequired: levelRequired,
+          spellcastingStartLevel: spellcastingStartLevel,
+          spellcastingProgression: spellcastingProgression,
+          spellSelectionMode: spellSelectionMode,
+          spellcastingAbilityValue: spellcastingAbilityValue,
         );
 
   /// Returns a shallow copy of this [SubclassData]
@@ -163,6 +227,7 @@ class _SubclassDataImpl extends SubclassData {
   @override
   SubclassData copyWith({
     Object? id = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? source = _Undefined,
@@ -173,9 +238,14 @@ class _SubclassDataImpl extends SubclassData {
     int? parentClassId,
     Object? parentClass = _Undefined,
     Object? levelRequired = _Undefined,
+    Object? spellcastingStartLevel = _Undefined,
+    Object? spellcastingProgression = _Undefined,
+    Object? spellSelectionMode = _Undefined,
+    Object? spellcastingAbilityValue = _Undefined,
   }) {
     return SubclassData(
       id: id is int? ? id : this.id,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       source: source is String? ? source : this.source,
@@ -188,6 +258,19 @@ class _SubclassDataImpl extends SubclassData {
           ? parentClass
           : this.parentClass?.copyWith(),
       levelRequired: levelRequired is int? ? levelRequired : this.levelRequired,
+      spellcastingStartLevel: spellcastingStartLevel is int?
+          ? spellcastingStartLevel
+          : this.spellcastingStartLevel,
+      spellcastingProgression:
+          spellcastingProgression is _i3.SpellcastingProgression?
+              ? spellcastingProgression
+              : this.spellcastingProgression,
+      spellSelectionMode: spellSelectionMode is _i4.ClassSpellSelectionMode?
+          ? spellSelectionMode
+          : this.spellSelectionMode,
+      spellcastingAbilityValue: spellcastingAbilityValue is _i5.Ability?
+          ? spellcastingAbilityValue
+          : this.spellcastingAbilityValue,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/feature_display_properties.dart';
+import 'package:characters_mirror_server/src/choice_eligibility_context.dart';
 import 'package:characters_mirror_server/src/weapon_training_values.dart';
 import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
 import 'package:characters_mirror_server/src/validation/character_quota_validator.dart';
@@ -25,6 +26,8 @@ import 'package:characters_mirror_shared/characters_mirror_shared.dart'
 import 'starting_equipment_endpoints.dart';
 import 'class_endpoints.dart';
 import '../../../spells/class_spell_progression.dart';
+import '../../../spells/spellcasting_source.dart';
+import '../../../feature_grants.dart';
 
 part 'character_data_endpoint/persistence_pruning_snapshot.dart';
 part 'character_data_endpoint/persistence_record_write.dart';

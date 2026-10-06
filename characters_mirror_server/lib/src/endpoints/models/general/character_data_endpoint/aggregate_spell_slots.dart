@@ -11,14 +11,20 @@ Future<_SpellSlotData> _resolveSpellSlots(
   var highestPactLevel = 0;
   final standardEntries = [
     for (final entry in entries)
-      if (_isStandardCasterProgression(
-          entry.classData?.spellcastingProgression))
+      if (_isStandardCasterProgression(entry.classData == null
+          ? null
+          : effectiveSpellcastingClass(
+                  entry.classData!, entry.subclass, entry.level ?? 0)
+              .spellcastingProgression))
         entry,
   ];
   final useSingleClassRounding = standardEntries.length == 1;
 
   for (final entry in entries) {
-    final classData = entry.classData;
+    final classData = entry.classData == null
+        ? null
+        : effectiveSpellcastingClass(
+            entry.classData!, entry.subclass, entry.level ?? 0);
     final level = entry.level ?? 0;
     final progression = classData?.spellcastingProgression;
     if (progression == null || level <= 0) {

@@ -76,8 +76,10 @@ Set<Ability> _savingThrowProficiencies(CharacterData character) {
 
 Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
   CharacterData character,
-  List<ChoiceOptionData> selectedOptions,
-) {
+  List<ChoiceOptionData> selectedOptions, {
+  Iterable<Skill> fixedSkills = const [],
+  Iterable<Skill> fixedExpertiseSkills = const [],
+}) {
   final result = {
     for (final skill in Skill.values)
       skill: CharacterSkillProficiencyLevel.none,
@@ -96,14 +98,18 @@ Map<Skill, CharacterSkillProficiencyLevel> _skillProficiencyLevels(
       result[skill] = CharacterSkillProficiencyLevel.proficient;
     }
   }
-  for (final option in selectedOptions) {
-    for (final skill in option.grantedSkills ?? const <Skill>[]) {
-      result[skill] = CharacterSkillProficiencyLevel.proficient;
-    }
-    for (final skill in option.grantedExpertiseSkills ?? const <Skill>[]) {
-      if (result[skill] != CharacterSkillProficiencyLevel.none) {
-        result[skill] = CharacterSkillProficiencyLevel.expertise;
-      }
+  for (final skill in [
+    ...fixedSkills,
+    for (final option in selectedOptions) ...?option.grantedSkills,
+  ]) {
+    result[skill] = CharacterSkillProficiencyLevel.proficient;
+  }
+  for (final skill in [
+    ...fixedExpertiseSkills,
+    for (final option in selectedOptions) ...?option.grantedExpertiseSkills,
+  ]) {
+    if (result[skill] != CharacterSkillProficiencyLevel.none) {
+      result[skill] = CharacterSkillProficiencyLevel.expertise;
     }
   }
   final overrides = character.manualSkillProficiencyOverrides;

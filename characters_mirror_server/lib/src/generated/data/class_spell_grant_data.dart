@@ -17,6 +17,7 @@ import '../data/general/class/class_data.dart' as _i3;
 import '../data/general/class/subclass_data.dart' as _i4;
 import '../data/general/class/class_feature_data.dart' as _i5;
 import '../data/general/class/subclass_feature_data.dart' as _i6;
+import '../data/general/choice_option_data.dart' as _i7;
 
 abstract class ClassSpellGrantData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -35,6 +36,8 @@ abstract class ClassSpellGrantData
     this.sourceSubclassFeature,
     this.grantedAtLevel,
     this.alwaysPrepared,
+    this.choiceOptionId,
+    this.choiceOption,
     this.notes,
     this.source,
     this.version,
@@ -57,6 +60,8 @@ abstract class ClassSpellGrantData
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
     bool? alwaysPrepared,
+    int? choiceOptionId,
+    _i7.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -97,6 +102,11 @@ abstract class ClassSpellGrantData
                   as Map<String, dynamic>)),
       grantedAtLevel: jsonSerialization['grantedAtLevel'] as int?,
       alwaysPrepared: jsonSerialization['alwaysPrepared'] as bool?,
+      choiceOptionId: jsonSerialization['choiceOptionId'] as int?,
+      choiceOption: jsonSerialization['choiceOption'] == null
+          ? null
+          : _i7.ChoiceOptionData.fromJson(
+              (jsonSerialization['choiceOption'] as Map<String, dynamic>)),
       notes: jsonSerialization['notes'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
@@ -142,6 +152,10 @@ abstract class ClassSpellGrantData
 
   bool? alwaysPrepared;
 
+  int? choiceOptionId;
+
+  _i7.ChoiceOptionData? choiceOption;
+
   String? notes;
 
   String? source;
@@ -173,6 +187,8 @@ abstract class ClassSpellGrantData
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
     bool? alwaysPrepared,
+    int? choiceOptionId,
+    _i7.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -198,6 +214,8 @@ abstract class ClassSpellGrantData
         'sourceSubclassFeature': sourceSubclassFeature?.toJson(),
       if (grantedAtLevel != null) 'grantedAtLevel': grantedAtLevel,
       if (alwaysPrepared != null) 'alwaysPrepared': alwaysPrepared,
+      if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
+      if (choiceOption != null) 'choiceOption': choiceOption?.toJson(),
       if (notes != null) 'notes': notes,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -227,6 +245,9 @@ abstract class ClassSpellGrantData
         'sourceSubclassFeature': sourceSubclassFeature?.toJsonForProtocol(),
       if (grantedAtLevel != null) 'grantedAtLevel': grantedAtLevel,
       if (alwaysPrepared != null) 'alwaysPrepared': alwaysPrepared,
+      if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
+      if (choiceOption != null)
+        'choiceOption': choiceOption?.toJsonForProtocol(),
       if (notes != null) 'notes': notes,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -241,6 +262,7 @@ abstract class ClassSpellGrantData
     _i4.SubclassDataInclude? sourceSubclass,
     _i5.ClassFeatureDataInclude? sourceFeature,
     _i6.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _i7.ChoiceOptionDataInclude? choiceOption,
   }) {
     return ClassSpellGrantDataInclude._(
       spell: spell,
@@ -248,6 +270,7 @@ abstract class ClassSpellGrantData
       sourceSubclass: sourceSubclass,
       sourceFeature: sourceFeature,
       sourceSubclassFeature: sourceSubclassFeature,
+      choiceOption: choiceOption,
     );
   }
 
@@ -295,6 +318,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
     bool? alwaysPrepared,
+    int? choiceOptionId,
+    _i7.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -315,6 +340,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
           sourceSubclassFeature: sourceSubclassFeature,
           grantedAtLevel: grantedAtLevel,
           alwaysPrepared: alwaysPrepared,
+          choiceOptionId: choiceOptionId,
+          choiceOption: choiceOption,
           notes: notes,
           source: source,
           version: version,
@@ -341,6 +368,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
     Object? sourceSubclassFeature = _Undefined,
     Object? grantedAtLevel = _Undefined,
     Object? alwaysPrepared = _Undefined,
+    Object? choiceOptionId = _Undefined,
+    Object? choiceOption = _Undefined,
     Object? notes = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
@@ -378,6 +407,11 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
           grantedAtLevel is int? ? grantedAtLevel : this.grantedAtLevel,
       alwaysPrepared:
           alwaysPrepared is bool? ? alwaysPrepared : this.alwaysPrepared,
+      choiceOptionId:
+          choiceOptionId is int? ? choiceOptionId : this.choiceOptionId,
+      choiceOption: choiceOption is _i7.ChoiceOptionData?
+          ? choiceOption
+          : this.choiceOption?.copyWith(),
       notes: notes is String? ? notes : this.notes,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
@@ -416,6 +450,10 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
     );
     alwaysPrepared = _i1.ColumnBool(
       'alwaysPrepared',
+      this,
+    );
+    choiceOptionId = _i1.ColumnInt(
+      'choiceOptionId',
       this,
     );
     notes = _i1.ColumnString(
@@ -463,6 +501,10 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
   late final _i1.ColumnInt grantedAtLevel;
 
   late final _i1.ColumnBool alwaysPrepared;
+
+  late final _i1.ColumnInt choiceOptionId;
+
+  _i7.ChoiceOptionDataTable? _choiceOption;
 
   late final _i1.ColumnString notes;
 
@@ -539,6 +581,19 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
     return _sourceSubclassFeature!;
   }
 
+  _i7.ChoiceOptionDataTable get choiceOption {
+    if (_choiceOption != null) return _choiceOption!;
+    _choiceOption = _i1.createRelationTable(
+      relationFieldName: 'choiceOption',
+      field: ClassSpellGrantData.t.choiceOptionId,
+      foreignField: _i7.ChoiceOptionData.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i7.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
+    );
+    return _choiceOption!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -549,6 +604,7 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
         sourceSubclassFeatureId,
         grantedAtLevel,
         alwaysPrepared,
+        choiceOptionId,
         notes,
         source,
         version,
@@ -573,6 +629,9 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
     if (relationField == 'sourceSubclassFeature') {
       return sourceSubclassFeature;
     }
+    if (relationField == 'choiceOption') {
+      return choiceOption;
+    }
     return null;
   }
 }
@@ -584,12 +643,14 @@ class ClassSpellGrantDataInclude extends _i1.IncludeObject {
     _i4.SubclassDataInclude? sourceSubclass,
     _i5.ClassFeatureDataInclude? sourceFeature,
     _i6.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _i7.ChoiceOptionDataInclude? choiceOption,
   }) {
     _spell = spell;
     _sourceClass = sourceClass;
     _sourceSubclass = sourceSubclass;
     _sourceFeature = sourceFeature;
     _sourceSubclassFeature = sourceSubclassFeature;
+    _choiceOption = choiceOption;
   }
 
   _i2.SpellDataInclude? _spell;
@@ -602,6 +663,8 @@ class ClassSpellGrantDataInclude extends _i1.IncludeObject {
 
   _i6.SubclassFeatureDataInclude? _sourceSubclassFeature;
 
+  _i7.ChoiceOptionDataInclude? _choiceOption;
+
   @override
   Map<String, _i1.Include?> get includes => {
         'spell': _spell,
@@ -609,6 +672,7 @@ class ClassSpellGrantDataInclude extends _i1.IncludeObject {
         'sourceSubclass': _sourceSubclass,
         'sourceFeature': _sourceFeature,
         'sourceSubclassFeature': _sourceSubclassFeature,
+        'choiceOption': _choiceOption,
       };
 
   @override
@@ -979,6 +1043,30 @@ class ClassSpellGrantDataAttachRowRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between the given [ClassSpellGrantData] and [ChoiceOptionData]
+  /// by setting the [ClassSpellGrantData]'s foreign key `choiceOptionId` to refer to the [ChoiceOptionData].
+  Future<void> choiceOption(
+    _i1.Session session,
+    ClassSpellGrantData classSpellGrantData,
+    _i7.ChoiceOptionData choiceOption, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
+    }
+    if (choiceOption.id == null) {
+      throw ArgumentError.notNull('choiceOption.id');
+    }
+
+    var $classSpellGrantData =
+        classSpellGrantData.copyWith(choiceOptionId: choiceOption.id);
+    await session.db.updateRow<ClassSpellGrantData>(
+      $classSpellGrantData,
+      columns: [ClassSpellGrantData.t.choiceOptionId],
+      transaction: transaction,
+    );
+  }
 }
 
 class ClassSpellGrantDataDetachRowRepository {
@@ -1094,6 +1182,29 @@ class ClassSpellGrantDataDetachRowRepository {
     await session.db.updateRow<ClassSpellGrantData>(
       $classspellgrantdata,
       columns: [ClassSpellGrantData.t.sourceSubclassFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [ClassSpellGrantData] and the [ChoiceOptionData] set in `choiceOption`
+  /// by setting the [ClassSpellGrantData]'s foreign key `choiceOptionId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceOption(
+    _i1.Session session,
+    ClassSpellGrantData classspellgrantdata, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classspellgrantdata.id == null) {
+      throw ArgumentError.notNull('classspellgrantdata.id');
+    }
+
+    var $classspellgrantdata =
+        classspellgrantdata.copyWith(choiceOptionId: null);
+    await session.db.updateRow<ClassSpellGrantData>(
+      $classspellgrantdata,
+      columns: [ClassSpellGrantData.t.choiceOptionId],
       transaction: transaction,
     );
   }

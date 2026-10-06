@@ -163,7 +163,7 @@ Ability? _spellcastingAbility(CharacterData character) {
         ));
 
   for (final entry in entries) {
-    final ability = entry.classData?.spellcastingAbilityValue;
+    final ability = spellcastingClassForEntry(entry)?.spellcastingAbilityValue;
     if (ability != null) {
       return ability;
     }
@@ -338,11 +338,9 @@ List<CharacterClassEntryData> _preparedClassContexts(
   return [
     for (final entry
         in character.classEntries ?? const <CharacterClassEntryData>[])
-      if ({
-        ClassSpellSelectionMode.prepared,
-        ClassSpellSelectionMode.spellbook
-      }.contains(
-          spellMode(entry.classData, _classLevelForEntry(entry, classLevels))))
+      if ({ClassSpellSelectionMode.prepared, ClassSpellSelectionMode.spellbook}
+          .contains(spellMode(spellcastingClassForEntry(entry),
+              _classLevelForEntry(entry, classLevels))))
         entry,
   ];
 }
@@ -351,17 +349,7 @@ ClassLevelData? _classLevelForEntry(
   CharacterClassEntryData entry,
   List<ClassLevelData> classLevels,
 ) {
-  final classId = entry.classData?.id;
-  final level = entry.level ?? 1;
-  if (classId == null) {
-    return null;
-  }
-  for (final classLevel in classLevels) {
-    if (classLevel.classDataId == classId && classLevel.level == level) {
-      return classLevel;
-    }
-  }
-  return null;
+  return spellLevelForEntry(entry, classLevels);
 }
 
 int? _preparedSpellCountLimit(
@@ -392,7 +380,7 @@ int? _primarySpellClassId(CharacterData character) {
           right.classOrder ?? 0,
         ));
   for (final entry in entries) {
-    if (entry.classData?.spellcastingAbilityValue != null &&
+    if (spellcastingClassForEntry(entry)?.spellcastingAbilityValue != null &&
         entry.classData?.id != null) {
       return entry.classData!.id;
     }

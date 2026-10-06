@@ -114,7 +114,9 @@ class ClassLevelRepository implements Repository<ClassLevelData> {
 
   Future<List<ClassLevelData>> getAllByClassId(int classId) async {
     final all = await getAll();
-    return all.where((e) => e.classDataId == classId).toList();
+    return all
+        .where((e) => e.classDataId == classId && e.subclassDataId == null)
+        .toList();
   }
 
   @override

@@ -58,7 +58,44 @@ Future<List<ClassFeatureData>> _currentClassFeatures(
       ),
       ClassStepView.fromJson,
     );
-    features.addAll(stepView?.currentLevelFeatures ?? const <ClassFeatureData>[]);
+    final candidates = stepView?.currentLevelFeatures ??
+        await cache.getReferenceList(
+            'class_feature', offlineAllKey, ClassFeatureData.fromJson) ??
+        const <ClassFeatureData>[];
+    features.addAll(candidates.where((feature) =>
+        feature.parentClassId == classId &&
+        feature.level <= (entry.level ?? 0)));
+  }
+  return features;
+}
+
+Future<List<SubclassFeatureData>> _currentSubclassFeatures(
+  OfflineCacheDatabase cache,
+  List<CharacterClassEntryData> entries,
+) async {
+  final features = <SubclassFeatureData>[];
+  for (final entry in entries) {
+    final subclass = entry.subclass;
+    final classId = entry.classData?.id;
+    if (classId == null ||
+        subclass?.id == null ||
+        subclass!.parentClassId != classId ||
+        (entry.level ?? 0) < (subclass.levelRequired ?? 1)) {
+      continue;
+    }
+    final view = await cache.getReference<ClassStepView>(
+      offlineClassStepKind,
+      offlineClassStepKey(classId,
+          selectedLevel: entry.level ?? 0, selectedSubclassId: subclass.id),
+      ClassStepView.fromJson,
+    );
+    final candidates = view?.currentSubclassFeatures ??
+        await cache.getReferenceList(
+            'subclass_feature', offlineAllKey, SubclassFeatureData.fromJson) ??
+        const <SubclassFeatureData>[];
+    features.addAll(candidates.where((feature) =>
+        feature.parentSubclassId == subclass.id &&
+        feature.level <= (entry.level ?? 0)));
   }
   return features;
 }

@@ -6,6 +6,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
   int totalLevel,
   int proficiencyBonus,
   Map<Ability, int> abilityModifiers,
+  List<ChoiceOptionData> selectedOptions,
 ) async {
   final result = <CharacterFeatureViewData>[];
   final activeEffects = <({
@@ -55,7 +56,9 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
     activeEffects.addAll([
       for (final effect
           in resourceEffects ?? const <FeatureResourceEffectData>[])
-        (sourceClassLevel: sourceClassLevel, effect: effect),
+        if (effect.choiceOptionId == null ||
+            selectedOptions.any((option) => option.id == effect.choiceOptionId))
+          (sourceClassLevel: sourceClassLevel, effect: effect),
     ]);
     result.add(
       CharacterFeatureViewData(
@@ -74,7 +77,12 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
           defaultName: resolvedName,
           sourceType: sourceType,
           sourceId: sourceId,
-          resources: resources,
+          resources: resources
+              ?.where((resource) =>
+                  resource.choiceOptionId == null ||
+                  selectedOptions
+                      .any((option) => option.id == resource.choiceOptionId))
+              .toList(),
           sourceClassLevel: sourceClassLevel,
           totalLevel: totalLevel,
           proficiencyBonus: proficiencyBonus,

@@ -1,0 +1,310 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "class_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_reference_key_idx\" is added to table \"class_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_feature_reference_key_idx\" is added to table \"class_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_reference_key_idx\" is added to table \"subclass_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_feature_reference_key_idx\" is added to table \"subclass_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_feature_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "class_feature_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_reference_key_idx\" is added to table \"class_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_feature_reference_key_idx\" is added to table \"class_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_reference_key_idx\" is added to table \"subclass_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_feature_reference_key_idx\" is added to table \"subclass_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "subclass_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_reference_key_idx\" is added to table \"class_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_feature_reference_key_idx\" is added to table \"class_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_reference_key_idx\" is added to table \"subclass_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_feature_reference_key_idx\" is added to table \"subclass_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_feature_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "subclass_feature_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_reference_key_idx\" is added to table \"class_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"class_feature_reference_key_idx\" is added to table \"class_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "class_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_reference_key_idx\" is added to table \"subclass_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"subclass_feature_reference_key_idx\" is added to table \"subclass_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "subclass_feature_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"class_reference_key_idx\" is added to table \"class_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "class_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"class_feature_reference_key_idx\" is added to table \"class_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "class_feature_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"subclass_reference_key_idx\" is added to table \"subclass_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "subclass_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"subclass_feature_reference_key_idx\" is added to table \"subclass_feature_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "subclass_feature_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

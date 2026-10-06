@@ -27,3 +27,8 @@ fields:
   multiclassToolTrainingKeys: List<String>?
 
   imageURL: String?
+
+indexes:
+  class_reference_key_idx:
+    fields: referenceKey
+    unique: true

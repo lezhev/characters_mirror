@@ -1,0 +1,312 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_feature_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "grantedSkills",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "grantedExpertiseSkills",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "grantedArmorTraining",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:ArmorCategory>?"
+          },
+          {
+            "name": "grantedWeaponTraining",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:WeaponCategory>?"
+          },
+          {
+            "name": "grantedToolKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "grantedExpertiseToolKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "grantedSpellKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_level_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "subclassDataId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "class_level_data_fk_1",
+            "columns": [
+              "subclassDataId"
+            ],
+            "referenceTable": "subclass_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_spell_grant_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "choiceOptionId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "class_spell_grant_data_fk_5",
+            "columns": [
+              "choiceOptionId"
+            ],
+            "referenceTable": "choice_option_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "feature_resource_definition_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "choiceOptionId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "feature_resource_definition_data_fk_3",
+            "columns": [
+              "choiceOptionId"
+            ],
+            "referenceTable": "choice_option_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "feature_resource_effect_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "choiceOptionId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "feature_resource_effect_data_fk_3",
+            "columns": [
+              "choiceOptionId"
+            ],
+            "referenceTable": "choice_option_data",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellcastingStartLevel",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "spellcastingProgression",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:SpellcastingProgression?"
+          },
+          {
+            "name": "spellSelectionMode",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:ClassSpellSelectionMode?"
+          },
+          {
+            "name": "spellcastingAbilityValue",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_feature_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "grantedSkills",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "grantedExpertiseSkills",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Skill>?"
+          },
+          {
+            "name": "grantedLanguages",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:Language>?"
+          },
+          {
+            "name": "grantedArmorTraining",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:ArmorCategory>?"
+          },
+          {
+            "name": "grantedWeaponTraining",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:WeaponCategory>?"
+          },
+          {
+            "name": "grantedToolKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "grantedExpertiseToolKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          },
+          {
+            "name": "grantedSpellKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

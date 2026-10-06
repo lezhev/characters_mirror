@@ -5,6 +5,7 @@ import 'package:characters_mirror_server/src/weapon_training_values.dart';
 import 'package:characters_mirror_server/src/validation/rules.dart';
 
 import '../../../spells/class_spell_progression.dart';
+import '../../../spells/spellcasting_source.dart';
 import 'starting_equipment_endpoints.dart';
 
 part 'class_endpoints/class_step_helpers.dart';
@@ -74,11 +75,22 @@ class ClassDataEndpoint extends Endpoint {
             orderBy: (t) => t.level,
             include: _subclassFeatureInclude(),
           );
-    final progression = await ClassLevelData.db.find(
+    final selectedSubclass = subclasses
+        .where((subclass) => subclass.id == selectedSubclassId)
+        .firstOrNull;
+    final spellcastingData =
+        effectiveSpellcastingClass(classData, selectedSubclass, selectedLevel);
+    final progressionRows = await ClassLevelData.db.find(
       session,
-      where: (t) => t.classDataId.equals(classId),
+      where: (t) =>
+          (t.classDataId.equals(classId) & t.subclassDataId.equals(null)) |
+          (selectedSubclass == null
+              ? t.id.equals(-1)
+              : t.subclassDataId.equals(selectedSubclass.id)),
       orderBy: (t) => t.level,
     );
+    final progression =
+        effectiveSpellProgression(classData, selectedSubclass, progressionRows);
     final selectedClassLevel = _classLevelForSelection(
       progression,
       selectedLevel,
@@ -145,7 +157,7 @@ class ClassDataEndpoint extends Endpoint {
             session,
             classId: classId,
             selectedSubclassId: selectedSubclassId,
-            classData: classData,
+            classData: spellcastingData,
             selectedLevel: selectedLevel,
             classLevel: selectedClassLevel,
             abilityScores: abilityScores,
@@ -245,8 +257,9 @@ class ClassDataEndpoint extends Endpoint {
     int classId,
     int fromLevel,
     int toLevel,
-    Map<String, int> abilityScores,
-  ) async {
+    Map<String, int> abilityScores, {
+    int? selectedSubclassId,
+  }) async {
     if (fromLevel < 1 ||
         toLevel <= fromLevel ||
         toLevel > 20 ||
@@ -262,16 +275,31 @@ class ClassDataEndpoint extends Endpoint {
     }
     final data = await ClassData.db.findById(session, classId);
     if (data == null) throw StateError('ClassData not found.');
-    final rows = await ClassLevelData.db.find(session,
-        where: (t) =>
-            t.classDataId.equals(classId) &
-            t.level.inSet({fromLevel, toLevel}));
+    final subclass = selectedSubclassId == null
+        ? null
+        : await SubclassData.db.findById(session, selectedSubclassId);
+    if (selectedSubclassId != null &&
+        (subclass == null || subclass.parentClassId != classId)) {
+      throw ArgumentError('Subclass does not belong to this class.');
+    }
+    final rows = effectiveSpellProgression(
+        data,
+        subclass,
+        await ClassLevelData.db.find(session,
+            where: (t) =>
+                ((t.classDataId.equals(classId) &
+                        t.subclassDataId.equals(null)) |
+                    (subclass == null
+                        ? t.id.equals(-1)
+                        : t.subclassDataId.equals(subclass.id))) &
+                t.level.inSet({fromLevel, toLevel})));
     final before = rows.where((row) => row.level == fromLevel).firstOrNull;
     final after = rows.where((row) => row.level == toLevel).firstOrNull;
     if (before == null || after == null) {
       throw StateError('Class progression row not found.');
     }
-    return buildClassSpellDelta(data, before, after,
+    return buildClassSpellDelta(
+        effectiveSpellcastingClass(data, subclass, toLevel), before, after,
         abilityScores: abilityScores);
   }
 

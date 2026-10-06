@@ -131,6 +131,7 @@ void _reconcileExpertise(WidgetRef ref) {
     selectedOptions: classState.selectedOptions,
     otherSelectedOptions: otherSelectedOptions,
     choiceGroups: classState.stepView?.choiceGroups ?? const [],
+    classStep: classState.stepView,
   );
   ref
       .read(classStateProvider.notifier)

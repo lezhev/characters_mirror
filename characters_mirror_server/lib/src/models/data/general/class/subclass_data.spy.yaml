@@ -1,6 +1,7 @@
 class: SubclassData
 table: subclass_data
 fields:
+  referenceKey: String?
   name: String?
   description: String?
   source: String?
@@ -11,3 +12,12 @@ fields:
 
   parentClass: ClassData?, relation
   levelRequired: int?
+  spellcastingStartLevel: int?
+  spellcastingProgression: SpellcastingProgression?
+  spellSelectionMode: ClassSpellSelectionMode?
+  spellcastingAbilityValue: Ability?
+
+indexes:
+  subclass_reference_key_idx:
+    fields: referenceKey
+    unique: true

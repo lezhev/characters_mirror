@@ -33,10 +33,14 @@ List<String> _collectAlwaysPreparedSpellKeys(
   required Set<int> currentSubclassFeatureIds,
   required Map<int, int> currentClassFeatureLevels,
   required Map<int, int> currentSubclassFeatureLevels,
+  required Set<int> selectedOptionIds,
+  bool onlyAlwaysPrepared = true,
 }) {
   final values = <String>{};
   for (final grant in grants) {
-    if (grant.alwaysPrepared == false ||
+    if ((onlyAlwaysPrepared && grant.alwaysPrepared != true) ||
+        (grant.choiceOptionId != null &&
+            !selectedOptionIds.contains(grant.choiceOptionId)) ||
         !_isClassSpellGrantActive(
           grant,
           classLevels: classLevels,
@@ -210,7 +214,8 @@ List<String> _collectWeaponProficiencyKeys(CharacterData character) {
     ..._normalizedTexts(character.race?.weaponProficiencyKeys),
     ..._normalizedTexts(character.subrace?.weaponProficiencyKeys),
   };
-  for (final entry in character.classEntries ?? const <CharacterClassEntryData>[]) {
+  for (final entry
+      in character.classEntries ?? const <CharacterClassEntryData>[]) {
     final classData = entry.classData;
     if (classData == null) continue;
     final source = (entry.isStartingClass ?? false)

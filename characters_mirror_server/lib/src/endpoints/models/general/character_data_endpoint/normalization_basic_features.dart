@@ -184,7 +184,12 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       defaultName: resolvedName,
       sourceType: sourceType,
       sourceId: sourceId,
-      resourceDefinitions: resources,
+      resourceDefinitions: resources
+          ?.where((resource) =>
+              resource.choiceOptionId == null ||
+              resolvedSources.selectedOptions
+                  .any((option) => option.id == resource.choiceOptionId))
+          .toList(),
       sourceClassLevel: sourceClassLevel,
       totalLevel: totalLevel,
       proficiencyBonus: proficiencyBonus,
@@ -194,12 +199,15 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
     activeEffects.addAll([
       for (final effect
           in resourceEffects ?? const <FeatureResourceEffectData>[])
-        _ActiveFeatureResourceEffect(
-          sourceType: sourceType,
-          sourceId: sourceId,
-          sourceClassLevel: sourceClassLevel,
-          effect: effect,
-        ),
+        if (effect.choiceOptionId == null ||
+            resolvedSources.selectedOptions
+                .any((option) => option.id == effect.choiceOptionId))
+          _ActiveFeatureResourceEffect(
+            sourceType: sourceType,
+            sourceId: sourceId,
+            sourceClassLevel: sourceClassLevel,
+            effect: effect,
+          ),
     ]);
 
     activeFeatures.add(
