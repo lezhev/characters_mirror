@@ -72,6 +72,7 @@ class CharacterSheetController
     extends AutoDisposeFamilyAsyncNotifier<CharacterData, int> {
   late final CharacterRepository _repository;
   late final int _characterId;
+  int? _canonicalCharacterId;
   int _saveRevision = 0;
   Timer? _saveDebounceTimer;
   CharacterData? _debouncedSave;
@@ -89,6 +90,37 @@ class CharacterSheetController
   bool _isReloadingAfterSync = false;
   int _semanticSavesInFlight = 0;
 
+  int get _effectiveCharacterId => _canonicalCharacterId ?? _characterId;
+
+  void _rememberCanonicalId(int? id) {
+    if (id != null && id > 0) _canonicalCharacterId = id;
+  }
+
+  void _rememberCanonicalCharacter(CharacterData character) {
+    _rememberCanonicalId(character.id);
+  }
+
+  CharacterData _withEffectiveCharacterId(CharacterData character) {
+    final canonicalId = _canonicalCharacterId;
+    if (canonicalId == null ||
+        character.id == canonicalId ||
+        character.id != null &&
+            character.id! > 0 &&
+            character.id != _characterId) {
+      return character;
+    }
+    return character.copyWith(id: canonicalId);
+  }
+
+  void _invalidateCharacterDataProviders() {
+    ref.invalidate(characterSheetProvider(_characterId));
+    ref.invalidate(offlineCharacterRecordProvider(_characterId));
+    if (_effectiveCharacterId != _characterId) {
+      ref.invalidate(characterSheetProvider(_effectiveCharacterId));
+      ref.invalidate(offlineCharacterRecordProvider(_effectiveCharacterId));
+    }
+  }
+
   @override
   Future<CharacterData> build(int characterId) async {
     _characterId = characterId;
@@ -100,6 +132,9 @@ class CharacterSheetController
       ref.onDispose(() => coordinator.removeListener(_reloadAfterSync));
     }
     final character = await _repository.getCharacter(characterId);
+    _rememberCanonicalCharacter(character);
+    final record = await _repository.getOfflineRecord(characterId);
+    _rememberCanonicalId(record?.serverId);
     _lastPersistedCharacter = character;
     return character;
   }
@@ -123,7 +158,7 @@ class CharacterSheetController
     _isReloadingAfterSync = true;
     final revisionBeforeRead = _saveRevision;
     try {
-      final record = await _repository.getOfflineRecord(_characterId);
+      final record = await _repository.getOfflineRecord(_effectiveCharacterId);
       if (_isDisposed ||
           record == null ||
           record.status == OfflineCharacterSyncStatus.deleting) {
@@ -137,6 +172,8 @@ class CharacterSheetController
         _syncReloadRequested = true;
         return;
       }
+      _rememberCanonicalId(record.serverId);
+      _rememberCanonicalCharacter(record.character);
       _lastPersistedCharacter = record.character;
       state = AsyncValue.data(record.character);
       _setLocalSavePending(false);
@@ -149,27 +186,50 @@ class CharacterSheetController
   }
 
   Future<void> reload() async {
-    final nextState =
-        await AsyncValue.guard(() => _repository.getCharacter(_characterId));
+    final nextState = await AsyncValue.guard(
+      () => _repository.getCharacter(_effectiveCharacterId),
+    );
     state = nextState;
     final character = nextState.valueOrNull;
     if (character != null) {
+      _rememberCanonicalCharacter(character);
+      final record = await _repository.getOfflineRecord(_effectiveCharacterId);
+      _rememberCanonicalId(record?.serverId);
       _lastPersistedCharacter = character;
     }
   }
 
   Future<CharacterData> prepareLevelUp() async {
     await flushPendingSave();
-    return _repository.prepareLevelUp(_characterId);
+    final character = await _repository.prepareLevelUp(_effectiveCharacterId);
+    _acceptCanonicalCharacter(character);
+    return character;
+  }
+
+  Future<CharacterData> prepareLevelDown() async {
+    await flushPendingSave();
+    final character = await _repository.prepareLevelDown(_effectiveCharacterId);
+    _acceptCanonicalCharacter(character);
+    return character;
+  }
+
+  void _acceptCanonicalCharacter(CharacterData character) {
+    _rememberCanonicalCharacter(character);
+    _saveRevision++;
+    _lastPersistedCharacter = character;
+    state = AsyncValue.data(character);
+    _invalidateCharacterDataProviders();
   }
 
   void acceptLevelUp(CharacterData saved) {
     _saveRevision++;
+    _rememberCanonicalCharacter(saved);
     _lastPersistedCharacter = saved;
     state = AsyncValue.data(saved);
-    ref.invalidate(characterSheetProvider(_characterId));
-    ref.invalidate(offlineCharacterRecordProvider(_characterId));
+    _invalidateCharacterDataProviders();
   }
+
+  void acceptLevelDown(CharacterData saved) => acceptLevelUp(saved);
 
   Future<void> saveProficiencyOverrides(CharacterData updated) async {
     await _saveCharacter(updated, debounce: false);
@@ -188,7 +248,10 @@ class CharacterSheetController
     bool debounce = true,
   }) async {
     final previous = _requireCharacter();
-    final stamped = stampCharacterMutation(previous: previous, next: updated);
+    final stamped = stampCharacterMutation(
+      previous: previous,
+      next: _withEffectiveCharacterId(updated),
+    );
     final revision = ++_saveRevision;
     _setLocalSavePending(true);
     state = AsyncValue.data(stamped);
@@ -274,7 +337,10 @@ class CharacterSheetController
     required CharacterSemanticActionData action,
   }) {
     final previous = _requireCharacter();
-    final stamped = stampCharacterMutation(previous: previous, next: updated);
+    final stamped = stampCharacterMutation(
+      previous: previous,
+      next: _withEffectiveCharacterId(updated),
+    );
     final revision = ++_saveRevision;
     _setLocalSavePending(true);
     state = AsyncValue.data(stamped);
@@ -296,13 +362,13 @@ class CharacterSheetController
             type: type,
             action: action,
           );
+          _rememberCanonicalCharacter(saved);
           _lastPersistedCharacter = saved;
           if (!_isDisposed && revision == _saveRevision) {
             state = AsyncValue.data(saved);
           }
           if (!_isDisposed) {
-            ref.invalidate(characterSheetProvider(_characterId));
-            ref.invalidate(offlineCharacterRecordProvider(_characterId));
+            _invalidateCharacterDataProviders();
           }
           if (!_isDisposed &&
               revision == _saveRevision &&
@@ -409,13 +475,13 @@ class CharacterSheetController
       while (true) {
         try {
           final saved = await _repository.saveCharacter(nextCharacter);
+          _rememberCanonicalCharacter(saved);
           _lastPersistedCharacter = saved;
           if (!_isDisposed && nextRevision == _saveRevision) {
             state = AsyncValue.data(saved);
           }
           if (!_isDisposed) {
-            ref.invalidate(characterSheetProvider(_characterId));
-            ref.invalidate(offlineCharacterRecordProvider(_characterId));
+            _invalidateCharacterDataProviders();
           }
           if (!_isDisposed &&
               nextRevision == _saveRevision &&

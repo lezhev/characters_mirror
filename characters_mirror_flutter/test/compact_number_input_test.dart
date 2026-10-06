@@ -36,7 +36,7 @@ void main() {
       expect(border, InputBorder.none);
     }
     expect(decoration.filled, false);
-    expect(tester.widget<TextField>(field).textAlignVertical?.y, -0.2);
+    expect(tester.widget<TextField>(field).textAlignVertical?.y, -0.15);
     await tester.tap(field);
     await tester.pump();
     final inputBox = find.byKey(const ValueKey('number-input'));
