@@ -243,7 +243,6 @@ void main() {
         ),
       );
 
-      await _expandSelector(tester);
       await tester.tap(find.byKey(const ValueKey('choice-card-a')));
       await tester.pump();
       await tester.tap(find.byKey(const ValueKey('choice-card-b')));

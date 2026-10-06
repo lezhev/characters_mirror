@@ -69,7 +69,11 @@ class BackgroundFeatures extends ConsumerWidget {
       );
       for (final groupView in classChoiceGroups) {
         final group = groupView.group;
-        if (group?.type != ChoiceType.expertise) continue;
+        if (group?.type != ChoiceType.expertise ||
+            group?.sourceFeatureId != null ||
+            group?.sourceSubclassFeatureId != null) {
+          continue;
+        }
         final groupKey = classChoiceGroupKey(group!);
         final eligibleKeysForGroup = eligibleKeys[groupKey] ?? const <String>{};
         expertiseChoiceGroups.add(

@@ -1,3 +1,5 @@
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    show subclassDisplayName;
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
@@ -18,8 +20,8 @@ class ClassRaceDetailsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final classEntries = sortedClassEntries(character.classEntries);
     final toolNames = {
-      for (final tool in ref.watch(toolCatalogProvider).valueOrNull ??
-          const <ToolData>[])
+      for (final tool
+          in ref.watch(toolCatalogProvider).valueOrNull ?? const <ToolData>[])
         tool.referenceKey: tool.name,
     };
     final weaponNames = {
@@ -30,7 +32,10 @@ class ClassRaceDetailsPage extends ConsumerWidget {
     };
     final subclassEntries = [
       for (final entry in classEntries)
-        if (normalizedText(entry.subclass?.name) != null) entry,
+        if (subclassDisplayName(
+                entry.subclass?.subclassName, entry.subclass?.name) !=
+            null)
+          entry,
     ];
     final subrace = character.subrace;
 
@@ -146,8 +151,13 @@ class _ClassEntryDetails extends StatelessWidget {
       ),
       if (entry.level != null)
         _DetailRow(label: 'Уровень', value: '${entry.level}'),
-      if (normalizedText(entry.subclass?.name) != null)
-        _DetailRow(label: 'Подкласс', value: entry.subclass!.name!.trim()),
+      if (subclassDisplayName(
+              entry.subclass?.subclassName, entry.subclass?.name) !=
+          null)
+        _DetailRow(
+            label: 'Подкласс',
+            value: subclassDisplayName(
+                entry.subclass?.subclassName, entry.subclass?.name)!),
       if (classData?.hitDieValue != null)
         _DetailRow(label: 'Кость хитов', value: 'd${classData!.hitDieValue}'),
       if (classData?.primaryAbilities?.isNotEmpty ?? false)
@@ -206,7 +216,8 @@ class _SubclassDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          displayName(subclass?.name, 'Подкласс'),
+          subclassDisplayName(subclass?.subclassName, subclass?.name) ??
+              'Подкласс',
           style: theme.textTheme.titleSmall,
         ),
         if (className != null) ...[
@@ -218,10 +229,10 @@ class _SubclassDetails extends StatelessWidget {
             ),
           ),
         ],
-        if (normalizedText(subclass?.description) != null) ...[
+        if (normalizedText(subclass?.shortDescription) != null) ...[
           const SizedBox(height: 8),
           Text(
-            subclass!.description!.trim(),
+            subclass!.shortDescription!.trim(),
             style: theme.textTheme.bodyMedium,
           ),
         ],

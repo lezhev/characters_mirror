@@ -208,15 +208,26 @@ void main() {
       await _pumpCard(
         tester,
         resource: null,
-        selectedChoices: const ['Избранный враг: Нежить', 'Язык: Подземный'],
+        selectedChoiceDetails: [
+          SelectedFeatureChoiceView(
+              groupKey: 'enemy',
+              groupTitle: 'Выберите 1',
+              optionKey: 'undead',
+              name: 'Нежить',
+              shortDescription: 'Enemy short text'),
+          SelectedFeatureChoiceView(
+              groupKey: 'language', optionKey: 'undercommon', name: 'Подземный')
+        ],
         onSetResource: (_) async {},
       );
 
       await tester.tap(find.byIcon(Icons.expand_more));
       await tester.pumpAndSettle();
 
-      expect(find.text('Избранный враг: Нежить'), findsOneWidget);
-      expect(find.text('Язык: Подземный'), findsOneWidget);
+      expect(find.text('Нежить'), findsOneWidget);
+      expect(find.text('Enemy short text'), findsOneWidget);
+      expect(find.text('Выберите 1'), findsNothing);
+      expect(find.text('Подземный'), findsOneWidget);
     });
 
     testWidgets('aligns collapsed feature titles to the left', (tester) async {
@@ -274,7 +285,7 @@ Future<void> _pumpCard(
   String? description,
   List<FeatureTag>? tags,
   List<FeatureDisplayPropertyView>? displayProperties,
-  List<String>? selectedChoices,
+  List<SelectedFeatureChoiceView>? selectedChoiceDetails,
   bool isCustomized = false,
   Future<void> Function()? onReset,
 }) {
@@ -291,11 +302,12 @@ Future<void> _pumpCard(
               defaultName: 'Feature',
               name: 'Feature',
               description: description,
+              shortDescription: description,
               isCustomized: isCustomized,
               defaultTags: tags,
               resources: resource == null ? null : [resource],
               displayProperties: displayProperties,
-              selectedChoices: selectedChoices,
+              selectedChoiceDetails: selectedChoiceDetails,
             ),
             onSave: ({name, description, tags}) async {},
             onReset: onReset ?? () async {},

@@ -1,3 +1,5 @@
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    show subclassDisplayName;
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/application/background_icon_asset_path.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
@@ -629,7 +631,8 @@ class _SummaryIcon extends StatelessWidget {
 }
 
 String? _classDetail(SummaryOverviewData data) {
-  final subclass = data.classEntry?.subclass?.name;
+  final subclass = subclassDisplayName(
+      data.classEntry?.subclass?.subclassName, data.classEntry?.subclass?.name);
   if (subclass != null && subclass.trim().isNotEmpty) return subclass;
   if (data.classEntry?.classData == null) return 'Можно выбрать позже';
   if (data.subclassIsLocked) return 'Подкласс откроется позже';

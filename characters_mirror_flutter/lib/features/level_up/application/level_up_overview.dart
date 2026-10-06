@@ -1,77 +1,158 @@
+import 'package:characters_mirror_flutter/core/character/feature_presentation.dart';
+import 'package:characters_mirror_flutter/core/character/choice_group_presentation.dart';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import '../../character_creation/application/choice_option_eligibility.dart';
 
-List<({String name, String? description, String? sourceKey})>
-    newLevelUpFeatures(LevelUpPreview preview, String entryId) {
+/// Keeps reference order; linked decisions and new resources belong to their
+/// source feature, even when that feature was obtained at an earlier level.
+List<FeaturePresentation> newLevelUpFeatures(
+    LevelUpPreview preview, String entryId) {
   final oldEntry =
       preview.before.classEntries!.firstWhere((e) => e.id == entryId);
   final oldLevel = oldEntry.level ?? 1;
-  final features =
-      preview.classStep.currentLevelFeatures ?? const <ClassFeatureData>[];
+  final step = preview.classStep;
+  final groups = levelUpDecisionGroups(preview);
+  final views = stepFeatureViews(
+      step.currentLevelFeatures,
+      step.currentSubclassFeatures,
+      step.currentLevelFeatureViews,
+      step.currentSubclassFeatureViews);
   final oldKeys = {
-    for (final f in features)
-      if (f.level <= oldLevel) f.referenceKey ?? 'class:${f.id}'
+    for (final v in views)
+      if (v.classFeature != null && v.classFeature!.level <= oldLevel)
+        v.classFeature!.referenceKey ?? 'class:${v.classFeature!.id}',
   };
-  final seen = <String>{...oldKeys};
-  final notices = <({String name, String? description, String? sourceKey})>[];
-  for (final f in features.where((f) => f.level > oldLevel)) {
-    if (seen.add(f.referenceKey ?? 'class:${f.id}')) {
-      notices.add((
-        name: f.name ?? 'Новая возможность',
-        description: f.shortDescription ?? f.description,
-        sourceKey: f.id == null ? null : 'class:${f.id}'
-      ));
-    }
-  }
-  final subclassFeatures = preview.classStep.currentSubclassFeatures ??
-      const <SubclassFeatureData>[];
-  final oldSubclass = oldEntry.subclass?.id;
   final oldSubclassKeys = {
-    for (final f in subclassFeatures)
-      if (oldSubclass == f.parentSubclassId && f.level <= oldLevel)
-        f.referenceKey ?? 'subclass:${f.id}'
+    for (final v in views)
+      if (v.subclassFeature != null &&
+          v.subclassFeature!.parentSubclassId == oldEntry.subclass?.id &&
+          v.subclassFeature!.level <= oldLevel)
+        v.subclassFeature!.referenceKey ?? 'subclass:${v.subclassFeature!.id}',
   };
-  for (final f in subclassFeatures) {
-    if (oldSubclassKeys.add(f.referenceKey ?? 'subclass:${f.id}')) {
-      notices.add((
-        name: f.name ?? 'Новая возможность подкласса',
-        description: f.shortDescription ?? f.description,
-        sourceKey: f.id == null ? null : 'subclass:${f.id}'
-      ));
-    }
-  }
-  final oldFeatures = {
+  final before = {
     for (final f in preview.before.derived?.activeFeatures ??
         const <CharacterFeatureViewData>[])
-      (f.sourceType, f.sourceId): f,
+      if (_featureViewSourceKey(f) != null) _featureViewSourceKey(f): f
   };
-  for (final feature in preview.character.derived?.activeFeatures ??
-      const <CharacterFeatureViewData>[]) {
-    final old = oldFeatures[(feature.sourceType, feature.sourceId)];
-    if (old == null) continue;
+  final after = {
+    for (final f in preview.character.derived?.activeFeatures ??
+        const <CharacterFeatureViewData>[])
+      if (_featureViewSourceKey(f) != null) _featureViewSourceKey(f): f
+  };
+  final result = <FeaturePresentation>[];
+  final seen = <String>{};
+  for (final v in views) {
+    var feature = FeaturePresentation.fromStep(v,
+        groups: groups, sourceLevel: step.selectedLevel ?? oldLevel + 1);
+    final key = v.classFeature?.referenceKey ??
+        v.subclassFeature?.referenceKey ??
+        feature.sourceKey;
+    final isNew = v.classFeature != null
+        ? feature.level > oldLevel && !oldKeys.contains(key)
+        : !oldSubclassKeys.contains(key);
     final oldResourceKeys = {
+      for (final r in before[feature.sourceKey]?.resources ??
+          const <CharacterResourceViewData>[])
+        r.key
+    };
+    final newResources = [
+      for (final r in after[feature.sourceKey]?.resources ??
+          (isNew ? feature.resources : const <CharacterResourceViewData>[]))
+        if (!oldResourceKeys.contains(r.key)) r
+    ];
+    final subclassDecision = step.subclassChoice?.sourceFeatureId != null &&
+        levelUpNeedsSubclass(preview, entryId) &&
+        feature.sourceKey == 'class:${step.subclassChoice?.sourceFeatureId}';
+    if (!isNew &&
+        feature.choices.isEmpty &&
+        newResources.isEmpty &&
+        !subclassDecision) {
+      continue;
+    }
+    if (key != null &&
+        !seen.add('${v.classFeature == null ? 'subclass' : 'class'}:$key')) {
+      continue;
+    }
+    final properties = feature.displayProperties.isNotEmpty
+        ? feature.displayProperties
+        : after[feature.sourceKey]?.displayProperties;
+    feature = feature.withResources(newResources, properties: properties);
+    result.add(feature);
+  }
+  // A capability can first appear on an existing feature outside the target
+  // class step (for example another multiclass source). Keep its owning feature
+  // instead of making the resource a standalone notice.
+  for (final entry in after.entries) {
+    if (result.any((f) => f.sourceKey == entry.key)) continue;
+    final old = before[entry.key];
+    if (old == null) continue;
+    final oldKeys = {
       for (final r in old.resources ?? const <CharacterResourceViewData>[])
         r.key
     };
-    for (final resource
-        in feature.resources ?? const <CharacterResourceViewData>[]) {
-      if (!oldResourceKeys.contains(resource.key)) {
-        notices.add((
-          name: resource.name ?? feature.name ?? 'Новая возможность',
-          description: feature.description,
-          sourceKey: switch (feature.sourceType) {
-            CharacterFeatureSourceType.classFeature =>
-              'class:${feature.sourceId}',
-            CharacterFeatureSourceType.subclassFeature =>
-              'subclass:${feature.sourceId}',
-            _ => null,
-          }
-        ));
-      }
-    }
+    final resources = [
+      for (final r
+          in entry.value.resources ?? const <CharacterResourceViewData>[])
+        if (!oldKeys.contains(r.key)) r
+    ];
+    if (resources.isEmpty) continue;
+    final feature = entry.value;
+    result.add(FeaturePresentation(
+        sourceKey: entry.key,
+        name: feature.defaultName ?? feature.name ?? 'Новая возможность',
+        level: feature.level ?? oldLevel,
+        shortDescription: feature.shortDescription,
+        displayProperties: feature.displayProperties ?? const [],
+        resources: resources,
+        choices: [
+          for (final g in groups)
+            if (choiceFeatureSourceKey(g.group!) == entry.key) g
+        ]..sort((a, b) =>
+            (a.group!.sortOrder ?? 0).compareTo(b.group!.sortOrder ?? 0))));
   }
-  return notices;
+  // Stable sort preserves reference order within a level, including class and
+  // subclass features. Decisions never determine feature order.
+  final order = {for (var i = 0; i < result.length; i++) result[i]: i};
+  result.sort((a, b) {
+    final level = a.level.compareTo(b.level);
+    return level != 0 ? level : order[a]!.compareTo(order[b]!);
+  });
+  return result;
+}
+
+String? _featureViewSourceKey(CharacterFeatureViewData f) =>
+    switch (f.sourceType) {
+      CharacterFeatureSourceType.classFeature => 'class:${f.sourceId}',
+      CharacterFeatureSourceType.subclassFeature => 'subclass:${f.sourceId}',
+      _ => null,
+    };
+
+List<ChoiceGroupView> levelUpDecisionGroups(LevelUpPreview preview) {
+  final alternatives = {
+    for (final view in preview.choiceGroups)
+      if (view.group?.type == ChoiceType.abilityIncrease &&
+          view.group?.exclusiveKey != null)
+        view.group!.exclusiveKey
+  };
+  return [
+    for (final view in preview.choiceGroups)
+      if (view.group != null &&
+          !(view.group!.type == ChoiceType.feat &&
+              alternatives.contains(view.group!.exclusiveKey)))
+        view
+  ];
+}
+
+bool levelUpNeedsSubclass(LevelUpPreview preview, String entryId) {
+  final old = preview.before.classEntries!.firstWhere((e) => e.id == entryId);
+  final next =
+      preview.character.classEntries!.firstWhere((e) => e.id == entryId);
+  final level = preview.classStep.subclassChoice?.requiredLevel;
+  return old.subclass == null &&
+      level != null &&
+      level > (old.level ?? 0) &&
+      level <= (next.level ?? 1);
 }
 
 List<int> newSpellLevels(LevelUpPreview preview) {

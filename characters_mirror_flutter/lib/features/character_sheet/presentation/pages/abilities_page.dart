@@ -48,10 +48,6 @@ class AbilitiesPage extends ConsumerWidget {
           child: PageSizeLimiter(
             child: ListView(
               children: [
-                Text(
-                  'Способности',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
                 const SizedBox(height: 16),
                 if (activeFeatures.isEmpty)
                   Text(

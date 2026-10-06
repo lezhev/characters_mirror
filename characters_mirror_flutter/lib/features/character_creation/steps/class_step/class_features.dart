@@ -1,4 +1,6 @@
+import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character/feature_presentation.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/state/class_state.dart';
@@ -41,9 +43,21 @@ class ClassFeatures extends HookConsumerWidget {
       if (group == null) continue;
       final featureId = group.sourceFeatureId;
       final subclassFeatureId = group.sourceSubclassFeatureId;
-      if (featureId != null) {
+      if (featureId != null &&
+          (currentStepView.currentLevelFeatures
+                      ?.any((f) => f.id == featureId) ==
+                  true ||
+              currentStepView.currentLevelFeatureViews
+                      ?.any((v) => v.classFeature?.id == featureId) ==
+                  true)) {
         groupsByClassFeatureId.putIfAbsent(featureId, () => []).add(groupView);
-      } else if (subclassFeatureId != null) {
+      } else if (subclassFeatureId != null &&
+          (currentStepView.currentSubclassFeatures
+                      ?.any((f) => f.id == subclassFeatureId) ==
+                  true ||
+              currentStepView.currentSubclassFeatureViews?.any(
+                      (v) => v.subclassFeature?.id == subclassFeatureId) ==
+                  true)) {
         groupsBySubclassFeatureId
             .putIfAbsent(subclassFeatureId, () => [])
             .add(groupView);
@@ -85,12 +99,33 @@ class ClassFeatures extends HookConsumerWidget {
         ClassFeatureEntry.subclassFeature(feature),
     ]..sort(_compareFeatureEntries);
     final subclassChoice = currentStepView.subclassChoice;
+    final hasSubclassDecision = subclassChoice != null &&
+        (subclassChoice.requiredLevel ?? 99) <= selectedLevel &&
+        (subclassChoice.subclasses?.isNotEmpty ?? false);
+    final subclassChoiceFeatureId = hasSubclassDecision &&
+            currentLevelEntries.any((e) =>
+                !e.isSubclass &&
+                e.featureId != null &&
+                e.featureId == subclassChoice.sourceFeatureId)
+        ? subclassChoice.sourceFeatureId
+        : null;
     final className = currentStepView.classData!.name?.trim();
     final classTitle =
         className == null || className.isEmpty ? 'Профиль класса' : className;
 
     return ref.watch(classStateProvider).when(
           data: (stateData) {
+            final scores = ref.watch(characterCreationProvider
+                .select((state) => state.character.baseAbilityScores));
+            final abilityModifiers = {
+              for (final a in Ability.values)
+                a: (((scores?[a.name] ?? 10) - 10) / 2).floor()
+            };
+            final selectedOptionIds = {
+              for (final options in stateData.selectedOptions.values)
+                for (final option in options)
+                  if (option.id != null) option.id!
+            };
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -150,9 +185,7 @@ class ClassFeatures extends HookConsumerWidget {
                   ClassChoiceGroupsSection(
                       choiceGroups: standaloneChoiceGroups),
                 ],
-                if (subclassChoice != null &&
-                    (subclassChoice.requiredLevel ?? 99) <= selectedLevel &&
-                    (subclassChoice.subclasses?.isNotEmpty ?? false)) ...[
+                if (hasSubclassDecision && subclassChoiceFeatureId == null) ...[
                   const Gap(12),
                   const SubclassChoiceSection(),
                 ],
@@ -161,6 +194,10 @@ class ClassFeatures extends HookConsumerWidget {
                   const Gap(12),
                   ClassProgressionSection(
                     currentLevelEntries: currentLevelEntries,
+                    subclassChoiceFeatureId: subclassChoiceFeatureId,
+                    sourceLevel: selectedLevel,
+                    selectedOptionIds: selectedOptionIds,
+                    abilityModifiers: abilityModifiers,
                     futureProgressionEntries: futureProgressionEntries,
                     groupsByClassFeatureId: groupsByClassFeatureId,
                     groupsBySubclassFeatureId: groupsBySubclassFeatureId,
@@ -201,22 +238,14 @@ List<ClassStepFeatureView> _classFeaturePresentationViews(
   List<ClassFeatureData>? features,
   List<ClassStepFeatureView>? views,
 ) {
-  if (views?.isNotEmpty == true) return views!;
-  return [
-    for (final feature in features ?? const <ClassFeatureData>[])
-      ClassStepFeatureView(classFeature: feature),
-  ];
+  return stepFeatureViews(features, null, views, null);
 }
 
 List<ClassStepFeatureView> _subclassFeaturePresentationViews(
   List<SubclassFeatureData>? features,
   List<ClassStepFeatureView>? views,
 ) {
-  if (views?.isNotEmpty == true) return views!;
-  return [
-    for (final feature in features ?? const <SubclassFeatureData>[])
-      ClassStepFeatureView(subclassFeature: feature),
-  ];
+  return stepFeatureViews(null, features, null, views);
 }
 
 int _compareFeatureEntries(ClassFeatureEntry left, ClassFeatureEntry right) {

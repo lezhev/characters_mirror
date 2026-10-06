@@ -1,3 +1,5 @@
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    show subclassDisplayName;
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/helpers/attributes_labels.dart';
 
@@ -15,8 +17,10 @@ String classEntrySummary(CharacterClassEntryData entry) {
   final className = displayName(entry.classData?.name, 'Класс не выбран');
   final parts = <String>[
     if (entry.level == null) className else '$className ${entry.level} уровень',
-    if (normalizedText(entry.subclass?.name) != null)
-      entry.subclass!.name!.trim(),
+    if (subclassDisplayName(
+            entry.subclass?.subclassName, entry.subclass?.name) !=
+        null)
+      subclassDisplayName(entry.subclass?.subclassName, entry.subclass?.name)!,
   ];
   return parts.join(' • ');
 }
