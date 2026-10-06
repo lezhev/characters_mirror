@@ -120,7 +120,8 @@ Future<LevelUpPreview> _previewLevelUp(
   var derived = await _buildDerivedData(session, draft,
       transaction: transaction, resolveContext: resolveContext);
   _validateLevelUpAsi(before, derived, groups, request);
-  draft = _preserveLevelUpResources(before, draft.copyWith(derived: derived));
+  draft =
+      _preserveLevelChangeResources(before, draft.copyWith(derived: derived));
   derived = await _buildDerivedData(session, draft,
       transaction: transaction, resolveContext: resolveContext);
   draft = draft.copyWith(derived: derived);

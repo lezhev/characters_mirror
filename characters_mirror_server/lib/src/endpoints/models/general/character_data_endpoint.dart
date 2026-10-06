@@ -57,6 +57,7 @@ part 'character_data_endpoint/level_up.dart';
 part 'character_data_endpoint/level_up_choices.dart';
 part 'character_data_endpoint/level_up_spells.dart';
 part 'character_data_endpoint/level_up_resources.dart';
+part 'character_data_endpoint/level_down.dart';
 
 const _standardSpellSlotTableKey = 'standard';
 const _pactMagicSpellSlotTableKey = 'pact_magic';
@@ -125,6 +126,53 @@ class CharacterDataEndpoint extends Endpoint {
       if (preview.missingDecisions.isNotEmpty) {
         throw InputValidationException(
             'levelUp', preview.missingDecisions.join('; '));
+      }
+      return _saveCharacterSnapshotInTransaction(session,
+          character:
+              preview.character.copyWith(updatedAt: DateTime.now().toUtc()),
+          userId: userId,
+          transaction: transaction,
+          expectedVersion: request.expectedVersion,
+          requireExistingWhenIdPresent: true,
+          resolveContext: context);
+    }, userId: userId);
+  }
+
+  Future<LevelDownPreview> previewLevelDown(
+    Session session,
+    LevelDownRequest request,
+  ) async {
+    _validateLevelDownRequest(request);
+    final record =
+        await _requireOwnedCharacterRecord(session, request.characterId);
+    final context = _createResolveContext(session);
+    final before = await _buildCharacterAggregate(session, record,
+        resolveContext: context);
+    return _previewLevelDown(session, before, request, resolveContext: context);
+  }
+
+  Future<CharacterData> applyLevelDown(
+    Session session,
+    LevelDownRequest request,
+  ) async {
+    _validateLevelDownRequest(request);
+    final userId = await _requireCurrentUserId(session);
+    return _runCharacterMutationTransaction(session, (transaction) async {
+      final record = await _lockOwnedCharacterRecord(session,
+          characterId: request.characterId,
+          userId: userId,
+          transaction: transaction);
+      if (record == null) {
+        throw InputValidationException('characterId', 'Character unavailable.');
+      }
+      final context = _createResolveContext(session);
+      final before = await _buildCharacterAggregate(session, record,
+          transaction: transaction, resolveContext: context);
+      final preview = await _previewLevelDown(session, before, request,
+          transaction: transaction, resolveContext: context);
+      if (preview.missingDecisions.isNotEmpty) {
+        throw InputValidationException(
+            'levelDown', preview.missingDecisions.join('; '));
       }
       return _saveCharacterSnapshotInTransaction(session,
           character:

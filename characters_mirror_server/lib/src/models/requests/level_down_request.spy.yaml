@@ -1,0 +1,6 @@
+class: LevelDownRequest
+fields:
+  characterId: int
+  expectedVersion: int
+  classEntryId: String
+  repairs: List<LevelDownChoiceRepair>?

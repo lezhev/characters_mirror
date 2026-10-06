@@ -1,0 +1,23 @@
+class: LevelDownPreview
+fields:
+  before: CharacterData
+  character: CharacterData
+  classEntryId: String
+  oldLevel: int
+  targetLevel: int
+  removedClassFeatures: List<ClassFeatureData>
+  removedSubclassFeatures: List<SubclassFeatureData>
+  removedChoiceGroups: List<ChoiceGroupData>
+  removedChoices: List<CharacterChoiceData>
+  invalidChoices: List<LevelDownInvalidChoiceView>
+  oldMaxHp: int?
+  newMaxHp: int?
+  oldProficiencyBonus: int?
+  newProficiencyBonus: int?
+  oldResourceMaxima: Map<String, int>
+  newResourceMaxima: Map<String, int>
+  oldSpellSlots: Map<int, int>
+  newSpellSlots: Map<int, int>
+  oldPactSlots: Map<int, int>
+  newPactSlots: Map<int, int>
+  missingDecisions: List<String>
