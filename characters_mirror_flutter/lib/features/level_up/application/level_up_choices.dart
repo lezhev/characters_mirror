@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/character/choice_group_presentation.dart';
 
 enum LevelUpChoicePresentation { inline, picker }
 
@@ -55,12 +56,7 @@ List<String>? asiOptionKeys(ChoiceGroupView view, Map<Ability, int> values) {
 LevelUpChoicePresentation choicePresentation(ChoiceGroupView view,
     {LevelUpChoicePresentation? override}) {
   if (override != null) return override;
-  final options = view.options ?? const <ChoiceOptionData>[];
-  if (view.group?.type == ChoiceType.feat ||
-      view.group?.type == ChoiceType.invocation ||
-      options.length > 4 ||
-      options.any((o) => (o.description?.length ?? 0) > 160)) {
-    return LevelUpChoicePresentation.picker;
-  }
-  return LevelUpChoicePresentation.inline;
+  return choicePresentationMode(view) == ChoicePresentationMode.picker
+      ? LevelUpChoicePresentation.picker
+      : LevelUpChoicePresentation.inline;
 }

@@ -58,7 +58,7 @@ void main() {
         LevelUpChoicePresentation.picker);
     expect(
         choicePresentation(short.copyWith(options: [
-          short.options!.first.copyWith(description: 'Detailed ' * 40)
+          short.options!.first.copyWith(shortDescription: 'Detailed ' * 40)
         ])),
         LevelUpChoicePresentation.picker);
     expect(

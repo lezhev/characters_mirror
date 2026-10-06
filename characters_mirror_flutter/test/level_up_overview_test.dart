@@ -62,7 +62,14 @@ void main() {
           knownSpellReplacements: 0,
           spellbookSpellsToAdd: 0),
     );
-    expect(newLevelUpFeatures(preview, 'entry').map((n) => n.name),
-        ['New mechanic']);
+    expect(
+        newLevelUpFeatures(preview, 'entry').map((n) => n.name), ['Feature']);
+    expect(
+        newLevelUpFeatures(preview, 'entry').single.resources.map((r) => r.key),
+        ['new']);
+    final derivedOnly = newLevelUpFeatures(
+        preview.copyWith(classStep: ClassStepView()), 'entry');
+    expect(derivedOnly.map((f) => f.name), ['Feature']);
+    expect(derivedOnly.single.resources.map((r) => r.key), ['new']);
   });
 }

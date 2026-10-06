@@ -142,7 +142,7 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                             if (sourceLabel != null) const SizedBox(height: 8),
                             SmoothSwitcher.ability(
                               title: feature.name,
-                              text: feature.description,
+                              text: feature.shortDescription,
                               tags: featureTags,
                               isCustomized: feature.isCustomized == true,
                               onSave: ({
@@ -172,16 +172,25 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                               properties: feature.displayProperties ??
                                   const <FeatureDisplayPropertyView>[],
                             ),
-                            if (feature.selectedChoices case final choices?
+                            if (feature.selectedChoiceDetails
+                                case final choices?
                                 when choices.isNotEmpty) ...[
                               const SizedBox(height: 8),
                               for (final choice in choices)
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 4),
-                                  child: Text(
-                                    choice,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(choice.name,
+                                            style: theme.textTheme.bodyMedium),
+                                        if (choice
+                                                .shortDescription?.isNotEmpty ==
+                                            true)
+                                          Text(choice.shortDescription!,
+                                              style: theme.textTheme.bodySmall),
+                                      ]),
                                 ),
                             ],
                             if (_isExpanded && resources.isNotEmpty) ...[

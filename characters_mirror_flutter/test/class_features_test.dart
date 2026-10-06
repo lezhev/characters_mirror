@@ -84,7 +84,7 @@ void main() {
             parentSubclassId: 10,
             name: 'Пробуждённый разум',
             level: 1,
-            description: 'Подклассное умение текущего уровня.',
+            shortDescription: 'Подклассное умение текущего уровня.',
           ),
         ],
         futureFeatures: const [],
@@ -95,7 +95,7 @@ void main() {
       await _pumpClassFeatures(tester, stepView);
 
       expect(find.text('Умения текущего уровня'), findsOneWidget);
-      expect(find.text('Уровень 1'), findsOneWidget);
+      expect(find.text('Уровень 1'), findsNothing);
       expect(find.text('Уровень 1: Базовая подготовка'), findsNothing);
       expect(find.text('Умения подкласса'), findsNothing);
       expect(find.text('Базовая подготовка'), findsOneWidget);
@@ -113,7 +113,7 @@ void main() {
             parentSubclassId: 10,
             name: 'Описание с переносом',
             level: 1,
-            description: r'Первая строка\nВторая строка',
+            shortDescription: r'Первая строка\nВторая строка',
           ),
         ],
         futureFeatures: const [],
@@ -162,7 +162,7 @@ void main() {
       expect(find.text('Полное описание подкласса.'), findsNothing);
     });
 
-    testWidgets('renders related subclass tables on demand', (tester) async {
+    testWidgets('never renders related subclass tables', (tester) async {
       final longSpellList =
           'мельфова кислотная стрела [melf’s acid arrow] , тьма [darkness]';
       final stepView = _buildStepView(
@@ -200,35 +200,10 @@ void main() {
       await _pumpClassFeatures(tester, stepView);
 
       expect(find.text('Связанные таблицы'), findsNothing);
-      expect(find.byTooltip('Показать таблицы'), findsOneWidget);
+      expect(find.byTooltip('Показать таблицы'), findsNothing);
       expect(find.text('Болото'), findsNothing);
-
-      await tester.tap(find.byTooltip('Показать таблицы'));
-      await tester.pumpAndSettle();
-
-      expect(find.byTooltip('Скрыть таблицы'), findsOneWidget);
-      expect(find.text('Болото'), findsOneWidget);
-      expect(find.text('Уровень друида'), findsOneWidget);
-      expect(find.text('Заклинания круга'), findsWidgets);
-      expect(find.text('Показать ещё 2'), findsOneWidget);
-      expect(find.text('17'), findsNothing);
-
-      await tester.tap(find.text(longSpellList));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.text(longSpellList), findsWidgets);
-
-      await tester.tap(find.text('Закрыть'));
-      await tester.pumpAndSettle();
-
-      await tester.ensureVisible(find.text('Показать ещё 2'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Показать ещё 2'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('17'), findsOneWidget);
-      expect(find.text('Скрыть'), findsOneWidget);
+      expect(find.text(longSpellList), findsNothing);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('ignores empty and malformed related subclass tables',
@@ -307,8 +282,7 @@ void main() {
     await _pumpClassFeatures(tester, stepView);
 
     expect(find.text('Короткое описание.'), findsOneWidget);
-    expect(find.text('Параметр'), findsOneWidget);
-    expect(find.text('1к10 + 5'), findsOneWidget);
+    expect(find.text('Параметр: 1к10 + 5'), findsOneWidget);
   });
 
   group('ClassFeatures future progression', () {
@@ -351,7 +325,7 @@ void main() {
       await tester.tap(find.text('Будущая прогрессия'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Уровень 2'), findsOneWidget);
+      expect(find.text('Уровень 2'), findsNothing);
       expect(find.text('Выбор архетипа'), findsOneWidget);
       expect(find.text('Иллюзорная магия'), findsOneWidget);
     });
@@ -375,7 +349,7 @@ void main() {
             parentSubclassId: 10,
             name: 'Боевое вдохновение',
             level: 2,
-            description: 'Даёт реальное умение подкласса на этом уровне.',
+            shortDescription: 'Даёт реальное умение подкласса на этом уровне.',
           ),
         ],
         progression: const [],
@@ -385,7 +359,7 @@ void main() {
       await tester.tap(find.text('Будущая прогрессия'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Уровень 2'), findsOneWidget);
+      expect(find.text('Уровень 2'), findsNothing);
       expect(find.text('Потусторонний покровитель'), findsOneWidget);
       expect(find.text('Боевое вдохновение'), findsOneWidget);
       expect(find.text('Даёт реальное умение подкласса на этом уровне.'),

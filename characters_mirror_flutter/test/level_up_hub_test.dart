@@ -175,6 +175,7 @@ void main() {
         ]);
     await pumpHub(tester, fixture(groups: [group]),
         onChoice: (_, keys) => selected = keys);
+    await tester.ensureVisible(find.text('Воззвания'));
     await tester.tap(find.text('Воззвания'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Первое воззвание'));
@@ -188,6 +189,7 @@ void main() {
   testWidgets('empty feat catalog still has a visible return route to hub',
       (tester) async {
     await pumpHub(tester, fixture(asi: true, complete: false));
+    await tester.ensureVisible(find.text('Выбрать черту'));
     await tester.tap(find.text('Выбрать черту'));
     await tester.pumpAndSettle();
     expect(find.text('Черты'), findsOneWidget);
@@ -359,9 +361,10 @@ void main() {
     expect(block, findsOneWidget);
     expect(find.text('Таинственные воззвания'), findsOneWidget);
     expect(find.text('Мистические воззвания'), findsNothing);
-    expect(find.text('Выбрать 2'), findsOneWidget);
+    expect(find.text('Обязательно · выбрать 2'), findsOneWidget);
 
-    await tester.tap(find.text('Выбрать 2'));
+    await tester.ensureVisible(find.text('Обязательно · выбрать 2'));
+    await tester.tap(find.text('Обязательно · выбрать 2'));
     await tester.pumpAndSettle();
     expect(find.text('Мистические воззвания'), findsOneWidget);
   });

@@ -432,7 +432,7 @@ void main() {
                   id: 1,
                   parentClassId: 1,
                   name: 'Чемпион',
-                  description: 'Описание выбранного подкласса.',
+                  shortDescription: 'Описание выбранного подкласса.',
                 ),
               ),
             ],

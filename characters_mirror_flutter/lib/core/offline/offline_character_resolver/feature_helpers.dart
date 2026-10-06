@@ -32,7 +32,9 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
     required int sourceClassLevel,
     List<FeatureDisplayPropertyView> displayProperties =
         const <FeatureDisplayPropertyView>[],
-    List<String> selectedChoices = const <String>[],
+    String? referenceShortDescription,
+    List<SelectedFeatureChoiceView> selectedChoices =
+        const <SelectedFeatureChoiceView>[],
   }) {
     if (sourceId == null) return;
     final override =
@@ -90,7 +92,18 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
           resourceStatesByKey: resourceStatesByKey,
         ),
         displayProperties: displayProperties,
-        selectedChoices: selectedChoices,
+        selectedChoices: [
+          for (final choice in selectedChoices)
+            choice.groupTitle == null
+                ? choice.name
+                : '${choice.groupTitle}: ${choice.name}'
+        ],
+        selectedChoiceDetails: selectedChoices,
+        shortDescription:
+            sourceType == CharacterFeatureSourceType.classFeature ||
+                    sourceType == CharacterFeatureSourceType.subclassFeature
+                ? override?.description ?? referenceShortDescription
+                : resolvedDescription,
       ),
     );
   }
@@ -189,6 +202,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         level: feature.level,
         name: feature.name,
         description: feature.shortDescription ?? feature.description,
+        referenceShortDescription: feature.shortDescription,
         tags: feature.tags,
         resources: feature.resources,
         resourceEffects: feature.resourceEffects,
@@ -199,7 +213,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
               CharacterFeatureSourceType.classFeature,
               feature.id!
             )] ??
-            const <String>[],
+            const <SelectedFeatureChoiceView>[],
       );
     }
     for (final feature
@@ -211,6 +225,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         level: feature.level,
         name: feature.name,
         description: feature.shortDescription ?? feature.description,
+        referenceShortDescription: feature.shortDescription,
         tags: feature.tags,
         resources: feature.resources,
         resourceEffects: feature.resourceEffects,
@@ -221,7 +236,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
               CharacterFeatureSourceType.subclassFeature,
               feature.id!
             )] ??
-            const <String>[],
+            const <SelectedFeatureChoiceView>[],
       );
     }
   }
@@ -247,7 +262,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
   return effective;
 }
 
-Map<(CharacterFeatureSourceType, int), List<String>>
+Map<(CharacterFeatureSourceType, int), List<SelectedFeatureChoiceView>>
     _offlineFeatureChoiceLabels(
   CharacterData character,
   List<ChoiceGroupData> groups,
@@ -261,8 +276,8 @@ Map<(CharacterFeatureSourceType, int), List<String>>
     optionsByGroupId.putIfAbsent(
         option.choiceGroupId, () => {})[option.optionKey] = option;
   }
-  final result =
-      <(CharacterFeatureSourceType, int), List<(int, int, String)>>{};
+  final result = <(CharacterFeatureSourceType, int),
+      List<(int, int, SelectedFeatureChoiceView)>>{};
   for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
     final group = groupsByKey[choice.groupKey];
     final option =
@@ -279,7 +294,12 @@ Map<(CharacterFeatureSourceType, int), List<String>>
     final featureKey = (sourceType, featureId);
     final optionName = _normalizedTextOrNull(option.name) ?? option.optionKey;
     final groupName = _normalizedTextOrNull(group.name);
-    final label = groupName == null ? optionName : '$groupName: $optionName';
+    final label = SelectedFeatureChoiceView(
+        groupKey: group.referenceKey,
+        groupTitle: groupName,
+        optionKey: option.optionKey,
+        name: optionName,
+        shortDescription: option.shortDescription);
     result.putIfAbsent(featureKey, () => []).add((
       group.sortOrder ?? 0,
       choice.selectionIndex ?? 0,
@@ -484,19 +504,8 @@ List<CharacterResourceViewData>? _resourceViews({
   return result.isEmpty ? null : result;
 }
 
-String? _subclassSourceName(SubclassData? subclass) {
-  final parts = [
-    _normalizedTextOrNull(subclass?.subclassName),
-    _normalizedTextOrNull(subclass?.name),
-  ].whereType<String>().toList();
-  if (parts.isEmpty) {
-    return null;
-  }
-  if (parts.length == 2 && parts[0] == parts[1]) {
-    return parts[0];
-  }
-  return parts.join(' ');
-}
+String? _subclassSourceName(SubclassData? subclass) => feature_modifiers
+    .subclassDisplayName(subclass?.subclassName, subclass?.name);
 
 int? _resourceMax({
   required FeatureResourceMaxRule rule,

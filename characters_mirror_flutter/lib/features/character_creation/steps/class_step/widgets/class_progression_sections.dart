@@ -1,3 +1,8 @@
+import 'package:characters_mirror_flutter/core/character/choice_group_presentation.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/subclass_decision.dart';
+import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
+import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/application/expertise_owned_proficiencies.dart';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
@@ -15,86 +20,23 @@ class SubclassChoiceSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final sectionTitleStyle = textTheme.titleLarge?.copyWith(
-      color: colorScheme.onSurface,
-    );
-
-    return ref.watch(classStateProvider).when(
-          data: (data) {
-            final subclasses = data.stepView?.subclassChoice?.subclasses ??
-                const <SubclassData>[];
-            final selected = data.selectedSubclass;
-            if (subclasses.isEmpty) {
-              return const SizedBox.shrink();
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppSectionHeader(
-                  title: 'Подкласс',
-                  showDivider: false,
-                  titleStyle: sectionTitleStyle,
-                ),
-                const Gap(8),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: subclasses.map((subclass) {
-                    final isSelected = selected?.id == subclass.id;
-                    return InkWell(
-                      onTap: () {
-                        isSelected
-                            ? ref
-                                .read(classStateProvider.notifier)
-                                .unselectSubclass()
-                            : ref
-                                .read(classStateProvider.notifier)
-                                .selectSubclass(subclass);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: isSelected
-                                ? colorScheme.primary
-                                : colorScheme.outline,
-                          ),
-                        ),
-                        child: Text(
-                          subclass.name ?? '',
-                          style: textTheme.bodyMedium,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                if (selected != null &&
-                    (selected.description ?? '').isNotEmpty) ...[
-                  const Gap(10),
-                  Text(
-                    selected.description!,
-                    style: textTheme.bodyMedium,
-                    textAlign: TextAlign.justify,
-                  ),
-                ],
-              ],
-            );
-          },
-          error: (e, s) => errorWidget(
-            e: e,
-            s: s,
-            refresh: () => ref.refresh(classStateProvider),
-            context: context,
-          ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-        );
+    final data = ref.watch(classStateProvider).valueOrNull;
+    final subclasses =
+        data?.stepView?.subclassChoice?.subclasses ?? const <SubclassData>[];
+    if (subclasses.isEmpty) return const SizedBox.shrink();
+    return SubclassDecision(
+        subclasses: subclasses,
+        selectedId: data?.selectedSubclass?.id,
+        context: ChoicePresentationContext.creation,
+        onChanged: (id) {
+          if (id == null) {
+            ref.read(classStateProvider.notifier).unselectSubclass();
+          } else {
+            ref
+                .read(classStateProvider.notifier)
+                .selectSubclass(subclasses.firstWhere((s) => s.id == id));
+          }
+        });
   }
 }
 
@@ -151,28 +93,63 @@ class ClassChoiceGroupsSection extends ConsumerWidget {
 }
 
 class ClassChoiceGroupCard extends ConsumerWidget {
-  const ClassChoiceGroupCard({required this.groupView, super.key});
+  const ClassChoiceGroupCard(
+      {required this.groupView, this.showTitle = true, super.key});
 
   final ChoiceGroupView groupView;
+  final bool showTitle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final group = groupView.group;
-    if (group == null || group.type == ChoiceType.expertise) {
+    if (group == null) {
       return const SizedBox.shrink();
     }
     return ref.watch(classStateProvider).when(
-          data: (data) => CreationChoiceGroupCard(
-            groupView: groupView,
-            selectedOptions: data.selectedOptions[classChoiceGroupKey(group)] ??
-                const <ChoiceOptionData>[],
-            onToggleOption: ref.read(classStateProvider.notifier).toggleOption,
-            onIncrementOption:
-                ref.read(classStateProvider.notifier).incrementOption,
-            onDecrementOption:
-                ref.read(classStateProvider.notifier).decrementOption,
-            onClearGroup: ref.read(classStateProvider.notifier).clearGroup,
-          ),
+          data: (data) {
+            var eligibleView = groupView;
+            if (group.type == ChoiceType.expertise) {
+              final creation = ref.watch(characterCreationProvider);
+              final background = ref.watch(backgroundStateProvider).valueOrNull;
+              final otherOptions = resolveSelectedChoiceOptions(
+                  choiceGroups: [
+                    ...creation.raceChoiceGroups,
+                    ...?background?.stepView?.choiceGroups
+                  ],
+                  savedChoices: creation.character.choices ?? [],
+                  draftSelections: background?.selectedOptions ?? {});
+              final keys = resolveExpertiseEligibleOptionKeys(
+                      character: creation.character,
+                      selectedBackground: background?.selectedBackground,
+                      selectedClass: data.selectedClass,
+                      classSkillSelections: data.selectedSkillSelections,
+                      backgroundSkillSelections:
+                          background?.selectedSkillSelections ?? [],
+                      selectedOptions: data.selectedOptions,
+                      otherSelectedOptions: otherOptions,
+                      choiceGroups: [groupView],
+                      classStep: data.stepView)[classChoiceGroupKey(group)] ??
+                  {};
+              eligibleView = groupView.copyWith(options: [
+                for (final o in groupView.options ?? const <ChoiceOptionData>[])
+                  if (keys.contains(o.optionKey.trim())) o
+              ]);
+            }
+            return CreationChoiceGroupCard(
+              groupView: eligibleView,
+              showTitle: showTitle,
+              selectedOptions:
+                  data.selectedOptions[classChoiceGroupKey(group)] ??
+                      const <ChoiceOptionData>[],
+              onToggleOption:
+                  ref.read(classStateProvider.notifier).toggleOption,
+              onIncrementOption:
+                  ref.read(classStateProvider.notifier).incrementOption,
+              onDecrementOption:
+                  ref.read(classStateProvider.notifier).decrementOption,
+              onClearGroup: ref.read(classStateProvider.notifier).clearGroup,
+            );
+          },
           error: (e, s) => errorWidget(
             e: e,
             s: s,
@@ -192,6 +169,10 @@ class ClassProgressionSection extends StatelessWidget {
     required this.groupsBySubclassFeatureId,
     required this.isFutureExpanded,
     required this.onToggleFuture,
+    this.subclassChoiceFeatureId,
+    this.sourceLevel = 1,
+    this.selectedOptionIds = const {},
+    this.abilityModifiers = const {},
     super.key,
   });
 
@@ -201,6 +182,10 @@ class ClassProgressionSection extends StatelessWidget {
   final Map<int, List<ChoiceGroupView>> groupsBySubclassFeatureId;
   final bool isFutureExpanded;
   final VoidCallback onToggleFuture;
+  final int? subclassChoiceFeatureId;
+  final int sourceLevel;
+  final Set<int> selectedOptionIds;
+  final Map<Ability, int> abilityModifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -220,11 +205,14 @@ class ClassProgressionSection extends StatelessWidget {
                 ),
           ),
           const Gap(8),
-          ..._buildFeatureLevelGroups(
-            context,
+          ..._buildFeatureCards(
             currentLevelEntries,
             groupsByClassFeatureId: groupsByClassFeatureId,
             groupsBySubclassFeatureId: groupsBySubclassFeatureId,
+            subclassChoiceFeatureId: subclassChoiceFeatureId,
+            sourceLevel: sourceLevel,
+            selectedOptionIds: selectedOptionIds,
+            abilityModifiers: abilityModifiers,
           ),
         ],
         if (futureProgressionEntries.isNotEmpty) ...[
@@ -253,11 +241,11 @@ class ClassProgressionSection extends StatelessWidget {
             expand: isFutureExpanded,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: _buildFeatureLevelGroups(
-                context,
+              children: _buildFeatureCards(
                 futureProgressionEntries,
                 groupsByClassFeatureId: groupsByClassFeatureId,
                 groupsBySubclassFeatureId: groupsBySubclassFeatureId,
+                sourceLevel: sourceLevel,
               ),
             ),
           ),
@@ -267,36 +255,17 @@ class ClassProgressionSection extends StatelessWidget {
   }
 }
 
-List<Widget> _buildFeatureLevelGroups(
-  BuildContext context,
+List<Widget> _buildFeatureCards(
   List<ClassFeatureEntry> entries, {
   required Map<int, List<ChoiceGroupView>> groupsByClassFeatureId,
   required Map<int, List<ChoiceGroupView>> groupsBySubclassFeatureId,
+  int? subclassChoiceFeatureId,
+  int sourceLevel = 1,
+  Set<int> selectedOptionIds = const {},
+  Map<Ability, int> abilityModifiers = const {},
 }) {
-  final textTheme = Theme.of(context).textTheme;
-  final colorScheme = Theme.of(context).colorScheme;
   final widgets = <Widget>[];
-  int? currentLevel;
-
   for (final entry in entries) {
-    if (entry.level != currentLevel) {
-      currentLevel = entry.level;
-      if (widgets.isNotEmpty) {
-        widgets.add(const Gap(10));
-      }
-      widgets.add(
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: 2),
-          child: Text(
-            'Уровень $currentLevel',
-            style: textTheme.titleMedium?.copyWith(
-              color: colorScheme.primary,
-            ),
-          ),
-        ),
-      );
-    }
-    widgets.add(entry.buildCard());
     final featureId = entry.featureId;
     final featureChoiceGroups = featureId == null
         ? const <ChoiceGroupView>[]
@@ -304,14 +273,28 @@ List<Widget> _buildFeatureLevelGroups(
                 ? groupsBySubclassFeatureId[featureId]
                 : groupsByClassFeatureId[featureId]) ??
             const <ChoiceGroupView>[];
-    for (final groupView in featureChoiceGroups) {
-      widgets.add(
-        Padding(
-          padding: const EdgeInsets.only(left: 12, bottom: 8),
-          child: ClassChoiceGroupCard(groupView: groupView),
-        ),
-      );
-    }
+    final title = entry.classFeature?.name ?? entry.subclassFeature?.name;
+    widgets.add(entry.buildCard(
+        sourceLevel: sourceLevel,
+        selectedOptionIds: selectedOptionIds,
+        abilityModifiers: abilityModifiers,
+        decisions: [
+          for (final groupView in featureChoiceGroups)
+            Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: ClassChoiceGroupCard(
+                    groupView: groupView,
+                    showTitle: showChoiceGroupTitle(
+                        title, groupView.group?.name,
+                        type: groupView.group?.type,
+                        linkedGroupCount: featureChoiceGroups.length))),
+          if (!entry.isSubclass &&
+              featureId != null &&
+              featureId == subclassChoiceFeatureId)
+            const Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: SubclassChoiceSection()),
+        ]));
   }
 
   return widgets;
