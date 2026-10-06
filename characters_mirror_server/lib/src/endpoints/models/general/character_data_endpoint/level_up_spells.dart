@@ -31,6 +31,7 @@ Future<CharacterData> _addLevelUpSpells(
       throw InputValidationException(
           'spells', 'Spell is unavailable or selected twice.');
     }
+    int? selectionIndex;
     if (choice.replacesSelectionId != null) {
       final index = selections.indexWhere((s) =>
           s.id == choice.replacesSelectionId &&
@@ -42,9 +43,15 @@ Future<CharacterData> _addLevelUpSpells(
           ++replacementCount > delta.knownSpellReplacements) {
         throw InputValidationException('spells', 'Invalid spell replacement.');
       }
+      selectionIndex = selections[index].selectionIndex;
       selections.removeAt(index);
     } else {
       added[choice.kind] = (added[choice.kind] ?? 0) + 1;
+      selectionIndex = _nextLevelUpSpellSelectionIndex(
+        selections,
+        entry: entry,
+        kind: choice.kind,
+      );
     }
     if (selections.any((s) =>
         s.classEntry?.id == entry.id &&
@@ -61,7 +68,7 @@ Future<CharacterData> _addLevelUpSpells(
         spellId: spell.id,
         spellKey: spell.referenceKey,
         kind: choice.kind,
-        selectionIndex: selections.length));
+        selectionIndex: selectionIndex));
   }
   final counts = {
     for (final (kind, count) in _levelUpSpellCounts(delta)) kind: count
@@ -72,4 +79,26 @@ Future<CharacterData> _addLevelUpSpells(
     }
   }
   return draft.copyWith(spellSelections: selections);
+}
+
+int _nextLevelUpSpellSelectionIndex(
+  List<CharacterSpellSelectionData> selections, {
+  required CharacterClassEntryData entry,
+  required CharacterSpellSelectionKind kind,
+}) {
+  final entryId = entry.id;
+  final classDataId = entry.classData?.id;
+  var maxIndex = -1;
+  for (final selection in selections) {
+    if (selection.kind != kind) continue;
+    final selectionEntryId = selection.classEntry?.id;
+    final sameSource = entryId != null
+        ? selectionEntryId == entryId
+        : selectionEntryId == null &&
+            (selection.classDataId ?? selection.classEntry?.classData?.id) ==
+                classDataId;
+    final index = selection.selectionIndex;
+    if (sameSource && index != null && index > maxIndex) maxIndex = index;
+  }
+  return maxIndex + 1;
 }

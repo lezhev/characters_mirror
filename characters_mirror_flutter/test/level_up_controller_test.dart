@@ -189,6 +189,52 @@ void main() {
     await Future.wait([subclass, choices, spells]);
   });
 
+  test('optimistic spell replacement retains the replaced logical slot',
+      () async {
+    final confirmed = optimisticFixture().copyWith(
+      before: optimisticFixture().before.copyWith(spellSelections: [
+        for (final index in [4, 9])
+          CharacterSpellSelectionData(
+            id: 'known-$index',
+            classEntry: CharacterClassEntryData(id: 'entry'),
+            kind: CharacterSpellSelectionKind.knownSpell,
+            spellId: index,
+            spellKey: 'old-$index',
+            selectionIndex: index,
+          ),
+      ]),
+      classStep: optimisticFixture().classStep.copyWith(
+        spellSelectionGroups: [
+          ClassSpellSelectionGroupView(
+            kind: CharacterSpellSelectionKind.knownSpell,
+            options: [SpellData(id: 7, referenceKey: 'replacement-spell')],
+          ),
+        ],
+      ),
+      spellDelta: ClassSpellDeltaView(
+        cantripsToAdd: 0,
+        knownSpellsToAdd: 0,
+        spellbookSpellsToAdd: 0,
+        knownSpellReplacements: 1,
+      ),
+    );
+    final load = controller.refresh();
+    gateway.pending.last.complete(confirmed);
+    await load;
+
+    final replacement = controller.chooseSpells(
+      CharacterSpellSelectionKind.knownSpell,
+      [7],
+      replacesSelectionId: 'known-4',
+    );
+    final selections = controller.state.preview!.character.spellSelections!;
+    expect(selections.map((s) => s.id), ['known-9', null]);
+    expect(selections.last.selectionIndex, 4);
+    expect(selections.last.spellKey, 'replacement-spell');
+    gateway.pending.last.complete(confirmed);
+    await replacement;
+  });
+
   test(
       'a failed background preview keeps the draft editable and prevents saving unvalidated data',
       () async {

@@ -49,7 +49,14 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
         (item) => selectionIdentity(item) == selectionIdentity(selection))) {
       return;
     }
-    selections.add(selection.copyWith(selectionIndex: selections.length));
+    selections.add(selection.copyWith(
+      selectionIndex: nextSpellSelectionIndex(
+        selections,
+        classEntry: selection.classEntry,
+        classDataId: selection.classDataId,
+        kind: selection.kind!,
+      ),
+    ));
 
     await _saveCharacter(
       current.copyWith(spellSelections: _normalizedSpellSelections(selections)),

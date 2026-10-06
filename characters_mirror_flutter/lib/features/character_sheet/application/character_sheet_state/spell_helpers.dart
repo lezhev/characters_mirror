@@ -46,12 +46,7 @@ String? _spellKey(SpellData spell) {
 List<CharacterSpellSelectionData>? _normalizedSpellSelections(
   List<CharacterSpellSelectionData>? selections,
 ) {
-  final normalized = [
-    for (var index = 0;
-        index < (selections ?? const <CharacterSpellSelectionData>[]).length;
-        index++)
-      selections![index].copyWith(selectionIndex: index),
-  ];
+  final normalized = [...?selections];
   return normalized.isEmpty ? null : normalized;
 }
 

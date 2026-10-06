@@ -417,7 +417,14 @@ List<CharacterSpellSelectionData> _addSpellSelection(
   if (selection.spellKey != null &&
       !next.any(
           (item) => selectionIdentity(item) == selectionIdentity(selection))) {
-    next.add(selection.copyWith(selectionIndex: next.length));
+    next.add(selection.copyWith(
+      selectionIndex: nextSpellSelectionIndex(
+        next,
+        classEntry: selection.classEntry,
+        classDataId: selection.classDataId,
+        kind: selection.kind!,
+      ),
+    ));
   }
   return next;
 }
