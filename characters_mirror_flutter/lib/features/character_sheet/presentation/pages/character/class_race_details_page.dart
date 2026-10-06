@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/class_race_formatters.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,8 @@ class ClassRaceDetailsPage extends ConsumerWidget {
     final subrace = character.subrace;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Класс и раса'),
+      appBar: const PageSizeAppBar(
+        title: Text('Класс и раса'),
       ),
       body: SafeArea(
         child: Padding(

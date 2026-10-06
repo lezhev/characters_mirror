@@ -1,0 +1,8 @@
+class: LevelUpPreview
+fields:
+  before: CharacterData
+  character: CharacterData
+  classStep: ClassStepView
+  choiceGroups: List<ChoiceGroupView>
+  spellDelta: ClassSpellDeltaView
+  missingDecisions: List<String>

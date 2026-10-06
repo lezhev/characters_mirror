@@ -182,7 +182,6 @@ class _SpellCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final spell = entry.spell;
     final disabledBySlots =
         (spell.level ?? 0) > 0 && (availableSlots ?? 0) <= 0;
@@ -193,42 +192,16 @@ class _SpellCard extends StatelessWidget {
         !disabledByPreparation &&
         (spell.requiresAttackRoll != true || spellStats.canRollSpellAttack);
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () => showSpellDetailsDialog(context, spell),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 8, 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      spellName(spell),
-                      style: textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    SpellPrimaryMetadata(spell: spell),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              KeyedSubtree(
-                key: ValueKey(
-                    'cast-spell-${spellKey(spell) ?? spellName(spell)}'),
-                child: _SpellCastButton(
-                  spell: spell,
-                  spellStats: spellStats,
-                  width: castButtonWidth,
-                  enabled: canCast,
-                  onPressed: () => _castSpell(context),
-                ),
-              ),
-            ],
-          ),
+    return SpellCard(
+      spell: spell,
+      trailing: KeyedSubtree(
+        key: ValueKey('cast-spell-${spellKey(spell) ?? spellName(spell)}'),
+        child: _SpellCastButton(
+          spell: spell,
+          spellStats: spellStats,
+          width: castButtonWidth,
+          enabled: canCast,
+          onPressed: () => _castSpell(context),
         ),
       ),
     );

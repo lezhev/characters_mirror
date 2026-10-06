@@ -13,6 +13,8 @@ import 'package:characters_mirror_flutter/features/character_sheet/presentation/
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/character/class_race_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:characters_mirror_flutter/features/level_up/application/level_experience.dart';
+import 'package:characters_mirror_flutter/features/level_up/presentation/open_level_up.dart';
 
 class CharacterPage extends ConsumerWidget {
   const CharacterPage({
@@ -35,6 +37,7 @@ class CharacterPage extends ConsumerWidget {
             .reload(),
       ),
       data: (character) {
+        final levelExperience = LevelExperience(character);
         final toolNames = {
           for (final tool in ref.watch(toolCatalogProvider).valueOrNull ??
               const <ToolData>[])
@@ -54,7 +57,10 @@ class CharacterPage extends ConsumerWidget {
               children: [
                 CharacterExperienceSummary(
                   character: character,
-                  onTap: null,
+                  currentLevelStartExperience: levelExperience.start,
+                  nextLevelExperience: levelExperience.next,
+                  onTap: () =>
+                      openLevelExperience(context, ref, characterId, character),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(

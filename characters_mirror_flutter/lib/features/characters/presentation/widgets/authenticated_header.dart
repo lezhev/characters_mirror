@@ -20,14 +20,7 @@ class AuthenticatedHeader extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            colorScheme.surfaceContainerHighest,
-            colorScheme.surfaceContainerHigh,
-          ],
-        ),
+        color: colorScheme.surfaceContainerHigh,
         border: Border(
           bottom: BorderSide(color: colorScheme.outline),
         ),

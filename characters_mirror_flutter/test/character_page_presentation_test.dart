@@ -17,7 +17,7 @@ void main() {
     expect(find.text('Mira'), findsOneWidget);
     expect(find.text('Уровень и опыт'), findsOneWidget);
     expect(find.text('3 уровень'), findsOneWidget);
-    expect(find.text('450 опыта · порог не указан'), findsOneWidget);
+    expect(find.text('450 / 2700 опыта'), findsOneWidget);
     expect(find.text('Класс и раса'), findsOneWidget);
     expect(find.text('Владения персонажа'), findsOneWidget);
     expect(find.text('Описание персонажа'), findsOneWidget);
@@ -48,6 +48,15 @@ void main() {
     expect(tops, orderedEquals([...tops]..sort()));
     expect(find.byIcon(Icons.chevron_right), findsNWidgets(4));
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('level summary opens XP sheet without changing the character',
+      (tester) async {
+    await _pumpPage(tester);
+    await tester.tap(find.text('3 уровень'));
+    await tester.pumpAndSettle();
+    expect(find.text('До следующего уровня: 2250 опыта'), findsOneWidget);
+    expect(find.text('Повысить уровень'), findsOneWidget);
   });
 
   testWidgets('character overview fits narrow and wide viewports',

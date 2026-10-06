@@ -270,7 +270,7 @@ bool _isChoiceGroupAvailable(
           entries.any(
             (entry) =>
                 entry.classData?.id == feature.parentClassId &&
-                (entry.level ?? 0) >= feature.level,
+                (entry.level ?? 0) >= max(feature.level, requiredLevel),
           ),
     );
   }
@@ -282,7 +282,7 @@ bool _isChoiceGroupAvailable(
           entries.any(
             (entry) =>
                 entry.subclass?.id == feature.parentSubclassId &&
-                (entry.level ?? 0) >= feature.level,
+                (entry.level ?? 0) >= max(feature.level, requiredLevel),
           ),
     );
   }

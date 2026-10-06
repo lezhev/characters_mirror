@@ -2,6 +2,7 @@ import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/dice/dice_roller.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_roll_variables.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
@@ -278,8 +279,8 @@ class FightPage extends ConsumerWidget {
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Все способности'),
+          appBar: const PageSizeAppBar(
+            title: Text('Все способности'),
           ),
           body: AbilitiesPage(characterId: characterId),
         ),

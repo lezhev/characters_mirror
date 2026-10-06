@@ -73,6 +73,10 @@ void main() {
     );
     await tester.pump();
 
+    final fieldSize =
+        tester.getSize(find.byKey(const ValueKey('manual-input-strength')));
+    expect(fieldSize.width, fieldSize.height);
+
     expect(
       container
           .read(attributeStateProvider)

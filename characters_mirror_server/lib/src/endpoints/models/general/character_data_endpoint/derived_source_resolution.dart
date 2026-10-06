@@ -188,9 +188,10 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     final bySubclass = group.sourceSubclassId != null &&
         (subclassLevels[group.sourceSubclassId!] ?? 0) >= groupLevel;
     final byFeature = group.sourceFeatureId != null &&
-        currentClassFeatureIds.contains(group.sourceFeatureId);
+        (currentClassFeatureLevels[group.sourceFeatureId!] ?? 0) >= groupLevel;
     final bySubclassFeature = group.sourceSubclassFeatureId != null &&
-        currentSubclassFeatureIds.contains(group.sourceSubclassFeatureId);
+        (currentSubclassFeatureLevels[group.sourceSubclassFeatureId!] ?? 0) >=
+            groupLevel;
     final byBackground = group.sourceBackgroundId != null &&
         group.sourceBackgroundId == character.background?.id;
     final byRace =

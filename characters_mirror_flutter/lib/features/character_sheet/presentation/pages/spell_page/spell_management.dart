@@ -28,8 +28,9 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
   late CharacterData _character;
   late final TextEditingController _saveDcController;
   late final TextEditingController _attackController;
-  late Future<_SpellManagementData> _dataFuture;
+  late Future<_SpellManagementCatalogs> _catalogFuture;
   List<ClassLevelData> _classLevels = const [];
+  String _query = '';
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
     _attackController = TextEditingController(
       text: widget.spellStats.finalAttackBonus.toString(),
     );
-    _dataFuture = _loadData();
+    _catalogFuture = _loadCatalogs();
   }
 
   @override
@@ -54,115 +55,150 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Настройки заклинаний')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: _SpellcastingSettingsPanel(
-              spellStats: widget.spellStats,
-              saveDcController: _saveDcController,
-              attackController: _attackController,
-              onChanged: _saveSpellcastingBonuses,
+      appBar: const PageSizeAppBar(title: Text('Настройки заклинаний')),
+      body: PageSizeLimiter(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: _SpellcastingSettingsPanel(
+                spellStats: widget.spellStats,
+                saveDcController: _saveDcController,
+                attackController: _attackController,
+                onChanged: _saveSpellcastingBonuses,
+              ),
             ),
-          ),
-          Expanded(
-            child: FutureBuilder<_SpellManagementData>(
-              future: _dataFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                      child: Text(humanReadableError(snapshot.error!)));
-                }
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: AppSearchField(
+                onChanged: (query) => setState(() => _query = query),
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder<_SpellManagementCatalogs>(
+                future: _catalogFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(
+                        child: Text(humanReadableError(snapshot.error!)));
+                  }
 
-                final data = snapshot.data!;
-                final tabCount = data.canPrepare ? 2 : 1;
-                return DefaultTabController(
-                  length: tabCount,
-                  child: Column(
-                    children: [
-                      TabBar(
-                        tabs: [
-                          if (data.canPrepare)
-                            const Tab(text: 'Подготовленные'),
-                          const Tab(text: 'Известные'),
-                        ],
-                      ),
-                      Expanded(
-                        child: TabBarView(
-                          children: [
+                  final catalogs = snapshot.data!;
+                  final data = _buildSpellManagementData(
+                    _character,
+                    catalogs.allSpells,
+                    catalogs.classLevels,
+                  );
+                  final knownSpells = _filterSpells(data.knownSpells);
+                  final learnableSpells = _filterSpells(data.learnableSpells);
+                  final preparedSpells = _filterSpells(data.preparedSpells);
+                  final preparationSourceSpells =
+                      _filterSpells(data.preparationSourceSpells);
+                  final tabCount = data.canPrepare ? 2 : 1;
+                  return DefaultTabController(
+                    length: tabCount,
+                    child: Column(
+                      children: [
+                        TabBar(
+                          tabs: [
                             if (data.canPrepare)
-                              _PreparedSpellsTab(
-                                preparedSpells: data.preparedSpells,
-                                preparationSourceSpells:
-                                    data.preparationSourceSpells,
-                                preparedCountLimit: data.preparedCountLimit,
-                                onUnprepareSpell: (spell) => _setSpellPrepared(
-                                  spell,
-                                  false,
-                                  data.preparationClassIds[spellKey(spell)],
-                                ),
-                                onPrepareSpell: (spell) => _setSpellPrepared(
-                                  spell,
-                                  true,
-                                  data.preparationClassIds[spellKey(spell)],
-                                ),
-                              ),
-                            _KnownSpellsTab(
-                              knownSpells: data.knownSpells,
-                              availableSpells: data.learnableSpells,
-                              onForgetSpell: _forgetSpell,
-                              onLearnSpell: (spell) => _learnSpell(
-                                spell,
-                                data.primaryClassDataId,
-                              ),
-                            ),
+                              const Tab(text: 'Подготовленные'),
+                            const Tab(text: 'Известные'),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              if (data.canPrepare)
+                                _PreparedSpellsTab(
+                                  preparedSpells: preparedSpells,
+                                  preparedSpellCount:
+                                      data.preparedSpells.length,
+                                  preparationSourceSpells:
+                                      preparationSourceSpells,
+                                  preparedCountLimit: data.preparedCountLimit,
+                                  query: _query,
+                                  onUnprepareSpell: (spell) =>
+                                      _setSpellPrepared(
+                                    spell,
+                                    false,
+                                    data.preparationClassIds[spellKey(spell)],
+                                  ),
+                                  onPrepareSpell: (spell) => _setSpellPrepared(
+                                    spell,
+                                    true,
+                                    data.preparationClassIds[spellKey(spell)],
+                                  ),
+                                ),
+                              _KnownSpellsTab(
+                                knownSpells: knownSpells,
+                                availableSpells: learnableSpells,
+                                query: _query,
+                                onForgetSpell: _forgetSpell,
+                                onLearnSpell: (spell) => _learnSpell(
+                                  spell,
+                                  data.primaryClassDataId,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Future<_SpellManagementData> _loadData() async {
+  Future<_SpellManagementCatalogs> _loadCatalogs() async {
     final allSpells = await SpellRepository().getAll();
     final classLevels = await ClassLevelRepository().getAll();
     _classLevels = classLevels;
-    return _buildSpellManagementData(_character, allSpells, classLevels);
+    return _SpellManagementCatalogs(
+      allSpells: allSpells,
+      classLevels: classLevels,
+    );
+  }
+
+  List<SpellData> _filterSpells(List<SpellData> spells) {
+    final query = _query.trim().toLowerCase();
+    if (query.isEmpty) {
+      return spells;
+    }
+    return spells
+        .where((spell) => spellName(spell).toLowerCase().contains(query))
+        .toList();
   }
 
   Future<void> _saveSpellcastingBonuses() async {
-    final saveDc = int.tryParse(_saveDcController.text.trim());
-    final attack = int.tryParse(_attackController.text.trim());
+    final saveDcText = _saveDcController.text.trim();
+    final attackText = _attackController.text.trim();
+    final saveDc = saveDcText.isEmpty ? 0 : int.tryParse(saveDcText);
+    final attack = attackText.isEmpty ? 0 : int.tryParse(attackText);
     if (saveDc == null || attack == null) {
       return;
     }
     final saveDcBonus = saveDc - widget.spellStats.baseSaveDc!;
     final attackBonus = attack - widget.spellStats.baseAttackBonus!;
-    await widget.onSpellcastingBonusesChanged?.call(
-      saveDcBonus,
-      attackBonus,
+    final updatedCharacter = _character.copyWith(
+      customSpellSaveDcBonus: saveDcBonus == 0 ? null : saveDcBonus,
+      customSpellAttackBonus: attackBonus == 0 ? null : attackBonus,
     );
     setState(() {
-      _character = _character.copyWith(
-        customSpellSaveDcBonus: saveDcBonus == 0 ? null : saveDcBonus,
-        customSpellAttackBonus: attackBonus == 0 ? null : attackBonus,
-      );
+      _character = updatedCharacter;
     });
+    await widget.onSpellcastingBonusesChanged?.call(saveDcBonus, attackBonus);
   }
 
   Future<void> _learnSpell(SpellData spell, int? classDataId) async {
-    await widget.onSpellLearned?.call(spell, classDataId);
     setState(() {
       _character = _character.copyWith(
         spellSelections: _addSpellSelection(
@@ -173,12 +209,11 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
               spellEntryForClass(_character, classDataId), _classLevels),
         ),
       );
-      _dataFuture = _loadData();
     });
+    await widget.onSpellLearned?.call(spell, classDataId);
   }
 
   Future<void> _forgetSpell(SpellData spell) async {
-    await widget.onSpellForgotten?.call(spell);
     final key = spellKey(spell);
     setState(() {
       final selections = forgetSpellSelections(
@@ -193,8 +228,8 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
               preparedKey,
         ],
       );
-      _dataFuture = _loadData();
     });
+    await widget.onSpellForgotten?.call(spell);
   }
 
   Future<void> _setSpellPrepared(
@@ -206,7 +241,6 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
         _character, spell, classDataId, prepared,
         classLevel: spellLevelForEntry(
             spellEntryForClass(_character, classDataId), _classLevels));
-    await widget.onSpellPreparedChanged?.call(spell, prepared, classDataId);
     final key = spellKey(spell);
     if (key == null) {
       return;
@@ -220,8 +254,8 @@ class _SpellManagementPageState extends State<_SpellManagementPage> {
         spellSelections: selections,
         preparedSpellKeys: preparedKeys.toList()..sort(),
       );
-      _dataFuture = _loadData();
     });
+    await widget.onSpellPreparedChanged?.call(spell, prepared, classDataId);
   }
 }
 
@@ -296,12 +330,14 @@ class _KnownSpellsTab extends StatelessWidget {
   const _KnownSpellsTab({
     required this.knownSpells,
     required this.availableSpells,
+    required this.query,
     required this.onForgetSpell,
     required this.onLearnSpell,
   });
 
   final List<SpellData> knownSpells;
   final List<SpellData> availableSpells;
+  final String query;
   final Future<void> Function(SpellData spell) onForgetSpell;
   final Future<void> Function(SpellData spell) onLearnSpell;
 
@@ -313,6 +349,7 @@ class _KnownSpellsTab extends StatelessWidget {
         _SpellManagementSection(
           emptyText: 'Нет известных заклинаний.',
           spells: knownSpells,
+          query: query,
           actionLabel: 'Убрать',
           onAction: onForgetSpell,
         ),
@@ -321,6 +358,7 @@ class _KnownSpellsTab extends StatelessWidget {
           title: 'Доступные',
           emptyText: 'Нет доступных заклинаний для изучения.',
           spells: availableSpells,
+          query: query,
           actionLabel: 'Выучить',
           onAction: onLearnSpell,
         ),
@@ -332,35 +370,40 @@ class _KnownSpellsTab extends StatelessWidget {
 class _PreparedSpellsTab extends StatelessWidget {
   const _PreparedSpellsTab({
     required this.preparedSpells,
+    required this.preparedSpellCount,
     required this.preparationSourceSpells,
+    required this.query,
     required this.preparedCountLimit,
     required this.onUnprepareSpell,
     required this.onPrepareSpell,
   });
 
   final List<SpellData> preparedSpells;
+  final int preparedSpellCount;
   final List<SpellData> preparationSourceSpells;
+  final String query;
   final int? preparedCountLimit;
   final Future<void> Function(SpellData spell) onUnprepareSpell;
   final Future<void> Function(SpellData spell) onPrepareSpell;
 
   @override
   Widget build(BuildContext context) {
-    final limitReached = preparedCountLimit != null &&
-        preparedSpells.length >= preparedCountLimit!;
+    final limitReached =
+        preparedCountLimit != null && preparedSpellCount >= preparedCountLimit!;
 
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
-        if (preparedCountLimit != null)
+        if (preparedCountLimit != null && query.isEmpty)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Text('Подготовлено ${preparedSpells.length} '
+            child: Text('Подготовлено $preparedSpellCount '
                 'из $preparedCountLimit'),
           ),
         _SpellManagementSection(
           emptyText: 'Нет подготовленных заклинаний.',
           spells: preparedSpells,
+          query: query,
           actionLabel: 'Убрать',
           onAction: onUnprepareSpell,
         ),
@@ -368,6 +411,7 @@ class _PreparedSpellsTab extends StatelessWidget {
         _SpellManagementSection(
           emptyText: 'Нет заклинаний для подготовки.',
           spells: preparationSourceSpells,
+          query: query,
           actionLabel: 'Подготовить',
           onAction: limitReached ? null : onPrepareSpell,
         ),
@@ -382,6 +426,7 @@ class _SpellManagementSection extends StatelessWidget {
     required this.spells,
     required this.actionLabel,
     required this.onAction,
+    required this.query,
     this.title,
   });
 
@@ -390,6 +435,7 @@ class _SpellManagementSection extends StatelessWidget {
   final List<SpellData> spells;
   final String actionLabel;
   final Future<void> Function(SpellData spell)? onAction;
+  final String query;
 
   @override
   Widget build(BuildContext context) {
@@ -403,7 +449,10 @@ class _SpellManagementSection extends StatelessWidget {
           const SizedBox(height: 8),
         ],
         if (spells.isEmpty)
-          Text(emptyText, style: theme.textTheme.bodyMedium)
+          Text(
+            query.trim().isEmpty ? emptyText : 'Ничего не найдено.',
+            style: theme.textTheme.bodyMedium,
+          )
         else
           for (final spell in spells)
             ListTile(

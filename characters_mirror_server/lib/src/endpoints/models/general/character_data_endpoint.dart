@@ -23,6 +23,8 @@ import 'package:characters_mirror_shared/characters_mirror_shared.dart'
         FeatureModifierCondition;
 
 import 'starting_equipment_endpoints.dart';
+import 'class_endpoints.dart';
+import '../../../spells/class_spell_progression.dart';
 
 part 'character_data_endpoint/persistence_pruning_snapshot.dart';
 part 'character_data_endpoint/persistence_record_write.dart';
@@ -51,6 +53,10 @@ part 'character_data_endpoint/normalization_basic_features.dart';
 part 'character_data_endpoint/normalization_feature_resources.dart';
 part 'character_data_endpoint/normalization_overrides_states.dart';
 part 'character_data_endpoint/normalization_sorting_includes.dart';
+part 'character_data_endpoint/level_up.dart';
+part 'character_data_endpoint/level_up_choices.dart';
+part 'character_data_endpoint/level_up_spells.dart';
+part 'character_data_endpoint/level_up_resources.dart';
 
 const _standardSpellSlotTableKey = 'standard';
 const _pactMagicSpellSlotTableKey = 'pact_magic';
@@ -83,6 +89,53 @@ class CharacterDataEndpoint extends Endpoint {
 
   @override
   bool get requireLogin => true;
+
+  Future<LevelUpPreview> previewLevelUp(
+    Session session,
+    LevelUpRequest request,
+  ) async {
+    _validateLevelUpRequest(request);
+    final record =
+        await _requireOwnedCharacterRecord(session, request.characterId);
+    final context = _createResolveContext(session);
+    final before = await _buildCharacterAggregate(session, record,
+        resolveContext: context);
+    return _previewLevelUp(session, before, request, resolveContext: context);
+  }
+
+  Future<CharacterData> applyLevelUp(
+    Session session,
+    LevelUpRequest request,
+  ) async {
+    _validateLevelUpRequest(request);
+    final userId = await _requireCurrentUserId(session);
+    return _runCharacterMutationTransaction(session, (transaction) async {
+      final record = await _lockOwnedCharacterRecord(session,
+          characterId: request.characterId,
+          userId: userId,
+          transaction: transaction);
+      if (record == null) {
+        throw InputValidationException('characterId', 'Character unavailable.');
+      }
+      final context = _createResolveContext(session);
+      final before = await _buildCharacterAggregate(session, record,
+          transaction: transaction, resolveContext: context);
+      final preview = await _previewLevelUp(session, before, request,
+          transaction: transaction, resolveContext: context);
+      if (preview.missingDecisions.isNotEmpty) {
+        throw InputValidationException(
+            'levelUp', preview.missingDecisions.join('; '));
+      }
+      return _saveCharacterSnapshotInTransaction(session,
+          character:
+              preview.character.copyWith(updatedAt: DateTime.now().toUtc()),
+          userId: userId,
+          transaction: transaction,
+          expectedVersion: request.expectedVersion,
+          requireExistingWhenIdPresent: true,
+          resolveContext: context);
+    }, userId: userId);
+  }
 
   Future<List<CharacterData>> getAll(Session session) async {
     final userId = await _requireCurrentUserId(session);

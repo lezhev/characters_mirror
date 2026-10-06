@@ -9,6 +9,11 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppGameColors gameColors) {
     colorScheme: colorScheme,
     useMaterial3: true,
     scaffoldBackgroundColor: colorScheme.surface,
+    appBarTheme: AppBarTheme(
+      backgroundColor: colorScheme.surfaceContainerHigh,
+      surfaceTintColor: Colors.transparent,
+      scrolledUnderElevation: 0,
+    ),
     textTheme: _buildTextTheme(colorScheme),
     extensions: [gameColors],
     cardTheme: CardThemeData(
