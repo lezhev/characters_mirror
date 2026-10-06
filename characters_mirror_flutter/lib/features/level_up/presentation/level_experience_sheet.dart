@@ -35,16 +35,22 @@ class LevelExperienceSheet extends StatelessWidget {
                       : 'До следующего уровня: ${xp.remaining} опыта'),
                   const SizedBox(height: 16),
                   FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.error,
-                        foregroundColor: Theme.of(context).colorScheme.onError,
+                      onPressed: xp.level < 20 ? onLevelUp : null,
+                      child: const Text('Повысить уровень')),
+                  const SizedBox(height: 8),
+                  TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.error,
+                        backgroundColor: Colors.transparent,
+                        overlayColor: Colors.transparent,
+                        side: BorderSide.none,
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
+                        surfaceTintColor: Colors.transparent,
+                        splashFactory: NoSplash.splashFactory,
                       ),
                       onPressed: _canLevelDown ? onLevelDown : null,
                       child: const Text('Понизить уровень')),
-                  const SizedBox(height: 8),
-                  FilledButton(
-                      onPressed: xp.level < 20 ? onLevelUp : null,
-                      child: const Text('Повысить уровень')),
                 ])));
   }
 

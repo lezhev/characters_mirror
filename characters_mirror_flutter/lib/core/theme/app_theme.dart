@@ -59,6 +59,9 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppGameColors gameColors) {
       style: FilledButton.styleFrom(
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(

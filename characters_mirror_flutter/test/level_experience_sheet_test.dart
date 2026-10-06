@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets(
-      'XP entry offers level-down before level-up and permits both actions',
+      'XP entry offers text-only level-down below level-up and permits both actions',
       (tester) async {
     var started = false;
     var lowered = false;
@@ -26,8 +26,26 @@ void main() {
     expect(find.text('Понизить уровень'), findsOneWidget);
     expect(
       tester.getTopLeft(find.text('Понизить уровень')).dy,
-      lessThan(tester.getTopLeft(find.text('Повысить уровень')).dy),
+      greaterThan(tester.getTopLeft(find.text('Повысить уровень')).dy),
     );
+    final levelDownFinder = find.widgetWithText(TextButton, 'Понизить уровень');
+    final levelDown = tester.widget<TextButton>(levelDownFinder);
+    final style = levelDown.style!;
+    final errorColor =
+        Theme.of(tester.element(levelDownFinder)).colorScheme.error;
+    for (final states in <Set<WidgetState>>[
+      {},
+      {WidgetState.hovered},
+      {WidgetState.focused},
+      {WidgetState.pressed},
+    ]) {
+      expect(style.foregroundColor!.resolve(states), errorColor);
+      expect(style.backgroundColor!.resolve(states), Colors.transparent);
+      expect(style.overlayColor!.resolve(states), Colors.transparent);
+      expect(style.side!.resolve(states), BorderSide.none);
+      expect(style.elevation!.resolve(states), 0);
+    }
+    expect(style.splashFactory, NoSplash.splashFactory);
     await tester.tap(find.text('Понизить уровень'));
     expect(lowered, true);
     await tester.tap(find.text('Повысить уровень'));
@@ -53,8 +71,8 @@ void main() {
     );
     expect(
       tester
-          .widget<FilledButton>(
-              find.widgetWithText(FilledButton, 'Понизить уровень'))
+          .widget<TextButton>(
+              find.widgetWithText(TextButton, 'Понизить уровень'))
           .onPressed,
       isNull,
     );
