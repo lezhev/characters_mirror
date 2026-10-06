@@ -5,6 +5,7 @@ fields:
   optionKey: String
   name: String?
   description: String?
+  shortDescription: String?
   sortOrder: int?
   grantedAbilityBonuses: Map<String, int>?
   grantedSkills: List<Skill>?

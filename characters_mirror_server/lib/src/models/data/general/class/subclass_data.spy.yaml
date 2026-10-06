@@ -4,6 +4,7 @@ fields:
   referenceKey: String?
   name: String?
   description: String?
+  shortDescription: String?
   source: String?
   version: int?
   createdAt: DateTime?

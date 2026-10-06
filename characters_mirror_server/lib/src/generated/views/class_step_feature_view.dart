@@ -13,6 +13,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../data/general/class/class_feature_data.dart' as _i2;
 import '../data/general/class/subclass_feature_data.dart' as _i3;
 import '../views/feature_display_property_view.dart' as _i4;
+import '../data/general/character/character_resource_view_data.dart' as _i5;
 
 abstract class ClassStepFeatureView
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -20,12 +21,14 @@ abstract class ClassStepFeatureView
     this.classFeature,
     this.subclassFeature,
     this.displayProperties,
+    this.resources,
   });
 
   factory ClassStepFeatureView({
     _i2.ClassFeatureData? classFeature,
     _i3.SubclassFeatureData? subclassFeature,
     List<_i4.FeatureDisplayPropertyView>? displayProperties,
+    List<_i5.CharacterResourceViewData>? resources,
   }) = _ClassStepFeatureViewImpl;
 
   factory ClassStepFeatureView.fromJson(
@@ -43,6 +46,10 @@ abstract class ClassStepFeatureView
           ?.map((e) => _i4.FeatureDisplayPropertyView.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
+      resources: (jsonSerialization['resources'] as List?)
+          ?.map((e) => _i5.CharacterResourceViewData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -52,6 +59,8 @@ abstract class ClassStepFeatureView
 
   List<_i4.FeatureDisplayPropertyView>? displayProperties;
 
+  List<_i5.CharacterResourceViewData>? resources;
+
   /// Returns a shallow copy of this [ClassStepFeatureView]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -59,6 +68,7 @@ abstract class ClassStepFeatureView
     _i2.ClassFeatureData? classFeature,
     _i3.SubclassFeatureData? subclassFeature,
     List<_i4.FeatureDisplayPropertyView>? displayProperties,
+    List<_i5.CharacterResourceViewData>? resources,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -68,6 +78,8 @@ abstract class ClassStepFeatureView
       if (displayProperties != null)
         'displayProperties':
             displayProperties?.toJson(valueToJson: (v) => v.toJson()),
+      if (resources != null)
+        'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -81,6 +93,9 @@ abstract class ClassStepFeatureView
       if (displayProperties != null)
         'displayProperties': displayProperties?.toJson(
             valueToJson: (v) => v.toJsonForProtocol()),
+      if (resources != null)
+        'resources':
+            resources?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
@@ -97,10 +112,12 @@ class _ClassStepFeatureViewImpl extends ClassStepFeatureView {
     _i2.ClassFeatureData? classFeature,
     _i3.SubclassFeatureData? subclassFeature,
     List<_i4.FeatureDisplayPropertyView>? displayProperties,
+    List<_i5.CharacterResourceViewData>? resources,
   }) : super._(
           classFeature: classFeature,
           subclassFeature: subclassFeature,
           displayProperties: displayProperties,
+          resources: resources,
         );
 
   /// Returns a shallow copy of this [ClassStepFeatureView]
@@ -111,6 +128,7 @@ class _ClassStepFeatureViewImpl extends ClassStepFeatureView {
     Object? classFeature = _Undefined,
     Object? subclassFeature = _Undefined,
     Object? displayProperties = _Undefined,
+    Object? resources = _Undefined,
   }) {
     return ClassStepFeatureView(
       classFeature: classFeature is _i2.ClassFeatureData?
@@ -123,6 +141,9 @@ class _ClassStepFeatureViewImpl extends ClassStepFeatureView {
           displayProperties is List<_i4.FeatureDisplayPropertyView>?
               ? displayProperties
               : this.displayProperties?.map((e0) => e0.copyWith()).toList(),
+      resources: resources is List<_i5.CharacterResourceViewData>?
+          ? resources
+          : this.resources?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

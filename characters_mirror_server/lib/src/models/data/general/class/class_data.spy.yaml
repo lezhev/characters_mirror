@@ -18,6 +18,7 @@ fields:
   skillCount: int?
 
   subclassChoiceLevel: int?
+  subclassChoiceFeatureId: int?, relation(parent=class_feature_data)
   spellcastingProgression: SpellcastingProgression?
   spellSelectionMode: ClassSpellSelectionMode?
   spellcastingAbilityValue: Ability?

@@ -36,6 +36,7 @@ abstract class ClassData
     this.availableSkills,
     this.skillCount,
     this.subclassChoiceLevel,
+    this.subclassChoiceFeatureId,
     this.spellcastingProgression,
     this.spellSelectionMode,
     this.spellcastingAbilityValue,
@@ -64,6 +65,7 @@ abstract class ClassData
     List<_i4.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
+    int? subclassChoiceFeatureId,
     _i5.SpellcastingProgression? spellcastingProgression,
     _i6.ClassSpellSelectionMode? spellSelectionMode,
     _i2.Ability? spellcastingAbilityValue,
@@ -110,6 +112,8 @@ abstract class ClassData
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
       subclassChoiceLevel: jsonSerialization['subclassChoiceLevel'] as int?,
+      subclassChoiceFeatureId:
+          jsonSerialization['subclassChoiceFeatureId'] as int?,
       spellcastingProgression:
           jsonSerialization['spellcastingProgression'] == null
               ? null
@@ -185,6 +189,8 @@ abstract class ClassData
 
   int? subclassChoiceLevel;
 
+  int? subclassChoiceFeatureId;
+
   _i5.SpellcastingProgression? spellcastingProgression;
 
   _i6.ClassSpellSelectionMode? spellSelectionMode;
@@ -225,6 +231,7 @@ abstract class ClassData
     List<_i4.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
+    int? subclassChoiceFeatureId,
     _i5.SpellcastingProgression? spellcastingProgression,
     _i6.ClassSpellSelectionMode? spellSelectionMode,
     _i2.Ability? spellcastingAbilityValue,
@@ -263,6 +270,8 @@ abstract class ClassData
       if (skillCount != null) 'skillCount': skillCount,
       if (subclassChoiceLevel != null)
         'subclassChoiceLevel': subclassChoiceLevel,
+      if (subclassChoiceFeatureId != null)
+        'subclassChoiceFeatureId': subclassChoiceFeatureId,
       if (spellcastingProgression != null)
         'spellcastingProgression': spellcastingProgression?.toJson(),
       if (spellSelectionMode != null)
@@ -311,6 +320,8 @@ abstract class ClassData
       if (skillCount != null) 'skillCount': skillCount,
       if (subclassChoiceLevel != null)
         'subclassChoiceLevel': subclassChoiceLevel,
+      if (subclassChoiceFeatureId != null)
+        'subclassChoiceFeatureId': subclassChoiceFeatureId,
       if (spellcastingProgression != null)
         'spellcastingProgression': spellcastingProgression?.toJson(),
       if (spellSelectionMode != null)
@@ -381,6 +392,7 @@ class _ClassDataImpl extends ClassData {
     List<_i4.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
+    int? subclassChoiceFeatureId,
     _i5.SpellcastingProgression? spellcastingProgression,
     _i6.ClassSpellSelectionMode? spellSelectionMode,
     _i2.Ability? spellcastingAbilityValue,
@@ -407,6 +419,7 @@ class _ClassDataImpl extends ClassData {
           availableSkills: availableSkills,
           skillCount: skillCount,
           subclassChoiceLevel: subclassChoiceLevel,
+          subclassChoiceFeatureId: subclassChoiceFeatureId,
           spellcastingProgression: spellcastingProgression,
           spellSelectionMode: spellSelectionMode,
           spellcastingAbilityValue: spellcastingAbilityValue,
@@ -439,6 +452,7 @@ class _ClassDataImpl extends ClassData {
     Object? availableSkills = _Undefined,
     Object? skillCount = _Undefined,
     Object? subclassChoiceLevel = _Undefined,
+    Object? subclassChoiceFeatureId = _Undefined,
     Object? spellcastingProgression = _Undefined,
     Object? spellSelectionMode = _Undefined,
     Object? spellcastingAbilityValue = _Undefined,
@@ -480,6 +494,9 @@ class _ClassDataImpl extends ClassData {
       subclassChoiceLevel: subclassChoiceLevel is int?
           ? subclassChoiceLevel
           : this.subclassChoiceLevel,
+      subclassChoiceFeatureId: subclassChoiceFeatureId is int?
+          ? subclassChoiceFeatureId
+          : this.subclassChoiceFeatureId,
       spellcastingProgression:
           spellcastingProgression is _i5.SpellcastingProgression?
               ? spellcastingProgression
@@ -581,6 +598,10 @@ class ClassDataTable extends _i1.Table<int?> {
       'subclassChoiceLevel',
       this,
     );
+    subclassChoiceFeatureId = _i1.ColumnInt(
+      'subclassChoiceFeatureId',
+      this,
+    );
     spellcastingProgression = _i1.ColumnEnum(
       'spellcastingProgression',
       this,
@@ -650,6 +671,8 @@ class ClassDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt subclassChoiceLevel;
 
+  late final _i1.ColumnInt subclassChoiceFeatureId;
+
   late final _i1.ColumnEnum<_i5.SpellcastingProgression>
       spellcastingProgression;
 
@@ -686,6 +709,7 @@ class ClassDataTable extends _i1.Table<int?> {
         availableSkills,
         skillCount,
         subclassChoiceLevel,
+        subclassChoiceFeatureId,
         spellcastingProgression,
         spellSelectionMode,
         spellcastingAbilityValue,

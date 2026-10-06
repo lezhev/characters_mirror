@@ -2,8 +2,10 @@ part of '../character_data_endpoint.dart';
 
 class _ResolvedDerivedSources {
   final List<ChoiceOptionData> selectedOptions;
-  final Map<int, List<String>> selectedChoicesByClassFeatureId;
-  final Map<int, List<String>> selectedChoicesBySubclassFeatureId;
+  final Map<int, List<SelectedFeatureChoiceView>>
+      selectedChoicesByClassFeatureId;
+  final Map<int, List<SelectedFeatureChoiceView>>
+      selectedChoicesBySubclassFeatureId;
   final List<ClassFeatureData> currentClassFeatures;
   final List<SubclassFeatureData> currentSubclassFeatures;
   final List<FeatureDisplayPropertyData> featureDisplayProperties;
@@ -284,8 +286,10 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     transaction: transaction,
   );
 
-  final selectedChoicesByClassFeatureId = <int, List<String>>{};
-  final selectedChoicesBySubclassFeatureId = <int, List<String>>{};
+  final selectedChoicesByClassFeatureId =
+      <int, List<SelectedFeatureChoiceView>>{};
+  final selectedChoicesBySubclassFeatureId =
+      <int, List<SelectedFeatureChoiceView>>{};
   final orderedGroups = [...relevantGroups]..sort(
       (left, right) => (left.sortOrder ?? 0).compareTo(right.sortOrder ?? 0));
   for (final group in orderedGroups) {
@@ -296,12 +300,12 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     final target = group.sourceFeatureId != null
         ? selectedChoicesByClassFeatureId.putIfAbsent(
             group.sourceFeatureId!,
-            () => <String>[],
+            () => <SelectedFeatureChoiceView>[],
           )
         : group.sourceSubclassFeatureId != null
             ? selectedChoicesBySubclassFeatureId.putIfAbsent(
                 group.sourceSubclassFeatureId!,
-                () => <String>[],
+                () => <SelectedFeatureChoiceView>[],
               )
             : null;
     if (target == null) continue;
@@ -309,7 +313,13 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
       final optionName = _normalizedTextOrNull(selection.option.name) ??
           selection.option.optionKey;
       final groupName = _normalizedTextOrNull(group.name);
-      target.add(groupName == null ? optionName : '$groupName: $optionName');
+      target.add(SelectedFeatureChoiceView(
+        groupKey: group.referenceKey,
+        groupTitle: groupName,
+        optionKey: selection.option.optionKey,
+        name: optionName,
+        shortDescription: selection.option.shortDescription,
+      ));
     }
   }
 

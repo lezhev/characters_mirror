@@ -1,5 +1,6 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/feature_display_properties.dart';
+import 'package:characters_mirror_server/src/feature_resource_summary.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:characters_mirror_server/src/weapon_training_values.dart';
 import 'package:characters_mirror_server/src/validation/rules.dart';
@@ -226,6 +227,11 @@ class ClassDataEndpoint extends Endpoint {
       ),
       subclassChoice: ClassStepSubclassChoiceView(
         requiredLevel: classData.subclassChoiceLevel,
+        sourceFeatureId: features.any((f) =>
+                f.id == classData.subclassChoiceFeatureId &&
+                f.level == classData.subclassChoiceLevel)
+            ? classData.subclassChoiceFeatureId
+            : null,
         subclasses: subclasses,
       ),
       choiceGroups: currentGroups,

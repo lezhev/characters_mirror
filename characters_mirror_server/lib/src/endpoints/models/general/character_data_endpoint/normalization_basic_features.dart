@@ -154,7 +154,9 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
     required int sourceClassLevel,
     List<FeatureDisplayPropertyData> displayPropertyDefinitions =
         const <FeatureDisplayPropertyData>[],
-    List<String> selectedChoices = const <String>[],
+    String? referenceShortDescription,
+    List<SelectedFeatureChoiceView> selectedChoices =
+        const <SelectedFeatureChoiceView>[],
   }) {
     if (sourceId == null) {
       return;
@@ -224,7 +226,18 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
         tags: resolvedTags,
         isCustomized: isCustomized,
         resources: featureResources,
-        selectedChoices: selectedChoices,
+        selectedChoices: [
+          for (final choice in selectedChoices)
+            choice.groupTitle == null
+                ? choice.name
+                : '${choice.groupTitle}: ${choice.name}'
+        ],
+        selectedChoiceDetails: selectedChoices,
+        shortDescription:
+            sourceType == CharacterFeatureSourceType.classFeature ||
+                    sourceType == CharacterFeatureSourceType.subclassFeature
+                ? override?.description ?? referenceShortDescription
+                : resolvedDescription,
         displayProperties: resolveDisplayPropertyViews(
           definitions: displayPropertyDefinitions,
           sourceLevel: sourceClassLevel,
@@ -260,6 +273,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       level: feature.level,
       defaultName: feature.name,
       defaultDescription: feature.shortDescription ?? feature.description,
+      referenceShortDescription: feature.shortDescription,
       defaultTags: feature.tags,
       resources: feature.resources,
       resourceEffects: feature.resourceEffects,
@@ -269,7 +283,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
           .toList(),
       selectedChoices:
           resolvedSources.selectedChoicesByClassFeatureId[feature.id] ??
-              const <String>[],
+              const <SelectedFeatureChoiceView>[],
     );
   }
   for (final feature in resolvedSources.currentSubclassFeatures) {
@@ -291,6 +305,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
       level: feature.level,
       defaultName: feature.name,
       defaultDescription: feature.shortDescription ?? feature.description,
+      referenceShortDescription: feature.shortDescription,
       defaultTags: feature.tags,
       resources: feature.resources,
       resourceEffects: feature.resourceEffects,
@@ -300,7 +315,7 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
           .toList(),
       selectedChoices:
           resolvedSources.selectedChoicesBySubclassFeatureId[feature.id] ??
-              const <String>[],
+              const <SelectedFeatureChoiceView>[],
     );
   }
   for (final feature in currentRaceFeatures.raceFeatures) {
