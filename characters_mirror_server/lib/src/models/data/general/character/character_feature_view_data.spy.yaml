@@ -9,8 +9,10 @@ fields:
   defaultTags: List<FeatureTag>?
   name: String?
   description: String?
+  shortDescription: String?
   tags: List<FeatureTag>?
   isCustomized: bool?
   resources: List<CharacterResourceViewData>?
   displayProperties: List<FeatureDisplayPropertyView>?
   selectedChoices: List<String>?
+  selectedChoiceDetails: List<SelectedFeatureChoiceView>?

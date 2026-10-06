@@ -24,6 +24,7 @@ abstract class SubclassData
     this.referenceKey,
     this.name,
     this.description,
+    this.shortDescription,
     this.source,
     this.version,
     this.createdAt,
@@ -43,6 +44,7 @@ abstract class SubclassData
     String? referenceKey,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -63,6 +65,7 @@ abstract class SubclassData
       referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
+      shortDescription: jsonSerialization['shortDescription'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
@@ -110,6 +113,8 @@ abstract class SubclassData
 
   String? description;
 
+  String? shortDescription;
+
   String? source;
 
   int? version;
@@ -145,6 +150,7 @@ abstract class SubclassData
     String? referenceKey,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -165,6 +171,7 @@ abstract class SubclassData
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -191,6 +198,7 @@ abstract class SubclassData
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -248,6 +256,7 @@ class _SubclassDataImpl extends SubclassData {
     String? referenceKey,
     String? name,
     String? description,
+    String? shortDescription,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -265,6 +274,7 @@ class _SubclassDataImpl extends SubclassData {
           referenceKey: referenceKey,
           name: name,
           description: description,
+          shortDescription: shortDescription,
           source: source,
           version: version,
           createdAt: createdAt,
@@ -288,6 +298,7 @@ class _SubclassDataImpl extends SubclassData {
     Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
+    Object? shortDescription = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
@@ -306,6 +317,9 @@ class _SubclassDataImpl extends SubclassData {
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
+      shortDescription: shortDescription is String?
+          ? shortDescription
+          : this.shortDescription,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
@@ -345,6 +359,10 @@ class SubclassDataTable extends _i1.Table<int?> {
     );
     description = _i1.ColumnString(
       'description',
+      this,
+    );
+    shortDescription = _i1.ColumnString(
+      'shortDescription',
       this,
     );
     source = _i1.ColumnString(
@@ -402,6 +420,8 @@ class SubclassDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString description;
 
+  late final _i1.ColumnString shortDescription;
+
   late final _i1.ColumnString source;
 
   late final _i1.ColumnInt version;
@@ -446,6 +466,7 @@ class SubclassDataTable extends _i1.Table<int?> {
         referenceKey,
         name,
         description,
+        shortDescription,
         source,
         version,
         createdAt,

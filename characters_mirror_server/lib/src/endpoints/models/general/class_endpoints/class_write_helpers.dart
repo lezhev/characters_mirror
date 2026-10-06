@@ -142,6 +142,10 @@ Future<List<ClassStepFeatureView>> _classStepFeatureViews(
     for (final feature in features)
       ClassStepFeatureView(
         classFeature: feature,
+        resources: referenceResourceSummaries(feature.resources,
+            name: feature.name,
+            sourceLevel: sourceLevel,
+            abilityModifiers: abilityModifiers),
         displayProperties: resolveDisplayPropertyViews(
           definitions: properties.where(
             (property) => property.sourceClassFeatureId == feature.id,
@@ -176,6 +180,10 @@ Future<List<ClassStepFeatureView>> _subclassStepFeatureViews(
     for (final feature in features)
       ClassStepFeatureView(
         subclassFeature: feature,
+        resources: referenceResourceSummaries(feature.resources,
+            name: feature.name,
+            sourceLevel: sourceLevel,
+            abilityModifiers: abilityModifiers),
         displayProperties: resolveDisplayPropertyViews(
           definitions: properties.where(
             (property) => property.sourceSubclassFeatureId == feature.id,

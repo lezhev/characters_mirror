@@ -16,11 +16,13 @@ abstract class ClassStepSubclassChoiceView
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   ClassStepSubclassChoiceView._({
     this.requiredLevel,
+    this.sourceFeatureId,
     this.subclasses,
   });
 
   factory ClassStepSubclassChoiceView({
     int? requiredLevel,
+    int? sourceFeatureId,
     List<_i2.SubclassData>? subclasses,
   }) = _ClassStepSubclassChoiceViewImpl;
 
@@ -28,6 +30,7 @@ abstract class ClassStepSubclassChoiceView
       Map<String, dynamic> jsonSerialization) {
     return ClassStepSubclassChoiceView(
       requiredLevel: jsonSerialization['requiredLevel'] as int?,
+      sourceFeatureId: jsonSerialization['sourceFeatureId'] as int?,
       subclasses: (jsonSerialization['subclasses'] as List?)
           ?.map((e) => _i2.SubclassData.fromJson((e as Map<String, dynamic>)))
           .toList(),
@@ -36,6 +39,8 @@ abstract class ClassStepSubclassChoiceView
 
   int? requiredLevel;
 
+  int? sourceFeatureId;
+
   List<_i2.SubclassData>? subclasses;
 
   /// Returns a shallow copy of this [ClassStepSubclassChoiceView]
@@ -43,12 +48,14 @@ abstract class ClassStepSubclassChoiceView
   @_i1.useResult
   ClassStepSubclassChoiceView copyWith({
     int? requiredLevel,
+    int? sourceFeatureId,
     List<_i2.SubclassData>? subclasses,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (requiredLevel != null) 'requiredLevel': requiredLevel,
+      if (sourceFeatureId != null) 'sourceFeatureId': sourceFeatureId,
       if (subclasses != null)
         'subclasses': subclasses?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -58,6 +65,7 @@ abstract class ClassStepSubclassChoiceView
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (requiredLevel != null) 'requiredLevel': requiredLevel,
+      if (sourceFeatureId != null) 'sourceFeatureId': sourceFeatureId,
       if (subclasses != null)
         'subclasses':
             subclasses?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -75,9 +83,11 @@ class _Undefined {}
 class _ClassStepSubclassChoiceViewImpl extends ClassStepSubclassChoiceView {
   _ClassStepSubclassChoiceViewImpl({
     int? requiredLevel,
+    int? sourceFeatureId,
     List<_i2.SubclassData>? subclasses,
   }) : super._(
           requiredLevel: requiredLevel,
+          sourceFeatureId: sourceFeatureId,
           subclasses: subclasses,
         );
 
@@ -87,10 +97,13 @@ class _ClassStepSubclassChoiceViewImpl extends ClassStepSubclassChoiceView {
   @override
   ClassStepSubclassChoiceView copyWith({
     Object? requiredLevel = _Undefined,
+    Object? sourceFeatureId = _Undefined,
     Object? subclasses = _Undefined,
   }) {
     return ClassStepSubclassChoiceView(
       requiredLevel: requiredLevel is int? ? requiredLevel : this.requiredLevel,
+      sourceFeatureId:
+          sourceFeatureId is int? ? sourceFeatureId : this.sourceFeatureId,
       subclasses: subclasses is List<_i2.SubclassData>?
           ? subclasses
           : this.subclasses?.map((e0) => e0.copyWith()).toList(),

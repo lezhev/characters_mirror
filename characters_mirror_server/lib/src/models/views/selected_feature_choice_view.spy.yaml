@@ -1,0 +1,7 @@
+class: SelectedFeatureChoiceView
+fields:
+  groupKey: String
+  groupTitle: String?
+  optionKey: String
+  name: String
+  shortDescription: String?

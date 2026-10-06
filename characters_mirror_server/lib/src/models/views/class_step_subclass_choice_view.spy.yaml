@@ -1,4 +1,5 @@
 class: ClassStepSubclassChoiceView
 fields:
   requiredLevel: int?
+  sourceFeatureId: int?
   subclasses: List<SubclassData>?

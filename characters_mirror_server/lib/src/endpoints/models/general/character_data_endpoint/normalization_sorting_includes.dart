@@ -1,18 +1,7 @@
 part of '../character_data_endpoint.dart';
 
-String? _subclassSourceName(SubclassData? subclass) {
-  final parts = [
-    _normalizedTextOrNull(subclass?.subclassName),
-    _normalizedTextOrNull(subclass?.name),
-  ].whereType<String>().toList();
-  if (parts.isEmpty) {
-    return null;
-  }
-  if (parts.length == 2 && parts[0] == parts[1]) {
-    return parts[0];
-  }
-  return parts.join(' ');
-}
+String? _subclassSourceName(SubclassData? subclass) => feature_modifiers
+    .subclassDisplayName(subclass?.subclassName, subclass?.name);
 
 String _resourceStateKey(
   CharacterFeatureSourceType sourceType,

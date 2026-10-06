@@ -3,3 +3,4 @@ fields:
   classFeature: ClassFeatureData?
   subclassFeature: SubclassFeatureData?
   displayProperties: List<FeatureDisplayPropertyView>?
+  resources: List<CharacterResourceViewData>?
