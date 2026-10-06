@@ -15,6 +15,7 @@ import '../data/general/class/class_data.dart' as _i3;
 import '../data/general/class/subclass_data.dart' as _i4;
 import '../data/general/class/class_feature_data.dart' as _i5;
 import '../data/general/class/subclass_feature_data.dart' as _i6;
+import '../data/general/choice_option_data.dart' as _i7;
 
 abstract class ClassSpellGrantData implements _i1.SerializableModel {
   ClassSpellGrantData._({
@@ -32,6 +33,8 @@ abstract class ClassSpellGrantData implements _i1.SerializableModel {
     this.sourceSubclassFeature,
     this.grantedAtLevel,
     this.alwaysPrepared,
+    this.choiceOptionId,
+    this.choiceOption,
     this.notes,
     this.source,
     this.version,
@@ -54,6 +57,8 @@ abstract class ClassSpellGrantData implements _i1.SerializableModel {
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
     bool? alwaysPrepared,
+    int? choiceOptionId,
+    _i7.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -94,6 +99,11 @@ abstract class ClassSpellGrantData implements _i1.SerializableModel {
                   as Map<String, dynamic>)),
       grantedAtLevel: jsonSerialization['grantedAtLevel'] as int?,
       alwaysPrepared: jsonSerialization['alwaysPrepared'] as bool?,
+      choiceOptionId: jsonSerialization['choiceOptionId'] as int?,
+      choiceOption: jsonSerialization['choiceOption'] == null
+          ? null
+          : _i7.ChoiceOptionData.fromJson(
+              (jsonSerialization['choiceOption'] as Map<String, dynamic>)),
       notes: jsonSerialization['notes'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
@@ -137,6 +147,10 @@ abstract class ClassSpellGrantData implements _i1.SerializableModel {
 
   bool? alwaysPrepared;
 
+  int? choiceOptionId;
+
+  _i7.ChoiceOptionData? choiceOption;
+
   String? notes;
 
   String? source;
@@ -165,6 +179,8 @@ abstract class ClassSpellGrantData implements _i1.SerializableModel {
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
     bool? alwaysPrepared,
+    int? choiceOptionId,
+    _i7.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -190,6 +206,8 @@ abstract class ClassSpellGrantData implements _i1.SerializableModel {
         'sourceSubclassFeature': sourceSubclassFeature?.toJson(),
       if (grantedAtLevel != null) 'grantedAtLevel': grantedAtLevel,
       if (alwaysPrepared != null) 'alwaysPrepared': alwaysPrepared,
+      if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
+      if (choiceOption != null) 'choiceOption': choiceOption?.toJson(),
       if (notes != null) 'notes': notes,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
@@ -222,6 +240,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
     bool? alwaysPrepared,
+    int? choiceOptionId,
+    _i7.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -242,6 +262,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
           sourceSubclassFeature: sourceSubclassFeature,
           grantedAtLevel: grantedAtLevel,
           alwaysPrepared: alwaysPrepared,
+          choiceOptionId: choiceOptionId,
+          choiceOption: choiceOption,
           notes: notes,
           source: source,
           version: version,
@@ -268,6 +290,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
     Object? sourceSubclassFeature = _Undefined,
     Object? grantedAtLevel = _Undefined,
     Object? alwaysPrepared = _Undefined,
+    Object? choiceOptionId = _Undefined,
+    Object? choiceOption = _Undefined,
     Object? notes = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
@@ -305,6 +329,11 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
           grantedAtLevel is int? ? grantedAtLevel : this.grantedAtLevel,
       alwaysPrepared:
           alwaysPrepared is bool? ? alwaysPrepared : this.alwaysPrepared,
+      choiceOptionId:
+          choiceOptionId is int? ? choiceOptionId : this.choiceOptionId,
+      choiceOption: choiceOption is _i7.ChoiceOptionData?
+          ? choiceOption
+          : this.choiceOption?.copyWith(),
       notes: notes is String? ? notes : this.notes,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,

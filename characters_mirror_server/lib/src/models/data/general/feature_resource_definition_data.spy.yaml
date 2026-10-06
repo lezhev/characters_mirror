@@ -5,6 +5,7 @@ fields:
   subclassFeature: SubclassFeatureData?, relation(name=subclass_feature_resource_definitions, optional)
   raceFeature: RaceFeatureData?, relation(name=race_feature_resource_definitions, optional)
   key: String
+  choiceOption: ChoiceOptionData?, relation(optional)
   name: String?
   kind: FeatureResourceKind
   maxRule: FeatureResourceMaxRule

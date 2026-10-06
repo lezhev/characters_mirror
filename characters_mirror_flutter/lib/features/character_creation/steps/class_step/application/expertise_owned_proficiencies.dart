@@ -35,8 +35,15 @@ List<ChoiceOptionData> resolveSelectedChoiceOptions({
   required Map<String, List<ChoiceOptionData>> selectedOptions,
   Iterable<ChoiceOptionData> otherSelectedOptions = const [],
   required String expertiseGroupKey,
+  ClassStepView? classStep,
 }) {
   final skills = <Skill>{
+    for (final feature
+        in classStep?.currentLevelFeatures ?? const <ClassFeatureData>[])
+      ...?feature.grantedSkills,
+    for (final feature
+        in classStep?.currentSubclassFeatures ?? const <SubclassFeatureData>[])
+      ...?feature.grantedSkills,
     ...?character.race?.skillProficiencies,
     ...?character.subrace?.skillProficiencies,
     ...?selectedBackground?.skillProficiencies,
@@ -49,6 +56,12 @@ List<ChoiceOptionData> resolveSelectedChoiceOptions({
       if (selection.skill != null) selection.skill!,
   };
   final toolKeys = <String>{
+    for (final feature
+        in classStep?.currentLevelFeatures ?? const <ClassFeatureData>[])
+      ...?feature.grantedToolKeys,
+    for (final feature
+        in classStep?.currentSubclassFeatures ?? const <SubclassFeatureData>[])
+      ...?feature.grantedToolKeys,
     ...?character.race?.toolProficiencyKeys,
     ...?character.subrace?.toolProficiencyKeys,
     ...?selectedBackground?.toolProficiencyKeys,
@@ -105,6 +118,7 @@ Map<String, Set<String>> resolveExpertiseEligibleOptionKeys({
   required Map<String, List<ChoiceOptionData>> selectedOptions,
   Iterable<ChoiceOptionData> otherSelectedOptions = const [],
   required Iterable<ChoiceGroupView> choiceGroups,
+  ClassStepView? classStep,
 }) {
   final result = <String, Set<String>>{};
   for (final groupView in choiceGroups) {
@@ -120,6 +134,7 @@ Map<String, Set<String>> resolveExpertiseEligibleOptionKeys({
       selectedOptions: selectedOptions,
       otherSelectedOptions: otherSelectedOptions,
       expertiseGroupKey: groupKey,
+      classStep: classStep,
     );
     final eligibleView = filterExpertiseChoiceOptions(
       groupView,

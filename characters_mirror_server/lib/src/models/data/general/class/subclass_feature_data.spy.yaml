@@ -13,8 +13,21 @@ fields:
   updatedAt: DateTime?
   tags: List<FeatureTag>?
   choiceGroupKey: String?
+  grantedSkills: List<Skill>?
+  grantedExpertiseSkills: List<Skill>?
+  grantedLanguages: List<Language>?
+  grantedArmorTraining: List<ArmorCategory>?
+  grantedWeaponTraining: List<WeaponCategory>?
+  grantedToolKeys: List<String>?
+  grantedExpertiseToolKeys: List<String>?
+  grantedSpellKeys: List<String>?
   relatedTable: String?
   resources: List<FeatureResourceDefinitionData>?, relation(name=subclass_feature_resource_definitions)
   resourceEffects: List<FeatureResourceEffectData>?, relation(name=subclass_feature_resource_effects)
   spellGrants: List<ClassSpellGrantData>?, relation(name=subclass_feature_spell_grants)
   featureModifiers: List<FeatureModifierData>?, relation(name=subclass_feature_modifiers)
+
+indexes:
+  subclass_feature_reference_key_idx:
+    fields: referenceKey
+    unique: true

@@ -16,12 +16,13 @@ import '../../data/general/class/class_feature_data.dart' as _i2;
 import '../../data/general/class/subclass_feature_data.dart' as _i3;
 import '../../data/general/race/race_feature_data.dart' as _i4;
 import '../../enums/feature_resource_effect_type.dart' as _i5;
-import '../../enums/feature_resource_target_type.dart' as _i6;
-import '../../enums/character_feature_source_type.dart' as _i7;
-import '../../enums/feature_resource_max_rule.dart' as _i8;
-import '../../enums/ability.dart' as _i9;
-import '../../enums/feature_resource_trigger.dart' as _i10;
-import '../../enums/rest_type.dart' as _i11;
+import '../../data/general/choice_option_data.dart' as _i6;
+import '../../enums/feature_resource_target_type.dart' as _i7;
+import '../../enums/character_feature_source_type.dart' as _i8;
+import '../../enums/feature_resource_max_rule.dart' as _i9;
+import '../../enums/ability.dart' as _i10;
+import '../../enums/feature_resource_trigger.dart' as _i11;
+import '../../enums/rest_type.dart' as _i12;
 
 abstract class FeatureResourceEffectData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -34,6 +35,8 @@ abstract class FeatureResourceEffectData
     this.raceFeatureId,
     this.raceFeature,
     required this.type,
+    this.choiceOptionId,
+    this.choiceOption,
     this.targetType,
     this.targetResourceKey,
     this.targetSourceType,
@@ -61,19 +64,21 @@ abstract class FeatureResourceEffectData
     int? raceFeatureId,
     _i4.RaceFeatureData? raceFeature,
     required _i5.FeatureResourceEffectType type,
-    _i6.FeatureResourceTargetType? targetType,
+    int? choiceOptionId,
+    _i6.ChoiceOptionData? choiceOption,
+    _i7.FeatureResourceTargetType? targetType,
     String? targetResourceKey,
-    _i7.CharacterFeatureSourceType? targetSourceType,
+    _i8.CharacterFeatureSourceType? targetSourceType,
     int? targetSourceId,
-    _i8.FeatureResourceMaxRule? amountRule,
+    _i9.FeatureResourceMaxRule? amountRule,
     int? amountValue,
-    _i9.Ability? amountAbility,
-    _i10.FeatureResourceTrigger? activationTrigger,
-    _i11.RestType? usageResetOn,
-    _i11.RestType? setResetOn,
-    _i8.FeatureResourceMaxRule? setMaxRule,
+    _i10.Ability? amountAbility,
+    _i11.FeatureResourceTrigger? activationTrigger,
+    _i12.RestType? usageResetOn,
+    _i12.RestType? setResetOn,
+    _i9.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
-    _i9.Ability? setMaxAbility,
+    _i10.Ability? setMaxAbility,
     int? addMaxValue,
     bool? setUnlimited,
     int? becomesUnlimitedAtLevel,
@@ -100,44 +105,49 @@ abstract class FeatureResourceEffectData
               (jsonSerialization['raceFeature'] as Map<String, dynamic>)),
       type: _i5.FeatureResourceEffectType.fromJson(
           (jsonSerialization['type'] as String)),
+      choiceOptionId: jsonSerialization['choiceOptionId'] as int?,
+      choiceOption: jsonSerialization['choiceOption'] == null
+          ? null
+          : _i6.ChoiceOptionData.fromJson(
+              (jsonSerialization['choiceOption'] as Map<String, dynamic>)),
       targetType: jsonSerialization['targetType'] == null
           ? null
-          : _i6.FeatureResourceTargetType.fromJson(
+          : _i7.FeatureResourceTargetType.fromJson(
               (jsonSerialization['targetType'] as String)),
       targetResourceKey: jsonSerialization['targetResourceKey'] as String?,
       targetSourceType: jsonSerialization['targetSourceType'] == null
           ? null
-          : _i7.CharacterFeatureSourceType.fromJson(
+          : _i8.CharacterFeatureSourceType.fromJson(
               (jsonSerialization['targetSourceType'] as String)),
       targetSourceId: jsonSerialization['targetSourceId'] as int?,
       amountRule: jsonSerialization['amountRule'] == null
           ? null
-          : _i8.FeatureResourceMaxRule.fromJson(
+          : _i9.FeatureResourceMaxRule.fromJson(
               (jsonSerialization['amountRule'] as String)),
       amountValue: jsonSerialization['amountValue'] as int?,
       amountAbility: jsonSerialization['amountAbility'] == null
           ? null
-          : _i9.Ability.fromJson(
+          : _i10.Ability.fromJson(
               (jsonSerialization['amountAbility'] as String)),
       activationTrigger: jsonSerialization['activationTrigger'] == null
           ? null
-          : _i10.FeatureResourceTrigger.fromJson(
+          : _i11.FeatureResourceTrigger.fromJson(
               (jsonSerialization['activationTrigger'] as String)),
       usageResetOn: jsonSerialization['usageResetOn'] == null
           ? null
-          : _i11.RestType.fromJson(
+          : _i12.RestType.fromJson(
               (jsonSerialization['usageResetOn'] as String)),
       setResetOn: jsonSerialization['setResetOn'] == null
           ? null
-          : _i11.RestType.fromJson((jsonSerialization['setResetOn'] as String)),
+          : _i12.RestType.fromJson((jsonSerialization['setResetOn'] as String)),
       setMaxRule: jsonSerialization['setMaxRule'] == null
           ? null
-          : _i8.FeatureResourceMaxRule.fromJson(
+          : _i9.FeatureResourceMaxRule.fromJson(
               (jsonSerialization['setMaxRule'] as String)),
       setMaxValue: jsonSerialization['setMaxValue'] as int?,
       setMaxAbility: jsonSerialization['setMaxAbility'] == null
           ? null
-          : _i9.Ability.fromJson(
+          : _i10.Ability.fromJson(
               (jsonSerialization['setMaxAbility'] as String)),
       addMaxValue: jsonSerialization['addMaxValue'] as int?,
       setUnlimited: jsonSerialization['setUnlimited'] as bool?,
@@ -167,31 +177,35 @@ abstract class FeatureResourceEffectData
 
   _i5.FeatureResourceEffectType type;
 
-  _i6.FeatureResourceTargetType? targetType;
+  int? choiceOptionId;
+
+  _i6.ChoiceOptionData? choiceOption;
+
+  _i7.FeatureResourceTargetType? targetType;
 
   String? targetResourceKey;
 
-  _i7.CharacterFeatureSourceType? targetSourceType;
+  _i8.CharacterFeatureSourceType? targetSourceType;
 
   int? targetSourceId;
 
-  _i8.FeatureResourceMaxRule? amountRule;
+  _i9.FeatureResourceMaxRule? amountRule;
 
   int? amountValue;
 
-  _i9.Ability? amountAbility;
+  _i10.Ability? amountAbility;
 
-  _i10.FeatureResourceTrigger? activationTrigger;
+  _i11.FeatureResourceTrigger? activationTrigger;
 
-  _i11.RestType? usageResetOn;
+  _i12.RestType? usageResetOn;
 
-  _i11.RestType? setResetOn;
+  _i12.RestType? setResetOn;
 
-  _i8.FeatureResourceMaxRule? setMaxRule;
+  _i9.FeatureResourceMaxRule? setMaxRule;
 
   int? setMaxValue;
 
-  _i9.Ability? setMaxAbility;
+  _i10.Ability? setMaxAbility;
 
   int? addMaxValue;
 
@@ -214,19 +228,21 @@ abstract class FeatureResourceEffectData
     int? raceFeatureId,
     _i4.RaceFeatureData? raceFeature,
     _i5.FeatureResourceEffectType? type,
-    _i6.FeatureResourceTargetType? targetType,
+    int? choiceOptionId,
+    _i6.ChoiceOptionData? choiceOption,
+    _i7.FeatureResourceTargetType? targetType,
     String? targetResourceKey,
-    _i7.CharacterFeatureSourceType? targetSourceType,
+    _i8.CharacterFeatureSourceType? targetSourceType,
     int? targetSourceId,
-    _i8.FeatureResourceMaxRule? amountRule,
+    _i9.FeatureResourceMaxRule? amountRule,
     int? amountValue,
-    _i9.Ability? amountAbility,
-    _i10.FeatureResourceTrigger? activationTrigger,
-    _i11.RestType? usageResetOn,
-    _i11.RestType? setResetOn,
-    _i8.FeatureResourceMaxRule? setMaxRule,
+    _i10.Ability? amountAbility,
+    _i11.FeatureResourceTrigger? activationTrigger,
+    _i12.RestType? usageResetOn,
+    _i12.RestType? setResetOn,
+    _i9.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
-    _i9.Ability? setMaxAbility,
+    _i10.Ability? setMaxAbility,
     int? addMaxValue,
     bool? setUnlimited,
     int? becomesUnlimitedAtLevel,
@@ -242,6 +258,8 @@ abstract class FeatureResourceEffectData
       if (raceFeatureId != null) 'raceFeatureId': raceFeatureId,
       if (raceFeature != null) 'raceFeature': raceFeature?.toJson(),
       'type': type.toJson(),
+      if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
+      if (choiceOption != null) 'choiceOption': choiceOption?.toJson(),
       if (targetType != null) 'targetType': targetType?.toJson(),
       if (targetResourceKey != null) 'targetResourceKey': targetResourceKey,
       if (targetSourceType != null)
@@ -277,6 +295,9 @@ abstract class FeatureResourceEffectData
       if (raceFeatureId != null) 'raceFeatureId': raceFeatureId,
       if (raceFeature != null) 'raceFeature': raceFeature?.toJsonForProtocol(),
       'type': type.toJson(),
+      if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
+      if (choiceOption != null)
+        'choiceOption': choiceOption?.toJsonForProtocol(),
       if (targetType != null) 'targetType': targetType?.toJson(),
       if (targetResourceKey != null) 'targetResourceKey': targetResourceKey,
       if (targetSourceType != null)
@@ -303,11 +324,13 @@ abstract class FeatureResourceEffectData
     _i2.ClassFeatureDataInclude? classFeature,
     _i3.SubclassFeatureDataInclude? subclassFeature,
     _i4.RaceFeatureDataInclude? raceFeature,
+    _i6.ChoiceOptionDataInclude? choiceOption,
   }) {
     return FeatureResourceEffectDataInclude._(
       classFeature: classFeature,
       subclassFeature: subclassFeature,
       raceFeature: raceFeature,
+      choiceOption: choiceOption,
     );
   }
 
@@ -349,19 +372,21 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
     int? raceFeatureId,
     _i4.RaceFeatureData? raceFeature,
     required _i5.FeatureResourceEffectType type,
-    _i6.FeatureResourceTargetType? targetType,
+    int? choiceOptionId,
+    _i6.ChoiceOptionData? choiceOption,
+    _i7.FeatureResourceTargetType? targetType,
     String? targetResourceKey,
-    _i7.CharacterFeatureSourceType? targetSourceType,
+    _i8.CharacterFeatureSourceType? targetSourceType,
     int? targetSourceId,
-    _i8.FeatureResourceMaxRule? amountRule,
+    _i9.FeatureResourceMaxRule? amountRule,
     int? amountValue,
-    _i9.Ability? amountAbility,
-    _i10.FeatureResourceTrigger? activationTrigger,
-    _i11.RestType? usageResetOn,
-    _i11.RestType? setResetOn,
-    _i8.FeatureResourceMaxRule? setMaxRule,
+    _i10.Ability? amountAbility,
+    _i11.FeatureResourceTrigger? activationTrigger,
+    _i12.RestType? usageResetOn,
+    _i12.RestType? setResetOn,
+    _i9.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
-    _i9.Ability? setMaxAbility,
+    _i10.Ability? setMaxAbility,
     int? addMaxValue,
     bool? setUnlimited,
     int? becomesUnlimitedAtLevel,
@@ -374,6 +399,8 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
           raceFeatureId: raceFeatureId,
           raceFeature: raceFeature,
           type: type,
+          choiceOptionId: choiceOptionId,
+          choiceOption: choiceOption,
           targetType: targetType,
           targetResourceKey: targetResourceKey,
           targetSourceType: targetSourceType,
@@ -405,6 +432,8 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
     Object? raceFeatureId = _Undefined,
     Object? raceFeature = _Undefined,
     _i5.FeatureResourceEffectType? type,
+    Object? choiceOptionId = _Undefined,
+    Object? choiceOption = _Undefined,
     Object? targetType = _Undefined,
     Object? targetResourceKey = _Undefined,
     Object? targetSourceType = _Undefined,
@@ -440,35 +469,40 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
           ? raceFeature
           : this.raceFeature?.copyWith(),
       type: type ?? this.type,
-      targetType: targetType is _i6.FeatureResourceTargetType?
+      choiceOptionId:
+          choiceOptionId is int? ? choiceOptionId : this.choiceOptionId,
+      choiceOption: choiceOption is _i6.ChoiceOptionData?
+          ? choiceOption
+          : this.choiceOption?.copyWith(),
+      targetType: targetType is _i7.FeatureResourceTargetType?
           ? targetType
           : this.targetType,
       targetResourceKey: targetResourceKey is String?
           ? targetResourceKey
           : this.targetResourceKey,
-      targetSourceType: targetSourceType is _i7.CharacterFeatureSourceType?
+      targetSourceType: targetSourceType is _i8.CharacterFeatureSourceType?
           ? targetSourceType
           : this.targetSourceType,
       targetSourceId:
           targetSourceId is int? ? targetSourceId : this.targetSourceId,
-      amountRule: amountRule is _i8.FeatureResourceMaxRule?
+      amountRule: amountRule is _i9.FeatureResourceMaxRule?
           ? amountRule
           : this.amountRule,
       amountValue: amountValue is int? ? amountValue : this.amountValue,
       amountAbility:
-          amountAbility is _i9.Ability? ? amountAbility : this.amountAbility,
-      activationTrigger: activationTrigger is _i10.FeatureResourceTrigger?
+          amountAbility is _i10.Ability? ? amountAbility : this.amountAbility,
+      activationTrigger: activationTrigger is _i11.FeatureResourceTrigger?
           ? activationTrigger
           : this.activationTrigger,
       usageResetOn:
-          usageResetOn is _i11.RestType? ? usageResetOn : this.usageResetOn,
-      setResetOn: setResetOn is _i11.RestType? ? setResetOn : this.setResetOn,
-      setMaxRule: setMaxRule is _i8.FeatureResourceMaxRule?
+          usageResetOn is _i12.RestType? ? usageResetOn : this.usageResetOn,
+      setResetOn: setResetOn is _i12.RestType? ? setResetOn : this.setResetOn,
+      setMaxRule: setMaxRule is _i9.FeatureResourceMaxRule?
           ? setMaxRule
           : this.setMaxRule,
       setMaxValue: setMaxValue is int? ? setMaxValue : this.setMaxValue,
       setMaxAbility:
-          setMaxAbility is _i9.Ability? ? setMaxAbility : this.setMaxAbility,
+          setMaxAbility is _i10.Ability? ? setMaxAbility : this.setMaxAbility,
       addMaxValue: addMaxValue is int? ? addMaxValue : this.addMaxValue,
       setUnlimited: setUnlimited is bool? ? setUnlimited : this.setUnlimited,
       becomesUnlimitedAtLevel: becomesUnlimitedAtLevel is int?
@@ -497,6 +531,10 @@ class FeatureResourceEffectDataTable extends _i1.Table<int?> {
       'type',
       this,
       _i1.EnumSerialization.byName,
+    );
+    choiceOptionId = _i1.ColumnInt(
+      'choiceOptionId',
+      this,
     );
     targetType = _i1.ColumnEnum(
       'targetType',
@@ -587,31 +625,35 @@ class FeatureResourceEffectDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnEnum<_i5.FeatureResourceEffectType> type;
 
-  late final _i1.ColumnEnum<_i6.FeatureResourceTargetType> targetType;
+  late final _i1.ColumnInt choiceOptionId;
+
+  _i6.ChoiceOptionDataTable? _choiceOption;
+
+  late final _i1.ColumnEnum<_i7.FeatureResourceTargetType> targetType;
 
   late final _i1.ColumnString targetResourceKey;
 
-  late final _i1.ColumnEnum<_i7.CharacterFeatureSourceType> targetSourceType;
+  late final _i1.ColumnEnum<_i8.CharacterFeatureSourceType> targetSourceType;
 
   late final _i1.ColumnInt targetSourceId;
 
-  late final _i1.ColumnEnum<_i8.FeatureResourceMaxRule> amountRule;
+  late final _i1.ColumnEnum<_i9.FeatureResourceMaxRule> amountRule;
 
   late final _i1.ColumnInt amountValue;
 
-  late final _i1.ColumnEnum<_i9.Ability> amountAbility;
+  late final _i1.ColumnEnum<_i10.Ability> amountAbility;
 
-  late final _i1.ColumnEnum<_i10.FeatureResourceTrigger> activationTrigger;
+  late final _i1.ColumnEnum<_i11.FeatureResourceTrigger> activationTrigger;
 
-  late final _i1.ColumnEnum<_i11.RestType> usageResetOn;
+  late final _i1.ColumnEnum<_i12.RestType> usageResetOn;
 
-  late final _i1.ColumnEnum<_i11.RestType> setResetOn;
+  late final _i1.ColumnEnum<_i12.RestType> setResetOn;
 
-  late final _i1.ColumnEnum<_i8.FeatureResourceMaxRule> setMaxRule;
+  late final _i1.ColumnEnum<_i9.FeatureResourceMaxRule> setMaxRule;
 
   late final _i1.ColumnInt setMaxValue;
 
-  late final _i1.ColumnEnum<_i9.Ability> setMaxAbility;
+  late final _i1.ColumnEnum<_i10.Ability> setMaxAbility;
 
   late final _i1.ColumnInt addMaxValue;
 
@@ -658,6 +700,19 @@ class FeatureResourceEffectDataTable extends _i1.Table<int?> {
     return _raceFeature!;
   }
 
+  _i6.ChoiceOptionDataTable get choiceOption {
+    if (_choiceOption != null) return _choiceOption!;
+    _choiceOption = _i1.createRelationTable(
+      relationFieldName: 'choiceOption',
+      field: FeatureResourceEffectData.t.choiceOptionId,
+      foreignField: _i6.ChoiceOptionData.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i6.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
+    );
+    return _choiceOption!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -665,6 +720,7 @@ class FeatureResourceEffectDataTable extends _i1.Table<int?> {
         subclassFeatureId,
         raceFeatureId,
         type,
+        choiceOptionId,
         targetType,
         targetResourceKey,
         targetSourceType,
@@ -694,6 +750,9 @@ class FeatureResourceEffectDataTable extends _i1.Table<int?> {
     if (relationField == 'raceFeature') {
       return raceFeature;
     }
+    if (relationField == 'choiceOption') {
+      return choiceOption;
+    }
     return null;
   }
 }
@@ -703,10 +762,12 @@ class FeatureResourceEffectDataInclude extends _i1.IncludeObject {
     _i2.ClassFeatureDataInclude? classFeature,
     _i3.SubclassFeatureDataInclude? subclassFeature,
     _i4.RaceFeatureDataInclude? raceFeature,
+    _i6.ChoiceOptionDataInclude? choiceOption,
   }) {
     _classFeature = classFeature;
     _subclassFeature = subclassFeature;
     _raceFeature = raceFeature;
+    _choiceOption = choiceOption;
   }
 
   _i2.ClassFeatureDataInclude? _classFeature;
@@ -715,11 +776,14 @@ class FeatureResourceEffectDataInclude extends _i1.IncludeObject {
 
   _i4.RaceFeatureDataInclude? _raceFeature;
 
+  _i6.ChoiceOptionDataInclude? _choiceOption;
+
   @override
   Map<String, _i1.Include?> get includes => {
         'classFeature': _classFeature,
         'subclassFeature': _subclassFeature,
         'raceFeature': _raceFeature,
+        'choiceOption': _choiceOption,
       };
 
   @override
@@ -1043,6 +1107,30 @@ class FeatureResourceEffectDataAttachRowRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between the given [FeatureResourceEffectData] and [ChoiceOptionData]
+  /// by setting the [FeatureResourceEffectData]'s foreign key `choiceOptionId` to refer to the [ChoiceOptionData].
+  Future<void> choiceOption(
+    _i1.Session session,
+    FeatureResourceEffectData featureResourceEffectData,
+    _i6.ChoiceOptionData choiceOption, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureResourceEffectData.id == null) {
+      throw ArgumentError.notNull('featureResourceEffectData.id');
+    }
+    if (choiceOption.id == null) {
+      throw ArgumentError.notNull('choiceOption.id');
+    }
+
+    var $featureResourceEffectData =
+        featureResourceEffectData.copyWith(choiceOptionId: choiceOption.id);
+    await session.db.updateRow<FeatureResourceEffectData>(
+      $featureResourceEffectData,
+      columns: [FeatureResourceEffectData.t.choiceOptionId],
+      transaction: transaction,
+    );
+  }
 }
 
 class FeatureResourceEffectDataDetachRowRepository {
@@ -1113,6 +1201,29 @@ class FeatureResourceEffectDataDetachRowRepository {
     await session.db.updateRow<FeatureResourceEffectData>(
       $featureresourceeffectdata,
       columns: [FeatureResourceEffectData.t.raceFeatureId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [FeatureResourceEffectData] and the [ChoiceOptionData] set in `choiceOption`
+  /// by setting the [FeatureResourceEffectData]'s foreign key `choiceOptionId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> choiceOption(
+    _i1.Session session,
+    FeatureResourceEffectData featureresourceeffectdata, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (featureresourceeffectdata.id == null) {
+      throw ArgumentError.notNull('featureresourceeffectdata.id');
+    }
+
+    var $featureresourceeffectdata =
+        featureresourceeffectdata.copyWith(choiceOptionId: null);
+    await session.db.updateRow<FeatureResourceEffectData>(
+      $featureresourceeffectdata,
+      columns: [FeatureResourceEffectData.t.choiceOptionId],
       transaction: transaction,
     );
   }

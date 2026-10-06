@@ -1,11 +1,12 @@
 part of '../offline_character_resolver.dart';
 
 Future<List<String>> _collectAlwaysPreparedSpellKeys(
-  OfflineCacheDatabase cache,
-  CharacterData character,
-  List<CharacterClassEntryData> entries,
-  int totalLevel,
-) async {
+    OfflineCacheDatabase cache,
+    CharacterData character,
+    List<CharacterClassEntryData> entries,
+    int totalLevel,
+    {required Set<int> selectedOptionIds,
+    bool onlyAlwaysPrepared = true}) async {
   final grants = await cache.getReferenceList(
         'class_spell_grant',
         offlineAllKey,
@@ -51,7 +52,11 @@ Future<List<String>> _collectAlwaysPreparedSpellKeys(
   };
   final values = <String>{};
   for (final grant in grants) {
-    if (grant.alwaysPrepared != true) continue;
+    if ((onlyAlwaysPrepared && grant.alwaysPrepared != true) ||
+        (grant.choiceOptionId != null &&
+            !selectedOptionIds.contains(grant.choiceOptionId))) {
+      continue;
+    }
     final requiredLevel = grant.grantedAtLevel ?? 1;
     final sourceClassId = grant.sourceClassId ?? grant.sourceClass?.id;
     final sourceSubclassId = grant.sourceSubclassId ?? grant.sourceSubclass?.id;
@@ -86,7 +91,11 @@ Future<(Map<int, int>?, Map<int, int>?)> _spellSlots(
   final standardEntries = [
     for (final entry in entries)
       if (_isStandardCasterProgression(
-        entry.classData?.spellcastingProgression,
+        entry.classData == null
+            ? null
+            : effectiveSpellcastingClass(
+                    entry.classData!, entry.subclass, entry.level ?? 0)
+                .spellcastingProgression,
       ))
         entry,
   ];
@@ -95,7 +104,10 @@ Future<(Map<int, int>?, Map<int, int>?)> _spellSlots(
   var pactLevel = 0;
   for (final entry in entries) {
     final level = entry.level ?? 0;
-    switch (entry.classData?.spellcastingProgression) {
+    switch (entry.classData == null
+        ? null
+        : effectiveSpellcastingClass(entry.classData!, entry.subclass, level)
+            .spellcastingProgression) {
       case SpellcastingProgression.full:
         standardLevel += level;
         break;

@@ -2,6 +2,7 @@ class: ClassLevelData
 table: class_level_data
 fields:
   classData: ClassData?, relation
+  subclassData: SubclassData?, relation(optional)
   level: int
   knownCantrips: int? # Total at this class level.
   knownSpells: int? # Total for known mode only.

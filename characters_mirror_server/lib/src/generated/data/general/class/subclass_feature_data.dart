@@ -14,10 +14,14 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/class/subclass_data.dart' as _i2;
 import '../../../enums/feature_tag.dart' as _i3;
-import '../../../data/general/feature_resource_definition_data.dart' as _i4;
-import '../../../data/general/feature_resource_effect_data.dart' as _i5;
-import '../../../data/class_spell_grant_data.dart' as _i6;
-import '../../../data/general/feature_modifier_data.dart' as _i7;
+import '../../../enums/skill.dart' as _i4;
+import '../../../enums/language.dart' as _i5;
+import '../../../enums/armor_category.dart' as _i6;
+import '../../../enums/weapon_category.dart' as _i7;
+import '../../../data/general/feature_resource_definition_data.dart' as _i8;
+import '../../../data/general/feature_resource_effect_data.dart' as _i9;
+import '../../../data/class_spell_grant_data.dart' as _i10;
+import '../../../data/general/feature_modifier_data.dart' as _i11;
 
 abstract class SubclassFeatureData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -36,6 +40,14 @@ abstract class SubclassFeatureData
     this.updatedAt,
     this.tags,
     this.choiceGroupKey,
+    this.grantedSkills,
+    this.grantedExpertiseSkills,
+    this.grantedLanguages,
+    this.grantedArmorTraining,
+    this.grantedWeaponTraining,
+    this.grantedToolKeys,
+    this.grantedExpertiseToolKeys,
+    this.grantedSpellKeys,
     this.relatedTable,
     this.resources,
     this.resourceEffects,
@@ -58,11 +70,19 @@ abstract class SubclassFeatureData
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.Skill>? grantedSkills,
+    List<_i4.Skill>? grantedExpertiseSkills,
+    List<_i5.Language>? grantedLanguages,
+    List<_i6.ArmorCategory>? grantedArmorTraining,
+    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<String>? grantedToolKeys,
+    List<String>? grantedExpertiseToolKeys,
+    List<String>? grantedSpellKeys,
     String? relatedTable,
-    List<_i4.FeatureResourceDefinitionData>? resources,
-    List<_i5.FeatureResourceEffectData>? resourceEffects,
-    List<_i6.ClassSpellGrantData>? spellGrants,
-    List<_i7.FeatureModifierData>? featureModifiers,
+    List<_i8.FeatureResourceDefinitionData>? resources,
+    List<_i9.FeatureResourceEffectData>? resourceEffects,
+    List<_i10.ClassSpellGrantData>? spellGrants,
+    List<_i11.FeatureModifierData>? featureModifiers,
   }) = _SubclassFeatureDataImpl;
 
   factory SubclassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -90,22 +110,49 @@ abstract class SubclassFeatureData
           ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
           .toList(),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
+      grantedSkills: (jsonSerialization['grantedSkills'] as List?)
+          ?.map((e) => _i4.Skill.fromJson((e as String)))
+          .toList(),
+      grantedExpertiseSkills:
+          (jsonSerialization['grantedExpertiseSkills'] as List?)
+              ?.map((e) => _i4.Skill.fromJson((e as String)))
+              .toList(),
+      grantedLanguages: (jsonSerialization['grantedLanguages'] as List?)
+          ?.map((e) => _i5.Language.fromJson((e as String)))
+          .toList(),
+      grantedArmorTraining: (jsonSerialization['grantedArmorTraining'] as List?)
+          ?.map((e) => _i6.ArmorCategory.fromJson((e as String)))
+          .toList(),
+      grantedWeaponTraining:
+          (jsonSerialization['grantedWeaponTraining'] as List?)
+              ?.map((e) => _i7.WeaponCategory.fromJson((e as String)))
+              .toList(),
+      grantedToolKeys: (jsonSerialization['grantedToolKeys'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
+      grantedExpertiseToolKeys:
+          (jsonSerialization['grantedExpertiseToolKeys'] as List?)
+              ?.map((e) => e as String)
+              .toList(),
+      grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
+          ?.map((e) => e as String)
+          .toList(),
       relatedTable: jsonSerialization['relatedTable'] as String?,
       resources: (jsonSerialization['resources'] as List?)
-          ?.map((e) => _i4.FeatureResourceDefinitionData.fromJson(
+          ?.map((e) => _i8.FeatureResourceDefinitionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       resourceEffects: (jsonSerialization['resourceEffects'] as List?)
-          ?.map((e) => _i5.FeatureResourceEffectData.fromJson(
+          ?.map((e) => _i9.FeatureResourceEffectData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       spellGrants: (jsonSerialization['spellGrants'] as List?)
           ?.map((e) =>
-              _i6.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
+              _i10.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       featureModifiers: (jsonSerialization['featureModifiers'] as List?)
           ?.map((e) =>
-              _i7.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
+              _i11.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
@@ -143,15 +190,31 @@ abstract class SubclassFeatureData
 
   String? choiceGroupKey;
 
+  List<_i4.Skill>? grantedSkills;
+
+  List<_i4.Skill>? grantedExpertiseSkills;
+
+  List<_i5.Language>? grantedLanguages;
+
+  List<_i6.ArmorCategory>? grantedArmorTraining;
+
+  List<_i7.WeaponCategory>? grantedWeaponTraining;
+
+  List<String>? grantedToolKeys;
+
+  List<String>? grantedExpertiseToolKeys;
+
+  List<String>? grantedSpellKeys;
+
   String? relatedTable;
 
-  List<_i4.FeatureResourceDefinitionData>? resources;
+  List<_i8.FeatureResourceDefinitionData>? resources;
 
-  List<_i5.FeatureResourceEffectData>? resourceEffects;
+  List<_i9.FeatureResourceEffectData>? resourceEffects;
 
-  List<_i6.ClassSpellGrantData>? spellGrants;
+  List<_i10.ClassSpellGrantData>? spellGrants;
 
-  List<_i7.FeatureModifierData>? featureModifiers;
+  List<_i11.FeatureModifierData>? featureModifiers;
 
   @override
   _i1.Table<int?> get table => t;
@@ -174,11 +237,19 @@ abstract class SubclassFeatureData
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.Skill>? grantedSkills,
+    List<_i4.Skill>? grantedExpertiseSkills,
+    List<_i5.Language>? grantedLanguages,
+    List<_i6.ArmorCategory>? grantedArmorTraining,
+    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<String>? grantedToolKeys,
+    List<String>? grantedExpertiseToolKeys,
+    List<String>? grantedSpellKeys,
     String? relatedTable,
-    List<_i4.FeatureResourceDefinitionData>? resources,
-    List<_i5.FeatureResourceEffectData>? resourceEffects,
-    List<_i6.ClassSpellGrantData>? spellGrants,
-    List<_i7.FeatureModifierData>? featureModifiers,
+    List<_i8.FeatureResourceDefinitionData>? resources,
+    List<_i9.FeatureResourceEffectData>? resourceEffects,
+    List<_i10.ClassSpellGrantData>? spellGrants,
+    List<_i11.FeatureModifierData>? featureModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -197,6 +268,25 @@ abstract class SubclassFeatureData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (grantedSkills != null)
+        'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedExpertiseSkills != null)
+        'grantedExpertiseSkills':
+            grantedExpertiseSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedLanguages != null)
+        'grantedLanguages':
+            grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedArmorTraining != null)
+        'grantedArmorTraining':
+            grantedArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedWeaponTraining != null)
+        'grantedWeaponTraining':
+            grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
+      if (grantedExpertiseToolKeys != null)
+        'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
+      if (grantedSpellKeys != null)
+        'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (relatedTable != null) 'relatedTable': relatedTable,
       if (resources != null)
         'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
@@ -229,6 +319,25 @@ abstract class SubclassFeatureData
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (grantedSkills != null)
+        'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedExpertiseSkills != null)
+        'grantedExpertiseSkills':
+            grantedExpertiseSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedLanguages != null)
+        'grantedLanguages':
+            grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedArmorTraining != null)
+        'grantedArmorTraining':
+            grantedArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedWeaponTraining != null)
+        'grantedWeaponTraining':
+            grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
+      if (grantedExpertiseToolKeys != null)
+        'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
+      if (grantedSpellKeys != null)
+        'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (relatedTable != null) 'relatedTable': relatedTable,
       if (resources != null)
         'resources':
@@ -247,10 +356,10 @@ abstract class SubclassFeatureData
 
   static SubclassFeatureDataInclude include({
     _i2.SubclassDataInclude? parentSubclass,
-    _i4.FeatureResourceDefinitionDataIncludeList? resources,
-    _i5.FeatureResourceEffectDataIncludeList? resourceEffects,
-    _i6.ClassSpellGrantDataIncludeList? spellGrants,
-    _i7.FeatureModifierDataIncludeList? featureModifiers,
+    _i8.FeatureResourceDefinitionDataIncludeList? resources,
+    _i9.FeatureResourceEffectDataIncludeList? resourceEffects,
+    _i10.ClassSpellGrantDataIncludeList? spellGrants,
+    _i11.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     return SubclassFeatureDataInclude._(
       parentSubclass: parentSubclass,
@@ -305,11 +414,19 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     DateTime? updatedAt,
     List<_i3.FeatureTag>? tags,
     String? choiceGroupKey,
+    List<_i4.Skill>? grantedSkills,
+    List<_i4.Skill>? grantedExpertiseSkills,
+    List<_i5.Language>? grantedLanguages,
+    List<_i6.ArmorCategory>? grantedArmorTraining,
+    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<String>? grantedToolKeys,
+    List<String>? grantedExpertiseToolKeys,
+    List<String>? grantedSpellKeys,
     String? relatedTable,
-    List<_i4.FeatureResourceDefinitionData>? resources,
-    List<_i5.FeatureResourceEffectData>? resourceEffects,
-    List<_i6.ClassSpellGrantData>? spellGrants,
-    List<_i7.FeatureModifierData>? featureModifiers,
+    List<_i8.FeatureResourceDefinitionData>? resources,
+    List<_i9.FeatureResourceEffectData>? resourceEffects,
+    List<_i10.ClassSpellGrantData>? spellGrants,
+    List<_i11.FeatureModifierData>? featureModifiers,
   }) : super._(
           id: id,
           parentSubclassId: parentSubclassId,
@@ -325,6 +442,14 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           updatedAt: updatedAt,
           tags: tags,
           choiceGroupKey: choiceGroupKey,
+          grantedSkills: grantedSkills,
+          grantedExpertiseSkills: grantedExpertiseSkills,
+          grantedLanguages: grantedLanguages,
+          grantedArmorTraining: grantedArmorTraining,
+          grantedWeaponTraining: grantedWeaponTraining,
+          grantedToolKeys: grantedToolKeys,
+          grantedExpertiseToolKeys: grantedExpertiseToolKeys,
+          grantedSpellKeys: grantedSpellKeys,
           relatedTable: relatedTable,
           resources: resources,
           resourceEffects: resourceEffects,
@@ -351,6 +476,14 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     Object? updatedAt = _Undefined,
     Object? tags = _Undefined,
     Object? choiceGroupKey = _Undefined,
+    Object? grantedSkills = _Undefined,
+    Object? grantedExpertiseSkills = _Undefined,
+    Object? grantedLanguages = _Undefined,
+    Object? grantedArmorTraining = _Undefined,
+    Object? grantedWeaponTraining = _Undefined,
+    Object? grantedToolKeys = _Undefined,
+    Object? grantedExpertiseToolKeys = _Undefined,
+    Object? grantedSpellKeys = _Undefined,
     Object? relatedTable = _Undefined,
     Object? resources = _Undefined,
     Object? resourceEffects = _Undefined,
@@ -379,17 +512,41 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           : this.tags?.map((e0) => e0).toList(),
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      grantedSkills: grantedSkills is List<_i4.Skill>?
+          ? grantedSkills
+          : this.grantedSkills?.map((e0) => e0).toList(),
+      grantedExpertiseSkills: grantedExpertiseSkills is List<_i4.Skill>?
+          ? grantedExpertiseSkills
+          : this.grantedExpertiseSkills?.map((e0) => e0).toList(),
+      grantedLanguages: grantedLanguages is List<_i5.Language>?
+          ? grantedLanguages
+          : this.grantedLanguages?.map((e0) => e0).toList(),
+      grantedArmorTraining: grantedArmorTraining is List<_i6.ArmorCategory>?
+          ? grantedArmorTraining
+          : this.grantedArmorTraining?.map((e0) => e0).toList(),
+      grantedWeaponTraining: grantedWeaponTraining is List<_i7.WeaponCategory>?
+          ? grantedWeaponTraining
+          : this.grantedWeaponTraining?.map((e0) => e0).toList(),
+      grantedToolKeys: grantedToolKeys is List<String>?
+          ? grantedToolKeys
+          : this.grantedToolKeys?.map((e0) => e0).toList(),
+      grantedExpertiseToolKeys: grantedExpertiseToolKeys is List<String>?
+          ? grantedExpertiseToolKeys
+          : this.grantedExpertiseToolKeys?.map((e0) => e0).toList(),
+      grantedSpellKeys: grantedSpellKeys is List<String>?
+          ? grantedSpellKeys
+          : this.grantedSpellKeys?.map((e0) => e0).toList(),
       relatedTable: relatedTable is String? ? relatedTable : this.relatedTable,
-      resources: resources is List<_i4.FeatureResourceDefinitionData>?
+      resources: resources is List<_i8.FeatureResourceDefinitionData>?
           ? resources
           : this.resources?.map((e0) => e0.copyWith()).toList(),
-      resourceEffects: resourceEffects is List<_i5.FeatureResourceEffectData>?
+      resourceEffects: resourceEffects is List<_i9.FeatureResourceEffectData>?
           ? resourceEffects
           : this.resourceEffects?.map((e0) => e0.copyWith()).toList(),
-      spellGrants: spellGrants is List<_i6.ClassSpellGrantData>?
+      spellGrants: spellGrants is List<_i10.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
-      featureModifiers: featureModifiers is List<_i7.FeatureModifierData>?
+      featureModifiers: featureModifiers is List<_i11.FeatureModifierData>?
           ? featureModifiers
           : this.featureModifiers?.map((e0) => e0.copyWith()).toList(),
     );
@@ -447,6 +604,38 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
       'choiceGroupKey',
       this,
     );
+    grantedSkills = _i1.ColumnSerializable(
+      'grantedSkills',
+      this,
+    );
+    grantedExpertiseSkills = _i1.ColumnSerializable(
+      'grantedExpertiseSkills',
+      this,
+    );
+    grantedLanguages = _i1.ColumnSerializable(
+      'grantedLanguages',
+      this,
+    );
+    grantedArmorTraining = _i1.ColumnSerializable(
+      'grantedArmorTraining',
+      this,
+    );
+    grantedWeaponTraining = _i1.ColumnSerializable(
+      'grantedWeaponTraining',
+      this,
+    );
+    grantedToolKeys = _i1.ColumnSerializable(
+      'grantedToolKeys',
+      this,
+    );
+    grantedExpertiseToolKeys = _i1.ColumnSerializable(
+      'grantedExpertiseToolKeys',
+      this,
+    );
+    grantedSpellKeys = _i1.ColumnSerializable(
+      'grantedSpellKeys',
+      this,
+    );
     relatedTable = _i1.ColumnString(
       'relatedTable',
       this,
@@ -479,23 +668,39 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString choiceGroupKey;
 
+  late final _i1.ColumnSerializable grantedSkills;
+
+  late final _i1.ColumnSerializable grantedExpertiseSkills;
+
+  late final _i1.ColumnSerializable grantedLanguages;
+
+  late final _i1.ColumnSerializable grantedArmorTraining;
+
+  late final _i1.ColumnSerializable grantedWeaponTraining;
+
+  late final _i1.ColumnSerializable grantedToolKeys;
+
+  late final _i1.ColumnSerializable grantedExpertiseToolKeys;
+
+  late final _i1.ColumnSerializable grantedSpellKeys;
+
   late final _i1.ColumnString relatedTable;
 
-  _i4.FeatureResourceDefinitionDataTable? ___resources;
+  _i8.FeatureResourceDefinitionDataTable? ___resources;
 
-  _i1.ManyRelation<_i4.FeatureResourceDefinitionDataTable>? _resources;
+  _i1.ManyRelation<_i8.FeatureResourceDefinitionDataTable>? _resources;
 
-  _i5.FeatureResourceEffectDataTable? ___resourceEffects;
+  _i9.FeatureResourceEffectDataTable? ___resourceEffects;
 
-  _i1.ManyRelation<_i5.FeatureResourceEffectDataTable>? _resourceEffects;
+  _i1.ManyRelation<_i9.FeatureResourceEffectDataTable>? _resourceEffects;
 
-  _i6.ClassSpellGrantDataTable? ___spellGrants;
+  _i10.ClassSpellGrantDataTable? ___spellGrants;
 
-  _i1.ManyRelation<_i6.ClassSpellGrantDataTable>? _spellGrants;
+  _i1.ManyRelation<_i10.ClassSpellGrantDataTable>? _spellGrants;
 
-  _i7.FeatureModifierDataTable? ___featureModifiers;
+  _i11.FeatureModifierDataTable? ___featureModifiers;
 
-  _i1.ManyRelation<_i7.FeatureModifierDataTable>? _featureModifiers;
+  _i1.ManyRelation<_i11.FeatureModifierDataTable>? _featureModifiers;
 
   _i2.SubclassDataTable get parentSubclass {
     if (_parentSubclass != null) return _parentSubclass!;
@@ -510,127 +715,127 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
     return _parentSubclass!;
   }
 
-  _i4.FeatureResourceDefinitionDataTable get __resources {
+  _i8.FeatureResourceDefinitionDataTable get __resources {
     if (___resources != null) return ___resources!;
     ___resources = _i1.createRelationTable(
       relationFieldName: '__resources',
       field: SubclassFeatureData.t.id,
-      foreignField: _i4.FeatureResourceDefinitionData.t.subclassFeatureId,
+      foreignField: _i8.FeatureResourceDefinitionData.t.subclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.FeatureResourceDefinitionDataTable(
+          _i8.FeatureResourceDefinitionDataTable(
               tableRelation: foreignTableRelation),
     );
     return ___resources!;
   }
 
-  _i5.FeatureResourceEffectDataTable get __resourceEffects {
+  _i9.FeatureResourceEffectDataTable get __resourceEffects {
     if (___resourceEffects != null) return ___resourceEffects!;
     ___resourceEffects = _i1.createRelationTable(
       relationFieldName: '__resourceEffects',
       field: SubclassFeatureData.t.id,
-      foreignField: _i5.FeatureResourceEffectData.t.subclassFeatureId,
+      foreignField: _i9.FeatureResourceEffectData.t.subclassFeatureId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) => _i5.FeatureResourceEffectDataTable(
+      createTable: (foreignTableRelation) => _i9.FeatureResourceEffectDataTable(
           tableRelation: foreignTableRelation),
     );
     return ___resourceEffects!;
   }
 
-  _i6.ClassSpellGrantDataTable get __spellGrants {
+  _i10.ClassSpellGrantDataTable get __spellGrants {
     if (___spellGrants != null) return ___spellGrants!;
     ___spellGrants = _i1.createRelationTable(
       relationFieldName: '__spellGrants',
       field: SubclassFeatureData.t.id,
-      foreignField: _i6.ClassSpellGrantData.t.sourceSubclassFeatureId,
+      foreignField: _i10.ClassSpellGrantData.t.sourceSubclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i6.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+          _i10.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
     );
     return ___spellGrants!;
   }
 
-  _i7.FeatureModifierDataTable get __featureModifiers {
+  _i11.FeatureModifierDataTable get __featureModifiers {
     if (___featureModifiers != null) return ___featureModifiers!;
     ___featureModifiers = _i1.createRelationTable(
       relationFieldName: '__featureModifiers',
       field: SubclassFeatureData.t.id,
-      foreignField: _i7.FeatureModifierData.t.subclassFeatureId,
+      foreignField: _i11.FeatureModifierData.t.subclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i7.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+          _i11.FeatureModifierDataTable(tableRelation: foreignTableRelation),
     );
     return ___featureModifiers!;
   }
 
-  _i1.ManyRelation<_i4.FeatureResourceDefinitionDataTable> get resources {
+  _i1.ManyRelation<_i8.FeatureResourceDefinitionDataTable> get resources {
     if (_resources != null) return _resources!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'resources',
       field: SubclassFeatureData.t.id,
-      foreignField: _i4.FeatureResourceDefinitionData.t.subclassFeatureId,
+      foreignField: _i8.FeatureResourceDefinitionData.t.subclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.FeatureResourceDefinitionDataTable(
+          _i8.FeatureResourceDefinitionDataTable(
               tableRelation: foreignTableRelation),
     );
-    _resources = _i1.ManyRelation<_i4.FeatureResourceDefinitionDataTable>(
+    _resources = _i1.ManyRelation<_i8.FeatureResourceDefinitionDataTable>(
       tableWithRelations: relationTable,
-      table: _i4.FeatureResourceDefinitionDataTable(
+      table: _i8.FeatureResourceDefinitionDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _resources!;
   }
 
-  _i1.ManyRelation<_i5.FeatureResourceEffectDataTable> get resourceEffects {
+  _i1.ManyRelation<_i9.FeatureResourceEffectDataTable> get resourceEffects {
     if (_resourceEffects != null) return _resourceEffects!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'resourceEffects',
       field: SubclassFeatureData.t.id,
-      foreignField: _i5.FeatureResourceEffectData.t.subclassFeatureId,
+      foreignField: _i9.FeatureResourceEffectData.t.subclassFeatureId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) => _i5.FeatureResourceEffectDataTable(
+      createTable: (foreignTableRelation) => _i9.FeatureResourceEffectDataTable(
           tableRelation: foreignTableRelation),
     );
-    _resourceEffects = _i1.ManyRelation<_i5.FeatureResourceEffectDataTable>(
+    _resourceEffects = _i1.ManyRelation<_i9.FeatureResourceEffectDataTable>(
       tableWithRelations: relationTable,
-      table: _i5.FeatureResourceEffectDataTable(
+      table: _i9.FeatureResourceEffectDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _resourceEffects!;
   }
 
-  _i1.ManyRelation<_i6.ClassSpellGrantDataTable> get spellGrants {
+  _i1.ManyRelation<_i10.ClassSpellGrantDataTable> get spellGrants {
     if (_spellGrants != null) return _spellGrants!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'spellGrants',
       field: SubclassFeatureData.t.id,
-      foreignField: _i6.ClassSpellGrantData.t.sourceSubclassFeatureId,
+      foreignField: _i10.ClassSpellGrantData.t.sourceSubclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i6.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+          _i10.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
     );
-    _spellGrants = _i1.ManyRelation<_i6.ClassSpellGrantDataTable>(
+    _spellGrants = _i1.ManyRelation<_i10.ClassSpellGrantDataTable>(
       tableWithRelations: relationTable,
-      table: _i6.ClassSpellGrantDataTable(
+      table: _i10.ClassSpellGrantDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _spellGrants!;
   }
 
-  _i1.ManyRelation<_i7.FeatureModifierDataTable> get featureModifiers {
+  _i1.ManyRelation<_i11.FeatureModifierDataTable> get featureModifiers {
     if (_featureModifiers != null) return _featureModifiers!;
     var relationTable = _i1.createRelationTable(
       relationFieldName: 'featureModifiers',
       field: SubclassFeatureData.t.id,
-      foreignField: _i7.FeatureModifierData.t.subclassFeatureId,
+      foreignField: _i11.FeatureModifierData.t.subclassFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i7.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+          _i11.FeatureModifierDataTable(tableRelation: foreignTableRelation),
     );
-    _featureModifiers = _i1.ManyRelation<_i7.FeatureModifierDataTable>(
+    _featureModifiers = _i1.ManyRelation<_i11.FeatureModifierDataTable>(
       tableWithRelations: relationTable,
-      table: _i7.FeatureModifierDataTable(
+      table: _i11.FeatureModifierDataTable(
           tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _featureModifiers!;
@@ -651,6 +856,14 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
         updatedAt,
         tags,
         choiceGroupKey,
+        grantedSkills,
+        grantedExpertiseSkills,
+        grantedLanguages,
+        grantedArmorTraining,
+        grantedWeaponTraining,
+        grantedToolKeys,
+        grantedExpertiseToolKeys,
+        grantedSpellKeys,
         relatedTable,
       ];
 
@@ -678,10 +891,10 @@ class SubclassFeatureDataTable extends _i1.Table<int?> {
 class SubclassFeatureDataInclude extends _i1.IncludeObject {
   SubclassFeatureDataInclude._({
     _i2.SubclassDataInclude? parentSubclass,
-    _i4.FeatureResourceDefinitionDataIncludeList? resources,
-    _i5.FeatureResourceEffectDataIncludeList? resourceEffects,
-    _i6.ClassSpellGrantDataIncludeList? spellGrants,
-    _i7.FeatureModifierDataIncludeList? featureModifiers,
+    _i8.FeatureResourceDefinitionDataIncludeList? resources,
+    _i9.FeatureResourceEffectDataIncludeList? resourceEffects,
+    _i10.ClassSpellGrantDataIncludeList? spellGrants,
+    _i11.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     _parentSubclass = parentSubclass;
     _resources = resources;
@@ -692,13 +905,13 @@ class SubclassFeatureDataInclude extends _i1.IncludeObject {
 
   _i2.SubclassDataInclude? _parentSubclass;
 
-  _i4.FeatureResourceDefinitionDataIncludeList? _resources;
+  _i8.FeatureResourceDefinitionDataIncludeList? _resources;
 
-  _i5.FeatureResourceEffectDataIncludeList? _resourceEffects;
+  _i9.FeatureResourceEffectDataIncludeList? _resourceEffects;
 
-  _i6.ClassSpellGrantDataIncludeList? _spellGrants;
+  _i10.ClassSpellGrantDataIncludeList? _spellGrants;
 
-  _i7.FeatureModifierDataIncludeList? _featureModifiers;
+  _i11.FeatureModifierDataIncludeList? _featureModifiers;
 
   @override
   Map<String, _i1.Include?> get includes => {
@@ -968,7 +1181,7 @@ class SubclassFeatureDataAttachRepository {
   Future<void> resources(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    List<_i4.FeatureResourceDefinitionData> featureResourceDefinitionData, {
+    List<_i8.FeatureResourceDefinitionData> featureResourceDefinitionData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.any((e) => e.id == null)) {
@@ -981,9 +1194,9 @@ class SubclassFeatureDataAttachRepository {
     var $featureResourceDefinitionData = featureResourceDefinitionData
         .map((e) => e.copyWith(subclassFeatureId: subclassFeatureData.id))
         .toList();
-    await session.db.update<_i4.FeatureResourceDefinitionData>(
+    await session.db.update<_i8.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      columns: [_i8.FeatureResourceDefinitionData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -993,7 +1206,7 @@ class SubclassFeatureDataAttachRepository {
   Future<void> resourceEffects(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    List<_i5.FeatureResourceEffectData> featureResourceEffectData, {
+    List<_i9.FeatureResourceEffectData> featureResourceEffectData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.any((e) => e.id == null)) {
@@ -1006,9 +1219,9 @@ class SubclassFeatureDataAttachRepository {
     var $featureResourceEffectData = featureResourceEffectData
         .map((e) => e.copyWith(subclassFeatureId: subclassFeatureData.id))
         .toList();
-    await session.db.update<_i5.FeatureResourceEffectData>(
+    await session.db.update<_i9.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      columns: [_i9.FeatureResourceEffectData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1018,7 +1231,7 @@ class SubclassFeatureDataAttachRepository {
   Future<void> spellGrants(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    List<_i6.ClassSpellGrantData> classSpellGrantData, {
+    List<_i10.ClassSpellGrantData> classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.any((e) => e.id == null)) {
@@ -1031,9 +1244,9 @@ class SubclassFeatureDataAttachRepository {
     var $classSpellGrantData = classSpellGrantData
         .map((e) => e.copyWith(sourceSubclassFeatureId: subclassFeatureData.id))
         .toList();
-    await session.db.update<_i6.ClassSpellGrantData>(
+    await session.db.update<_i10.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i10.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1043,7 +1256,7 @@ class SubclassFeatureDataAttachRepository {
   Future<void> featureModifiers(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    List<_i7.FeatureModifierData> featureModifierData, {
+    List<_i11.FeatureModifierData> featureModifierData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureModifierData.any((e) => e.id == null)) {
@@ -1056,9 +1269,9 @@ class SubclassFeatureDataAttachRepository {
     var $featureModifierData = featureModifierData
         .map((e) => e.copyWith(subclassFeatureId: subclassFeatureData.id))
         .toList();
-    await session.db.update<_i7.FeatureModifierData>(
+    await session.db.update<_i11.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
+      columns: [_i11.FeatureModifierData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1096,7 +1309,7 @@ class SubclassFeatureDataAttachRowRepository {
   Future<void> resources(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    _i4.FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _i8.FeatureResourceDefinitionData featureResourceDefinitionData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
@@ -1108,9 +1321,9 @@ class SubclassFeatureDataAttachRowRepository {
 
     var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
         subclassFeatureId: subclassFeatureData.id);
-    await session.db.updateRow<_i4.FeatureResourceDefinitionData>(
+    await session.db.updateRow<_i8.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      columns: [_i8.FeatureResourceDefinitionData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1120,7 +1333,7 @@ class SubclassFeatureDataAttachRowRepository {
   Future<void> resourceEffects(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    _i5.FeatureResourceEffectData featureResourceEffectData, {
+    _i9.FeatureResourceEffectData featureResourceEffectData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.id == null) {
@@ -1132,9 +1345,9 @@ class SubclassFeatureDataAttachRowRepository {
 
     var $featureResourceEffectData = featureResourceEffectData.copyWith(
         subclassFeatureId: subclassFeatureData.id);
-    await session.db.updateRow<_i5.FeatureResourceEffectData>(
+    await session.db.updateRow<_i9.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      columns: [_i9.FeatureResourceEffectData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1144,7 +1357,7 @@ class SubclassFeatureDataAttachRowRepository {
   Future<void> spellGrants(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    _i6.ClassSpellGrantData classSpellGrantData, {
+    _i10.ClassSpellGrantData classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
@@ -1156,9 +1369,9 @@ class SubclassFeatureDataAttachRowRepository {
 
     var $classSpellGrantData = classSpellGrantData.copyWith(
         sourceSubclassFeatureId: subclassFeatureData.id);
-    await session.db.updateRow<_i6.ClassSpellGrantData>(
+    await session.db.updateRow<_i10.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i10.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1168,7 +1381,7 @@ class SubclassFeatureDataAttachRowRepository {
   Future<void> featureModifiers(
     _i1.Session session,
     SubclassFeatureData subclassFeatureData,
-    _i7.FeatureModifierData featureModifierData, {
+    _i11.FeatureModifierData featureModifierData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureModifierData.id == null) {
@@ -1180,9 +1393,9 @@ class SubclassFeatureDataAttachRowRepository {
 
     var $featureModifierData =
         featureModifierData.copyWith(subclassFeatureId: subclassFeatureData.id);
-    await session.db.updateRow<_i7.FeatureModifierData>(
+    await session.db.updateRow<_i11.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
+      columns: [_i11.FeatureModifierData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1198,7 +1411,7 @@ class SubclassFeatureDataDetachRepository {
   /// the related record.
   Future<void> resources(
     _i1.Session session,
-    List<_i4.FeatureResourceDefinitionData> featureResourceDefinitionData, {
+    List<_i8.FeatureResourceDefinitionData> featureResourceDefinitionData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.any((e) => e.id == null)) {
@@ -1208,9 +1421,9 @@ class SubclassFeatureDataDetachRepository {
     var $featureResourceDefinitionData = featureResourceDefinitionData
         .map((e) => e.copyWith(subclassFeatureId: null))
         .toList();
-    await session.db.update<_i4.FeatureResourceDefinitionData>(
+    await session.db.update<_i8.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      columns: [_i8.FeatureResourceDefinitionData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1222,7 +1435,7 @@ class SubclassFeatureDataDetachRepository {
   /// the related record.
   Future<void> resourceEffects(
     _i1.Session session,
-    List<_i5.FeatureResourceEffectData> featureResourceEffectData, {
+    List<_i9.FeatureResourceEffectData> featureResourceEffectData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.any((e) => e.id == null)) {
@@ -1232,9 +1445,9 @@ class SubclassFeatureDataDetachRepository {
     var $featureResourceEffectData = featureResourceEffectData
         .map((e) => e.copyWith(subclassFeatureId: null))
         .toList();
-    await session.db.update<_i5.FeatureResourceEffectData>(
+    await session.db.update<_i9.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      columns: [_i9.FeatureResourceEffectData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1246,7 +1459,7 @@ class SubclassFeatureDataDetachRepository {
   /// the related record.
   Future<void> spellGrants(
     _i1.Session session,
-    List<_i6.ClassSpellGrantData> classSpellGrantData, {
+    List<_i10.ClassSpellGrantData> classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.any((e) => e.id == null)) {
@@ -1256,9 +1469,9 @@ class SubclassFeatureDataDetachRepository {
     var $classSpellGrantData = classSpellGrantData
         .map((e) => e.copyWith(sourceSubclassFeatureId: null))
         .toList();
-    await session.db.update<_i6.ClassSpellGrantData>(
+    await session.db.update<_i10.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i10.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1270,7 +1483,7 @@ class SubclassFeatureDataDetachRepository {
   /// the related record.
   Future<void> featureModifiers(
     _i1.Session session,
-    List<_i7.FeatureModifierData> featureModifierData, {
+    List<_i11.FeatureModifierData> featureModifierData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureModifierData.any((e) => e.id == null)) {
@@ -1280,9 +1493,9 @@ class SubclassFeatureDataDetachRepository {
     var $featureModifierData = featureModifierData
         .map((e) => e.copyWith(subclassFeatureId: null))
         .toList();
-    await session.db.update<_i7.FeatureModifierData>(
+    await session.db.update<_i11.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
+      columns: [_i11.FeatureModifierData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1298,7 +1511,7 @@ class SubclassFeatureDataDetachRowRepository {
   /// the related record.
   Future<void> resources(
     _i1.Session session,
-    _i4.FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _i8.FeatureResourceDefinitionData featureResourceDefinitionData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
@@ -1307,9 +1520,9 @@ class SubclassFeatureDataDetachRowRepository {
 
     var $featureResourceDefinitionData =
         featureResourceDefinitionData.copyWith(subclassFeatureId: null);
-    await session.db.updateRow<_i4.FeatureResourceDefinitionData>(
+    await session.db.updateRow<_i8.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i4.FeatureResourceDefinitionData.t.subclassFeatureId],
+      columns: [_i8.FeatureResourceDefinitionData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1321,7 +1534,7 @@ class SubclassFeatureDataDetachRowRepository {
   /// the related record.
   Future<void> resourceEffects(
     _i1.Session session,
-    _i5.FeatureResourceEffectData featureResourceEffectData, {
+    _i9.FeatureResourceEffectData featureResourceEffectData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.id == null) {
@@ -1330,9 +1543,9 @@ class SubclassFeatureDataDetachRowRepository {
 
     var $featureResourceEffectData =
         featureResourceEffectData.copyWith(subclassFeatureId: null);
-    await session.db.updateRow<_i5.FeatureResourceEffectData>(
+    await session.db.updateRow<_i9.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i5.FeatureResourceEffectData.t.subclassFeatureId],
+      columns: [_i9.FeatureResourceEffectData.t.subclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1344,7 +1557,7 @@ class SubclassFeatureDataDetachRowRepository {
   /// the related record.
   Future<void> spellGrants(
     _i1.Session session,
-    _i6.ClassSpellGrantData classSpellGrantData, {
+    _i10.ClassSpellGrantData classSpellGrantData, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
@@ -1353,9 +1566,9 @@ class SubclassFeatureDataDetachRowRepository {
 
     var $classSpellGrantData =
         classSpellGrantData.copyWith(sourceSubclassFeatureId: null);
-    await session.db.updateRow<_i6.ClassSpellGrantData>(
+    await session.db.updateRow<_i10.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i6.ClassSpellGrantData.t.sourceSubclassFeatureId],
+      columns: [_i10.ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
   }
@@ -1367,7 +1580,7 @@ class SubclassFeatureDataDetachRowRepository {
   /// the related record.
   Future<void> featureModifiers(
     _i1.Session session,
-    _i7.FeatureModifierData featureModifierData, {
+    _i11.FeatureModifierData featureModifierData, {
     _i1.Transaction? transaction,
   }) async {
     if (featureModifierData.id == null) {
@@ -1376,9 +1589,9 @@ class SubclassFeatureDataDetachRowRepository {
 
     var $featureModifierData =
         featureModifierData.copyWith(subclassFeatureId: null);
-    await session.db.updateRow<_i7.FeatureModifierData>(
+    await session.db.updateRow<_i11.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i7.FeatureModifierData.t.subclassFeatureId],
+      columns: [_i11.FeatureModifierData.t.subclassFeatureId],
       transaction: transaction,
     );
   }

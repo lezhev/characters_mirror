@@ -13,7 +13,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/class/class_data.dart' as _i2;
-import '../../../data/general/class/prepared_spell_rule_data.dart' as _i3;
+import '../../../data/general/class/subclass_data.dart' as _i3;
+import '../../../data/general/class/prepared_spell_rule_data.dart' as _i4;
 
 abstract class ClassLevelData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -21,6 +22,8 @@ abstract class ClassLevelData
     this.id,
     required this.classDataId,
     this.classData,
+    this.subclassDataId,
+    this.subclassData,
     required this.level,
     this.knownCantrips,
     this.knownSpells,
@@ -40,12 +43,14 @@ abstract class ClassLevelData
     int? id,
     required int classDataId,
     _i2.ClassData? classData,
+    int? subclassDataId,
+    _i3.SubclassData? subclassData,
     required int level,
     int? knownCantrips,
     int? knownSpells,
     int? spellbookSpells,
     int? knownSpellReplacements,
-    _i3.PreparedSpellRuleData? preparedSpellRule,
+    _i4.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -63,6 +68,11 @@ abstract class ClassLevelData
           ? null
           : _i2.ClassData.fromJson(
               (jsonSerialization['classData'] as Map<String, dynamic>)),
+      subclassDataId: jsonSerialization['subclassDataId'] as int?,
+      subclassData: jsonSerialization['subclassData'] == null
+          ? null
+          : _i3.SubclassData.fromJson(
+              (jsonSerialization['subclassData'] as Map<String, dynamic>)),
       level: jsonSerialization['level'] as int,
       knownCantrips: jsonSerialization['knownCantrips'] as int?,
       knownSpells: jsonSerialization['knownSpells'] as int?,
@@ -71,7 +81,7 @@ abstract class ClassLevelData
           jsonSerialization['knownSpellReplacements'] as int?,
       preparedSpellRule: jsonSerialization['preparedSpellRule'] == null
           ? null
-          : _i3.PreparedSpellRuleData.fromJson(
+          : _i4.PreparedSpellRuleData.fromJson(
               (jsonSerialization['preparedSpellRule'] as Map<String, dynamic>)),
       preparedSpellFormula:
           jsonSerialization['preparedSpellFormula'] as String?,
@@ -99,6 +109,10 @@ abstract class ClassLevelData
 
   _i2.ClassData? classData;
 
+  int? subclassDataId;
+
+  _i3.SubclassData? subclassData;
+
   int level;
 
   int? knownCantrips;
@@ -109,7 +123,7 @@ abstract class ClassLevelData
 
   int? knownSpellReplacements;
 
-  _i3.PreparedSpellRuleData? preparedSpellRule;
+  _i4.PreparedSpellRuleData? preparedSpellRule;
 
   String? preparedSpellFormula;
 
@@ -135,12 +149,14 @@ abstract class ClassLevelData
     int? id,
     int? classDataId,
     _i2.ClassData? classData,
+    int? subclassDataId,
+    _i3.SubclassData? subclassData,
     int? level,
     int? knownCantrips,
     int? knownSpells,
     int? spellbookSpells,
     int? knownSpellReplacements,
-    _i3.PreparedSpellRuleData? preparedSpellRule,
+    _i4.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -155,6 +171,8 @@ abstract class ClassLevelData
       if (id != null) 'id': id,
       'classDataId': classDataId,
       if (classData != null) 'classData': classData?.toJson(),
+      if (subclassDataId != null) 'subclassDataId': subclassDataId,
+      if (subclassData != null) 'subclassData': subclassData?.toJson(),
       'level': level,
       if (knownCantrips != null) 'knownCantrips': knownCantrips,
       if (knownSpells != null) 'knownSpells': knownSpells,
@@ -180,6 +198,9 @@ abstract class ClassLevelData
       if (id != null) 'id': id,
       'classDataId': classDataId,
       if (classData != null) 'classData': classData?.toJsonForProtocol(),
+      if (subclassDataId != null) 'subclassDataId': subclassDataId,
+      if (subclassData != null)
+        'subclassData': subclassData?.toJsonForProtocol(),
       'level': level,
       if (knownCantrips != null) 'knownCantrips': knownCantrips,
       if (knownSpells != null) 'knownSpells': knownSpells,
@@ -199,8 +220,14 @@ abstract class ClassLevelData
     };
   }
 
-  static ClassLevelDataInclude include({_i2.ClassDataInclude? classData}) {
-    return ClassLevelDataInclude._(classData: classData);
+  static ClassLevelDataInclude include({
+    _i2.ClassDataInclude? classData,
+    _i3.SubclassDataInclude? subclassData,
+  }) {
+    return ClassLevelDataInclude._(
+      classData: classData,
+      subclassData: subclassData,
+    );
   }
 
   static ClassLevelDataIncludeList includeList({
@@ -236,12 +263,14 @@ class _ClassLevelDataImpl extends ClassLevelData {
     int? id,
     required int classDataId,
     _i2.ClassData? classData,
+    int? subclassDataId,
+    _i3.SubclassData? subclassData,
     required int level,
     int? knownCantrips,
     int? knownSpells,
     int? spellbookSpells,
     int? knownSpellReplacements,
-    _i3.PreparedSpellRuleData? preparedSpellRule,
+    _i4.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -253,6 +282,8 @@ class _ClassLevelDataImpl extends ClassLevelData {
           id: id,
           classDataId: classDataId,
           classData: classData,
+          subclassDataId: subclassDataId,
+          subclassData: subclassData,
           level: level,
           knownCantrips: knownCantrips,
           knownSpells: knownSpells,
@@ -276,6 +307,8 @@ class _ClassLevelDataImpl extends ClassLevelData {
     Object? id = _Undefined,
     int? classDataId,
     Object? classData = _Undefined,
+    Object? subclassDataId = _Undefined,
+    Object? subclassData = _Undefined,
     int? level,
     Object? knownCantrips = _Undefined,
     Object? knownSpells = _Undefined,
@@ -295,6 +328,11 @@ class _ClassLevelDataImpl extends ClassLevelData {
       classDataId: classDataId ?? this.classDataId,
       classData:
           classData is _i2.ClassData? ? classData : this.classData?.copyWith(),
+      subclassDataId:
+          subclassDataId is int? ? subclassDataId : this.subclassDataId,
+      subclassData: subclassData is _i3.SubclassData?
+          ? subclassData
+          : this.subclassData?.copyWith(),
       level: level ?? this.level,
       knownCantrips: knownCantrips is int? ? knownCantrips : this.knownCantrips,
       knownSpells: knownSpells is int? ? knownSpells : this.knownSpells,
@@ -303,7 +341,7 @@ class _ClassLevelDataImpl extends ClassLevelData {
       knownSpellReplacements: knownSpellReplacements is int?
           ? knownSpellReplacements
           : this.knownSpellReplacements,
-      preparedSpellRule: preparedSpellRule is _i3.PreparedSpellRuleData?
+      preparedSpellRule: preparedSpellRule is _i4.PreparedSpellRuleData?
           ? preparedSpellRule
           : this.preparedSpellRule?.copyWith(),
       preparedSpellFormula: preparedSpellFormula is String?
@@ -325,6 +363,10 @@ class ClassLevelDataTable extends _i1.Table<int?> {
       : super(tableName: 'class_level_data') {
     classDataId = _i1.ColumnInt(
       'classDataId',
+      this,
+    );
+    subclassDataId = _i1.ColumnInt(
+      'subclassDataId',
       this,
     );
     level = _i1.ColumnInt(
@@ -385,6 +427,10 @@ class ClassLevelDataTable extends _i1.Table<int?> {
 
   _i2.ClassDataTable? _classData;
 
+  late final _i1.ColumnInt subclassDataId;
+
+  _i3.SubclassDataTable? _subclassData;
+
   late final _i1.ColumnInt level;
 
   late final _i1.ColumnInt knownCantrips;
@@ -424,10 +470,24 @@ class ClassLevelDataTable extends _i1.Table<int?> {
     return _classData!;
   }
 
+  _i3.SubclassDataTable get subclassData {
+    if (_subclassData != null) return _subclassData!;
+    _subclassData = _i1.createRelationTable(
+      relationFieldName: 'subclassData',
+      field: ClassLevelData.t.subclassDataId,
+      foreignField: _i3.SubclassData.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.SubclassDataTable(tableRelation: foreignTableRelation),
+    );
+    return _subclassData!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         classDataId,
+        subclassDataId,
         level,
         knownCantrips,
         knownSpells,
@@ -448,19 +508,31 @@ class ClassLevelDataTable extends _i1.Table<int?> {
     if (relationField == 'classData') {
       return classData;
     }
+    if (relationField == 'subclassData') {
+      return subclassData;
+    }
     return null;
   }
 }
 
 class ClassLevelDataInclude extends _i1.IncludeObject {
-  ClassLevelDataInclude._({_i2.ClassDataInclude? classData}) {
+  ClassLevelDataInclude._({
+    _i2.ClassDataInclude? classData,
+    _i3.SubclassDataInclude? subclassData,
+  }) {
     _classData = classData;
+    _subclassData = subclassData;
   }
 
   _i2.ClassDataInclude? _classData;
 
+  _i3.SubclassDataInclude? _subclassData;
+
   @override
-  Map<String, _i1.Include?> get includes => {'classData': _classData};
+  Map<String, _i1.Include?> get includes => {
+        'classData': _classData,
+        'subclassData': _subclassData,
+      };
 
   @override
   _i1.Table<int?> get table => ClassLevelData.t;
@@ -490,6 +562,8 @@ class ClassLevelDataRepository {
   const ClassLevelDataRepository._();
 
   final attachRow = const ClassLevelDataAttachRowRepository._();
+
+  final detachRow = const ClassLevelDataDetachRowRepository._();
 
   /// Returns a list of [ClassLevelData]s matching the given query parameters.
   ///
@@ -729,6 +803,56 @@ class ClassLevelDataAttachRowRepository {
     await session.db.updateRow<ClassLevelData>(
       $classLevelData,
       columns: [ClassLevelData.t.classDataId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [ClassLevelData] and [SubclassData]
+  /// by setting the [ClassLevelData]'s foreign key `subclassDataId` to refer to the [SubclassData].
+  Future<void> subclassData(
+    _i1.Session session,
+    ClassLevelData classLevelData,
+    _i3.SubclassData subclassData, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classLevelData.id == null) {
+      throw ArgumentError.notNull('classLevelData.id');
+    }
+    if (subclassData.id == null) {
+      throw ArgumentError.notNull('subclassData.id');
+    }
+
+    var $classLevelData =
+        classLevelData.copyWith(subclassDataId: subclassData.id);
+    await session.db.updateRow<ClassLevelData>(
+      $classLevelData,
+      columns: [ClassLevelData.t.subclassDataId],
+      transaction: transaction,
+    );
+  }
+}
+
+class ClassLevelDataDetachRowRepository {
+  const ClassLevelDataDetachRowRepository._();
+
+  /// Detaches the relation between this [ClassLevelData] and the [SubclassData] set in `subclassData`
+  /// by setting the [ClassLevelData]'s foreign key `subclassDataId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> subclassData(
+    _i1.Session session,
+    ClassLevelData classleveldata, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (classleveldata.id == null) {
+      throw ArgumentError.notNull('classleveldata.id');
+    }
+
+    var $classleveldata = classleveldata.copyWith(subclassDataId: null);
+    await session.db.updateRow<ClassLevelData>(
+      $classleveldata,
+      columns: [ClassLevelData.t.subclassDataId],
       transaction: transaction,
     );
   }

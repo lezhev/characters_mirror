@@ -949,6 +949,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<Map<String, int>>(),
               nullable: false,
             ),
+            'selectedSubclassId': _i1.ParameterDescription(
+              name: 'selectedSubclassId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
           },
           call: (
             _i1.Session session,
@@ -960,6 +965,7 @@ class Endpoints extends _i1.EndpointDispatch {
             params['fromLevel'],
             params['toLevel'],
             params['abilityScores'],
+            selectedSubclassId: params['selectedSubclassId'],
           ),
         ),
         'delete': _i1.MethodConnector(

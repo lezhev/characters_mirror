@@ -443,8 +443,9 @@ class EndpointClassData extends _i1.EndpointRef {
     int classId,
     int fromLevel,
     int toLevel,
-    Map<String, int> abilityScores,
-  ) =>
+    Map<String, int> abilityScores, {
+    int? selectedSubclassId,
+  }) =>
       caller.callServerEndpoint<_i20.ClassSpellDeltaView>(
         'classData',
         'getSpellDelta',
@@ -453,6 +454,7 @@ class EndpointClassData extends _i1.EndpointRef {
           'fromLevel': fromLevel,
           'toLevel': toLevel,
           'abilityScores': abilityScores,
+          'selectedSubclassId': selectedSubclassId,
         },
       );
 

@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:characters_mirror_flutter/core/character/feature_grants.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spellcasting_source.dart';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
@@ -62,6 +64,11 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   final proficiencyBonus = 2 + ((totalLevel - 1) ~/ 4);
   final selectedOptions =
       await _selectedChoiceOptions(cache, character, entries);
+  final currentClassFeatures = await _currentClassFeatures(cache, entries);
+  final currentSubclassFeatures =
+      await _currentSubclassFeatures(cache, entries);
+  final fixedGrants =
+      collectFixedFeatureGrants(currentClassFeatures, currentSubclassFeatures);
   final abilityScoreValues = _abilityScores(character, selectedOptions);
   final abilityScores = <Ability, int>{
     for (final ability in Ability.values)
@@ -72,7 +79,9 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       entry.key: _modifier(entry.value),
   };
   final savingThrowProficiencies = _savingThrowProficiencies(character);
-  final skillLevels = _skillProficiencyLevels(character, selectedOptions);
+  final skillLevels = _skillProficiencyLevels(character, selectedOptions,
+      fixedSkills: fixedGrants.grantedSkills,
+      fixedExpertiseSkills: fixedGrants.grantedExpertiseSkills);
   final savingThrowBonuses = <Ability, int>{
     for (final ability in Ability.values)
       ability: (abilityModifiers[ability] ?? 0) +
@@ -98,8 +107,8 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     totalLevel,
     proficiencyBonus,
     abilityModifiers,
+    selectedOptions,
   );
-  final currentClassFeatures = await _currentClassFeatures(cache, entries);
   final activeFeatureModifiers =
       await _offlineCurrentFeatureModifiers(cache, entries);
   final hitDice = _hitDiceSummary(character, entries);
@@ -134,6 +143,21 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     character,
     entries,
     totalLevel,
+    selectedOptionIds: {
+      for (final option in selectedOptions)
+        if (option.id != null) option.id!
+    },
+  );
+  final grantedClassSpellKeys = await _collectAlwaysPreparedSpellKeys(
+    cache,
+    character,
+    entries,
+    totalLevel,
+    selectedOptionIds: {
+      for (final option in selectedOptions)
+        if (option.id != null) option.id!
+    },
+    onlyAlwaysPrepared: false,
   );
   final racialSpellKeys = _racialSpellKeys(character, totalLevel);
   final grantedSpellKeys = _collectGrantedSpellKeys(
@@ -141,14 +165,15 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     alwaysPreparedSpellKeys,
     racialSpellKeys,
     selectedOptions,
-  );
+  )..addAll([...fixedGrants.grantedSpellKeys, ...grantedClassSpellKeys]);
+  final uniqueGrantedSpellKeys = _uniqueStrings(grantedSpellKeys);
   final automaticLanguages = _languages(
     character,
     selectedOptions,
     currentClassFeatures,
   );
   final languages = _effectiveProficiencyValues<Language>(
-    automaticLanguages,
+    [...automaticLanguages, ...fixedGrants.grantedLanguages],
     character.manualLanguageOverrides?.added,
     character.manualLanguageOverrides?.removed,
     (value) => value.name,
@@ -159,12 +184,13 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     entries,
   );
   final toolProficiencyKeys = _effectiveProficiencyValues<String>(
-    automaticToolKeys,
+    [...automaticToolKeys, ...fixedGrants.grantedToolKeys],
     character.manualToolProficiencyOverrides?.addedKeys,
     character.manualToolProficiencyOverrides?.removedKeys,
     (value) => value,
   );
   final toolExpertiseKeys = {
+    ...fixedGrants.grantedExpertiseToolKeys,
     for (final option in selectedOptions) ...?option.grantedExpertiseToolKeys,
   }.intersection(toolProficiencyKeys.toSet()).toList()
     ..sort();
@@ -174,7 +200,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     entries,
   );
   final armorTraining = _effectiveProficiencyValues<ArmorCategory>(
-    automaticArmorTraining,
+    [...automaticArmorTraining, ...fixedGrants.grantedArmorTraining],
     character.manualArmorTrainingOverrides?.addedCategories,
     character.manualArmorTrainingOverrides?.removedCategories,
     (value) => value.name,
@@ -182,7 +208,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   final automaticWeaponTraining =
       await _weaponTraining(cache, character, entries);
   final weaponTraining = _effectiveProficiencyValues<WeaponCategory>(
-    automaticWeaponTraining,
+    [...automaticWeaponTraining, ...fixedGrants.grantedWeaponTraining],
     character.manualWeaponProficiencyOverrides?.addedCategories,
     character.manualWeaponProficiencyOverrides?.removedCategories,
     (value) => value.name,
@@ -270,7 +296,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     customArmorTraining: _normalizedCustomValues(
       character.manualArmorTrainingOverrides?.custom,
     ),
-    grantedSpellKeys: grantedSpellKeys,
+    grantedSpellKeys: uniqueGrantedSpellKeys,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
     resistances: _uniqueDamageTypes([

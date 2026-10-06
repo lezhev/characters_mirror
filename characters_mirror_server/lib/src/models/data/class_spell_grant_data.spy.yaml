@@ -9,6 +9,7 @@ fields:
   sourceSubclassFeature: SubclassFeatureData?, relation(optional, name=subclass_feature_spell_grants)
   grantedAtLevel: int?
   alwaysPrepared: bool?
+  choiceOption: ChoiceOptionData?, relation(optional)
   notes: String?
   source: String?
   version: int?

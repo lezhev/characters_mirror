@@ -57,8 +57,20 @@ Future<CharacterDerivedData> _buildDerivedData(
     character.skillSelections ?? const <CharacterSkillSelectionData>[],
     resolvedSources.selectedOptions,
   );
+  final fixedGrants = collectFixedFeatureGrants(
+    resolvedSources.currentClassFeatures,
+    resolvedSources.currentSubclassFeatures,
+  );
+  skillProficiencies.addAll(fixedGrants.grantedSkills);
   final automaticSkillProficiencyLevels =
       _defaultSkillProficiencyLevels(skillProficiencies);
+  for (final skill in fixedGrants.grantedExpertiseSkills) {
+    if (automaticSkillProficiencyLevels[skill] !=
+        CharacterSkillProficiencyLevel.none) {
+      automaticSkillProficiencyLevels[skill] =
+          CharacterSkillProficiencyLevel.expertise;
+    }
+  }
   for (final option in resolvedSources.selectedOptions) {
     for (final skill in option.grantedExpertiseSkills ?? const <Skill>[]) {
       if (automaticSkillProficiencyLevels[skill] !=
@@ -109,45 +121,58 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolveContext: context,
   );
   final languages = _applyProficiencyOverrides<Language>(
-    automatic: _collectLanguages(
-      character,
-      resolvedSources.selectedOptions,
-      resolvedSources.currentClassFeatures,
-    ),
+    automatic: [
+      ...fixedGrants.grantedLanguages,
+      ..._collectLanguages(
+        character,
+        resolvedSources.selectedOptions,
+        resolvedSources.currentClassFeatures,
+      )
+    ],
     added: character.manualLanguageOverrides?.added,
     removed: character.manualLanguageOverrides?.removed,
     sortKey: (value) => value.name,
   );
   final toolProficiencyKeys = _applyProficiencyOverrides<String>(
-    automatic: _collectToolProficiencyKeys(
-      character,
-      entries,
-      resolvedSources.selectedOptions,
-    ),
+    automatic: [
+      ...fixedGrants.grantedToolKeys,
+      ..._collectToolProficiencyKeys(
+        character,
+        entries,
+        resolvedSources.selectedOptions,
+      )
+    ],
     added: character.manualToolProficiencyOverrides?.addedKeys,
     removed: character.manualToolProficiencyOverrides?.removedKeys,
     sortKey: (value) => value,
   );
   final toolExpertiseKeys = {
+    ...fixedGrants.grantedExpertiseToolKeys,
     for (final option in resolvedSources.selectedOptions)
       ...?option.grantedExpertiseToolKeys,
   }.intersection(toolProficiencyKeys.toSet()).toList()
     ..sort();
   final armorTraining = _applyProficiencyOverrides<ArmorCategory>(
-    automatic: _collectArmorTraining(
-      character,
-      entries,
-      resolvedSources.selectedOptions,
-    ),
+    automatic: [
+      ...fixedGrants.grantedArmorTraining,
+      ..._collectArmorTraining(
+        character,
+        entries,
+        resolvedSources.selectedOptions,
+      )
+    ],
     added: character.manualArmorTrainingOverrides?.addedCategories,
     removed: character.manualArmorTrainingOverrides?.removedCategories,
     sortKey: (value) => value.name,
   );
   final weaponTraining = _applyProficiencyOverrides<WeaponCategory>(
-    automatic: _collectWeaponTraining(
-      entries,
-      resolvedSources.selectedOptions,
-    ),
+    automatic: [
+      ...fixedGrants.grantedWeaponTraining,
+      ..._collectWeaponTraining(
+        entries,
+        resolvedSources.selectedOptions,
+      )
+    ],
     added: character.manualWeaponProficiencyOverrides?.addedCategories,
     removed: character.manualWeaponProficiencyOverrides?.removedCategories,
     sortKey: (value) => value.name,
@@ -171,7 +196,12 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.selectedOptions,
     currentRaceFeatures,
     resolvedSources.alwaysPreparedSpellKeys,
-  );
+  )..addAll([
+      ...fixedGrants.grantedSpellKeys,
+      ...resolvedSources.grantedClassSpellKeys
+    ]);
+  final uniqueGrantedSpellKeys =
+      _normalizedTexts(grantedSpellKeys).toSet().toList()..sort();
   final grantedEquipment = await _collectGrantedEquipment(
     session,
     character,
@@ -269,7 +299,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     customArmorTraining: _normalizedCustomValues(
       character.manualArmorTrainingOverrides?.custom,
     ),
-    grantedSpellKeys: grantedSpellKeys,
+    grantedSpellKeys: uniqueGrantedSpellKeys,
     alwaysPreparedSpellKeys: resolvedSources.alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
     resistances: resistances,

@@ -14,9 +14,21 @@ fields:
   tags: List<FeatureTag>?
   choiceGroupKey: String?
   grantedLanguages: List<Language>?
+  grantedSkills: List<Skill>?
+  grantedExpertiseSkills: List<Skill>?
+  grantedArmorTraining: List<ArmorCategory>?
+  grantedWeaponTraining: List<WeaponCategory>?
+  grantedToolKeys: List<String>?
+  grantedExpertiseToolKeys: List<String>?
+  grantedSpellKeys: List<String>?
   unarmoredDefenseRule: UnarmoredDefenseRule?
   relatedTable: String?
   resources: List<FeatureResourceDefinitionData>?, relation(name=class_feature_resource_definitions)
   resourceEffects: List<FeatureResourceEffectData>?, relation(name=class_feature_resource_effects)
   spellGrants: List<ClassSpellGrantData>?, relation(name=class_feature_spell_grants)
   featureModifiers: List<FeatureModifierData>?, relation(name=class_feature_modifiers)
+
+indexes:
+  class_feature_reference_key_idx:
+    fields: referenceKey
+    unique: true

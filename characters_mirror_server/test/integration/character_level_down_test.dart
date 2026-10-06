@@ -18,7 +18,9 @@ void main() {
       int hitDie = 8,
       int currentHp = 20,
       int? subclassChoiceLevel,
+      int? subclassRequiredLevel,
       bool withSubclass = false,
+      List<int>? hpRolls,
       List<CharacterChoiceData> choices = const [],
       List<CharacterSpellSelectionData> spells = const [],
       Map<int, int>? slots,
@@ -38,11 +40,12 @@ void main() {
             subclassChoiceLevel: subclassChoiceLevel,
           ),
         );
+        String featureKey(String suffix) => '${suffix}_${classData.id}';
         await ClassFeatureData.db.insertRow(
           session,
           ClassFeatureData(
             parentClassId: classData.id!,
-            referenceKey: 'stable_feature',
+            referenceKey: featureKey('stable_feature'),
             level: 1,
           ),
         );
@@ -50,7 +53,7 @@ void main() {
           session,
           ClassFeatureData(
             parentClassId: classData.id!,
-            referenceKey: 'removed_feature',
+            referenceKey: featureKey('removed_feature'),
             level: level,
           ),
         );
@@ -58,7 +61,7 @@ void main() {
           session,
           ClassFeatureData(
             parentClassId: classData.id!,
-            referenceKey: 'pool_feature',
+            referenceKey: featureKey('pool_feature'),
             level: 1,
           ),
         );
@@ -96,7 +99,8 @@ void main() {
                 session,
                 SubclassData(
                   parentClassId: classData.id!,
-                  levelRequired: subclassChoiceLevel ?? 1,
+                  levelRequired:
+                      subclassRequiredLevel ?? subclassChoiceLevel ?? 1,
                   name: 'Test subclass',
                 ),
               )
@@ -117,7 +121,7 @@ void main() {
           level: level,
           subclass: subclass,
           isStartingClass: true,
-          hpRolledValues: [8, ...List.filled(level - 1, 5)],
+          hpRolledValues: hpRolls ?? [8, ...List.filled(level - 1, 5)],
         );
         return endpoints.characterData.saveCharacter(
           owner,
@@ -178,9 +182,10 @@ void main() {
       String? alternativeKey,
       List<ChoiceRequirementData> alternativeRequirements = const [],
     }) async {
+      final entry =
+          character.classEntries!.firstWhere((entry) => entry.id == 'entry');
       final session = owner.build();
       try {
-        final entry = character.classEntries!.single;
         final group = await ChoiceGroupData.db.insertRow(
           session,
           ChoiceGroupData(
@@ -217,7 +222,7 @@ void main() {
         character.copyWith(choices: [
           ...?character.choices,
           CharacterChoiceData(
-            classEntry: character.classEntries!.single,
+            classEntry: entry,
             groupKey: groupKey,
             optionKey: optionKey,
             selectionIndex: 0,
@@ -247,6 +252,14 @@ void main() {
         endpoints.characterData.previewLevelDown(owner, request(before)),
         throwsA(isA<InputValidationException>()),
       );
+    });
+
+    test('partial HP roll history retains entries through target level',
+        () async {
+      final before = await fixture(level: 5, hpRolls: [8, 5]);
+      final preview = await endpoints.characterData
+          .previewLevelDown(owner, request(before));
+      expect(preview.character.classEntries!.single.hpRolledValues, [8, 5]);
     });
 
     test('applying a simple level-down increments version exactly once',
@@ -287,9 +300,9 @@ void main() {
       final preview = await endpoints.characterData
           .previewLevelDown(owner, request(before));
       expect(preview.removedClassFeatures.map((f) => f.referenceKey),
-          contains('removed_feature'));
+          contains(startsWith('removed_feature_')));
       final removedId = preview.removedClassFeatures
-          .singleWhere((f) => f.referenceKey == 'removed_feature')
+          .singleWhere((f) => f.referenceKey!.startsWith('removed_feature_'))
           .id;
       expect(
           preview.character.derived!.activeFeatures!
@@ -304,6 +317,19 @@ void main() {
           .previewLevelDown(owner, request(before));
       expect(preview.character.classEntries!.single.subclass, isNull);
       expect(preview.removedSubclassFeatures, isNotEmpty);
+    });
+
+    test('selected subclass level requirement is respected independently',
+        () async {
+      final before = await fixture(
+        level: 4,
+        subclassChoiceLevel: 3,
+        subclassRequiredLevel: 4,
+        withSubclass: true,
+      );
+      final preview = await endpoints.characterData
+          .previewLevelDown(owner, request(before));
+      expect(preview.character.classEntries!.single.subclass, isNull);
     });
 
     test('ASI group and its ability bonus disappear automatically', () async {
@@ -393,6 +419,126 @@ void main() {
           throwsA(isA<InputValidationException>()));
     });
 
+    test('known-spell prerequisite remains valid after snapshot normalization',
+        () async {
+      final session = owner.build();
+      late SpellData spell;
+      try {
+        spell = await SpellData.db.insertRow(
+          session,
+          SpellData(referenceKey: 'linked_known_spell', name: 'Known spell'),
+        );
+      } finally {
+        await session.close();
+      }
+      final base = await fixture(
+        level: 5,
+        spells: [
+          CharacterSpellSelectionData(
+            spell: spell,
+            spellId: spell.id,
+            kind: CharacterSpellSelectionKind.knownSpell,
+            selectionIndex: 0,
+          ),
+        ],
+      );
+      final before = await addChoice(
+        base,
+        groupKey: 'known_spell_choice_${base.id}',
+        groupLevel: 2,
+        optionKey: 'requires_spell',
+        requirements: [
+          ChoiceRequirementData(
+            type: ChoiceRequirementType.knownSpell,
+            referenceKey: 'linked_known_spell',
+          ),
+        ],
+        alternativeKey: 'fallback',
+      );
+      final preview = await endpoints.characterData
+          .previewLevelDown(owner, request(before));
+      expect(preview.invalidChoices, isEmpty);
+    });
+
+    test(
+        'colliding class and subclass feature ids preserve foreign feature facts',
+        () async {
+      final base = await fixture(level: 5);
+      final session = owner.build();
+      late ClassData otherClass;
+      late SubclassData otherSubclass;
+      late int collidingFeatureId;
+      try {
+        final targetClass = base.classEntries!.first.classData!;
+        collidingFeatureId = (await ClassFeatureData.db.find(
+          session,
+          where: (t) =>
+              t.parentClassId.equals(targetClass.id!) &
+              t.referenceKey.like('removed_feature_%'),
+        ))
+            .single
+            .id!;
+        otherClass = await ClassData.db.insertRow(
+          session,
+          ClassData(
+            name: 'Other class',
+            referenceKey: 'other_class_${base.id}',
+            hitDieValue: 6,
+          ),
+        );
+        otherSubclass = await SubclassData.db.insertRow(
+          session,
+          SubclassData(
+            parentClassId: otherClass.id!,
+            name: 'Other subclass',
+            levelRequired: 1,
+          ),
+        );
+        await SubclassFeatureData.db.insertRow(
+          session,
+          SubclassFeatureData(
+            id: collidingFeatureId,
+            parentSubclassId: otherSubclass.id!,
+            referenceKey: 'other_active_subclass_feature',
+            level: 1,
+          ),
+        );
+      } finally {
+        await session.close();
+      }
+      final withOtherSubclass = await endpoints.characterData.saveCharacter(
+        owner,
+        base.copyWith(classEntries: [
+          ...base.classEntries!,
+          CharacterClassEntryData(
+            id: 'other',
+            classData: otherClass,
+            subclass: otherSubclass,
+            level: 1,
+            isStartingClass: false,
+            hpRolledValues: [5],
+          ),
+        ]),
+      );
+      final before = await addChoice(
+        withOtherSubclass,
+        groupKey: 'foreign_feature_choice_${base.id}',
+        groupLevel: 2,
+        optionKey: 'requires_other_feature',
+        requirements: [
+          ChoiceRequirementData(
+            type: ChoiceRequirementType.feature,
+            referenceKey: 'other_active_subclass_feature',
+          ),
+        ],
+        alternativeKey: 'fallback',
+      );
+
+      final preview = await endpoints.characterData
+          .previewLevelDown(owner, request(before));
+      expect(preview.invalidChoices, isEmpty);
+    });
+
     test('eligible replacement keeps the same logical choice slot', () async {
       final base = await fixture(level: 5);
       final before = await addChoice(
@@ -436,7 +582,7 @@ void main() {
         sourceId = (await ClassFeatureData.db.find(session,
                 where: (t) =>
                     t.parentClassId.equals(classId) &
-                    t.referenceKey.equals('pool_feature')))
+                    t.referenceKey.like('pool_feature_%')))
             .single
             .id!;
       } finally {
@@ -468,8 +614,11 @@ void main() {
       late int fullSourceId;
       try {
         fullSourceId = (await ClassFeatureData.db.find(fullSession,
-            where: (t) => t.parentClassId.equals(fullClassId) &
-                t.referenceKey.equals('pool_feature'))).single.id!;
+                where: (t) =>
+                    t.parentClassId.equals(fullClassId) &
+                    t.referenceKey.like('pool_feature_%')))
+            .single
+            .id!;
       } finally {
         await fullSession.close();
       }
@@ -484,10 +633,11 @@ void main() {
           ),
         ]),
       );
-      final clamped = await endpoints.characterData
-          .previewLevelDown(owner, request(full));
+      final clamped =
+          await endpoints.characterData.previewLevelDown(owner, request(full));
       final clampedResource = clamped.character.derived!.activeFeatures!
-          .expand((feature) => feature.resources ?? const <CharacterResourceViewData>[])
+          .expand((feature) =>
+              feature.resources ?? const <CharacterResourceViewData>[])
           .singleWhere((item) => item.key == 'pool');
       expect(clampedResource.current, 3);
       expect(clampedResource.max, 3);
@@ -503,7 +653,7 @@ void main() {
                 where: (t) =>
                     t.parentClassId
                         .equals(base.classEntries!.single.classData!.id!) &
-                    t.referenceKey.equals('removed_feature')))
+                    t.referenceKey.like('removed_feature_%')))
             .single;
         sourceId = feature.id!;
         await FeatureResourceDefinitionData.db.insertRow(
@@ -606,7 +756,7 @@ void main() {
                 where: (t) =>
                     t.parentClassId
                         .equals(base.classEntries!.single.classData!.id!) &
-                    t.referenceKey.equals('removed_feature')))
+                    t.referenceKey.like('removed_feature_%')))
             .single
             .id!;
       } finally {

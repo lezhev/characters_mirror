@@ -5,6 +5,7 @@ fields:
   subclassFeature: SubclassFeatureData?, relation(name=subclass_feature_resource_effects, optional)
   raceFeature: RaceFeatureData?, relation(name=race_feature_resource_effects, optional)
   type: FeatureResourceEffectType
+  choiceOption: ChoiceOptionData?, relation(optional)
   targetType: FeatureResourceTargetType?
   targetResourceKey: String?
   targetSourceType: CharacterFeatureSourceType?

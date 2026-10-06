@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_shared/characters_mirror_shared.dart';
+import 'spellcasting_source.dart';
 
 String? selectionSpellKey(CharacterSpellSelectionData selection) =>
     _text(selection.spellKey) ?? spellReferenceKey(selection.spell);
@@ -11,6 +12,12 @@ String? _text(String? value) {
   final trimmed = value?.trim();
   return trimmed == null || trimmed.isEmpty ? null : trimmed;
 }
+
+ClassData? spellcastingClassForEntry(CharacterClassEntryData? entry) =>
+    entry?.classData == null
+        ? null
+        : effectiveSpellcastingClass(
+            entry!.classData!, entry.subclass, entry.level ?? 0);
 
 ClassSpellSelectionMode spellMode(ClassData? data, [ClassLevelData? row]) =>
     ClassSpellSelectionMode.values.byName(resolveSpellSelectionMode(
@@ -111,7 +118,7 @@ List<SpellData> preparationPoolForEntry(
     CharacterClassEntryData entry,
     ClassLevelData? row,
     List<SpellData> allSpells) {
-  final mode = spellMode(entry.classData, row);
+  final mode = spellMode(spellcastingClassForEntry(entry), row);
   if (mode == ClassSpellSelectionMode.spellbook) {
     return [
       for (final selection
@@ -140,7 +147,10 @@ CharacterClassEntryData? spellEntryForClass(
 
 ClassLevelData? spellLevelForEntry(
         CharacterClassEntryData? entry, List<ClassLevelData> levels) =>
-    levels
+    (entry?.classData == null
+            ? <ClassLevelData>[]
+            : effectiveSpellProgression(
+                entry!.classData!, entry.subclass, levels))
         .where((row) =>
             row.classDataId == entry?.classData?.id &&
             row.level == (entry?.level ?? 1))
@@ -158,7 +168,7 @@ CharacterSpellSelectionData learnedSpellSelection(
       spellKey: spellReferenceKey(spell),
       kind: (spell.level ?? 0) <= 0
           ? CharacterSpellSelectionKind.knownCantrip
-          : spellMode(entry?.classData, classLevel) ==
+          : spellMode(spellcastingClassForEntry(entry), classLevel) ==
                   ClassSpellSelectionMode.spellbook
               ? CharacterSpellSelectionKind.spellbookSpell
               : CharacterSpellSelectionKind.knownSpell);
@@ -171,7 +181,7 @@ List<CharacterSpellSelectionData> prepareSpellSelections(
   if (!prepared) return selections;
   final entry = spellEntryForClass(character, classId);
   final key = spellReferenceKey(spell);
-  if (spellMode(entry?.classData, classLevel) ==
+  if (spellMode(spellcastingClassForEntry(entry), classLevel) ==
           ClassSpellSelectionMode.spellbook &&
       !selections.any((selection) =>
           selection.kind == CharacterSpellSelectionKind.spellbookSpell &&
