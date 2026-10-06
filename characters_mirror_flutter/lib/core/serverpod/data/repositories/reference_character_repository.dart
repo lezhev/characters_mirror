@@ -58,8 +58,8 @@ class CharacterRepository implements Repository<CharacterData> {
       throw StateError(
           'Сначала синхронизируйте изменения персонажа с сервером.');
     }
-    final character = await client.characterData
-        .getCharacter(record?.serverId ?? characterId);
+    final serverId = _requireCanonicalServerId(characterId, record);
+    final character = await client.characterData.getCharacter(serverId);
     final store = characterSyncStore;
     final userId = currentOfflineUserId();
     if (store != null && userId != null) {
@@ -72,15 +72,69 @@ class CharacterRepository implements Repository<CharacterData> {
     await offlineSyncCoordinator?.syncNow();
     final store = characterSyncStore;
     final userId = currentOfflineUserId();
+    final record = await getOfflineRecord(request.characterId);
+    if (record != null &&
+        (record.status != OfflineCharacterSyncStatus.clean ||
+            record.serverId == null)) {
+      throw StateError('Character changes must sync before level up.');
+    }
+    final serverId = _requireCanonicalServerId(request.characterId, record);
     if (store != null && userId != null) {
-      final record =
-          await store.getCharacterByServerId(userId, request.characterId);
-      if (record != null && record.status != OfflineCharacterSyncStatus.clean) {
+      final serverRecord = await store.getCharacterByServerId(userId, serverId);
+      if (serverRecord != null &&
+          serverRecord.status != OfflineCharacterSyncStatus.clean) {
         throw StateError(
             'Персонаж изменился. Синхронизируйте изменения и откройте повышение уровня заново.');
       }
     }
-    final saved = await client.characterData.applyLevelUp(request);
+    final saved = await client.characterData
+        .applyLevelUp(request.copyWith(characterId: serverId));
+    if (store != null && userId != null) {
+      await store.upsertCleanFromServer(userId, saved);
+    }
+    return saved;
+  }
+
+  Future<CharacterData> prepareLevelDown(int characterId) async {
+    await offlineSyncCoordinator?.syncNow();
+    final record = await getOfflineRecord(characterId);
+    if (record != null &&
+        (record.status != OfflineCharacterSyncStatus.clean ||
+            record.serverId == null)) {
+      throw StateError(
+          'Сначала синхронизируйте изменения персонажа с сервером.');
+    }
+    final serverId = _requireCanonicalServerId(characterId, record);
+    final character = await client.characterData.getCharacter(serverId);
+    final store = characterSyncStore;
+    final userId = currentOfflineUserId();
+    if (store != null && userId != null) {
+      await store.upsertCleanFromServer(userId, character);
+    }
+    return character;
+  }
+
+  Future<CharacterData> applyLevelDown(LevelDownRequest request) async {
+    await offlineSyncCoordinator?.syncNow();
+    final store = characterSyncStore;
+    final userId = currentOfflineUserId();
+    final record = await getOfflineRecord(request.characterId);
+    if (record != null &&
+        (record.status != OfflineCharacterSyncStatus.clean ||
+            record.serverId == null)) {
+      throw StateError('Character changes must sync before level down.');
+    }
+    final serverId = _requireCanonicalServerId(request.characterId, record);
+    if (store != null && userId != null) {
+      final serverRecord = await store.getCharacterByServerId(userId, serverId);
+      if (serverRecord != null &&
+          serverRecord.status != OfflineCharacterSyncStatus.clean) {
+        throw StateError(
+            'Персонаж изменился. Синхронизируйте изменения и откройте понижение уровня заново.');
+      }
+    }
+    final saved = await client.characterData
+        .applyLevelDown(request.copyWith(characterId: serverId));
     if (store != null && userId != null) {
       await store.upsertCleanFromServer(userId, saved);
     }
@@ -104,6 +158,9 @@ class CharacterRepository implements Repository<CharacterData> {
     final existing = normalized.id == null
         ? null
         : await store.getCharacter(userId, normalized.id!);
+    if ((normalized.id ?? 0) < 0 && existing == null) {
+      throw StateError('Cannot save an unresolved temporary character id.');
+    }
     if (existing?.serverId == null) {
       final resolved = await _resolveForLocalStore(normalized);
       final record = await store.saveLocal(userId, resolved);
@@ -148,6 +205,11 @@ class CharacterRepository implements Repository<CharacterData> {
       }
     }
 
+    if (characterId < 0) {
+      throw StateError(
+          'Cannot request a temporary character id from the server.');
+    }
+
     final character = await client.characterData.getCharacter(characterId);
     if (store != null && userId != null) {
       await store.upsertCleanFromServer(userId, character);
@@ -166,6 +228,9 @@ class CharacterRepository implements Repository<CharacterData> {
       await store.markDeleting(userId, id, null);
       unawaited(offlineSyncCoordinator?.syncNow());
       return;
+    }
+    if (id < 0) {
+      throw StateError('Cannot delete a temporary character id on the server.');
     }
     return client.characterData.delete(id);
   }
@@ -221,10 +286,18 @@ class CharacterRepository implements Repository<CharacterData> {
           saveRemote: client.characterData.saveCharacter,
         );
       }
+      if ((normalized.id ?? 0) < 0 &&
+          await store.getCharacter(userId, normalized.id!) == null) {
+        throw StateError('Cannot save an unresolved temporary character id.');
+      }
       final resolved = await _resolveForLocalStore(normalized);
       final record = await store.saveLocal(userId, resolved);
       unawaited(offlineSyncCoordinator?.syncNow());
       return record.character;
+    }
+
+    if ((normalized.id ?? 0) < 0) {
+      throw StateError('Cannot save a temporary character id on the server.');
     }
 
     return client.characterData.saveCharacter(normalized);
@@ -254,6 +327,17 @@ class CharacterRepository implements Repository<CharacterData> {
     }
     return resolveOfflineCharacter(cache, character);
   }
+}
+
+int _requireCanonicalServerId(
+  int routeCharacterId,
+  OfflineCharacterRecord? record,
+) {
+  final serverId = record?.serverId;
+  if (serverId != null && serverId > 0) return serverId;
+  if (routeCharacterId > 0) return routeCharacterId;
+  throw StateError(
+      'Cannot contact the server without a canonical character id.');
 }
 
 Future<CharacterData> persistConfirmedNewCharacter(

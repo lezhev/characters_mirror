@@ -21,8 +21,9 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final character = ref.watch(characterSheetControllerProvider(characterId));
+    final effectiveCharacterId = character.valueOrNull?.id ?? characterId;
     final offlineRecord =
-        ref.watch(offlineCharacterRecordProvider(characterId));
+        ref.watch(offlineCharacterRecordProvider(effectiveCharacterId));
     final localSavePending =
         ref.watch(characterSheetLocalSavePendingProvider(characterId));
     final characterName = character.valueOrNull?.name?.trim();
@@ -72,7 +73,7 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
               ],
               const SizedBox(height: 12),
               CharacterSheetSettingsSection(
-                characterId: characterId,
+                characterId: effectiveCharacterId,
                 offlineRecord: offlineRecord,
                 localSavePending: localSavePending,
                 showTitle: false,

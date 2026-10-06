@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repository_providers.dart';
+import 'package:characters_mirror_flutter/core/serverpod/data/repositories/reference_character_repository.dart';
 import 'package:characters_mirror_flutter/features/character_portrait/character_portrait.dart';
 import 'package:characters_mirror_flutter/features/character_portrait/application/character_portrait_controller.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
@@ -57,6 +58,31 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('До следующего уровня: 2250 опыта'), findsOneWidget);
     expect(find.text('Повысить уровень'), findsOneWidget);
+  });
+
+  testWidgets('level-down action opens its page and applies the selected entry',
+      (tester) async {
+    final character = _character();
+    final repository = _FakeCharacterRepository(
+      character.copyWith(
+        version: 2,
+        classEntries: [character.classEntries!.single.copyWith(level: 2)],
+        derived: character.derived!.copyWith(totalLevel: 2),
+      ),
+    );
+    await _pumpPage(tester, characterRepository: repository);
+
+    await tester.tap(find.text('3 уровень'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Понизить уровень'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Понижение уровня'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('level-down-apply')));
+    await tester.pumpAndSettle();
+
+    expect(repository.request?.classEntryId, 'entry');
+    expect(find.text('2 уровень'), findsOneWidget);
   });
 
   testWidgets('character overview fits narrow and wide viewports',
@@ -120,29 +146,11 @@ void main() {
   });
 }
 
-Future<void> _pumpPage(WidgetTester tester) async {
-  final character = CharacterData(
-    id: 1,
-    name: 'Mira',
-    age: '120',
-    height: '142 см',
-    weight: '52 кг',
-    eyes: 'Серые',
-    skin: 'Смуглая',
-    hair: 'Чёрные',
-    experience: 450,
-    derived: CharacterDerivedData(
-      totalLevel: 3,
-      languages: [Language.common],
-    ),
-    classEntries: [
-      CharacterClassEntryData(
-        level: 3,
-        classData: ClassData(name: 'Колдун'),
-      ),
-    ],
-    race: RaceData(name: 'Дварф'),
-  );
+Future<void> _pumpPage(
+  WidgetTester tester, {
+  CharacterRepository? characterRepository,
+}) async {
+  final character = _character();
 
   await tester.pumpWidget(
     ProviderScope(
@@ -153,6 +161,8 @@ Future<void> _pumpPage(WidgetTester tester) async {
             .overrideWith(() => _FakePortraitController()),
         toolCatalogProvider.overrideWith((ref) async => []),
         weaponCatalogProvider.overrideWith((ref) async => []),
+        if (characterRepository != null)
+          characterRepositoryProvider.overrideWithValue(characterRepository),
       ],
       child: MaterialApp(
         home: Scaffold(
@@ -165,6 +175,31 @@ Future<void> _pumpPage(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+CharacterData _character() => CharacterData(
+      id: 1,
+      version: 1,
+      name: 'Mira',
+      age: '120',
+      height: '142 см',
+      weight: '52 кг',
+      eyes: 'Серые',
+      skin: 'Смуглая',
+      hair: 'Чёрные',
+      experience: 450,
+      derived: CharacterDerivedData(
+        totalLevel: 3,
+        languages: [Language.common],
+      ),
+      classEntries: [
+        CharacterClassEntryData(
+          id: 'entry',
+          level: 3,
+          classData: ClassData(name: 'Колдун'),
+        ),
+      ],
+      race: RaceData(name: 'Дварф'),
+    );
+
 class _FakeCharacterSheetController extends CharacterSheetController {
   _FakeCharacterSheetController(this.character);
 
@@ -172,9 +207,25 @@ class _FakeCharacterSheetController extends CharacterSheetController {
 
   @override
   Future<CharacterData> build(int characterId) async => character;
+
+  @override
+  Future<CharacterData> prepareLevelDown() async => character;
 }
 
 class _FakePortraitController extends CharacterPortraitController {
   @override
   Future<Uri?> build(int characterId) async => null;
+}
+
+class _FakeCharacterRepository extends CharacterRepository {
+  _FakeCharacterRepository(this.saved);
+
+  final CharacterData saved;
+  LevelDownRequest? request;
+
+  @override
+  Future<CharacterData> applyLevelDown(LevelDownRequest request) async {
+    this.request = request;
+    return saved;
+  }
 }

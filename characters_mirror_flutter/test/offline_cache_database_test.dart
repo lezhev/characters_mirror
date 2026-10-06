@@ -155,6 +155,22 @@ void main() {
     expect(synced.status, OfflineCharacterSyncStatus.clean);
   });
 
+  test('canonical server refresh can move cache identity off the temp id',
+      () async {
+    final local = await cache.saveLocal(7, CharacterData(name: 'Local'));
+    final canonical = CharacterData(id: 42, name: 'Remote', version: 3);
+    await cache.markSynced(7, local.localId, canonical);
+    expect(await cache.getCharacter(7, local.localId), isNotNull);
+
+    await cache.upsertCleanFromServer(7, canonical.copyWith(version: 4));
+
+    expect(await cache.getCharacter(7, local.localId), isNull);
+    final byServerId = await cache.getCharacter(7, 42);
+    expect(byServerId?.localId, 42);
+    expect(byServerId?.serverId, 42);
+    expect(byServerId?.character.version, 4);
+  });
+
   test('server refresh does not overwrite pending local edits', () async {
     await cache.upsertCleanFromServer(
       7,

@@ -168,10 +168,11 @@ final darkColorScheme = ColorScheme(
   onTertiaryContainer: Color(0xFFFFDADD),
 
   // Ошибки / destructive
-  error: Color(0xFFE06A75),
-  onError: Color(0xFF16100A),
-  errorContainer: Color(0xFF93000A),
-  onErrorContainer: Color(0xFFFFDAD6),
+  // dark
+  error: Color(0xFFB83241),
+  onError: Color(0xFFF0E6D2),
+  errorContainer: Color(0xFF3A1116),
+  onErrorContainer: Color(0xFFF0CDD0),
 
   // Контуры и вспомогательные
   outline: Color(0xFF5A544C),
@@ -216,10 +217,11 @@ final lightColorScheme = ColorScheme(
   onTertiaryContainer: Color(0xFF40000A),
 
   // Ошибки / destructive
-  error: Color(0xFFC42837),
+  // light
+  error: Color(0xFF9D2833),
   onError: Color(0xFFFFFFFF),
-  errorContainer: Color(0xFFFFDAD6),
-  onErrorContainer: Color(0xFF410002),
+  errorContainer: Color(0xFFF1D6D8),
+  onErrorContainer: Color(0xFF480B11),
 
   // Контуры и вспомогательные
   outline: Color(0x269D2833),
