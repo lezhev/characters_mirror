@@ -156,3 +156,8 @@
 20261006202000000-level3-technical-backfill-2
 20261006203000000-level3-technical-backfill-3
 20261006203500000-feature-presentation
+20261006204000000-level3-technical-backfill-4
+20261006205000000-level3-technical-backfill-5
+20261006206000000-choice-option-short-descriptions
+20261006207000000-level3-class-feature-short-descriptions
+20261006208000000-deflect-missiles-presentation
