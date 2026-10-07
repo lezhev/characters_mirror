@@ -1,97 +1,45 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:flutter/material.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
+import 'spell_presentation_view.dart';
 
 Future<void> showSpellDetailsDialog(
   BuildContext context,
-  SpellData spell,
-) {
+  SpellData spell, {
+  SpellPresentationContext presentationContext =
+      const SpellPresentationContext(),
+}) {
   return showDialog<void>(
     context: context,
-    builder: (context) => SpellDetailsDialog(spell: spell),
+    builder: (context) => SpellDetailsDialog(
+        spell: spell, presentationContext: presentationContext),
   );
 }
 
 class SpellDetailsDialog extends StatelessWidget {
   const SpellDetailsDialog({
     required this.spell,
+    this.presentationContext = const SpellPresentationContext(),
     super.key,
   });
 
   final SpellData spell;
+  final SpellPresentationContext presentationContext;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final description = _normalizedText(spell.description);
-    final higherLevel = _normalizedText(spell.higherLevel);
-
+    final presentation = const SpellPresentationResolver()
+        .resolve(spell.toJson(), context: presentationContext);
     return AlertDialog(
-      title: Text(spellName(spell)),
+      title: Text(presentation.name),
       content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _SpellInfoChip(label: spellLevelLabel(spell)),
-                if (spell.schoolValue != null)
-                  _SpellInfoChip(label: spellSchoolLabel(spell.schoolValue!)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            SpellPrimaryMetadata(
-              spell: spell,
-              showHiddenLabels: true,
-            ),
-            if (description != null) ...[
-              const SizedBox(height: 16),
-              Text(description),
-            ],
-            if (higherLevel != null) ...[
-              const SizedBox(height: 16),
-              Text(
-                'На высоких уровнях',
-                style: theme.textTheme.titleSmall,
-              ),
-              const SizedBox(height: 6),
-              Text(higherLevel),
-            ],
-          ],
-        ),
-      ),
+          child: SpellPresentationView(presentation: presentation)),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Закрыть'),
         ),
       ],
-    );
-  }
-}
-
-class _SpellInfoChip extends StatelessWidget {
-  const _SpellInfoChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(
-          label,
-          style: theme.textTheme.labelMedium,
-        ),
-      ),
     );
   }
 }
@@ -119,10 +67,11 @@ class SpellPrimaryMetadata extends StatelessWidget {
           icon: Icons.swap_horiz,
           label: spell.range!.trim(),
         ),
-      if (_normalizedText(spell.duration) != null)
+      if (_normalizedText(spell.duration) != null ||
+          spell.durationType == SpellDurationType.instantaneous)
         SpellMetadataItem(
           icon: Icons.hourglass_empty,
-          label: spell.duration!.trim(),
+          label: _normalizedText(spell.duration) ?? 'Мгновенно',
         ),
       if (spell.concentration == true)
         SpellMetadataItem(
@@ -168,20 +117,26 @@ class SpellMetadataItem extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        customIcon ?? Icon(icon, size: 16, color: colorScheme.onSurfaceVariant),
-        if (showLabel) ...[
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
+    return Semantics(
+      label: label,
+      excludeSemantics: true,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          customIcon ??
+              Icon(icon, size: 16, color: colorScheme.onSurfaceVariant),
+          if (showLabel) ...[
+            const SizedBox(width: 6),
+            Flexible(
+                child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            )),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -295,7 +250,7 @@ String spellName(SpellData spell) {
 }
 
 String? spellKey(SpellData? spell) {
-  return _normalizedText(spell?.referenceKey) ?? _normalizedText(spell?.name);
+  return _normalizedText(spell?.referenceKey);
 }
 
 String spellLevelLabel(SpellData spell) {

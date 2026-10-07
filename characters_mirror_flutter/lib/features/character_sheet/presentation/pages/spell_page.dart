@@ -1,4 +1,9 @@
 import 'dart:math' as math;
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
+import 'package:characters_mirror_flutter/core/character_spells/character_spell_projection.dart';
+import '../widgets/spell_cast_dialog.dart';
+import '../widgets/spell_source_stats.dart';
+import '../widgets/spell_slot_indicator.dart';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';
@@ -10,7 +15,6 @@ import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.dart';
-import 'package:characters_mirror_flutter/core/ui/widgets/segmented_stat_bar.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
@@ -55,6 +59,19 @@ class SpellPage extends ConsumerWidget {
               );
               return Future.value();
             },
+            onPactSlotCountChanged: (level, available) {
+              runCharacterSheetSave(
+                  context,
+                  ref
+                      .read(characterSheetControllerProvider(characterId)
+                          .notifier)
+                      .setCurrentSpellSlotsForLevel(level, available,
+                          slotSource: SpellSlotSource.pact));
+              return Future.value();
+            },
+            onSpellCastContext: (spell, cast) => ref
+                .read(characterSheetControllerProvider(characterId).notifier)
+                .castSpell(spell, castContext: cast),
             onSpellCast: (spell) {
               runCharacterSheetSave(
                 context,
@@ -125,6 +142,8 @@ class SpellPageContent extends StatelessWidget {
     required this.character,
     super.key,
     this.onSlotCountChanged,
+    this.onPactSlotCountChanged,
+    this.onSpellCastContext,
     this.onSpellCast,
     this.onSpellcastingBonusesChanged,
     this.onSpellPreparedChanged,
@@ -135,6 +154,9 @@ class SpellPageContent extends StatelessWidget {
 
   final CharacterData character;
   final Future<void> Function(int level, int available)? onSlotCountChanged;
+  final Future<void> Function(int level, int available)? onPactSlotCountChanged;
+  final Future<void> Function(SpellData spell, SpellCastContext cast)?
+      onSpellCastContext;
   final Future<void> Function(SpellData spell)? onSpellCast;
   final Future<void> Function(int saveDcBonus, int attackBonus)?
       onSpellcastingBonusesChanged;
@@ -148,8 +170,7 @@ class SpellPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spellStats = _spellStats(character);
-    final preparation = _spellPreparationState(character);
-    final spellsByLevel = _spellEntriesByLevel(character, preparation);
+    final spellsByLevel = _spellEntriesByLevel(character);
     final cantrips = spellsByLevel[0] ?? const <_SpellEntry>[];
     final spellLevels = _spellLevels(character, spellsByLevel);
     final castButtonWidth = _spellCastButtonWidth(
@@ -168,22 +189,13 @@ class SpellPageContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        SegmentedStatBar(
-          segments: [
-            SegmentedStatBarItem(
-              label: 'Спасбросок',
-              value: spellStats.saveDcLabel,
-            ),
-            SegmentedStatBarItem(
-              label: 'Атака',
-              value: spellStats.attackBonusLabel,
-            ),
-          ],
-        ),
+        SpellSourceStats(character: character),
         const SizedBox(height: 20),
         _SpellLevelSection(
           title: 'Заговоры',
           entries: cantrips,
+          character: character,
+          onSpellCastContext: onSpellCastContext,
           spellStats: spellStats,
           castButtonWidth: castButtonWidth,
           onSpellCast: onSpellCast,
@@ -193,9 +205,18 @@ class SpellPageContent extends StatelessWidget {
           const SizedBox(height: 20),
           _SpellLevelSection(
             title: 'Круг $level',
+            level: level,
+            character: character,
+            onSpellCastContext: onSpellCastContext,
             entries: spellsByLevel[level] ?? const <_SpellEntry>[],
             slots: _slotCount(character, level),
             currentSlots: _currentSlotCount(character, level),
+            pactSlots: character.derived?.pactSlots?[level],
+            currentPactSlots: SpellSlotPools.fromCharacter(character.toJson())
+                .available(SpellSlotSource.pact, level),
+            onPactSlotCountChanged: onPactSlotCountChanged == null
+                ? null
+                : (available) => onPactSlotCountChanged!(level, available),
             spellStats: spellStats,
             castButtonWidth: castButtonWidth,
             onSlotCountChanged: onSlotCountChanged == null

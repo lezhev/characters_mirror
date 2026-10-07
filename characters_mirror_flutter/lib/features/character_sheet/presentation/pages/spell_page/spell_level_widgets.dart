@@ -4,10 +4,16 @@ class _SpellLevelSection extends StatelessWidget {
   const _SpellLevelSection({
     required this.title,
     required this.entries,
+    required this.character,
+    this.onSpellCastContext,
     required this.spellStats,
     required this.castButtonWidth,
     this.slots,
     this.currentSlots,
+    this.level = 0,
+    this.pactSlots,
+    this.currentPactSlots,
+    this.onPactSlotCountChanged,
     this.onSlotCountChanged,
     this.onSpellCast,
     this.diceRoller,
@@ -15,10 +21,17 @@ class _SpellLevelSection extends StatelessWidget {
 
   final String title;
   final List<_SpellEntry> entries;
+  final CharacterData character;
+  final Future<void> Function(SpellData spell, SpellCastContext cast)?
+      onSpellCastContext;
   final _SpellStats spellStats;
   final double castButtonWidth;
   final int? slots;
   final int? currentSlots;
+  final int level;
+  final int? pactSlots;
+  final int? currentPactSlots;
+  final ValueChanged<int>? onPactSlotCountChanged;
   final ValueChanged<int>? onSlotCountChanged;
   final Future<void> Function(SpellData spell)? onSpellCast;
   final DiceRoller? diceRoller;
@@ -30,14 +43,20 @@ class _SpellLevelSection extends StatelessWidget {
       children: [
         _SpellLevelHeader(
           title: title,
+          level: level,
           slots: slots,
           currentSlots: currentSlots,
+          pactSlots: pactSlots,
+          currentPactSlots: currentPactSlots,
+          onPactSlotCountChanged: onPactSlotCountChanged,
           onSlotCountChanged: onSlotCountChanged,
         ),
         const SizedBox(height: 8),
         for (var index = 0; index < entries.length; index++) ...[
           _SpellCard(
             entry: entries[index],
+            character: character,
+            onSpellCastContext: onSpellCastContext,
             spellStats: spellStats,
             castButtonWidth: castButtonWidth,
             availableSlots:
@@ -55,14 +74,22 @@ class _SpellLevelSection extends StatelessWidget {
 class _SpellLevelHeader extends StatelessWidget {
   const _SpellLevelHeader({
     required this.title,
+    required this.level,
     this.slots,
     this.currentSlots,
+    this.pactSlots,
+    this.currentPactSlots,
+    this.onPactSlotCountChanged,
     this.onSlotCountChanged,
   });
 
   final String title;
+  final int level;
   final int? slots;
   final int? currentSlots;
+  final int? pactSlots;
+  final int? currentPactSlots;
+  final ValueChanged<int>? onPactSlotCountChanged;
   final ValueChanged<int>? onSlotCountChanged;
 
   @override
@@ -72,100 +99,84 @@ class _SpellLevelHeader extends StatelessWidget {
     final slotCount = slots ?? 0;
     final availableSlots =
         (currentSlots ?? slotCount).clamp(0, slotCount).toInt();
+    final pactCount = pactSlots ?? 0;
+    final availablePact =
+        (currentPactSlots ?? pactCount).clamp(0, pactCount).toInt();
 
-    return Row(
-      children: [
-        Text(title, style: theme.textTheme.titleMedium),
-        if (slots != null) ...[
+    final totalSlots = slotCount + pactCount;
+    if (totalSlots == 0) {
+      return Text(title, style: theme.textTheme.titleMedium);
+    }
+    return LayoutBuilder(builder: (context, constraints) {
+      final titlePainter = TextPainter(
+        text: TextSpan(text: title, style: theme.textTheme.titleMedium),
+        textScaler: MediaQuery.textScalerOf(context),
+        textDirection: Directionality.of(context),
+      )..layout();
+      final slotWidth =
+          math.max(0.0, constraints.maxWidth - titlePainter.width - 24);
+      titlePainter.dispose();
+      final spacing = totalSlots > 1
+          ? ((slotWidth - totalSlots * 22) / (totalSlots - 1)).clamp(0.0, 6.0)
+          : 0.0;
+      return Row(
+        children: [
+          Text(title, style: theme.textTheme.titleMedium),
           const SizedBox(width: 12),
           Expanded(
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: colorScheme.outline,
-            ),
-          ),
+              child:
+                  Divider(height: 1, thickness: 1, color: colorScheme.outline)),
           const SizedBox(width: 12),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              for (var index = 0; index < slotCount; index++)
-                _SpellSlotFlag(
-                  key: ValueKey('spell-slot-$title-$index'),
-                  value: index < availableSlots,
-                  onPressed: onSlotCountChanged == null
-                      ? null
-                      : () {
-                          final nextAvailable = index < availableSlots
-                              ? availableSlots - 1
-                              : availableSlots + 1;
-                          onSlotCountChanged!(nextAvailable);
-                        },
-                ),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _SpellSlotFlag extends StatelessWidget {
-  const _SpellSlotFlag({
-    required this.value,
-    super.key,
-    this.onPressed,
-  });
-
-  final bool value;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Semantics(
-      button: onPressed != null,
-      selected: value,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onPressed,
-        child: SizedBox.square(
-          dimension: 22,
-          child: Center(
-            child: SizedBox.square(
-              dimension: 18,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: colorScheme.primary),
-                ),
-                child: value
-                    ? Center(
-                        child: SizedBox.square(
-                          dimension: 10,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                      )
-                    : null,
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: slotWidth),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                key: ValueKey('spell-slot-row-$title'),
+                mainAxisSize: MainAxisSize.min,
+                spacing: spacing,
+                children: [
+                  for (var index = 0; index < slotCount; index++)
+                    SpellSlotIndicator(
+                      key: ValueKey('spell-slot-$title-$index'),
+                      level: level,
+                      value: index < availableSlots,
+                      onPressed: onSlotCountChanged == null
+                          ? null
+                          : () {
+                              final nextAvailable = index < availableSlots
+                                  ? availableSlots - 1
+                                  : availableSlots + 1;
+                              onSlotCountChanged!(nextAvailable);
+                            },
+                    ),
+                  for (var index = 0; index < pactCount; index++)
+                    SpellSlotIndicator(
+                      key: ValueKey('pact-slot-$title-$index'),
+                      level: level,
+                      variant: SpellSlotVariant.pact,
+                      value: index < availablePact,
+                      onPressed: onPactSlotCountChanged == null
+                          ? null
+                          : () => onPactSlotCountChanged!(index < availablePact
+                              ? availablePact - 1
+                              : availablePact + 1),
+                    ),
+                ],
               ),
             ),
           ),
-        ),
-      ),
-    );
+        ],
+      );
+    });
   }
 }
 
 class _SpellCard extends StatelessWidget {
   const _SpellCard({
     required this.entry,
+    required this.character,
+    this.onSpellCastContext,
     required this.spellStats,
     required this.castButtonWidth,
     required this.availableSlots,
@@ -174,6 +185,17 @@ class _SpellCard extends StatelessWidget {
   });
 
   final _SpellEntry entry;
+  final CharacterData character;
+  final Future<void> Function(SpellData spell, SpellCastContext cast)?
+      onSpellCastContext;
+  List<SpellCastContext> get castChoices => availableSpellCasts(
+      spellKey(entry.spell) ?? '',
+      entry.spell.level ?? 0,
+      entry.sources,
+      SpellSlotPools.fromCharacter(character.toJson()));
+  SpellSourceContext? get defaultSource =>
+      castChoices.firstOrNull?.source ??
+      entry.sources.where((s) => s.prepared || s.alwaysPrepared).firstOrNull;
   final _SpellStats spellStats;
   final double castButtonWidth;
   final int? availableSlots;
@@ -183,23 +205,30 @@ class _SpellCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final spell = entry.spell;
+    final spellStats = _spellStats(character, source: defaultSource);
     final disabledBySlots =
         (spell.level ?? 0) > 0 && (availableSlots ?? 0) <= 0;
     final disabledByPreparation =
         entry.canPrepare && !entry.isPrepared && (spell.level ?? 0) > 0;
-    final canCast = onSpellCast != null &&
-        !disabledBySlots &&
-        !disabledByPreparation &&
-        (spell.requiresAttackRoll != true || spellStats.canRollSpellAttack);
+    final canCast = onSpellCastContext != null
+        ? castChoices.isNotEmpty
+        : onSpellCast != null &&
+            !disabledBySlots &&
+            !disabledByPreparation &&
+            (!spellHasAttack(spell) || spellStats.canRollSpellAttack);
 
     return SpellCard(
       spell: spell,
+      presentationContext: defaultSource == null
+          ? const SpellPresentationContext()
+          : characterSpellPresentationContext(character, defaultSource!,
+              castLevel: castChoices.firstOrNull?.castLevel),
       trailing: KeyedSubtree(
         key: ValueKey('cast-spell-${spellKey(spell) ?? spellName(spell)}'),
         child: _SpellCastButton(
           spell: spell,
           spellStats: spellStats,
-          width: castButtonWidth,
+          width: _spellCastButtonWidth(context, spellStats.attackBonusLabel),
           enabled: canCast,
           onPressed: () => _castSpell(context),
         ),
@@ -209,23 +238,40 @@ class _SpellCard extends StatelessWidget {
 
   Future<void> _castSpell(BuildContext context) async {
     final spell = entry.spell;
-    await onSpellCast?.call(spell);
+    var stats = _spellStats(character, source: defaultSource);
+    try {
+      if (onSpellCastContext != null) {
+        final cast = await chooseSpellCast(context,
+            character: character, spell: spell, choices: castChoices);
+        if (cast == null || !context.mounted) return;
+        stats = _spellStats(character, source: cast.source);
+        await onSpellCastContext!(spell, cast);
+      } else {
+        await onSpellCast?.call(spell);
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(humanReadableError(error))));
+      }
+      return;
+    }
     if (!context.mounted) {
       return;
     }
 
-    if (spell.requiresSavingThrow == true) {
+    if (spellHasSave(spell)) {
       RollResultsOverlay.show(
         context,
-        _spellSavingThrowMessage(spell, spellStats),
+        _spellSavingThrowMessage(spell, stats),
       );
       return;
     }
 
-    if (spell.requiresAttackRoll == true) {
+    if (spellHasAttack(spell) && stats.canRollSpellAttack) {
       final roller = diceRoller ?? DiceRoller();
       try {
-        final result = roller.rollModifier(spellStats.attackBonusLabel);
+        final result = roller.rollModifier(stats.attackBonusLabel);
         RollResultsOverlay.show(context, result.displayText);
       } on DiceRollException catch (error) {
         RollResultsOverlay.show(context, error.message);
@@ -251,7 +297,7 @@ class _SpellCastButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (spell.requiresAttackRoll == true) {
+    if (spellHasAttack(spell) && spellStats.canRollSpellAttack) {
       return SizedBox(
         width: width,
         child: OutlinedButton(

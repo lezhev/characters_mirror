@@ -43,8 +43,12 @@ String? _savingThrowAbilityGenitiveLabel(String? value) {
   return _normalizedText(value);
 }
 
-_SpellStats _spellStats(CharacterData character) {
-  final ability = _spellcastingAbility(character);
+_SpellStats _spellStats(CharacterData character, {SpellSourceContext? source}) {
+  final ability = source == null
+      ? _spellcastingAbility(character)
+      : Ability.values
+          .where((a) => a.name == source.castingAbility)
+          .firstOrNull;
   if (ability == null) {
     return const _SpellStats(
       saveDcLabel: '—',
@@ -73,44 +77,20 @@ _SpellStats _spellStats(CharacterData character) {
 
 Map<int, List<_SpellEntry>> _spellEntriesByLevel(
   CharacterData character,
-  _SpellPreparationState preparation,
 ) {
   final result = <int, List<_SpellEntry>>{};
-  final seen = <String>{};
-  final selections = [...?character.spellSelections]..sort(
-      (left, right) =>
-          (left.selectionIndex ?? 0).compareTo(right.selectionIndex ?? 0),
-    );
-
-  for (final selection in selections) {
-    final spell = selection.spell;
-    if (spell == null) {
-      continue;
-    }
-    final key = spellKey(spell);
-    if (key == null) continue;
-    final level = spell.level ?? 0;
-    final isPrepared = preparation.preparedKeys.contains(key) ||
-        preparation.alwaysPreparedKeys.contains(key);
-    final sourceClass = selection.classEntry?.classData ??
-        spellEntryForClass(character, selection.classDataId)?.classData;
-    final explicitMode = sourceClass?.spellSelectionMode;
-    final requiresPreparation =
-        selection.kind == CharacterSpellSelectionKind.spellbookSpell ||
-            selection.kind == CharacterSpellSelectionKind.preparedSpell ||
-            explicitMode == ClassSpellSelectionMode.prepared ||
-            explicitMode == ClassSpellSelectionMode.spellbook ||
-            (explicitMode == null && preparation.canPrepare);
-    if (requiresPreparation && level > 0 && !isPrepared) continue;
-    if (!seen.add(key)) continue;
-    result.putIfAbsent(level, () => <_SpellEntry>[]).add(
-          _SpellEntry(
-            spell: spell,
-            canPrepare: preparation.canPrepare && level > 0,
-            isPrepared: isPrepared,
-            isAlwaysPrepared: preparation.alwaysPreparedKeys.contains(key),
-          ),
-        );
+  for (final resolved in characterResolvedSpells(character)) {
+    final sources = resolved.sources
+        .map((s) => SpellSourceContext.fromJson(s.toJson()))
+        .toList();
+    if (!sources.any((s) => s.prepared || s.alwaysPrepared)) continue;
+    final level = resolved.spell.level ?? 0;
+    result.putIfAbsent(level, () => []).add(_SpellEntry(
+        spell: resolved.spell,
+        sources: sources,
+        canPrepare: false,
+        isPrepared: sources.any((s) => s.prepared),
+        isAlwaysPrepared: sources.any((s) => s.alwaysPrepared)));
   }
 
   return result;
@@ -131,24 +111,20 @@ List<int> _spellLevels(
       levels.add(level);
     }
   }
-  for (final level in character.derived?.pactSlots?.keys ?? const <int>[]) {
-    if (_slotCount(character, level) > 0) {
-      levels.add(level);
-    }
+  for (final entry in character.derived?.pactSlots?.entries ??
+      const <MapEntry<int, int>>[]) {
+    if (entry.key > 0 && entry.value > 0) levels.add(entry.key);
   }
   return levels.toList()..sort();
 }
 
 int _slotCount(CharacterData character, int level) {
-  return (character.derived?.spellSlots?[level] ?? 0) +
-      (character.derived?.pactSlots?[level] ?? 0);
+  return character.derived?.spellSlots?[level] ?? 0;
 }
 
 int _currentSlotCount(CharacterData character, int level) {
-  final maxSlots = _slotCount(character, level);
-  return (character.currentSpellSlots?[level] ?? maxSlots)
-      .clamp(0, maxSlots)
-      .toInt();
+  return SpellSlotPools.fromCharacter(character.toJson())
+      .available(SpellSlotSource.standard, level);
 }
 
 String? _normalizedText(String? value) {
@@ -169,39 +145,6 @@ Ability? _spellcastingAbility(CharacterData character) {
     }
   }
   return null;
-}
-
-_SpellPreparationState _spellPreparationState(CharacterData character) {
-  final alwaysPreparedKeys = {
-    for (final key in character.derived?.alwaysPreparedSpellKeys ?? const [])
-      if (_normalizedText(key) != null) _normalizedText(key)!,
-  };
-  final defaultPreparedKeys = {
-    for (final selection
-        in character.spellSelections ?? const <CharacterSpellSelectionData>[])
-      if (selection.kind == CharacterSpellSelectionKind.preparedSpell &&
-          _spellSelectionKey(selection) != null)
-        _spellSelectionKey(selection)!,
-  };
-  final explicitPreparedKeys = character.preparedSpellKeys;
-  final preparedKeys = explicitPreparedKeys == null
-      ? defaultPreparedKeys
-      : {
-          for (final key in explicitPreparedKeys)
-            if (_normalizedText(key) != null) _normalizedText(key)!,
-        };
-
-  return _SpellPreparationState(
-    canPrepare: defaultPreparedKeys.isNotEmpty ||
-        explicitPreparedKeys != null ||
-        (character.classEntries?.any((entry) => {
-                  ClassSpellSelectionMode.prepared,
-                  ClassSpellSelectionMode.spellbook
-                }.contains(entry.classData?.spellSelectionMode)) ??
-            false),
-    preparedKeys: preparedKeys,
-    alwaysPreparedKeys: alwaysPreparedKeys,
-  );
 }
 
 String? _spellSelectionKey(CharacterSpellSelectionData selection) {
@@ -452,24 +395,14 @@ class _SpellEntry {
     required this.canPrepare,
     required this.isPrepared,
     required this.isAlwaysPrepared,
+    this.sources = const [],
   });
 
   final SpellData spell;
   final bool canPrepare;
   final bool isPrepared;
   final bool isAlwaysPrepared;
-}
-
-class _SpellPreparationState {
-  const _SpellPreparationState({
-    required this.canPrepare,
-    required this.preparedKeys,
-    required this.alwaysPreparedKeys,
-  });
-
-  final bool canPrepare;
-  final Set<String> preparedKeys;
-  final Set<String> alwaysPreparedKeys;
+  final List<SpellSourceContext> sources;
 }
 
 class _SpellManagementCatalogs {

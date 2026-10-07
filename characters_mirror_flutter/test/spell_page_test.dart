@@ -155,7 +155,10 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Burning Hands'), findsWidgets);
-    expect(find.text('1 уровень'), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byType(AlertDialog), matching: find.text('1 уровень')),
+        findsOneWidget);
 
     await tester.tap(find.text('Закрыть'));
     await tester.pumpAndSettle();
