@@ -102,12 +102,6 @@ class LevelUpHub extends StatelessWidget {
                                   child: Text(
                                       'Бонус мастерства ${signedLevelUpValue(before.derived?.proficiencyBonus ?? 2)} → ${signedLevelUpValue(after.derived?.proficiencyBonus ?? 2)}',
                                       style: theme.textTheme.titleSmall)),
-                            for (final level in newSpellLevels(preview))
-                              Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Text(
-                                      'Доступны заклинания $level уровня',
-                                      style: theme.textTheme.titleSmall)),
                             if (newFeatures.isNotEmpty)
                               LevelUpFeatureSection(
                                   features: newFeatures,

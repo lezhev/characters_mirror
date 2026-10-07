@@ -19,7 +19,7 @@ class AttributesStep extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return CreationStepScaffold(
-      route: 'spells',
+      route: 'personal',
       scrollableBody: false,
       onBack: () {
         ref.read(characterCreationProvider.notifier).reset();
@@ -102,10 +102,5 @@ Future<void> _syncAndGo({
         );
   }
 
-  final destination = target ?? (hasSpellGroups ? Step.spells : Step.personal);
-  if (destination == Step.spells && !hasSpellGroups) {
-    notifier.goToStep(context, Step.personal);
-    return;
-  }
-  notifier.goToStep(context, destination);
+  notifier.goToStep(context, target ?? Step.personal);
 }

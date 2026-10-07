@@ -1,7 +1,8 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:flutter/material.dart';
-import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/spell_card.dart';
-import 'level_up_picker.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/choice_picker.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
+import '../application/level_up_overview.dart';
 
 class LevelUpSpells extends StatelessWidget {
   const LevelUpSpells(
@@ -32,7 +33,7 @@ class LevelUpSpells extends StatelessWidget {
           s.spellId
     };
     return Navigator.of(context).push<List<String>>(MaterialPageRoute(
-        builder: (_) => LevelUpPicker(
+        builder: (_) => ChoicePicker(
               title: kind == CharacterSpellSelectionKind.knownCantrip
                   ? 'Заговоры'
                   : 'Заклинания',
@@ -42,9 +43,12 @@ class LevelUpSpells extends StatelessWidget {
               options: [
                 for (final s in _options(kind))
                   if (!owned.contains(s.id) && s.id != null)
-                    LevelUpPickerOption(
+                    ChoicePickerOption(
                         key: '${s.id}',
-                        name: s.name ?? s.referenceKey ?? 'Заклинание',
+                        name: s.name ??
+                            (s.referenceKey.isEmpty
+                                ? 'Заклинание'
+                                : s.referenceKey),
                         description: s.description,
                         spellLevel: s.level,
                         spell: s)
@@ -55,7 +59,7 @@ class LevelUpSpells extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final delta = preview.spellDelta;
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    final rows = <Widget>[
       for (final (kind, count) in [
         (CharacterSpellSelectionKind.knownCantrip, delta.cantripsToAdd),
         (CharacterSpellSelectionKind.knownSpell, delta.knownSpellsToAdd),
@@ -71,47 +75,46 @@ class LevelUpSpells extends StatelessWidget {
                 if (s.kind == kind && s.replacesSelectionId == null)
                   '${s.spellId}'
             ];
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                          kind == CharacterSpellSelectionKind.knownCantrip
-                              ? 'Заговоры'
-                              : 'Заклинания'),
-                      subtitle: Text(selected.isEmpty
-                          ? 'Выбрать $count'
-                          : 'Выбрано ${selected.length} / $count'),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () async {
-                        final keys =
-                            await _pick(context, kind, count, selected);
-                        if (keys != null) {
-                          onChanged(kind, keys.map(int.parse).toList(), null);
-                        }
-                      }),
-                  for (final spell in _options(kind))
-                    if (selected.contains('${spell.id}'))
-                      SpellCard(
-                          spell: spell,
-                          selectionMode: true,
-                          selected: true,
-                          onSelectionChanged: (_) => onChanged(
-                              kind,
-                              selected
-                                  .where((id) => id != '${spell.id}')
-                                  .map(int.parse)
-                                  .toList(),
-                              null)),
-                ]);
+            return ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(kind == CharacterSpellSelectionKind.knownCantrip
+                    ? 'Выбрать заговоры'
+                    : kind == CharacterSpellSelectionKind.spellbookSpell
+                        ? 'Добавить в книгу заклинаний'
+                        : 'Выбрать заклинания'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(selected.isEmpty
+                        ? 'Выбрать $count'
+                        : 'Выбрано ${selected.length} / $count'),
+                    if (selected.isNotEmpty)
+                      Text([
+                        for (final key in selected)
+                          _spellName(kind, int.parse(key))
+                      ].join(', ')),
+                  ],
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  final keys = await _pick(context, kind, count, selected);
+                  if (keys != null) {
+                    onChanged(kind, keys.map(int.parse).toList(), null);
+                  }
+                });
           }),
       if (delta.knownSpellReplacements > 0)
         ListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Заменить заклинание'),
             subtitle:
-                Text('Необязательно · до ${delta.knownSpellReplacements}'),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Необязательно · до ${delta.knownSpellReplacements}'),
+              for (final s in request.spells ?? const <LevelUpSpellChoice>[])
+                if (s.replacesSelectionId != null)
+                  Text(
+                      '${_replacedSpellName(s.replacesSelectionId!)} → ${_spellName(s.kind, s.spellId)}'),
+            ]),
             trailing: const Icon(Icons.chevron_right),
             onTap: () async {
               final old = preview.before.spellSelections
@@ -123,13 +126,13 @@ class LevelUpSpells extends StatelessWidget {
                   [];
               final replacement = await Navigator.of(context)
                   .push<List<String>>(MaterialPageRoute(
-                      builder: (_) => LevelUpPicker(
+                      builder: (_) => ChoicePicker(
                             title: 'Что заменить',
                             maximum: 1,
                             minimum: 1,
                             options: [
                               for (final s in old)
-                                LevelUpPickerOption(
+                                ChoicePickerOption(
                                     key: s.id!,
                                     name: s.spell?.name ??
                                         s.spellKey ??
@@ -165,20 +168,34 @@ class LevelUpSpells extends StatelessWidget {
                     picked.map(int.parse).toList(), id);
               }
             }),
-      for (final s in request.spells ?? const <LevelUpSpellChoice>[])
-        if (s.replacesSelectionId != null)
-          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            const Text('Замена'),
-            SpellCard(
-                spell: _options(s.kind)
-                        .where((o) => o.id == s.spellId)
-                        .firstOrNull ??
-                    SpellData(id: s.spellId),
-                selectionMode: true,
-                selected: true,
-                onSelectionChanged: (_) =>
-                    onChanged(s.kind, [], s.replacesSelectionId)),
-          ]),
-    ]);
+      for (final level in newSpellLevels(preview))
+        ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text('Доступны заклинания $level уровня')),
+    ];
+    if (rows.isEmpty) return const SizedBox.shrink();
+    return Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: SheetOutlineCard(
+            key: const ValueKey('level-up-spells'),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text('Заклинания',
+                      style: Theme.of(context).textTheme.titleMedium),
+                  for (final row in rows) ...[const Divider(), row],
+                ])));
+  }
+
+  String _spellName(CharacterSpellSelectionKind kind, int id) {
+    final spell = _options(kind).where((s) => s.id == id).firstOrNull;
+    return spell?.name ?? spell?.referenceKey ?? 'Заклинание';
+  }
+
+  String _replacedSpellName(String selectionId) {
+    final selection = preview.before.spellSelections
+        ?.where((s) => s.id == selectionId)
+        .firstOrNull;
+    return selection?.spell?.name ?? selection?.spellKey ?? 'Заклинание';
   }
 }

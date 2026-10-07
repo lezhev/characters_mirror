@@ -18,10 +18,7 @@ class CreationProgression extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasSpellStep = ref.watch(
-      characterCreationProvider.select((state) => state.hasSpellCreationStep),
-    );
-    final steps = creationVisibleSteps(hasSpellStep: hasSpellStep);
+    final steps = creationVisibleSteps();
     return LayoutBuilder(
       builder: (context, constraints) {
         if (scrollable && constraints.maxWidth < 300) {
