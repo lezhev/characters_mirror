@@ -81,10 +81,12 @@ extension CreationStepX on Step {
   }
 }
 
-List<Step> creationVisibleSteps({required bool hasSpellStep}) {
+// Keep the legacy flag/step API compatible with existing draft callers.
+// Spell selection is now a picker launched from the class step.
+List<Step> creationVisibleSteps({bool hasSpellStep = false}) {
   return [
     for (final step in Step.values)
-      if (hasSpellStep || step != Step.spells) step,
+      if (step != Step.spells) step,
   ];
 }
 
@@ -156,6 +158,7 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void goToStep(BuildContext context, Step step) {
+    if (step == Step.spells) step = Step.classStep;
     ref.read(creationStepTransitionDirectionProvider.notifier).state =
         step.index >= state.step.index ? 1 : -1;
     context.go(step.routePath);
@@ -163,6 +166,7 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void syncStep(Step step) {
+    if (step == Step.spells) step = Step.classStep;
     if (state.step == step) return;
     state = state.copyWith(step: step);
   }

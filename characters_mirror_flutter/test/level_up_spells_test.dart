@@ -1,8 +1,12 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/theme/app_theme.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/choice_picker.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import 'package:characters_mirror_flutter/features/level_up/presentation/level_up_spells.dart';
+import 'package:characters_mirror_flutter/features/level_up/application/level_up_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'level_up_controller_test.dart' as controller_test;
 
 SpellData spell(int id, {int level = 1}) => SpellData(
     id: id,
@@ -80,6 +84,106 @@ Future<void> inspect(WidgetTester tester, int id) async {
 }
 
 void main() {
+  testWidgets('shared picker commits only confirmed results to level-up state',
+      (tester) async {
+    final data = preview(CharacterSpellSelectionKind.knownSpell, count: 2);
+    final gateway = controller_test.FakeGateway();
+    final controller = LevelUpController(gateway, request());
+    addTearDown(controller.dispose);
+    final refresh = controller.refresh();
+    gateway.pending.single.complete(data);
+    await refresh;
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: StatefulBuilder(
+                builder: (context, setState) => LevelUpSpells(
+                    preview: controller.state.preview!,
+                    request: controller.state.request,
+                    onChanged: (kind, ids, replaces) {
+                      controller.chooseSpells(kind, ids,
+                          replacesSelectionId: replaces);
+                      gateway.pending.last.complete(data);
+                      setState(() {});
+                    })))));
+    await tester.tap(find.text('Выбрать заклинания'));
+    await tester.pumpAndSettle();
+    final picker = tester.widget<ChoicePicker>(find.byType(ChoicePicker));
+    expect(picker.minimum, 2);
+    expect(picker.maximum, 2);
+    final done = find.widgetWithText(FilledButton, 'Готово');
+    expect(tester.widget<FilledButton>(done).onPressed, isNull);
+    await tester.tap(find.text('Spell 1'));
+    await tester.pump();
+    expect(tester.widget<FilledButton>(done).onPressed, isNull);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(controller.state.request.spells, isNull);
+    await tester.tap(find.text('Выбрать заклинания'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Spell 1'));
+    await tester.pump();
+    await tester.tap(find.text('Spell 2'));
+    await tester.pump();
+    expect(tester.widget<Checkbox>(checkbox(3)).onChanged, isNull);
+    await tester.tap(done);
+    await tester.pumpAndSettle();
+    expect(controller.state.request.spells!.map((s) => s.spellId), [1, 2]);
+    expect(
+        controller.state.request.spells!.every((s) =>
+            s.kind == CharacterSpellSelectionKind.knownSpell &&
+            s.replacesSelectionId == null),
+        isTrue);
+    expect(find.text('Выбрано 2 / 2'), findsOneWidget);
+    expect(find.text('Spell 1, Spell 2'), findsOneWidget);
+  });
+
+  testWidgets('spell decisions and new level share one outline',
+      (tester) async {
+    final base = preview(CharacterSpellSelectionKind.knownSpell);
+    await pumpSpells(
+        tester,
+        base.copyWith(
+            character: CharacterData(
+                derived: CharacterDerivedData(spellSlots: {2: 2})),
+            spellDelta: base.spellDelta.copyWith(knownSpellReplacements: 1)),
+        onChanged: (_, __, ___) {});
+    final block = find.byType(SheetOutlineCard);
+    expect(block, findsOneWidget);
+    for (final label in [
+      'Заклинания',
+      'Выбрать заклинания',
+      'Заменить заклинание',
+      'Доступны заклинания 2 уровня'
+    ]) {
+      expect(find.descendant(of: block, matching: find.text(label)),
+          findsOneWidget);
+    }
+    expect(find.descendant(of: block, matching: find.byType(Divider)),
+        findsNWidgets(3));
+  });
+
+  testWidgets('no spell events hides the block', (tester) async {
+    await pumpSpells(
+        tester, preview(CharacterSpellSelectionKind.knownSpell, count: 0),
+        onChanged: (_, __, ___) {});
+    expect(find.byType(SheetOutlineCard), findsNothing);
+    expect(find.text('Заклинания'), findsNothing);
+  });
+
+  testWidgets('new level alone still renders a passive outline row',
+      (tester) async {
+    final base = preview(CharacterSpellSelectionKind.knownSpell, count: 0);
+    await pumpSpells(
+        tester,
+        base.copyWith(
+            character: CharacterData(
+                derived: CharacterDerivedData(pactSlots: {2: 1}))),
+        onChanged: (_, __, ___) {});
+    expect(find.byType(SheetOutlineCard), findsOneWidget);
+    expect(find.text('Доступны заклинания 2 уровня'), findsOneWidget);
+    expect(find.byIcon(Icons.chevron_right), findsNothing);
+  });
+
   for (final kind in [
     CharacterSpellSelectionKind.knownCantrip,
     CharacterSpellSelectionKind.knownSpell,
@@ -93,17 +197,21 @@ void main() {
         expect(replaces, isNull);
         chosen = ids;
       });
-      await tester.tap(find.text(
-          kind == CharacterSpellSelectionKind.knownCantrip
-              ? 'Заговоры'
-              : 'Заклинания'));
+      expect(find.byType(SheetOutlineCard), findsOneWidget);
+      await tester
+          .tap(find.text(kind == CharacterSpellSelectionKind.knownCantrip
+              ? 'Выбрать заговоры'
+              : kind == CharacterSpellSelectionKind.spellbookSpell
+                  ? 'Добавить в книгу заклинаний'
+                  : 'Выбрать заклинания'));
       await tester.pumpAndSettle();
+      expect(find.byType(ChoicePicker), findsOneWidget);
       expect(card(1), findsOneWidget);
       expect(tester.getCenter(checkbox(1)).dx,
           lessThan(tester.getCenter(find.text('Spell 1')).dx));
       expect(tester.getCenter(info(1)).dx,
           greaterThan(tester.getCenter(find.text('Spell 1')).dx));
-      expect(find.text('60 футов'), findsWidgets);
+      expect(find.textContaining('60 футов'), findsWidgets);
       expect(find.text('Full description 1'), findsNothing);
       await inspect(tester, 1);
       expect(tester.widget<Checkbox>(checkbox(1)).value, false);
@@ -130,7 +238,7 @@ void main() {
     await pumpSpells(
         tester, preview(CharacterSpellSelectionKind.knownSpell, count: 2),
         onChanged: (_, __, ___) {});
-    await tester.tap(find.text('Заклинания'));
+    await tester.tap(find.text('Выбрать заклинания'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Spell 1'));
     await tester.tap(find.text('Spell 2'));
@@ -138,7 +246,7 @@ void main() {
     expect(tester.widget<Checkbox>(checkbox(3)).onChanged, isNull);
     await inspect(tester, 3);
     expect(find.text('Выбрано 2 / 2'), findsOneWidget);
-    await tester.tap(find.text('2 уровень'));
+    await tester.tap(find.widgetWithText(ChoiceChip, '2 уровень'));
     await tester.pump();
     expect(card(1), findsNothing);
     await tester.enterText(find.byType(TextField), 'Spell 3');
@@ -176,7 +284,7 @@ void main() {
     expect(replaced, 'old-selection');
   });
 
-  testWidgets('hub draft spells use cards whose taps remove the selection',
+  testWidgets('hub draft spells show summaries and edit through the picker',
       (tester) async {
     final updates = <(List<int>, String?)>[];
     await pumpSpells(
@@ -197,19 +305,20 @@ void main() {
               replacesSelectionId: 'old-selection')
         ]),
         onChanged: (_, ids, replaces) => updates.add((ids, replaces)));
-    expect(card(1), findsOneWidget);
-    expect(card(2), findsOneWidget);
-    await inspect(tester, 1);
-    await inspect(tester, 2);
+    expect(find.byType(Card), findsNothing);
+    expect(find.text('Spell 1'), findsOneWidget);
+    expect(find.text('Spell 9 → Spell 2'), findsOneWidget);
+    expect(find.text('Выбрано 1 / 1'), findsOneWidget);
     expect(updates, isEmpty);
-    await tester.tap(find.text('Spell 1'));
+    await tester.tap(find.text('Выбрать заклинания'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<Checkbox>(checkbox(1)).value, true);
+    await tester.tap(find.text('Spell 3'));
     await tester.pump();
-    expect(updates.last.$1, isEmpty);
-    expect(updates.last.$2, isNull);
-    await tester.tap(checkbox(2));
-    await tester.pump();
-    expect(updates.last.$1, isEmpty);
-    expect(updates.last.$2, 'old-selection');
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(updates, isEmpty);
+    expect(find.text('Spell 1'), findsOneWidget);
   });
 
   testWidgets('selection cards fit a narrow screen in the app theme',
@@ -223,7 +332,7 @@ void main() {
                 preview: preview(CharacterSpellSelectionKind.knownSpell),
                 request: request(),
                 onChanged: (_, __, ___) {}))));
-    await tester.tap(find.text('Заклинания'));
+    await tester.tap(find.text('Выбрать заклинания'));
     await tester.pumpAndSettle();
     expect(card(1), findsOneWidget);
     expect(tester.takeException(), isNull);

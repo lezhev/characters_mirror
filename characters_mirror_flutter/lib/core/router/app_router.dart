@@ -103,10 +103,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/create/spells',
-        pageBuilder: (_, state) => _creationStepPage(
-          state,
-          const SpellsStep(),
-        ),
+        redirect: (_, __) => '/create',
       ),
       GoRoute(
         path: '/create/personal',

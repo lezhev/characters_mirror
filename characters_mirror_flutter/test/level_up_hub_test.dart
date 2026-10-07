@@ -98,6 +98,66 @@ Future<void> pumpHub(WidgetTester tester, LevelUpFlowState state,
             onApply: () {})));
 
 void main() {
+  testWidgets('hub puts new spell levels inside the spell outline only',
+      (tester) async {
+    final base = fixture();
+    final preview = base.preview!;
+    await pumpHub(
+        tester,
+        LevelUpFlowState(
+            request: base.request,
+            previewCurrent: true,
+            preview: preview.copyWith(
+                character: preview.character.copyWith(
+                    derived: preview.character.derived!
+                        .copyWith(spellSlots: {2: 2})),
+                spellDelta: preview.spellDelta.copyWith(
+                    cantripsToAdd: 1,
+                    knownSpellsToAdd: 1,
+                    spellbookSpellsToAdd: 1,
+                    knownSpellReplacements: 1))));
+    final block = find.byKey(const ValueKey('level-up-spells'));
+    expect(block, findsOneWidget);
+    expect(find.text('Заклинания'), findsOneWidget);
+    for (final label in [
+      'Выбрать заговоры',
+      'Выбрать заклинания',
+      'Добавить в книгу заклинаний',
+      'Заменить заклинание',
+      'Доступны заклинания 2 уровня'
+    ]) {
+      expect(find.descendant(of: block, matching: find.text(label)),
+          findsOneWidget);
+    }
+    expect(find.text('Доступны заклинания 2 уровня'), findsOneWidget);
+    expect(
+        tester.getTopLeft(block).dy -
+            tester
+                .getBottomLeft(find.byKey(const ValueKey('level-up-features')))
+                .dy,
+        12);
+  });
+
+  for (final minimum in [0, 1, 2]) {
+    testWidgets('standalone decision shares minimum=$minimum wording',
+        (tester) async {
+      final group = ChoiceGroupView(
+          group: ChoiceGroupData(
+              referenceKey: 'standalone',
+              name: 'Standalone',
+              minimumSelectionCount: minimum,
+              selectionCount: 2),
+          options: [ChoiceOptionData(choiceGroupId: 1, optionKey: 'a')]);
+      await pumpHub(tester, fixture(groups: [group], complete: false));
+      final prompt = minimum == 0
+          ? 'Необязательно · до 2'
+          : 'Обязательно · выбрать ${minimum == 2 ? '2' : '1–2'}';
+      expect(find.text(prompt), findsOneWidget);
+      expect(tester.widget<Text>(find.text(prompt)).style?.color,
+          isNot(Theme.of(tester.element(find.text(prompt))).colorScheme.error));
+    });
+  }
+
   testWidgets('hub shows decisions and new features, hides numeric scaling',
       (tester) async {
     await pumpHub(tester, fixture());

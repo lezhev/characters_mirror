@@ -325,18 +325,19 @@ class _ProgressionShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final steps = creationVisibleSteps();
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (var index = 0; index < Step.values.length; index++) ...[
+        for (var index = 0; index < steps.length; index++) ...[
           _ShimmerCircle(
-            isCurrent: Step.values[index] == currentStep,
+            isCurrent: steps[index] == currentStep,
             activeBaseColor: activeBaseColor,
             activeHighlightColor: activeHighlightColor,
             inactiveBaseColor: inactiveBaseColor,
             inactiveHighlightColor: inactiveHighlightColor,
           ),
-          if (index < Step.values.length - 1)
+          if (index < steps.length - 1)
             Expanded(
               child: _ShimmerPiece(
                 baseColor: inactiveBaseColor,

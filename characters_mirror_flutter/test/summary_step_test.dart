@@ -148,7 +148,7 @@ void main() {
     _expectStepRoute(tester, container, Step.race);
   });
 
-  testWidgets('Attributes Next includes Spells when the step is visible',
+  testWidgets('Attributes Next goes directly to Personal for a spellcaster',
       (tester) async {
     final container = _createContainer();
     addTearDown(container.dispose);
@@ -167,7 +167,7 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('step-next')));
     await tester.pumpAndSettle();
-    _expectStepRoute(tester, container, Step.spells);
+    _expectStepRoute(tester, container, Step.personal);
   });
 
   testWidgets('jump and Next preserve selected character data', (tester) async {
