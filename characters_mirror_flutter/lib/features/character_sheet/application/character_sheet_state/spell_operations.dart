@@ -3,22 +3,15 @@
 part of '../character_sheet_state.dart';
 
 extension CharacterSheetControllerSpells on CharacterSheetController {
-  Future<void> setCurrentSpellSlotsForLevel(int level, int available) async {
+  Future<void> setCurrentSpellSlotsForLevel(int level, int available,
+      {SpellSlotSource slotSource = SpellSlotSource.standard}) async {
     final current = _requireCharacter();
-    final maxSlots = _spellSlotCount(current, level);
-    final normalizedAvailable = available.clamp(0, maxSlots).toInt();
-    final currentSpellSlots = <int, int>{...?current.currentSpellSlots};
-    if (maxSlots <= 0 || normalizedAvailable == maxSlots) {
-      currentSpellSlots.remove(level);
-    } else {
-      currentSpellSlots[level] = normalizedAvailable;
-    }
-
-    await _saveCharacter(
-      current.copyWith(
-        currentSpellSlots: currentSpellSlots.isEmpty ? null : currentSpellSlots,
-      ),
-    );
+    final pools = SpellSlotPools.fromCharacter(current.toJson());
+    final maximum = pools.maximum(slotSource, level);
+    final delta =
+        available.clamp(0, maximum) - pools.available(slotSource, level);
+    if (delta == 0 || maximum <= 0) return;
+    await adjustSpellSlots(level, delta, slotSource: slotSource);
   }
 
   Future<void> saveSpellcastingBonuses({
@@ -74,7 +67,9 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
         classDataId ?? current.classEntries?.firstOrNull?.classData?.id;
     final selections = forgetSpellSelections(current, spell, sourceId);
     final preparedKeys = _effectivePreparedSpellKeys(current);
-    if (!selections.any((selection) => _spellSelectionKey(selection) == key)) {
+    if (!selections.any((selection) =>
+        _spellSelectionKey(selection) == key &&
+        selection.kind == CharacterSpellSelectionKind.preparedSpell)) {
       preparedKeys.remove(key);
     }
 
@@ -109,7 +104,10 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
         classLevel: row);
     final defaultKeys = _defaultPreparedSpellKeys(current);
     final preparedKeys = _effectivePreparedSpellKeys(current)..remove(key);
-    if (prepared) {
+    if (prepared ||
+        selections.any((selection) =>
+            _spellSelectionKey(selection) == key &&
+            selection.kind == CharacterSpellSelectionKind.preparedSpell)) {
       preparedKeys.add(key);
     }
     await _saveCharacter(
@@ -128,68 +126,41 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
     await adjustSpellSlots(level, -1);
   }
 
-  Future<void> adjustSpellSlots(int level, int delta) async {
-    if (level <= 0) {
-      return;
-    }
-
+  Future<void> adjustSpellSlots(int level, int delta,
+      {SpellSlotSource slotSource = SpellSlotSource.standard}) async {
+    if (level <= 0 || delta == 0) return;
     final current = _requireCharacter();
-    final maxSlots = _spellSlotCount(current, level);
-    final available = _currentSpellSlotCount(current, level);
-    final nextAvailable = available + delta;
-    if (delta == 0 ||
-        maxSlots <= 0 ||
-        nextAvailable < 0 ||
-        nextAvailable > maxSlots) {
-      return;
-    }
-    final slots = <int, int>{...?current.currentSpellSlots};
-    if (nextAvailable == maxSlots) {
-      slots.remove(level);
-    } else {
-      slots[level] = nextAvailable;
-    }
-    await _saveSemanticAction(
-      current.copyWith(currentSpellSlots: slots.isEmpty ? null : slots),
-      type: CharacterSyncOperationType.adjustSpellSlots,
-      action: CharacterSemanticActionData(level: level, delta: delta),
-    );
+    final action = CharacterSemanticActionData(
+        level: level, delta: delta, slotSource: slotSource.name);
+    await _saveSemanticAction(adjustCharacterSpellSlots(current, action),
+        type: CharacterSyncOperationType.adjustSpellSlots, action: action);
   }
 
-  Future<void> castSpell(SpellData spell) async {
+  Future<void> castSpell(SpellData spell,
+      {SpellCastContext? castContext}) async {
     final current = _requireCharacter();
-    final level = spell.level ?? 0;
-    final currentSpellSlots = <int, int>{...?current.currentSpellSlots};
-
-    if (level > 0) {
-      final maxSlots = _spellSlotCount(current, level);
-      final available = _currentSpellSlotCount(current, level);
-      if (maxSlots <= 0 || available <= 0) {
-        return;
-      }
-
-      final nextAvailable = available - 1;
-      if (nextAvailable == maxSlots) {
-        currentSpellSlots.remove(level);
-      } else {
-        currentSpellSlots[level] = nextAvailable;
-      }
-    }
-
-    await _saveSemanticAction(
-      current.copyWith(
-        currentSpellSlots: currentSpellSlots.isEmpty ? null : currentSpellSlots,
-        activeConcentrationSpellName: spell.concentration == true
-            ? _spellName(spell)
-            : current.activeConcentrationSpellName,
-      ),
-      type: CharacterSyncOperationType.castSpell,
-      action: CharacterSemanticActionData(
-        level: level,
-        spellName: spell.concentration == true ? _spellName(spell) : null,
-        startsConcentration: spell.concentration == true,
-      ),
-    );
+    final resolved = characterResolvedSpells(current);
+    final entry =
+        resolved.where((s) => s.spellKey == spell.referenceKey).firstOrNull;
+    if (entry == null) throw StateError('Заклинание недоступно персонажу.');
+    final choices = availableSpellCasts(
+        entry.spellKey,
+        entry.spell.level ?? 0,
+        entry.sources
+            .map((s) => SpellSourceContext.fromJson(s.toJson()))
+            .toList(),
+        SpellSlotPools.fromCharacter(current.toJson()));
+    final cast = castContext ?? choices.firstOrNull;
+    if (cast == null) throw StateError('Нет доступной ячейки заклинания.');
+    final action = CharacterSemanticActionData.fromJson(cast.toActionJson())
+        .copyWith(
+            startsConcentration: entry.spell.concentration == true,
+            spellName:
+                entry.spell.concentration == true ? entry.spell.name : null);
+    final canonical = current.copyWith(
+        derived: current.derived?.copyWith(resolvedSpells: resolved));
+    await _saveSemanticAction(applyCharacterSpellCast(canonical, action),
+        type: CharacterSyncOperationType.castSpell, action: action);
   }
 
   Future<void> cancelConcentration() async {

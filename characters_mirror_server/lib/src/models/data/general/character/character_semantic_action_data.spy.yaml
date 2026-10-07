@@ -3,6 +3,9 @@ fields:
   amount: int?
   delta: int?
   level: int?
+  spellKey: String?
+  spellSourceKey: String?
+  slotSource: String?
   spellName: String?
   startsConcentration: bool?
   dieKind: String?

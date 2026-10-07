@@ -32,6 +32,8 @@ abstract class FeatureModifierData
     required this.operation,
     required this.value,
     this.conditions,
+    this.spellKey,
+    this.minimumCastLevel,
     this.source,
     this.version,
     this.createdAt,
@@ -49,6 +51,8 @@ abstract class FeatureModifierData
     required _i5.FeatureModifierOperation operation,
     required _i6.FeatureModifierValueData value,
     List<_i7.FeatureModifierConditionData>? conditions,
+    String? spellKey,
+    int? minimumCastLevel,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -79,6 +83,8 @@ abstract class FeatureModifierData
           ?.map((e) => _i7.FeatureModifierConditionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
+      spellKey: jsonSerialization['spellKey'] as String?,
+      minimumCastLevel: jsonSerialization['minimumCastLevel'] as int?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
@@ -115,6 +121,10 @@ abstract class FeatureModifierData
 
   List<_i7.FeatureModifierConditionData>? conditions;
 
+  String? spellKey;
+
+  int? minimumCastLevel;
+
   String? source;
 
   int? version;
@@ -140,6 +150,8 @@ abstract class FeatureModifierData
     _i5.FeatureModifierOperation? operation,
     _i6.FeatureModifierValueData? value,
     List<_i7.FeatureModifierConditionData>? conditions,
+    String? spellKey,
+    int? minimumCastLevel,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -159,6 +171,8 @@ abstract class FeatureModifierData
       'value': value.toJson(),
       if (conditions != null)
         'conditions': conditions?.toJson(valueToJson: (v) => v.toJson()),
+      if (spellKey != null) 'spellKey': spellKey,
+      if (minimumCastLevel != null) 'minimumCastLevel': minimumCastLevel,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -183,6 +197,8 @@ abstract class FeatureModifierData
       if (conditions != null)
         'conditions':
             conditions?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (spellKey != null) 'spellKey': spellKey,
+      if (minimumCastLevel != null) 'minimumCastLevel': minimumCastLevel,
       if (source != null) 'source': source,
       if (version != null) 'version': version,
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
@@ -240,6 +256,8 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     required _i5.FeatureModifierOperation operation,
     required _i6.FeatureModifierValueData value,
     List<_i7.FeatureModifierConditionData>? conditions,
+    String? spellKey,
+    int? minimumCastLevel,
     String? source,
     int? version,
     DateTime? createdAt,
@@ -255,6 +273,8 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
           operation: operation,
           value: value,
           conditions: conditions,
+          spellKey: spellKey,
+          minimumCastLevel: minimumCastLevel,
           source: source,
           version: version,
           createdAt: createdAt,
@@ -276,6 +296,8 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     _i5.FeatureModifierOperation? operation,
     _i6.FeatureModifierValueData? value,
     Object? conditions = _Undefined,
+    Object? spellKey = _Undefined,
+    Object? minimumCastLevel = _Undefined,
     Object? source = _Undefined,
     Object? version = _Undefined,
     Object? createdAt = _Undefined,
@@ -301,6 +323,9 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
       conditions: conditions is List<_i7.FeatureModifierConditionData>?
           ? conditions
           : this.conditions?.map((e0) => e0.copyWith()).toList(),
+      spellKey: spellKey is String? ? spellKey : this.spellKey,
+      minimumCastLevel:
+          minimumCastLevel is int? ? minimumCastLevel : this.minimumCastLevel,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
@@ -342,6 +367,14 @@ class FeatureModifierDataTable extends _i1.Table<int?> {
       'conditions',
       this,
     );
+    spellKey = _i1.ColumnString(
+      'spellKey',
+      this,
+    );
+    minimumCastLevel = _i1.ColumnInt(
+      'minimumCastLevel',
+      this,
+    );
     source = _i1.ColumnString(
       'source',
       this,
@@ -377,6 +410,10 @@ class FeatureModifierDataTable extends _i1.Table<int?> {
   late final _i1.ColumnSerializable value;
 
   late final _i1.ColumnSerializable conditions;
+
+  late final _i1.ColumnString spellKey;
+
+  late final _i1.ColumnInt minimumCastLevel;
 
   late final _i1.ColumnString source;
 
@@ -422,6 +459,8 @@ class FeatureModifierDataTable extends _i1.Table<int?> {
         operation,
         value,
         conditions,
+        spellKey,
+        minimumCastLevel,
         source,
         version,
         createdAt,

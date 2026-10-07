@@ -8,6 +8,8 @@ fields:
   operation: FeatureModifierOperation
   value: FeatureModifierValueData
   conditions: List<FeatureModifierConditionData>?
+  spellKey: String?
+  minimumCastLevel: int?
   source: String?
   version: int?
   createdAt: DateTime?

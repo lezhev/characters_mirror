@@ -11,6 +11,7 @@ import 'package:characters_mirror_shared/characters_mirror_shared.dart'
     as feature_modifiers;
 
 part 'offline_character_resolver/spell_equipment_helpers.dart';
+part 'offline_character_resolver/resolved_spells.dart';
 part 'offline_character_resolver/ability_proficiency_helpers.dart';
 part 'offline_character_resolver/feature_helpers.dart';
 part 'offline_character_resolver/armor_class_helpers.dart';
@@ -27,7 +28,7 @@ Future<CharacterData> resolveOfflineCharacter(
   return character.copyWith(
     experience: character.experience ?? 0,
     derived: derived,
-    currentHp: character.currentHp ?? derived.maxHp,
+    currentHp: min(character.currentHp ?? derived.maxHp ?? 0, derived.maxHp ?? 0),
     temporaryHp: character.temporaryHp,
   );
 }
@@ -114,10 +115,14 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       await _offlineCurrentFeatureModifiers(cache, entries);
   final hitDice = _hitDiceSummary(character, entries);
   final spellSlots = await _spellSlots(cache, entries);
-  final maxHp = _maxHp(
-    character,
-    entries,
-    abilityModifiers[Ability.constitution] ?? 0,
+  final maxHp = max(
+    1,
+    _maxHp(character, entries, abilityModifiers[Ability.constitution] ?? 0) +
+        await _offlineFeatureModifierTotal(
+          cache, entries, character,
+          proficiencyBonus: proficiencyBonus,
+          target: FeatureModifierTarget.hitPointMaximum,
+        ),
   );
   final dexterityModifier = abilityModifiers[Ability.dexterity] ?? 0;
   final armorClassModifiers = armorClassFeatureModifiers(
@@ -241,8 +246,15 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
     featureModifiers: [
-      ...activeFeatureModifiers.where(
-          (modifier) => modifier.target != FeatureModifierTarget.armorClass),
+      ...feature_modifiers.activeFeatureModifierRows(
+        character.toJson(),
+        activeFeatureModifiers
+            .where((modifier) =>
+                modifier.target != FeatureModifierTarget.armorClass)
+            .map((modifier) => modifier.toJson()),
+        classFeatures: currentClassFeatures.map((f) => f.toJson()),
+        subclassFeatures: currentSubclassFeatures.map((f) => f.toJson()),
+      ).map(FeatureModifierData.fromJson),
       ...armorClassModifiers,
     ],
     armorClass: armorClass.value,
@@ -287,6 +299,8 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     customArmorTraining: _normalizedCustomValues(
       character.manualArmorTrainingOverrides?.custom,
     ),
+    resolvedSpells: await _resolveCharacterSpells(cache, character,
+        currentClassFeatures, currentSubclassFeatures, selectedOptions),
     grantedSpellKeys: uniqueGrantedSpellKeys,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,

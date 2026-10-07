@@ -12,6 +12,7 @@ class _CharacterResolveContext {
   Future<List<ChoiceGroupData>>? _choiceGroups;
   Future<List<FeatureDisplayPropertyData>>? _featureDisplayProperties;
   Future<List<ClassSpellGrantData>>? _classSpellGrants;
+  final Map<String, Future<List<SpellData>>> _spells = {};
   final Map<int, Future<List<ChoiceOptionData>>> _choiceOptions = {};
   final Map<String, Future<List<ClassFeatureData>>> _classFeatures = {};
   final Map<String, Future<List<SubclassFeatureData>>> _subclassFeatures = {};
@@ -24,6 +25,18 @@ class _CharacterResolveContext {
   final Map<String, Future<SpellSlotProgressionData?>> _spellSlotProgressions =
       {};
   final Map<int, Future<FeatData?>> _feats = {};
+
+  Future<List<SpellData>> spells(Set<String> keys, {Transaction? transaction}) {
+    if (keys.isEmpty) return Future.value([]);
+    final sorted = keys.toList()..sort();
+    return _spells.putIfAbsent(
+        sorted.join('|'),
+        () => _load(
+            'spells',
+            () => SpellData.db.find(session,
+                where: (t) => t.referenceKey.inSet(keys),
+                transaction: transaction)));
+  }
 
   Future<List<ChoiceGroupData>> choiceGroups({
     Transaction? transaction,

@@ -1,0 +1,8 @@
+enum: AreaSizeMeasurement
+serialized: byName
+values:
+  - radius
+  - diameter
+  - edge
+  - length
+  - side

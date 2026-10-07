@@ -28,6 +28,7 @@ void main() {
       final spell = await endpoints.spellData.upsert(
         sessionBuilder,
         SpellData(
+          referenceKey: 'test_thaumaturgy',
           name: 'Test Thaumaturgy',
           level: 0,
         ),

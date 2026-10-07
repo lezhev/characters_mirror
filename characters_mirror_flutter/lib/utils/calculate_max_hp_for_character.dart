@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    as modifiers;
 
 int calculateMaxHpForCharacter(
   CharacterData character, {
@@ -21,6 +23,15 @@ int calculateMaxHpForCharacter(
   total +=
       descriptors.length * (hpPerLevelBonus ?? character.hpPerLevelBonus ?? 0);
   total += hpFlatBonus ?? character.hpFlatBonus ?? 0;
+  total = math.max(1, total);
+  final input = modifiers.characterFeatureModifierInput(
+      character.copyWith(classEntries: entries).toJson());
+  total += modifiers.sumFeatureModifierValues(
+          modifiers.evaluateFeatureModifiers(
+              modifiers: input.modifiers,
+              context: input
+                  .context))[modifiers.FeatureModifierTarget.hitPointMaximum] ??
+      0;
   return math.max(1, total);
 }
 

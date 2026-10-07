@@ -161,3 +161,9 @@
 20261006206000000-choice-option-short-descriptions
 20261006207000000-level3-class-feature-short-descriptions
 20261006208000000-deflect-missiles-presentation
+20261006223316590-spell-cast-sources
+20261006233630830-spell-reference-key-integrity
+20261007001020520-spell-structured-pilot
+20261007002111299-spell-area-measurements
+20261007133706748-spell-material-cost-units
+20261007141026044-feature-spell-hp-presentation

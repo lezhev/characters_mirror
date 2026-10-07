@@ -360,6 +360,8 @@ void main() {
     ], selections: [
       selection(shield, CharacterSpellSelectionKind.spellbookSpell)
     ], onToggleSpell: (_, __) {}, onClearGroup: (_) {}))));
+    await tester.tap(find.text('Подготовленные заклинания'));
+    await tester.pumpAndSettle();
     expect(find.text('Shield'), findsOneWidget);
     expect(find.text('Sleep'), findsNothing);
   });

@@ -2,3 +2,4 @@ enum: FeatureModifierOperation
 values:
   - add
   - baseArmorClass
+  - setValue

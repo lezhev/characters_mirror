@@ -3,7 +3,9 @@ import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'spellcasting_source.dart';
 
 String? selectionSpellKey(CharacterSpellSelectionData selection) =>
-    _text(selection.spellKey) ?? spellReferenceKey(selection.spell);
+    _text(selection.spell?.referenceKey) ??
+    _text(selection.spellKey) ??
+    spellReferenceKey(selection.spell);
 
 String? spellReferenceKey(SpellData? spell) =>
     _text(spell?.referenceKey) ?? _text(spell?.name);
@@ -200,9 +202,18 @@ List<CharacterSpellSelectionData> prepareSpellSelections(
     CharacterData character, SpellData spell, int? classId, bool prepared,
     {ClassLevelData? classLevel}) {
   final selections = [...?character.spellSelections];
-  if (!prepared) return selections;
   final entry = spellEntryForClass(character, classId);
   final key = spellReferenceKey(spell);
+  if (!prepared) {
+    return selections
+        .where((selection) =>
+            selection.kind != CharacterSpellSelectionKind.preparedSpell ||
+            selectionSpellKey(selection) != key ||
+            (entry != null
+                ? !selectionBelongsToEntry(selection, entry)
+                : selection.classDataId != classId))
+        .toList();
+  }
   if (spellMode(spellcastingClassForEntry(entry), classLevel) ==
           ClassSpellSelectionMode.spellbook &&
       !selections.any((selection) =>

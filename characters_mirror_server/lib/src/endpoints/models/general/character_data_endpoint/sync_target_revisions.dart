@@ -122,6 +122,12 @@ Map<String, int> _materializedSyncTargetRevisions(
     character.currentSpellSlots,
     baselineRevision,
   );
+  _addMapTargetRevisions(
+    revisions,
+    'currentPactSlots',
+    character.currentPactSlots,
+    baselineRevision,
+  );
   _addItemTargetRevisions(
     revisions,
     'notes',
@@ -479,6 +485,8 @@ Set<String> _changedSyncTargetKeys(
     previous.currentSpellSlots,
     next.currentSpellSlots,
   );
+  _addChangedMapTargets(changed, 'currentPactSlots', previous.currentPactSlots,
+      next.currentPactSlots);
 
   _addChangedItemTargets(
     changed,

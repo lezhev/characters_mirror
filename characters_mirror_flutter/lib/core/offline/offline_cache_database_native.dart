@@ -11,6 +11,7 @@ import 'package:characters_mirror_flutter/core/offline/offline_character_sync_op
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
+import 'cached_spell_key_compatibility.dart';
 
 part 'offline_cache_database_native/reference_cache_operations.dart';
 part 'offline_cache_database_native/character_read_operations.dart';
@@ -513,12 +514,16 @@ VALUES (?, ?, ?)
     return payload;
   }
 
-  Map<String, dynamic> _decodeCachedPayload(String payloadJson) {
-    return jsonDecode(payloadJson) as Map<String, dynamic>;
+  Map<String, dynamic> _decodeCachedPayload(String payloadJson,
+      {bool isSpell = false}) {
+    return compatibleCachedSpellKeys(jsonDecode(payloadJson), isSpell: isSpell)
+        as Map<String, dynamic>;
   }
 
-  List<dynamic> _decodeCachedListPayload(String payloadJson) {
-    return jsonDecode(payloadJson) as List<dynamic>;
+  List<dynamic> _decodeCachedListPayload(String payloadJson,
+      {bool isSpell = false}) {
+    return compatibleCachedSpellKeys(jsonDecode(payloadJson), isSpell: isSpell)
+        as List<dynamic>;
   }
 
   String _generateLegacyId(String seed) {

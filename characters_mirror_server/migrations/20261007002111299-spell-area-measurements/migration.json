@@ -1,0 +1,28 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "areaOfEffectSizeKind",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:AreaSizeMeasurement?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

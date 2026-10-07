@@ -57,7 +57,7 @@ Future<CharacterData> _addLevelUpSpells(
         s.classEntry?.id == entry.id &&
         s.kind == choice.kind &&
         (s.spellId == spell.id ||
-            s.spellKey == spell.referenceKey && spell.referenceKey != null))) {
+            s.spellKey == spell.referenceKey && spell.referenceKey.isNotEmpty))) {
       throw InputValidationException(
           'spells', 'This spell is already selected.');
     }

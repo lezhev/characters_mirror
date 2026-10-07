@@ -1220,7 +1220,7 @@ void _setMapEntryJsonValue(
   if (field == null || key == null) {
     throw Exception('Map operation requires fieldPath and targetId.');
   }
-  if (field == 'currentSpellSlots') {
+  if (field == 'currentSpellSlots' || field == 'currentPactSlots') {
     final rawMap = _decodeIntKeyMap(json[field]);
     rawMap[int.parse(key)] = value?.intValue;
     json[field] = _encodeIntKeyMap(rawMap);
@@ -1240,7 +1240,7 @@ void _removeMapEntryJsonValue(
   if (field == null || key == null) {
     throw Exception('Map operation requires fieldPath and targetId.');
   }
-  if (field == 'currentSpellSlots') {
+  if (field == 'currentSpellSlots' || field == 'currentPactSlots') {
     final rawMap = _decodeIntKeyMap(json[field]);
     rawMap.remove(int.parse(key));
     json[field] = rawMap.isEmpty ? null : _encodeIntKeyMap(rawMap);
@@ -1549,6 +1549,7 @@ Object? _encodedValueForField(String field, CharacterSyncValueData? value) {
     case 'currentHitDice':
     case 'hitDiceMaxOverrides':
     case 'currentSpellSlots':
+    case 'currentPactSlots':
       return value.intValue;
     case 'useFlexibleAbilityBonuses':
     case 'inspiration':

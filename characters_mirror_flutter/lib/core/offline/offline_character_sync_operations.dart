@@ -225,6 +225,8 @@ class _OperationBuilder {
     );
     _addIntIntMap('currentSpellSlots', previous.currentSpellSlots,
         next.currentSpellSlots);
+    _addIntIntMap(
+        'currentPactSlots', previous.currentPactSlots, next.currentPactSlots);
     _addStringField(
       'activeConcentrationSpellName',
       previous.activeConcentrationSpellName,

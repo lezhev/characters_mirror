@@ -1,6 +1,8 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_target_keys.dart';
 
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
+
 const characterSemanticSyncProtocolVersion = 4;
 
 bool isCharacterSemanticOperation(CharacterSyncOperationType type) {
@@ -39,14 +41,11 @@ List<String> characterSemanticActionTargetKeys(
     case CharacterSyncOperationType.grantTemporaryHp:
       return [characterSyncFieldTargetKey('temporaryHp')];
     case CharacterSyncOperationType.adjustSpellSlots:
-      return [
-        characterSyncMapTargetKey('currentSpellSlots', '${action.level ?? ''}'),
-      ];
+      return spellSlotActionTargetKeys(character.toJson(), action.toJson());
     case CharacterSyncOperationType.castSpell:
       return [
-        if ((action.level ?? 0) > 0)
-          characterSyncMapTargetKey('currentSpellSlots', '${action.level}'),
-        if (action.startsConcentration == true)
+        ...spellSlotActionTargetKeys(character.toJson(), action.toJson()),
+        if (spellCastStartsConcentration(character.toJson(), action.toJson()))
           characterSyncFieldTargetKey('activeConcentrationSpellName'),
       ];
     case CharacterSyncOperationType.adjustHitDice:
@@ -101,7 +100,7 @@ CharacterSyncOperationData createCharacterSemanticOperation({
     type: type,
     targetType: _targetTypeForSemanticAction(type),
     targetId: _targetIdForSemanticAction(type, action),
-    fieldPath: _fieldPathForSemanticAction(type),
+    fieldPath: _fieldPathForSemanticAction(type, action),
     value: CharacterSyncValueData(
       semanticActionValue: action.copyWith(
         baseBarrierTokens: baseBarrierTokens,
@@ -188,6 +187,7 @@ bool isCharacterSemanticBarrierTarget(String target) {
       target == characterSyncFieldTargetKey('activeConcentrationSpellName') ||
       target == characterSyncFieldTargetKey('experience') ||
       target.startsWith('map:currentSpellSlots:') ||
+      target.startsWith('map:currentPactSlots:') ||
       target.startsWith('map:currentHitDice:') ||
       target.startsWith('resource:');
 }
@@ -229,6 +229,18 @@ List<String> _characterRestTargetKeys(
       }
     }
   }
+  final pactLevels = {
+    ...?character.derived?.pactSlots?.keys,
+    ...?character.currentPactSlots?.keys
+  };
+  targets.addAll(pactLevels
+      .map((level) => characterSyncMapTargetKey('currentPactSlots', '$level')));
+  if (character.currentPactSlots == null && pactLevels.isNotEmpty) {
+    targets.addAll({
+      ...?character.derived?.spellSlots?.keys,
+      ...?character.currentSpellSlots?.keys
+    }.map((level) => characterSyncMapTargetKey('currentSpellSlots', '$level')));
+  }
   if (restType == RestType.longRest) {
     targets.addAll([
       characterSyncFieldTargetKey('currentHp'),
@@ -238,7 +250,6 @@ List<String> _characterRestTargetKeys(
     ]);
     final levels = <int>{
       ...?character.derived?.spellSlots?.keys,
-      ...?character.derived?.pactSlots?.keys,
       ...?character.currentSpellSlots?.keys,
     };
     targets.addAll(levels.map(
@@ -280,7 +291,8 @@ CharacterSyncTargetType _targetTypeForSemanticAction(
   };
 }
 
-String? _fieldPathForSemanticAction(CharacterSyncOperationType type) {
+String? _fieldPathForSemanticAction(
+    CharacterSyncOperationType type, CharacterSemanticActionData action) {
   return switch (type) {
     CharacterSyncOperationType.applyDamage ||
     CharacterSyncOperationType.heal =>
@@ -288,7 +300,7 @@ String? _fieldPathForSemanticAction(CharacterSyncOperationType type) {
     CharacterSyncOperationType.grantTemporaryHp => 'temporaryHp',
     CharacterSyncOperationType.adjustSpellSlots ||
     CharacterSyncOperationType.castSpell =>
-      'currentSpellSlots',
+      action.slotSource == 'pact' ? 'currentPactSlots' : 'currentSpellSlots',
     CharacterSyncOperationType.adjustHitDice => 'currentHitDice',
     CharacterSyncOperationType.adjustResource => 'resourceStates',
     CharacterSyncOperationType.adjustExperience => 'experience',
