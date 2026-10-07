@@ -237,6 +237,20 @@ class _DisplayFormulaParser {
       if (value == null) throw const FormatException('Unknown ability.');
       return _FormulaValue.number(value);
     }
+    if (name == 'max' || name == 'min') {
+      final left = _parseSum();
+      _expect(',');
+      final right = _parseSum();
+      _expect(')');
+      if (left.number == null || right.number == null) {
+        throw const FormatException('Min/max requires numeric values.');
+      }
+      return _FormulaValue.number(
+        name == 'max'
+            ? math.max(left.number!, right.number!)
+            : math.min(left.number!, right.number!),
+      );
+    }
     if (name != 'ceil' && name != 'floor') {
       throw const FormatException('Unsupported function.');
     }

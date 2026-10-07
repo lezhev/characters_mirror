@@ -19,4 +19,36 @@ void main() {
 
     expect(values.single.value, '1к10 + 5');
   });
+
+  test('display formula supports min and max', () {
+    final values = resolveDisplayPropertyViews(
+      definitions: [
+        FeatureDisplayPropertyData(
+          key: 'temporary_hp',
+          label: 'Временные хиты',
+          valueKind: FeatureDisplayPropertyValueKind.formula,
+          formula: 'max(1, classLevel + abilityModifier(charisma))',
+        ),
+      ],
+      sourceLevel: 3,
+      abilityModifiers: const {'charisma': -4},
+    );
+
+    expect(values.single.value, '1');
+
+    final higher = resolveDisplayPropertyViews(
+      definitions: [
+        FeatureDisplayPropertyData(
+          key: 'temporary_hp',
+          label: 'Временные хиты',
+          valueKind: FeatureDisplayPropertyValueKind.formula,
+          formula: 'min(20, classLevel + abilityModifier(charisma))',
+        ),
+      ],
+      sourceLevel: 18,
+      abilityModifiers: const {'charisma': 5},
+    );
+
+    expect(higher.single.value, '20');
+  });
 }

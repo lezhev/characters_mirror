@@ -167,3 +167,4 @@
 20261007002111299-spell-area-measurements
 20261007133706748-spell-material-cost-units
 20261007141026044-feature-spell-hp-presentation
+20261007170600000-subclass-level1-safe-presentation
