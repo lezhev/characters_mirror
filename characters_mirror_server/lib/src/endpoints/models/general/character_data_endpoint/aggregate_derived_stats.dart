@@ -110,7 +110,17 @@ Future<CharacterDerivedData> _buildDerivedData(
     savingThrowBonuses[ability] = base + (proficient ? proficiencyBonus : 0);
   }
 
-  final maxHp = _calculateMaxHp(character, entries, conMod);
+  final maxHp = max(
+    1,
+    _calculateMaxHp(character, entries, conMod) +
+        _featureModifierTotal(
+          resolvedSources.featureModifiers, character, entries,
+          resolvedSources.currentClassFeatures,
+          resolvedSources.currentSubclassFeatures,
+          proficiencyBonus: proficiencyBonus,
+          target: FeatureModifierTarget.hitPointMaximum,
+        ),
+  );
   final passivePerception = 10 + skillBonuses[Skill.perception]!;
   final passiveInvestigation = 10 + skillBonuses[Skill.investigation]!;
   final passiveInsight = 10 + skillBonuses[Skill.insight]!;
@@ -196,6 +206,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolvedSources.selectedOptions,
     currentRaceFeatures,
     resolvedSources.alwaysPreparedSpellKeys,
+    totalLevel,
   )..addAll([
       ...fixedGrants.grantedSpellKeys,
       ...resolvedSources.grantedClassSpellKeys
@@ -251,8 +262,15 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
     featureModifiers: [
-      ...resolvedSources.featureModifiers.where(
-          (modifier) => modifier.target != FeatureModifierTarget.armorClass),
+      ...feature_modifiers.activeFeatureModifierRows(
+        character.toJson(),
+        resolvedSources.featureModifiers
+            .where((modifier) =>
+                modifier.target != FeatureModifierTarget.armorClass)
+            .map((modifier) => modifier.toJson()),
+        classFeatures: resolvedSources.currentClassFeatures.map((f) => f.toJson()),
+        subclassFeatures: resolvedSources.currentSubclassFeatures.map((f) => f.toJson()),
+      ).map(FeatureModifierData.fromJson),
       ...armorClassModifiers,
     ],
     armorClass: armorClass.value,
@@ -289,6 +307,9 @@ Future<CharacterDerivedData> _buildDerivedData(
     customArmorTraining: _normalizedCustomValues(
       character.manualArmorTrainingOverrides?.custom,
     ),
+    resolvedSpells: await _resolveCharacterSpells(
+        context, character, resolvedSources, uniqueGrantedSpellKeys,
+        transaction: transaction),
     grantedSpellKeys: uniqueGrantedSpellKeys,
     alwaysPreparedSpellKeys: resolvedSources.alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
@@ -306,161 +327,18 @@ int _featureModifierTotal(
   required FeatureModifierTarget target,
   bool abilityCheckIncludesProficiency = false,
 }) {
-  final featureClassKeys = <int, String>{};
-  for (final feature in classFeatures) {
-    final classKey = entries
-        .where((entry) => entry.classData?.id == feature.parentClassId)
-        .map((entry) => entry.classData?.referenceKey)
-        .whereType<String>()
-        .firstOrNull;
-    if (feature.id != null && classKey != null) {
-      featureClassKeys[feature.id!] = classKey;
-    }
-  }
-  for (final feature in subclassFeatures) {
-    final classKey = entries
-        .where((entry) => entry.subclass?.id == feature.parentSubclassId)
-        .map((entry) => entry.classData?.referenceKey)
-        .whereType<String>()
-        .firstOrNull;
-    if (feature.id != null && classKey != null) {
-      featureClassKeys[feature.id!] = classKey;
-    }
-  }
-  final classLevels = <String, int>{};
-  for (final entry in entries) {
-    final key = entry.classData?.referenceKey;
-    if (key != null) {
-      classLevels[key] = (classLevels[key] ?? 0) + (entry.level ?? 0);
-    }
-  }
-  final specs = <feature_modifiers.FeatureModifierSpec>[];
-  final activeKeys = <String>{};
-  final selectedChoiceOptionKeys = <String>{
-    for (final choice in character.choices ?? const <CharacterChoiceData>[])
-      if ((choice.groupKey?.trim().isNotEmpty ?? false) &&
-          (choice.optionKey?.trim().isNotEmpty ?? false))
-        '${choice.groupKey!.trim()}::${choice.optionKey!.trim()}',
-  };
-  for (final feature in classFeatures) {
-    if (feature.referenceKey case final key?) activeKeys.add(key);
-  }
-  for (final feature in subclassFeatures) {
-    if (feature.referenceKey case final key?) activeKeys.add(key);
-  }
-  for (final modifier in data) {
-    if (modifier.operation != FeatureModifierOperation.add) continue;
-    if ((modifier.classFeatureId == null) ==
-        (modifier.subclassFeatureId == null)) {
-      continue;
-    }
-    final featureKey = modifier.classFeature?.referenceKey ??
-        classFeatures
-            .where((feature) => feature.id == modifier.classFeatureId)
-            .map((feature) => feature.referenceKey)
-            .firstOrNull ??
-        subclassFeatures
-            .where((feature) => feature.id == modifier.subclassFeatureId)
-            .map((feature) => feature.referenceKey)
-            .firstOrNull;
-    final sourceId = modifier.classFeatureId ?? modifier.subclassFeatureId;
-    final classKey = sourceId == null ? null : featureClassKeys[sourceId];
-    if (featureKey == null || classKey == null) continue;
-    final simpleConditions = <feature_modifiers.FeatureModifierCondition>{};
-    final requiredChoiceOptions = <String>{};
-    for (final condition
-        in modifier.conditions ?? const <FeatureModifierConditionData>[]) {
-      switch (condition.type) {
-        case FeatureModifierConditionType.unarmored:
-          simpleConditions
-              .add(feature_modifiers.FeatureModifierCondition.unarmored);
-        case FeatureModifierConditionType.noShield:
-          simpleConditions
-              .add(feature_modifiers.FeatureModifierCondition.noShield);
-        case FeatureModifierConditionType.abilityCheckIsNotProficient:
-          simpleConditions.add(
-            feature_modifiers
-                .FeatureModifierCondition.abilityCheckIsNotProficient,
-          );
-        case FeatureModifierConditionType.armored:
-          simpleConditions
-              .add(feature_modifiers.FeatureModifierCondition.armored);
-        case FeatureModifierConditionType.rangedWeaponAttack:
-          simpleConditions.add(
-            feature_modifiers.FeatureModifierCondition.rangedWeaponAttack,
-          );
-        case FeatureModifierConditionType.selectedChoiceOption:
-          final groupKey = condition.choiceGroupKey?.trim();
-          final optionKey = condition.optionKey?.trim();
-          if (groupKey != null &&
-              groupKey.isNotEmpty &&
-              optionKey != null &&
-              optionKey.isNotEmpty) {
-            requiredChoiceOptions.add('$groupKey::$optionKey');
-          }
-      }
-    }
-    specs.add(feature_modifiers.FeatureModifierSpec(
-      referenceKey: modifier.referenceKey,
-      sourceFeatureKey: featureKey,
-      sourceClassKey: classKey,
-      target: switch (modifier.target) {
-        FeatureModifierTarget.speed =>
-          feature_modifiers.FeatureModifierTarget.speed,
-        FeatureModifierTarget.abilityCheck =>
-          feature_modifiers.FeatureModifierTarget.abilityCheck,
-        FeatureModifierTarget.armorClass =>
-          feature_modifiers.FeatureModifierTarget.armorClass,
-        FeatureModifierTarget.attackRoll =>
-          feature_modifiers.FeatureModifierTarget.attackRoll,
-        FeatureModifierTarget.damageRoll =>
-          feature_modifiers.FeatureModifierTarget.damageRoll,
-      },
-      operation: feature_modifiers.FeatureModifierOperation.add,
-      valueKind: switch (modifier.value.kind) {
-        FeatureModifierValueKind.staticValue =>
-          feature_modifiers.FeatureModifierValueKind.staticValue,
-        FeatureModifierValueKind.classLevelProgression =>
-          feature_modifiers.FeatureModifierValueKind.classLevelProgression,
-        FeatureModifierValueKind.proficiencyBonusFraction =>
-          feature_modifiers.FeatureModifierValueKind.proficiencyBonusFraction,
-      },
-      staticValue: modifier.value.staticValue,
-      progression: modifier.value.progression ?? const {},
-      numerator: modifier.value.numerator,
-      denominator: modifier.value.denominator,
-      rounding: modifier.value.rounding == FeatureModifierRounding.floor
-          ? feature_modifiers.FeatureModifierRounding.floor
-          : null,
-      conditions: simpleConditions,
-      requiredChoiceOptions: requiredChoiceOptions,
-    ));
-  }
-  final evaluated = feature_modifiers.evaluateFeatureModifiers(
-    modifiers: specs,
-    context: feature_modifiers.FeatureModifierContext(
-      proficiencyBonus: proficiencyBonus,
-      classLevelsByKey: classLevels,
-      activeFeatureKeys: activeKeys,
-      isArmored: character.equippedArmor != null,
-      hasShield: character.equippedShield != null,
-      abilityCheckIncludesProficiency: abilityCheckIncludesProficiency,
-      selectedChoiceOptionKeys: selectedChoiceOptionKeys,
-    ),
+  final input = feature_modifiers.characterFeatureModifierInput(
+    character.toJson(),
+    modifiers: data.map((modifier) => modifier.toJson()),
+    classFeatures: classFeatures.map((feature) => feature.toJson()),
+    subclassFeatures: subclassFeatures.map((feature) => feature.toJson()),
+    proficiencyBonus: proficiencyBonus,
+    abilityCheckIncludesProficiency: abilityCheckIncludesProficiency,
   );
-  return feature_modifiers.sumFeatureModifierValues(evaluated)[switch (target) {
-        FeatureModifierTarget.speed =>
-          feature_modifiers.FeatureModifierTarget.speed,
-        FeatureModifierTarget.abilityCheck =>
-          feature_modifiers.FeatureModifierTarget.abilityCheck,
-        FeatureModifierTarget.armorClass =>
-          feature_modifiers.FeatureModifierTarget.armorClass,
-        FeatureModifierTarget.attackRoll =>
-          feature_modifiers.FeatureModifierTarget.attackRoll,
-        FeatureModifierTarget.damageRoll =>
-          feature_modifiers.FeatureModifierTarget.damageRoll,
-      }] ??
-      0;
+  final evaluated = feature_modifiers.evaluateFeatureModifiers(
+      modifiers: input.modifiers, context: input.context);
+  return feature_modifiers.sumFeatureModifierValues(evaluated)[
+      feature_modifiers.FeatureModifierTarget.values.byName(target.name)] ?? 0;
 }
 
 Set<String> _effectiveSavingThrowAbilities(

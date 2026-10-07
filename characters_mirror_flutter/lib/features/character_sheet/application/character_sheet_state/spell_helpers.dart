@@ -33,14 +33,8 @@ int _normalizedMovementSpeed(int value) {
   return value < 0 ? 0 : value;
 }
 
-String _spellName(SpellData spell) {
-  return _normalizedText(spell.name) ??
-      _normalizedText(spell.referenceKey) ??
-      'Заклинание';
-}
-
 String? _spellKey(SpellData spell) {
-  return _normalizedText(spell.referenceKey) ?? _normalizedText(spell.name);
+  return _normalizedText(spell.referenceKey);
 }
 
 List<CharacterSpellSelectionData>? _normalizedSpellSelections(
@@ -65,9 +59,17 @@ List<String> _defaultPreparedSpellKeys(CharacterData character) {
 Set<String> _effectivePreparedSpellKeys(CharacterData character) {
   final explicit = character.preparedSpellKeys;
   if (explicit != null) {
+    final aliases = {
+      for (final s
+          in character.spellSelections ?? <CharacterSpellSelectionData>[])
+        if (_normalizedText(s.spellKey) != null &&
+            _normalizedText(s.spell?.referenceKey) != null)
+          _normalizedText(s.spellKey)!: _normalizedText(s.spell?.referenceKey)!,
+    };
     return {
       for (final key in explicit)
-        if (_normalizedText(key) != null) _normalizedText(key)!,
+        if (_normalizedText(key) != null)
+          aliases[_normalizedText(key)!] ?? _normalizedText(key)!,
     };
   }
   return _defaultPreparedSpellKeys(character).toSet();
@@ -86,19 +88,6 @@ List<String>? _normalizedPreparedKeys(
 }
 
 String? _spellSelectionKey(CharacterSpellSelectionData selection) {
-  return _normalizedText(selection.spellKey) ??
-      _normalizedText(selection.spell?.referenceKey) ??
-      _normalizedText(selection.spell?.name);
-}
-
-int _spellSlotCount(CharacterData character, int level) {
-  return (character.derived?.spellSlots?[level] ?? 0) +
-      (character.derived?.pactSlots?[level] ?? 0);
-}
-
-int _currentSpellSlotCount(CharacterData character, int level) {
-  final maxSlots = _spellSlotCount(character, level);
-  return (character.currentSpellSlots?[level] ?? maxSlots)
-      .clamp(0, maxSlots)
-      .toInt();
+  return _normalizedText(selection.spell?.referenceKey) ??
+      _normalizedText(selection.spellKey);
 }

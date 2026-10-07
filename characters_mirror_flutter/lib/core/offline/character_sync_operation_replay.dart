@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:characters_mirror_flutter/core/character_spells/spell_cast_application.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 
@@ -112,6 +114,11 @@ CharacterData _replaySemantic(
     case CharacterSyncOperationType.adjustSpellSlots:
       return _adjustSpellSlots(character, action);
     case CharacterSyncOperationType.castSpell:
+      if (action.spellKey != null ||
+          action.spellSourceKey != null ||
+          action.slotSource != null) {
+        return applyCharacterSpellCast(character, action);
+      }
       var next = character;
       final level = action.level;
       if (level == null || level < 0 || level > 9) {
@@ -168,28 +175,8 @@ int _positive(int? value) {
 }
 
 CharacterData _adjustSpellSlots(
-  CharacterData character,
-  CharacterSemanticActionData action,
-) {
-  final level = action.level;
-  final delta = action.delta;
-  if (level == null || delta == null) throw StateError('Invalid slot action.');
-  final maximum = (character.derived?.spellSlots?[level] ?? 0) +
-      (character.derived?.pactSlots?[level] ?? 0);
-  final current = character.currentSpellSlots?[level] ?? maximum;
-  final next = current + delta;
-  if (maximum <= 0 || next < 0 || next > maximum) {
-    throw StateError('Spell slot bounds.');
-  }
-  return character.copyWith(
-    currentSpellSlots: _updatedMap(
-      character.currentSpellSlots,
-      level,
-      next,
-      removeWhen: maximum,
-    ),
-  );
-}
+        CharacterData character, CharacterSemanticActionData action) =>
+    adjustCharacterSpellSlots(character, action);
 
 CharacterData _adjustResource(
   CharacterData character,
@@ -261,7 +248,18 @@ CharacterData _applyRest(CharacterData character, RestType? restType) {
           '${state.sourceType.name}:${state.sourceId}:${state.resourceKey}'))
         state,
   ];
-  var next = character.copyWith(resourceStates: states.isEmpty ? null : states);
+  final pools = SpellSlotPools.fromCharacter(character.toJson());
+  final materialized = pools.materialized;
+  var next = character.copyWith(
+    resourceStates: states.isEmpty ? null : states,
+    currentSpellSlots:
+        character.currentPactSlots == null && pools.pactMax.isNotEmpty
+            ? (materialized['currentSpellSlots'] == null
+                ? null
+                : spellProtocolIntMap<int>(materialized['currentSpellSlots']))
+            : character.currentSpellSlots,
+    currentPactSlots: pools.pactMax.isEmpty ? null : pools.pactMax,
+  );
   if (restType == RestType.longRest) {
     next = next.copyWith(
       currentHp: null,
@@ -328,7 +326,7 @@ void _setMapEntry(
   final field = operation.fieldPath;
   final key = operation.targetId;
   if (field == null || key == null) throw StateError('Missing map target.');
-  if (field == 'currentSpellSlots') {
+  if (field == 'currentSpellSlots' || field == 'currentPactSlots') {
     final values = _decodeIntMap(json[field]);
     values[int.parse(key)] = operation.value?.intValue;
     json[field] = _encodeIntMap(values);
@@ -346,7 +344,7 @@ void _removeMapEntry(
   final field = operation.fieldPath;
   final key = operation.targetId;
   if (field == null || key == null) throw StateError('Missing map target.');
-  if (field == 'currentSpellSlots') {
+  if (field == 'currentSpellSlots' || field == 'currentPactSlots') {
     final values = _decodeIntMap(json[field])..remove(int.parse(key));
     json[field] = values.isEmpty ? null : _encodeIntMap(values);
     return;

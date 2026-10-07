@@ -4,7 +4,8 @@
 class: SpellData
 table: spell_data
 fields:
-  referenceKey: String?
+  # Model-only sentinel for legacy constructors; reference writes reject it.
+  referenceKey: String, defaultModel=''
   name: String?
   description: String?
   shortDescription: String?
@@ -33,6 +34,7 @@ fields:
   targetType: SpellTargetType?
   areaOfEffectType: AreaOfEffectType? # Форма области действия: sphere, cone, line и т.д.
   areaOfEffectSize: int? # Основной размер области в футах
+  areaOfEffectSizeKind: AreaSizeMeasurement? # Explicit measurement; legacy sizes stay unqualified.
   areaOfEffectSecondarySize: int? # Второй размер для несимметричных форм, например ширина линии
   areaOfEffectHeight: int? # Высота области в футах, если форма её использует
   materialDescription: String? # Описание материального компонента из текста заклинания
@@ -41,9 +43,15 @@ fields:
   durationType: SpellDurationType?
   isHealing: bool? # Является ли эффект заклинания лечением
   healingDice: String? # Формула лечения, например "1d8"
+  healingScaling: SpellScalingData? # Complete healing formulas by slot level.
+  healingAddsCastingModifier: bool? # Explicit opt-in; never inferred from prose.
   requiresLineOfSight: bool? # Нужна ли прямая видимость цели/точки
   requiresVerbal: bool? # Есть ли verbal component
   requiresSomatic: bool? # Есть ли somatic component
   requiresMaterial: bool? # Есть ли material component
   availableForClassIds: List<int>? # Id классов, которым доступно заклинание
   availableForSubclassIds: List<int>? # Id подклассов, которым доступно заклинание
+indexes:
+  spell_reference_key_idx:
+    fields: referenceKey
+    unique: true

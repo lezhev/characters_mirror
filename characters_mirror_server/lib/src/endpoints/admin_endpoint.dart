@@ -154,6 +154,7 @@ class AdminEndpoint extends Endpoint {
           throw ArgumentError('baseArmorClass requires the armorClass target.');
         }
         if (operation == FeatureModifierOperation.add &&
+            value.kind != FeatureModifierValueKind.abilityModifier &&
             value.abilityModifiers?.isNotEmpty == true) {
           throw ArgumentError(
               'Ability terms require a baseArmorClass formula.');
@@ -167,6 +168,8 @@ class AdminEndpoint extends Endpoint {
           operation: operation,
           value: value,
           conditions: conditions,
+          spellKey: raw['spellKey'] as String?,
+          minimumCastLevel: raw['minimumCastLevel'] as int?,
           source: raw['source'] as String?,
           version: raw['version'] as int?,
           createdAt: DateTime.now().toUtc(),
@@ -266,6 +269,9 @@ class AdminEndpoint extends Endpoint {
     );
     final valid = switch (kind) {
       FeatureModifierValueKind.staticValue => value.staticValue != null,
+      FeatureModifierValueKind.abilityModifier =>
+        value.abilityModifiers?.isNotEmpty == true,
+      FeatureModifierValueKind.castLevel => true,
       FeatureModifierValueKind.classLevelProgression =>
         value.progression?.isNotEmpty == true,
       FeatureModifierValueKind.proficiencyBonusFraction =>

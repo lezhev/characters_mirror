@@ -27,6 +27,7 @@ import 'starting_equipment_endpoints.dart';
 import 'class_endpoints.dart';
 import '../../../spells/class_spell_progression.dart';
 import '../../../spells/spellcasting_source.dart';
+import '../../../spells/spell_cast_service.dart';
 import '../../../feature_grants.dart';
 import '../../../armor_class_feature_modifiers.dart';
 
@@ -51,6 +52,7 @@ part 'character_data_endpoint/aggregate_spell_slots.dart';
 part 'character_data_endpoint/derived_resolve_context.dart';
 part 'character_data_endpoint/derived_source_resolution.dart';
 part 'character_data_endpoint/derived_collectors.dart';
+part 'character_data_endpoint/derived_spells.dart';
 part 'character_data_endpoint/derived_starting_equipment.dart';
 part 'character_data_endpoint/derived_equipment_selection.dart';
 part 'character_data_endpoint/normalization_basic_features.dart';
@@ -75,6 +77,8 @@ const _characterSyncCapabilities = <String>[
   'semantic_counter_actions',
   'semantic_barrier_tokens',
   'compound_cast_and_rest',
+  'spell_cast_sources',
+  'separate_pact_slots',
   'authoritative_full_resync',
 ];
 

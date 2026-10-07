@@ -3,15 +3,21 @@ enum FeatureModifierTarget {
   abilityCheck,
   armorClass,
   attackRoll,
-  damageRoll
+  damageRoll,
+  hitPointMaximum,
+  spellHealing,
+  spellDamage,
+  spellRange
 }
 
-enum FeatureModifierOperation { add, baseArmorClass }
+enum FeatureModifierOperation { add, baseArmorClass, setValue }
 
 enum FeatureModifierValueKind {
   staticValue,
   classLevelProgression,
   proficiencyBonusFraction,
+  abilityModifier,
+  castLevel,
 }
 
 enum FeatureModifierCondition {
@@ -41,6 +47,8 @@ class FeatureModifierSpec {
     this.requiredChoiceOptions = const {},
     this.abilityModifierKeys = const [],
     this.sourceName,
+    this.spellKey,
+    this.minimumCastLevel,
   });
 
   final String referenceKey;
@@ -58,6 +66,16 @@ class FeatureModifierSpec {
   final Set<String> requiredChoiceOptions;
   final List<String> abilityModifierKeys;
   final String? sourceName;
+  final String? spellKey;
+  final int? minimumCastLevel;
+}
+
+/// Only spell targets receive this context. Cast level includes upcast previews.
+class FeatureModifierSpellContext {
+  const FeatureModifierSpellContext(
+      {required this.spellKey, required this.castLevel});
+  final String? spellKey;
+  final int castLevel;
 }
 
 class FeatureModifierContext {
@@ -103,6 +121,7 @@ class ResolvedFeatureModifier {
 List<ResolvedFeatureModifier> evaluateFeatureModifiers({
   required Iterable<FeatureModifierSpec> modifiers,
   required FeatureModifierContext context,
+  FeatureModifierSpellContext? spellContext,
 }) {
   final byKey = <String, FeatureModifierSpec>{};
   for (final modifier in modifiers) {
@@ -121,7 +140,18 @@ List<ResolvedFeatureModifier> evaluateFeatureModifiers({
       continue;
     }
     if (!_conditionsPass(modifier.conditions, context)) continue;
-    final baseValue = _resolveValue(modifier, context);
+    final isSpell = isSpellModifierTarget(modifier.target);
+    if (isSpell) {
+      if (spellContext == null) continue;
+      if (modifier.spellKey != null &&
+          modifier.spellKey != spellContext.spellKey) continue;
+      if (spellContext.castLevel < (modifier.minimumCastLevel ?? 0)) continue;
+    }
+    // Spell operands cannot leak into character derived calculations.
+    if (!isSpell && modifier.valueKind == FeatureModifierValueKind.castLevel)
+      continue;
+    final baseValue =
+        _resolveValue(modifier, context, isSpell ? spellContext : null);
     if (baseValue == null) continue;
     if (modifier.operation == FeatureModifierOperation.baseArmorClass &&
         modifier.target != FeatureModifierTarget.armorClass) continue;
@@ -155,6 +185,10 @@ Map<FeatureModifierTarget, int> sumFeatureModifierValues(
       case FeatureModifierTarget.armorClass:
       case FeatureModifierTarget.attackRoll:
       case FeatureModifierTarget.damageRoll:
+      case FeatureModifierTarget.hitPointMaximum:
+      case FeatureModifierTarget.spellHealing:
+      case FeatureModifierTarget.spellDamage:
+      case FeatureModifierTarget.spellRange:
         result.update(
           modifier.target,
           (value) => value + modifier.value,
@@ -189,10 +223,22 @@ bool _conditionsPass(
 int? _resolveValue(
   FeatureModifierSpec modifier,
   FeatureModifierContext context,
+  FeatureModifierSpellContext? spellContext,
 ) {
   switch (modifier.valueKind) {
     case FeatureModifierValueKind.staticValue:
       return modifier.staticValue;
+    case FeatureModifierValueKind.abilityModifier:
+      final keys = modifier.abilityModifierKeys.toSet();
+      if (keys.isEmpty ||
+          keys.any((key) => !context.abilityModifiers.containsKey(key)))
+        return null;
+      return keys.fold<int>(modifier.staticValue ?? 0,
+          (sum, key) => sum + context.abilityModifiers[key]!);
+    case FeatureModifierValueKind.castLevel:
+      return spellContext == null
+          ? null
+          : spellContext.castLevel + (modifier.staticValue ?? 0);
     case FeatureModifierValueKind.classLevelProgression:
       final sourceLevel =
           context.classLevelsByKey[modifier.sourceClassKey] ?? 0;
@@ -216,4 +262,24 @@ int? _resolveValue(
         null => null,
       };
   }
+}
+
+bool isSpellModifierTarget(FeatureModifierTarget target) =>
+    target == FeatureModifierTarget.spellHealing ||
+    target == FeatureModifierTarget.spellDamage ||
+    target == FeatureModifierTarget.spellRange;
+
+/// Deterministic set-then-add semantics for numeric presentation targets.
+int applyFeatureModifierValues(int base,
+    Iterable<ResolvedFeatureModifier> modifiers, FeatureModifierTarget target) {
+  final applicable = modifiers
+      .where((modifier) => modifier.target == target)
+      .toList()
+    ..sort((a, b) => a.referenceKey.compareTo(b.referenceKey));
+  var value = base;
+  for (final modifier in applicable) {
+    if (modifier.operation == FeatureModifierOperation.setValue)
+      value = modifier.value;
+  }
+  return value + (sumFeatureModifierValues(applicable)[target] ?? 0);
 }

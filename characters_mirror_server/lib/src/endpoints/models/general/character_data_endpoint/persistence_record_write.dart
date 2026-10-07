@@ -128,6 +128,7 @@ CharacterRecord _toCharacterRecord(
     hitDiceMaxOverrides:
         _normalizedNonNegativeIntMap(character.hitDiceMaxOverrides),
     currentSpellSlots: character.currentSpellSlots,
+    currentPactSlots: character.currentPactSlots,
     activeConcentrationSpellName: character.activeConcentrationSpellName,
     customInitiativeBonus: _zeroAsNull(character.customInitiativeBonus),
     customArmorClassBonus: _zeroAsNull(character.customArmorClassBonus),

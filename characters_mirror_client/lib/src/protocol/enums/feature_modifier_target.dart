@@ -16,7 +16,11 @@ enum FeatureModifierTarget implements _i1.SerializableModel {
   abilityCheck,
   armorClass,
   attackRoll,
-  damageRoll;
+  damageRoll,
+  hitPointMaximum,
+  spellHealing,
+  spellDamage,
+  spellRange;
 
   static FeatureModifierTarget fromJson(int index) {
     switch (index) {
@@ -30,6 +34,14 @@ enum FeatureModifierTarget implements _i1.SerializableModel {
         return FeatureModifierTarget.attackRoll;
       case 4:
         return FeatureModifierTarget.damageRoll;
+      case 5:
+        return FeatureModifierTarget.hitPointMaximum;
+      case 6:
+        return FeatureModifierTarget.spellHealing;
+      case 7:
+        return FeatureModifierTarget.spellDamage;
+      case 8:
+        return FeatureModifierTarget.spellRange;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "FeatureModifierTarget"');

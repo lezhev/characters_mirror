@@ -188,6 +188,7 @@ abstract final class CharacterValidator {
       valueRule: Rules.nonNegativeInt,
     );
     _validateSpellSlotMap('currentSpellSlots', character.currentSpellSlots);
+    _validateSpellSlotMap('currentPactSlots', character.currentPactSlots);
   }
 
   static void _validateCollections(CharacterData character) {

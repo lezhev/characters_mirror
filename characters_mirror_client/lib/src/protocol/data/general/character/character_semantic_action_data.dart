@@ -18,6 +18,9 @@ abstract class CharacterSemanticActionData implements _i1.SerializableModel {
     this.amount,
     this.delta,
     this.level,
+    this.spellKey,
+    this.spellSourceKey,
+    this.slotSource,
     this.spellName,
     this.startsConcentration,
     this.dieKind,
@@ -32,6 +35,9 @@ abstract class CharacterSemanticActionData implements _i1.SerializableModel {
     int? amount,
     int? delta,
     int? level,
+    String? spellKey,
+    String? spellSourceKey,
+    String? slotSource,
     String? spellName,
     bool? startsConcentration,
     String? dieKind,
@@ -48,6 +54,9 @@ abstract class CharacterSemanticActionData implements _i1.SerializableModel {
       amount: jsonSerialization['amount'] as int?,
       delta: jsonSerialization['delta'] as int?,
       level: jsonSerialization['level'] as int?,
+      spellKey: jsonSerialization['spellKey'] as String?,
+      spellSourceKey: jsonSerialization['spellSourceKey'] as String?,
+      slotSource: jsonSerialization['slotSource'] as String?,
       spellName: jsonSerialization['spellName'] as String?,
       startsConcentration: jsonSerialization['startsConcentration'] as bool?,
       dieKind: jsonSerialization['dieKind'] as String?,
@@ -74,6 +83,12 @@ abstract class CharacterSemanticActionData implements _i1.SerializableModel {
 
   int? level;
 
+  String? spellKey;
+
+  String? spellSourceKey;
+
+  String? slotSource;
+
   String? spellName;
 
   bool? startsConcentration;
@@ -97,6 +112,9 @@ abstract class CharacterSemanticActionData implements _i1.SerializableModel {
     int? amount,
     int? delta,
     int? level,
+    String? spellKey,
+    String? spellSourceKey,
+    String? slotSource,
     String? spellName,
     bool? startsConcentration,
     String? dieKind,
@@ -112,6 +130,9 @@ abstract class CharacterSemanticActionData implements _i1.SerializableModel {
       if (amount != null) 'amount': amount,
       if (delta != null) 'delta': delta,
       if (level != null) 'level': level,
+      if (spellKey != null) 'spellKey': spellKey,
+      if (spellSourceKey != null) 'spellSourceKey': spellSourceKey,
+      if (slotSource != null) 'slotSource': slotSource,
       if (spellName != null) 'spellName': spellName,
       if (startsConcentration != null)
         'startsConcentration': startsConcentration,
@@ -138,6 +159,9 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
     int? amount,
     int? delta,
     int? level,
+    String? spellKey,
+    String? spellSourceKey,
+    String? slotSource,
     String? spellName,
     bool? startsConcentration,
     String? dieKind,
@@ -150,6 +174,9 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
           amount: amount,
           delta: delta,
           level: level,
+          spellKey: spellKey,
+          spellSourceKey: spellSourceKey,
+          slotSource: slotSource,
           spellName: spellName,
           startsConcentration: startsConcentration,
           dieKind: dieKind,
@@ -168,6 +195,9 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
     Object? amount = _Undefined,
     Object? delta = _Undefined,
     Object? level = _Undefined,
+    Object? spellKey = _Undefined,
+    Object? spellSourceKey = _Undefined,
+    Object? slotSource = _Undefined,
     Object? spellName = _Undefined,
     Object? startsConcentration = _Undefined,
     Object? dieKind = _Undefined,
@@ -181,6 +211,10 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
       amount: amount is int? ? amount : this.amount,
       delta: delta is int? ? delta : this.delta,
       level: level is int? ? level : this.level,
+      spellKey: spellKey is String? ? spellKey : this.spellKey,
+      spellSourceKey:
+          spellSourceKey is String? ? spellSourceKey : this.spellSourceKey,
+      slotSource: slotSource is String? ? slotSource : this.slotSource,
       spellName: spellName is String? ? spellName : this.spellName,
       startsConcentration: startsConcentration is bool?
           ? startsConcentration

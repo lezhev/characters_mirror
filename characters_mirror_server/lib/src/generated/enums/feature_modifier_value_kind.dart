@@ -14,7 +14,9 @@ import 'package:serverpod/serverpod.dart' as _i1;
 enum FeatureModifierValueKind implements _i1.SerializableModel {
   staticValue,
   classLevelProgression,
-  proficiencyBonusFraction;
+  proficiencyBonusFraction,
+  abilityModifier,
+  castLevel;
 
   static FeatureModifierValueKind fromJson(int index) {
     switch (index) {
@@ -24,6 +26,10 @@ enum FeatureModifierValueKind implements _i1.SerializableModel {
         return FeatureModifierValueKind.classLevelProgression;
       case 2:
         return FeatureModifierValueKind.proficiencyBonusFraction;
+      case 3:
+        return FeatureModifierValueKind.abilityModifier;
+      case 4:
+        return FeatureModifierValueKind.castLevel;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "FeatureModifierValueKind"');

@@ -41,6 +41,7 @@ fields:
   currentHitDice: Map<String, int>?
   hitDiceMaxOverrides: Map<String, int>?
   currentSpellSlots: Map<int, int>?
+  currentPactSlots: Map<int, int>?
   activeConcentrationSpellName: String?
   customInitiativeBonus: int?
   customArmorClassBonus: int?

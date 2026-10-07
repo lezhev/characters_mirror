@@ -5,3 +5,7 @@ values:
   - armorClass
   - attackRoll
   - damageRoll
+  - hitPointMaximum
+  - spellHealing
+  - spellDamage
+  - spellRange

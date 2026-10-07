@@ -20,8 +20,9 @@ import '../../../data/general/character/character_skill_proficiency_state.dart'
 import '../../../enums/language.dart' as _i7;
 import '../../../enums/armor_category.dart' as _i8;
 import '../../../enums/weapon_category.dart' as _i9;
-import '../../../views/character_equipment_entry_view.dart' as _i10;
-import '../../../enums/damage_type.dart' as _i11;
+import '../../../views/resolved_character_spell_data.dart' as _i10;
+import '../../../views/character_equipment_entry_view.dart' as _i11;
+import '../../../enums/damage_type.dart' as _i12;
 
 abstract class CharacterDerivedData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -60,6 +61,7 @@ abstract class CharacterDerivedData
     this.customArmorTraining,
     this.grantedSpellKeys,
     this.alwaysPreparedSpellKeys,
+    this.resolvedSpells,
     this.grantedEquipment,
     this.resistances,
   });
@@ -99,8 +101,9 @@ abstract class CharacterDerivedData
     List<String>? customArmorTraining,
     List<String>? grantedSpellKeys,
     List<String>? alwaysPreparedSpellKeys,
-    List<_i10.CharacterEquipmentEntryView>? grantedEquipment,
-    List<_i11.DamageType>? resistances,
+    List<_i10.ResolvedCharacterSpellData>? resolvedSpells,
+    List<_i11.CharacterEquipmentEntryView>? grantedEquipment,
+    List<_i12.DamageType>? resistances,
   }) = _CharacterDerivedDataImpl;
 
   factory CharacterDerivedData.fromJson(
@@ -212,12 +215,16 @@ abstract class CharacterDerivedData
           (jsonSerialization['alwaysPreparedSpellKeys'] as List?)
               ?.map((e) => e as String)
               .toList(),
+      resolvedSpells: (jsonSerialization['resolvedSpells'] as List?)
+          ?.map((e) => _i10.ResolvedCharacterSpellData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       grantedEquipment: (jsonSerialization['grantedEquipment'] as List?)
-          ?.map((e) => _i10.CharacterEquipmentEntryView.fromJson(
+          ?.map((e) => _i11.CharacterEquipmentEntryView.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i11.DamageType.fromJson((e as String)))
+          ?.map((e) => _i12.DamageType.fromJson((e as String)))
           .toList(),
     );
   }
@@ -290,9 +297,11 @@ abstract class CharacterDerivedData
 
   List<String>? alwaysPreparedSpellKeys;
 
-  List<_i10.CharacterEquipmentEntryView>? grantedEquipment;
+  List<_i10.ResolvedCharacterSpellData>? resolvedSpells;
 
-  List<_i11.DamageType>? resistances;
+  List<_i11.CharacterEquipmentEntryView>? grantedEquipment;
+
+  List<_i12.DamageType>? resistances;
 
   /// Returns a shallow copy of this [CharacterDerivedData]
   /// with some or all fields replaced by the given arguments.
@@ -332,8 +341,9 @@ abstract class CharacterDerivedData
     List<String>? customArmorTraining,
     List<String>? grantedSpellKeys,
     List<String>? alwaysPreparedSpellKeys,
-    List<_i10.CharacterEquipmentEntryView>? grantedEquipment,
-    List<_i11.DamageType>? resistances,
+    List<_i10.ResolvedCharacterSpellData>? resolvedSpells,
+    List<_i11.CharacterEquipmentEntryView>? grantedEquipment,
+    List<_i12.DamageType>? resistances,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -399,6 +409,9 @@ abstract class CharacterDerivedData
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (alwaysPreparedSpellKeys != null)
         'alwaysPreparedSpellKeys': alwaysPreparedSpellKeys?.toJson(),
+      if (resolvedSpells != null)
+        'resolvedSpells':
+            resolvedSpells?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedEquipment != null)
         'grantedEquipment':
             grantedEquipment?.toJson(valueToJson: (v) => v.toJson()),
@@ -471,6 +484,9 @@ abstract class CharacterDerivedData
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (alwaysPreparedSpellKeys != null)
         'alwaysPreparedSpellKeys': alwaysPreparedSpellKeys?.toJson(),
+      if (resolvedSpells != null)
+        'resolvedSpells':
+            resolvedSpells?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (grantedEquipment != null)
         'grantedEquipment':
             grantedEquipment?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -523,8 +539,9 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     List<String>? customArmorTraining,
     List<String>? grantedSpellKeys,
     List<String>? alwaysPreparedSpellKeys,
-    List<_i10.CharacterEquipmentEntryView>? grantedEquipment,
-    List<_i11.DamageType>? resistances,
+    List<_i10.ResolvedCharacterSpellData>? resolvedSpells,
+    List<_i11.CharacterEquipmentEntryView>? grantedEquipment,
+    List<_i12.DamageType>? resistances,
   }) : super._(
           totalLevel: totalLevel,
           proficiencyBonus: proficiencyBonus,
@@ -560,6 +577,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
           customArmorTraining: customArmorTraining,
           grantedSpellKeys: grantedSpellKeys,
           alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
+          resolvedSpells: resolvedSpells,
           grantedEquipment: grantedEquipment,
           resistances: resistances,
         );
@@ -603,6 +621,7 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
     Object? customArmorTraining = _Undefined,
     Object? grantedSpellKeys = _Undefined,
     Object? alwaysPreparedSpellKeys = _Undefined,
+    Object? resolvedSpells = _Undefined,
     Object? grantedEquipment = _Undefined,
     Object? resistances = _Undefined,
   }) {
@@ -747,11 +766,14 @@ class _CharacterDerivedDataImpl extends CharacterDerivedData {
       alwaysPreparedSpellKeys: alwaysPreparedSpellKeys is List<String>?
           ? alwaysPreparedSpellKeys
           : this.alwaysPreparedSpellKeys?.map((e0) => e0).toList(),
+      resolvedSpells: resolvedSpells is List<_i10.ResolvedCharacterSpellData>?
+          ? resolvedSpells
+          : this.resolvedSpells?.map((e0) => e0.copyWith()).toList(),
       grantedEquipment:
-          grantedEquipment is List<_i10.CharacterEquipmentEntryView>?
+          grantedEquipment is List<_i11.CharacterEquipmentEntryView>?
               ? grantedEquipment
               : this.grantedEquipment?.map((e0) => e0.copyWith()).toList(),
-      resistances: resistances is List<_i11.DamageType>?
+      resistances: resistances is List<_i12.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
     );

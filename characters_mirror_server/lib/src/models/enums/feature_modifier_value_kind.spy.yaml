@@ -3,3 +3,5 @@ values:
   - staticValue
   - classLevelProgression
   - proficiencyBonusFraction
+  - abilityModifier
+  - castLevel

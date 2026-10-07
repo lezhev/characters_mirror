@@ -229,7 +229,16 @@ extension CharacterSheetControllerFeatureResources on CharacterSheetController {
         ),
     ];
 
+    final pools = SpellSlotPools.fromCharacter(character.toJson());
+    final materialized = pools.materialized;
     var updatedCharacter = character.copyWith(
+      currentSpellSlots:
+          character.currentPactSlots == null && pools.pactMax.isNotEmpty
+              ? (materialized['currentSpellSlots'] == null
+                  ? null
+                  : spellProtocolIntMap<int>(materialized['currentSpellSlots']))
+              : character.currentSpellSlots,
+      currentPactSlots: pools.pactMax.isEmpty ? null : pools.pactMax,
       resourceStates: resourceStates.isEmpty ? null : resourceStates,
       derived: character.derived?.copyWith(activeFeatures: updatedFeatures),
     );

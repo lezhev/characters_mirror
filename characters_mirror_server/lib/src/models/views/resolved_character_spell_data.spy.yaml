@@ -1,0 +1,5 @@
+class: ResolvedCharacterSpellData
+fields:
+  spellKey: String
+  spell: SpellData
+  sources: List<SpellSourceContextData>

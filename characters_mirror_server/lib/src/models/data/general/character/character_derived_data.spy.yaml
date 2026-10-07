@@ -34,5 +34,6 @@ fields:
   customArmorTraining: List<String>?
   grantedSpellKeys: List<String>?
   alwaysPreparedSpellKeys: List<String>?
+  resolvedSpells: List<ResolvedCharacterSpellData>?
   grantedEquipment: List<CharacterEquipmentEntryView>?
   resistances: List<DamageType>?

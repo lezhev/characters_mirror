@@ -162,8 +162,9 @@ List<String> _racialSpellKeys(CharacterData character, int totalLevel) {
       if ((feature.level ?? 1) <= characterLevel)
         for (final grant
             in feature.spellGrants ?? const <RaceFeatureSpellGrantData>[])
-          if (_normalizedTextOrNull(grant.spell?.referenceKey) != null)
-            grant.spell!.referenceKey!,
+          if ((grant.grantedAtLevel ?? 1) <= characterLevel &&
+              _normalizedTextOrNull(grant.spell?.referenceKey) != null)
+            grant.spell!.referenceKey,
   ]);
 }
 

@@ -44,12 +44,14 @@ List<String> _semanticActionTargetKeys(
     case CharacterSyncOperationType.grantTemporaryHp:
       return [_fieldTargetKey('temporaryHp')];
     case CharacterSyncOperationType.adjustSpellSlots:
-      return [_mapTargetKey('currentSpellSlots', '${action?.level ?? ''}')];
+      return spellSlotActionTargetKeys(
+          character.toJson(), action?.toJson() ?? {});
     case CharacterSyncOperationType.castSpell:
       return [
-        if ((action?.level ?? 0) > 0)
-          _mapTargetKey('currentSpellSlots', '${action?.level}'),
-        if (action?.startsConcentration == true)
+        ...spellSlotActionTargetKeys(
+            character.toJson(), action?.toJson() ?? {}),
+        if (spellCastStartsConcentration(
+            character.toJson(), action?.toJson() ?? {}))
           _fieldTargetKey('activeConcentrationSpellName'),
       ];
     case CharacterSyncOperationType.adjustHitDice:
@@ -98,6 +100,18 @@ List<String> _restTargetKeys(CharacterData character, RestType? restType) {
       }
     }
   }
+  final pactLevels = {
+    ...?character.derived?.pactSlots?.keys,
+    ...?character.currentPactSlots?.keys
+  };
+  result.addAll(
+      pactLevels.map((level) => _mapTargetKey('currentPactSlots', '$level')));
+  if (character.currentPactSlots == null && pactLevels.isNotEmpty) {
+    result.addAll({
+      ...?character.derived?.spellSlots?.keys,
+      ...?character.currentSpellSlots?.keys
+    }.map((level) => _mapTargetKey('currentSpellSlots', '$level')));
+  }
   if (restType == RestType.longRest) {
     result.addAll([
       _fieldTargetKey('currentHp'),
@@ -107,7 +121,6 @@ List<String> _restTargetKeys(CharacterData character, RestType? restType) {
     ]);
     final slotLevels = <int>{
       ...?character.derived?.spellSlots?.keys,
-      ...?character.derived?.pactSlots?.keys,
       ...?character.currentSpellSlots?.keys,
     };
     result.addAll(slotLevels.map(
@@ -193,6 +206,7 @@ bool _isSemanticBarrierTarget(String target) {
       target == _fieldTargetKey('activeConcentrationSpellName') ||
       target == _fieldTargetKey('experience') ||
       target.startsWith('map:currentSpellSlots:') ||
+      target.startsWith('map:currentPactSlots:') ||
       target.startsWith('map:currentHitDice:') ||
       target.startsWith('resource:');
 }
@@ -273,60 +287,28 @@ CharacterData _grantServerTemporaryHp(CharacterData character, int amount) {
   return character.copyWith(temporaryHp: next);
 }
 
-int _serverSpellSlotMax(CharacterData character, int level) {
-  return (character.derived?.spellSlots?[level] ?? 0) +
-      (character.derived?.pactSlots?[level] ?? 0);
-}
-
 CharacterData _adjustServerSpellSlots(
-  CharacterData character,
-  CharacterSemanticActionData action,
-) {
-  final level = action.level;
-  final delta = action.delta;
-  if (level == null || level < 1 || level > 9 || delta == null || delta == 0) {
-    throw const _SemanticActionFailure(
-      'invalid_action',
-      'Spell slot adjustment requires level 1..9 and non-zero delta.',
-    );
+    CharacterData character, CharacterSemanticActionData action) {
+  try {
+    return adjustCharacterSpellSlots(character, action);
+  } on SpellCastFailure catch (error) {
+    throw _SemanticActionFailure(error.code, error.message);
   }
-  final maximum = _serverSpellSlotMax(character, level);
-  if (maximum <= 0) {
-    throw const _SemanticActionFailure(
-      'target_not_found',
-      'The requested spell slot level does not exist.',
-    );
-  }
-  final current = (character.currentSpellSlots?[level] ?? maximum)
-      .clamp(0, maximum)
-      .toInt();
-  final next = current + delta;
-  if (next < 0) {
-    throw const _SemanticActionFailure(
-      'insufficient_resource',
-      'Not enough spell slots are available.',
-    );
-  }
-  if (next > maximum) {
-    throw const _SemanticActionFailure(
-      'resource_bounds',
-      'Spell slot adjustment exceeds the canonical maximum.',
-    );
-  }
-  return character.copyWith(
-    currentSpellSlots: _updatedIntMap(
-      character.currentSpellSlots,
-      level,
-      next,
-      removeWhen: maximum,
-    ),
-  );
 }
 
 CharacterData _castServerSpell(
   CharacterData character,
   CharacterSemanticActionData action,
 ) {
+  if (action.spellKey != null ||
+      action.spellSourceKey != null ||
+      action.slotSource != null) {
+    try {
+      return applyCharacterSpellCast(character, action);
+    } on SpellCastFailure catch (error) {
+      throw _SemanticActionFailure(error.code, error.message);
+    }
+  }
   final level = action.level;
   if (level == null || level < 0 || level > 9) {
     throw const _SemanticActionFailure(
@@ -517,8 +499,17 @@ CharacterData _applyServerRest(
       )))
         state,
   ];
+  final pools = SpellSlotPools.fromCharacter(character.toJson());
+  final materialized = pools.materialized;
   var next = character.copyWith(
     resourceStates: resourceStates.isEmpty ? null : resourceStates,
+    currentSpellSlots:
+        character.currentPactSlots == null && pools.pactMax.isNotEmpty
+            ? (materialized['currentSpellSlots'] == null
+                ? null
+                : spellProtocolIntMap<int>(materialized['currentSpellSlots']))
+            : character.currentSpellSlots,
+    currentPactSlots: pools.pactMax.isEmpty ? null : pools.pactMax,
   );
   if (restType == RestType.longRest) {
     next = next.copyWith(

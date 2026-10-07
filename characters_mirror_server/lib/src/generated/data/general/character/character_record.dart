@@ -88,6 +88,7 @@ abstract class CharacterRecord
     this.currentHitDice,
     this.hitDiceMaxOverrides,
     this.currentSpellSlots,
+    this.currentPactSlots,
     this.activeConcentrationSpellName,
     this.customInitiativeBonus,
     this.customArmorClassBonus,
@@ -163,6 +164,7 @@ abstract class CharacterRecord
     Map<String, int>? currentHitDice,
     Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
+    Map<int, int>? currentPactSlots,
     String? activeConcentrationSpellName,
     int? customInitiativeBonus,
     int? customArmorClassBonus,
@@ -282,6 +284,9 @@ abstract class CharacterRecord
                 v as int,
               )),
       currentSpellSlots: (jsonSerialization['currentSpellSlots'] as List?)
+          ?.fold<Map<int, int>>(
+              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      currentPactSlots: (jsonSerialization['currentPactSlots'] as List?)
           ?.fold<Map<int, int>>(
               {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
       activeConcentrationSpellName:
@@ -474,6 +479,8 @@ abstract class CharacterRecord
 
   Map<int, int>? currentSpellSlots;
 
+  Map<int, int>? currentPactSlots;
+
   String? activeConcentrationSpellName;
 
   int? customInitiativeBonus;
@@ -584,6 +591,7 @@ abstract class CharacterRecord
     Map<String, int>? currentHitDice,
     Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
+    Map<int, int>? currentPactSlots,
     String? activeConcentrationSpellName,
     int? customInitiativeBonus,
     int? customArmorClassBonus,
@@ -670,6 +678,8 @@ abstract class CharacterRecord
         'hitDiceMaxOverrides': hitDiceMaxOverrides?.toJson(),
       if (currentSpellSlots != null)
         'currentSpellSlots': currentSpellSlots?.toJson(),
+      if (currentPactSlots != null)
+        'currentPactSlots': currentPactSlots?.toJson(),
       if (activeConcentrationSpellName != null)
         'activeConcentrationSpellName': activeConcentrationSpellName,
       if (customInitiativeBonus != null)
@@ -822,6 +832,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     Map<String, int>? currentHitDice,
     Map<String, int>? hitDiceMaxOverrides,
     Map<int, int>? currentSpellSlots,
+    Map<int, int>? currentPactSlots,
     String? activeConcentrationSpellName,
     int? customInitiativeBonus,
     int? customArmorClassBonus,
@@ -897,6 +908,7 @@ class _CharacterRecordImpl extends CharacterRecord {
           currentHitDice: currentHitDice,
           hitDiceMaxOverrides: hitDiceMaxOverrides,
           currentSpellSlots: currentSpellSlots,
+          currentPactSlots: currentPactSlots,
           activeConcentrationSpellName: activeConcentrationSpellName,
           customInitiativeBonus: customInitiativeBonus,
           customArmorClassBonus: customArmorClassBonus,
@@ -977,6 +989,7 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? currentHitDice = _Undefined,
     Object? hitDiceMaxOverrides = _Undefined,
     Object? currentSpellSlots = _Undefined,
+    Object? currentPactSlots = _Undefined,
     Object? activeConcentrationSpellName = _Undefined,
     Object? customInitiativeBonus = _Undefined,
     Object? customArmorClassBonus = _Undefined,
@@ -1123,6 +1136,16 @@ class _CharacterRecordImpl extends CharacterRecord {
       currentSpellSlots: currentSpellSlots is Map<int, int>?
           ? currentSpellSlots
           : this.currentSpellSlots?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
+      currentPactSlots: currentPactSlots is Map<int, int>?
+          ? currentPactSlots
+          : this.currentPactSlots?.map((
                 key0,
                 value0,
               ) =>
@@ -1385,6 +1408,10 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'currentSpellSlots',
       this,
     );
+    currentPactSlots = _i1.ColumnSerializable(
+      'currentPactSlots',
+      this,
+    );
     activeConcentrationSpellName = _i1.ColumnString(
       'activeConcentrationSpellName',
       this,
@@ -1588,6 +1615,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable currentSpellSlots;
 
+  late final _i1.ColumnSerializable currentPactSlots;
+
   late final _i1.ColumnString activeConcentrationSpellName;
 
   late final _i1.ColumnInt customInitiativeBonus;
@@ -1727,6 +1756,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
         currentHitDice,
         hitDiceMaxOverrides,
         currentSpellSlots,
+        currentPactSlots,
         activeConcentrationSpellName,
         customInitiativeBonus,
         customArmorClassBonus,

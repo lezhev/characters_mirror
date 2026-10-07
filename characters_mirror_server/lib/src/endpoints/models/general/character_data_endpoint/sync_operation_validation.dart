@@ -134,7 +134,7 @@ void _validateSyncMapEntry(CharacterSyncOperationData operation) {
       <String, dynamic>{
         field: <String, int>{targetId: value},
       },
-    'currentSpellSlots' => <String, dynamic>{
+    'currentSpellSlots' || 'currentPactSlots' => <String, dynamic>{
         field: [
           {'k': int.parse(targetId), 'v': value},
         ],

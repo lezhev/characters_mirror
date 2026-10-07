@@ -18,13 +18,14 @@ import '../data/damage_part_data.dart' as _i6;
 import '../enums/condition_type.dart' as _i7;
 import '../enums/spell/spell_target_type.dart' as _i8;
 import '../enums/spell/area_of_effect_type.dart' as _i9;
-import '../enums/spell/spell_duration_type.dart' as _i10;
+import '../enums/spell/area_size_measurement.dart' as _i10;
+import '../enums/spell/spell_duration_type.dart' as _i11;
 
 abstract class SpellData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SpellData._({
     this.id,
-    this.referenceKey,
+    String? referenceKey,
     this.name,
     this.description,
     this.shortDescription,
@@ -52,6 +53,7 @@ abstract class SpellData
     this.targetType,
     this.areaOfEffectType,
     this.areaOfEffectSize,
+    this.areaOfEffectSizeKind,
     this.areaOfEffectSecondarySize,
     this.areaOfEffectHeight,
     this.materialDescription,
@@ -60,13 +62,15 @@ abstract class SpellData
     this.durationType,
     this.isHealing,
     this.healingDice,
+    this.healingScaling,
+    this.healingAddsCastingModifier,
     this.requiresLineOfSight,
     this.requiresVerbal,
     this.requiresSomatic,
     this.requiresMaterial,
     this.availableForClassIds,
     this.availableForSubclassIds,
-  });
+  }) : referenceKey = referenceKey ?? '';
 
   factory SpellData({
     int? id,
@@ -98,14 +102,17 @@ abstract class SpellData
     _i8.SpellTargetType? targetType,
     _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
+    _i10.AreaSizeMeasurement? areaOfEffectSizeKind,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i10.SpellDurationType? durationType,
+    _i11.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
+    _i5.SpellScalingData? healingScaling,
+    bool? healingAddsCastingModifier,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
@@ -117,7 +124,7 @@ abstract class SpellData
   factory SpellData.fromJson(Map<String, dynamic> jsonSerialization) {
     return SpellData(
       id: jsonSerialization['id'] as int?,
-      referenceKey: jsonSerialization['referenceKey'] as String?,
+      referenceKey: jsonSerialization['referenceKey'] as String,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
@@ -171,6 +178,10 @@ abstract class SpellData
           : _i9.AreaOfEffectType.fromJson(
               (jsonSerialization['areaOfEffectType'] as String)),
       areaOfEffectSize: jsonSerialization['areaOfEffectSize'] as int?,
+      areaOfEffectSizeKind: jsonSerialization['areaOfEffectSizeKind'] == null
+          ? null
+          : _i10.AreaSizeMeasurement.fromJson(
+              (jsonSerialization['areaOfEffectSizeKind'] as String)),
       areaOfEffectSecondarySize:
           jsonSerialization['areaOfEffectSecondarySize'] as int?,
       areaOfEffectHeight: jsonSerialization['areaOfEffectHeight'] as int?,
@@ -179,10 +190,16 @@ abstract class SpellData
       materialConsumed: jsonSerialization['materialConsumed'] as bool?,
       durationType: jsonSerialization['durationType'] == null
           ? null
-          : _i10.SpellDurationType.fromJson(
+          : _i11.SpellDurationType.fromJson(
               (jsonSerialization['durationType'] as String)),
       isHealing: jsonSerialization['isHealing'] as bool?,
       healingDice: jsonSerialization['healingDice'] as String?,
+      healingScaling: jsonSerialization['healingScaling'] == null
+          ? null
+          : _i5.SpellScalingData.fromJson(
+              (jsonSerialization['healingScaling'] as Map<String, dynamic>)),
+      healingAddsCastingModifier:
+          jsonSerialization['healingAddsCastingModifier'] as bool?,
       requiresLineOfSight: jsonSerialization['requiresLineOfSight'] as bool?,
       requiresVerbal: jsonSerialization['requiresVerbal'] as bool?,
       requiresSomatic: jsonSerialization['requiresSomatic'] as bool?,
@@ -204,7 +221,7 @@ abstract class SpellData
   @override
   int? id;
 
-  String? referenceKey;
+  String referenceKey;
 
   String? name;
 
@@ -260,6 +277,8 @@ abstract class SpellData
 
   int? areaOfEffectSize;
 
+  _i10.AreaSizeMeasurement? areaOfEffectSizeKind;
+
   int? areaOfEffectSecondarySize;
 
   int? areaOfEffectHeight;
@@ -270,11 +289,15 @@ abstract class SpellData
 
   bool? materialConsumed;
 
-  _i10.SpellDurationType? durationType;
+  _i11.SpellDurationType? durationType;
 
   bool? isHealing;
 
   String? healingDice;
+
+  _i5.SpellScalingData? healingScaling;
+
+  bool? healingAddsCastingModifier;
 
   bool? requiresLineOfSight;
 
@@ -324,14 +347,17 @@ abstract class SpellData
     _i8.SpellTargetType? targetType,
     _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
+    _i10.AreaSizeMeasurement? areaOfEffectSizeKind,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i10.SpellDurationType? durationType,
+    _i11.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
+    _i5.SpellScalingData? healingScaling,
+    bool? healingAddsCastingModifier,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
@@ -343,7 +369,7 @@ abstract class SpellData
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (referenceKey != null) 'referenceKey': referenceKey,
+      'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
@@ -375,6 +401,8 @@ abstract class SpellData
       if (areaOfEffectType != null)
         'areaOfEffectType': areaOfEffectType?.toJson(),
       if (areaOfEffectSize != null) 'areaOfEffectSize': areaOfEffectSize,
+      if (areaOfEffectSizeKind != null)
+        'areaOfEffectSizeKind': areaOfEffectSizeKind?.toJson(),
       if (areaOfEffectSecondarySize != null)
         'areaOfEffectSecondarySize': areaOfEffectSecondarySize,
       if (areaOfEffectHeight != null) 'areaOfEffectHeight': areaOfEffectHeight,
@@ -385,6 +413,9 @@ abstract class SpellData
       if (durationType != null) 'durationType': durationType?.toJson(),
       if (isHealing != null) 'isHealing': isHealing,
       if (healingDice != null) 'healingDice': healingDice,
+      if (healingScaling != null) 'healingScaling': healingScaling?.toJson(),
+      if (healingAddsCastingModifier != null)
+        'healingAddsCastingModifier': healingAddsCastingModifier,
       if (requiresLineOfSight != null)
         'requiresLineOfSight': requiresLineOfSight,
       if (requiresVerbal != null) 'requiresVerbal': requiresVerbal,
@@ -401,7 +432,7 @@ abstract class SpellData
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      if (referenceKey != null) 'referenceKey': referenceKey,
+      'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
@@ -435,6 +466,8 @@ abstract class SpellData
       if (areaOfEffectType != null)
         'areaOfEffectType': areaOfEffectType?.toJson(),
       if (areaOfEffectSize != null) 'areaOfEffectSize': areaOfEffectSize,
+      if (areaOfEffectSizeKind != null)
+        'areaOfEffectSizeKind': areaOfEffectSizeKind?.toJson(),
       if (areaOfEffectSecondarySize != null)
         'areaOfEffectSecondarySize': areaOfEffectSecondarySize,
       if (areaOfEffectHeight != null) 'areaOfEffectHeight': areaOfEffectHeight,
@@ -445,6 +478,10 @@ abstract class SpellData
       if (durationType != null) 'durationType': durationType?.toJson(),
       if (isHealing != null) 'isHealing': isHealing,
       if (healingDice != null) 'healingDice': healingDice,
+      if (healingScaling != null)
+        'healingScaling': healingScaling?.toJsonForProtocol(),
+      if (healingAddsCastingModifier != null)
+        'healingAddsCastingModifier': healingAddsCastingModifier,
       if (requiresLineOfSight != null)
         'requiresLineOfSight': requiresLineOfSight,
       if (requiresVerbal != null) 'requiresVerbal': requiresVerbal,
@@ -520,14 +557,17 @@ class _SpellDataImpl extends SpellData {
     _i8.SpellTargetType? targetType,
     _i9.AreaOfEffectType? areaOfEffectType,
     int? areaOfEffectSize,
+    _i10.AreaSizeMeasurement? areaOfEffectSizeKind,
     int? areaOfEffectSecondarySize,
     int? areaOfEffectHeight,
     String? materialDescription,
     int? materialCost,
     bool? materialConsumed,
-    _i10.SpellDurationType? durationType,
+    _i11.SpellDurationType? durationType,
     bool? isHealing,
     String? healingDice,
+    _i5.SpellScalingData? healingScaling,
+    bool? healingAddsCastingModifier,
     bool? requiresLineOfSight,
     bool? requiresVerbal,
     bool? requiresSomatic,
@@ -564,6 +604,7 @@ class _SpellDataImpl extends SpellData {
           targetType: targetType,
           areaOfEffectType: areaOfEffectType,
           areaOfEffectSize: areaOfEffectSize,
+          areaOfEffectSizeKind: areaOfEffectSizeKind,
           areaOfEffectSecondarySize: areaOfEffectSecondarySize,
           areaOfEffectHeight: areaOfEffectHeight,
           materialDescription: materialDescription,
@@ -572,6 +613,8 @@ class _SpellDataImpl extends SpellData {
           durationType: durationType,
           isHealing: isHealing,
           healingDice: healingDice,
+          healingScaling: healingScaling,
+          healingAddsCastingModifier: healingAddsCastingModifier,
           requiresLineOfSight: requiresLineOfSight,
           requiresVerbal: requiresVerbal,
           requiresSomatic: requiresSomatic,
@@ -586,7 +629,7 @@ class _SpellDataImpl extends SpellData {
   @override
   SpellData copyWith({
     Object? id = _Undefined,
-    Object? referenceKey = _Undefined,
+    String? referenceKey,
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? shortDescription = _Undefined,
@@ -614,6 +657,7 @@ class _SpellDataImpl extends SpellData {
     Object? targetType = _Undefined,
     Object? areaOfEffectType = _Undefined,
     Object? areaOfEffectSize = _Undefined,
+    Object? areaOfEffectSizeKind = _Undefined,
     Object? areaOfEffectSecondarySize = _Undefined,
     Object? areaOfEffectHeight = _Undefined,
     Object? materialDescription = _Undefined,
@@ -622,6 +666,8 @@ class _SpellDataImpl extends SpellData {
     Object? durationType = _Undefined,
     Object? isHealing = _Undefined,
     Object? healingDice = _Undefined,
+    Object? healingScaling = _Undefined,
+    Object? healingAddsCastingModifier = _Undefined,
     Object? requiresLineOfSight = _Undefined,
     Object? requiresVerbal = _Undefined,
     Object? requiresSomatic = _Undefined,
@@ -631,7 +677,7 @@ class _SpellDataImpl extends SpellData {
   }) {
     return SpellData(
       id: id is int? ? id : this.id,
-      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
+      referenceKey: referenceKey ?? this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       shortDescription: shortDescription is String?
@@ -680,6 +726,9 @@ class _SpellDataImpl extends SpellData {
           : this.areaOfEffectType,
       areaOfEffectSize:
           areaOfEffectSize is int? ? areaOfEffectSize : this.areaOfEffectSize,
+      areaOfEffectSizeKind: areaOfEffectSizeKind is _i10.AreaSizeMeasurement?
+          ? areaOfEffectSizeKind
+          : this.areaOfEffectSizeKind,
       areaOfEffectSecondarySize: areaOfEffectSecondarySize is int?
           ? areaOfEffectSecondarySize
           : this.areaOfEffectSecondarySize,
@@ -692,11 +741,17 @@ class _SpellDataImpl extends SpellData {
       materialCost: materialCost is int? ? materialCost : this.materialCost,
       materialConsumed:
           materialConsumed is bool? ? materialConsumed : this.materialConsumed,
-      durationType: durationType is _i10.SpellDurationType?
+      durationType: durationType is _i11.SpellDurationType?
           ? durationType
           : this.durationType,
       isHealing: isHealing is bool? ? isHealing : this.isHealing,
       healingDice: healingDice is String? ? healingDice : this.healingDice,
+      healingScaling: healingScaling is _i5.SpellScalingData?
+          ? healingScaling
+          : this.healingScaling?.copyWith(),
+      healingAddsCastingModifier: healingAddsCastingModifier is bool?
+          ? healingAddsCastingModifier
+          : this.healingAddsCastingModifier,
       requiresLineOfSight: requiresLineOfSight is bool?
           ? requiresLineOfSight
           : this.requiresLineOfSight,
@@ -835,6 +890,11 @@ class SpellDataTable extends _i1.Table<int?> {
       'areaOfEffectSize',
       this,
     );
+    areaOfEffectSizeKind = _i1.ColumnEnum(
+      'areaOfEffectSizeKind',
+      this,
+      _i1.EnumSerialization.byName,
+    );
     areaOfEffectSecondarySize = _i1.ColumnInt(
       'areaOfEffectSecondarySize',
       this,
@@ -866,6 +926,14 @@ class SpellDataTable extends _i1.Table<int?> {
     );
     healingDice = _i1.ColumnString(
       'healingDice',
+      this,
+    );
+    healingScaling = _i1.ColumnSerializable(
+      'healingScaling',
+      this,
+    );
+    healingAddsCastingModifier = _i1.ColumnBool(
+      'healingAddsCastingModifier',
       this,
     );
     requiresLineOfSight = _i1.ColumnBool(
@@ -950,6 +1018,8 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt areaOfEffectSize;
 
+  late final _i1.ColumnEnum<_i10.AreaSizeMeasurement> areaOfEffectSizeKind;
+
   late final _i1.ColumnInt areaOfEffectSecondarySize;
 
   late final _i1.ColumnInt areaOfEffectHeight;
@@ -960,11 +1030,15 @@ class SpellDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool materialConsumed;
 
-  late final _i1.ColumnEnum<_i10.SpellDurationType> durationType;
+  late final _i1.ColumnEnum<_i11.SpellDurationType> durationType;
 
   late final _i1.ColumnBool isHealing;
 
   late final _i1.ColumnString healingDice;
+
+  late final _i1.ColumnSerializable healingScaling;
+
+  late final _i1.ColumnBool healingAddsCastingModifier;
 
   late final _i1.ColumnBool requiresLineOfSight;
 
@@ -1009,6 +1083,7 @@ class SpellDataTable extends _i1.Table<int?> {
         targetType,
         areaOfEffectType,
         areaOfEffectSize,
+        areaOfEffectSizeKind,
         areaOfEffectSecondarySize,
         areaOfEffectHeight,
         materialDescription,
@@ -1017,6 +1092,8 @@ class SpellDataTable extends _i1.Table<int?> {
         durationType,
         isHealing,
         healingDice,
+        healingScaling,
+        healingAddsCastingModifier,
         requiresLineOfSight,
         requiresVerbal,
         requiresSomatic,

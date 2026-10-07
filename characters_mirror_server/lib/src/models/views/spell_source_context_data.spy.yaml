@@ -1,0 +1,14 @@
+class: SpellSourceContextData
+fields:
+  sourceKey: String
+  label: String
+  classDataId: int?
+  castingAbility: Ability?
+  known: bool
+  prepared: bool
+  alwaysPrepared: bool
+  granted: bool
+  canUseSlots: bool
+  castAtSpellLevel: int?
+  freeCastsFormula: String?
+  freeCastsPerRest: RestType?

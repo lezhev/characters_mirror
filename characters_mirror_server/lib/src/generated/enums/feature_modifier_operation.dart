@@ -13,7 +13,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum FeatureModifierOperation implements _i1.SerializableModel {
   add,
-  baseArmorClass;
+  baseArmorClass,
+  setValue;
 
   static FeatureModifierOperation fromJson(int index) {
     switch (index) {
@@ -21,6 +22,8 @@ enum FeatureModifierOperation implements _i1.SerializableModel {
         return FeatureModifierOperation.add;
       case 1:
         return FeatureModifierOperation.baseArmorClass;
+      case 2:
+        return FeatureModifierOperation.setValue;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "FeatureModifierOperation"');

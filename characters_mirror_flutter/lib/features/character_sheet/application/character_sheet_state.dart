@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_cast_application.dart';
+import 'package:characters_mirror_flutter/core/character_spells/character_spell_projection.dart';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';

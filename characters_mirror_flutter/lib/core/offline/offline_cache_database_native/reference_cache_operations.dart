@@ -52,7 +52,7 @@ VALUES (?, ?, ?, ?)
   ) async {
     final payload = _readReferencePayload(kind, cacheKey);
     if (payload == null) return null;
-    return fromJson(_decodeCachedPayload(payload));
+    return fromJson(_decodeCachedPayload(payload, isSpell: kind == 'spell'));
   }
 
   Future<List<T>?> getReferenceList<T>(
@@ -63,7 +63,8 @@ VALUES (?, ?, ?, ?)
     final payload = _readReferencePayload(kind, cacheKey);
     if (payload == null) return null;
     return [
-      for (final item in _decodeCachedListPayload(payload))
+      for (final item
+          in _decodeCachedListPayload(payload, isSpell: kind == 'spell'))
         fromJson(item as Map<String, dynamic>),
     ];
   }

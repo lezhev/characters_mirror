@@ -1,0 +1,79 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "spell_data",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [
+          {
+            "columnName": "referenceKey",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          }
+        ],
+        "addIndexes": [
+          {
+            "indexName": "spell_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "notNullAdded",
+            "message": "Column referenceKey of table spell_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "spell_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          },
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"spell_reference_key_idx\" is added to table \"spell_data\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "spell_data",
+            "columns": [
+              "referenceKey"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "notNullAdded",
+      "message": "Column referenceKey of table spell_data is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "spell_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    },
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"spell_reference_key_idx\" is added to table \"spell_data\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "spell_data",
+      "columns": [
+        "referenceKey"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

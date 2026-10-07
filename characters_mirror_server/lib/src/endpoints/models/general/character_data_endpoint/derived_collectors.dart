@@ -231,6 +231,7 @@ List<String> _collectGrantedSpellKeys(
   List<ChoiceOptionData> selectedOptions,
   _CurrentRaceFeatures currentRaceFeatures,
   List<String> alwaysPreparedSpellKeys,
+  int totalLevel,
 ) {
   final values = <String>{};
   values.addAll(alwaysPreparedSpellKeys);
@@ -250,6 +251,7 @@ List<String> _collectGrantedSpellKeys(
   ]) {
     for (final grant
         in feature.spellGrants ?? const <RaceFeatureSpellGrantData>[]) {
+      if ((grant.grantedAtLevel ?? 1) > totalLevel) continue;
       final spellKey = _normalizedTextOrNull(grant.spell?.referenceKey);
       if (spellKey != null) {
         values.add(spellKey);

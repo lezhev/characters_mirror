@@ -4,16 +4,12 @@ part of '../character_data_endpoint.dart';
 CharacterData _preserveLevelChangeResources(
     CharacterData before, CharacterData draft,
     {bool fillNewResources = true}) {
-  Map<int, int> slots(CharacterData c) => {
-        for (final key in {
-          ...?c.derived?.spellSlots?.keys,
-          ...?c.derived?.pactSlots?.keys
-        })
-          key: (c.derived?.spellSlots?[key] ?? 0) +
-              (c.derived?.pactSlots?[key] ?? 0)
-      };
-  final oldSlots = slots(before);
-  final newSlots = slots(draft);
+  final oldPools = SpellSlotPools.fromCharacter(before.toJson());
+  final newSlots = draft.derived?.spellSlots ?? <int, int>{};
+  final oldSlots = oldPools.standardMax;
+  final oldPactAvailable =
+      oldPools.pactCurrent.values.fold<int>(0, (sum, value) => sum + value);
+  final newPactSlots = draft.derived?.pactSlots ?? <int, int>{};
   final oldDice = before.derived?.hitDiceSummary ?? const <String, int>{};
   final newDice = draft.derived?.hitDiceSummary ?? const <String, int>{};
   final oldResources = {
@@ -30,13 +26,22 @@ CharacterData _preserveLevelChangeResources(
         if (e.value > 0)
           e.key: (oldSlots[e.key] ?? 0) > 0
               ? min(
-                  before.currentSpellSlots?[e.key] ?? oldSlots[e.key]!, e.value)
+                  oldPools.standardCurrent[e.key] ?? oldSlots[e.key]!, e.value)
               : fillNewResources
                   ? e.value
-                  : min(
-                      before.currentSpellSlots?[e.key] ?? oldSlots[e.key] ?? 0,
+                  : min(oldPools.standardCurrent[e.key] ?? oldSlots[e.key] ?? 0,
                       e.value)
     },
+    currentPactSlots: newPactSlots.isEmpty
+        ? null
+        : {
+            for (final e in newPactSlots.entries)
+              e.key: min(
+                  oldPools.pactMax.isNotEmpty
+                      ? oldPactAvailable
+                      : (fillNewResources ? e.value : 0),
+                  e.value),
+          },
     currentHitDice: {
       for (final e in newDice.entries)
         e.key: (oldDice[e.key] ?? 0) > 0

@@ -1,0 +1,902 @@
+{
+  "status": "applied_to_development_database",
+  "basis": "Manually reviewed existing materialDescription; 1 gp=100 cp, 1 sp=10 cp. No regex extraction or description changes. Does not determine consumed subcomponents.",
+  "proposals": [
+    {
+      "referenceKey": "arcane_lock",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "золотая пыль, стоящая как минимум 25 зм, расходуемая заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "augury",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "особые палочки, костяшки или фигурки с отметинами, стоящие как минимум 25 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "awaken",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "агат, стоящий как минимум 1 000 зм, расходуемый заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "booming_blade",
+      "field": "materialCost",
+      "old": 1,
+      "proposed": 10,
+      "unit": "copper pieces",
+      "evidence": "рукопашное оружие стоимостью не менее 1 см",
+      "edition": "SCAG, TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "borrowed_knowledge",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "книга стоимостью не менее 25 зм",
+      "edition": "SCC",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "ceremony",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "порошок серебра стоимостью 25 зм, расходуемый заклинанием",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "circle_of_death",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "порошок растолчённой чёрной жемчужины, стоящей как минимум 500 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "clairvoyance",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "фокусировка, стоящая как минимум 100 зм: либо украшенный камнями рог для подслушивания, либо стеклянный глаз для подсматривания",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "contingency",
+      "field": "materialCost",
+      "old": 1500,
+      "proposed": 150000,
+      "unit": "copper pieces",
+      "evidence": "ваша статуэтка, вырезанная из слоновой кости, украшенная драгоценными камнями и стоящая как минимум 1500 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "continual_flame",
+      "field": "materialCost",
+      "old": 50,
+      "proposed": 5000,
+      "unit": "copper pieces",
+      "evidence": "порошок рубина на 50 зм, расходуемый заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "create_spelljamming_helm",
+      "field": "materialCost",
+      "old": 5000,
+      "proposed": 500000,
+      "unit": "copper pieces",
+      "evidence": "кристаллический жезл стоимостью как минимум 5000 зм, расходуемый заклинанием",
+      "edition": "AAG",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "dawn",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "кулон солнечных лучей, стоимостью не менее 100 зм",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "divination",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "благовония и жертвенное подношение, подходящее вашей религии, стоящие вместе как минимум 25 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "draconic_transformation",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "статуэтка дракона стоимостью не менее 500 зм",
+      "edition": "FTD",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "drawmijs_instant_summons",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "сапфир стоимостью 1000 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "find_familiar",
+      "field": "materialCost",
+      "old": 10,
+      "proposed": 1000,
+      "unit": "copper pieces",
+      "evidence": "стоящие 10 зм уголь, благовония и травы, сжигаемые в огне в латунной жаровне",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "find_the_path",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "набор инструментов для ворожбы — такой, как кости, палочки из слоновой кости, карты, зубы или резные руны — стоящий 100 зм, а также предмет из места, которое вы хотите найти",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "fizbans_platinum_shield",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "покрытая платиной чешуя Дракона, стоимостью не менее 500 зм",
+      "edition": "FTD",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "forcecage",
+      "field": "materialCost",
+      "old": 1500,
+      "proposed": 150000,
+      "unit": "copper pieces",
+      "evidence": "порошок рубина, стоящий 1 500 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "fortunes_favor",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "жемчужина, стоящая как минимум 100 зм, расходуемая заклинанием",
+      "edition": "EGW",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "galders_speedy_courier",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "25 зм или минералы равноценной стоимости, расходуемые заклинанием",
+      "edition": "LLK",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "gate",
+      "field": "materialCost",
+      "old": 5000,
+      "proposed": 500000,
+      "unit": "copper pieces",
+      "evidence": "бриллиант, стоящий как минимум 5 000 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "glyph_of_warding",
+      "field": "materialCost",
+      "old": 200,
+      "proposed": 20000,
+      "unit": "copper pieces",
+      "evidence": "благовония и растолчённый бриллиант, стоящий как минимум 200 зм, расходуемый заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "greater_restoration",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "бриллиантовая пыль, стоящая как минимум 100 зм, расходуемая заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "green_flame_blade",
+      "field": "materialCost",
+      "old": 1,
+      "proposed": 10,
+      "unit": "copper pieces",
+      "evidence": "рукопашное оружие стоимостью не менее 1 см",
+      "edition": "SCAG, TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "hallow",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "травы, масла и благовония, стоящие как минимум 1 000 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "heroes_feast",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "инкрустированная драгоценными камнями чаша, стоящая как минимум 1000 зм, расходуемая заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "holy_aura",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "крошечный контейнер, стоящий как минимум 1 000 зм, хранящий священную реликвию, такую как лоскут ткани с мантии святого или кусочек пергамента с религиозным текстом",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "identify",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "жемчужина, стоящая как минимум 100 зм, и перо совы",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "illusory_script",
+      "field": "materialCost",
+      "old": 10,
+      "proposed": 1000,
+      "unit": "copper pieces",
+      "evidence": "свинцовые чернила, стоящие как минимум 10 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "incite_greed",
+      "field": "materialCost",
+      "old": 50,
+      "proposed": 5000,
+      "unit": "copper pieces",
+      "evidence": "Драгоценный камень стоимостью не менее 50 зм",
+      "edition": "AI",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "infernal_calling",
+      "field": "materialCost",
+      "old": 999,
+      "proposed": 99900,
+      "unit": "copper pieces",
+      "evidence": "рубин стоимостью не менее 999 зм",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "invulnerability",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "небольшой кусочек адамантина стоящий не менее 500 зм, расходуемый заклинанием",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "magic_circle",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "святая вода или порошок серебра и железа, стоящий как минимум 100 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "magic_jar",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "драгоценный камень, кристалл, реликварий или другой украшенный контейнер, стоящий как минимум 500 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "magic_mouth",
+      "field": "materialCost",
+      "old": 10,
+      "proposed": 1000,
+      "unit": "copper pieces",
+      "evidence": "кусочек медовых сот и порошок нефрита, стоящий как минимум 10 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "mighty_fortress",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "бриллиант стоимостью не менее 500 зм, расходуемый заклинанием",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "mordenkainens_sword",
+      "field": "materialCost",
+      "old": 250,
+      "proposed": 25000,
+      "unit": "copper pieces",
+      "evidence": "миниатюрный платиновый меч с рукояткой и навершием из меди и цинка, стоящий 250 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "nondetection",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "щепотка алмазной пыли, стоящая 25 зм, которой посыпается цель, расходуемая заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "planar_binding",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "драгоценный камень, стоящий как минимум 1 000 зм, расходуемый заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "plane_shift",
+      "field": "materialCost",
+      "old": 250,
+      "proposed": 25000,
+      "unit": "copper pieces",
+      "evidence": "раздвоенный металлический прут, стоящий как минимум 250 зм, настроенный на конкретный план существования",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "programmed_illusion",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "кусок овечьей шерсти и порошок нефрита, стоящий как минимум 25 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "project_image",
+      "field": "materialCost",
+      "old": 5,
+      "proposed": 500,
+      "unit": "copper pieces",
+      "evidence": "ваша небольшая копия, изготовленная из материала, стоящего не менее 5 зм",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "raise_dead",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "бриллиант, стоящий как минимум 500 зм, расходуемый заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "reincarnate",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "редкие масла и мази, стоящие как минимум 1 000 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "resurrection",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "бриллиант, стоящий как минимум 1 000 зм, расходуемый заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "revivify",
+      "field": "materialCost",
+      "old": 300,
+      "proposed": 30000,
+      "unit": "copper pieces",
+      "evidence": "бриллианты, стоящие в сумме 300 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "scrying",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "фокусировка, стоящая как минимум 1000 зм, такая, как хрустальный шар, серебряное зеркало или чаша со святой водой",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "sequester",
+      "field": "materialCost",
+      "old": 5000,
+      "proposed": 500000,
+      "unit": "copper pieces",
+      "evidence": "смесь порошков из бриллианта, изумруда, рубина и сапфира, стоящая как минимум 5 000 зм, расходуемая заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "shadow_of_moil",
+      "field": "materialCost",
+      "old": 150,
+      "proposed": 15000,
+      "unit": "copper pieces",
+      "evidence": "глазное яблоко Нежити, заключенное в драгоценный камень стоимостью не менее 150 зм",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "shapechange",
+      "field": "materialCost",
+      "old": 1500,
+      "proposed": 150000,
+      "unit": "copper pieces",
+      "evidence": "нефритовый обруч, стоящий как минимум 1 500 зм, который вы должны надеть на голову перед накладыванием заклинания",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "simulacrum",
+      "field": "materialCost",
+      "old": 1500,
+      "proposed": 150000,
+      "unit": "copper pieces",
+      "evidence": "снег или лёд в количестве, достаточном для создания точной копии существа, немного волос, обрезков ногтей или других частей тела этого существа, помещаемые в снег или лёд и толчёный рубин стоимостью 1500 зм, которым посыпается копия, и который расходуется заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "soul_cage",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "крошечная серебряная клетка стоимостью 100 зм",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "spirit_of_death",
+      "field": "materialCost",
+      "old": 400,
+      "proposed": 40000,
+      "unit": "copper pieces",
+      "evidence": "позолоченная игральная карта с изображением аватара смерти стоимостью не менее 400 зм",
+      "edition": "BMT",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "steel_wind_strike",
+      "field": "materialCost",
+      "old": 1,
+      "proposed": 10,
+      "unit": "copper pieces",
+      "evidence": "рукопашное оружие стоимостью не менее 1 см",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "stoneskin",
+      "field": "materialCost",
+      "old": 100,
+      "proposed": 10000,
+      "unit": "copper pieces",
+      "evidence": "бриллиантовая пыль, стоящая как минимум 100 зм, расходуемая заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_aberration",
+      "field": "materialCost",
+      "old": 400,
+      "proposed": 40000,
+      "unit": "copper pieces",
+      "evidence": "заспиртованные щупальце и глазное яблоко в сосуде с платиновой инкрустацией стоимостью не менее 400 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_beast",
+      "field": "materialCost",
+      "old": 200,
+      "proposed": 20000,
+      "unit": "copper pieces",
+      "evidence": "перо, пучок меха и рыбий хвост внутри позолоченного жёлудя стоимостью не менее 200 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_celestial",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "золотой реликварий стоимостью не менее 500 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_construct",
+      "field": "materialCost",
+      "old": 400,
+      "proposed": 40000,
+      "unit": "copper pieces",
+      "evidence": "затейливая шкатулка с замком, сделанная из камня и металла, стоимостью не менее 400 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_draconic_spirit",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "предмет с выгравированным на нём изображением дракона стоимостью не менее 500 зм",
+      "edition": "FTD",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_elemental",
+      "field": "materialCost",
+      "old": 400,
+      "proposed": 40000,
+      "unit": "copper pieces",
+      "evidence": "воздух, галька, пепел и вода во флаконе с золотой инкрустацией стоимостью не менее 400 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_fey",
+      "field": "materialCost",
+      "old": 300,
+      "proposed": 30000,
+      "unit": "copper pieces",
+      "evidence": "позолоченный цветок стоимостью не менее 300 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_fiend",
+      "field": "materialCost",
+      "old": 600,
+      "proposed": 60000,
+      "unit": "copper pieces",
+      "evidence": "кровь Гуманоида внутри рубинового флакона стоимостью не менее 600 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_shadowspawn",
+      "field": "materialCost",
+      "old": 300,
+      "proposed": 30000,
+      "unit": "copper pieces",
+      "evidence": "слезы внутри драгоценного камня стоимостью не менее 300 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "summon_undead",
+      "field": "materialCost",
+      "old": 300,
+      "proposed": 30000,
+      "unit": "copper pieces",
+      "evidence": "позолоченный череп стоимостью не менее 300 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "symbol",
+      "field": "materialCost",
+      "old": 1000,
+      "proposed": 100000,
+      "unit": "copper pieces",
+      "evidence": "ртуть, фосфор и толчёные алмаз с опалом, общей стоимостью как минимум 1 000 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "tashas_otherworldly_guise",
+      "field": "materialCost",
+      "old": 500,
+      "proposed": 50000,
+      "unit": "copper pieces",
+      "evidence": "предмет с выгравированным символом Внешних планов стоимостью не менее 500 зм",
+      "edition": "TCE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "teleportation_circle",
+      "field": "materialCost",
+      "old": 50,
+      "proposed": 5000,
+      "unit": "copper pieces",
+      "evidence": "редкие мелки и чернила с основой из драгоценных камней стоимостью 50 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "temple_of_the_gods",
+      "field": "materialCost",
+      "old": 5,
+      "proposed": 500,
+      "unit": "copper pieces",
+      "evidence": "святой символ стоимостью не менее 5 зм",
+      "edition": "XGE",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "tether_essence",
+      "field": "materialCost",
+      "old": 250,
+      "proposed": 25000,
+      "unit": "copper pieces",
+      "evidence": "катушка с платиновым шнуром стоимостью не менее 250 зм, расходуемая заклинанием",
+      "edition": "EGW",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "true_resurrection",
+      "field": "materialCost",
+      "old": 25000,
+      "proposed": 2500000,
+      "unit": "copper pieces",
+      "evidence": "немного святой воды и бриллианты, стоящие как минимум 25 000 зм, расходуемые заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    },
+    {
+      "referenceKey": "true_seeing",
+      "field": "materialCost",
+      "old": 25,
+      "proposed": 2500,
+      "unit": "copper pieces",
+      "evidence": "мазь для глаз, стоящая 25 зм изготавливается из грибного порошка, шафрана и жира, расходуется заклинанием",
+      "edition": "PHB 2014",
+      "confidence": "high_for_denomination_only",
+      "applied": true
+    }
+  ],
+  "excluded": [
+    {
+      "referenceKey": "astral_projection",
+      "old": 1000100,
+      "materialDescription": "для каждого существа требуется по одному гиацинту, стоящему как минимум 1 000 зм, и по одному бруску серебра с орнаментом, стоящему как минимум 100 зм; все компоненты расходуются заклинанием",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "clone",
+      "old": 10002000,
+      "materialDescription": "алмаз, стоящий как минимум 1000 зм, и как минимум 1 кубический дюйм (16 кубических сантиметров) плоти клонируемого существа, расходуемые заклинанием, а также сосуд, стоящий как минимум 2000 зм, с запираемой крышкой и достаточно большой, чтобы вместить клонируемое существо, например, огромная урна, гроб, яма в земле или кристаллический контейнер, заполненный солёной водой",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "create_homunculus",
+      "old": 1000,
+      "materialDescription": "Глина, пепел и корень мандрагоры, расходуемые заклинанием, и кинжал с инкрустированными драгоценными камнями стоимостью не менее 1000 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "create_magen",
+      "old": 5001500,
+      "materialDescription": "флакон ртути стоимостью 500 зм и человеческая кукла в натуральную величину, расходуемые заклинанием, и замысловатый хрустальный жезл стоимостью не менее 1500 зм, который не расходуется",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "create_undead",
+      "old": 150,
+      "materialDescription": "глиняный горшок с могильной землёй, глиняный горшок с солоноватой водой и по одному чёрному ониксу стоимостью 150 зм на каждый труп",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "forbiddance",
+      "old": 1000,
+      "materialDescription": "немного святой воды, редкие благовония и толчёный рубин, стоящий как минимум 1000 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "gift_of_gab",
+      "old": 2,
+      "materialDescription": "А 2 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "guards_and_wards",
+      "old": 10,
+      "materialDescription": "горящее благовоние, немного серы и масла, завязанная узлом тетива, немного крови бурого увальня и маленький серебряный жезл, стоящий как минимум 10 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "imprisonment",
+      "old": 500,
+      "materialDescription": "рисунок или резная статуэтка, изображающая цель, и особый компонент, зависящий от выбранной версии заклинания, стоящий как минимум 500 зм за каждую Кость Хитов цели",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "jims_glowing_coin",
+      "old": 2,
+      "materialDescription": "монетка), А (2 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "jims_magic_missile",
+      "old": 1,
+      "materialDescription": "1 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "legend_lore",
+      "old": 25050,
+      "materialDescription": "благовония, стоящие как минимум 250 зм, расходуемые заклинанием, и четыре пластинки из слоновой кости, стоящие как минимум 50 зм каждая",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "leomunds_secret_chest",
+      "old": 500050,
+      "materialDescription": "изысканный сундук 3×2×2 фута, созданный из редких материалов, и стоящий как минимум 5 000 зм, и его копия Крошечного размера, изготовленная из того же материала, стоящая как минимум 50 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "mordenkainens_magnificent_mansion",
+      "old": 5,
+      "materialDescription": "миниатюрная дверь из слоновой кости, кусочек полированного мрамора и крошечная серебряная ложка, каждый предмет должен стоить как минимум 5 зм",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    },
+    {
+      "referenceKey": "warding_bond",
+      "old": 50,
+      "materialDescription": "пара платиновых колец, каждое из которых стоит как минимум 50 зм, которые вы с целью должны носить всю длительность заклинания",
+      "reason": "Composite price, per-target/per-component quantity, conditional consumption, or royalty semantics require separate review."
+    }
+  ],
+  "migration": "20261007133706748-spell-material-cost-units"
+}
