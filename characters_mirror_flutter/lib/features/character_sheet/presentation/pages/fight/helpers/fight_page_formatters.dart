@@ -1,4 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart'
+    as spell_presentation;
 import 'package:characters_mirror_flutter/core/ui/weapon_property_localization.dart';
 import 'package:flutter/foundation.dart';
 
@@ -100,26 +102,20 @@ List<DamagePartData> effectiveAttackDamageParts(CharacterAttackData attack) {
   ];
 }
 
-List<DamagePartData> effectiveSpellDamageParts(SpellData spell) {
-  final parts = _normalizedDamageParts(spell.damageParts);
-  if (parts.isNotEmpty) {
-    return parts;
-  }
-
-  final formula = normalizedAttackText(spell.damageDice);
-  if (formula == null &&
-      spell.damageType == null &&
-      spell.damageScaling == null) {
-    return const <DamagePartData>[];
-  }
-  return [
-    DamagePartData(
-      formula: formula,
-      damageType: spell.damageType,
-      scaling: spell.damageScaling,
-    ),
-  ];
-}
+List<DamagePartData> effectiveSpellDamageParts(SpellData spell) =>
+    spell_presentation
+        .effectiveSpellDamageParts(spell.toJson())
+        .map((part) => DamagePartData(
+              formula: part.formula,
+              damageType: DamageType.values
+                  .where((d) => d.name == part.damageType)
+                  .firstOrNull,
+              scaling: part.scaling == null
+                  ? null
+                  : SpellScalingData.fromJson(part.scaling!),
+              notes: part.notes,
+            ))
+        .toList();
 
 String _formatDamagePartLabel(DamagePartData part) {
   final formula = normalizedAttackText(part.formula);
