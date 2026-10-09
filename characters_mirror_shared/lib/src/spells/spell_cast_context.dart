@@ -1,5 +1,6 @@
 import 'spell_source_context.dart';
 import 'spell_protocol_values.dart';
+import 'spell_activation.dart';
 
 enum SpellSlotSource { none, standard, pact }
 
@@ -9,18 +10,23 @@ class SpellCastContext {
       required this.source,
       required this.baseSpellLevel,
       required this.castLevel,
-      required this.slotSource});
+      required this.slotSource,
+      this.payment,
+      this.resourceCost});
   final String spellKey;
   final SpellSourceContext source;
   final int baseSpellLevel;
   final int castLevel;
   final SpellSlotSource slotSource;
+  final String? payment;
+  final int? resourceCost;
   String? get castingAbility => source.castingAbility;
   Map<String, dynamic> toActionJson() => {
         'spellKey': spellKey,
         'spellSourceKey': source.sourceKey,
         'level': castLevel,
-        'slotSource': slotSource.name
+        'slotSource': slotSource.name,
+        if (payment != null) 'spellPayment': payment,
       };
 }
 
@@ -122,21 +128,90 @@ class SpellSlotPools {
 }
 
 List<SpellCastContext> availableSpellCasts(String spellKey, int baseLevel,
-    List<SpellSourceContext> sources, SpellSlotPools pools) {
+    List<SpellSourceContext> sources, SpellSlotPools pools,
+    {Map<String, dynamic> character = const {}}) {
   final result = <SpellCastContext>[];
   for (final source in sources) {
     if (!source.prepared && !source.alwaysPrepared) continue;
-    if (baseLevel == 0) {
-      if (source.freeCastsFormula != null || source.freeCastsPerRest != null)
-        continue;
+    final policy = spellActivationPolicy(source);
+    final explicit = source.activation != null;
+    final maxCasts = policy['maxCasts'] as int?;
+    final castsUsed = (character['spellActivationUses']
+            as Map?)?[_castLimitCounterKey(source.sourceKey)] as int? ??
+        0;
+    if (maxCasts != null && castsUsed >= maxCasts) continue;
+    final castLevel = policy['castAtSpellLevel'] as int? ?? baseLevel;
+    if (castLevel < baseLevel || castLevel > 9) continue;
+    void slotless(String? payment) => result.add(SpellCastContext(
+        spellKey: spellKey,
+        source: source,
+        baseSpellLevel: baseLevel,
+        castLevel: castLevel,
+        slotSource: SpellSlotSource.none,
+        payment: payment));
+    if (baseLevel == 0 &&
+        !explicit &&
+        source.freeCastsFormula == null &&
+        source.freeCastsPerRest == null) {
       result.add(SpellCastContext(
           spellKey: spellKey,
           source: source,
           baseSpellLevel: 0,
           castLevel: 0,
           slotSource: SpellSlotSource.none));
-    } else if (source.canUseSlots) {
+    }
+    if (policy['slotless'] == true) {
+      final cost = policy['resourceCost'] as int? ?? 0;
+      if (policy['resourceKey'] is String && cost > 0) {
+        final available = spellActivationResourceAvailable(character, source);
+        final upcast = policy['resourceUpcastPolicy'] as Map?;
+        if (upcast == null) {
+          if (available >= cost) {
+            result.add(SpellCastContext(
+                spellKey: spellKey,
+                source: source,
+                baseSpellLevel: baseLevel,
+                castLevel: castLevel,
+                slotSource: SpellSlotSource.none,
+                payment: 'resource',
+                resourceCost: cost));
+          }
+        } else {
+          final limit = spellActivationMaxResourceCost(character, source);
+          final maximumCost = limit == null
+              ? 0
+              : limit < available
+                  ? limit
+                  : available;
+          final step = upcast['resourcePerAdditionalSpellLevel'] as int;
+          for (var level = baseLevel; level <= 9; level++) {
+            final resourceCost = cost + (level - baseLevel) * step;
+            if (resourceCost <= maximumCost) {
+              result.add(SpellCastContext(
+                  spellKey: spellKey,
+                  source: source,
+                  baseSpellLevel: baseLevel,
+                  castLevel: level,
+                  slotSource: SpellSlotSource.none,
+                  payment: 'resource',
+                  resourceCost: resourceCost));
+            }
+          }
+        }
+      }
+      final free = policy['freeCasts'] as int? ?? 0;
+      final spent = (character['spellActivationUses']
+              as Map?)?[source.sourceKey] as int? ??
+          0;
+      if (character.isNotEmpty && free > spent) slotless('free');
+      if (policy['atWill'] == true) slotless('atWill');
+    }
+    if (baseLevel > 0) {
       for (final pool in [SpellSlotSource.standard, SpellSlotSource.pact]) {
+        if (policy[pool == SpellSlotSource.standard
+                ? 'canUseStandardSlots'
+                : 'canUsePactSlots'] !=
+            true) continue;
         for (var level = baseLevel; level <= 9; level++) {
           if (pools.available(pool, level) > 0)
             result.add(SpellCastContext(
@@ -144,7 +219,8 @@ List<SpellCastContext> availableSpellCasts(String spellKey, int baseLevel,
                 source: source,
                 baseSpellLevel: baseLevel,
                 castLevel: level,
-                slotSource: pool));
+                slotSource: pool,
+                payment: explicit ? 'slot' : null));
         }
       }
     }
@@ -185,24 +261,70 @@ Map<String, dynamic> applySpellCast(
       .toList();
   final baseLevel = spell['level'] as int? ?? 0;
   final pools = SpellSlotPools.fromCharacter(character);
-  final choices = availableSpellCasts(key, baseLevel, sources, pools);
-  if (!choices.any((c) =>
-      c.source.sourceKey == sourceKey &&
-      c.castLevel == level &&
-      c.slotSource == source)) {
+  final choices =
+      availableSpellCasts(key, baseLevel, sources, pools, character: character);
+  final cast = choices
+      .where((c) =>
+          c.source.sourceKey == sourceKey &&
+          c.castLevel == level &&
+          c.slotSource == source &&
+          c.payment == action['spellPayment'])
+      .firstOrNull;
+  if (cast == null) {
     throw const SpellCastFailure(
         'invalid_cast', 'The selected source or spell slot is not available.');
   }
-  final patch = source == SpellSlotSource.none
-      ? <String, dynamic>{}
-      : pools.adjusted(source, level, -1);
+  final patch = <String, dynamic>{
+    ...(source == SpellSlotSource.none
+        ? spellActivationPaymentPatch(character, cast)
+        : pools.adjusted(source, level, -1)),
+  };
+  patch.addAll(spellActivationCastLimitPatch(character, cast));
   patch['activeConcentrationSpellName'] = spell['concentration'] == true
       ? spell['name'] ?? key
       : character['activeConcentrationSpellName'];
   return patch;
 }
 
+String spellActivationCastLimitCounterKey(String sourceKey) =>
+    _castLimitCounterKey(sourceKey);
+
+String _castLimitCounterKey(String sourceKey) => 'castLimit:$sourceKey';
+
 Map<int, int> _intMap(dynamic value) => spellProtocolIntMap<int>(value);
+
+int? spellActivationMaxResourceCost(
+    Map<String, dynamic> character, SpellSourceContext source) {
+  final policy = spellActivationPolicy(source);
+  final upcast = policy['resourceUpcastPolicy'] as Map?;
+  if (upcast == null) return policy['resourceCost'] as int?;
+  final features =
+      (character['derived'] as Map?)?['activeFeatures'] as List? ?? const [];
+  final owner = features
+      .whereType<Map>()
+      .where((feature) =>
+          feature['sourceType'] == source.resourceSourceType &&
+          feature['sourceId'] == source.resourceSourceId &&
+          (feature['resources'] as List? ?? const [])
+              .whereType<Map>()
+              .any((resource) => resource['key'] == policy['resourceKey']))
+      .firstOrNull;
+  final sourceLevel = owner?['sourceClassLevel'] as int?;
+  if (sourceLevel == null) return null;
+  final progression = upcast['maxResourceCostBySourceLevel'];
+  final eligible = <MapEntry<int, int>>[];
+  final rows = spellProtocolIntMap<int>(progression);
+  for (final entry in rows.entries) {
+    final level = entry.key;
+    final cost = entry.value;
+    if (level <= sourceLevel) {
+      eligible.add(MapEntry(level, cost));
+    }
+  }
+  if (eligible.isEmpty) return null;
+  eligible.sort((a, b) => a.key.compareTo(b.key));
+  return eligible.last.value;
+}
 
 SpellSlotSource spellActionSlotSource(
     Map<String, dynamic> character, Map<String, dynamic> action) {

@@ -1,4 +1,5 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:serverpod/serverpod.dart';
 
 part 'race_endpoints/race_resource_endpoints.dart';

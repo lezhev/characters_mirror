@@ -1,0 +1,5 @@
+class: SpellSlotRecoveryTriggerData
+fields:
+  sourceActionId: String
+  trigger: FeatureResourceTrigger
+  castLevel: int?

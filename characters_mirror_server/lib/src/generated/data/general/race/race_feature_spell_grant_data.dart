@@ -14,8 +14,9 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/race/race_feature_data.dart' as _i2;
 import '../../../data/spell_data.dart' as _i3;
-import '../../../enums/ability.dart' as _i4;
-import '../../../enums/rest_type.dart' as _i5;
+import '../../../data/general/spell_activation_data.dart' as _i4;
+import '../../../enums/ability.dart' as _i5;
+import '../../../enums/rest_type.dart' as _i6;
 
 abstract class RaceFeatureSpellGrantData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -26,6 +27,7 @@ abstract class RaceFeatureSpellGrantData
     required this.spellId,
     this.spell,
     this.grantedAtLevel,
+    this.activation,
     this.castingAbility,
     this.freeCastsPerRest,
     this.freeCastsFormula,
@@ -45,8 +47,9 @@ abstract class RaceFeatureSpellGrantData
     required int spellId,
     _i3.SpellData? spell,
     int? grantedAtLevel,
-    _i4.Ability? castingAbility,
-    _i5.RestType? freeCastsPerRest,
+    _i4.SpellActivationData? activation,
+    _i5.Ability? castingAbility,
+    _i6.RestType? freeCastsPerRest,
     String? freeCastsFormula,
     int? castAtSpellLevel,
     bool? canAlsoCastWithSpellSlots,
@@ -72,13 +75,17 @@ abstract class RaceFeatureSpellGrantData
           : _i3.SpellData.fromJson(
               (jsonSerialization['spell'] as Map<String, dynamic>)),
       grantedAtLevel: jsonSerialization['grantedAtLevel'] as int?,
+      activation: jsonSerialization['activation'] == null
+          ? null
+          : _i4.SpellActivationData.fromJson(
+              (jsonSerialization['activation'] as Map<String, dynamic>)),
       castingAbility: jsonSerialization['castingAbility'] == null
           ? null
-          : _i4.Ability.fromJson(
+          : _i5.Ability.fromJson(
               (jsonSerialization['castingAbility'] as String)),
       freeCastsPerRest: jsonSerialization['freeCastsPerRest'] == null
           ? null
-          : _i5.RestType.fromJson(
+          : _i6.RestType.fromJson(
               (jsonSerialization['freeCastsPerRest'] as String)),
       freeCastsFormula: jsonSerialization['freeCastsFormula'] as String?,
       castAtSpellLevel: jsonSerialization['castAtSpellLevel'] as int?,
@@ -113,9 +120,11 @@ abstract class RaceFeatureSpellGrantData
 
   int? grantedAtLevel;
 
-  _i4.Ability? castingAbility;
+  _i4.SpellActivationData? activation;
 
-  _i5.RestType? freeCastsPerRest;
+  _i5.Ability? castingAbility;
+
+  _i6.RestType? freeCastsPerRest;
 
   String? freeCastsFormula;
 
@@ -146,8 +155,9 @@ abstract class RaceFeatureSpellGrantData
     int? spellId,
     _i3.SpellData? spell,
     int? grantedAtLevel,
-    _i4.Ability? castingAbility,
-    _i5.RestType? freeCastsPerRest,
+    _i4.SpellActivationData? activation,
+    _i5.Ability? castingAbility,
+    _i6.RestType? freeCastsPerRest,
     String? freeCastsFormula,
     int? castAtSpellLevel,
     bool? canAlsoCastWithSpellSlots,
@@ -166,6 +176,7 @@ abstract class RaceFeatureSpellGrantData
       'spellId': spellId,
       if (spell != null) 'spell': spell?.toJson(),
       if (grantedAtLevel != null) 'grantedAtLevel': grantedAtLevel,
+      if (activation != null) 'activation': activation?.toJson(),
       if (castingAbility != null) 'castingAbility': castingAbility?.toJson(),
       if (freeCastsPerRest != null)
         'freeCastsPerRest': freeCastsPerRest?.toJson(),
@@ -190,6 +201,7 @@ abstract class RaceFeatureSpellGrantData
       'spellId': spellId,
       if (spell != null) 'spell': spell?.toJsonForProtocol(),
       if (grantedAtLevel != null) 'grantedAtLevel': grantedAtLevel,
+      if (activation != null) 'activation': activation?.toJsonForProtocol(),
       if (castingAbility != null) 'castingAbility': castingAbility?.toJson(),
       if (freeCastsPerRest != null)
         'freeCastsPerRest': freeCastsPerRest?.toJson(),
@@ -251,8 +263,9 @@ class _RaceFeatureSpellGrantDataImpl extends RaceFeatureSpellGrantData {
     required int spellId,
     _i3.SpellData? spell,
     int? grantedAtLevel,
-    _i4.Ability? castingAbility,
-    _i5.RestType? freeCastsPerRest,
+    _i4.SpellActivationData? activation,
+    _i5.Ability? castingAbility,
+    _i6.RestType? freeCastsPerRest,
     String? freeCastsFormula,
     int? castAtSpellLevel,
     bool? canAlsoCastWithSpellSlots,
@@ -268,6 +281,7 @@ class _RaceFeatureSpellGrantDataImpl extends RaceFeatureSpellGrantData {
           spellId: spellId,
           spell: spell,
           grantedAtLevel: grantedAtLevel,
+          activation: activation,
           castingAbility: castingAbility,
           freeCastsPerRest: freeCastsPerRest,
           freeCastsFormula: freeCastsFormula,
@@ -291,6 +305,7 @@ class _RaceFeatureSpellGrantDataImpl extends RaceFeatureSpellGrantData {
     int? spellId,
     Object? spell = _Undefined,
     Object? grantedAtLevel = _Undefined,
+    Object? activation = _Undefined,
     Object? castingAbility = _Undefined,
     Object? freeCastsPerRest = _Undefined,
     Object? freeCastsFormula = _Undefined,
@@ -311,9 +326,12 @@ class _RaceFeatureSpellGrantDataImpl extends RaceFeatureSpellGrantData {
       spell: spell is _i3.SpellData? ? spell : this.spell?.copyWith(),
       grantedAtLevel:
           grantedAtLevel is int? ? grantedAtLevel : this.grantedAtLevel,
+      activation: activation is _i4.SpellActivationData?
+          ? activation
+          : this.activation?.copyWith(),
       castingAbility:
-          castingAbility is _i4.Ability? ? castingAbility : this.castingAbility,
-      freeCastsPerRest: freeCastsPerRest is _i5.RestType?
+          castingAbility is _i5.Ability? ? castingAbility : this.castingAbility,
+      freeCastsPerRest: freeCastsPerRest is _i6.RestType?
           ? freeCastsPerRest
           : this.freeCastsPerRest,
       freeCastsFormula: freeCastsFormula is String?
@@ -346,6 +364,10 @@ class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
     );
     grantedAtLevel = _i1.ColumnInt(
       'grantedAtLevel',
+      this,
+    );
+    activation = _i1.ColumnSerializable(
+      'activation',
       this,
     );
     castingAbility = _i1.ColumnEnum(
@@ -402,9 +424,11 @@ class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt grantedAtLevel;
 
-  late final _i1.ColumnEnum<_i4.Ability> castingAbility;
+  late final _i1.ColumnSerializable activation;
 
-  late final _i1.ColumnEnum<_i5.RestType> freeCastsPerRest;
+  late final _i1.ColumnEnum<_i5.Ability> castingAbility;
+
+  late final _i1.ColumnEnum<_i6.RestType> freeCastsPerRest;
 
   late final _i1.ColumnString freeCastsFormula;
 
@@ -454,6 +478,7 @@ class RaceFeatureSpellGrantDataTable extends _i1.Table<int?> {
         featureId,
         spellId,
         grantedAtLevel,
+        activation,
         castingAbility,
         freeCastsPerRest,
         freeCastsFormula,

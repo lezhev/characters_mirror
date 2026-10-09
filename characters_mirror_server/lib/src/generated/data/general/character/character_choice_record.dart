@@ -12,14 +12,17 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/character/character_record.dart' as _i2;
+import '../../../data/general/character/choice_replacement_history_data.dart'
+    as _i2;
+import '../../../data/general/character/character_record.dart' as _i3;
 import '../../../data/general/character/character_class_entry_record.dart'
-    as _i3;
+    as _i4;
 
 abstract class CharacterChoiceRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   CharacterChoiceRecord._({
     this.id,
+    this.replacementHistory,
     this.syncId,
     required this.characterId,
     this.character,
@@ -33,11 +36,12 @@ abstract class CharacterChoiceRecord
 
   factory CharacterChoiceRecord({
     int? id,
+    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
     String? syncId,
     required int characterId,
-    _i2.CharacterRecord? character,
+    _i3.CharacterRecord? character,
     int? classEntryId,
-    _i3.CharacterClassEntryRecord? classEntry,
+    _i4.CharacterClassEntryRecord? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
@@ -48,16 +52,20 @@ abstract class CharacterChoiceRecord
       Map<String, dynamic> jsonSerialization) {
     return CharacterChoiceRecord(
       id: jsonSerialization['id'] as int?,
+      replacementHistory: (jsonSerialization['replacementHistory'] as List?)
+          ?.map((e) => _i2.ChoiceReplacementHistoryData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       syncId: jsonSerialization['syncId'] as String?,
       characterId: jsonSerialization['characterId'] as int,
       character: jsonSerialization['character'] == null
           ? null
-          : _i2.CharacterRecord.fromJson(
+          : _i3.CharacterRecord.fromJson(
               (jsonSerialization['character'] as Map<String, dynamic>)),
       classEntryId: jsonSerialization['classEntryId'] as int?,
       classEntry: jsonSerialization['classEntry'] == null
           ? null
-          : _i3.CharacterClassEntryRecord.fromJson(
+          : _i4.CharacterClassEntryRecord.fromJson(
               (jsonSerialization['classEntry'] as Map<String, dynamic>)),
       groupKey: jsonSerialization['groupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
@@ -75,15 +83,17 @@ abstract class CharacterChoiceRecord
   @override
   int? id;
 
+  List<_i2.ChoiceReplacementHistoryData>? replacementHistory;
+
   String? syncId;
 
   int characterId;
 
-  _i2.CharacterRecord? character;
+  _i3.CharacterRecord? character;
 
   int? classEntryId;
 
-  _i3.CharacterClassEntryRecord? classEntry;
+  _i4.CharacterClassEntryRecord? classEntry;
 
   String? groupKey;
 
@@ -101,11 +111,12 @@ abstract class CharacterChoiceRecord
   @_i1.useResult
   CharacterChoiceRecord copyWith({
     int? id,
+    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
     String? syncId,
     int? characterId,
-    _i2.CharacterRecord? character,
+    _i3.CharacterRecord? character,
     int? classEntryId,
-    _i3.CharacterClassEntryRecord? classEntry,
+    _i4.CharacterClassEntryRecord? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
@@ -115,6 +126,9 @@ abstract class CharacterChoiceRecord
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (replacementHistory != null)
+        'replacementHistory':
+            replacementHistory?.toJson(valueToJson: (v) => v.toJson()),
       if (syncId != null) 'syncId': syncId,
       'characterId': characterId,
       if (character != null) 'character': character?.toJson(),
@@ -133,8 +147,8 @@ abstract class CharacterChoiceRecord
   }
 
   static CharacterChoiceRecordInclude include({
-    _i2.CharacterRecordInclude? character,
-    _i3.CharacterClassEntryRecordInclude? classEntry,
+    _i3.CharacterRecordInclude? character,
+    _i4.CharacterClassEntryRecordInclude? classEntry,
   }) {
     return CharacterChoiceRecordInclude._(
       character: character,
@@ -173,17 +187,19 @@ class _Undefined {}
 class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
   _CharacterChoiceRecordImpl({
     int? id,
+    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
     String? syncId,
     required int characterId,
-    _i2.CharacterRecord? character,
+    _i3.CharacterRecord? character,
     int? classEntryId,
-    _i3.CharacterClassEntryRecord? classEntry,
+    _i4.CharacterClassEntryRecord? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
     DateTime? updatedAt,
   }) : super._(
           id: id,
+          replacementHistory: replacementHistory,
           syncId: syncId,
           characterId: characterId,
           character: character,
@@ -201,6 +217,7 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
   @override
   CharacterChoiceRecord copyWith({
     Object? id = _Undefined,
+    Object? replacementHistory = _Undefined,
     Object? syncId = _Undefined,
     int? characterId,
     Object? character = _Undefined,
@@ -213,13 +230,17 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
   }) {
     return CharacterChoiceRecord(
       id: id is int? ? id : this.id,
+      replacementHistory:
+          replacementHistory is List<_i2.ChoiceReplacementHistoryData>?
+              ? replacementHistory
+              : this.replacementHistory?.map((e0) => e0.copyWith()).toList(),
       syncId: syncId is String? ? syncId : this.syncId,
       characterId: characterId ?? this.characterId,
-      character: character is _i2.CharacterRecord?
+      character: character is _i3.CharacterRecord?
           ? character
           : this.character?.copyWith(),
       classEntryId: classEntryId is int? ? classEntryId : this.classEntryId,
-      classEntry: classEntry is _i3.CharacterClassEntryRecord?
+      classEntry: classEntry is _i4.CharacterClassEntryRecord?
           ? classEntry
           : this.classEntry?.copyWith(),
       groupKey: groupKey is String? ? groupKey : this.groupKey,
@@ -234,6 +255,10 @@ class _CharacterChoiceRecordImpl extends CharacterChoiceRecord {
 class CharacterChoiceRecordTable extends _i1.Table<int?> {
   CharacterChoiceRecordTable({super.tableRelation})
       : super(tableName: 'character_choice_data') {
+    replacementHistory = _i1.ColumnSerializable(
+      'replacementHistory',
+      this,
+    );
     syncId = _i1.ColumnString(
       'syncId',
       this,
@@ -264,15 +289,17 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
     );
   }
 
+  late final _i1.ColumnSerializable replacementHistory;
+
   late final _i1.ColumnString syncId;
 
   late final _i1.ColumnInt characterId;
 
-  _i2.CharacterRecordTable? _character;
+  _i3.CharacterRecordTable? _character;
 
   late final _i1.ColumnInt classEntryId;
 
-  _i3.CharacterClassEntryRecordTable? _classEntry;
+  _i4.CharacterClassEntryRecordTable? _classEntry;
 
   late final _i1.ColumnString groupKey;
 
@@ -282,27 +309,27 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updatedAt;
 
-  _i2.CharacterRecordTable get character {
+  _i3.CharacterRecordTable get character {
     if (_character != null) return _character!;
     _character = _i1.createRelationTable(
       relationFieldName: 'character',
       field: CharacterChoiceRecord.t.characterId,
-      foreignField: _i2.CharacterRecord.t.id,
+      foreignField: _i3.CharacterRecord.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.CharacterRecordTable(tableRelation: foreignTableRelation),
+          _i3.CharacterRecordTable(tableRelation: foreignTableRelation),
     );
     return _character!;
   }
 
-  _i3.CharacterClassEntryRecordTable get classEntry {
+  _i4.CharacterClassEntryRecordTable get classEntry {
     if (_classEntry != null) return _classEntry!;
     _classEntry = _i1.createRelationTable(
       relationFieldName: 'classEntry',
       field: CharacterChoiceRecord.t.classEntryId,
-      foreignField: _i3.CharacterClassEntryRecord.t.id,
+      foreignField: _i4.CharacterClassEntryRecord.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) => _i3.CharacterClassEntryRecordTable(
+      createTable: (foreignTableRelation) => _i4.CharacterClassEntryRecordTable(
           tableRelation: foreignTableRelation),
     );
     return _classEntry!;
@@ -311,6 +338,7 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        replacementHistory,
         syncId,
         characterId,
         classEntryId,
@@ -334,16 +362,16 @@ class CharacterChoiceRecordTable extends _i1.Table<int?> {
 
 class CharacterChoiceRecordInclude extends _i1.IncludeObject {
   CharacterChoiceRecordInclude._({
-    _i2.CharacterRecordInclude? character,
-    _i3.CharacterClassEntryRecordInclude? classEntry,
+    _i3.CharacterRecordInclude? character,
+    _i4.CharacterClassEntryRecordInclude? classEntry,
   }) {
     _character = character;
     _classEntry = classEntry;
   }
 
-  _i2.CharacterRecordInclude? _character;
+  _i3.CharacterRecordInclude? _character;
 
-  _i3.CharacterClassEntryRecordInclude? _classEntry;
+  _i4.CharacterClassEntryRecordInclude? _classEntry;
 
   @override
   Map<String, _i1.Include?> get includes => {
@@ -606,7 +634,7 @@ class CharacterChoiceRecordAttachRowRepository {
   Future<void> character(
     _i1.Session session,
     CharacterChoiceRecord characterChoiceRecord,
-    _i2.CharacterRecord character, {
+    _i3.CharacterRecord character, {
     _i1.Transaction? transaction,
   }) async {
     if (characterChoiceRecord.id == null) {
@@ -630,7 +658,7 @@ class CharacterChoiceRecordAttachRowRepository {
   Future<void> classEntry(
     _i1.Session session,
     CharacterChoiceRecord characterChoiceRecord,
-    _i3.CharacterClassEntryRecord classEntry, {
+    _i4.CharacterClassEntryRecord classEntry, {
     _i1.Transaction? transaction,
   }) async {
     if (characterChoiceRecord.id == null) {

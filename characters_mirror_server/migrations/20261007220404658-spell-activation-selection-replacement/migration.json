@@ -1,0 +1,172 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "character_choice_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "replacementHistory",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:ChoiceReplacementHistoryData>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellActivationUses",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,int>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "choice_group_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "progressionKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "replacementsAllowed",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "replacementProgressionKeys",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<String>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellSelectionFilter",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellSelectionFilterData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_spell_grant_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "activation",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellActivationData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_spell_grant_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "activation",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellActivationData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "subclass_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellSelectionFilter",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellSelectionFilterData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

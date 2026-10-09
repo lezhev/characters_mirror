@@ -1,0 +1,9 @@
+class: SpellSlotRecoveryPolicyData
+fields:
+  mode: SpellSlotRecoveryMode
+  resourceKey: String?
+  levelBudgetBySourceLevel: Map<int, int>?
+  maximumSlotLevel: int?
+  minimumCastLevel: int?
+  spellSchool: SpellSchool?
+  activationSeconds: int?

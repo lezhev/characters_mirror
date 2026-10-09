@@ -16,6 +16,7 @@ import '../../../enums/rest_type.dart' as _i3;
 abstract class CharacterSemanticActionData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   CharacterSemanticActionData._({
+    this.spellPayment,
     this.amount,
     this.delta,
     this.level,
@@ -30,9 +31,13 @@ abstract class CharacterSemanticActionData
     this.resourceKey,
     this.restType,
     this.baseBarrierTokens,
+    this.recoveryEffectId,
+    this.slotsToRestore,
+    this.recoveryTriggerId,
   });
 
   factory CharacterSemanticActionData({
+    String? spellPayment,
     int? amount,
     int? delta,
     int? level,
@@ -47,11 +52,15 @@ abstract class CharacterSemanticActionData
     String? resourceKey,
     _i3.RestType? restType,
     Map<String, String>? baseBarrierTokens,
+    int? recoveryEffectId,
+    Map<int, int>? slotsToRestore,
+    String? recoveryTriggerId,
   }) = _CharacterSemanticActionDataImpl;
 
   factory CharacterSemanticActionData.fromJson(
       Map<String, dynamic> jsonSerialization) {
     return CharacterSemanticActionData(
+      spellPayment: jsonSerialization['spellPayment'] as String?,
       amount: jsonSerialization['amount'] as int?,
       delta: jsonSerialization['delta'] as int?,
       level: jsonSerialization['level'] as int?,
@@ -75,8 +84,15 @@ abstract class CharacterSemanticActionData
                 k as String,
                 v as String,
               )),
+      recoveryEffectId: jsonSerialization['recoveryEffectId'] as int?,
+      slotsToRestore: (jsonSerialization['slotsToRestore'] as List?)
+          ?.fold<Map<int, int>>(
+              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      recoveryTriggerId: jsonSerialization['recoveryTriggerId'] as String?,
     );
   }
+
+  String? spellPayment;
 
   int? amount;
 
@@ -106,10 +122,17 @@ abstract class CharacterSemanticActionData
 
   Map<String, String>? baseBarrierTokens;
 
+  int? recoveryEffectId;
+
+  Map<int, int>? slotsToRestore;
+
+  String? recoveryTriggerId;
+
   /// Returns a shallow copy of this [CharacterSemanticActionData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   CharacterSemanticActionData copyWith({
+    String? spellPayment,
     int? amount,
     int? delta,
     int? level,
@@ -124,10 +147,14 @@ abstract class CharacterSemanticActionData
     String? resourceKey,
     _i3.RestType? restType,
     Map<String, String>? baseBarrierTokens,
+    int? recoveryEffectId,
+    Map<int, int>? slotsToRestore,
+    String? recoveryTriggerId,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      if (spellPayment != null) 'spellPayment': spellPayment,
       if (amount != null) 'amount': amount,
       if (delta != null) 'delta': delta,
       if (level != null) 'level': level,
@@ -144,12 +171,16 @@ abstract class CharacterSemanticActionData
       if (restType != null) 'restType': restType?.toJson(),
       if (baseBarrierTokens != null)
         'baseBarrierTokens': baseBarrierTokens?.toJson(),
+      if (recoveryEffectId != null) 'recoveryEffectId': recoveryEffectId,
+      if (slotsToRestore != null) 'slotsToRestore': slotsToRestore?.toJson(),
+      if (recoveryTriggerId != null) 'recoveryTriggerId': recoveryTriggerId,
     };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      if (spellPayment != null) 'spellPayment': spellPayment,
       if (amount != null) 'amount': amount,
       if (delta != null) 'delta': delta,
       if (level != null) 'level': level,
@@ -166,6 +197,9 @@ abstract class CharacterSemanticActionData
       if (restType != null) 'restType': restType?.toJson(),
       if (baseBarrierTokens != null)
         'baseBarrierTokens': baseBarrierTokens?.toJson(),
+      if (recoveryEffectId != null) 'recoveryEffectId': recoveryEffectId,
+      if (slotsToRestore != null) 'slotsToRestore': slotsToRestore?.toJson(),
+      if (recoveryTriggerId != null) 'recoveryTriggerId': recoveryTriggerId,
     };
   }
 
@@ -179,6 +213,7 @@ class _Undefined {}
 
 class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
   _CharacterSemanticActionDataImpl({
+    String? spellPayment,
     int? amount,
     int? delta,
     int? level,
@@ -193,7 +228,11 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
     String? resourceKey,
     _i3.RestType? restType,
     Map<String, String>? baseBarrierTokens,
+    int? recoveryEffectId,
+    Map<int, int>? slotsToRestore,
+    String? recoveryTriggerId,
   }) : super._(
+          spellPayment: spellPayment,
           amount: amount,
           delta: delta,
           level: level,
@@ -208,6 +247,9 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
           resourceKey: resourceKey,
           restType: restType,
           baseBarrierTokens: baseBarrierTokens,
+          recoveryEffectId: recoveryEffectId,
+          slotsToRestore: slotsToRestore,
+          recoveryTriggerId: recoveryTriggerId,
         );
 
   /// Returns a shallow copy of this [CharacterSemanticActionData]
@@ -215,6 +257,7 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
   @_i1.useResult
   @override
   CharacterSemanticActionData copyWith({
+    Object? spellPayment = _Undefined,
     Object? amount = _Undefined,
     Object? delta = _Undefined,
     Object? level = _Undefined,
@@ -229,8 +272,12 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
     Object? resourceKey = _Undefined,
     Object? restType = _Undefined,
     Object? baseBarrierTokens = _Undefined,
+    Object? recoveryEffectId = _Undefined,
+    Object? slotsToRestore = _Undefined,
+    Object? recoveryTriggerId = _Undefined,
   }) {
     return CharacterSemanticActionData(
+      spellPayment: spellPayment is String? ? spellPayment : this.spellPayment,
       amount: amount is int? ? amount : this.amount,
       delta: delta is int? ? delta : this.delta,
       level: level is int? ? level : this.level,
@@ -259,6 +306,21 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
                     key0,
                     value0,
                   )),
+      recoveryEffectId:
+          recoveryEffectId is int? ? recoveryEffectId : this.recoveryEffectId,
+      slotsToRestore: slotsToRestore is Map<int, int>?
+          ? slotsToRestore
+          : this.slotsToRestore?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
+      recoveryTriggerId: recoveryTriggerId is String?
+          ? recoveryTriggerId
+          : this.recoveryTriggerId,
     );
   }
 }

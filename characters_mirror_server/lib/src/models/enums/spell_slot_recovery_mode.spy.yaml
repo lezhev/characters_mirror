@@ -1,0 +1,6 @@
+enum: SpellSlotRecoveryMode
+serialized: byName
+values:
+  - levelBudget
+  - singleLowerLevel
+  - all

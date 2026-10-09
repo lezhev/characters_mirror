@@ -3,7 +3,7 @@ import 'package:characters_mirror_flutter/core/offline/character_sync_target_key
 
 import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 
-const characterSemanticSyncProtocolVersion = 4;
+const characterSemanticSyncProtocolVersion = 6;
 
 bool isCharacterSemanticOperation(CharacterSyncOperationType type) {
   return switch (type) {
@@ -15,6 +15,7 @@ bool isCharacterSemanticOperation(CharacterSyncOperationType type) {
     CharacterSyncOperationType.adjustHitDice ||
     CharacterSyncOperationType.adjustResource ||
     CharacterSyncOperationType.adjustExperience ||
+    CharacterSyncOperationType.recoverSpellSlots ||
     CharacterSyncOperationType.applyRest =>
       true,
     _ => false,
@@ -44,7 +45,8 @@ List<String> characterSemanticActionTargetKeys(
       return spellSlotActionTargetKeys(character.toJson(), action.toJson());
     case CharacterSyncOperationType.castSpell:
       return [
-        ...spellSlotActionTargetKeys(character.toJson(), action.toJson()),
+        ...spellSlotRecoveryEventTargetKeys(character.toJson()),
+        ...spellActivationActionTargets(character.toJson(), action.toJson()),
         if (spellCastStartsConcentration(character.toJson(), action.toJson()))
           characterSyncFieldTargetKey('activeConcentrationSpellName'),
       ];
@@ -64,6 +66,9 @@ List<String> characterSemanticActionTargetKeys(
       return [characterSyncFieldTargetKey('experience')];
     case CharacterSyncOperationType.applyRest:
       return _characterRestTargetKeys(character, action.restType);
+    case CharacterSyncOperationType.recoverSpellSlots:
+      return spellSlotRecoveryActionTargetKeys(
+          character.toJson(), action.toJson());
     case CharacterSyncOperationType.createCharacter:
     case CharacterSyncOperationType.deleteCharacter:
     case CharacterSyncOperationType.setField:
@@ -168,6 +173,12 @@ CharacterData materializeLocalBarrierTokens(
       result[target] = operation.id;
     }
   }
+  if (targets.contains(characterSyncFieldTargetKey('spellRecoveryTriggers')) &&
+      (operation.type == CharacterSyncOperationType.castSpell ||
+          operation.type == CharacterSyncOperationType.applyRest ||
+          operation.type == CharacterSyncOperationType.recoverSpellSlots)) {
+    result[characterSyncFieldTargetKey('spellRecoveryTriggers')] = operation.id;
+  }
   return character.copyWith(syncBarrierTokens: result.isEmpty ? null : result);
 }
 
@@ -181,12 +192,14 @@ String materializedCharacterBarrierToken(
 
 bool isCharacterSemanticBarrierTarget(String target) {
   return target == characterSyncFieldTargetKey('currentHp') ||
+      target == characterSyncFieldTargetKey('spellRecoveryTriggers') ||
       target == characterSyncFieldTargetKey('temporaryHp') ||
       target == characterSyncFieldTargetKey('deathSaveSuccesses') ||
       target == characterSyncFieldTargetKey('deathSaveFailures') ||
       target == characterSyncFieldTargetKey('activeConcentrationSpellName') ||
       target == characterSyncFieldTargetKey('experience') ||
       target.startsWith('map:currentSpellSlots:') ||
+      target.startsWith('map:spellActivationUses:') ||
       target.startsWith('map:currentPactSlots:') ||
       target.startsWith('map:currentHitDice:') ||
       target.startsWith('resource:');
@@ -212,15 +225,18 @@ List<String> _characterRestTargetKeys(
   CharacterData character,
   RestType? restType,
 ) {
-  if (restType != RestType.shortRest && restType != RestType.longRest) {
+  if (restType == null || restType == RestType.special) {
     return const [];
   }
-  final targets = <String>{};
+  final targets = <String>{
+    ...spellActivationRestTargets(character.toJson(), restType.name),
+    ...spellSlotRecoveryEventTargetKeys(character.toJson())
+  };
   for (final feature in character.derived?.activeFeatures ??
       const <CharacterFeatureViewData>[]) {
     for (final resource
         in feature.resources ?? const <CharacterResourceViewData>[]) {
-      if (_resourceRestoresOn(resource, restType!)) {
+      if (_resourceRestoresOn(resource, restType)) {
         targets.add(characterSyncResourceTargetKey(
           feature.sourceType,
           feature.sourceId,
@@ -229,10 +245,13 @@ List<String> _characterRestTargetKeys(
       }
     }
   }
-  final pactLevels = {
-    ...?character.derived?.pactSlots?.keys,
-    ...?character.currentPactSlots?.keys
-  };
+  final pactLevels =
+      restType == RestType.shortRest || restType == RestType.longRest
+          ? <int>{
+              ...?character.derived?.pactSlots?.keys,
+              ...?character.currentPactSlots?.keys
+            }
+          : <int>{};
   targets.addAll(pactLevels
       .map((level) => characterSyncMapTargetKey('currentPactSlots', '$level')));
   if (character.currentPactSlots == null && pactLevels.isNotEmpty) {
@@ -273,7 +292,7 @@ bool _resourceRestoresOn(
     RestType.shortRest => resource.resetOn == RestType.shortRest,
     RestType.longRest => resource.resetOn == RestType.shortRest ||
         resource.resetOn == RestType.longRest,
-    RestType.dawn || RestType.special => false,
+    RestType.dawn || RestType.special => resource.resetOn == restType,
   };
 }
 
@@ -287,6 +306,8 @@ CharacterSyncTargetType _targetTypeForSemanticAction(
     CharacterSyncOperationType.adjustResource =>
       CharacterSyncTargetType.resource,
     CharacterSyncOperationType.applyRest => CharacterSyncTargetType.character,
+    CharacterSyncOperationType.recoverSpellSlots =>
+      CharacterSyncTargetType.character,
     _ => CharacterSyncTargetType.field,
   };
 }

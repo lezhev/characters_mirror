@@ -1,0 +1,8 @@
+class: SpellSelectionReplacementHistoryData
+fields:
+  spellId: int?
+  spellKey: String?
+  selectionFilter: SpellSelectionFilterData?
+  selectionRuleLevel: int?
+  selectionUnrestricted: bool?
+  replacedAtClassLevel: int

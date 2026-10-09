@@ -1,5 +1,6 @@
 class: CharacterSemanticActionData
 fields:
+  spellPayment: String?
   amount: int?
   delta: int?
   level: int?
@@ -14,3 +15,6 @@ fields:
   resourceKey: String?
   restType: RestType?
   baseBarrierTokens: Map<String, String>?
+  recoveryEffectId: int?
+  slotsToRestore: Map<int, int>?
+  recoveryTriggerId: String?

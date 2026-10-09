@@ -2,6 +2,7 @@ class: CharacterChoiceRecord
 serverOnly: true
 table: character_choice_data
 fields:
+  replacementHistory: List<ChoiceReplacementHistoryData>?
   syncId: String?
   character: CharacterRecord?, relation
   classEntry: CharacterClassEntryRecord?, relation(optional)

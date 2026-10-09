@@ -19,3 +19,4 @@ values:
   - adjustResource
   - adjustExperience
   - applyRest
+  - recoverSpellSlots

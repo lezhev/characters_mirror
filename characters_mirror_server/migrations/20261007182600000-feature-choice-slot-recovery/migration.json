@@ -1,0 +1,72 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "characters",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "spellRecoveryTriggers",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,protocol:SpellSlotRecoveryTriggerData>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "choice_group_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "autoSelectSingleEligible",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "feature_resource_effect_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "recoveryPolicy",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellSlotRecoveryPolicyData?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

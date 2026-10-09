@@ -128,6 +128,8 @@ Map<String, int> _materializedSyncTargetRevisions(
     character.currentPactSlots,
     baselineRevision,
   );
+  _addMapTargetRevisions(revisions, 'spellActivationUses',
+      character.spellActivationUses, baselineRevision);
   _addItemTargetRevisions(
     revisions,
     'notes',
@@ -384,6 +386,7 @@ String _targetKeyForOperation(
     case CharacterSyncOperationType.adjustHitDice:
     case CharacterSyncOperationType.adjustResource:
     case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.recoverSpellSlots:
     case CharacterSyncOperationType.applyRest:
       final targets = _semanticActionTargetKeys(
         current ?? CharacterData(),
@@ -414,6 +417,10 @@ Set<String> _changedSyncTargetKeys(
   final changed = <String>{};
   final previousJson = previous.toJson()..remove('derived');
   final nextJson = next.toJson()..remove('derived');
+  if (!_syncJsonEquals(previousJson['spellRecoveryTriggers'],
+      nextJson['spellRecoveryTriggers'])) {
+    changed.add(_fieldTargetKey('spellRecoveryTriggers'));
+  }
 
   for (final field in _characterScalarSyncFields) {
     if (!_syncJsonEquals(
@@ -485,6 +492,8 @@ Set<String> _changedSyncTargetKeys(
     previous.currentSpellSlots,
     next.currentSpellSlots,
   );
+  _addChangedMapTargets(changed, 'spellActivationUses',
+      previous.spellActivationUses, next.spellActivationUses);
   _addChangedMapTargets(changed, 'currentPactSlots', previous.currentPactSlots,
       next.currentPactSlots);
 

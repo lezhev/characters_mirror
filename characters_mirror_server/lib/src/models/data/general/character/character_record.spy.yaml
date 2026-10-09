@@ -2,6 +2,7 @@ class: CharacterRecord
 serverOnly: true
 table: characters
 fields:
+  spellActivationUses: Map<String, int>?
   name: String?
   age: String?
   height: String?
@@ -71,3 +72,4 @@ fields:
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?
   resourceStates: List<CharacterResourceStateData>?
+  spellRecoveryTriggers: Map<String, SpellSlotRecoveryTriggerData>?

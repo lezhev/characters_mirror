@@ -1,0 +1,46 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "character_spell_selection_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "selectionFilter",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:SpellSelectionFilterData?"
+          },
+          {
+            "name": "selectionRuleLevel",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "selectionUnrestricted",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "spellReplacementHistory",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<protocol:SpellSelectionReplacementHistoryData>?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

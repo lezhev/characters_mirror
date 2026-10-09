@@ -96,6 +96,66 @@ void main() {
     );
   });
 
+  test('offline formula display refreshes proficiency bonus at total level',
+      () async {
+    const classId = 16;
+    const featureId = 91;
+    await cache.putReference(
+      offlineClassStepKind,
+      offlineClassStepKey(classId, selectedLevel: 3),
+      ClassStepView(
+        classData: ClassData(id: classId, name: 'Fixture class'),
+        selectedLevel: 3,
+        currentLevelFeatures: [
+          ClassFeatureData(
+              id: featureId,
+              parentClassId: classId,
+              name: 'Fixture feature',
+              level: 1),
+        ],
+        currentLevelFeatureViews: [
+          ClassStepFeatureView(
+            classFeature: ClassFeatureData(
+                id: featureId,
+                parentClassId: classId,
+                name: 'Fixture feature',
+                level: 1),
+            displayProperties: [
+              FeatureDisplayPropertyView(
+                key: 'dc',
+                label: 'DC',
+                value: '13',
+                formula: '8 + proficiencyBonus + abilityModifier(wisdom)',
+              ),
+            ],
+          ),
+        ],
+      ),
+      (value) => value.toJson(),
+    );
+
+    Future<String> resolve({required bool multiclass}) async {
+      final derived = await buildOfflineDerivedData(
+        cache,
+        CharacterData(
+          baseAbilityScores: {'wisdom': 16},
+          classEntries: [
+            CharacterClassEntryData(
+              classData: ClassData(id: classId, name: 'Fixture class'),
+              level: 3,
+              isStartingClass: true,
+            ),
+            if (multiclass) CharacterClassEntryData(level: 2),
+          ],
+        ),
+      );
+      return derived.activeFeatures!.single.displayProperties!.single.value;
+    }
+
+    expect(await resolve(multiclass: false), '13');
+    expect(await resolve(multiclass: true), '14');
+  });
+
   test('barbarian unarmored defense allows a shield and preserves custom AC',
       () async {
     await _cacheArmorCatalog(cache);

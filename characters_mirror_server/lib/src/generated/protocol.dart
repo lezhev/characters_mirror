@@ -12,7 +12,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
-import 'data/general/class/prepared_spell_rule_data.dart' as _i4;
+import 'data/general/class/class_feature_data.dart' as _i4;
 import 'data/background_data.dart' as _i5;
 import 'data/class_spell_grant_data.dart' as _i6;
 import 'data/damage_part_data.dart' as _i7;
@@ -65,164 +65,174 @@ import 'data/general/character/character_tool_proficiency_overrides_data.dart'
     as _i47;
 import 'data/general/character/character_weapon_proficiency_overrides_data.dart'
     as _i48;
-import 'data/general/character/level_up_request.dart' as _i49;
-import 'data/general/character/level_up_spell_choice.dart' as _i50;
-import 'data/general/choice_group_data.dart' as _i51;
-import 'data/general/choice_option_data.dart' as _i52;
-import 'data/general/choice_requirement_data.dart' as _i53;
-import 'data/general/class/class_data.dart' as _i54;
-import 'data/general/class/class_feature_data.dart' as _i55;
-import 'data/general/class/class_level_data.dart' as _i56;
-import 'auth/auth_action_result.dart' as _i57;
-import 'data/general/class/spell_slot_progression_data.dart' as _i58;
-import 'data/general/class/starting_equipment_block_data.dart' as _i59;
-import 'data/general/class/starting_equipment_entry_data.dart' as _i60;
-import 'data/general/class/starting_equipment_line_data.dart' as _i61;
-import 'data/general/class/starting_equipment_option_data.dart' as _i62;
-import 'data/general/class/subclass_data.dart' as _i63;
-import 'data/general/class/subclass_feature_data.dart' as _i64;
-import 'data/general/feature_display_property_data.dart' as _i65;
-import 'data/general/feature_modifier_condition_data.dart' as _i66;
-import 'data/general/feature_modifier_data.dart' as _i67;
-import 'data/general/feature_modifier_value_data.dart' as _i68;
-import 'data/general/feature_resource_definition_data.dart' as _i69;
-import 'data/general/feature_resource_effect_data.dart' as _i70;
-import 'data/general/feature_resource_progression_value_data.dart' as _i71;
-import 'data/general/race/race_data.dart' as _i72;
-import 'data/general/race/race_feature_data.dart' as _i73;
-import 'data/general/race/race_feature_spell_grant_data.dart' as _i74;
-import 'data/general/race/subrace_data.dart' as _i75;
-import 'data/general/tool_data.dart' as _i76;
-import 'data/items/armor_data.dart' as _i77;
-import 'data/items/item_data.dart' as _i78;
-import 'data/items/magic_item_data.dart' as _i79;
-import 'data/items/weapon_data.dart' as _i80;
-import 'data/spell_data.dart' as _i81;
-import 'data/spell_scaling_data.dart' as _i82;
-import 'enums/ability.dart' as _i83;
-import 'enums/armor_category.dart' as _i84;
-import 'enums/character_alignment.dart' as _i85;
-import 'enums/character_change_type.dart' as _i86;
-import 'enums/character_entity_type.dart' as _i87;
-import 'enums/character_feature_source_type.dart' as _i88;
-import 'enums/character_inventory_item_type.dart' as _i89;
-import 'enums/character_saving_throw_proficiency_override.dart' as _i90;
-import 'enums/character_skill_proficiency_level.dart' as _i91;
-import 'enums/character_skill_selection_kind.dart' as _i92;
-import 'enums/character_speed_kind.dart' as _i93;
-import 'enums/character_spell_selection_kind.dart' as _i94;
-import 'enums/character_sync_operation_type.dart' as _i95;
-import 'enums/character_sync_target_type.dart' as _i96;
-import 'enums/choice_requirement_type.dart' as _i97;
-import 'enums/choice_source_type.dart' as _i98;
-import 'enums/choice_type.dart' as _i99;
-import 'enums/class_spell_selection_mode.dart' as _i100;
-import 'enums/condition_type.dart' as _i101;
-import 'enums/creature_size.dart' as _i102;
-import 'enums/damage_type.dart' as _i103;
-import 'enums/equipment_catalog_type.dart' as _i104;
-import 'enums/feature_display_property_value_kind.dart' as _i105;
-import 'enums/feature_modifier_condition_type.dart' as _i106;
-import 'enums/feature_modifier_operation.dart' as _i107;
-import 'enums/feature_modifier_rounding.dart' as _i108;
-import 'views/starting_equipment_option_view.dart' as _i109;
-import 'enums/feature_modifier_value_kind.dart' as _i110;
-import 'enums/feature_resource_effect_type.dart' as _i111;
-import 'enums/feature_resource_kind.dart' as _i112;
-import 'enums/feature_resource_max_rule.dart' as _i113;
-import 'enums/feature_resource_progression_key.dart' as _i114;
-import 'enums/feature_resource_target_type.dart' as _i115;
-import 'enums/feature_resource_trigger.dart' as _i116;
-import 'enums/feature_tag.dart' as _i117;
-import 'enums/hit_point_mode.dart' as _i118;
-import 'enums/language.dart' as _i119;
-import 'enums/prepared_spell_rounding.dart' as _i120;
-import 'enums/rest_type.dart' as _i121;
-import 'enums/sense_type.dart' as _i122;
-import 'enums/skill.dart' as _i123;
-import 'enums/spell/area_of_effect_type.dart' as _i124;
-import 'enums/spell/area_size_measurement.dart' as _i125;
-import 'enums/spell/spell_attack_type.dart' as _i126;
-import 'enums/spell/spell_duration_type.dart' as _i127;
-import 'enums/spell/spell_scaling_mode.dart' as _i128;
-import 'enums/spell/spell_school.dart' as _i129;
-import 'enums/spell/spell_target_type.dart' as _i130;
-import 'enums/spellcasting_progression.dart' as _i131;
-import 'enums/starting_equipment_block_kind.dart' as _i132;
-import 'enums/starting_equipment_entry_kind.dart' as _i133;
-import 'enums/starting_equipment_line_kind.dart' as _i134;
-import 'enums/tool_category.dart' as _i135;
-import 'enums/unarmored_defense_rule.dart' as _i136;
-import 'enums/weapon_category.dart' as _i137;
-import 'enums/weapon_property.dart' as _i138;
-import 'requests/level_down_choice_repair.dart' as _i139;
-import 'requests/level_down_request.dart' as _i140;
-import 'views/background_step_view.dart' as _i141;
-import 'views/character_equipment_entry_view.dart' as _i142;
-import 'views/choice_group_view.dart' as _i143;
-import 'views/choice_option_eligibility_view.dart' as _i144;
-import 'views/choice_requirement_failure_view.dart' as _i145;
-import 'views/class_spell_delta_view.dart' as _i146;
-import 'views/class_spell_selection_group_view.dart' as _i147;
-import 'views/class_step_feature_view.dart' as _i148;
-import 'views/class_step_subclass_choice_view.dart' as _i149;
-import 'views/class_step_view.dart' as _i150;
-import 'views/feature_display_property_view.dart' as _i151;
-import 'views/level_down_invalid_choice_view.dart' as _i152;
-import 'views/level_down_preview.dart' as _i153;
-import 'views/level_up_preview.dart' as _i154;
-import 'views/proficiency_bundle_view.dart' as _i155;
-import 'views/race_step_view.dart' as _i156;
-import 'views/resolved_character_spell_data.dart' as _i157;
-import 'views/selected_feature_choice_view.dart' as _i158;
-import 'views/skill_selection_group_view.dart' as _i159;
-import 'views/spell_source_context_data.dart' as _i160;
-import 'views/starting_equipment_block_view.dart' as _i161;
-import 'enums/feature_modifier_target.dart' as _i162;
+import 'data/general/character/choice_replacement_history_data.dart' as _i49;
+import 'data/general/character/level_up_choice_replacement_data.dart' as _i50;
+import 'data/general/character/level_up_request.dart' as _i51;
+import 'data/general/character/level_up_spell_choice.dart' as _i52;
+import 'data/general/character/spell_selection_replacement_history_data.dart'
+    as _i53;
+import 'data/general/character/spell_slot_recovery_trigger_data.dart' as _i54;
+import 'data/general/choice_group_data.dart' as _i55;
+import 'data/general/choice_option_data.dart' as _i56;
+import 'data/general/choice_requirement_data.dart' as _i57;
+import 'data/general/class/class_data.dart' as _i58;
+import 'auth/auth_action_result.dart' as _i59;
+import 'data/general/class/class_level_data.dart' as _i60;
+import 'data/general/class/prepared_spell_rule_data.dart' as _i61;
+import 'data/general/class/spell_slot_progression_data.dart' as _i62;
+import 'data/general/class/starting_equipment_block_data.dart' as _i63;
+import 'data/general/class/starting_equipment_entry_data.dart' as _i64;
+import 'data/general/class/starting_equipment_line_data.dart' as _i65;
+import 'data/general/class/starting_equipment_option_data.dart' as _i66;
+import 'data/general/class/subclass_data.dart' as _i67;
+import 'data/general/class/subclass_feature_data.dart' as _i68;
+import 'data/general/feature_display_property_data.dart' as _i69;
+import 'data/general/feature_modifier_condition_data.dart' as _i70;
+import 'data/general/feature_modifier_data.dart' as _i71;
+import 'data/general/feature_modifier_value_data.dart' as _i72;
+import 'data/general/feature_resource_definition_data.dart' as _i73;
+import 'data/general/feature_resource_effect_data.dart' as _i74;
+import 'data/general/feature_resource_progression_value_data.dart' as _i75;
+import 'data/general/race/race_data.dart' as _i76;
+import 'data/general/race/race_feature_data.dart' as _i77;
+import 'data/general/race/race_feature_spell_grant_data.dart' as _i78;
+import 'data/general/race/subrace_data.dart' as _i79;
+import 'data/general/spell_activation_data.dart' as _i80;
+import 'data/general/spell_resource_upcast_policy_data.dart' as _i81;
+import 'data/general/spell_selection_filter_data.dart' as _i82;
+import 'data/general/spell_slot_recovery_policy_data.dart' as _i83;
+import 'data/general/tool_data.dart' as _i84;
+import 'data/items/armor_data.dart' as _i85;
+import 'data/items/item_data.dart' as _i86;
+import 'data/items/magic_item_data.dart' as _i87;
+import 'data/items/weapon_data.dart' as _i88;
+import 'data/spell_data.dart' as _i89;
+import 'data/spell_scaling_data.dart' as _i90;
+import 'enums/ability.dart' as _i91;
+import 'enums/armor_category.dart' as _i92;
+import 'enums/character_alignment.dart' as _i93;
+import 'enums/character_change_type.dart' as _i94;
+import 'enums/character_entity_type.dart' as _i95;
+import 'enums/character_feature_source_type.dart' as _i96;
+import 'enums/character_inventory_item_type.dart' as _i97;
+import 'enums/character_saving_throw_proficiency_override.dart' as _i98;
+import 'enums/character_skill_proficiency_level.dart' as _i99;
+import 'enums/character_skill_selection_kind.dart' as _i100;
+import 'enums/character_speed_kind.dart' as _i101;
+import 'enums/character_spell_selection_kind.dart' as _i102;
+import 'enums/character_sync_operation_type.dart' as _i103;
+import 'enums/character_sync_target_type.dart' as _i104;
+import 'enums/choice_requirement_type.dart' as _i105;
+import 'enums/choice_source_type.dart' as _i106;
+import 'enums/choice_type.dart' as _i107;
+import 'enums/class_spell_selection_mode.dart' as _i108;
+import 'enums/condition_type.dart' as _i109;
+import 'enums/creature_size.dart' as _i110;
+import 'enums/damage_type.dart' as _i111;
+import 'enums/equipment_catalog_type.dart' as _i112;
+import 'enums/feature_display_property_value_kind.dart' as _i113;
+import 'enums/feature_modifier_condition_type.dart' as _i114;
+import 'views/starting_equipment_option_view.dart' as _i115;
+import 'enums/feature_modifier_rounding.dart' as _i116;
+import 'enums/feature_modifier_target.dart' as _i117;
+import 'enums/feature_modifier_value_kind.dart' as _i118;
+import 'enums/feature_resource_effect_type.dart' as _i119;
+import 'enums/feature_resource_kind.dart' as _i120;
+import 'enums/feature_resource_max_rule.dart' as _i121;
+import 'enums/feature_resource_progression_key.dart' as _i122;
+import 'enums/feature_resource_target_type.dart' as _i123;
+import 'enums/feature_resource_trigger.dart' as _i124;
+import 'enums/feature_tag.dart' as _i125;
+import 'enums/hit_point_mode.dart' as _i126;
+import 'enums/language.dart' as _i127;
+import 'enums/prepared_spell_rounding.dart' as _i128;
+import 'enums/rest_type.dart' as _i129;
+import 'enums/sense_type.dart' as _i130;
+import 'enums/skill.dart' as _i131;
+import 'enums/spell/area_of_effect_type.dart' as _i132;
+import 'enums/spell/area_size_measurement.dart' as _i133;
+import 'enums/spell/spell_attack_type.dart' as _i134;
+import 'enums/spell/spell_duration_type.dart' as _i135;
+import 'enums/spell/spell_scaling_mode.dart' as _i136;
+import 'enums/spell/spell_school.dart' as _i137;
+import 'enums/spell/spell_target_type.dart' as _i138;
+import 'enums/spell_slot_recovery_mode.dart' as _i139;
+import 'enums/spellcasting_progression.dart' as _i140;
+import 'enums/starting_equipment_block_kind.dart' as _i141;
+import 'enums/starting_equipment_entry_kind.dart' as _i142;
+import 'enums/starting_equipment_line_kind.dart' as _i143;
+import 'enums/tool_category.dart' as _i144;
+import 'enums/unarmored_defense_rule.dart' as _i145;
+import 'enums/weapon_category.dart' as _i146;
+import 'enums/weapon_property.dart' as _i147;
+import 'requests/level_down_choice_repair.dart' as _i148;
+import 'requests/level_down_request.dart' as _i149;
+import 'views/background_step_view.dart' as _i150;
+import 'views/character_equipment_entry_view.dart' as _i151;
+import 'views/choice_group_view.dart' as _i152;
+import 'views/choice_option_eligibility_view.dart' as _i153;
+import 'views/choice_requirement_failure_view.dart' as _i154;
+import 'views/class_spell_delta_view.dart' as _i155;
+import 'views/class_spell_selection_group_view.dart' as _i156;
+import 'views/class_step_feature_view.dart' as _i157;
+import 'views/class_step_subclass_choice_view.dart' as _i158;
+import 'views/class_step_view.dart' as _i159;
+import 'views/feature_display_property_view.dart' as _i160;
+import 'views/level_down_invalid_choice_view.dart' as _i161;
+import 'views/level_down_preview.dart' as _i162;
+import 'views/level_up_preview.dart' as _i163;
+import 'views/proficiency_bundle_view.dart' as _i164;
+import 'views/race_step_view.dart' as _i165;
+import 'views/resolved_character_spell_data.dart' as _i166;
+import 'views/selected_feature_choice_view.dart' as _i167;
+import 'views/skill_selection_group_view.dart' as _i168;
+import 'views/spell_source_context_data.dart' as _i169;
+import 'views/starting_equipment_block_view.dart' as _i170;
+import 'enums/feature_modifier_operation.dart' as _i171;
 import 'package:characters_mirror_server/src/generated/data/background_data.dart'
-    as _i163;
-import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
-    as _i164;
-import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
-    as _i165;
-import 'package:characters_mirror_server/src/generated/data/general/choice_group_data.dart'
-    as _i166;
-import 'package:characters_mirror_server/src/generated/data/general/choice_option_data.dart'
-    as _i167;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
-    as _i168;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
-    as _i169;
-import 'package:characters_mirror_server/src/generated/data/class_spell_grant_data.dart'
-    as _i170;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_level_data.dart'
-    as _i171;
-import 'package:characters_mirror_server/src/generated/data/general/class/spell_slot_progression_data.dart'
     as _i172;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
+import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
     as _i173;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
     as _i174;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/choice_group_data.dart'
     as _i175;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/choice_option_data.dart'
     as _i176;
-import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
     as _i177;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
     as _i178;
-import 'package:characters_mirror_server/src/generated/data/general/tool_data.dart'
+import 'package:characters_mirror_server/src/generated/data/class_spell_grant_data.dart'
     as _i179;
-import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_level_data.dart'
     as _i180;
-import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/spell_slot_progression_data.dart'
     as _i181;
-import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
     as _i182;
-import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
     as _i183;
-import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
     as _i184;
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
+    as _i185;
+import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
+    as _i186;
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
+    as _i187;
+import 'package:characters_mirror_server/src/generated/data/general/tool_data.dart'
+    as _i188;
+import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
+    as _i189;
+import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
+    as _i190;
+import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
+    as _i191;
+import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
+    as _i192;
+import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+    as _i193;
 export 'auth/auth_action_result.dart';
 export 'data/background_data.dart';
 export 'data/class_spell_grant_data.dart';
@@ -268,8 +278,12 @@ export 'data/general/character/character_sync_status.dart';
 export 'data/general/character/character_sync_value_data.dart';
 export 'data/general/character/character_tool_proficiency_overrides_data.dart';
 export 'data/general/character/character_weapon_proficiency_overrides_data.dart';
+export 'data/general/character/choice_replacement_history_data.dart';
+export 'data/general/character/level_up_choice_replacement_data.dart';
 export 'data/general/character/level_up_request.dart';
 export 'data/general/character/level_up_spell_choice.dart';
+export 'data/general/character/spell_selection_replacement_history_data.dart';
+export 'data/general/character/spell_slot_recovery_trigger_data.dart';
 export 'data/general/choice_group_data.dart';
 export 'data/general/choice_option_data.dart';
 export 'data/general/choice_requirement_data.dart';
@@ -295,6 +309,10 @@ export 'data/general/race/race_data.dart';
 export 'data/general/race/race_feature_data.dart';
 export 'data/general/race/race_feature_spell_grant_data.dart';
 export 'data/general/race/subrace_data.dart';
+export 'data/general/spell_activation_data.dart';
+export 'data/general/spell_resource_upcast_policy_data.dart';
+export 'data/general/spell_selection_filter_data.dart';
+export 'data/general/spell_slot_recovery_policy_data.dart';
 export 'data/general/tool_data.dart';
 export 'data/items/armor_data.dart';
 export 'data/items/item_data.dart';
@@ -350,6 +368,7 @@ export 'enums/spell/spell_duration_type.dart';
 export 'enums/spell/spell_scaling_mode.dart';
 export 'enums/spell/spell_school.dart';
 export 'enums/spell/spell_target_type.dart';
+export 'enums/spell_slot_recovery_mode.dart';
 export 'enums/spellcasting_progression.dart';
 export 'enums/starting_equipment_block_kind.dart';
 export 'enums/starting_equipment_entry_kind.dart';
@@ -766,6 +785,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'character_choice_data_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
+          name: 'replacementHistory',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:ChoiceReplacementHistoryData>?',
+        ),
+        _i2.ColumnDefinition(
           name: 'syncId',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -1168,6 +1193,30 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int?',
         ),
         _i2.ColumnDefinition(
+          name: 'selectionFilter',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'protocol:SpellSelectionFilterData?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'selectionRuleLevel',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'selectionUnrestricted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: true,
+          dartType: 'bool?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'spellReplacementHistory',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:SpellSelectionReplacementHistoryData>?',
+        ),
+        _i2.ColumnDefinition(
           name: 'updatedAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
@@ -1561,6 +1610,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'int?',
           columnDefault: 'nextval(\'characters_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'spellActivationUses',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'Map<String,int>?',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -1977,6 +2032,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'List<protocol:CharacterResourceStateData>?',
         ),
+        _i2.ColumnDefinition(
+          name: 'spellRecoveryTriggers',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'Map<String,protocol:SpellSlotRecoveryTriggerData>?',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -2039,6 +2100,24 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'int?',
           columnDefault: 'nextval(\'choice_group_data_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'progressionKey',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'replacementsAllowed',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'replacementProgressionKeys',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
         ),
         _i2.ColumnDefinition(
           name: 'referenceKey',
@@ -2129,6 +2208,18 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'requirements',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<protocol:ChoiceRequirementData>?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'autoSelectSingleEligible',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: true,
+          dartType: 'bool?',
         ),
         _i2.ColumnDefinition(
           name: 'appliesAtCharacterLevel',
@@ -2335,6 +2426,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
+          name: 'automaticSelection',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: true,
+          dartType: 'bool?',
+        ),
+        _i2.ColumnDefinition(
           name: 'sortOrder',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
@@ -2525,6 +2622,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'int?',
           columnDefault: 'nextval(\'class_data_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'spellSelectionFilter',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'protocol:SpellSelectionFilterData?',
         ),
         _i2.ColumnDefinition(
           name: 'referenceKey',
@@ -3098,6 +3201,18 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'activation',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'protocol:SpellActivationData?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'castingAbility',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:Ability?',
         ),
         _i2.ColumnDefinition(
           name: 'alwaysPrepared',
@@ -3924,6 +4039,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'protocol:RestType?',
         ),
         _i2.ColumnDefinition(
+          name: 'recoveryPolicy',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'protocol:SpellSlotRecoveryPolicyData?',
+        ),
+        _i2.ColumnDefinition(
           name: 'setResetOn',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -4673,6 +4794,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int?',
         ),
         _i2.ColumnDefinition(
+          name: 'activation',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'protocol:SpellActivationData?',
+        ),
+        _i2.ColumnDefinition(
           name: 'castingAbility',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -5382,6 +5509,12 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'subclass_data_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
+          name: 'spellSelectionFilter',
+          columnType: _i2.ColumnType.json,
+          isNullable: true,
+          dartType: 'protocol:SpellSelectionFilterData?',
+        ),
+        _i2.ColumnDefinition(
           name: 'referenceKey',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -6073,8 +6206,8 @@ class Protocol extends _i1.SerializationManagerServer {
     Type? t,
   ]) {
     t ??= T;
-    if (t == _i4.PreparedSpellRuleData) {
-      return _i4.PreparedSpellRuleData.fromJson(data) as T;
+    if (t == _i4.ClassFeatureData) {
+      return _i4.ClassFeatureData.fromJson(data) as T;
     }
     if (t == _i5.BackgroundData) {
       return _i5.BackgroundData.fromJson(data) as T;
@@ -6210,351 +6343,377 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i48.CharacterWeaponProficiencyOverridesData) {
       return _i48.CharacterWeaponProficiencyOverridesData.fromJson(data) as T;
     }
-    if (t == _i49.LevelUpRequest) {
-      return _i49.LevelUpRequest.fromJson(data) as T;
+    if (t == _i49.ChoiceReplacementHistoryData) {
+      return _i49.ChoiceReplacementHistoryData.fromJson(data) as T;
     }
-    if (t == _i50.LevelUpSpellChoice) {
-      return _i50.LevelUpSpellChoice.fromJson(data) as T;
+    if (t == _i50.LevelUpChoiceReplacementData) {
+      return _i50.LevelUpChoiceReplacementData.fromJson(data) as T;
     }
-    if (t == _i51.ChoiceGroupData) {
-      return _i51.ChoiceGroupData.fromJson(data) as T;
+    if (t == _i51.LevelUpRequest) {
+      return _i51.LevelUpRequest.fromJson(data) as T;
     }
-    if (t == _i52.ChoiceOptionData) {
-      return _i52.ChoiceOptionData.fromJson(data) as T;
+    if (t == _i52.LevelUpSpellChoice) {
+      return _i52.LevelUpSpellChoice.fromJson(data) as T;
     }
-    if (t == _i53.ChoiceRequirementData) {
-      return _i53.ChoiceRequirementData.fromJson(data) as T;
+    if (t == _i53.SpellSelectionReplacementHistoryData) {
+      return _i53.SpellSelectionReplacementHistoryData.fromJson(data) as T;
     }
-    if (t == _i54.ClassData) {
-      return _i54.ClassData.fromJson(data) as T;
+    if (t == _i54.SpellSlotRecoveryTriggerData) {
+      return _i54.SpellSlotRecoveryTriggerData.fromJson(data) as T;
     }
-    if (t == _i55.ClassFeatureData) {
-      return _i55.ClassFeatureData.fromJson(data) as T;
+    if (t == _i55.ChoiceGroupData) {
+      return _i55.ChoiceGroupData.fromJson(data) as T;
     }
-    if (t == _i56.ClassLevelData) {
-      return _i56.ClassLevelData.fromJson(data) as T;
+    if (t == _i56.ChoiceOptionData) {
+      return _i56.ChoiceOptionData.fromJson(data) as T;
     }
-    if (t == _i57.AuthActionResult) {
-      return _i57.AuthActionResult.fromJson(data) as T;
+    if (t == _i57.ChoiceRequirementData) {
+      return _i57.ChoiceRequirementData.fromJson(data) as T;
     }
-    if (t == _i58.SpellSlotProgressionData) {
-      return _i58.SpellSlotProgressionData.fromJson(data) as T;
+    if (t == _i58.ClassData) {
+      return _i58.ClassData.fromJson(data) as T;
     }
-    if (t == _i59.StartingEquipmentBlockData) {
-      return _i59.StartingEquipmentBlockData.fromJson(data) as T;
+    if (t == _i59.AuthActionResult) {
+      return _i59.AuthActionResult.fromJson(data) as T;
     }
-    if (t == _i60.StartingEquipmentEntryData) {
-      return _i60.StartingEquipmentEntryData.fromJson(data) as T;
+    if (t == _i60.ClassLevelData) {
+      return _i60.ClassLevelData.fromJson(data) as T;
     }
-    if (t == _i61.StartingEquipmentLineData) {
-      return _i61.StartingEquipmentLineData.fromJson(data) as T;
+    if (t == _i61.PreparedSpellRuleData) {
+      return _i61.PreparedSpellRuleData.fromJson(data) as T;
     }
-    if (t == _i62.StartingEquipmentOptionData) {
-      return _i62.StartingEquipmentOptionData.fromJson(data) as T;
+    if (t == _i62.SpellSlotProgressionData) {
+      return _i62.SpellSlotProgressionData.fromJson(data) as T;
     }
-    if (t == _i63.SubclassData) {
-      return _i63.SubclassData.fromJson(data) as T;
+    if (t == _i63.StartingEquipmentBlockData) {
+      return _i63.StartingEquipmentBlockData.fromJson(data) as T;
     }
-    if (t == _i64.SubclassFeatureData) {
-      return _i64.SubclassFeatureData.fromJson(data) as T;
+    if (t == _i64.StartingEquipmentEntryData) {
+      return _i64.StartingEquipmentEntryData.fromJson(data) as T;
     }
-    if (t == _i65.FeatureDisplayPropertyData) {
-      return _i65.FeatureDisplayPropertyData.fromJson(data) as T;
+    if (t == _i65.StartingEquipmentLineData) {
+      return _i65.StartingEquipmentLineData.fromJson(data) as T;
     }
-    if (t == _i66.FeatureModifierConditionData) {
-      return _i66.FeatureModifierConditionData.fromJson(data) as T;
+    if (t == _i66.StartingEquipmentOptionData) {
+      return _i66.StartingEquipmentOptionData.fromJson(data) as T;
     }
-    if (t == _i67.FeatureModifierData) {
-      return _i67.FeatureModifierData.fromJson(data) as T;
+    if (t == _i67.SubclassData) {
+      return _i67.SubclassData.fromJson(data) as T;
     }
-    if (t == _i68.FeatureModifierValueData) {
-      return _i68.FeatureModifierValueData.fromJson(data) as T;
+    if (t == _i68.SubclassFeatureData) {
+      return _i68.SubclassFeatureData.fromJson(data) as T;
     }
-    if (t == _i69.FeatureResourceDefinitionData) {
-      return _i69.FeatureResourceDefinitionData.fromJson(data) as T;
+    if (t == _i69.FeatureDisplayPropertyData) {
+      return _i69.FeatureDisplayPropertyData.fromJson(data) as T;
     }
-    if (t == _i70.FeatureResourceEffectData) {
-      return _i70.FeatureResourceEffectData.fromJson(data) as T;
+    if (t == _i70.FeatureModifierConditionData) {
+      return _i70.FeatureModifierConditionData.fromJson(data) as T;
     }
-    if (t == _i71.FeatureResourceProgressionValueData) {
-      return _i71.FeatureResourceProgressionValueData.fromJson(data) as T;
+    if (t == _i71.FeatureModifierData) {
+      return _i71.FeatureModifierData.fromJson(data) as T;
     }
-    if (t == _i72.RaceData) {
-      return _i72.RaceData.fromJson(data) as T;
+    if (t == _i72.FeatureModifierValueData) {
+      return _i72.FeatureModifierValueData.fromJson(data) as T;
     }
-    if (t == _i73.RaceFeatureData) {
-      return _i73.RaceFeatureData.fromJson(data) as T;
+    if (t == _i73.FeatureResourceDefinitionData) {
+      return _i73.FeatureResourceDefinitionData.fromJson(data) as T;
     }
-    if (t == _i74.RaceFeatureSpellGrantData) {
-      return _i74.RaceFeatureSpellGrantData.fromJson(data) as T;
+    if (t == _i74.FeatureResourceEffectData) {
+      return _i74.FeatureResourceEffectData.fromJson(data) as T;
     }
-    if (t == _i75.SubraceData) {
-      return _i75.SubraceData.fromJson(data) as T;
+    if (t == _i75.FeatureResourceProgressionValueData) {
+      return _i75.FeatureResourceProgressionValueData.fromJson(data) as T;
     }
-    if (t == _i76.ToolData) {
-      return _i76.ToolData.fromJson(data) as T;
+    if (t == _i76.RaceData) {
+      return _i76.RaceData.fromJson(data) as T;
     }
-    if (t == _i77.ArmorData) {
-      return _i77.ArmorData.fromJson(data) as T;
+    if (t == _i77.RaceFeatureData) {
+      return _i77.RaceFeatureData.fromJson(data) as T;
     }
-    if (t == _i78.ItemData) {
-      return _i78.ItemData.fromJson(data) as T;
+    if (t == _i78.RaceFeatureSpellGrantData) {
+      return _i78.RaceFeatureSpellGrantData.fromJson(data) as T;
     }
-    if (t == _i79.MagicItemData) {
-      return _i79.MagicItemData.fromJson(data) as T;
+    if (t == _i79.SubraceData) {
+      return _i79.SubraceData.fromJson(data) as T;
     }
-    if (t == _i80.WeaponData) {
-      return _i80.WeaponData.fromJson(data) as T;
+    if (t == _i80.SpellActivationData) {
+      return _i80.SpellActivationData.fromJson(data) as T;
     }
-    if (t == _i81.SpellData) {
-      return _i81.SpellData.fromJson(data) as T;
+    if (t == _i81.SpellResourceUpcastPolicyData) {
+      return _i81.SpellResourceUpcastPolicyData.fromJson(data) as T;
     }
-    if (t == _i82.SpellScalingData) {
-      return _i82.SpellScalingData.fromJson(data) as T;
+    if (t == _i82.SpellSelectionFilterData) {
+      return _i82.SpellSelectionFilterData.fromJson(data) as T;
     }
-    if (t == _i83.Ability) {
-      return _i83.Ability.fromJson(data) as T;
+    if (t == _i83.SpellSlotRecoveryPolicyData) {
+      return _i83.SpellSlotRecoveryPolicyData.fromJson(data) as T;
     }
-    if (t == _i84.ArmorCategory) {
-      return _i84.ArmorCategory.fromJson(data) as T;
+    if (t == _i84.ToolData) {
+      return _i84.ToolData.fromJson(data) as T;
     }
-    if (t == _i85.CharacterAlignment) {
-      return _i85.CharacterAlignment.fromJson(data) as T;
+    if (t == _i85.ArmorData) {
+      return _i85.ArmorData.fromJson(data) as T;
     }
-    if (t == _i86.CharacterChangeType) {
-      return _i86.CharacterChangeType.fromJson(data) as T;
+    if (t == _i86.ItemData) {
+      return _i86.ItemData.fromJson(data) as T;
     }
-    if (t == _i87.CharacterEntityType) {
-      return _i87.CharacterEntityType.fromJson(data) as T;
+    if (t == _i87.MagicItemData) {
+      return _i87.MagicItemData.fromJson(data) as T;
     }
-    if (t == _i88.CharacterFeatureSourceType) {
-      return _i88.CharacterFeatureSourceType.fromJson(data) as T;
+    if (t == _i88.WeaponData) {
+      return _i88.WeaponData.fromJson(data) as T;
     }
-    if (t == _i89.CharacterInventoryItemType) {
-      return _i89.CharacterInventoryItemType.fromJson(data) as T;
+    if (t == _i89.SpellData) {
+      return _i89.SpellData.fromJson(data) as T;
     }
-    if (t == _i90.CharacterSavingThrowProficiencyOverride) {
-      return _i90.CharacterSavingThrowProficiencyOverride.fromJson(data) as T;
+    if (t == _i90.SpellScalingData) {
+      return _i90.SpellScalingData.fromJson(data) as T;
     }
-    if (t == _i91.CharacterSkillProficiencyLevel) {
-      return _i91.CharacterSkillProficiencyLevel.fromJson(data) as T;
+    if (t == _i91.Ability) {
+      return _i91.Ability.fromJson(data) as T;
     }
-    if (t == _i92.CharacterSkillSelectionKind) {
-      return _i92.CharacterSkillSelectionKind.fromJson(data) as T;
+    if (t == _i92.ArmorCategory) {
+      return _i92.ArmorCategory.fromJson(data) as T;
     }
-    if (t == _i93.CharacterSpeedKind) {
-      return _i93.CharacterSpeedKind.fromJson(data) as T;
+    if (t == _i93.CharacterAlignment) {
+      return _i93.CharacterAlignment.fromJson(data) as T;
     }
-    if (t == _i94.CharacterSpellSelectionKind) {
-      return _i94.CharacterSpellSelectionKind.fromJson(data) as T;
+    if (t == _i94.CharacterChangeType) {
+      return _i94.CharacterChangeType.fromJson(data) as T;
     }
-    if (t == _i95.CharacterSyncOperationType) {
-      return _i95.CharacterSyncOperationType.fromJson(data) as T;
+    if (t == _i95.CharacterEntityType) {
+      return _i95.CharacterEntityType.fromJson(data) as T;
     }
-    if (t == _i96.CharacterSyncTargetType) {
-      return _i96.CharacterSyncTargetType.fromJson(data) as T;
+    if (t == _i96.CharacterFeatureSourceType) {
+      return _i96.CharacterFeatureSourceType.fromJson(data) as T;
     }
-    if (t == _i97.ChoiceRequirementType) {
-      return _i97.ChoiceRequirementType.fromJson(data) as T;
+    if (t == _i97.CharacterInventoryItemType) {
+      return _i97.CharacterInventoryItemType.fromJson(data) as T;
     }
-    if (t == _i98.ChoiceSourceType) {
-      return _i98.ChoiceSourceType.fromJson(data) as T;
+    if (t == _i98.CharacterSavingThrowProficiencyOverride) {
+      return _i98.CharacterSavingThrowProficiencyOverride.fromJson(data) as T;
     }
-    if (t == _i99.ChoiceType) {
-      return _i99.ChoiceType.fromJson(data) as T;
+    if (t == _i99.CharacterSkillProficiencyLevel) {
+      return _i99.CharacterSkillProficiencyLevel.fromJson(data) as T;
     }
-    if (t == _i100.ClassSpellSelectionMode) {
-      return _i100.ClassSpellSelectionMode.fromJson(data) as T;
+    if (t == _i100.CharacterSkillSelectionKind) {
+      return _i100.CharacterSkillSelectionKind.fromJson(data) as T;
     }
-    if (t == _i101.ConditionType) {
-      return _i101.ConditionType.fromJson(data) as T;
+    if (t == _i101.CharacterSpeedKind) {
+      return _i101.CharacterSpeedKind.fromJson(data) as T;
     }
-    if (t == _i102.CreatureSize) {
-      return _i102.CreatureSize.fromJson(data) as T;
+    if (t == _i102.CharacterSpellSelectionKind) {
+      return _i102.CharacterSpellSelectionKind.fromJson(data) as T;
     }
-    if (t == _i103.DamageType) {
-      return _i103.DamageType.fromJson(data) as T;
+    if (t == _i103.CharacterSyncOperationType) {
+      return _i103.CharacterSyncOperationType.fromJson(data) as T;
     }
-    if (t == _i104.EquipmentCatalogType) {
-      return _i104.EquipmentCatalogType.fromJson(data) as T;
+    if (t == _i104.CharacterSyncTargetType) {
+      return _i104.CharacterSyncTargetType.fromJson(data) as T;
     }
-    if (t == _i105.FeatureDisplayPropertyValueKind) {
-      return _i105.FeatureDisplayPropertyValueKind.fromJson(data) as T;
+    if (t == _i105.ChoiceRequirementType) {
+      return _i105.ChoiceRequirementType.fromJson(data) as T;
     }
-    if (t == _i106.FeatureModifierConditionType) {
-      return _i106.FeatureModifierConditionType.fromJson(data) as T;
+    if (t == _i106.ChoiceSourceType) {
+      return _i106.ChoiceSourceType.fromJson(data) as T;
     }
-    if (t == _i107.FeatureModifierOperation) {
-      return _i107.FeatureModifierOperation.fromJson(data) as T;
+    if (t == _i107.ChoiceType) {
+      return _i107.ChoiceType.fromJson(data) as T;
     }
-    if (t == _i108.FeatureModifierRounding) {
-      return _i108.FeatureModifierRounding.fromJson(data) as T;
+    if (t == _i108.ClassSpellSelectionMode) {
+      return _i108.ClassSpellSelectionMode.fromJson(data) as T;
     }
-    if (t == _i109.StartingEquipmentOptionView) {
-      return _i109.StartingEquipmentOptionView.fromJson(data) as T;
+    if (t == _i109.ConditionType) {
+      return _i109.ConditionType.fromJson(data) as T;
     }
-    if (t == _i110.FeatureModifierValueKind) {
-      return _i110.FeatureModifierValueKind.fromJson(data) as T;
+    if (t == _i110.CreatureSize) {
+      return _i110.CreatureSize.fromJson(data) as T;
     }
-    if (t == _i111.FeatureResourceEffectType) {
-      return _i111.FeatureResourceEffectType.fromJson(data) as T;
+    if (t == _i111.DamageType) {
+      return _i111.DamageType.fromJson(data) as T;
     }
-    if (t == _i112.FeatureResourceKind) {
-      return _i112.FeatureResourceKind.fromJson(data) as T;
+    if (t == _i112.EquipmentCatalogType) {
+      return _i112.EquipmentCatalogType.fromJson(data) as T;
     }
-    if (t == _i113.FeatureResourceMaxRule) {
-      return _i113.FeatureResourceMaxRule.fromJson(data) as T;
+    if (t == _i113.FeatureDisplayPropertyValueKind) {
+      return _i113.FeatureDisplayPropertyValueKind.fromJson(data) as T;
     }
-    if (t == _i114.FeatureResourceProgressionKey) {
-      return _i114.FeatureResourceProgressionKey.fromJson(data) as T;
+    if (t == _i114.FeatureModifierConditionType) {
+      return _i114.FeatureModifierConditionType.fromJson(data) as T;
     }
-    if (t == _i115.FeatureResourceTargetType) {
-      return _i115.FeatureResourceTargetType.fromJson(data) as T;
+    if (t == _i115.StartingEquipmentOptionView) {
+      return _i115.StartingEquipmentOptionView.fromJson(data) as T;
     }
-    if (t == _i116.FeatureResourceTrigger) {
-      return _i116.FeatureResourceTrigger.fromJson(data) as T;
+    if (t == _i116.FeatureModifierRounding) {
+      return _i116.FeatureModifierRounding.fromJson(data) as T;
     }
-    if (t == _i117.FeatureTag) {
-      return _i117.FeatureTag.fromJson(data) as T;
+    if (t == _i117.FeatureModifierTarget) {
+      return _i117.FeatureModifierTarget.fromJson(data) as T;
     }
-    if (t == _i118.HitPointMode) {
-      return _i118.HitPointMode.fromJson(data) as T;
+    if (t == _i118.FeatureModifierValueKind) {
+      return _i118.FeatureModifierValueKind.fromJson(data) as T;
     }
-    if (t == _i119.Language) {
-      return _i119.Language.fromJson(data) as T;
+    if (t == _i119.FeatureResourceEffectType) {
+      return _i119.FeatureResourceEffectType.fromJson(data) as T;
     }
-    if (t == _i120.PreparedSpellRounding) {
-      return _i120.PreparedSpellRounding.fromJson(data) as T;
+    if (t == _i120.FeatureResourceKind) {
+      return _i120.FeatureResourceKind.fromJson(data) as T;
     }
-    if (t == _i121.RestType) {
-      return _i121.RestType.fromJson(data) as T;
+    if (t == _i121.FeatureResourceMaxRule) {
+      return _i121.FeatureResourceMaxRule.fromJson(data) as T;
     }
-    if (t == _i122.SenseType) {
-      return _i122.SenseType.fromJson(data) as T;
+    if (t == _i122.FeatureResourceProgressionKey) {
+      return _i122.FeatureResourceProgressionKey.fromJson(data) as T;
     }
-    if (t == _i123.Skill) {
-      return _i123.Skill.fromJson(data) as T;
+    if (t == _i123.FeatureResourceTargetType) {
+      return _i123.FeatureResourceTargetType.fromJson(data) as T;
     }
-    if (t == _i124.AreaOfEffectType) {
-      return _i124.AreaOfEffectType.fromJson(data) as T;
+    if (t == _i124.FeatureResourceTrigger) {
+      return _i124.FeatureResourceTrigger.fromJson(data) as T;
     }
-    if (t == _i125.AreaSizeMeasurement) {
-      return _i125.AreaSizeMeasurement.fromJson(data) as T;
+    if (t == _i125.FeatureTag) {
+      return _i125.FeatureTag.fromJson(data) as T;
     }
-    if (t == _i126.SpellAttackType) {
-      return _i126.SpellAttackType.fromJson(data) as T;
+    if (t == _i126.HitPointMode) {
+      return _i126.HitPointMode.fromJson(data) as T;
     }
-    if (t == _i127.SpellDurationType) {
-      return _i127.SpellDurationType.fromJson(data) as T;
+    if (t == _i127.Language) {
+      return _i127.Language.fromJson(data) as T;
     }
-    if (t == _i128.SpellScalingMode) {
-      return _i128.SpellScalingMode.fromJson(data) as T;
+    if (t == _i128.PreparedSpellRounding) {
+      return _i128.PreparedSpellRounding.fromJson(data) as T;
     }
-    if (t == _i129.SpellSchool) {
-      return _i129.SpellSchool.fromJson(data) as T;
+    if (t == _i129.RestType) {
+      return _i129.RestType.fromJson(data) as T;
     }
-    if (t == _i130.SpellTargetType) {
-      return _i130.SpellTargetType.fromJson(data) as T;
+    if (t == _i130.SenseType) {
+      return _i130.SenseType.fromJson(data) as T;
     }
-    if (t == _i131.SpellcastingProgression) {
-      return _i131.SpellcastingProgression.fromJson(data) as T;
+    if (t == _i131.Skill) {
+      return _i131.Skill.fromJson(data) as T;
     }
-    if (t == _i132.StartingEquipmentBlockKind) {
-      return _i132.StartingEquipmentBlockKind.fromJson(data) as T;
+    if (t == _i132.AreaOfEffectType) {
+      return _i132.AreaOfEffectType.fromJson(data) as T;
     }
-    if (t == _i133.StartingEquipmentEntryKind) {
-      return _i133.StartingEquipmentEntryKind.fromJson(data) as T;
+    if (t == _i133.AreaSizeMeasurement) {
+      return _i133.AreaSizeMeasurement.fromJson(data) as T;
     }
-    if (t == _i134.StartingEquipmentLineKind) {
-      return _i134.StartingEquipmentLineKind.fromJson(data) as T;
+    if (t == _i134.SpellAttackType) {
+      return _i134.SpellAttackType.fromJson(data) as T;
     }
-    if (t == _i135.ToolCategory) {
-      return _i135.ToolCategory.fromJson(data) as T;
+    if (t == _i135.SpellDurationType) {
+      return _i135.SpellDurationType.fromJson(data) as T;
     }
-    if (t == _i136.UnarmoredDefenseRule) {
-      return _i136.UnarmoredDefenseRule.fromJson(data) as T;
+    if (t == _i136.SpellScalingMode) {
+      return _i136.SpellScalingMode.fromJson(data) as T;
     }
-    if (t == _i137.WeaponCategory) {
-      return _i137.WeaponCategory.fromJson(data) as T;
+    if (t == _i137.SpellSchool) {
+      return _i137.SpellSchool.fromJson(data) as T;
     }
-    if (t == _i138.WeaponProperty) {
-      return _i138.WeaponProperty.fromJson(data) as T;
+    if (t == _i138.SpellTargetType) {
+      return _i138.SpellTargetType.fromJson(data) as T;
     }
-    if (t == _i139.LevelDownChoiceRepair) {
-      return _i139.LevelDownChoiceRepair.fromJson(data) as T;
+    if (t == _i139.SpellSlotRecoveryMode) {
+      return _i139.SpellSlotRecoveryMode.fromJson(data) as T;
     }
-    if (t == _i140.LevelDownRequest) {
-      return _i140.LevelDownRequest.fromJson(data) as T;
+    if (t == _i140.SpellcastingProgression) {
+      return _i140.SpellcastingProgression.fromJson(data) as T;
     }
-    if (t == _i141.BackgroundStepView) {
-      return _i141.BackgroundStepView.fromJson(data) as T;
+    if (t == _i141.StartingEquipmentBlockKind) {
+      return _i141.StartingEquipmentBlockKind.fromJson(data) as T;
     }
-    if (t == _i142.CharacterEquipmentEntryView) {
-      return _i142.CharacterEquipmentEntryView.fromJson(data) as T;
+    if (t == _i142.StartingEquipmentEntryKind) {
+      return _i142.StartingEquipmentEntryKind.fromJson(data) as T;
     }
-    if (t == _i143.ChoiceGroupView) {
-      return _i143.ChoiceGroupView.fromJson(data) as T;
+    if (t == _i143.StartingEquipmentLineKind) {
+      return _i143.StartingEquipmentLineKind.fromJson(data) as T;
     }
-    if (t == _i144.ChoiceOptionEligibilityView) {
-      return _i144.ChoiceOptionEligibilityView.fromJson(data) as T;
+    if (t == _i144.ToolCategory) {
+      return _i144.ToolCategory.fromJson(data) as T;
     }
-    if (t == _i145.ChoiceRequirementFailureView) {
-      return _i145.ChoiceRequirementFailureView.fromJson(data) as T;
+    if (t == _i145.UnarmoredDefenseRule) {
+      return _i145.UnarmoredDefenseRule.fromJson(data) as T;
     }
-    if (t == _i146.ClassSpellDeltaView) {
-      return _i146.ClassSpellDeltaView.fromJson(data) as T;
+    if (t == _i146.WeaponCategory) {
+      return _i146.WeaponCategory.fromJson(data) as T;
     }
-    if (t == _i147.ClassSpellSelectionGroupView) {
-      return _i147.ClassSpellSelectionGroupView.fromJson(data) as T;
+    if (t == _i147.WeaponProperty) {
+      return _i147.WeaponProperty.fromJson(data) as T;
     }
-    if (t == _i148.ClassStepFeatureView) {
-      return _i148.ClassStepFeatureView.fromJson(data) as T;
+    if (t == _i148.LevelDownChoiceRepair) {
+      return _i148.LevelDownChoiceRepair.fromJson(data) as T;
     }
-    if (t == _i149.ClassStepSubclassChoiceView) {
-      return _i149.ClassStepSubclassChoiceView.fromJson(data) as T;
+    if (t == _i149.LevelDownRequest) {
+      return _i149.LevelDownRequest.fromJson(data) as T;
     }
-    if (t == _i150.ClassStepView) {
-      return _i150.ClassStepView.fromJson(data) as T;
+    if (t == _i150.BackgroundStepView) {
+      return _i150.BackgroundStepView.fromJson(data) as T;
     }
-    if (t == _i151.FeatureDisplayPropertyView) {
-      return _i151.FeatureDisplayPropertyView.fromJson(data) as T;
+    if (t == _i151.CharacterEquipmentEntryView) {
+      return _i151.CharacterEquipmentEntryView.fromJson(data) as T;
     }
-    if (t == _i152.LevelDownInvalidChoiceView) {
-      return _i152.LevelDownInvalidChoiceView.fromJson(data) as T;
+    if (t == _i152.ChoiceGroupView) {
+      return _i152.ChoiceGroupView.fromJson(data) as T;
     }
-    if (t == _i153.LevelDownPreview) {
-      return _i153.LevelDownPreview.fromJson(data) as T;
+    if (t == _i153.ChoiceOptionEligibilityView) {
+      return _i153.ChoiceOptionEligibilityView.fromJson(data) as T;
     }
-    if (t == _i154.LevelUpPreview) {
-      return _i154.LevelUpPreview.fromJson(data) as T;
+    if (t == _i154.ChoiceRequirementFailureView) {
+      return _i154.ChoiceRequirementFailureView.fromJson(data) as T;
     }
-    if (t == _i155.ProficiencyBundleView) {
-      return _i155.ProficiencyBundleView.fromJson(data) as T;
+    if (t == _i155.ClassSpellDeltaView) {
+      return _i155.ClassSpellDeltaView.fromJson(data) as T;
     }
-    if (t == _i156.RaceStepView) {
-      return _i156.RaceStepView.fromJson(data) as T;
+    if (t == _i156.ClassSpellSelectionGroupView) {
+      return _i156.ClassSpellSelectionGroupView.fromJson(data) as T;
     }
-    if (t == _i157.ResolvedCharacterSpellData) {
-      return _i157.ResolvedCharacterSpellData.fromJson(data) as T;
+    if (t == _i157.ClassStepFeatureView) {
+      return _i157.ClassStepFeatureView.fromJson(data) as T;
     }
-    if (t == _i158.SelectedFeatureChoiceView) {
-      return _i158.SelectedFeatureChoiceView.fromJson(data) as T;
+    if (t == _i158.ClassStepSubclassChoiceView) {
+      return _i158.ClassStepSubclassChoiceView.fromJson(data) as T;
     }
-    if (t == _i159.SkillSelectionGroupView) {
-      return _i159.SkillSelectionGroupView.fromJson(data) as T;
+    if (t == _i159.ClassStepView) {
+      return _i159.ClassStepView.fromJson(data) as T;
     }
-    if (t == _i160.SpellSourceContextData) {
-      return _i160.SpellSourceContextData.fromJson(data) as T;
+    if (t == _i160.FeatureDisplayPropertyView) {
+      return _i160.FeatureDisplayPropertyView.fromJson(data) as T;
     }
-    if (t == _i161.StartingEquipmentBlockView) {
-      return _i161.StartingEquipmentBlockView.fromJson(data) as T;
+    if (t == _i161.LevelDownInvalidChoiceView) {
+      return _i161.LevelDownInvalidChoiceView.fromJson(data) as T;
     }
-    if (t == _i162.FeatureModifierTarget) {
-      return _i162.FeatureModifierTarget.fromJson(data) as T;
+    if (t == _i162.LevelDownPreview) {
+      return _i162.LevelDownPreview.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i4.PreparedSpellRuleData?>()) {
-      return (data != null ? _i4.PreparedSpellRuleData.fromJson(data) : null)
-          as T;
+    if (t == _i163.LevelUpPreview) {
+      return _i163.LevelUpPreview.fromJson(data) as T;
+    }
+    if (t == _i164.ProficiencyBundleView) {
+      return _i164.ProficiencyBundleView.fromJson(data) as T;
+    }
+    if (t == _i165.RaceStepView) {
+      return _i165.RaceStepView.fromJson(data) as T;
+    }
+    if (t == _i166.ResolvedCharacterSpellData) {
+      return _i166.ResolvedCharacterSpellData.fromJson(data) as T;
+    }
+    if (t == _i167.SelectedFeatureChoiceView) {
+      return _i167.SelectedFeatureChoiceView.fromJson(data) as T;
+    }
+    if (t == _i168.SkillSelectionGroupView) {
+      return _i168.SkillSelectionGroupView.fromJson(data) as T;
+    }
+    if (t == _i169.SpellSourceContextData) {
+      return _i169.SpellSourceContextData.fromJson(data) as T;
+    }
+    if (t == _i170.StartingEquipmentBlockView) {
+      return _i170.StartingEquipmentBlockView.fromJson(data) as T;
+    }
+    if (t == _i171.FeatureModifierOperation) {
+      return _i171.FeatureModifierOperation.fromJson(data) as T;
+    }
+    if (t == _i1.getType<_i4.ClassFeatureData?>()) {
+      return (data != null ? _i4.ClassFeatureData.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i5.BackgroundData?>()) {
       return (data != null ? _i5.BackgroundData.fromJson(data) : null) as T;
@@ -6752,544 +6911,666 @@ class Protocol extends _i1.SerializationManagerServer {
           ? _i48.CharacterWeaponProficiencyOverridesData.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i49.LevelUpRequest?>()) {
-      return (data != null ? _i49.LevelUpRequest.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i49.ChoiceReplacementHistoryData?>()) {
+      return (data != null
+          ? _i49.ChoiceReplacementHistoryData.fromJson(data)
+          : null) as T;
     }
-    if (t == _i1.getType<_i50.LevelUpSpellChoice?>()) {
-      return (data != null ? _i50.LevelUpSpellChoice.fromJson(data) : null)
+    if (t == _i1.getType<_i50.LevelUpChoiceReplacementData?>()) {
+      return (data != null
+          ? _i50.LevelUpChoiceReplacementData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i51.LevelUpRequest?>()) {
+      return (data != null ? _i51.LevelUpRequest.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i52.LevelUpSpellChoice?>()) {
+      return (data != null ? _i52.LevelUpSpellChoice.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i51.ChoiceGroupData?>()) {
-      return (data != null ? _i51.ChoiceGroupData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i53.SpellSelectionReplacementHistoryData?>()) {
+      return (data != null
+          ? _i53.SpellSelectionReplacementHistoryData.fromJson(data)
+          : null) as T;
     }
-    if (t == _i1.getType<_i52.ChoiceOptionData?>()) {
-      return (data != null ? _i52.ChoiceOptionData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i54.SpellSlotRecoveryTriggerData?>()) {
+      return (data != null
+          ? _i54.SpellSlotRecoveryTriggerData.fromJson(data)
+          : null) as T;
     }
-    if (t == _i1.getType<_i53.ChoiceRequirementData?>()) {
-      return (data != null ? _i53.ChoiceRequirementData.fromJson(data) : null)
+    if (t == _i1.getType<_i55.ChoiceGroupData?>()) {
+      return (data != null ? _i55.ChoiceGroupData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i56.ChoiceOptionData?>()) {
+      return (data != null ? _i56.ChoiceOptionData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i57.ChoiceRequirementData?>()) {
+      return (data != null ? _i57.ChoiceRequirementData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i54.ClassData?>()) {
-      return (data != null ? _i54.ClassData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i58.ClassData?>()) {
+      return (data != null ? _i58.ClassData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i55.ClassFeatureData?>()) {
-      return (data != null ? _i55.ClassFeatureData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i59.AuthActionResult?>()) {
+      return (data != null ? _i59.AuthActionResult.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i56.ClassLevelData?>()) {
-      return (data != null ? _i56.ClassLevelData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i60.ClassLevelData?>()) {
+      return (data != null ? _i60.ClassLevelData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i57.AuthActionResult?>()) {
-      return (data != null ? _i57.AuthActionResult.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i58.SpellSlotProgressionData?>()) {
-      return (data != null
-          ? _i58.SpellSlotProgressionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i59.StartingEquipmentBlockData?>()) {
-      return (data != null
-          ? _i59.StartingEquipmentBlockData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i60.StartingEquipmentEntryData?>()) {
-      return (data != null
-          ? _i60.StartingEquipmentEntryData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i61.StartingEquipmentLineData?>()) {
-      return (data != null
-          ? _i61.StartingEquipmentLineData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i62.StartingEquipmentOptionData?>()) {
-      return (data != null
-          ? _i62.StartingEquipmentOptionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i63.SubclassData?>()) {
-      return (data != null ? _i63.SubclassData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i64.SubclassFeatureData?>()) {
-      return (data != null ? _i64.SubclassFeatureData.fromJson(data) : null)
+    if (t == _i1.getType<_i61.PreparedSpellRuleData?>()) {
+      return (data != null ? _i61.PreparedSpellRuleData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i65.FeatureDisplayPropertyData?>()) {
+    if (t == _i1.getType<_i62.SpellSlotProgressionData?>()) {
       return (data != null
-          ? _i65.FeatureDisplayPropertyData.fromJson(data)
+          ? _i62.SpellSlotProgressionData.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i66.FeatureModifierConditionData?>()) {
+    if (t == _i1.getType<_i63.StartingEquipmentBlockData?>()) {
       return (data != null
-          ? _i66.FeatureModifierConditionData.fromJson(data)
+          ? _i63.StartingEquipmentBlockData.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i67.FeatureModifierData?>()) {
-      return (data != null ? _i67.FeatureModifierData.fromJson(data) : null)
+    if (t == _i1.getType<_i64.StartingEquipmentEntryData?>()) {
+      return (data != null
+          ? _i64.StartingEquipmentEntryData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i65.StartingEquipmentLineData?>()) {
+      return (data != null
+          ? _i65.StartingEquipmentLineData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i66.StartingEquipmentOptionData?>()) {
+      return (data != null
+          ? _i66.StartingEquipmentOptionData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i67.SubclassData?>()) {
+      return (data != null ? _i67.SubclassData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i68.SubclassFeatureData?>()) {
+      return (data != null ? _i68.SubclassFeatureData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i68.FeatureModifierValueData?>()) {
+    if (t == _i1.getType<_i69.FeatureDisplayPropertyData?>()) {
       return (data != null
-          ? _i68.FeatureModifierValueData.fromJson(data)
+          ? _i69.FeatureDisplayPropertyData.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i69.FeatureResourceDefinitionData?>()) {
+    if (t == _i1.getType<_i70.FeatureModifierConditionData?>()) {
       return (data != null
-          ? _i69.FeatureResourceDefinitionData.fromJson(data)
+          ? _i70.FeatureModifierConditionData.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i70.FeatureResourceEffectData?>()) {
-      return (data != null
-          ? _i70.FeatureResourceEffectData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i71.FeatureResourceProgressionValueData?>()) {
-      return (data != null
-          ? _i71.FeatureResourceProgressionValueData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i72.RaceData?>()) {
-      return (data != null ? _i72.RaceData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i73.RaceFeatureData?>()) {
-      return (data != null ? _i73.RaceFeatureData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i74.RaceFeatureSpellGrantData?>()) {
-      return (data != null
-          ? _i74.RaceFeatureSpellGrantData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i75.SubraceData?>()) {
-      return (data != null ? _i75.SubraceData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i76.ToolData?>()) {
-      return (data != null ? _i76.ToolData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i77.ArmorData?>()) {
-      return (data != null ? _i77.ArmorData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i78.ItemData?>()) {
-      return (data != null ? _i78.ItemData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i79.MagicItemData?>()) {
-      return (data != null ? _i79.MagicItemData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i80.WeaponData?>()) {
-      return (data != null ? _i80.WeaponData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i81.SpellData?>()) {
-      return (data != null ? _i81.SpellData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i82.SpellScalingData?>()) {
-      return (data != null ? _i82.SpellScalingData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i83.Ability?>()) {
-      return (data != null ? _i83.Ability.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i84.ArmorCategory?>()) {
-      return (data != null ? _i84.ArmorCategory.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i85.CharacterAlignment?>()) {
-      return (data != null ? _i85.CharacterAlignment.fromJson(data) : null)
+    if (t == _i1.getType<_i71.FeatureModifierData?>()) {
+      return (data != null ? _i71.FeatureModifierData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i86.CharacterChangeType?>()) {
-      return (data != null ? _i86.CharacterChangeType.fromJson(data) : null)
+    if (t == _i1.getType<_i72.FeatureModifierValueData?>()) {
+      return (data != null
+          ? _i72.FeatureModifierValueData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i73.FeatureResourceDefinitionData?>()) {
+      return (data != null
+          ? _i73.FeatureResourceDefinitionData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i74.FeatureResourceEffectData?>()) {
+      return (data != null
+          ? _i74.FeatureResourceEffectData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i75.FeatureResourceProgressionValueData?>()) {
+      return (data != null
+          ? _i75.FeatureResourceProgressionValueData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i76.RaceData?>()) {
+      return (data != null ? _i76.RaceData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i77.RaceFeatureData?>()) {
+      return (data != null ? _i77.RaceFeatureData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i78.RaceFeatureSpellGrantData?>()) {
+      return (data != null
+          ? _i78.RaceFeatureSpellGrantData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i79.SubraceData?>()) {
+      return (data != null ? _i79.SubraceData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i80.SpellActivationData?>()) {
+      return (data != null ? _i80.SpellActivationData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i87.CharacterEntityType?>()) {
-      return (data != null ? _i87.CharacterEntityType.fromJson(data) : null)
+    if (t == _i1.getType<_i81.SpellResourceUpcastPolicyData?>()) {
+      return (data != null
+          ? _i81.SpellResourceUpcastPolicyData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i82.SpellSelectionFilterData?>()) {
+      return (data != null
+          ? _i82.SpellSelectionFilterData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i83.SpellSlotRecoveryPolicyData?>()) {
+      return (data != null
+          ? _i83.SpellSlotRecoveryPolicyData.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i84.ToolData?>()) {
+      return (data != null ? _i84.ToolData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i85.ArmorData?>()) {
+      return (data != null ? _i85.ArmorData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i86.ItemData?>()) {
+      return (data != null ? _i86.ItemData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i87.MagicItemData?>()) {
+      return (data != null ? _i87.MagicItemData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i88.WeaponData?>()) {
+      return (data != null ? _i88.WeaponData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i89.SpellData?>()) {
+      return (data != null ? _i89.SpellData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i90.SpellScalingData?>()) {
+      return (data != null ? _i90.SpellScalingData.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i91.Ability?>()) {
+      return (data != null ? _i91.Ability.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i92.ArmorCategory?>()) {
+      return (data != null ? _i92.ArmorCategory.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i93.CharacterAlignment?>()) {
+      return (data != null ? _i93.CharacterAlignment.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i88.CharacterFeatureSourceType?>()) {
-      return (data != null
-          ? _i88.CharacterFeatureSourceType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i89.CharacterInventoryItemType?>()) {
-      return (data != null
-          ? _i89.CharacterInventoryItemType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i90.CharacterSavingThrowProficiencyOverride?>()) {
-      return (data != null
-          ? _i90.CharacterSavingThrowProficiencyOverride.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i91.CharacterSkillProficiencyLevel?>()) {
-      return (data != null
-          ? _i91.CharacterSkillProficiencyLevel.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i92.CharacterSkillSelectionKind?>()) {
-      return (data != null
-          ? _i92.CharacterSkillSelectionKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i93.CharacterSpeedKind?>()) {
-      return (data != null ? _i93.CharacterSpeedKind.fromJson(data) : null)
+    if (t == _i1.getType<_i94.CharacterChangeType?>()) {
+      return (data != null ? _i94.CharacterChangeType.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i94.CharacterSpellSelectionKind?>()) {
-      return (data != null
-          ? _i94.CharacterSpellSelectionKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i95.CharacterSyncOperationType?>()) {
-      return (data != null
-          ? _i95.CharacterSyncOperationType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i96.CharacterSyncTargetType?>()) {
-      return (data != null ? _i96.CharacterSyncTargetType.fromJson(data) : null)
+    if (t == _i1.getType<_i95.CharacterEntityType?>()) {
+      return (data != null ? _i95.CharacterEntityType.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i97.ChoiceRequirementType?>()) {
-      return (data != null ? _i97.ChoiceRequirementType.fromJson(data) : null)
+    if (t == _i1.getType<_i96.CharacterFeatureSourceType?>()) {
+      return (data != null
+          ? _i96.CharacterFeatureSourceType.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i97.CharacterInventoryItemType?>()) {
+      return (data != null
+          ? _i97.CharacterInventoryItemType.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i98.CharacterSavingThrowProficiencyOverride?>()) {
+      return (data != null
+          ? _i98.CharacterSavingThrowProficiencyOverride.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i99.CharacterSkillProficiencyLevel?>()) {
+      return (data != null
+          ? _i99.CharacterSkillProficiencyLevel.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i100.CharacterSkillSelectionKind?>()) {
+      return (data != null
+          ? _i100.CharacterSkillSelectionKind.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i101.CharacterSpeedKind?>()) {
+      return (data != null ? _i101.CharacterSpeedKind.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i98.ChoiceSourceType?>()) {
-      return (data != null ? _i98.ChoiceSourceType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i99.ChoiceType?>()) {
-      return (data != null ? _i99.ChoiceType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i100.ClassSpellSelectionMode?>()) {
+    if (t == _i1.getType<_i102.CharacterSpellSelectionKind?>()) {
       return (data != null
-          ? _i100.ClassSpellSelectionMode.fromJson(data)
+          ? _i102.CharacterSpellSelectionKind.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i101.ConditionType?>()) {
-      return (data != null ? _i101.ConditionType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i103.CharacterSyncOperationType?>()) {
+      return (data != null
+          ? _i103.CharacterSyncOperationType.fromJson(data)
+          : null) as T;
     }
-    if (t == _i1.getType<_i102.CreatureSize?>()) {
-      return (data != null ? _i102.CreatureSize.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i104.CharacterSyncTargetType?>()) {
+      return (data != null
+          ? _i104.CharacterSyncTargetType.fromJson(data)
+          : null) as T;
     }
-    if (t == _i1.getType<_i103.DamageType?>()) {
-      return (data != null ? _i103.DamageType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i104.EquipmentCatalogType?>()) {
-      return (data != null ? _i104.EquipmentCatalogType.fromJson(data) : null)
+    if (t == _i1.getType<_i105.ChoiceRequirementType?>()) {
+      return (data != null ? _i105.ChoiceRequirementType.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i105.FeatureDisplayPropertyValueKind?>()) {
+    if (t == _i1.getType<_i106.ChoiceSourceType?>()) {
+      return (data != null ? _i106.ChoiceSourceType.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i107.ChoiceType?>()) {
+      return (data != null ? _i107.ChoiceType.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i108.ClassSpellSelectionMode?>()) {
       return (data != null
-          ? _i105.FeatureDisplayPropertyValueKind.fromJson(data)
+          ? _i108.ClassSpellSelectionMode.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i106.FeatureModifierConditionType?>()) {
-      return (data != null
-          ? _i106.FeatureModifierConditionType.fromJson(data)
-          : null) as T;
+    if (t == _i1.getType<_i109.ConditionType?>()) {
+      return (data != null ? _i109.ConditionType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i107.FeatureModifierOperation?>()) {
-      return (data != null
-          ? _i107.FeatureModifierOperation.fromJson(data)
-          : null) as T;
+    if (t == _i1.getType<_i110.CreatureSize?>()) {
+      return (data != null ? _i110.CreatureSize.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i108.FeatureModifierRounding?>()) {
-      return (data != null
-          ? _i108.FeatureModifierRounding.fromJson(data)
-          : null) as T;
+    if (t == _i1.getType<_i111.DamageType?>()) {
+      return (data != null ? _i111.DamageType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i109.StartingEquipmentOptionView?>()) {
-      return (data != null
-          ? _i109.StartingEquipmentOptionView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i110.FeatureModifierValueKind?>()) {
-      return (data != null
-          ? _i110.FeatureModifierValueKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i111.FeatureResourceEffectType?>()) {
-      return (data != null
-          ? _i111.FeatureResourceEffectType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i112.FeatureResourceKind?>()) {
-      return (data != null ? _i112.FeatureResourceKind.fromJson(data) : null)
+    if (t == _i1.getType<_i112.EquipmentCatalogType?>()) {
+      return (data != null ? _i112.EquipmentCatalogType.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i113.FeatureResourceMaxRule?>()) {
-      return (data != null ? _i113.FeatureResourceMaxRule.fromJson(data) : null)
+    if (t == _i1.getType<_i113.FeatureDisplayPropertyValueKind?>()) {
+      return (data != null
+          ? _i113.FeatureDisplayPropertyValueKind.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i114.FeatureModifierConditionType?>()) {
+      return (data != null
+          ? _i114.FeatureModifierConditionType.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i115.StartingEquipmentOptionView?>()) {
+      return (data != null
+          ? _i115.StartingEquipmentOptionView.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i116.FeatureModifierRounding?>()) {
+      return (data != null
+          ? _i116.FeatureModifierRounding.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i117.FeatureModifierTarget?>()) {
+      return (data != null ? _i117.FeatureModifierTarget.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i114.FeatureResourceProgressionKey?>()) {
+    if (t == _i1.getType<_i118.FeatureModifierValueKind?>()) {
       return (data != null
-          ? _i114.FeatureResourceProgressionKey.fromJson(data)
+          ? _i118.FeatureModifierValueKind.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i115.FeatureResourceTargetType?>()) {
+    if (t == _i1.getType<_i119.FeatureResourceEffectType?>()) {
       return (data != null
-          ? _i115.FeatureResourceTargetType.fromJson(data)
+          ? _i119.FeatureResourceEffectType.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i116.FeatureResourceTrigger?>()) {
-      return (data != null ? _i116.FeatureResourceTrigger.fromJson(data) : null)
+    if (t == _i1.getType<_i120.FeatureResourceKind?>()) {
+      return (data != null ? _i120.FeatureResourceKind.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i117.FeatureTag?>()) {
-      return (data != null ? _i117.FeatureTag.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i118.HitPointMode?>()) {
-      return (data != null ? _i118.HitPointMode.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i119.Language?>()) {
-      return (data != null ? _i119.Language.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i120.PreparedSpellRounding?>()) {
-      return (data != null ? _i120.PreparedSpellRounding.fromJson(data) : null)
+    if (t == _i1.getType<_i121.FeatureResourceMaxRule?>()) {
+      return (data != null ? _i121.FeatureResourceMaxRule.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i121.RestType?>()) {
-      return (data != null ? _i121.RestType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i122.FeatureResourceProgressionKey?>()) {
+      return (data != null
+          ? _i122.FeatureResourceProgressionKey.fromJson(data)
+          : null) as T;
     }
-    if (t == _i1.getType<_i122.SenseType?>()) {
-      return (data != null ? _i122.SenseType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i123.FeatureResourceTargetType?>()) {
+      return (data != null
+          ? _i123.FeatureResourceTargetType.fromJson(data)
+          : null) as T;
     }
-    if (t == _i1.getType<_i123.Skill?>()) {
-      return (data != null ? _i123.Skill.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i124.AreaOfEffectType?>()) {
-      return (data != null ? _i124.AreaOfEffectType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i125.AreaSizeMeasurement?>()) {
-      return (data != null ? _i125.AreaSizeMeasurement.fromJson(data) : null)
+    if (t == _i1.getType<_i124.FeatureResourceTrigger?>()) {
+      return (data != null ? _i124.FeatureResourceTrigger.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i126.SpellAttackType?>()) {
-      return (data != null ? _i126.SpellAttackType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i125.FeatureTag?>()) {
+      return (data != null ? _i125.FeatureTag.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i127.SpellDurationType?>()) {
-      return (data != null ? _i127.SpellDurationType.fromJson(data) : null)
+    if (t == _i1.getType<_i126.HitPointMode?>()) {
+      return (data != null ? _i126.HitPointMode.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i127.Language?>()) {
+      return (data != null ? _i127.Language.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i128.PreparedSpellRounding?>()) {
+      return (data != null ? _i128.PreparedSpellRounding.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i128.SpellScalingMode?>()) {
-      return (data != null ? _i128.SpellScalingMode.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i129.RestType?>()) {
+      return (data != null ? _i129.RestType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i129.SpellSchool?>()) {
-      return (data != null ? _i129.SpellSchool.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i130.SenseType?>()) {
+      return (data != null ? _i130.SenseType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i130.SpellTargetType?>()) {
-      return (data != null ? _i130.SpellTargetType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i131.Skill?>()) {
+      return (data != null ? _i131.Skill.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i131.SpellcastingProgression?>()) {
-      return (data != null
-          ? _i131.SpellcastingProgression.fromJson(data)
-          : null) as T;
+    if (t == _i1.getType<_i132.AreaOfEffectType?>()) {
+      return (data != null ? _i132.AreaOfEffectType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i132.StartingEquipmentBlockKind?>()) {
-      return (data != null
-          ? _i132.StartingEquipmentBlockKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i133.StartingEquipmentEntryKind?>()) {
-      return (data != null
-          ? _i133.StartingEquipmentEntryKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i134.StartingEquipmentLineKind?>()) {
-      return (data != null
-          ? _i134.StartingEquipmentLineKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i135.ToolCategory?>()) {
-      return (data != null ? _i135.ToolCategory.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i136.UnarmoredDefenseRule?>()) {
-      return (data != null ? _i136.UnarmoredDefenseRule.fromJson(data) : null)
+    if (t == _i1.getType<_i133.AreaSizeMeasurement?>()) {
+      return (data != null ? _i133.AreaSizeMeasurement.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i137.WeaponCategory?>()) {
-      return (data != null ? _i137.WeaponCategory.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i134.SpellAttackType?>()) {
+      return (data != null ? _i134.SpellAttackType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i138.WeaponProperty?>()) {
-      return (data != null ? _i138.WeaponProperty.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i139.LevelDownChoiceRepair?>()) {
-      return (data != null ? _i139.LevelDownChoiceRepair.fromJson(data) : null)
+    if (t == _i1.getType<_i135.SpellDurationType?>()) {
+      return (data != null ? _i135.SpellDurationType.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i140.LevelDownRequest?>()) {
-      return (data != null ? _i140.LevelDownRequest.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i136.SpellScalingMode?>()) {
+      return (data != null ? _i136.SpellScalingMode.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i141.BackgroundStepView?>()) {
-      return (data != null ? _i141.BackgroundStepView.fromJson(data) : null)
+    if (t == _i1.getType<_i137.SpellSchool?>()) {
+      return (data != null ? _i137.SpellSchool.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i138.SpellTargetType?>()) {
+      return (data != null ? _i138.SpellTargetType.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i139.SpellSlotRecoveryMode?>()) {
+      return (data != null ? _i139.SpellSlotRecoveryMode.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i142.CharacterEquipmentEntryView?>()) {
+    if (t == _i1.getType<_i140.SpellcastingProgression?>()) {
       return (data != null
-          ? _i142.CharacterEquipmentEntryView.fromJson(data)
+          ? _i140.SpellcastingProgression.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i143.ChoiceGroupView?>()) {
-      return (data != null ? _i143.ChoiceGroupView.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i144.ChoiceOptionEligibilityView?>()) {
+    if (t == _i1.getType<_i141.StartingEquipmentBlockKind?>()) {
       return (data != null
-          ? _i144.ChoiceOptionEligibilityView.fromJson(data)
+          ? _i141.StartingEquipmentBlockKind.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i145.ChoiceRequirementFailureView?>()) {
+    if (t == _i1.getType<_i142.StartingEquipmentEntryKind?>()) {
       return (data != null
-          ? _i145.ChoiceRequirementFailureView.fromJson(data)
+          ? _i142.StartingEquipmentEntryKind.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i146.ClassSpellDeltaView?>()) {
-      return (data != null ? _i146.ClassSpellDeltaView.fromJson(data) : null)
+    if (t == _i1.getType<_i143.StartingEquipmentLineKind?>()) {
+      return (data != null
+          ? _i143.StartingEquipmentLineKind.fromJson(data)
+          : null) as T;
+    }
+    if (t == _i1.getType<_i144.ToolCategory?>()) {
+      return (data != null ? _i144.ToolCategory.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i145.UnarmoredDefenseRule?>()) {
+      return (data != null ? _i145.UnarmoredDefenseRule.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i147.ClassSpellSelectionGroupView?>()) {
-      return (data != null
-          ? _i147.ClassSpellSelectionGroupView.fromJson(data)
-          : null) as T;
+    if (t == _i1.getType<_i146.WeaponCategory?>()) {
+      return (data != null ? _i146.WeaponCategory.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i148.ClassStepFeatureView?>()) {
-      return (data != null ? _i148.ClassStepFeatureView.fromJson(data) : null)
+    if (t == _i1.getType<_i147.WeaponProperty?>()) {
+      return (data != null ? _i147.WeaponProperty.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i148.LevelDownChoiceRepair?>()) {
+      return (data != null ? _i148.LevelDownChoiceRepair.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i149.ClassStepSubclassChoiceView?>()) {
-      return (data != null
-          ? _i149.ClassStepSubclassChoiceView.fromJson(data)
-          : null) as T;
+    if (t == _i1.getType<_i149.LevelDownRequest?>()) {
+      return (data != null ? _i149.LevelDownRequest.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i150.ClassStepView?>()) {
-      return (data != null ? _i150.ClassStepView.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i151.FeatureDisplayPropertyView?>()) {
-      return (data != null
-          ? _i151.FeatureDisplayPropertyView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i152.LevelDownInvalidChoiceView?>()) {
-      return (data != null
-          ? _i152.LevelDownInvalidChoiceView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i153.LevelDownPreview?>()) {
-      return (data != null ? _i153.LevelDownPreview.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i154.LevelUpPreview?>()) {
-      return (data != null ? _i154.LevelUpPreview.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i155.ProficiencyBundleView?>()) {
-      return (data != null ? _i155.ProficiencyBundleView.fromJson(data) : null)
+    if (t == _i1.getType<_i150.BackgroundStepView?>()) {
+      return (data != null ? _i150.BackgroundStepView.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i156.RaceStepView?>()) {
-      return (data != null ? _i156.RaceStepView.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i157.ResolvedCharacterSpellData?>()) {
+    if (t == _i1.getType<_i151.CharacterEquipmentEntryView?>()) {
       return (data != null
-          ? _i157.ResolvedCharacterSpellData.fromJson(data)
+          ? _i151.CharacterEquipmentEntryView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i158.SelectedFeatureChoiceView?>()) {
+    if (t == _i1.getType<_i152.ChoiceGroupView?>()) {
+      return (data != null ? _i152.ChoiceGroupView.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i153.ChoiceOptionEligibilityView?>()) {
       return (data != null
-          ? _i158.SelectedFeatureChoiceView.fromJson(data)
+          ? _i153.ChoiceOptionEligibilityView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i159.SkillSelectionGroupView?>()) {
+    if (t == _i1.getType<_i154.ChoiceRequirementFailureView?>()) {
       return (data != null
-          ? _i159.SkillSelectionGroupView.fromJson(data)
+          ? _i154.ChoiceRequirementFailureView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i160.SpellSourceContextData?>()) {
-      return (data != null ? _i160.SpellSourceContextData.fromJson(data) : null)
+    if (t == _i1.getType<_i155.ClassSpellDeltaView?>()) {
+      return (data != null ? _i155.ClassSpellDeltaView.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i161.StartingEquipmentBlockView?>()) {
+    if (t == _i1.getType<_i156.ClassSpellSelectionGroupView?>()) {
       return (data != null
-          ? _i161.StartingEquipmentBlockView.fromJson(data)
+          ? _i156.ClassSpellSelectionGroupView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<_i162.FeatureModifierTarget?>()) {
-      return (data != null ? _i162.FeatureModifierTarget.fromJson(data) : null)
+    if (t == _i1.getType<_i157.ClassStepFeatureView?>()) {
+      return (data != null ? _i157.ClassStepFeatureView.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<_i158.ClassStepSubclassChoiceView?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? _i158.ClassStepSubclassChoiceView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<_i159.ClassStepView?>()) {
+      return (data != null ? _i159.ClassStepView.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i160.FeatureDisplayPropertyView?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? _i160.FeatureDisplayPropertyView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<_i161.LevelDownInvalidChoiceView?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? _i161.LevelDownInvalidChoiceView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<_i162.LevelDownPreview?>()) {
+      return (data != null ? _i162.LevelDownPreview.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i163.LevelUpPreview?>()) {
+      return (data != null ? _i163.LevelUpPreview.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i164.ProficiencyBundleView?>()) {
+      return (data != null ? _i164.ProficiencyBundleView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i165.RaceStepView?>()) {
+      return (data != null ? _i165.RaceStepView.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i166.ResolvedCharacterSpellData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? _i166.ResolvedCharacterSpellData.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<_i167.SelectedFeatureChoiceView?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? _i167.SelectedFeatureChoiceView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<_i168.SkillSelectionGroupView?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? _i168.SkillSelectionGroupView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<_i169.SpellSourceContextData?>()) {
+      return (data != null ? _i169.SpellSourceContextData.fromJson(data) : null)
+          as T;
+    }
+    if (t == _i1.getType<_i170.StartingEquipmentBlockView?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? _i170.StartingEquipmentBlockView.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<_i171.FeatureModifierOperation?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? _i171.FeatureModifierOperation.fromJson(data)
           : null) as T;
     }
-    if (t == _i1.getType<Map<String, int>?>()) {
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
       return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i127.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i73.FeatureResourceDefinitionData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i73.FeatureResourceDefinitionData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i74.FeatureResourceEffectData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i74.FeatureResourceEffectData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i6.ClassSpellGrantData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i6.ClassSpellGrantData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i71.FeatureModifierData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i71.FeatureModifierData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
@@ -7310,6 +7591,20 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<_i49.ChoiceReplacementHistoryData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i49.ChoiceReplacementHistoryData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i49.ChoiceReplacementHistoryData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i49.ChoiceReplacementHistoryData>(e))
+              .toList()
+          : null) as T;
+    }
     if (t == _i1.getType<List<int>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<int>(e)).toList()
@@ -7318,6 +7613,12 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<List<int>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<int>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -7373,10 +7674,10 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i101.ConditionType>?>()) {
+    if (t == _i1.getType<List<_i109.ConditionType>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i101.ConditionType>(e))
+              .map((e) => deserialize<_i109.ConditionType>(e))
               .toList()
           : null) as T;
     }
@@ -7394,9 +7695,9 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
@@ -7443,6 +7744,12 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List)
               .map((e) => deserialize<_i27.CharacterResourceStateData>(e))
               .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, _i54.SpellSlotRecoveryTriggerData>?>()) {
+      return (data != null
+          ? (data as Map).map((k, v) => MapEntry(deserialize<String>(k),
+              deserialize<_i54.SpellSlotRecoveryTriggerData>(v)))
           : null) as T;
     }
     if (t == _i1.getType<List<_i15.CharacterClassEntryData>?>()) {
@@ -7482,16 +7789,16 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<Map<_i83.Ability, int>?>()) {
+    if (t == _i1.getType<Map<_i91.Ability, int>?>()) {
       return (data != null
           ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i83.Ability>(e['k']), deserialize<int>(e['v']))))
+              deserialize<_i91.Ability>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
-    if (t == _i1.getType<Map<_i83.Ability, int>?>()) {
+    if (t == _i1.getType<Map<_i91.Ability, int>?>()) {
       return (data != null
           ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i83.Ability>(e['k']), deserialize<int>(e['v']))))
+              deserialize<_i91.Ability>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
     if (t == _i1.getType<List<_i21.CharacterFeatureViewData>?>()) {
@@ -7501,23 +7808,23 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i67.FeatureModifierData>?>()) {
+    if (t == _i1.getType<List<_i71.FeatureModifierData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i67.FeatureModifierData>(e))
+              .map((e) => deserialize<_i71.FeatureModifierData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<Map<_i83.Ability, int>?>()) {
+    if (t == _i1.getType<Map<_i91.Ability, int>?>()) {
       return (data != null
           ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i83.Ability>(e['k']), deserialize<int>(e['v']))))
+              deserialize<_i91.Ability>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
-    if (t == _i1.getType<Map<_i123.Skill, int>?>()) {
+    if (t == _i1.getType<Map<_i131.Skill, int>?>()) {
       return (data != null
           ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i123.Skill>(e['k']), deserialize<int>(e['v']))))
+              deserialize<_i131.Skill>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
     if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
@@ -7527,9 +7834,9 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<int, int>?>()) {
@@ -7550,9 +7857,9 @@ class Protocol extends _i1.SerializationManagerServer {
               (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
+    if (t == _i1.getType<List<_i127.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -7565,17 +7872,17 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
@@ -7614,38 +7921,38 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i157.ResolvedCharacterSpellData>?>()) {
+    if (t == _i1.getType<List<_i166.ResolvedCharacterSpellData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i157.ResolvedCharacterSpellData>(e))
+              .map((e) => deserialize<_i166.ResolvedCharacterSpellData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i142.CharacterEquipmentEntryView>?>()) {
+    if (t == _i1.getType<List<_i151.CharacterEquipmentEntryView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i142.CharacterEquipmentEntryView>(e))
+              .map((e) => deserialize<_i151.CharacterEquipmentEntryView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i103.DamageType>?>()) {
+    if (t == _i1.getType<List<_i111.DamageType>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i103.DamageType>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i111.DamageType>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i28.CharacterResourceViewData>?>()) {
@@ -7655,10 +7962,10 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i151.FeatureDisplayPropertyView>?>()) {
+    if (t == _i1.getType<List<_i160.FeatureDisplayPropertyView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i151.FeatureDisplayPropertyView>(e))
+              .map((e) => deserialize<_i160.FeatureDisplayPropertyView>(e))
               .toList()
           : null) as T;
     }
@@ -7667,26 +7974,39 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i158.SelectedFeatureChoiceView>?>()) {
+    if (t == _i1.getType<List<_i167.SelectedFeatureChoiceView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i158.SelectedFeatureChoiceView>(e))
+              .map((e) => deserialize<_i167.SelectedFeatureChoiceView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
+    if (t == _i1.getType<List<_i74.FeatureResourceEffectData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
+          ? (data as List)
+              .map((e) => deserialize<_i74.FeatureResourceEffectData>(e))
+              .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
+    if (t == _i1.getType<List<_i127.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i127.Language>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<String, int>?>()) {
+      return (data != null
+          ? (data as Map).map(
+              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -7742,10 +8062,10 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i101.ConditionType>?>()) {
+    if (t == _i1.getType<List<_i109.ConditionType>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i101.ConditionType>(e))
+              .map((e) => deserialize<_i109.ConditionType>(e))
               .toList()
           : null) as T;
     }
@@ -7763,9 +8083,9 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
@@ -7814,10 +8134,38 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
+    if (t == _i1.getType<Map<String, _i54.SpellSlotRecoveryTriggerData>?>()) {
+      return (data != null
+          ? (data as Map).map((k, v) => MapEntry(deserialize<String>(k),
+              deserialize<_i54.SpellSlotRecoveryTriggerData>(v)))
+          : null) as T;
+    }
     if (t == _i1.getType<Map<String, String>?>()) {
       return (data != null
           ? (data as Map).map((k, v) =>
               MapEntry(deserialize<String>(k), deserialize<String>(v)))
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<int, int>?>()) {
+      return (data != null
+          ? Map.fromEntries((data as List).map((e) =>
+              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i53.SpellSelectionReplacementHistoryData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) =>
+                  deserialize<_i53.SpellSelectionReplacementHistoryData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i53.SpellSelectionReplacementHistoryData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) =>
+                  deserialize<_i53.SpellSelectionReplacementHistoryData>(e))
+              .toList()
           : null) as T;
     }
     if (t ==
@@ -7878,10 +8226,10 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i101.ConditionType>?>()) {
+    if (t == _i1.getType<List<_i109.ConditionType>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i101.ConditionType>(e))
+              .map((e) => deserialize<_i109.ConditionType>(e))
               .toList()
           : null) as T;
     }
@@ -7890,9 +8238,9 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -7929,17 +8277,17 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
@@ -7956,6 +8304,13 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i50.LevelUpChoiceReplacementData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i50.LevelUpChoiceReplacementData>(e))
+              .toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<String, List<String>>?>()) {
@@ -7967,10 +8322,22 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == _i1.getType<List<_i50.LevelUpSpellChoice>?>()) {
+    if (t == _i1.getType<List<_i52.LevelUpSpellChoice>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i50.LevelUpSpellChoice>(e))
+              .map((e) => deserialize<_i52.LevelUpSpellChoice>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i57.ChoiceRequirementData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i57.ChoiceRequirementData>(e))
               .toList()
           : null) as T;
     }
@@ -7980,49 +8347,32 @@ class Protocol extends _i1.SerializationManagerServer {
               (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
+    if (t == _i1.getType<List<_i127.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i53.ChoiceRequirementData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i53.ChoiceRequirementData>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
@@ -8031,9 +8381,26 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
+    if (t == _i1.getType<List<String>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i57.ChoiceRequirementData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i57.ChoiceRequirementData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<String, String>?>()) {
@@ -8042,20 +8409,20 @@ class Protocol extends _i1.SerializationManagerServer {
               MapEntry(deserialize<String>(k), deserialize<String>(v)))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
@@ -8069,9 +8436,9 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -8080,10 +8447,10 @@ class Protocol extends _i1.SerializationManagerServer {
               (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
@@ -8095,83 +8462,6 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i69.FeatureResourceDefinitionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i69.FeatureResourceDefinitionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i70.FeatureResourceEffectData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i70.FeatureResourceEffectData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i6.ClassSpellGrantData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i6.ClassSpellGrantData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i67.FeatureModifierData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i67.FeatureModifierData>(e))
-              .toList()
           : null) as T;
     }
     if (t == _i1.getType<Map<int, int>?>()) {
@@ -8180,36 +8470,24 @@ class Protocol extends _i1.SerializationManagerServer {
               MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i61.StartingEquipmentLineData>?>()) {
+    if (t == _i1.getType<List<_i65.StartingEquipmentLineData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i61.StartingEquipmentLineData>(e))
+              .map((e) => deserialize<_i65.StartingEquipmentLineData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i62.StartingEquipmentOptionData>?>()) {
+    if (t == _i1.getType<List<_i66.StartingEquipmentOptionData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i62.StartingEquipmentOptionData>(e))
+              .map((e) => deserialize<_i66.StartingEquipmentOptionData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
@@ -8218,44 +8496,56 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i61.StartingEquipmentLineData>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i61.StartingEquipmentLineData>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
+    if (t == _i1.getType<List<String>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i65.StartingEquipmentLineData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i65.StartingEquipmentLineData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i127.Language>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
@@ -8274,17 +8564,17 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i69.FeatureResourceDefinitionData>?>()) {
+    if (t == _i1.getType<List<_i73.FeatureResourceDefinitionData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i69.FeatureResourceDefinitionData>(e))
+              .map((e) => deserialize<_i73.FeatureResourceDefinitionData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i70.FeatureResourceEffectData>?>()) {
+    if (t == _i1.getType<List<_i74.FeatureResourceEffectData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i70.FeatureResourceEffectData>(e))
+              .map((e) => deserialize<_i74.FeatureResourceEffectData>(e))
               .toList()
           : null) as T;
     }
@@ -8295,10 +8585,10 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i67.FeatureModifierData>?>()) {
+    if (t == _i1.getType<List<_i71.FeatureModifierData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i67.FeatureModifierData>(e))
+              .map((e) => deserialize<_i71.FeatureModifierData>(e))
               .toList()
           : null) as T;
     }
@@ -8308,10 +8598,10 @@ class Protocol extends _i1.SerializationManagerServer {
               MapEntry(deserialize<int>(e['k']), deserialize<String>(e['v']))))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i66.FeatureModifierConditionData>?>()) {
+    if (t == _i1.getType<List<_i70.FeatureModifierConditionData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i66.FeatureModifierConditionData>(e))
+              .map((e) => deserialize<_i70.FeatureModifierConditionData>(e))
               .toList()
           : null) as T;
     }
@@ -8321,16 +8611,16 @@ class Protocol extends _i1.SerializationManagerServer {
               MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i71.FeatureResourceProgressionValueData>?>()) {
+    if (t == _i1.getType<List<_i75.FeatureResourceProgressionValueData>?>()) {
       return (data != null
           ? (data as List)
               .map((e) =>
-                  deserialize<_i71.FeatureResourceProgressionValueData>(e))
+                  deserialize<_i75.FeatureResourceProgressionValueData>(e))
               .toList()
           : null) as T;
     }
@@ -8339,90 +8629,25 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
+    if (t == _i1.getType<List<_i127.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i103.DamageType>?>()) {
+    if (t == _i1.getType<List<_i111.DamageType>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i103.DamageType>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i111.DamageType>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i73.RaceFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i73.RaceFeatureData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i69.FeatureResourceDefinitionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i69.FeatureResourceDefinitionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i70.FeatureResourceEffectData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i70.FeatureResourceEffectData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i117.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i117.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i74.RaceFeatureSpellGrantData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i74.RaceFeatureSpellGrantData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i103.DamageType>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i103.DamageType>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
@@ -8436,11 +8661,106 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i73.RaceFeatureData>?>()) {
+    if (t == _i1.getType<List<_i77.RaceFeatureData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i73.RaceFeatureData>(e))
+              .map((e) => deserialize<_i77.RaceFeatureData>(e))
               .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i73.FeatureResourceDefinitionData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i73.FeatureResourceDefinitionData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i74.FeatureResourceEffectData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i74.FeatureResourceEffectData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i125.FeatureTag>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i125.FeatureTag>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i78.RaceFeatureSpellGrantData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i78.RaceFeatureSpellGrantData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i111.DamageType>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i111.DamageType>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i77.RaceFeatureData>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i77.RaceFeatureData>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == Map<int, int>) {
+      return Map.fromEntries((data as List).map((e) =>
+          MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v'])))) as T;
+    }
+    if (t == _i1.getType<List<_i137.SpellSchool>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i137.SpellSchool>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i102.CharacterSpellSelectionKind>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i102.CharacterSpellSelectionKind>(e))
+              .toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<int, int>?>()) {
+      return (data != null
+          ? Map.fromEntries((data as List).map((e) =>
+              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
+          : null) as T;
+    }
+    if (t == _i1.getType<Map<int, int>?>()) {
+      return (data != null
+          ? Map.fromEntries((data as List).map((e) =>
+              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
           : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
@@ -8459,10 +8779,10 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i138.WeaponProperty>?>()) {
+    if (t == _i1.getType<List<_i147.WeaponProperty>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i138.WeaponProperty>(e))
+              .map((e) => deserialize<_i147.WeaponProperty>(e))
               .toList()
           : null) as T;
     }
@@ -8473,10 +8793,10 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i101.ConditionType>?>()) {
+    if (t == _i1.getType<List<_i109.ConditionType>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i101.ConditionType>(e))
+              .map((e) => deserialize<_i109.ConditionType>(e))
               .toList()
           : null) as T;
     }
@@ -8502,71 +8822,71 @@ class Protocol extends _i1.SerializationManagerServer {
               MapEntry(deserialize<int>(e['k']), deserialize<String>(e['v']))))
           : null) as T;
     }
-    if (t == _i1.getType<List<_i61.StartingEquipmentLineData>?>()) {
+    if (t == _i1.getType<List<_i65.StartingEquipmentLineData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i61.StartingEquipmentLineData>(e))
+              .map((e) => deserialize<_i65.StartingEquipmentLineData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i139.LevelDownChoiceRepair>?>()) {
+    if (t == _i1.getType<List<_i148.LevelDownChoiceRepair>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i139.LevelDownChoiceRepair>(e))
+              .map((e) => deserialize<_i148.LevelDownChoiceRepair>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i143.ChoiceGroupView>?>()) {
+    if (t == _i1.getType<List<_i152.ChoiceGroupView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i143.ChoiceGroupView>(e))
+              .map((e) => deserialize<_i152.ChoiceGroupView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i159.SkillSelectionGroupView>?>()) {
+    if (t == _i1.getType<List<_i168.SkillSelectionGroupView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i159.SkillSelectionGroupView>(e))
+              .map((e) => deserialize<_i168.SkillSelectionGroupView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i161.StartingEquipmentBlockView>?>()) {
+    if (t == _i1.getType<List<_i170.StartingEquipmentBlockView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i161.StartingEquipmentBlockView>(e))
+              .map((e) => deserialize<_i170.StartingEquipmentBlockView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i52.ChoiceOptionData>?>()) {
+    if (t == _i1.getType<List<_i56.ChoiceOptionData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i52.ChoiceOptionData>(e))
+              .map((e) => deserialize<_i56.ChoiceOptionData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i144.ChoiceOptionEligibilityView>?>()) {
+    if (t == _i1.getType<List<_i153.ChoiceOptionEligibilityView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i144.ChoiceOptionEligibilityView>(e))
+              .map((e) => deserialize<_i153.ChoiceOptionEligibilityView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i145.ChoiceRequirementFailureView>?>()) {
+    if (t == _i1.getType<List<_i154.ChoiceRequirementFailureView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i145.ChoiceRequirementFailureView>(e))
+              .map((e) => deserialize<_i154.ChoiceRequirementFailureView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i81.SpellData>?>()) {
+    if (t == _i1.getType<List<_i89.SpellData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i81.SpellData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i89.SpellData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i151.FeatureDisplayPropertyView>?>()) {
+    if (t == _i1.getType<List<_i160.FeatureDisplayPropertyView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i151.FeatureDisplayPropertyView>(e))
+              .map((e) => deserialize<_i160.FeatureDisplayPropertyView>(e))
               .toList()
           : null) as T;
     }
@@ -8577,94 +8897,94 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i63.SubclassData>?>()) {
+    if (t == _i1.getType<List<_i67.SubclassData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i63.SubclassData>(e))
+              .map((e) => deserialize<_i67.SubclassData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i55.ClassFeatureData>?>()) {
+    if (t == _i1.getType<List<_i4.ClassFeatureData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i55.ClassFeatureData>(e))
+              .map((e) => deserialize<_i4.ClassFeatureData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i55.ClassFeatureData>?>()) {
+    if (t == _i1.getType<List<_i4.ClassFeatureData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i55.ClassFeatureData>(e))
+              .map((e) => deserialize<_i4.ClassFeatureData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i64.SubclassFeatureData>?>()) {
+    if (t == _i1.getType<List<_i68.SubclassFeatureData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i64.SubclassFeatureData>(e))
+              .map((e) => deserialize<_i68.SubclassFeatureData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i64.SubclassFeatureData>?>()) {
+    if (t == _i1.getType<List<_i68.SubclassFeatureData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i64.SubclassFeatureData>(e))
+              .map((e) => deserialize<_i68.SubclassFeatureData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i148.ClassStepFeatureView>?>()) {
+    if (t == _i1.getType<List<_i157.ClassStepFeatureView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i148.ClassStepFeatureView>(e))
+              .map((e) => deserialize<_i157.ClassStepFeatureView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i148.ClassStepFeatureView>?>()) {
+    if (t == _i1.getType<List<_i157.ClassStepFeatureView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i148.ClassStepFeatureView>(e))
+              .map((e) => deserialize<_i157.ClassStepFeatureView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i148.ClassStepFeatureView>?>()) {
+    if (t == _i1.getType<List<_i157.ClassStepFeatureView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i148.ClassStepFeatureView>(e))
+              .map((e) => deserialize<_i157.ClassStepFeatureView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i148.ClassStepFeatureView>?>()) {
+    if (t == _i1.getType<List<_i157.ClassStepFeatureView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i148.ClassStepFeatureView>(e))
+              .map((e) => deserialize<_i157.ClassStepFeatureView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i143.ChoiceGroupView>?>()) {
+    if (t == _i1.getType<List<_i152.ChoiceGroupView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i143.ChoiceGroupView>(e))
+              .map((e) => deserialize<_i152.ChoiceGroupView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i159.SkillSelectionGroupView>?>()) {
+    if (t == _i1.getType<List<_i168.SkillSelectionGroupView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i159.SkillSelectionGroupView>(e))
+              .map((e) => deserialize<_i168.SkillSelectionGroupView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i147.ClassSpellSelectionGroupView>?>()) {
+    if (t == _i1.getType<List<_i156.ClassSpellSelectionGroupView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i147.ClassSpellSelectionGroupView>(e))
+              .map((e) => deserialize<_i156.ClassSpellSelectionGroupView>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i161.StartingEquipmentBlockView>?>()) {
+    if (t == _i1.getType<List<_i170.StartingEquipmentBlockView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i161.StartingEquipmentBlockView>(e))
+              .map((e) => deserialize<_i170.StartingEquipmentBlockView>(e))
               .toList()
           : null) as T;
     }
@@ -8673,33 +8993,33 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i56.ClassLevelData>?>()) {
+    if (t == _i1.getType<List<_i60.ClassLevelData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i56.ClassLevelData>(e))
+              .map((e) => deserialize<_i60.ClassLevelData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i67.FeatureModifierData>?>()) {
+    if (t == _i1.getType<List<_i71.FeatureModifierData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i67.FeatureModifierData>(e))
+              .map((e) => deserialize<_i71.FeatureModifierData>(e))
               .toList()
           : null) as T;
     }
-    if (t == List<_i55.ClassFeatureData>) {
+    if (t == List<_i4.ClassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i55.ClassFeatureData>(e))
+          .map((e) => deserialize<_i4.ClassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i64.SubclassFeatureData>) {
+    if (t == List<_i68.SubclassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i64.SubclassFeatureData>(e))
+          .map((e) => deserialize<_i68.SubclassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i51.ChoiceGroupData>) {
+    if (t == List<_i55.ChoiceGroupData>) {
       return (data as List)
-          .map((e) => deserialize<_i51.ChoiceGroupData>(e))
+          .map((e) => deserialize<_i55.ChoiceGroupData>(e))
           .toList() as T;
     }
     if (t == List<_i13.CharacterChoiceData>) {
@@ -8707,45 +9027,41 @@ class Protocol extends _i1.SerializationManagerServer {
           .map((e) => deserialize<_i13.CharacterChoiceData>(e))
           .toList() as T;
     }
-    if (t == List<_i152.LevelDownInvalidChoiceView>) {
+    if (t == List<_i161.LevelDownInvalidChoiceView>) {
       return (data as List)
-          .map((e) => deserialize<_i152.LevelDownInvalidChoiceView>(e))
+          .map((e) => deserialize<_i161.LevelDownInvalidChoiceView>(e))
           .toList() as T;
     }
     if (t == Map<String, int>) {
       return (data as Map).map(
           (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v))) as T;
     }
-    if (t == Map<int, int>) {
-      return Map.fromEntries((data as List).map((e) =>
-          MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v'])))) as T;
-    }
-    if (t == List<_i143.ChoiceGroupView>) {
+    if (t == List<_i152.ChoiceGroupView>) {
       return (data as List)
-          .map((e) => deserialize<_i143.ChoiceGroupView>(e))
+          .map((e) => deserialize<_i152.ChoiceGroupView>(e))
           .toList() as T;
     }
-    if (t == _i1.getType<List<_i83.Ability>?>()) {
+    if (t == _i1.getType<List<_i91.Ability>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i83.Ability>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i91.Ability>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i84.ArmorCategory>?>()) {
+    if (t == _i1.getType<List<_i92.ArmorCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i84.ArmorCategory>(e))
+              .map((e) => deserialize<_i92.ArmorCategory>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i137.WeaponCategory>?>()) {
+    if (t == _i1.getType<List<_i146.WeaponCategory>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i137.WeaponCategory>(e))
+              .map((e) => deserialize<_i146.WeaponCategory>(e))
               .toList()
           : null) as T;
     }
@@ -8759,51 +9075,51 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i119.Language>?>()) {
+    if (t == _i1.getType<List<_i127.Language>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i119.Language>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i127.Language>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i75.SubraceData>?>()) {
+    if (t == _i1.getType<List<_i79.SubraceData>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i75.SubraceData>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i79.SubraceData>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i73.RaceFeatureData>?>()) {
+    if (t == _i1.getType<List<_i77.RaceFeatureData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i73.RaceFeatureData>(e))
+              .map((e) => deserialize<_i77.RaceFeatureData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i143.ChoiceGroupView>?>()) {
+    if (t == _i1.getType<List<_i152.ChoiceGroupView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i143.ChoiceGroupView>(e))
+              .map((e) => deserialize<_i152.ChoiceGroupView>(e))
               .toList()
           : null) as T;
     }
-    if (t == List<_i160.SpellSourceContextData>) {
+    if (t == List<_i169.SpellSourceContextData>) {
       return (data as List)
-          .map((e) => deserialize<_i160.SpellSourceContextData>(e))
+          .map((e) => deserialize<_i169.SpellSourceContextData>(e))
           .toList() as T;
     }
-    if (t == _i1.getType<List<_i123.Skill>?>()) {
+    if (t == _i1.getType<List<_i131.Skill>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i123.Skill>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i131.Skill>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i61.StartingEquipmentLineData>?>()) {
+    if (t == _i1.getType<List<_i65.StartingEquipmentLineData>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i61.StartingEquipmentLineData>(e))
+              .map((e) => deserialize<_i65.StartingEquipmentLineData>(e))
               .toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i109.StartingEquipmentOptionView>?>()) {
+    if (t == _i1.getType<List<_i115.StartingEquipmentOptionView>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i109.StartingEquipmentOptionView>(e))
+              .map((e) => deserialize<_i115.StartingEquipmentOptionView>(e))
               .toList()
           : null) as T;
     }
@@ -8811,32 +9127,32 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<_i3.UserInfo>(e)).toList()
           as T;
     }
-    if (t == List<_i163.BackgroundData>) {
+    if (t == List<_i172.BackgroundData>) {
       return (data as List)
-          .map((e) => deserialize<_i163.BackgroundData>(e))
+          .map((e) => deserialize<_i172.BackgroundData>(e))
           .toList() as T;
     }
-    if (t == List<_i164.FeatData>) {
-      return (data as List).map((e) => deserialize<_i164.FeatData>(e)).toList()
+    if (t == List<_i173.FeatData>) {
+      return (data as List).map((e) => deserialize<_i173.FeatData>(e)).toList()
           as T;
     }
-    if (t == List<_i165.CharacterData>) {
+    if (t == List<_i174.CharacterData>) {
       return (data as List)
-          .map((e) => deserialize<_i165.CharacterData>(e))
+          .map((e) => deserialize<_i174.CharacterData>(e))
           .toList() as T;
     }
-    if (t == List<_i166.ChoiceGroupData>) {
+    if (t == List<_i175.ChoiceGroupData>) {
       return (data as List)
-          .map((e) => deserialize<_i166.ChoiceGroupData>(e))
+          .map((e) => deserialize<_i175.ChoiceGroupData>(e))
           .toList() as T;
     }
-    if (t == List<_i167.ChoiceOptionData>) {
+    if (t == List<_i176.ChoiceOptionData>) {
       return (data as List)
-          .map((e) => deserialize<_i167.ChoiceOptionData>(e))
+          .map((e) => deserialize<_i176.ChoiceOptionData>(e))
           .toList() as T;
     }
-    if (t == List<_i168.ClassData>) {
-      return (data as List).map((e) => deserialize<_i168.ClassData>(e)).toList()
+    if (t == List<_i177.ClassData>) {
+      return (data as List).map((e) => deserialize<_i177.ClassData>(e)).toList()
           as T;
     }
     if (t == _i1.getType<Map<String, int>?>()) {
@@ -8849,79 +9165,79 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as Map).map(
           (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v))) as T;
     }
-    if (t == List<_i169.ClassFeatureData>) {
+    if (t == List<_i178.ClassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i169.ClassFeatureData>(e))
+          .map((e) => deserialize<_i178.ClassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i170.ClassSpellGrantData>) {
+    if (t == List<_i179.ClassSpellGrantData>) {
       return (data as List)
-          .map((e) => deserialize<_i170.ClassSpellGrantData>(e))
+          .map((e) => deserialize<_i179.ClassSpellGrantData>(e))
           .toList() as T;
     }
-    if (t == List<_i171.ClassLevelData>) {
+    if (t == List<_i180.ClassLevelData>) {
       return (data as List)
-          .map((e) => deserialize<_i171.ClassLevelData>(e))
+          .map((e) => deserialize<_i180.ClassLevelData>(e))
           .toList() as T;
     }
-    if (t == List<_i172.SpellSlotProgressionData>) {
+    if (t == List<_i181.SpellSlotProgressionData>) {
       return (data as List)
-          .map((e) => deserialize<_i172.SpellSlotProgressionData>(e))
+          .map((e) => deserialize<_i181.SpellSlotProgressionData>(e))
           .toList() as T;
     }
-    if (t == List<_i173.SubclassData>) {
+    if (t == List<_i182.SubclassData>) {
       return (data as List)
-          .map((e) => deserialize<_i173.SubclassData>(e))
+          .map((e) => deserialize<_i182.SubclassData>(e))
           .toList() as T;
     }
-    if (t == List<_i174.SubclassFeatureData>) {
+    if (t == List<_i183.SubclassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i174.SubclassFeatureData>(e))
+          .map((e) => deserialize<_i183.SubclassFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i175.RaceData>) {
-      return (data as List).map((e) => deserialize<_i175.RaceData>(e)).toList()
+    if (t == List<_i184.RaceData>) {
+      return (data as List).map((e) => deserialize<_i184.RaceData>(e)).toList()
           as T;
     }
-    if (t == List<_i176.RaceFeatureData>) {
+    if (t == List<_i185.RaceFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i176.RaceFeatureData>(e))
+          .map((e) => deserialize<_i185.RaceFeatureData>(e))
           .toList() as T;
     }
-    if (t == List<_i177.SubraceData>) {
+    if (t == List<_i186.SubraceData>) {
       return (data as List)
-          .map((e) => deserialize<_i177.SubraceData>(e))
+          .map((e) => deserialize<_i186.SubraceData>(e))
           .toList() as T;
     }
-    if (t == List<_i178.RaceFeatureSpellGrantData>) {
+    if (t == List<_i187.RaceFeatureSpellGrantData>) {
       return (data as List)
-          .map((e) => deserialize<_i178.RaceFeatureSpellGrantData>(e))
+          .map((e) => deserialize<_i187.RaceFeatureSpellGrantData>(e))
           .toList() as T;
     }
-    if (t == List<_i179.ToolData>) {
-      return (data as List).map((e) => deserialize<_i179.ToolData>(e)).toList()
+    if (t == List<_i188.ToolData>) {
+      return (data as List).map((e) => deserialize<_i188.ToolData>(e)).toList()
           as T;
     }
-    if (t == List<_i180.ArmorData>) {
-      return (data as List).map((e) => deserialize<_i180.ArmorData>(e)).toList()
+    if (t == List<_i189.ArmorData>) {
+      return (data as List).map((e) => deserialize<_i189.ArmorData>(e)).toList()
           as T;
     }
-    if (t == List<_i181.ItemData>) {
-      return (data as List).map((e) => deserialize<_i181.ItemData>(e)).toList()
+    if (t == List<_i190.ItemData>) {
+      return (data as List).map((e) => deserialize<_i190.ItemData>(e)).toList()
           as T;
     }
-    if (t == List<_i182.MagicItemData>) {
+    if (t == List<_i191.MagicItemData>) {
       return (data as List)
-          .map((e) => deserialize<_i182.MagicItemData>(e))
+          .map((e) => deserialize<_i191.MagicItemData>(e))
           .toList() as T;
     }
-    if (t == List<_i183.WeaponData>) {
+    if (t == List<_i192.WeaponData>) {
       return (data as List)
-          .map((e) => deserialize<_i183.WeaponData>(e))
+          .map((e) => deserialize<_i192.WeaponData>(e))
           .toList() as T;
     }
-    if (t == List<_i184.SpellData>) {
-      return (data as List).map((e) => deserialize<_i184.SpellData>(e)).toList()
+    if (t == List<_i193.SpellData>) {
+      return (data as List).map((e) => deserialize<_i193.SpellData>(e)).toList()
           as T;
     }
     try {
@@ -8937,8 +9253,8 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i4.PreparedSpellRuleData) {
-      return 'PreparedSpellRuleData';
+    if (data is _i4.ClassFeatureData) {
+      return 'ClassFeatureData';
     }
     if (data is _i5.BackgroundData) {
       return 'BackgroundData';
@@ -9072,347 +9388,374 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i48.CharacterWeaponProficiencyOverridesData) {
       return 'CharacterWeaponProficiencyOverridesData';
     }
-    if (data is _i49.LevelUpRequest) {
+    if (data is _i49.ChoiceReplacementHistoryData) {
+      return 'ChoiceReplacementHistoryData';
+    }
+    if (data is _i50.LevelUpChoiceReplacementData) {
+      return 'LevelUpChoiceReplacementData';
+    }
+    if (data is _i51.LevelUpRequest) {
       return 'LevelUpRequest';
     }
-    if (data is _i50.LevelUpSpellChoice) {
+    if (data is _i52.LevelUpSpellChoice) {
       return 'LevelUpSpellChoice';
     }
-    if (data is _i51.ChoiceGroupData) {
+    if (data is _i53.SpellSelectionReplacementHistoryData) {
+      return 'SpellSelectionReplacementHistoryData';
+    }
+    if (data is _i54.SpellSlotRecoveryTriggerData) {
+      return 'SpellSlotRecoveryTriggerData';
+    }
+    if (data is _i55.ChoiceGroupData) {
       return 'ChoiceGroupData';
     }
-    if (data is _i52.ChoiceOptionData) {
+    if (data is _i56.ChoiceOptionData) {
       return 'ChoiceOptionData';
     }
-    if (data is _i53.ChoiceRequirementData) {
+    if (data is _i57.ChoiceRequirementData) {
       return 'ChoiceRequirementData';
     }
-    if (data is _i54.ClassData) {
+    if (data is _i58.ClassData) {
       return 'ClassData';
     }
-    if (data is _i55.ClassFeatureData) {
-      return 'ClassFeatureData';
-    }
-    if (data is _i56.ClassLevelData) {
-      return 'ClassLevelData';
-    }
-    if (data is _i57.AuthActionResult) {
+    if (data is _i59.AuthActionResult) {
       return 'AuthActionResult';
     }
-    if (data is _i58.SpellSlotProgressionData) {
+    if (data is _i60.ClassLevelData) {
+      return 'ClassLevelData';
+    }
+    if (data is _i61.PreparedSpellRuleData) {
+      return 'PreparedSpellRuleData';
+    }
+    if (data is _i62.SpellSlotProgressionData) {
       return 'SpellSlotProgressionData';
     }
-    if (data is _i59.StartingEquipmentBlockData) {
+    if (data is _i63.StartingEquipmentBlockData) {
       return 'StartingEquipmentBlockData';
     }
-    if (data is _i60.StartingEquipmentEntryData) {
+    if (data is _i64.StartingEquipmentEntryData) {
       return 'StartingEquipmentEntryData';
     }
-    if (data is _i61.StartingEquipmentLineData) {
+    if (data is _i65.StartingEquipmentLineData) {
       return 'StartingEquipmentLineData';
     }
-    if (data is _i62.StartingEquipmentOptionData) {
+    if (data is _i66.StartingEquipmentOptionData) {
       return 'StartingEquipmentOptionData';
     }
-    if (data is _i63.SubclassData) {
+    if (data is _i67.SubclassData) {
       return 'SubclassData';
     }
-    if (data is _i64.SubclassFeatureData) {
+    if (data is _i68.SubclassFeatureData) {
       return 'SubclassFeatureData';
     }
-    if (data is _i65.FeatureDisplayPropertyData) {
+    if (data is _i69.FeatureDisplayPropertyData) {
       return 'FeatureDisplayPropertyData';
     }
-    if (data is _i66.FeatureModifierConditionData) {
+    if (data is _i70.FeatureModifierConditionData) {
       return 'FeatureModifierConditionData';
     }
-    if (data is _i67.FeatureModifierData) {
+    if (data is _i71.FeatureModifierData) {
       return 'FeatureModifierData';
     }
-    if (data is _i68.FeatureModifierValueData) {
+    if (data is _i72.FeatureModifierValueData) {
       return 'FeatureModifierValueData';
     }
-    if (data is _i69.FeatureResourceDefinitionData) {
+    if (data is _i73.FeatureResourceDefinitionData) {
       return 'FeatureResourceDefinitionData';
     }
-    if (data is _i70.FeatureResourceEffectData) {
+    if (data is _i74.FeatureResourceEffectData) {
       return 'FeatureResourceEffectData';
     }
-    if (data is _i71.FeatureResourceProgressionValueData) {
+    if (data is _i75.FeatureResourceProgressionValueData) {
       return 'FeatureResourceProgressionValueData';
     }
-    if (data is _i72.RaceData) {
+    if (data is _i76.RaceData) {
       return 'RaceData';
     }
-    if (data is _i73.RaceFeatureData) {
+    if (data is _i77.RaceFeatureData) {
       return 'RaceFeatureData';
     }
-    if (data is _i74.RaceFeatureSpellGrantData) {
+    if (data is _i78.RaceFeatureSpellGrantData) {
       return 'RaceFeatureSpellGrantData';
     }
-    if (data is _i75.SubraceData) {
+    if (data is _i79.SubraceData) {
       return 'SubraceData';
     }
-    if (data is _i76.ToolData) {
+    if (data is _i80.SpellActivationData) {
+      return 'SpellActivationData';
+    }
+    if (data is _i81.SpellResourceUpcastPolicyData) {
+      return 'SpellResourceUpcastPolicyData';
+    }
+    if (data is _i82.SpellSelectionFilterData) {
+      return 'SpellSelectionFilterData';
+    }
+    if (data is _i83.SpellSlotRecoveryPolicyData) {
+      return 'SpellSlotRecoveryPolicyData';
+    }
+    if (data is _i84.ToolData) {
       return 'ToolData';
     }
-    if (data is _i77.ArmorData) {
+    if (data is _i85.ArmorData) {
       return 'ArmorData';
     }
-    if (data is _i78.ItemData) {
+    if (data is _i86.ItemData) {
       return 'ItemData';
     }
-    if (data is _i79.MagicItemData) {
+    if (data is _i87.MagicItemData) {
       return 'MagicItemData';
     }
-    if (data is _i80.WeaponData) {
+    if (data is _i88.WeaponData) {
       return 'WeaponData';
     }
-    if (data is _i81.SpellData) {
+    if (data is _i89.SpellData) {
       return 'SpellData';
     }
-    if (data is _i82.SpellScalingData) {
+    if (data is _i90.SpellScalingData) {
       return 'SpellScalingData';
     }
-    if (data is _i83.Ability) {
+    if (data is _i91.Ability) {
       return 'Ability';
     }
-    if (data is _i84.ArmorCategory) {
+    if (data is _i92.ArmorCategory) {
       return 'ArmorCategory';
     }
-    if (data is _i85.CharacterAlignment) {
+    if (data is _i93.CharacterAlignment) {
       return 'CharacterAlignment';
     }
-    if (data is _i86.CharacterChangeType) {
+    if (data is _i94.CharacterChangeType) {
       return 'CharacterChangeType';
     }
-    if (data is _i87.CharacterEntityType) {
+    if (data is _i95.CharacterEntityType) {
       return 'CharacterEntityType';
     }
-    if (data is _i88.CharacterFeatureSourceType) {
+    if (data is _i96.CharacterFeatureSourceType) {
       return 'CharacterFeatureSourceType';
     }
-    if (data is _i89.CharacterInventoryItemType) {
+    if (data is _i97.CharacterInventoryItemType) {
       return 'CharacterInventoryItemType';
     }
-    if (data is _i90.CharacterSavingThrowProficiencyOverride) {
+    if (data is _i98.CharacterSavingThrowProficiencyOverride) {
       return 'CharacterSavingThrowProficiencyOverride';
     }
-    if (data is _i91.CharacterSkillProficiencyLevel) {
+    if (data is _i99.CharacterSkillProficiencyLevel) {
       return 'CharacterSkillProficiencyLevel';
     }
-    if (data is _i92.CharacterSkillSelectionKind) {
+    if (data is _i100.CharacterSkillSelectionKind) {
       return 'CharacterSkillSelectionKind';
     }
-    if (data is _i93.CharacterSpeedKind) {
+    if (data is _i101.CharacterSpeedKind) {
       return 'CharacterSpeedKind';
     }
-    if (data is _i94.CharacterSpellSelectionKind) {
+    if (data is _i102.CharacterSpellSelectionKind) {
       return 'CharacterSpellSelectionKind';
     }
-    if (data is _i95.CharacterSyncOperationType) {
+    if (data is _i103.CharacterSyncOperationType) {
       return 'CharacterSyncOperationType';
     }
-    if (data is _i96.CharacterSyncTargetType) {
+    if (data is _i104.CharacterSyncTargetType) {
       return 'CharacterSyncTargetType';
     }
-    if (data is _i97.ChoiceRequirementType) {
+    if (data is _i105.ChoiceRequirementType) {
       return 'ChoiceRequirementType';
     }
-    if (data is _i98.ChoiceSourceType) {
+    if (data is _i106.ChoiceSourceType) {
       return 'ChoiceSourceType';
     }
-    if (data is _i99.ChoiceType) {
+    if (data is _i107.ChoiceType) {
       return 'ChoiceType';
     }
-    if (data is _i100.ClassSpellSelectionMode) {
+    if (data is _i108.ClassSpellSelectionMode) {
       return 'ClassSpellSelectionMode';
     }
-    if (data is _i101.ConditionType) {
+    if (data is _i109.ConditionType) {
       return 'ConditionType';
     }
-    if (data is _i102.CreatureSize) {
+    if (data is _i110.CreatureSize) {
       return 'CreatureSize';
     }
-    if (data is _i103.DamageType) {
+    if (data is _i111.DamageType) {
       return 'DamageType';
     }
-    if (data is _i104.EquipmentCatalogType) {
+    if (data is _i112.EquipmentCatalogType) {
       return 'EquipmentCatalogType';
     }
-    if (data is _i105.FeatureDisplayPropertyValueKind) {
+    if (data is _i113.FeatureDisplayPropertyValueKind) {
       return 'FeatureDisplayPropertyValueKind';
     }
-    if (data is _i106.FeatureModifierConditionType) {
+    if (data is _i114.FeatureModifierConditionType) {
       return 'FeatureModifierConditionType';
     }
-    if (data is _i107.FeatureModifierOperation) {
-      return 'FeatureModifierOperation';
-    }
-    if (data is _i108.FeatureModifierRounding) {
-      return 'FeatureModifierRounding';
-    }
-    if (data is _i109.StartingEquipmentOptionView) {
+    if (data is _i115.StartingEquipmentOptionView) {
       return 'StartingEquipmentOptionView';
     }
-    if (data is _i110.FeatureModifierValueKind) {
+    if (data is _i116.FeatureModifierRounding) {
+      return 'FeatureModifierRounding';
+    }
+    if (data is _i117.FeatureModifierTarget) {
+      return 'FeatureModifierTarget';
+    }
+    if (data is _i118.FeatureModifierValueKind) {
       return 'FeatureModifierValueKind';
     }
-    if (data is _i111.FeatureResourceEffectType) {
+    if (data is _i119.FeatureResourceEffectType) {
       return 'FeatureResourceEffectType';
     }
-    if (data is _i112.FeatureResourceKind) {
+    if (data is _i120.FeatureResourceKind) {
       return 'FeatureResourceKind';
     }
-    if (data is _i113.FeatureResourceMaxRule) {
+    if (data is _i121.FeatureResourceMaxRule) {
       return 'FeatureResourceMaxRule';
     }
-    if (data is _i114.FeatureResourceProgressionKey) {
+    if (data is _i122.FeatureResourceProgressionKey) {
       return 'FeatureResourceProgressionKey';
     }
-    if (data is _i115.FeatureResourceTargetType) {
+    if (data is _i123.FeatureResourceTargetType) {
       return 'FeatureResourceTargetType';
     }
-    if (data is _i116.FeatureResourceTrigger) {
+    if (data is _i124.FeatureResourceTrigger) {
       return 'FeatureResourceTrigger';
     }
-    if (data is _i117.FeatureTag) {
+    if (data is _i125.FeatureTag) {
       return 'FeatureTag';
     }
-    if (data is _i118.HitPointMode) {
+    if (data is _i126.HitPointMode) {
       return 'HitPointMode';
     }
-    if (data is _i119.Language) {
+    if (data is _i127.Language) {
       return 'Language';
     }
-    if (data is _i120.PreparedSpellRounding) {
+    if (data is _i128.PreparedSpellRounding) {
       return 'PreparedSpellRounding';
     }
-    if (data is _i121.RestType) {
+    if (data is _i129.RestType) {
       return 'RestType';
     }
-    if (data is _i122.SenseType) {
+    if (data is _i130.SenseType) {
       return 'SenseType';
     }
-    if (data is _i123.Skill) {
+    if (data is _i131.Skill) {
       return 'Skill';
     }
-    if (data is _i124.AreaOfEffectType) {
+    if (data is _i132.AreaOfEffectType) {
       return 'AreaOfEffectType';
     }
-    if (data is _i125.AreaSizeMeasurement) {
+    if (data is _i133.AreaSizeMeasurement) {
       return 'AreaSizeMeasurement';
     }
-    if (data is _i126.SpellAttackType) {
+    if (data is _i134.SpellAttackType) {
       return 'SpellAttackType';
     }
-    if (data is _i127.SpellDurationType) {
+    if (data is _i135.SpellDurationType) {
       return 'SpellDurationType';
     }
-    if (data is _i128.SpellScalingMode) {
+    if (data is _i136.SpellScalingMode) {
       return 'SpellScalingMode';
     }
-    if (data is _i129.SpellSchool) {
+    if (data is _i137.SpellSchool) {
       return 'SpellSchool';
     }
-    if (data is _i130.SpellTargetType) {
+    if (data is _i138.SpellTargetType) {
       return 'SpellTargetType';
     }
-    if (data is _i131.SpellcastingProgression) {
+    if (data is _i139.SpellSlotRecoveryMode) {
+      return 'SpellSlotRecoveryMode';
+    }
+    if (data is _i140.SpellcastingProgression) {
       return 'SpellcastingProgression';
     }
-    if (data is _i132.StartingEquipmentBlockKind) {
+    if (data is _i141.StartingEquipmentBlockKind) {
       return 'StartingEquipmentBlockKind';
     }
-    if (data is _i133.StartingEquipmentEntryKind) {
+    if (data is _i142.StartingEquipmentEntryKind) {
       return 'StartingEquipmentEntryKind';
     }
-    if (data is _i134.StartingEquipmentLineKind) {
+    if (data is _i143.StartingEquipmentLineKind) {
       return 'StartingEquipmentLineKind';
     }
-    if (data is _i135.ToolCategory) {
+    if (data is _i144.ToolCategory) {
       return 'ToolCategory';
     }
-    if (data is _i136.UnarmoredDefenseRule) {
+    if (data is _i145.UnarmoredDefenseRule) {
       return 'UnarmoredDefenseRule';
     }
-    if (data is _i137.WeaponCategory) {
+    if (data is _i146.WeaponCategory) {
       return 'WeaponCategory';
     }
-    if (data is _i138.WeaponProperty) {
+    if (data is _i147.WeaponProperty) {
       return 'WeaponProperty';
     }
-    if (data is _i139.LevelDownChoiceRepair) {
+    if (data is _i148.LevelDownChoiceRepair) {
       return 'LevelDownChoiceRepair';
     }
-    if (data is _i140.LevelDownRequest) {
+    if (data is _i149.LevelDownRequest) {
       return 'LevelDownRequest';
     }
-    if (data is _i141.BackgroundStepView) {
+    if (data is _i150.BackgroundStepView) {
       return 'BackgroundStepView';
     }
-    if (data is _i142.CharacterEquipmentEntryView) {
+    if (data is _i151.CharacterEquipmentEntryView) {
       return 'CharacterEquipmentEntryView';
     }
-    if (data is _i143.ChoiceGroupView) {
+    if (data is _i152.ChoiceGroupView) {
       return 'ChoiceGroupView';
     }
-    if (data is _i144.ChoiceOptionEligibilityView) {
+    if (data is _i153.ChoiceOptionEligibilityView) {
       return 'ChoiceOptionEligibilityView';
     }
-    if (data is _i145.ChoiceRequirementFailureView) {
+    if (data is _i154.ChoiceRequirementFailureView) {
       return 'ChoiceRequirementFailureView';
     }
-    if (data is _i146.ClassSpellDeltaView) {
+    if (data is _i155.ClassSpellDeltaView) {
       return 'ClassSpellDeltaView';
     }
-    if (data is _i147.ClassSpellSelectionGroupView) {
+    if (data is _i156.ClassSpellSelectionGroupView) {
       return 'ClassSpellSelectionGroupView';
     }
-    if (data is _i148.ClassStepFeatureView) {
+    if (data is _i157.ClassStepFeatureView) {
       return 'ClassStepFeatureView';
     }
-    if (data is _i149.ClassStepSubclassChoiceView) {
+    if (data is _i158.ClassStepSubclassChoiceView) {
       return 'ClassStepSubclassChoiceView';
     }
-    if (data is _i150.ClassStepView) {
+    if (data is _i159.ClassStepView) {
       return 'ClassStepView';
     }
-    if (data is _i151.FeatureDisplayPropertyView) {
+    if (data is _i160.FeatureDisplayPropertyView) {
       return 'FeatureDisplayPropertyView';
     }
-    if (data is _i152.LevelDownInvalidChoiceView) {
+    if (data is _i161.LevelDownInvalidChoiceView) {
       return 'LevelDownInvalidChoiceView';
     }
-    if (data is _i153.LevelDownPreview) {
+    if (data is _i162.LevelDownPreview) {
       return 'LevelDownPreview';
     }
-    if (data is _i154.LevelUpPreview) {
+    if (data is _i163.LevelUpPreview) {
       return 'LevelUpPreview';
     }
-    if (data is _i155.ProficiencyBundleView) {
+    if (data is _i164.ProficiencyBundleView) {
       return 'ProficiencyBundleView';
     }
-    if (data is _i156.RaceStepView) {
+    if (data is _i165.RaceStepView) {
       return 'RaceStepView';
     }
-    if (data is _i157.ResolvedCharacterSpellData) {
+    if (data is _i166.ResolvedCharacterSpellData) {
       return 'ResolvedCharacterSpellData';
     }
-    if (data is _i158.SelectedFeatureChoiceView) {
+    if (data is _i167.SelectedFeatureChoiceView) {
       return 'SelectedFeatureChoiceView';
     }
-    if (data is _i159.SkillSelectionGroupView) {
+    if (data is _i168.SkillSelectionGroupView) {
       return 'SkillSelectionGroupView';
     }
-    if (data is _i160.SpellSourceContextData) {
+    if (data is _i169.SpellSourceContextData) {
       return 'SpellSourceContextData';
     }
-    if (data is _i161.StartingEquipmentBlockView) {
+    if (data is _i170.StartingEquipmentBlockView) {
       return 'StartingEquipmentBlockView';
     }
-    if (data is _i162.FeatureModifierTarget) {
-      return 'FeatureModifierTarget';
+    if (data is _i171.FeatureModifierOperation) {
+      return 'FeatureModifierOperation';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -9431,8 +9774,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
-    if (dataClassName == 'PreparedSpellRuleData') {
-      return deserialize<_i4.PreparedSpellRuleData>(data['data']);
+    if (dataClassName == 'ClassFeatureData') {
+      return deserialize<_i4.ClassFeatureData>(data['data']);
     }
     if (dataClassName == 'BackgroundData') {
       return deserialize<_i5.BackgroundData>(data['data']);
@@ -9574,349 +9917,377 @@ class Protocol extends _i1.SerializationManagerServer {
       return deserialize<_i48.CharacterWeaponProficiencyOverridesData>(
           data['data']);
     }
+    if (dataClassName == 'ChoiceReplacementHistoryData') {
+      return deserialize<_i49.ChoiceReplacementHistoryData>(data['data']);
+    }
+    if (dataClassName == 'LevelUpChoiceReplacementData') {
+      return deserialize<_i50.LevelUpChoiceReplacementData>(data['data']);
+    }
     if (dataClassName == 'LevelUpRequest') {
-      return deserialize<_i49.LevelUpRequest>(data['data']);
+      return deserialize<_i51.LevelUpRequest>(data['data']);
     }
     if (dataClassName == 'LevelUpSpellChoice') {
-      return deserialize<_i50.LevelUpSpellChoice>(data['data']);
+      return deserialize<_i52.LevelUpSpellChoice>(data['data']);
+    }
+    if (dataClassName == 'SpellSelectionReplacementHistoryData') {
+      return deserialize<_i53.SpellSelectionReplacementHistoryData>(
+          data['data']);
+    }
+    if (dataClassName == 'SpellSlotRecoveryTriggerData') {
+      return deserialize<_i54.SpellSlotRecoveryTriggerData>(data['data']);
     }
     if (dataClassName == 'ChoiceGroupData') {
-      return deserialize<_i51.ChoiceGroupData>(data['data']);
+      return deserialize<_i55.ChoiceGroupData>(data['data']);
     }
     if (dataClassName == 'ChoiceOptionData') {
-      return deserialize<_i52.ChoiceOptionData>(data['data']);
+      return deserialize<_i56.ChoiceOptionData>(data['data']);
     }
     if (dataClassName == 'ChoiceRequirementData') {
-      return deserialize<_i53.ChoiceRequirementData>(data['data']);
+      return deserialize<_i57.ChoiceRequirementData>(data['data']);
     }
     if (dataClassName == 'ClassData') {
-      return deserialize<_i54.ClassData>(data['data']);
-    }
-    if (dataClassName == 'ClassFeatureData') {
-      return deserialize<_i55.ClassFeatureData>(data['data']);
-    }
-    if (dataClassName == 'ClassLevelData') {
-      return deserialize<_i56.ClassLevelData>(data['data']);
+      return deserialize<_i58.ClassData>(data['data']);
     }
     if (dataClassName == 'AuthActionResult') {
-      return deserialize<_i57.AuthActionResult>(data['data']);
+      return deserialize<_i59.AuthActionResult>(data['data']);
+    }
+    if (dataClassName == 'ClassLevelData') {
+      return deserialize<_i60.ClassLevelData>(data['data']);
+    }
+    if (dataClassName == 'PreparedSpellRuleData') {
+      return deserialize<_i61.PreparedSpellRuleData>(data['data']);
     }
     if (dataClassName == 'SpellSlotProgressionData') {
-      return deserialize<_i58.SpellSlotProgressionData>(data['data']);
+      return deserialize<_i62.SpellSlotProgressionData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentBlockData') {
-      return deserialize<_i59.StartingEquipmentBlockData>(data['data']);
+      return deserialize<_i63.StartingEquipmentBlockData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentEntryData') {
-      return deserialize<_i60.StartingEquipmentEntryData>(data['data']);
+      return deserialize<_i64.StartingEquipmentEntryData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentLineData') {
-      return deserialize<_i61.StartingEquipmentLineData>(data['data']);
+      return deserialize<_i65.StartingEquipmentLineData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentOptionData') {
-      return deserialize<_i62.StartingEquipmentOptionData>(data['data']);
+      return deserialize<_i66.StartingEquipmentOptionData>(data['data']);
     }
     if (dataClassName == 'SubclassData') {
-      return deserialize<_i63.SubclassData>(data['data']);
+      return deserialize<_i67.SubclassData>(data['data']);
     }
     if (dataClassName == 'SubclassFeatureData') {
-      return deserialize<_i64.SubclassFeatureData>(data['data']);
+      return deserialize<_i68.SubclassFeatureData>(data['data']);
     }
     if (dataClassName == 'FeatureDisplayPropertyData') {
-      return deserialize<_i65.FeatureDisplayPropertyData>(data['data']);
+      return deserialize<_i69.FeatureDisplayPropertyData>(data['data']);
     }
     if (dataClassName == 'FeatureModifierConditionData') {
-      return deserialize<_i66.FeatureModifierConditionData>(data['data']);
+      return deserialize<_i70.FeatureModifierConditionData>(data['data']);
     }
     if (dataClassName == 'FeatureModifierData') {
-      return deserialize<_i67.FeatureModifierData>(data['data']);
+      return deserialize<_i71.FeatureModifierData>(data['data']);
     }
     if (dataClassName == 'FeatureModifierValueData') {
-      return deserialize<_i68.FeatureModifierValueData>(data['data']);
+      return deserialize<_i72.FeatureModifierValueData>(data['data']);
     }
     if (dataClassName == 'FeatureResourceDefinitionData') {
-      return deserialize<_i69.FeatureResourceDefinitionData>(data['data']);
+      return deserialize<_i73.FeatureResourceDefinitionData>(data['data']);
     }
     if (dataClassName == 'FeatureResourceEffectData') {
-      return deserialize<_i70.FeatureResourceEffectData>(data['data']);
+      return deserialize<_i74.FeatureResourceEffectData>(data['data']);
     }
     if (dataClassName == 'FeatureResourceProgressionValueData') {
-      return deserialize<_i71.FeatureResourceProgressionValueData>(
+      return deserialize<_i75.FeatureResourceProgressionValueData>(
           data['data']);
     }
     if (dataClassName == 'RaceData') {
-      return deserialize<_i72.RaceData>(data['data']);
+      return deserialize<_i76.RaceData>(data['data']);
     }
     if (dataClassName == 'RaceFeatureData') {
-      return deserialize<_i73.RaceFeatureData>(data['data']);
+      return deserialize<_i77.RaceFeatureData>(data['data']);
     }
     if (dataClassName == 'RaceFeatureSpellGrantData') {
-      return deserialize<_i74.RaceFeatureSpellGrantData>(data['data']);
+      return deserialize<_i78.RaceFeatureSpellGrantData>(data['data']);
     }
     if (dataClassName == 'SubraceData') {
-      return deserialize<_i75.SubraceData>(data['data']);
+      return deserialize<_i79.SubraceData>(data['data']);
+    }
+    if (dataClassName == 'SpellActivationData') {
+      return deserialize<_i80.SpellActivationData>(data['data']);
+    }
+    if (dataClassName == 'SpellResourceUpcastPolicyData') {
+      return deserialize<_i81.SpellResourceUpcastPolicyData>(data['data']);
+    }
+    if (dataClassName == 'SpellSelectionFilterData') {
+      return deserialize<_i82.SpellSelectionFilterData>(data['data']);
+    }
+    if (dataClassName == 'SpellSlotRecoveryPolicyData') {
+      return deserialize<_i83.SpellSlotRecoveryPolicyData>(data['data']);
     }
     if (dataClassName == 'ToolData') {
-      return deserialize<_i76.ToolData>(data['data']);
+      return deserialize<_i84.ToolData>(data['data']);
     }
     if (dataClassName == 'ArmorData') {
-      return deserialize<_i77.ArmorData>(data['data']);
+      return deserialize<_i85.ArmorData>(data['data']);
     }
     if (dataClassName == 'ItemData') {
-      return deserialize<_i78.ItemData>(data['data']);
+      return deserialize<_i86.ItemData>(data['data']);
     }
     if (dataClassName == 'MagicItemData') {
-      return deserialize<_i79.MagicItemData>(data['data']);
+      return deserialize<_i87.MagicItemData>(data['data']);
     }
     if (dataClassName == 'WeaponData') {
-      return deserialize<_i80.WeaponData>(data['data']);
+      return deserialize<_i88.WeaponData>(data['data']);
     }
     if (dataClassName == 'SpellData') {
-      return deserialize<_i81.SpellData>(data['data']);
+      return deserialize<_i89.SpellData>(data['data']);
     }
     if (dataClassName == 'SpellScalingData') {
-      return deserialize<_i82.SpellScalingData>(data['data']);
+      return deserialize<_i90.SpellScalingData>(data['data']);
     }
     if (dataClassName == 'Ability') {
-      return deserialize<_i83.Ability>(data['data']);
+      return deserialize<_i91.Ability>(data['data']);
     }
     if (dataClassName == 'ArmorCategory') {
-      return deserialize<_i84.ArmorCategory>(data['data']);
+      return deserialize<_i92.ArmorCategory>(data['data']);
     }
     if (dataClassName == 'CharacterAlignment') {
-      return deserialize<_i85.CharacterAlignment>(data['data']);
+      return deserialize<_i93.CharacterAlignment>(data['data']);
     }
     if (dataClassName == 'CharacterChangeType') {
-      return deserialize<_i86.CharacterChangeType>(data['data']);
+      return deserialize<_i94.CharacterChangeType>(data['data']);
     }
     if (dataClassName == 'CharacterEntityType') {
-      return deserialize<_i87.CharacterEntityType>(data['data']);
+      return deserialize<_i95.CharacterEntityType>(data['data']);
     }
     if (dataClassName == 'CharacterFeatureSourceType') {
-      return deserialize<_i88.CharacterFeatureSourceType>(data['data']);
+      return deserialize<_i96.CharacterFeatureSourceType>(data['data']);
     }
     if (dataClassName == 'CharacterInventoryItemType') {
-      return deserialize<_i89.CharacterInventoryItemType>(data['data']);
+      return deserialize<_i97.CharacterInventoryItemType>(data['data']);
     }
     if (dataClassName == 'CharacterSavingThrowProficiencyOverride') {
-      return deserialize<_i90.CharacterSavingThrowProficiencyOverride>(
+      return deserialize<_i98.CharacterSavingThrowProficiencyOverride>(
           data['data']);
     }
     if (dataClassName == 'CharacterSkillProficiencyLevel') {
-      return deserialize<_i91.CharacterSkillProficiencyLevel>(data['data']);
+      return deserialize<_i99.CharacterSkillProficiencyLevel>(data['data']);
     }
     if (dataClassName == 'CharacterSkillSelectionKind') {
-      return deserialize<_i92.CharacterSkillSelectionKind>(data['data']);
+      return deserialize<_i100.CharacterSkillSelectionKind>(data['data']);
     }
     if (dataClassName == 'CharacterSpeedKind') {
-      return deserialize<_i93.CharacterSpeedKind>(data['data']);
+      return deserialize<_i101.CharacterSpeedKind>(data['data']);
     }
     if (dataClassName == 'CharacterSpellSelectionKind') {
-      return deserialize<_i94.CharacterSpellSelectionKind>(data['data']);
+      return deserialize<_i102.CharacterSpellSelectionKind>(data['data']);
     }
     if (dataClassName == 'CharacterSyncOperationType') {
-      return deserialize<_i95.CharacterSyncOperationType>(data['data']);
+      return deserialize<_i103.CharacterSyncOperationType>(data['data']);
     }
     if (dataClassName == 'CharacterSyncTargetType') {
-      return deserialize<_i96.CharacterSyncTargetType>(data['data']);
+      return deserialize<_i104.CharacterSyncTargetType>(data['data']);
     }
     if (dataClassName == 'ChoiceRequirementType') {
-      return deserialize<_i97.ChoiceRequirementType>(data['data']);
+      return deserialize<_i105.ChoiceRequirementType>(data['data']);
     }
     if (dataClassName == 'ChoiceSourceType') {
-      return deserialize<_i98.ChoiceSourceType>(data['data']);
+      return deserialize<_i106.ChoiceSourceType>(data['data']);
     }
     if (dataClassName == 'ChoiceType') {
-      return deserialize<_i99.ChoiceType>(data['data']);
+      return deserialize<_i107.ChoiceType>(data['data']);
     }
     if (dataClassName == 'ClassSpellSelectionMode') {
-      return deserialize<_i100.ClassSpellSelectionMode>(data['data']);
+      return deserialize<_i108.ClassSpellSelectionMode>(data['data']);
     }
     if (dataClassName == 'ConditionType') {
-      return deserialize<_i101.ConditionType>(data['data']);
+      return deserialize<_i109.ConditionType>(data['data']);
     }
     if (dataClassName == 'CreatureSize') {
-      return deserialize<_i102.CreatureSize>(data['data']);
+      return deserialize<_i110.CreatureSize>(data['data']);
     }
     if (dataClassName == 'DamageType') {
-      return deserialize<_i103.DamageType>(data['data']);
+      return deserialize<_i111.DamageType>(data['data']);
     }
     if (dataClassName == 'EquipmentCatalogType') {
-      return deserialize<_i104.EquipmentCatalogType>(data['data']);
+      return deserialize<_i112.EquipmentCatalogType>(data['data']);
     }
     if (dataClassName == 'FeatureDisplayPropertyValueKind') {
-      return deserialize<_i105.FeatureDisplayPropertyValueKind>(data['data']);
+      return deserialize<_i113.FeatureDisplayPropertyValueKind>(data['data']);
     }
     if (dataClassName == 'FeatureModifierConditionType') {
-      return deserialize<_i106.FeatureModifierConditionType>(data['data']);
-    }
-    if (dataClassName == 'FeatureModifierOperation') {
-      return deserialize<_i107.FeatureModifierOperation>(data['data']);
-    }
-    if (dataClassName == 'FeatureModifierRounding') {
-      return deserialize<_i108.FeatureModifierRounding>(data['data']);
+      return deserialize<_i114.FeatureModifierConditionType>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentOptionView') {
-      return deserialize<_i109.StartingEquipmentOptionView>(data['data']);
+      return deserialize<_i115.StartingEquipmentOptionView>(data['data']);
     }
-    if (dataClassName == 'FeatureModifierValueKind') {
-      return deserialize<_i110.FeatureModifierValueKind>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceEffectType') {
-      return deserialize<_i111.FeatureResourceEffectType>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceKind') {
-      return deserialize<_i112.FeatureResourceKind>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceMaxRule') {
-      return deserialize<_i113.FeatureResourceMaxRule>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceProgressionKey') {
-      return deserialize<_i114.FeatureResourceProgressionKey>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceTargetType') {
-      return deserialize<_i115.FeatureResourceTargetType>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceTrigger') {
-      return deserialize<_i116.FeatureResourceTrigger>(data['data']);
-    }
-    if (dataClassName == 'FeatureTag') {
-      return deserialize<_i117.FeatureTag>(data['data']);
-    }
-    if (dataClassName == 'HitPointMode') {
-      return deserialize<_i118.HitPointMode>(data['data']);
-    }
-    if (dataClassName == 'Language') {
-      return deserialize<_i119.Language>(data['data']);
-    }
-    if (dataClassName == 'PreparedSpellRounding') {
-      return deserialize<_i120.PreparedSpellRounding>(data['data']);
-    }
-    if (dataClassName == 'RestType') {
-      return deserialize<_i121.RestType>(data['data']);
-    }
-    if (dataClassName == 'SenseType') {
-      return deserialize<_i122.SenseType>(data['data']);
-    }
-    if (dataClassName == 'Skill') {
-      return deserialize<_i123.Skill>(data['data']);
-    }
-    if (dataClassName == 'AreaOfEffectType') {
-      return deserialize<_i124.AreaOfEffectType>(data['data']);
-    }
-    if (dataClassName == 'AreaSizeMeasurement') {
-      return deserialize<_i125.AreaSizeMeasurement>(data['data']);
-    }
-    if (dataClassName == 'SpellAttackType') {
-      return deserialize<_i126.SpellAttackType>(data['data']);
-    }
-    if (dataClassName == 'SpellDurationType') {
-      return deserialize<_i127.SpellDurationType>(data['data']);
-    }
-    if (dataClassName == 'SpellScalingMode') {
-      return deserialize<_i128.SpellScalingMode>(data['data']);
-    }
-    if (dataClassName == 'SpellSchool') {
-      return deserialize<_i129.SpellSchool>(data['data']);
-    }
-    if (dataClassName == 'SpellTargetType') {
-      return deserialize<_i130.SpellTargetType>(data['data']);
-    }
-    if (dataClassName == 'SpellcastingProgression') {
-      return deserialize<_i131.SpellcastingProgression>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentBlockKind') {
-      return deserialize<_i132.StartingEquipmentBlockKind>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentEntryKind') {
-      return deserialize<_i133.StartingEquipmentEntryKind>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentLineKind') {
-      return deserialize<_i134.StartingEquipmentLineKind>(data['data']);
-    }
-    if (dataClassName == 'ToolCategory') {
-      return deserialize<_i135.ToolCategory>(data['data']);
-    }
-    if (dataClassName == 'UnarmoredDefenseRule') {
-      return deserialize<_i136.UnarmoredDefenseRule>(data['data']);
-    }
-    if (dataClassName == 'WeaponCategory') {
-      return deserialize<_i137.WeaponCategory>(data['data']);
-    }
-    if (dataClassName == 'WeaponProperty') {
-      return deserialize<_i138.WeaponProperty>(data['data']);
-    }
-    if (dataClassName == 'LevelDownChoiceRepair') {
-      return deserialize<_i139.LevelDownChoiceRepair>(data['data']);
-    }
-    if (dataClassName == 'LevelDownRequest') {
-      return deserialize<_i140.LevelDownRequest>(data['data']);
-    }
-    if (dataClassName == 'BackgroundStepView') {
-      return deserialize<_i141.BackgroundStepView>(data['data']);
-    }
-    if (dataClassName == 'CharacterEquipmentEntryView') {
-      return deserialize<_i142.CharacterEquipmentEntryView>(data['data']);
-    }
-    if (dataClassName == 'ChoiceGroupView') {
-      return deserialize<_i143.ChoiceGroupView>(data['data']);
-    }
-    if (dataClassName == 'ChoiceOptionEligibilityView') {
-      return deserialize<_i144.ChoiceOptionEligibilityView>(data['data']);
-    }
-    if (dataClassName == 'ChoiceRequirementFailureView') {
-      return deserialize<_i145.ChoiceRequirementFailureView>(data['data']);
-    }
-    if (dataClassName == 'ClassSpellDeltaView') {
-      return deserialize<_i146.ClassSpellDeltaView>(data['data']);
-    }
-    if (dataClassName == 'ClassSpellSelectionGroupView') {
-      return deserialize<_i147.ClassSpellSelectionGroupView>(data['data']);
-    }
-    if (dataClassName == 'ClassStepFeatureView') {
-      return deserialize<_i148.ClassStepFeatureView>(data['data']);
-    }
-    if (dataClassName == 'ClassStepSubclassChoiceView') {
-      return deserialize<_i149.ClassStepSubclassChoiceView>(data['data']);
-    }
-    if (dataClassName == 'ClassStepView') {
-      return deserialize<_i150.ClassStepView>(data['data']);
-    }
-    if (dataClassName == 'FeatureDisplayPropertyView') {
-      return deserialize<_i151.FeatureDisplayPropertyView>(data['data']);
-    }
-    if (dataClassName == 'LevelDownInvalidChoiceView') {
-      return deserialize<_i152.LevelDownInvalidChoiceView>(data['data']);
-    }
-    if (dataClassName == 'LevelDownPreview') {
-      return deserialize<_i153.LevelDownPreview>(data['data']);
-    }
-    if (dataClassName == 'LevelUpPreview') {
-      return deserialize<_i154.LevelUpPreview>(data['data']);
-    }
-    if (dataClassName == 'ProficiencyBundleView') {
-      return deserialize<_i155.ProficiencyBundleView>(data['data']);
-    }
-    if (dataClassName == 'RaceStepView') {
-      return deserialize<_i156.RaceStepView>(data['data']);
-    }
-    if (dataClassName == 'ResolvedCharacterSpellData') {
-      return deserialize<_i157.ResolvedCharacterSpellData>(data['data']);
-    }
-    if (dataClassName == 'SelectedFeatureChoiceView') {
-      return deserialize<_i158.SelectedFeatureChoiceView>(data['data']);
-    }
-    if (dataClassName == 'SkillSelectionGroupView') {
-      return deserialize<_i159.SkillSelectionGroupView>(data['data']);
-    }
-    if (dataClassName == 'SpellSourceContextData') {
-      return deserialize<_i160.SpellSourceContextData>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentBlockView') {
-      return deserialize<_i161.StartingEquipmentBlockView>(data['data']);
+    if (dataClassName == 'FeatureModifierRounding') {
+      return deserialize<_i116.FeatureModifierRounding>(data['data']);
     }
     if (dataClassName == 'FeatureModifierTarget') {
-      return deserialize<_i162.FeatureModifierTarget>(data['data']);
+      return deserialize<_i117.FeatureModifierTarget>(data['data']);
+    }
+    if (dataClassName == 'FeatureModifierValueKind') {
+      return deserialize<_i118.FeatureModifierValueKind>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceEffectType') {
+      return deserialize<_i119.FeatureResourceEffectType>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceKind') {
+      return deserialize<_i120.FeatureResourceKind>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceMaxRule') {
+      return deserialize<_i121.FeatureResourceMaxRule>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceProgressionKey') {
+      return deserialize<_i122.FeatureResourceProgressionKey>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceTargetType') {
+      return deserialize<_i123.FeatureResourceTargetType>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceTrigger') {
+      return deserialize<_i124.FeatureResourceTrigger>(data['data']);
+    }
+    if (dataClassName == 'FeatureTag') {
+      return deserialize<_i125.FeatureTag>(data['data']);
+    }
+    if (dataClassName == 'HitPointMode') {
+      return deserialize<_i126.HitPointMode>(data['data']);
+    }
+    if (dataClassName == 'Language') {
+      return deserialize<_i127.Language>(data['data']);
+    }
+    if (dataClassName == 'PreparedSpellRounding') {
+      return deserialize<_i128.PreparedSpellRounding>(data['data']);
+    }
+    if (dataClassName == 'RestType') {
+      return deserialize<_i129.RestType>(data['data']);
+    }
+    if (dataClassName == 'SenseType') {
+      return deserialize<_i130.SenseType>(data['data']);
+    }
+    if (dataClassName == 'Skill') {
+      return deserialize<_i131.Skill>(data['data']);
+    }
+    if (dataClassName == 'AreaOfEffectType') {
+      return deserialize<_i132.AreaOfEffectType>(data['data']);
+    }
+    if (dataClassName == 'AreaSizeMeasurement') {
+      return deserialize<_i133.AreaSizeMeasurement>(data['data']);
+    }
+    if (dataClassName == 'SpellAttackType') {
+      return deserialize<_i134.SpellAttackType>(data['data']);
+    }
+    if (dataClassName == 'SpellDurationType') {
+      return deserialize<_i135.SpellDurationType>(data['data']);
+    }
+    if (dataClassName == 'SpellScalingMode') {
+      return deserialize<_i136.SpellScalingMode>(data['data']);
+    }
+    if (dataClassName == 'SpellSchool') {
+      return deserialize<_i137.SpellSchool>(data['data']);
+    }
+    if (dataClassName == 'SpellTargetType') {
+      return deserialize<_i138.SpellTargetType>(data['data']);
+    }
+    if (dataClassName == 'SpellSlotRecoveryMode') {
+      return deserialize<_i139.SpellSlotRecoveryMode>(data['data']);
+    }
+    if (dataClassName == 'SpellcastingProgression') {
+      return deserialize<_i140.SpellcastingProgression>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentBlockKind') {
+      return deserialize<_i141.StartingEquipmentBlockKind>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentEntryKind') {
+      return deserialize<_i142.StartingEquipmentEntryKind>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentLineKind') {
+      return deserialize<_i143.StartingEquipmentLineKind>(data['data']);
+    }
+    if (dataClassName == 'ToolCategory') {
+      return deserialize<_i144.ToolCategory>(data['data']);
+    }
+    if (dataClassName == 'UnarmoredDefenseRule') {
+      return deserialize<_i145.UnarmoredDefenseRule>(data['data']);
+    }
+    if (dataClassName == 'WeaponCategory') {
+      return deserialize<_i146.WeaponCategory>(data['data']);
+    }
+    if (dataClassName == 'WeaponProperty') {
+      return deserialize<_i147.WeaponProperty>(data['data']);
+    }
+    if (dataClassName == 'LevelDownChoiceRepair') {
+      return deserialize<_i148.LevelDownChoiceRepair>(data['data']);
+    }
+    if (dataClassName == 'LevelDownRequest') {
+      return deserialize<_i149.LevelDownRequest>(data['data']);
+    }
+    if (dataClassName == 'BackgroundStepView') {
+      return deserialize<_i150.BackgroundStepView>(data['data']);
+    }
+    if (dataClassName == 'CharacterEquipmentEntryView') {
+      return deserialize<_i151.CharacterEquipmentEntryView>(data['data']);
+    }
+    if (dataClassName == 'ChoiceGroupView') {
+      return deserialize<_i152.ChoiceGroupView>(data['data']);
+    }
+    if (dataClassName == 'ChoiceOptionEligibilityView') {
+      return deserialize<_i153.ChoiceOptionEligibilityView>(data['data']);
+    }
+    if (dataClassName == 'ChoiceRequirementFailureView') {
+      return deserialize<_i154.ChoiceRequirementFailureView>(data['data']);
+    }
+    if (dataClassName == 'ClassSpellDeltaView') {
+      return deserialize<_i155.ClassSpellDeltaView>(data['data']);
+    }
+    if (dataClassName == 'ClassSpellSelectionGroupView') {
+      return deserialize<_i156.ClassSpellSelectionGroupView>(data['data']);
+    }
+    if (dataClassName == 'ClassStepFeatureView') {
+      return deserialize<_i157.ClassStepFeatureView>(data['data']);
+    }
+    if (dataClassName == 'ClassStepSubclassChoiceView') {
+      return deserialize<_i158.ClassStepSubclassChoiceView>(data['data']);
+    }
+    if (dataClassName == 'ClassStepView') {
+      return deserialize<_i159.ClassStepView>(data['data']);
+    }
+    if (dataClassName == 'FeatureDisplayPropertyView') {
+      return deserialize<_i160.FeatureDisplayPropertyView>(data['data']);
+    }
+    if (dataClassName == 'LevelDownInvalidChoiceView') {
+      return deserialize<_i161.LevelDownInvalidChoiceView>(data['data']);
+    }
+    if (dataClassName == 'LevelDownPreview') {
+      return deserialize<_i162.LevelDownPreview>(data['data']);
+    }
+    if (dataClassName == 'LevelUpPreview') {
+      return deserialize<_i163.LevelUpPreview>(data['data']);
+    }
+    if (dataClassName == 'ProficiencyBundleView') {
+      return deserialize<_i164.ProficiencyBundleView>(data['data']);
+    }
+    if (dataClassName == 'RaceStepView') {
+      return deserialize<_i165.RaceStepView>(data['data']);
+    }
+    if (dataClassName == 'ResolvedCharacterSpellData') {
+      return deserialize<_i166.ResolvedCharacterSpellData>(data['data']);
+    }
+    if (dataClassName == 'SelectedFeatureChoiceView') {
+      return deserialize<_i167.SelectedFeatureChoiceView>(data['data']);
+    }
+    if (dataClassName == 'SkillSelectionGroupView') {
+      return deserialize<_i168.SkillSelectionGroupView>(data['data']);
+    }
+    if (dataClassName == 'SpellSourceContextData') {
+      return deserialize<_i169.SpellSourceContextData>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentBlockView') {
+      return deserialize<_i170.StartingEquipmentBlockView>(data['data']);
+    }
+    if (dataClassName == 'FeatureModifierOperation') {
+      return deserialize<_i171.FeatureModifierOperation>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -9968,54 +10339,54 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i39.CharacterStartingEquipmentSelectionRecord.t;
       case _i40.CharacterSyncEventRecord:
         return _i40.CharacterSyncEventRecord.t;
-      case _i51.ChoiceGroupData:
-        return _i51.ChoiceGroupData.t;
-      case _i52.ChoiceOptionData:
-        return _i52.ChoiceOptionData.t;
-      case _i54.ClassData:
-        return _i54.ClassData.t;
-      case _i55.ClassFeatureData:
-        return _i55.ClassFeatureData.t;
-      case _i56.ClassLevelData:
-        return _i56.ClassLevelData.t;
-      case _i58.SpellSlotProgressionData:
-        return _i58.SpellSlotProgressionData.t;
-      case _i60.StartingEquipmentEntryData:
-        return _i60.StartingEquipmentEntryData.t;
-      case _i63.SubclassData:
-        return _i63.SubclassData.t;
-      case _i64.SubclassFeatureData:
-        return _i64.SubclassFeatureData.t;
-      case _i65.FeatureDisplayPropertyData:
-        return _i65.FeatureDisplayPropertyData.t;
-      case _i67.FeatureModifierData:
-        return _i67.FeatureModifierData.t;
-      case _i69.FeatureResourceDefinitionData:
-        return _i69.FeatureResourceDefinitionData.t;
-      case _i70.FeatureResourceEffectData:
-        return _i70.FeatureResourceEffectData.t;
-      case _i71.FeatureResourceProgressionValueData:
-        return _i71.FeatureResourceProgressionValueData.t;
-      case _i72.RaceData:
-        return _i72.RaceData.t;
-      case _i73.RaceFeatureData:
-        return _i73.RaceFeatureData.t;
-      case _i74.RaceFeatureSpellGrantData:
-        return _i74.RaceFeatureSpellGrantData.t;
-      case _i75.SubraceData:
-        return _i75.SubraceData.t;
-      case _i76.ToolData:
-        return _i76.ToolData.t;
-      case _i77.ArmorData:
-        return _i77.ArmorData.t;
-      case _i78.ItemData:
-        return _i78.ItemData.t;
-      case _i79.MagicItemData:
-        return _i79.MagicItemData.t;
-      case _i80.WeaponData:
-        return _i80.WeaponData.t;
-      case _i81.SpellData:
-        return _i81.SpellData.t;
+      case _i55.ChoiceGroupData:
+        return _i55.ChoiceGroupData.t;
+      case _i56.ChoiceOptionData:
+        return _i56.ChoiceOptionData.t;
+      case _i58.ClassData:
+        return _i58.ClassData.t;
+      case _i4.ClassFeatureData:
+        return _i4.ClassFeatureData.t;
+      case _i60.ClassLevelData:
+        return _i60.ClassLevelData.t;
+      case _i62.SpellSlotProgressionData:
+        return _i62.SpellSlotProgressionData.t;
+      case _i64.StartingEquipmentEntryData:
+        return _i64.StartingEquipmentEntryData.t;
+      case _i67.SubclassData:
+        return _i67.SubclassData.t;
+      case _i68.SubclassFeatureData:
+        return _i68.SubclassFeatureData.t;
+      case _i69.FeatureDisplayPropertyData:
+        return _i69.FeatureDisplayPropertyData.t;
+      case _i71.FeatureModifierData:
+        return _i71.FeatureModifierData.t;
+      case _i73.FeatureResourceDefinitionData:
+        return _i73.FeatureResourceDefinitionData.t;
+      case _i74.FeatureResourceEffectData:
+        return _i74.FeatureResourceEffectData.t;
+      case _i75.FeatureResourceProgressionValueData:
+        return _i75.FeatureResourceProgressionValueData.t;
+      case _i76.RaceData:
+        return _i76.RaceData.t;
+      case _i77.RaceFeatureData:
+        return _i77.RaceFeatureData.t;
+      case _i78.RaceFeatureSpellGrantData:
+        return _i78.RaceFeatureSpellGrantData.t;
+      case _i79.SubraceData:
+        return _i79.SubraceData.t;
+      case _i84.ToolData:
+        return _i84.ToolData.t;
+      case _i85.ArmorData:
+        return _i85.ArmorData.t;
+      case _i86.ItemData:
+        return _i86.ItemData.t;
+      case _i87.MagicItemData:
+        return _i87.MagicItemData.t;
+      case _i88.WeaponData:
+        return _i88.WeaponData.t;
+      case _i89.SpellData:
+        return _i89.SpellData.t;
     }
     return null;
   }

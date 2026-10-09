@@ -140,6 +140,9 @@ void _validateRaceFeature(RaceFeatureData item) {
 }
 
 void _validateRaceFeatureSpellGrant(RaceFeatureSpellGrantData item) {
+  if (item.activation != null) {
+    validateSpellActivation(item.activation!.toJson());
+  }
   if (item.featureId <= 0) {
     throw ArgumentError(
       'RaceFeatureSpellGrantData.featureId must reference a RaceFeatureData row.',

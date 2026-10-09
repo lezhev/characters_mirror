@@ -88,6 +88,7 @@ void _validateSyncOperationResult({
     case CharacterSyncOperationType.adjustHitDice:
     case CharacterSyncOperationType.adjustResource:
     case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.recoverSpellSlots:
     case CharacterSyncOperationType.applyRest:
       _validateSyncSnapshotChanges(current: current, next: next);
       return;

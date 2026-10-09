@@ -21,6 +21,7 @@ import '../../enums/feature_resource_max_rule.dart' as _i9;
 import '../../enums/ability.dart' as _i10;
 import '../../enums/feature_resource_trigger.dart' as _i11;
 import '../../enums/rest_type.dart' as _i12;
+import '../../data/general/spell_slot_recovery_policy_data.dart' as _i13;
 
 abstract class FeatureResourceEffectData implements _i1.SerializableModel {
   FeatureResourceEffectData._({
@@ -43,6 +44,7 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
     this.amountAbility,
     this.activationTrigger,
     this.usageResetOn,
+    this.recoveryPolicy,
     this.setResetOn,
     this.setMaxRule,
     this.setMaxValue,
@@ -72,6 +74,7 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
     _i10.Ability? amountAbility,
     _i11.FeatureResourceTrigger? activationTrigger,
     _i12.RestType? usageResetOn,
+    _i13.SpellSlotRecoveryPolicyData? recoveryPolicy,
     _i12.RestType? setResetOn,
     _i9.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
@@ -134,6 +137,10 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
           ? null
           : _i12.RestType.fromJson(
               (jsonSerialization['usageResetOn'] as String)),
+      recoveryPolicy: jsonSerialization['recoveryPolicy'] == null
+          ? null
+          : _i13.SpellSlotRecoveryPolicyData.fromJson(
+              (jsonSerialization['recoveryPolicy'] as Map<String, dynamic>)),
       setResetOn: jsonSerialization['setResetOn'] == null
           ? null
           : _i12.RestType.fromJson((jsonSerialization['setResetOn'] as String)),
@@ -194,6 +201,8 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
 
   _i12.RestType? usageResetOn;
 
+  _i13.SpellSlotRecoveryPolicyData? recoveryPolicy;
+
   _i12.RestType? setResetOn;
 
   _i9.FeatureResourceMaxRule? setMaxRule;
@@ -231,6 +240,7 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
     _i10.Ability? amountAbility,
     _i11.FeatureResourceTrigger? activationTrigger,
     _i12.RestType? usageResetOn,
+    _i13.SpellSlotRecoveryPolicyData? recoveryPolicy,
     _i12.RestType? setResetOn,
     _i9.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
@@ -263,6 +273,7 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
       if (activationTrigger != null)
         'activationTrigger': activationTrigger?.toJson(),
       if (usageResetOn != null) 'usageResetOn': usageResetOn?.toJson(),
+      if (recoveryPolicy != null) 'recoveryPolicy': recoveryPolicy?.toJson(),
       if (setResetOn != null) 'setResetOn': setResetOn?.toJson(),
       if (setMaxRule != null) 'setMaxRule': setMaxRule?.toJson(),
       if (setMaxValue != null) 'setMaxValue': setMaxValue,
@@ -303,6 +314,7 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
     _i10.Ability? amountAbility,
     _i11.FeatureResourceTrigger? activationTrigger,
     _i12.RestType? usageResetOn,
+    _i13.SpellSlotRecoveryPolicyData? recoveryPolicy,
     _i12.RestType? setResetOn,
     _i9.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
@@ -330,6 +342,7 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
           amountAbility: amountAbility,
           activationTrigger: activationTrigger,
           usageResetOn: usageResetOn,
+          recoveryPolicy: recoveryPolicy,
           setResetOn: setResetOn,
           setMaxRule: setMaxRule,
           setMaxValue: setMaxValue,
@@ -363,6 +376,7 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
     Object? amountAbility = _Undefined,
     Object? activationTrigger = _Undefined,
     Object? usageResetOn = _Undefined,
+    Object? recoveryPolicy = _Undefined,
     Object? setResetOn = _Undefined,
     Object? setMaxRule = _Undefined,
     Object? setMaxValue = _Undefined,
@@ -416,6 +430,9 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
           : this.activationTrigger,
       usageResetOn:
           usageResetOn is _i12.RestType? ? usageResetOn : this.usageResetOn,
+      recoveryPolicy: recoveryPolicy is _i13.SpellSlotRecoveryPolicyData?
+          ? recoveryPolicy
+          : this.recoveryPolicy?.copyWith(),
       setResetOn: setResetOn is _i12.RestType? ? setResetOn : this.setResetOn,
       setMaxRule: setMaxRule is _i9.FeatureResourceMaxRule?
           ? setMaxRule

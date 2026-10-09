@@ -1,5 +1,6 @@
 class: CharacterData
 fields:
+  spellActivationUses: Map<String, int>?
   id: int?
   name: String?
   age: String?
@@ -69,6 +70,7 @@ fields:
   attacks: List<CharacterAttackData>?
   featureOverrides: List<CharacterFeatureOverrideData>?
   resourceStates: List<CharacterResourceStateData>?
+  spellRecoveryTriggers: Map<String, SpellSlotRecoveryTriggerData>?
   classEntries: List<CharacterClassEntryData>?
   choices: List<CharacterChoiceData>?
   skillSelections: List<CharacterSkillSelectionData>?

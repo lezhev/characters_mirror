@@ -149,7 +149,8 @@ extension CharacterSheetControllerSpells on CharacterSheetController {
         entry.sources
             .map((s) => SpellSourceContext.fromJson(s.toJson()))
             .toList(),
-        SpellSlotPools.fromCharacter(current.toJson()));
+        SpellSlotPools.fromCharacter(current.toJson()),
+        character: current.toJson());
     final cast = castContext ?? choices.firstOrNull;
     if (cast == null) throw StateError('Нет доступной ячейки заклинания.');
     final action = CharacterSemanticActionData.fromJson(cast.toActionJson())

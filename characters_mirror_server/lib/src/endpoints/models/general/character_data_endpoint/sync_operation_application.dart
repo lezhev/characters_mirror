@@ -264,6 +264,7 @@ Future<_OperationApplyResult> _applySyncOperationAtomically(
         CharacterSyncOperationType.adjustHitDice ||
         CharacterSyncOperationType.adjustResource ||
         CharacterSyncOperationType.adjustExperience ||
+        CharacterSyncOperationType.recoverSpellSlots ||
         CharacterSyncOperationType.applyRest =>
           await _applyUpdateCharacterOperation(
             session,
@@ -552,6 +553,9 @@ Future<_OperationApplyResult> _applyUpdateCharacterOperation(
     syncTargetRevisions: targetRevisions,
   );
   final changedTargets = _changedSyncTargetKeys(current, next);
+  next = await _preserveChoiceReplacementHistory(session, current, next,
+      transaction: transaction);
+  await _validateSpellSelectionFilters(session, next, transaction: transaction);
   for (final changedTarget in changedTargets) {
     targetRevisions[changedTarget] = nextRevision;
   }
@@ -649,6 +653,7 @@ CharacterData _applyOperationToCharacter(
     case CharacterSyncOperationType.adjustHitDice:
     case CharacterSyncOperationType.adjustResource:
     case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.recoverSpellSlots:
     case CharacterSyncOperationType.applyRest:
       break;
   }

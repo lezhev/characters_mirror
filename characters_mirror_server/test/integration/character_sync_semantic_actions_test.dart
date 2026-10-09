@@ -470,7 +470,7 @@ void main() {
           syncProtocolVersion: 3,
         ),
       );
-      expect(oldProtocol.syncProtocolVersion, _protocolVersion);
+      expect(oldProtocol.syncProtocolVersion, 6);
       expect(oldProtocol.capabilities, contains('semantic_counter_actions'));
       expect(
         oldProtocol.rejectedChanges!.single.reason,

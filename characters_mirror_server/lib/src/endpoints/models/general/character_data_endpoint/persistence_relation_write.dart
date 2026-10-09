@@ -5,6 +5,7 @@ Future<void> _upsertCharacterRelations(
   CharacterRecord characterRecord,
   CharacterData character, {
   Transaction? transaction,
+  bool replaceSpellSelectionProvenance = false,
 }) async {
   final entryResult = await _upsertClassEntryRecords(
     session,
@@ -32,6 +33,7 @@ Future<void> _upsertCharacterRelations(
     entryResult.savedEntries,
     character.spellSelections ?? const <CharacterSpellSelectionData>[],
     transaction: transaction,
+    replaceProvenance: replaceSpellSelectionProvenance,
   );
   await _deleteMissingClassEntryRecords(
     session,
@@ -160,6 +162,7 @@ Future<void> _upsertChoiceRecords(
       classEntryId: matchedEntry?.id,
       classEntry: matchedEntry,
       groupKey: choice.groupKey,
+      replacementHistory: choice.replacementHistory,
       optionKey: choice.optionKey,
       selectionIndex: choice.selectionIndex,
       updatedAt: choice.updatedAt?.toUtc() ?? characterRecord.updatedAt,
@@ -267,6 +270,7 @@ Future<void> _upsertSpellSelectionRecords(
   List<CharacterClassEntryRecord> savedEntries,
   List<CharacterSpellSelectionData> selections, {
   Transaction? transaction,
+  bool replaceProvenance = false,
 }) async {
   final existingSelections = await CharacterSpellSelectionRecord.db.find(
     session,
@@ -312,6 +316,20 @@ Future<void> _upsertSpellSelectionRecords(
       spellKey: spellKey,
       kind: selection.kind,
       selectionIndex: selection.selectionIndex,
+      selectionFilter: replaceProvenance
+          ? selection.selectionFilter
+          : selection.selectionFilter ?? existingRecord?.selectionFilter,
+      selectionRuleLevel: replaceProvenance
+          ? selection.selectionRuleLevel
+          : selection.selectionRuleLevel ?? existingRecord?.selectionRuleLevel,
+      selectionUnrestricted: replaceProvenance
+          ? selection.selectionUnrestricted
+          : selection.selectionUnrestricted ??
+              existingRecord?.selectionUnrestricted,
+      spellReplacementHistory: replaceProvenance
+          ? selection.spellReplacementHistory
+          : selection.spellReplacementHistory ??
+              existingRecord?.spellReplacementHistory,
       updatedAt: selection.updatedAt?.toUtc() ?? characterRecord.updatedAt,
     );
     final saved = existingRecord == null

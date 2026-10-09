@@ -86,6 +86,7 @@ String characterSyncOperationTargetKey(CharacterSyncOperationData operation) {
     case CharacterSyncOperationType.adjustHitDice:
     case CharacterSyncOperationType.adjustResource:
     case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.recoverSpellSlots:
     case CharacterSyncOperationType.applyRest:
       return 'semantic:${operation.id}';
   }

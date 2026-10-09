@@ -10,15 +10,17 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../enums/ability.dart' as _i2;
-import '../../../enums/armor_category.dart' as _i3;
-import '../../../enums/skill.dart' as _i4;
-import '../../../enums/spellcasting_progression.dart' as _i5;
-import '../../../enums/class_spell_selection_mode.dart' as _i6;
+import '../../../data/general/spell_selection_filter_data.dart' as _i2;
+import '../../../enums/ability.dart' as _i3;
+import '../../../enums/armor_category.dart' as _i4;
+import '../../../enums/skill.dart' as _i5;
+import '../../../enums/spellcasting_progression.dart' as _i6;
+import '../../../enums/class_spell_selection_mode.dart' as _i7;
 
 abstract class ClassData implements _i1.SerializableModel {
   ClassData._({
     this.id,
+    this.spellSelectionFilter,
     this.referenceKey,
     this.name,
     this.description,
@@ -48,6 +50,7 @@ abstract class ClassData implements _i1.SerializableModel {
 
   factory ClassData({
     int? id,
+    _i2.SpellSelectionFilterData? spellSelectionFilter,
     String? referenceKey,
     String? name,
     String? description,
@@ -56,20 +59,20 @@ abstract class ClassData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? hitDieValue,
-    List<_i2.Ability>? primaryAbilities,
-    List<_i2.Ability>? savingThrowProficiencies,
-    List<_i3.ArmorCategory>? armorTraining,
+    List<_i3.Ability>? primaryAbilities,
+    List<_i3.Ability>? savingThrowProficiencies,
+    List<_i4.ArmorCategory>? armorTraining,
     List<String>? weaponTraining,
     List<String>? toolTrainingKeys,
-    List<_i4.Skill>? availableSkills,
+    List<_i5.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
     int? subclassChoiceFeatureId,
-    _i5.SpellcastingProgression? spellcastingProgression,
-    _i6.ClassSpellSelectionMode? spellSelectionMode,
-    _i2.Ability? spellcastingAbilityValue,
+    _i6.SpellcastingProgression? spellcastingProgression,
+    _i7.ClassSpellSelectionMode? spellSelectionMode,
+    _i3.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
-    List<_i3.ArmorCategory>? multiclassArmorTraining,
+    List<_i4.ArmorCategory>? multiclassArmorTraining,
     List<String>? multiclassWeaponTraining,
     List<String>? multiclassToolTrainingKeys,
     String? imageURL,
@@ -78,6 +81,11 @@ abstract class ClassData implements _i1.SerializableModel {
   factory ClassData.fromJson(Map<String, dynamic> jsonSerialization) {
     return ClassData(
       id: jsonSerialization['id'] as int?,
+      spellSelectionFilter: jsonSerialization['spellSelectionFilter'] == null
+          ? null
+          : _i2.SpellSelectionFilterData.fromJson(
+              (jsonSerialization['spellSelectionFilter']
+                  as Map<String, dynamic>)),
       referenceKey: jsonSerialization['referenceKey'] as String?,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -91,14 +99,14 @@ abstract class ClassData implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       hitDieValue: jsonSerialization['hitDieValue'] as int?,
       primaryAbilities: (jsonSerialization['primaryAbilities'] as List?)
-          ?.map((e) => _i2.Ability.fromJson((e as String)))
+          ?.map((e) => _i3.Ability.fromJson((e as String)))
           .toList(),
       savingThrowProficiencies:
           (jsonSerialization['savingThrowProficiencies'] as List?)
-              ?.map((e) => _i2.Ability.fromJson((e as String)))
+              ?.map((e) => _i3.Ability.fromJson((e as String)))
               .toList(),
       armorTraining: (jsonSerialization['armorTraining'] as List?)
-          ?.map((e) => _i3.ArmorCategory.fromJson((e as String)))
+          ?.map((e) => _i4.ArmorCategory.fromJson((e as String)))
           .toList(),
       weaponTraining: (jsonSerialization['weaponTraining'] as List?)
           ?.map((e) => e as String)
@@ -107,7 +115,7 @@ abstract class ClassData implements _i1.SerializableModel {
           ?.map((e) => e as String)
           .toList(),
       availableSkills: (jsonSerialization['availableSkills'] as List?)
-          ?.map((e) => _i4.Skill.fromJson((e as String)))
+          ?.map((e) => _i5.Skill.fromJson((e as String)))
           .toList(),
       skillCount: jsonSerialization['skillCount'] as int?,
       subclassChoiceLevel: jsonSerialization['subclassChoiceLevel'] as int?,
@@ -116,16 +124,16 @@ abstract class ClassData implements _i1.SerializableModel {
       spellcastingProgression:
           jsonSerialization['spellcastingProgression'] == null
               ? null
-              : _i5.SpellcastingProgression.fromJson(
+              : _i6.SpellcastingProgression.fromJson(
                   (jsonSerialization['spellcastingProgression'] as String)),
       spellSelectionMode: jsonSerialization['spellSelectionMode'] == null
           ? null
-          : _i6.ClassSpellSelectionMode.fromJson(
+          : _i7.ClassSpellSelectionMode.fromJson(
               (jsonSerialization['spellSelectionMode'] as String)),
       spellcastingAbilityValue:
           jsonSerialization['spellcastingAbilityValue'] == null
               ? null
-              : _i2.Ability.fromJson(
+              : _i3.Ability.fromJson(
                   (jsonSerialization['spellcastingAbilityValue'] as String)),
       multiclassPrerequisites:
           (jsonSerialization['multiclassPrerequisites'] as Map?)
@@ -135,7 +143,7 @@ abstract class ClassData implements _i1.SerializableModel {
                   )),
       multiclassArmorTraining:
           (jsonSerialization['multiclassArmorTraining'] as List?)
-              ?.map((e) => _i3.ArmorCategory.fromJson((e as String)))
+              ?.map((e) => _i4.ArmorCategory.fromJson((e as String)))
               .toList(),
       multiclassWeaponTraining:
           (jsonSerialization['multiclassWeaponTraining'] as List?)
@@ -154,6 +162,8 @@ abstract class ClassData implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
+  _i2.SpellSelectionFilterData? spellSelectionFilter;
+
   String? referenceKey;
 
   String? name;
@@ -170,17 +180,17 @@ abstract class ClassData implements _i1.SerializableModel {
 
   int? hitDieValue;
 
-  List<_i2.Ability>? primaryAbilities;
+  List<_i3.Ability>? primaryAbilities;
 
-  List<_i2.Ability>? savingThrowProficiencies;
+  List<_i3.Ability>? savingThrowProficiencies;
 
-  List<_i3.ArmorCategory>? armorTraining;
+  List<_i4.ArmorCategory>? armorTraining;
 
   List<String>? weaponTraining;
 
   List<String>? toolTrainingKeys;
 
-  List<_i4.Skill>? availableSkills;
+  List<_i5.Skill>? availableSkills;
 
   int? skillCount;
 
@@ -188,15 +198,15 @@ abstract class ClassData implements _i1.SerializableModel {
 
   int? subclassChoiceFeatureId;
 
-  _i5.SpellcastingProgression? spellcastingProgression;
+  _i6.SpellcastingProgression? spellcastingProgression;
 
-  _i6.ClassSpellSelectionMode? spellSelectionMode;
+  _i7.ClassSpellSelectionMode? spellSelectionMode;
 
-  _i2.Ability? spellcastingAbilityValue;
+  _i3.Ability? spellcastingAbilityValue;
 
   Map<String, int>? multiclassPrerequisites;
 
-  List<_i3.ArmorCategory>? multiclassArmorTraining;
+  List<_i4.ArmorCategory>? multiclassArmorTraining;
 
   List<String>? multiclassWeaponTraining;
 
@@ -209,6 +219,7 @@ abstract class ClassData implements _i1.SerializableModel {
   @_i1.useResult
   ClassData copyWith({
     int? id,
+    _i2.SpellSelectionFilterData? spellSelectionFilter,
     String? referenceKey,
     String? name,
     String? description,
@@ -217,20 +228,20 @@ abstract class ClassData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? hitDieValue,
-    List<_i2.Ability>? primaryAbilities,
-    List<_i2.Ability>? savingThrowProficiencies,
-    List<_i3.ArmorCategory>? armorTraining,
+    List<_i3.Ability>? primaryAbilities,
+    List<_i3.Ability>? savingThrowProficiencies,
+    List<_i4.ArmorCategory>? armorTraining,
     List<String>? weaponTraining,
     List<String>? toolTrainingKeys,
-    List<_i4.Skill>? availableSkills,
+    List<_i5.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
     int? subclassChoiceFeatureId,
-    _i5.SpellcastingProgression? spellcastingProgression,
-    _i6.ClassSpellSelectionMode? spellSelectionMode,
-    _i2.Ability? spellcastingAbilityValue,
+    _i6.SpellcastingProgression? spellcastingProgression,
+    _i7.ClassSpellSelectionMode? spellSelectionMode,
+    _i3.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
-    List<_i3.ArmorCategory>? multiclassArmorTraining,
+    List<_i4.ArmorCategory>? multiclassArmorTraining,
     List<String>? multiclassWeaponTraining,
     List<String>? multiclassToolTrainingKeys,
     String? imageURL,
@@ -239,6 +250,8 @@ abstract class ClassData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (spellSelectionFilter != null)
+        'spellSelectionFilter': spellSelectionFilter?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -296,6 +309,7 @@ class _Undefined {}
 class _ClassDataImpl extends ClassData {
   _ClassDataImpl({
     int? id,
+    _i2.SpellSelectionFilterData? spellSelectionFilter,
     String? referenceKey,
     String? name,
     String? description,
@@ -304,25 +318,26 @@ class _ClassDataImpl extends ClassData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? hitDieValue,
-    List<_i2.Ability>? primaryAbilities,
-    List<_i2.Ability>? savingThrowProficiencies,
-    List<_i3.ArmorCategory>? armorTraining,
+    List<_i3.Ability>? primaryAbilities,
+    List<_i3.Ability>? savingThrowProficiencies,
+    List<_i4.ArmorCategory>? armorTraining,
     List<String>? weaponTraining,
     List<String>? toolTrainingKeys,
-    List<_i4.Skill>? availableSkills,
+    List<_i5.Skill>? availableSkills,
     int? skillCount,
     int? subclassChoiceLevel,
     int? subclassChoiceFeatureId,
-    _i5.SpellcastingProgression? spellcastingProgression,
-    _i6.ClassSpellSelectionMode? spellSelectionMode,
-    _i2.Ability? spellcastingAbilityValue,
+    _i6.SpellcastingProgression? spellcastingProgression,
+    _i7.ClassSpellSelectionMode? spellSelectionMode,
+    _i3.Ability? spellcastingAbilityValue,
     Map<String, int>? multiclassPrerequisites,
-    List<_i3.ArmorCategory>? multiclassArmorTraining,
+    List<_i4.ArmorCategory>? multiclassArmorTraining,
     List<String>? multiclassWeaponTraining,
     List<String>? multiclassToolTrainingKeys,
     String? imageURL,
   }) : super._(
           id: id,
+          spellSelectionFilter: spellSelectionFilter,
           referenceKey: referenceKey,
           name: name,
           description: description,
@@ -356,6 +371,7 @@ class _ClassDataImpl extends ClassData {
   @override
   ClassData copyWith({
     Object? id = _Undefined,
+    Object? spellSelectionFilter = _Undefined,
     Object? referenceKey = _Undefined,
     Object? name = _Undefined,
     Object? description = _Undefined,
@@ -384,6 +400,10 @@ class _ClassDataImpl extends ClassData {
   }) {
     return ClassData(
       id: id is int? ? id : this.id,
+      spellSelectionFilter:
+          spellSelectionFilter is _i2.SpellSelectionFilterData?
+              ? spellSelectionFilter
+              : this.spellSelectionFilter?.copyWith(),
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -392,13 +412,13 @@ class _ClassDataImpl extends ClassData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       hitDieValue: hitDieValue is int? ? hitDieValue : this.hitDieValue,
-      primaryAbilities: primaryAbilities is List<_i2.Ability>?
+      primaryAbilities: primaryAbilities is List<_i3.Ability>?
           ? primaryAbilities
           : this.primaryAbilities?.map((e0) => e0).toList(),
-      savingThrowProficiencies: savingThrowProficiencies is List<_i2.Ability>?
+      savingThrowProficiencies: savingThrowProficiencies is List<_i3.Ability>?
           ? savingThrowProficiencies
           : this.savingThrowProficiencies?.map((e0) => e0).toList(),
-      armorTraining: armorTraining is List<_i3.ArmorCategory>?
+      armorTraining: armorTraining is List<_i4.ArmorCategory>?
           ? armorTraining
           : this.armorTraining?.map((e0) => e0).toList(),
       weaponTraining: weaponTraining is List<String>?
@@ -407,7 +427,7 @@ class _ClassDataImpl extends ClassData {
       toolTrainingKeys: toolTrainingKeys is List<String>?
           ? toolTrainingKeys
           : this.toolTrainingKeys?.map((e0) => e0).toList(),
-      availableSkills: availableSkills is List<_i4.Skill>?
+      availableSkills: availableSkills is List<_i5.Skill>?
           ? availableSkills
           : this.availableSkills?.map((e0) => e0).toList(),
       skillCount: skillCount is int? ? skillCount : this.skillCount,
@@ -418,13 +438,13 @@ class _ClassDataImpl extends ClassData {
           ? subclassChoiceFeatureId
           : this.subclassChoiceFeatureId,
       spellcastingProgression:
-          spellcastingProgression is _i5.SpellcastingProgression?
+          spellcastingProgression is _i6.SpellcastingProgression?
               ? spellcastingProgression
               : this.spellcastingProgression,
-      spellSelectionMode: spellSelectionMode is _i6.ClassSpellSelectionMode?
+      spellSelectionMode: spellSelectionMode is _i7.ClassSpellSelectionMode?
           ? spellSelectionMode
           : this.spellSelectionMode,
-      spellcastingAbilityValue: spellcastingAbilityValue is _i2.Ability?
+      spellcastingAbilityValue: spellcastingAbilityValue is _i3.Ability?
           ? spellcastingAbilityValue
           : this.spellcastingAbilityValue,
       multiclassPrerequisites: multiclassPrerequisites is Map<String, int>?
@@ -438,7 +458,7 @@ class _ClassDataImpl extends ClassData {
                     value0,
                   )),
       multiclassArmorTraining:
-          multiclassArmorTraining is List<_i3.ArmorCategory>?
+          multiclassArmorTraining is List<_i4.ArmorCategory>?
               ? multiclassArmorTraining
               : this.multiclassArmorTraining?.map((e0) => e0).toList(),
       multiclassWeaponTraining: multiclassWeaponTraining is List<String>?

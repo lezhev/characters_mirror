@@ -22,6 +22,7 @@ abstract class ChoiceRequirementData implements _i1.SerializableModel {
     this.referenceKey,
     this.choiceGroupKey,
     this.optionKey,
+    this.negate,
   });
 
   factory ChoiceRequirementData({
@@ -32,6 +33,7 @@ abstract class ChoiceRequirementData implements _i1.SerializableModel {
     String? referenceKey,
     String? choiceGroupKey,
     String? optionKey,
+    bool? negate,
   }) = _ChoiceRequirementDataImpl;
 
   factory ChoiceRequirementData.fromJson(
@@ -47,6 +49,7 @@ abstract class ChoiceRequirementData implements _i1.SerializableModel {
       referenceKey: jsonSerialization['referenceKey'] as String?,
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
+      negate: jsonSerialization['negate'] as bool?,
     );
   }
 
@@ -64,6 +67,8 @@ abstract class ChoiceRequirementData implements _i1.SerializableModel {
 
   String? optionKey;
 
+  bool? negate;
+
   /// Returns a shallow copy of this [ChoiceRequirementData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -75,6 +80,7 @@ abstract class ChoiceRequirementData implements _i1.SerializableModel {
     String? referenceKey,
     String? choiceGroupKey,
     String? optionKey,
+    bool? negate,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -86,6 +92,7 @@ abstract class ChoiceRequirementData implements _i1.SerializableModel {
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
       if (optionKey != null) 'optionKey': optionKey,
+      if (negate != null) 'negate': negate,
     };
   }
 
@@ -106,6 +113,7 @@ class _ChoiceRequirementDataImpl extends ChoiceRequirementData {
     String? referenceKey,
     String? choiceGroupKey,
     String? optionKey,
+    bool? negate,
   }) : super._(
           type: type,
           classKey: classKey,
@@ -114,6 +122,7 @@ class _ChoiceRequirementDataImpl extends ChoiceRequirementData {
           referenceKey: referenceKey,
           choiceGroupKey: choiceGroupKey,
           optionKey: optionKey,
+          negate: negate,
         );
 
   /// Returns a shallow copy of this [ChoiceRequirementData]
@@ -128,6 +137,7 @@ class _ChoiceRequirementDataImpl extends ChoiceRequirementData {
     Object? referenceKey = _Undefined,
     Object? choiceGroupKey = _Undefined,
     Object? optionKey = _Undefined,
+    Object? negate = _Undefined,
   }) {
     return ChoiceRequirementData(
       type: type ?? this.type,
@@ -138,6 +148,7 @@ class _ChoiceRequirementDataImpl extends ChoiceRequirementData {
       choiceGroupKey:
           choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
       optionKey: optionKey is String? ? optionKey : this.optionKey,
+      negate: negate is bool? ? negate : this.negate,
     );
   }
 }

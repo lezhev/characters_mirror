@@ -39,20 +39,23 @@ import '../../../data/general/character/character_feature_override_data.dart'
     as _i19;
 import '../../../data/general/character/character_resource_state_data.dart'
     as _i20;
-import '../../../data/general/character/character_class_entry_data.dart'
+import '../../../data/general/character/spell_slot_recovery_trigger_data.dart'
     as _i21;
-import '../../../data/general/character/character_choice_data.dart' as _i22;
+import '../../../data/general/character/character_class_entry_data.dart'
+    as _i22;
+import '../../../data/general/character/character_choice_data.dart' as _i23;
 import '../../../data/general/character/character_skill_selection_data.dart'
-    as _i23;
-import '../../../data/general/character/character_spell_selection_data.dart'
     as _i24;
-import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+import '../../../data/general/character/character_spell_selection_data.dart'
     as _i25;
-import '../../../data/general/character/character_derived_data.dart' as _i26;
+import '../../../data/general/character/character_starting_equipment_selection_data.dart'
+    as _i26;
+import '../../../data/general/character/character_derived_data.dart' as _i27;
 
 abstract class CharacterData implements _i1.SerializableModel {
   CharacterData._({
     this.id,
+    this.spellActivationUses,
     this.name,
     this.age,
     this.height,
@@ -121,6 +124,7 @@ abstract class CharacterData implements _i1.SerializableModel {
     this.attacks,
     this.featureOverrides,
     this.resourceStates,
+    this.spellRecoveryTriggers,
     this.classEntries,
     this.choices,
     this.skillSelections,
@@ -131,6 +135,7 @@ abstract class CharacterData implements _i1.SerializableModel {
 
   factory CharacterData({
     int? id,
+    Map<String, int>? spellActivationUses,
     String? name,
     String? age,
     String? height,
@@ -201,18 +206,24 @@ abstract class CharacterData implements _i1.SerializableModel {
     List<_i18.CharacterAttackData>? attacks,
     List<_i19.CharacterFeatureOverrideData>? featureOverrides,
     List<_i20.CharacterResourceStateData>? resourceStates,
-    List<_i21.CharacterClassEntryData>? classEntries,
-    List<_i22.CharacterChoiceData>? choices,
-    List<_i23.CharacterSkillSelectionData>? skillSelections,
-    List<_i24.CharacterSpellSelectionData>? spellSelections,
-    List<_i25.CharacterStartingEquipmentSelectionData>?
+    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
+    List<_i22.CharacterClassEntryData>? classEntries,
+    List<_i23.CharacterChoiceData>? choices,
+    List<_i24.CharacterSkillSelectionData>? skillSelections,
+    List<_i25.CharacterSpellSelectionData>? spellSelections,
+    List<_i26.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i26.CharacterDerivedData? derived,
+    _i27.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterData(
       id: jsonSerialization['id'] as int?,
+      spellActivationUses: (jsonSerialization['spellActivationUses'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
       name: jsonSerialization['name'] as String?,
       age: jsonSerialization['age'] as String?,
       height: jsonSerialization['height'] as String?,
@@ -393,34 +404,43 @@ abstract class CharacterData implements _i1.SerializableModel {
           ?.map((e) => _i20.CharacterResourceStateData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
+      spellRecoveryTriggers:
+          (jsonSerialization['spellRecoveryTriggers'] as Map?)
+              ?.map((k, v) => MapEntry(
+                    k as String,
+                    _i21.SpellSlotRecoveryTriggerData.fromJson(
+                        (v as Map<String, dynamic>)),
+                  )),
       classEntries: (jsonSerialization['classEntries'] as List?)
-          ?.map((e) => _i21.CharacterClassEntryData.fromJson(
+          ?.map((e) => _i22.CharacterClassEntryData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       choices: (jsonSerialization['choices'] as List?)
           ?.map((e) =>
-              _i22.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
+              _i23.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
           .toList(),
       skillSelections: (jsonSerialization['skillSelections'] as List?)
-          ?.map((e) => _i23.CharacterSkillSelectionData.fromJson(
+          ?.map((e) => _i24.CharacterSkillSelectionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       spellSelections: (jsonSerialization['spellSelections'] as List?)
-          ?.map((e) => _i24.CharacterSpellSelectionData.fromJson(
+          ?.map((e) => _i25.CharacterSpellSelectionData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
       startingEquipmentSelections:
           (jsonSerialization['startingEquipmentSelections'] as List?)
               ?.map((e) =>
-                  _i25.CharacterStartingEquipmentSelectionData.fromJson(
+                  _i26.CharacterStartingEquipmentSelectionData.fromJson(
                       (e as Map<String, dynamic>)))
               .toList(),
       derived: jsonSerialization['derived'] == null
           ? null
-          : _i26.CharacterDerivedData.fromJson(
+          : _i27.CharacterDerivedData.fromJson(
               (jsonSerialization['derived'] as Map<String, dynamic>)),
     );
   }
+
+  Map<String, int>? spellActivationUses;
 
   int? id;
 
@@ -562,24 +582,27 @@ abstract class CharacterData implements _i1.SerializableModel {
 
   List<_i20.CharacterResourceStateData>? resourceStates;
 
-  List<_i21.CharacterClassEntryData>? classEntries;
+  Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers;
 
-  List<_i22.CharacterChoiceData>? choices;
+  List<_i22.CharacterClassEntryData>? classEntries;
 
-  List<_i23.CharacterSkillSelectionData>? skillSelections;
+  List<_i23.CharacterChoiceData>? choices;
 
-  List<_i24.CharacterSpellSelectionData>? spellSelections;
+  List<_i24.CharacterSkillSelectionData>? skillSelections;
 
-  List<_i25.CharacterStartingEquipmentSelectionData>?
+  List<_i25.CharacterSpellSelectionData>? spellSelections;
+
+  List<_i26.CharacterStartingEquipmentSelectionData>?
       startingEquipmentSelections;
 
-  _i26.CharacterDerivedData? derived;
+  _i27.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   CharacterData copyWith({
     int? id,
+    Map<String, int>? spellActivationUses,
     String? name,
     String? age,
     String? height,
@@ -650,18 +673,21 @@ abstract class CharacterData implements _i1.SerializableModel {
     List<_i18.CharacterAttackData>? attacks,
     List<_i19.CharacterFeatureOverrideData>? featureOverrides,
     List<_i20.CharacterResourceStateData>? resourceStates,
-    List<_i21.CharacterClassEntryData>? classEntries,
-    List<_i22.CharacterChoiceData>? choices,
-    List<_i23.CharacterSkillSelectionData>? skillSelections,
-    List<_i24.CharacterSpellSelectionData>? spellSelections,
-    List<_i25.CharacterStartingEquipmentSelectionData>?
+    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
+    List<_i22.CharacterClassEntryData>? classEntries,
+    List<_i23.CharacterChoiceData>? choices,
+    List<_i24.CharacterSkillSelectionData>? skillSelections,
+    List<_i25.CharacterSpellSelectionData>? spellSelections,
+    List<_i26.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i26.CharacterDerivedData? derived,
+    _i27.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (spellActivationUses != null)
+        'spellActivationUses': spellActivationUses?.toJson(),
       if (name != null) 'name': name,
       if (age != null) 'age': age,
       if (height != null) 'height': height,
@@ -769,6 +795,9 @@ abstract class CharacterData implements _i1.SerializableModel {
       if (resourceStates != null)
         'resourceStates':
             resourceStates?.toJson(valueToJson: (v) => v.toJson()),
+      if (spellRecoveryTriggers != null)
+        'spellRecoveryTriggers':
+            spellRecoveryTriggers?.toJson(valueToJson: (v) => v.toJson()),
       if (classEntries != null)
         'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
       if (choices != null)
@@ -797,6 +826,7 @@ class _Undefined {}
 class _CharacterDataImpl extends CharacterData {
   _CharacterDataImpl({
     int? id,
+    Map<String, int>? spellActivationUses,
     String? name,
     String? age,
     String? height,
@@ -867,15 +897,17 @@ class _CharacterDataImpl extends CharacterData {
     List<_i18.CharacterAttackData>? attacks,
     List<_i19.CharacterFeatureOverrideData>? featureOverrides,
     List<_i20.CharacterResourceStateData>? resourceStates,
-    List<_i21.CharacterClassEntryData>? classEntries,
-    List<_i22.CharacterChoiceData>? choices,
-    List<_i23.CharacterSkillSelectionData>? skillSelections,
-    List<_i24.CharacterSpellSelectionData>? spellSelections,
-    List<_i25.CharacterStartingEquipmentSelectionData>?
+    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
+    List<_i22.CharacterClassEntryData>? classEntries,
+    List<_i23.CharacterChoiceData>? choices,
+    List<_i24.CharacterSkillSelectionData>? skillSelections,
+    List<_i25.CharacterSpellSelectionData>? spellSelections,
+    List<_i26.CharacterStartingEquipmentSelectionData>?
         startingEquipmentSelections,
-    _i26.CharacterDerivedData? derived,
+    _i27.CharacterDerivedData? derived,
   }) : super._(
           id: id,
+          spellActivationUses: spellActivationUses,
           name: name,
           age: age,
           height: height,
@@ -945,6 +977,7 @@ class _CharacterDataImpl extends CharacterData {
           attacks: attacks,
           featureOverrides: featureOverrides,
           resourceStates: resourceStates,
+          spellRecoveryTriggers: spellRecoveryTriggers,
           classEntries: classEntries,
           choices: choices,
           skillSelections: skillSelections,
@@ -959,6 +992,7 @@ class _CharacterDataImpl extends CharacterData {
   @override
   CharacterData copyWith({
     Object? id = _Undefined,
+    Object? spellActivationUses = _Undefined,
     Object? name = _Undefined,
     Object? age = _Undefined,
     Object? height = _Undefined,
@@ -1027,6 +1061,7 @@ class _CharacterDataImpl extends CharacterData {
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
     Object? resourceStates = _Undefined,
+    Object? spellRecoveryTriggers = _Undefined,
     Object? classEntries = _Undefined,
     Object? choices = _Undefined,
     Object? skillSelections = _Undefined,
@@ -1036,6 +1071,16 @@ class _CharacterDataImpl extends CharacterData {
   }) {
     return CharacterData(
       id: id is int? ? id : this.id,
+      spellActivationUses: spellActivationUses is Map<String, int>?
+          ? spellActivationUses
+          : this.spellActivationUses?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
       name: name is String? ? name : this.name,
       age: age is String? ? age : this.age,
       height: height is String? ? height : this.height,
@@ -1255,28 +1300,39 @@ class _CharacterDataImpl extends CharacterData {
       resourceStates: resourceStates is List<_i20.CharacterResourceStateData>?
           ? resourceStates
           : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
-      classEntries: classEntries is List<_i21.CharacterClassEntryData>?
+      spellRecoveryTriggers: spellRecoveryTriggers
+              is Map<String, _i21.SpellSlotRecoveryTriggerData>?
+          ? spellRecoveryTriggers
+          : this.spellRecoveryTriggers?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0.copyWith(),
+                  )),
+      classEntries: classEntries is List<_i22.CharacterClassEntryData>?
           ? classEntries
           : this.classEntries?.map((e0) => e0.copyWith()).toList(),
-      choices: choices is List<_i22.CharacterChoiceData>?
+      choices: choices is List<_i23.CharacterChoiceData>?
           ? choices
           : this.choices?.map((e0) => e0.copyWith()).toList(),
       skillSelections:
-          skillSelections is List<_i23.CharacterSkillSelectionData>?
+          skillSelections is List<_i24.CharacterSkillSelectionData>?
               ? skillSelections
               : this.skillSelections?.map((e0) => e0.copyWith()).toList(),
       spellSelections:
-          spellSelections is List<_i24.CharacterSpellSelectionData>?
+          spellSelections is List<_i25.CharacterSpellSelectionData>?
               ? spellSelections
               : this.spellSelections?.map((e0) => e0.copyWith()).toList(),
       startingEquipmentSelections: startingEquipmentSelections
-              is List<_i25.CharacterStartingEquipmentSelectionData>?
+              is List<_i26.CharacterStartingEquipmentSelectionData>?
           ? startingEquipmentSelections
           : this
               .startingEquipmentSelections
               ?.map((e0) => e0.copyWith())
               .toList(),
-      derived: derived is _i26.CharacterDerivedData?
+      derived: derived is _i27.CharacterDerivedData?
           ? derived
           : this.derived?.copyWith(),
     );

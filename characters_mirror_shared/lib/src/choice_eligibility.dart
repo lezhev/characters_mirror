@@ -53,6 +53,7 @@ class ChoiceRequirement {
     this.referenceKey,
     this.choiceGroupKey,
     this.optionKey,
+    this.negate = false,
   });
 
   final ChoiceRequirementKind kind;
@@ -62,6 +63,7 @@ class ChoiceRequirement {
   final String? referenceKey;
   final String? choiceGroupKey;
   final String? optionKey;
+  final bool negate;
 }
 
 /// Minimal facts needed to evaluate choice availability.
@@ -108,6 +110,29 @@ class ChoiceRequirementFailure {
   final int? actualValue;
 }
 
+bool choiceRequirementIsWellFormed(ChoiceRequirement requirement) {
+  final key = requirement.referenceKey?.trim();
+  return switch (requirement.kind) {
+    ChoiceRequirementKind.minimumClassLevel =>
+      (requirement.classKey?.trim().isNotEmpty ?? false) &&
+          _validClassLevel(requirement.value),
+    ChoiceRequirementKind.minimumCharacterLevel =>
+      _validClassLevel(requirement.value),
+    ChoiceRequirementKind.abilityScore =>
+      (requirement.ability?.trim().isNotEmpty ?? false) &&
+          _validValue(requirement.value),
+    ChoiceRequirementKind.knownSpell ||
+    ChoiceRequirementKind.knownCantrip ||
+    ChoiceRequirementKind.feature ||
+    ChoiceRequirementKind.existingSkill ||
+    ChoiceRequirementKind.existingTool =>
+      key != null && key.isNotEmpty,
+    ChoiceRequirementKind.selectedChoiceOption =>
+      (requirement.choiceGroupKey?.trim().isNotEmpty ?? false) &&
+          (requirement.optionKey?.trim().isNotEmpty ?? false),
+  };
+}
+
 class ChoiceOptionEligibility {
   const ChoiceOptionEligibility(this.failedRequirements);
 
@@ -124,7 +149,11 @@ ChoiceOptionEligibility evaluateChoiceOptionEligibility({
   final failures = <ChoiceRequirementFailure>[];
   for (final requirement in requirements) {
     final result = _evaluate(requirement, context);
-    if (result != null) failures.add(result);
+    if (!requirement.negate || result?.reason == 'invalidRequirement') {
+      if (result != null) failures.add(result);
+    } else if (result == null) {
+      failures.add(_failure(requirement, 'negatedRequirement'));
+    }
   }
   return ChoiceOptionEligibility(List.unmodifiable(failures));
 }
@@ -213,6 +242,8 @@ ChoiceRequirementFailure? _evaluate(
 }
 
 bool _validValue(int? value) => value != null && value >= 1 && value <= 30;
+
+bool _validClassLevel(int? value) => value != null && value >= 1 && value <= 20;
 
 String encodeSelectedChoiceOptionKey(String groupKey, String optionKey) =>
     '$groupKey\u0000$optionKey';

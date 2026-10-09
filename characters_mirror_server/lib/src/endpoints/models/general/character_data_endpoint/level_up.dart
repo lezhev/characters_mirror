@@ -16,6 +16,13 @@ void _validateLevelUpRequest(LevelUpRequest request) {
     }
   }
   Rules.smallCollection('spells', request.spells);
+  Rules.smallCollection('choiceReplacements', request.choiceReplacements);
+  for (final replacement
+      in request.choiceReplacements ?? <LevelUpChoiceReplacementData>[]) {
+    Rules.shortText('choiceReplacements.groupKey', replacement.groupKey);
+    Rules.shortText('choiceReplacements.selectionId', replacement.selectionId);
+    Rules.shortText('choiceReplacements.optionKey', replacement.optionKey);
+  }
   for (final spell in request.spells ?? const <LevelUpSpellChoice>[]) {
     Rules.rangeInt('spells.spellId', spell.spellId, min: 1, max: 2147483647);
     Rules.shortText('spells.replacesSelectionId', spell.replacesSelectionId);
@@ -119,15 +126,30 @@ Future<LevelUpPreview> _previewLevelUp(
   draft = await _addLevelUpSpells(
       session, draft, nextEntry, step, delta, request,
       transaction: transaction);
-  var derived = await _buildDerivedData(session, draft,
+  draft = await _replaceLevelUpChoices(
+      session, draft, before, nextEntry, step, request,
       transaction: transaction, resolveContext: resolveContext);
+  var derived = await _buildDerivedData(session, draft,
+      transaction: transaction,
+      resolveContext: resolveContext,
+      allowIncompleteConditionalGroups: true);
+  await _validateSpellSelectionFilters(session, draft,
+      transaction: transaction, allowSpellReplacements: true);
   _validateLevelUpAsi(before, derived, groups, request);
   draft =
       _preserveLevelChangeResources(before, draft.copyWith(derived: derived));
   derived = await _buildDerivedData(session, draft,
-      transaction: transaction, resolveContext: resolveContext);
+      transaction: transaction,
+      resolveContext: resolveContext,
+      allowIncompleteConditionalGroups: true);
   draft = draft.copyWith(derived: derived);
-  final missing = _missingLevelUpChoices(groups, request);
+  final missing = _missingLevelUpChoices(
+    groups,
+    request,
+    draft,
+    step.currentLevelFeatures ?? const <ClassFeatureData>[],
+    step.currentSubclassFeatures ?? const <SubclassFeatureData>[],
+  );
   if (request.hitDieRoll == null) missing.add('Выберите результат кости хитов');
   final subclassLevel = step.subclassChoice?.requiredLevel;
   if (subclass == null &&

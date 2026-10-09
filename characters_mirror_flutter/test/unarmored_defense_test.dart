@@ -5,6 +5,8 @@ import 'package:characters_mirror_flutter/core/character/armor_class_calculator.
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_character_resolver.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/widgets/combat_stat_settings_sheet.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../test_fixtures/armor_class_contract.dart';
 
@@ -179,6 +181,151 @@ void main() {
             .derived
             ?.armorClass,
         18);
+  });
+
+  for (final ability in ['constitution', 'wisdom']) {
+    testWidgets('missing class step retains $ability defense and AC details',
+        (tester) async {
+      final snapshot = await resolve(ArmorClassCase('snapshot', 15,
+          defenses: [ability], constitution: 16, wisdom: 16));
+      final emptyCache = OfflineCacheDatabase.openInMemory();
+      addTearDown(emptyCache.close);
+      final offline = await resolveOfflineCharacter(emptyCache, snapshot);
+      expect(offline.derived?.armorClass, snapshot.derived?.armorClass);
+      expect(offline.derived?.armorClassFormula,
+          snapshot.derived?.armorClassFormula);
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: TextButton(
+            onPressed: () => showArmorClassSettingsSheet(
+              context: tester.element(find.byType(TextButton)),
+              character: offline,
+              onSave: (_) async {},
+            ),
+            child: const Text('AC'),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('AC'));
+      await tester.pumpAndSettle();
+      expect(find.text('Итоговая КД: 15'), findsOneWidget);
+      expect(find.text('Источник: Защита без доспехов'), findsOneWidget);
+      expect(find.text('Расчёт: ${snapshot.derived?.armorClassFormula}'),
+          findsOneWidget);
+    });
+  }
+
+  test('missing class step reevaluates snapshot conditions and ability scores',
+      () async {
+    final snapshot = await resolve(
+        const ArmorClassCase('snapshot', 15, defenses: ['wisdom'], wisdom: 16));
+    final emptyCache = OfflineCacheDatabase.openInMemory();
+    addTearDown(emptyCache.close);
+    await emptyCache.putReferenceList(
+        'armor', offlineAllKey, catalog, (armor) => armor.toJson());
+    final changed = snapshot.copyWith(
+      baseAbilityScores: {'dexterity': 18, 'wisdom': 20},
+      classEntries: [snapshot.classEntries!.single.copyWith(level: 2)],
+      customArmorClassBonus: 1,
+    );
+    final offline = await resolveOfflineCharacter(emptyCache, changed);
+    expect(offline.derived?.armorClass, 20);
+    expect(offline.derived?.armorClassFormula,
+        '10 + Ловкость (4) + Мудрость (5) + Бонус (1)');
+    final shielded = await resolveOfflineCharacter(
+        emptyCache,
+        changed.copyWith(
+            equippedShield: CharacterEquipmentSelectionData(
+                referenceKey: 'shield', name: 'Shield')));
+    expect(shielded.derived?.armorClass, 17);
+    final armored = await resolveOfflineCharacter(
+        emptyCache,
+        changed.copyWith(
+            equippedArmor: CharacterEquipmentSelectionData(
+                referenceKey: 'plate', name: 'Plate')));
+    expect(armored.derived?.armorClass, 19);
+    final removedClass = await resolveOfflineCharacter(
+        emptyCache, changed.copyWith(classEntries: []));
+    expect(removedClass.derived?.armorClass, 15);
+  });
+
+  test('cached current class step supersedes snapshot formula modifiers',
+      () async {
+    final snapshot = await resolve(const ArmorClassCase('snapshot', 15));
+    final data = classes['constitution']!;
+    await cache.putReference(
+        offlineClassStepKind,
+        offlineClassStepKey(data.id!),
+        ClassStepView(
+            classData: data,
+            selectedLevel: 1,
+            currentLevelFeatures: [],
+            featureModifiers: []),
+        (view) => view.toJson());
+    final offline = await resolveOfflineCharacter(cache, snapshot);
+    expect(offline.derived?.armorClass, 12);
+    expect(offline.derived?.featureModifiers, isEmpty);
+  });
+
+  test('older cached step without modifier metadata retains snapshot formula',
+      () async {
+    final snapshot = await resolve(const ArmorClassCase('snapshot', 15));
+    await cache.putReference(
+        offlineClassStepKind,
+        offlineClassStepKey(classes['constitution']!.id!),
+        ClassStepView(currentLevelFeatures: [features.first]),
+        (view) => view.toJson());
+    final offline = await resolveOfflineCharacter(cache, snapshot);
+    expect(offline.derived?.armorClass, 15);
+    expect(offline.derived?.armorClassFormula,
+        snapshot.derived?.armorClassFormula);
+  });
+
+  test('snapshot subclass formula requires its subclass and feature level',
+      () async {
+    final data = classes['constitution']!;
+    final subclass =
+        SubclassData(id: 301, parentClassId: data.id!, levelRequired: 2);
+    final feature = SubclassFeatureData(
+        id: 302,
+        parentSubclassId: subclass.id!,
+        level: 3,
+        name: 'Fixture defense');
+    final character = CharacterData(
+      baseAbilityScores: {'dexterity': 14, 'wisdom': 16},
+      classEntries: [
+        CharacterClassEntryData(classData: data, subclass: subclass, level: 3)
+      ],
+      derived: CharacterDerivedData(featureModifiers: [
+        FeatureModifierData(
+          referenceKey: 'subclass.ac',
+          subclassFeatureId: feature.id,
+          subclassFeature: feature,
+          target: FeatureModifierTarget.armorClass,
+          operation: FeatureModifierOperation.baseArmorClass,
+          value: FeatureModifierValueData(
+              kind: FeatureModifierValueKind.staticValue,
+              staticValue: 10,
+              abilityModifiers: [Ability.dexterity, Ability.wisdom]),
+        )
+      ]),
+    );
+    expect(
+        (await resolveOfflineCharacter(cache, character)).derived?.armorClass,
+        15);
+    for (final entry in [
+      character.classEntries!.single.copyWith(level: 2),
+      character.classEntries!.single.copyWith(subclass: null),
+      character.classEntries!.single
+          .copyWith(subclass: subclass.copyWith(id: 303)),
+    ]) {
+      expect(
+          (await resolveOfflineCharacter(
+                  cache, character.copyWith(classEntries: [entry])))
+              .derived
+              ?.armorClass,
+          12);
+    }
   });
 
   final snapshotsPath = Platform.environment['ARMOR_CLASS_SERVER_SNAPSHOTS'];

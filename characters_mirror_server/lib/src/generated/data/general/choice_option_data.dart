@@ -32,6 +32,7 @@ abstract class ChoiceOptionData
     this.name,
     this.description,
     this.shortDescription,
+    this.automaticSelection,
     this.sortOrder,
     this.grantedAbilityBonuses,
     this.grantedSkills,
@@ -64,6 +65,7 @@ abstract class ChoiceOptionData
     String? name,
     String? description,
     String? shortDescription,
+    bool? automaticSelection,
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
     List<_i3.Skill>? grantedSkills,
@@ -100,6 +102,7 @@ abstract class ChoiceOptionData
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
+      automaticSelection: jsonSerialization['automaticSelection'] as bool?,
       sortOrder: jsonSerialization['sortOrder'] as int?,
       grantedAbilityBonuses:
           (jsonSerialization['grantedAbilityBonuses'] as Map?)
@@ -191,6 +194,8 @@ abstract class ChoiceOptionData
 
   String? shortDescription;
 
+  bool? automaticSelection;
+
   int? sortOrder;
 
   Map<String, int>? grantedAbilityBonuses;
@@ -249,6 +254,7 @@ abstract class ChoiceOptionData
     String? name,
     String? description,
     String? shortDescription,
+    bool? automaticSelection,
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
     List<_i3.Skill>? grantedSkills,
@@ -282,6 +288,7 @@ abstract class ChoiceOptionData
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
+      if (automaticSelection != null) 'automaticSelection': automaticSelection,
       if (sortOrder != null) 'sortOrder': sortOrder,
       if (grantedAbilityBonuses != null)
         'grantedAbilityBonuses': grantedAbilityBonuses?.toJson(),
@@ -335,6 +342,7 @@ abstract class ChoiceOptionData
       if (name != null) 'name': name,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
+      if (automaticSelection != null) 'automaticSelection': automaticSelection,
       if (sortOrder != null) 'sortOrder': sortOrder,
       if (grantedAbilityBonuses != null)
         'grantedAbilityBonuses': grantedAbilityBonuses?.toJson(),
@@ -421,6 +429,7 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     String? name,
     String? description,
     String? shortDescription,
+    bool? automaticSelection,
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
     List<_i3.Skill>? grantedSkills,
@@ -451,6 +460,7 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
           name: name,
           description: description,
           shortDescription: shortDescription,
+          automaticSelection: automaticSelection,
           sortOrder: sortOrder,
           grantedAbilityBonuses: grantedAbilityBonuses,
           grantedSkills: grantedSkills,
@@ -487,6 +497,7 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     Object? name = _Undefined,
     Object? description = _Undefined,
     Object? shortDescription = _Undefined,
+    Object? automaticSelection = _Undefined,
     Object? sortOrder = _Undefined,
     Object? grantedAbilityBonuses = _Undefined,
     Object? grantedSkills = _Undefined,
@@ -522,6 +533,9 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
       shortDescription: shortDescription is String?
           ? shortDescription
           : this.shortDescription,
+      automaticSelection: automaticSelection is bool?
+          ? automaticSelection
+          : this.automaticSelection,
       sortOrder: sortOrder is int? ? sortOrder : this.sortOrder,
       grantedAbilityBonuses: grantedAbilityBonuses is Map<String, int>?
           ? grantedAbilityBonuses
@@ -613,6 +627,10 @@ class ChoiceOptionDataTable extends _i1.Table<int?> {
     );
     shortDescription = _i1.ColumnString(
       'shortDescription',
+      this,
+    );
+    automaticSelection = _i1.ColumnBool(
+      'automaticSelection',
       this,
     );
     sortOrder = _i1.ColumnInt(
@@ -720,6 +738,8 @@ class ChoiceOptionDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString shortDescription;
 
+  late final _i1.ColumnBool automaticSelection;
+
   late final _i1.ColumnInt sortOrder;
 
   late final _i1.ColumnSerializable grantedAbilityBonuses;
@@ -785,6 +805,7 @@ class ChoiceOptionDataTable extends _i1.Table<int?> {
         name,
         description,
         shortDescription,
+        automaticSelection,
         sortOrder,
         grantedAbilityBonuses,
         grantedSkills,

@@ -1,5 +1,6 @@
 class: CharacterChoiceData
 fields:
+  replacementHistory: List<ChoiceReplacementHistoryData>?
   id: String?
   classEntry: CharacterClassEntryData?
   groupKey: String?

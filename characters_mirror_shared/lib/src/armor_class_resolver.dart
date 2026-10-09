@@ -47,16 +47,7 @@ class ArmorClassEquipment {
     value = modifier.value;
     final spec = modifier.spec!;
     source = spec.sourceName ?? 'Защита без доспехов';
-    // Ability terms are included once in each base candidate, never added to armor.
-    final abilityTerms = spec.abilityModifierKeys.toSet();
-    final constant = value -
-        abilityTerms.fold<int>(
-            0, (sum, key) => sum + (context.abilityModifiers[key] ?? 0));
-    formula = '$constant';
-    for (final key in abilityTerms) {
-      formula +=
-          ' + ${_abilityLabel(key)} (${context.abilityModifiers[key] ?? 0})';
-    }
+    formula = armorClassBaseFormula(modifier, context.abilityModifiers);
   }
   if (shield != null) {
     value += shield.bonusAC;
@@ -70,6 +61,21 @@ class ArmorClassEquipment {
   value += effects;
   if (effects != 0) formula += ' + Эффекты ($effects)';
   return (value: value, source: source, formula: formula);
+}
+
+String armorClassBaseFormula(
+    ResolvedFeatureModifier modifier, Map<String, int> abilityModifiers) {
+  final spec = modifier.spec!;
+  // Ability terms are included once in each base candidate, never added to armor.
+  final abilityTerms = spec.abilityModifierKeys.toSet();
+  final constant = modifier.value -
+      abilityTerms.fold<int>(
+          0, (sum, key) => sum + (abilityModifiers[key] ?? 0));
+  var formula = '$constant';
+  for (final key in abilityTerms) {
+    formula += ' + ${_abilityLabel(key)} (${abilityModifiers[key] ?? 0})';
+  }
+  return formula;
 }
 
 String _abilityLabel(String key) => switch (key) {

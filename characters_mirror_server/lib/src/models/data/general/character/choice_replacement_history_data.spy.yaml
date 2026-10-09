@@ -1,0 +1,5 @@
+class: ChoiceReplacementHistoryData
+fields:
+  classLevel: int
+  previousOptionKey: String
+  replacementGroupKey: String?

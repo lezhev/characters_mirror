@@ -1,5 +1,7 @@
 class: ClassSpellSelectionGroupView
 fields:
+  selectionFilter: SpellSelectionFilterData?
+  unrestrictedSelectionCount: int?
   kind: CharacterSpellSelectionKind?
   optionSourceSelectionKind: CharacterSpellSelectionKind?
   selectionCount: int?

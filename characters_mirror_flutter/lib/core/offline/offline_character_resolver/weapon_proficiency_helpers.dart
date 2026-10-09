@@ -200,8 +200,9 @@ Future<List<String>> _toolProficiencyKeys(
 Future<List<ChoiceOptionData>> _selectedChoiceOptions(
   OfflineCacheDatabase cache,
   CharacterData character,
-  List<CharacterClassEntryData> entries,
-) async {
+  List<CharacterClassEntryData> entries, {
+  List<CharacterChoiceData>? automaticChoices,
+}) async {
   final groups = await cache.getReferenceList(
         'choice_group',
         offlineAllKey,
@@ -268,10 +269,298 @@ Future<List<ChoiceOptionData>> _selectedChoiceOptions(
     final group = groupsByKey[groupKey];
     final groupId = group?.id;
     if (groupId == null) continue;
-    final option = optionsByGroupId[groupId]?[optionKey];
+    final classSourced = group!.sourceClassId != null ||
+        group.sourceSubclassId != null ||
+        group.sourceFeatureId != null ||
+        group.sourceSubclassFeatureId != null;
+    if (!classSourced) {
+      if (choice.classEntry != null) {
+        throw StateError('Non-class choice $groupKey has a class entry.');
+      }
+    } else {
+      final sourceClassId = group.sourceClassId ??
+          classFeatures
+              .where((feature) => feature.id == group.sourceFeatureId)
+              .firstOrNull
+              ?.parentClassId;
+      final sourceSubclassId = group.sourceSubclassId ??
+          subclassFeatures
+              .where((feature) => feature.id == group.sourceSubclassFeatureId)
+              .firstOrNull
+              ?.parentSubclassId;
+      final matchingEntries = entries
+          .where((entry) =>
+              (sourceClassId == null || entry.classData?.id == sourceClassId) &&
+              (sourceSubclassId == null ||
+                  entry.subclass?.id == sourceSubclassId))
+          .toList();
+      final boundId = choice.classEntry?.id;
+      if (matchingEntries.isEmpty ||
+          boundId == null && matchingEntries.length > 1 ||
+          boundId != null &&
+              matchingEntries.where((e) => e.id == boundId).length != 1) {
+        throw StateError('Choice $groupKey is bound to the wrong class entry.');
+      }
+    }
+    var option = optionsByGroupId[groupId]?[optionKey];
+    if (option == null && choice.replacementHistory?.isNotEmpty == true) {
+      final resolved = feature_modifiers.resolveProgressionChoiceOption(
+          choice.toJson(),
+          groupsByKey.values.map((g) => g.toJson()),
+          options.map((o) => o.toJson()));
+      if (resolved != null) option = ChoiceOptionData.fromJson(resolved);
+    }
     if (option != null) selected.add(option);
   }
+  final selectionsByGroup = <String, List<ChoiceOptionData>>{};
+  final selectedKeysByGroup = <String, List<String>>{};
+  for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
+    final groupKey = choice.groupKey;
+    final optionKey = choice.optionKey;
+    final group = groupsByKey[groupKey];
+    final option =
+        group == null ? null : optionsByGroupId[group.id]?[optionKey?.trim()];
+    if (groupKey == null || option == null) continue;
+    selectionsByGroup.putIfAbsent(groupKey, () => []).add(option);
+    selectedKeysByGroup.putIfAbsent(groupKey, () => []).add(option.optionKey);
+  }
+  final activeClassFeatures = await _currentClassFeatures(cache, entries);
+  final activeSubclassFeatures = await _currentSubclassFeatures(cache, entries);
+  for (final group in groupsByKey.values) {
+    final selected = selectionsByGroup[group.referenceKey] ?? const [];
+    final keys = selectedKeysByGroup[group.referenceKey] ?? const [];
+    final context = conditionalChoiceContext(
+      character: character,
+      group: group,
+      options: optionsByGroupId[group.id]?.values ?? const [],
+      otherOptions: [
+        for (final entry in selectionsByGroup.entries)
+          if (entry.key != group.referenceKey) ...entry.value,
+      ],
+      selectedOptionsByGroupKey: selectionsByGroup,
+      classFeatures: activeClassFeatures,
+      subclassFeatures: activeSubclassFeatures,
+    );
+    final groupEligible = feature_modifiers
+        .choiceRequirementsEligibilityFromProtocol(
+          (group.requirements ?? const <ChoiceRequirementData>[])
+              .map((requirement) => requirement.toJson()),
+          context,
+        )
+        .isEligible;
+    if (!groupEligible && selected.isNotEmpty) {
+      throw StateError('Choice group ${group.referenceKey} is unavailable.');
+    }
+    if (groupEligible && (group.requirements?.isNotEmpty ?? false)) {
+      final minimum = group.minimumSelectionCount ?? group.selectionCount ?? 1;
+      if (selected.length < minimum) {
+        throw StateError(
+            'Choice group ${group.referenceKey} requires $minimum selections.');
+      }
+    }
+    final maximum = group.selectionCount ?? 1;
+    final indices = (character.choices ?? const <CharacterChoiceData>[])
+        .where((choice) => choice.groupKey == group.referenceKey)
+        .map((choice) => choice.selectionIndex)
+        .whereType<int>()
+        .toList();
+    if (selected.length > maximum ||
+        group.allowDuplicates != true && keys.toSet().length != keys.length ||
+        indices.toSet().length != indices.length) {
+      throw StateError(
+          'Choice group ${group.referenceKey} has invalid selections.');
+    }
+  }
+  if (!groupsByKey.values.any((g) => g.autoSelectSingleEligible == true)) {
+    return selected;
+  }
+  final spells = await cache.getReferenceList(
+          'spell', offlineAllKey, SpellData.fromJson) ??
+      [];
+  final grants = await cache.getReferenceList(
+          'class_spell_grant', offlineAllKey, ClassSpellGrantData.fromJson) ??
+      [];
+  for (final group in groupsByKey.values) {
+    if (group.autoSelectSingleEligible != true ||
+        (character.choices?.any((c) => c.groupKey == group.referenceKey) ??
+            false)) {
+      continue;
+    }
+    final groupOptions =
+        optionsByGroupId[group.id]?.values ?? <ChoiceOptionData>[];
+    final otherOptions =
+        selected.where((o) => o.choiceGroupId != group.id).toList();
+    final otherSpells = feature_modifiers.resolveCharacterSpellCollection(
+      character: character.copyWith(derived: null).toJson(),
+      spells: spells.map((s) => s.toJson()),
+      classGrants: grants
+          .where((g) =>
+              (group.sourceFeatureId == null ||
+                  g.sourceFeatureId != group.sourceFeatureId) &&
+              (group.sourceSubclassFeatureId == null ||
+                  g.sourceSubclassFeatureId != group.sourceSubclassFeatureId))
+          .map((g) => g.toJson()),
+      classFeatures: activeClassFeatures
+          .where((f) => f.id != group.sourceFeatureId)
+          .map((f) => f.toJson()),
+      subclassFeatures: activeSubclassFeatures
+          .where((f) => f.id != group.sourceSubclassFeatureId)
+          .map((f) => f.toJson()),
+      selectedOptions: otherOptions.map((o) => o.toJson()),
+      choiceGroups: groups.map((g) => g.toJson()),
+    );
+    final context = conditionalChoiceContext(
+      character: character,
+      group: group,
+      options: groupOptions,
+      otherOptions: otherOptions,
+      classFeatures: activeClassFeatures,
+      subclassFeatures: activeSubclassFeatures,
+      otherGrantedCantripKeys: otherSpells
+          .where((s) => s.spell['level'] == 0)
+          .map((s) => s.spellKey),
+    );
+    final key = feature_modifiers.automaticChoiceOptionKey(
+        groupOptions.map((o) => o.toJson()), context);
+    if (key == null) continue;
+    selected.add(groupOptions.firstWhere((o) => o.optionKey == key));
+    final parentClassId = activeClassFeatures
+        .where((f) => f.id == group.sourceFeatureId)
+        .firstOrNull
+        ?.parentClassId;
+    final parentSubclassId = activeSubclassFeatures
+        .where((f) => f.id == group.sourceSubclassFeatureId)
+        .firstOrNull
+        ?.parentSubclassId;
+    final entry = entries
+        .where((e) =>
+            (group.sourceClassId != null &&
+                e.classData?.id == group.sourceClassId) ||
+            (group.sourceSubclassId != null &&
+                e.subclass?.id == group.sourceSubclassId) ||
+            (parentClassId != null && e.classData?.id == parentClassId) ||
+            (parentSubclassId != null && e.subclass?.id == parentSubclassId))
+        .firstOrNull;
+    automaticChoices?.add(CharacterChoiceData(
+        id: const Uuid().v4(),
+        groupKey: group.referenceKey,
+        optionKey: key,
+        selectionIndex: 0,
+        classEntry: entry));
+  }
   return selected;
+}
+
+Future<CharacterData> _pruneInactiveConditionalChoices(
+  OfflineCacheDatabase cache,
+  CharacterData character,
+) async {
+  final groups = await cache.getReferenceList(
+        'choice_group',
+        offlineAllKey,
+        ChoiceGroupData.fromJson,
+      ) ??
+      const <ChoiceGroupData>[];
+  final conditionalGroups =
+      groups.where((group) => group.requirements?.isNotEmpty == true).toList();
+  if (conditionalGroups.isEmpty) return character;
+  final options = await cache.getReferenceList(
+        'choice_option',
+        offlineAllKey,
+        ChoiceOptionData.fromJson,
+      ) ??
+      const <ChoiceOptionData>[];
+  final classFeatures = await cache.getReferenceList(
+        'class_feature',
+        offlineAllKey,
+        ClassFeatureData.fromJson,
+      ) ??
+      const <ClassFeatureData>[];
+  final subclassFeatures = await cache.getReferenceList(
+        'subclass_feature',
+        offlineAllKey,
+        SubclassFeatureData.fromJson,
+      ) ??
+      const <SubclassFeatureData>[];
+  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
+  final totalLevel =
+      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0));
+  final raceFeatureIds = {
+    for (final feature in [
+      ...?character.race?.features,
+      ...?character.subrace?.features,
+    ])
+      if ((feature.level ?? 1) <= max(totalLevel, 1)) feature.id,
+  };
+  final optionsByGroupId = <int, Map<String, ChoiceOptionData>>{};
+  for (final option in options) {
+    optionsByGroupId.putIfAbsent(
+        option.choiceGroupId, () => {})[option.optionKey] = option;
+  }
+  final availableGroups = {
+    for (final group in groups)
+      if (_isChoiceGroupAvailable(group, character, entries, classFeatures,
+          subclassFeatures, raceFeatureIds))
+        group.referenceKey: group,
+  };
+  final selectedByGroup = <String, List<ChoiceOptionData>>{};
+  for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
+    final group = availableGroups[choice.groupKey];
+    final option = group == null
+        ? null
+        : optionsByGroupId[group.id]?[choice.optionKey?.trim()];
+    if (choice.groupKey != null && option != null) {
+      selectedByGroup.putIfAbsent(choice.groupKey!, () => []).add(option);
+    }
+  }
+  final activeClassFeatures = await _currentClassFeatures(cache, entries);
+  final activeSubclassFeatures = await _currentSubclassFeatures(cache, entries);
+  final inactive = <String>{};
+  for (final group in conditionalGroups) {
+    if (!availableGroups.containsKey(group.referenceKey)) continue;
+    for (final data in group.requirements!) {
+      if (!feature_modifiers.choiceRequirementIsWellFormed(
+          feature_modifiers.choiceRequirementFromProtocol(data.toJson()))) {
+        throw StateError(
+            'Choice group ${group.referenceKey} has invalid requirements.');
+      }
+    }
+    final context = conditionalChoiceContext(
+      character: character,
+      group: group,
+      options: optionsByGroupId[group.id]?.values ?? const [],
+      otherOptions: [
+        for (final entry in selectedByGroup.entries)
+          if (entry.key != group.referenceKey) ...entry.value,
+      ],
+      selectedOptionsByGroupKey: selectedByGroup,
+      classFeatures: activeClassFeatures,
+      subclassFeatures: activeSubclassFeatures,
+    );
+    if (!feature_modifiers
+        .choiceRequirementsEligibilityFromProtocol(
+          group.requirements!.map((requirement) => requirement.toJson()),
+          context,
+        )
+        .isEligible) {
+      inactive.add(group.referenceKey);
+    }
+  }
+  if (inactive.isEmpty) return character;
+  return character.copyWith(choices: [
+    for (final choice in character.choices ?? const <CharacterChoiceData>[])
+      if (!inactive.contains(choice.groupKey)) choice,
+  ]);
+}
+
+Future<CharacterData> _materializeOfflineAutomaticChoices(
+    OfflineCacheDatabase cache, CharacterData character) async {
+  final automatic = <CharacterChoiceData>[];
+  await _selectedChoiceOptions(cache, character, character.classEntries ?? [],
+      automaticChoices: automatic);
+  return automatic.isEmpty
+      ? character
+      : character.copyWith(choices: [...?character.choices, ...automatic]);
 }
 
 bool _isChoiceGroupAvailable(

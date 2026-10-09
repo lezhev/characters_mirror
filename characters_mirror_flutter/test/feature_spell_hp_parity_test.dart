@@ -112,6 +112,11 @@ void main() {
             .currentHp,
         3);
     expect(after.derived!.armorClass, 15);
+    final properties = after.derived!.activeFeatures!.single.displayProperties!;
+    expect(
+        properties.singleWhere((p) => p.label == 'Максимум хитов').value, '+2');
+    expect(properties.singleWhere((p) => p.label == 'КД без доспехов').value,
+        '13 + Ловкость (2) = 15');
     expect(calculateMaxHpForCharacter(before), 17);
     expect(calculateMaxHpForCharacter(after), 16);
     expect(calculateMaxHpForCharacter(before, classEntries: after.classEntries),

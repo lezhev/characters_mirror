@@ -9,6 +9,9 @@ fields:
   alwaysPrepared: bool
   granted: bool
   canUseSlots: bool
+  activation: SpellActivationData?
+  resourceSourceType: CharacterFeatureSourceType?
+  resourceSourceId: int?
   castAtSpellLevel: int?
   freeCastsFormula: String?
   freeCastsPerRest: RestType?

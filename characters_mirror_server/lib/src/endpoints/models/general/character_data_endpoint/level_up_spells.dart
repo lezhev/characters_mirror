@@ -32,6 +32,7 @@ Future<CharacterData> _addLevelUpSpells(
           'spells', 'Spell is unavailable or selected twice.');
     }
     int? selectionIndex;
+    CharacterSpellSelectionData? replacedSelection;
     if (choice.replacesSelectionId != null) {
       final index = selections.indexWhere((s) =>
           s.id == choice.replacesSelectionId &&
@@ -44,6 +45,7 @@ Future<CharacterData> _addLevelUpSpells(
         throw InputValidationException('spells', 'Invalid spell replacement.');
       }
       selectionIndex = selections[index].selectionIndex;
+      replacedSelection = selections[index];
       selections.removeAt(index);
     } else {
       added[choice.kind] = (added[choice.kind] ?? 0) + 1;
@@ -61,14 +63,40 @@ Future<CharacterData> _addLevelUpSpells(
       throw InputValidationException(
           'spells', 'This spell is already selected.');
     }
-    selections.add(CharacterSpellSelectionData(
-        id: _generateSyncId(),
-        classEntry: entry,
-        classDataId: entry.classData!.id,
-        spellId: spell.id,
-        spellKey: spell.referenceKey,
-        kind: choice.kind,
-        selectionIndex: selectionIndex));
+    if (replacedSelection != null) {
+      final replaced = replaceSpellSelection(
+        selection: replacedSelection.toJson(),
+        replacementSpell: spell.toJson(),
+        currentFilter: group?.selectionFilter?.toJson(),
+        kind: choice.kind.name,
+        currentLevel: step.selectedLevel ?? (entry.level ?? 0) + 1,
+      );
+      if (replaced == null) {
+        throw InputValidationException(
+            'spells', 'Replacement violates its original selection rule.');
+      }
+      selections.add(CharacterSpellSelectionData.fromJson(replaced));
+    } else {
+      final provenance = spellSelectionProvenance(
+        spell.toJson(),
+        group?.selectionFilter?.toJson(),
+        kind: choice.kind.name,
+        level: step.selectedLevel ?? (entry.level ?? 1) + 1,
+      );
+      selections.add(CharacterSpellSelectionData(
+          id: _generateSyncId(),
+          classEntry: entry,
+          classDataId: entry.classData!.id,
+          spellId: spell.id,
+          spellKey: spell.referenceKey,
+          kind: choice.kind,
+          selectionIndex: selectionIndex,
+          selectionFilter: SpellSelectionFilterData.fromJson(
+              Map<String, dynamic>.from(provenance['selectionFilter'] as Map)),
+          selectionRuleLevel: provenance['selectionRuleLevel'] as int,
+          selectionUnrestricted:
+              provenance['selectionUnrestricted'] as bool));
+    }
   }
   final counts = {
     for (final (kind, count) in _levelUpSpellCounts(delta)) kind: count

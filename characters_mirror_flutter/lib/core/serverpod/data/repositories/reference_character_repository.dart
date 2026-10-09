@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/character/armor_class_calculator.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_slot_recovery_application.dart';
 import 'package:characters_mirror_flutter/core/offline/offline_cache_database.dart';
 import 'package:characters_mirror_flutter/core/offline/character_sync_store.dart';
 import 'package:characters_mirror_flutter/core/offline/character_semantic_sync.dart';
@@ -153,7 +154,26 @@ class CharacterRepository implements Repository<CharacterData> {
     final store = characterSyncStore;
     final userId = currentOfflineUserId();
     if (store == null || userId == null) {
-      return saveCharacter(normalized);
+      if (normalized.id == null) return saveCharacter(normalized);
+      final before = await client.characterData.getCharacter(normalized.id!);
+      final operation = createCharacterSemanticOperation(
+          character: before,
+          localId: before.id!,
+          serverId: before.id!,
+          type: type,
+          action: action,
+          changeId: createCharacterSyncItemId(),
+          createdAt: DateTime.now().toUtc());
+      final response = await client.characterData.syncCharacters(
+          CharacterSyncRequest(
+              syncProtocolVersion: characterSemanticSyncProtocolVersion,
+              operations: [operation]));
+      if (response.rejectedChanges?.isNotEmpty ?? false) {
+        throw StateError(response.rejectedChanges!.first.message ??
+            response.rejectedChanges!.first.reason ??
+            'Semantic action rejected.');
+      }
+      return client.characterData.getCharacter(before.id!);
     }
     final existing = normalized.id == null
         ? null
@@ -177,7 +197,16 @@ class CharacterRepository implements Repository<CharacterData> {
       changeId: createCharacterSyncItemId(),
       createdAt: now,
     );
-    final resolved = await _resolveForLocalStore(normalized);
+    final event = type == CharacterSyncOperationType.castSpell
+        ? 'spellCast'
+        : type == CharacterSyncOperationType.applyRest
+            ? action.restType?.name
+            : null;
+    final withEvent = event == null
+        ? normalized
+        : applyCharacterSpellRecoveryEvent(normalized,
+            event: event, sourceActionId: operation.id, action: action);
+    final resolved = await _resolveForLocalStore(withEvent);
     final record = await store.saveSemanticLocal(
       userId,
       resolved,

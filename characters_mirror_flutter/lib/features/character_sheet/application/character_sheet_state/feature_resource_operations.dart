@@ -187,6 +187,9 @@ extension CharacterSheetControllerFeatureResources on CharacterSheetController {
   }
 
   Future<void> restoreResources(RestType restType) async {
+    if (restType == RestType.special) {
+      throw StateError('Unsupported rest type.');
+    }
     final character = _requireCharacter();
     final activeFeatures =
         character.derived?.activeFeatures ?? const <CharacterFeatureViewData>[];
@@ -199,7 +202,16 @@ extension CharacterSheetControllerFeatureResources on CharacterSheetController {
                 feature.sourceType, feature.sourceId, resource.key),
     };
     final isLongRest = restType == RestType.longRest;
-    if (restoredKeys.isEmpty && !isLongRest) {
+    final pools = SpellSlotPools.fromCharacter(character.toJson());
+    final restoresPactSlots = restType == RestType.shortRest &&
+        pools.pactMax.values.any((count) => count > 0);
+    final createsRecoveryTrigger =
+        characterSpellSlotRecoverySources(character.toJson())
+            .any((source) => source.trigger == restType.name);
+    if (restoredKeys.isEmpty &&
+        !isLongRest &&
+        !restoresPactSlots &&
+        !createsRecoveryTrigger) {
       return;
     }
 
@@ -229,16 +241,21 @@ extension CharacterSheetControllerFeatureResources on CharacterSheetController {
         ),
     ];
 
-    final pools = SpellSlotPools.fromCharacter(character.toJson());
     final materialized = pools.materialized;
+    final restoresSlotPools = isLongRest || restType == RestType.shortRest;
     var updatedCharacter = character.copyWith(
-      currentSpellSlots:
-          character.currentPactSlots == null && pools.pactMax.isNotEmpty
-              ? (materialized['currentSpellSlots'] == null
-                  ? null
-                  : spellProtocolIntMap<int>(materialized['currentSpellSlots']))
-              : character.currentSpellSlots,
-      currentPactSlots: pools.pactMax.isEmpty ? null : pools.pactMax,
+      currentSpellSlots: restoresSlotPools &&
+              character.currentPactSlots == null &&
+              pools.pactMax.isNotEmpty
+          ? (materialized['currentSpellSlots'] == null
+              ? null
+              : spellProtocolIntMap<int>(materialized['currentSpellSlots']))
+          : character.currentSpellSlots,
+      currentPactSlots: restoresSlotPools
+          ? pools.pactMax.isEmpty
+              ? null
+              : pools.pactMax
+          : character.currentPactSlots,
       resourceStates: resourceStates.isEmpty ? null : resourceStates,
       derived: character.derived?.copyWith(activeFeatures: updatedFeatures),
     );

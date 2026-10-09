@@ -122,16 +122,53 @@ List<CharacterSpellSelectionData> normalizeDraftSpells(
       ..sort(
           (a, b) => (a.selectionIndex ?? 0).compareTo(b.selectionIndex ?? 0));
     final seen = <String>{};
+    final accepted = <Map<String, dynamic>>[];
     for (final selection in selected) {
       if (seen.length >= (group.selectionCount ?? 1)) break;
       final key = selectionSpellKey(selection);
       final spell = options[key];
-      if (key == null || spell == null || !seen.add(key)) continue;
+      if (key == null || spell == null || seen.contains(key)) continue;
+      final preserveLegacyAmbiguity =
+          selection.id != null && selection.selectionUnrestricted == null;
+      final provenance = selection.selectionUnrestricted != null
+          ? <String, dynamic>{
+              'selectionFilter': selection.selectionFilter?.toJson() ??
+                  <String, dynamic>{},
+              'selectionRuleLevel': selection.selectionRuleLevel,
+              'selectionUnrestricted': selection.selectionUnrestricted,
+            }
+          : preserveLegacyAmbiguity
+              ? <String, dynamic>{
+                  'selectionFilter': selection.selectionFilter?.toJson(),
+                  'selectionRuleLevel': selection.selectionRuleLevel,
+                  'selectionUnrestricted': null,
+                }
+              : spellSelectionProvenance(spell.toJson(),
+                  group.selectionFilter?.toJson(),
+                  kind: group.kind!.name, level: group.classLevel ?? 1);
+      final candidate = {
+        ...spell.toJson(),
+        'selectionUnrestricted': provenance['selectionUnrestricted'],
+      };
+      if (!spellSelectionsMatchFilter(
+          [...accepted, candidate], group.selectionFilter?.toJson(),
+          kind: group.kind!.name, level: group.classLevel ?? 1)) {
+        continue;
+      }
+      seen.add(key);
+      accepted.add(candidate);
       result.add(selection.copyWith(
           spell: spell,
           spellId: spell.id,
           spellKey: key,
-          selectionIndex: seen.length - 1));
+          selectionIndex: seen.length - 1,
+          selectionFilter: provenance['selectionFilter'] is Map
+              ? SpellSelectionFilterData.fromJson(Map<String, dynamic>.from(
+                  provenance['selectionFilter'] as Map))
+              : null,
+          selectionRuleLevel: provenance['selectionRuleLevel'] as int?,
+          selectionUnrestricted:
+              provenance['selectionUnrestricted'] as bool?));
     }
   }
   return result;

@@ -79,6 +79,13 @@ void main() {
       expect(healing.value.staticValue, 2);
       expect(healing.spellKey, isNull);
       expect(healing.minimumCastLevel, 1);
+      final active = character.derived!.activeFeatures!.firstWhere((f) =>
+          f.sourceType == CharacterFeatureSourceType.subclassFeature &&
+          f.sourceId == feature.id);
+      expect(active.displayProperties!.single.label, 'Дополнительное лечение');
+      expect(active.displayProperties!.single.value,
+          'Уровень ячейки + 2 (от 1-го уровня)');
+      expect(active.shortDescription, isNot(contains('2 +')));
       expect(spellFeatureContractValues(character.toJson()),
           lifeSpellFeatureExpected);
       expect(character.currentHp, 2);
@@ -103,7 +110,7 @@ void main() {
     test(
         'Draconic uses source levels, preserves manual HP and AC, and clamps level-down',
         () async {
-      final (data, sub, _) =
+      final (data, sub, feature) =
           await source('sorcerer_draconic_bloodline_draconic_resilience');
       final session = owner.build();
       late ClassData fighter;
@@ -137,6 +144,16 @@ void main() {
             ));
         expect(character.derived!.maxHp, level == 1 ? 6 : 11);
         expect(character.derived!.armorClass, 15);
+        final properties = character.derived!.activeFeatures!
+            .firstWhere((f) =>
+                f.sourceType == CharacterFeatureSourceType.subclassFeature &&
+                f.sourceId == feature.id)
+            .displayProperties!;
+        expect(properties.singleWhere((p) => p.label == 'Максимум хитов').value,
+            '+$level');
+        expect(
+            properties.singleWhere((p) => p.label == 'КД без доспехов').value,
+            '13 + Ловкость (2) = 15');
         await export(character, 'Draconic $level');
       }
       for (final lowHp in [false, true]) {

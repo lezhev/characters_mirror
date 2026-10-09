@@ -10,6 +10,8 @@ ChoiceEligibilityContext buildChoiceEligibilityContext({
   required Map<String, int> abilityScores,
   required List<ClassFeatureData> currentClassFeatures,
   required List<SubclassFeatureData> currentSubclassFeatures,
+  Set<String> cantripReferenceKeys = const {},
+  Set<String> grantedCantripKeys = const {},
 }) {
   final ownedSkills = <Skill>{
     for (final feature in currentClassFeatures) ...?feature.grantedSkills,
@@ -108,7 +110,49 @@ ChoiceEligibilityContext buildChoiceEligibilityContext({
     classLevelsByReferenceKey: classLevelsByReferenceKey,
     abilityScores: abilityScores,
     knownSpellKeys: spellFacts.knownSpellKeys,
-    knownCantripKeys: spellFacts.knownCantripKeys,
+    knownCantripKeys: {
+      ...spellFacts.knownCantripKeys,
+      ...knownChoiceCantripKeys(
+        character: character.toJson(),
+        otherGrantedCantripKeys: grantedCantripKeys,
+        otherOptions: selectedOptionsByGroupKey.entries
+            .where((entry) => entry.key != evaluatingGroupKey)
+            .expand((entry) => entry.value)
+            .map((option) => option.toJson()),
+        otherFeatures: [
+          ...currentClassFeatures
+              .where((feature) =>
+                  feature.id !=
+                  groups
+                      .where(
+                          (group) => group.referenceKey == evaluatingGroupKey)
+                      .firstOrNull
+                      ?.sourceFeatureId)
+              .map((feature) => feature.toJson()),
+          ...currentSubclassFeatures
+              .where((feature) =>
+                  feature.id !=
+                  groups
+                      .where(
+                          (group) => group.referenceKey == evaluatingGroupKey)
+                      .firstOrNull
+                      ?.sourceSubclassFeatureId)
+              .map((feature) => feature.toJson()),
+        ],
+        cantripReferenceKeys: {
+          ...cantripReferenceKeys,
+          for (final group in groups)
+            for (final option
+                in selectedOptionsByGroupKey[group.referenceKey] ??
+                    <ChoiceOptionData>[])
+              for (final requirement
+                  in option.requirements ?? <ChoiceRequirementData>[])
+                if (requirement.type == ChoiceRequirementType.knownCantrip &&
+                    requirement.referenceKey != null)
+                  requirement.referenceKey!,
+        },
+      ),
+    },
     featureKeys: featureKeys,
     selectedChoiceOptionKeys: selectedOptionKeys,
     skillKeys: {for (final skill in ownedSkills) skill.name},

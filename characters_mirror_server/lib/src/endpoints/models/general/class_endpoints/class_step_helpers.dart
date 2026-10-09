@@ -60,12 +60,22 @@ Future<List<ClassSpellSelectionGroupView>> _buildSpellSelectionGroups(
   required ClassLevelData classLevel,
   required Map<String, int>? abilityScores,
 }) async {
+  final listKey = classData.spellSelectionFilter?.spellListClassKey;
+  final listClass = listKey == null
+      ? null
+      : (await ClassData.db.find(session,
+              where: (t) => t.referenceKey.equals(listKey), limit: 1))
+          .firstOrNull;
+  if (listKey != null && listClass == null) {
+    throw InputValidationException(
+        'spellSelectionFilter', 'Unknown spell list.');
+  }
   final spells = [
     for (final spell in await SpellData.db.find(session))
       if (_isSpellAvailableForClassStep(
         spell,
-        classId: classId,
-        selectedSubclassId: selectedSubclassId,
+        classId: listClass?.id ?? classId,
+        selectedSubclassId: listClass == null ? selectedSubclassId : null,
       ))
         spell,
   ]..sort(_compareSpells);

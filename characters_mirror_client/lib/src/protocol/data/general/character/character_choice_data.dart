@@ -10,11 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/character/character_class_entry_data.dart' as _i2;
+import '../../../data/general/character/choice_replacement_history_data.dart'
+    as _i2;
+import '../../../data/general/character/character_class_entry_data.dart' as _i3;
 
 abstract class CharacterChoiceData implements _i1.SerializableModel {
   CharacterChoiceData._({
     this.id,
+    this.replacementHistory,
     this.classEntry,
     this.groupKey,
     this.optionKey,
@@ -24,7 +27,8 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
 
   factory CharacterChoiceData({
     String? id,
-    _i2.CharacterClassEntryData? classEntry,
+    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
+    _i3.CharacterClassEntryData? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
@@ -34,9 +38,13 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
   factory CharacterChoiceData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterChoiceData(
       id: jsonSerialization['id'] as String?,
+      replacementHistory: (jsonSerialization['replacementHistory'] as List?)
+          ?.map((e) => _i2.ChoiceReplacementHistoryData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       classEntry: jsonSerialization['classEntry'] == null
           ? null
-          : _i2.CharacterClassEntryData.fromJson(
+          : _i3.CharacterClassEntryData.fromJson(
               (jsonSerialization['classEntry'] as Map<String, dynamic>)),
       groupKey: jsonSerialization['groupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
@@ -47,9 +55,11 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
     );
   }
 
+  List<_i2.ChoiceReplacementHistoryData>? replacementHistory;
+
   String? id;
 
-  _i2.CharacterClassEntryData? classEntry;
+  _i3.CharacterClassEntryData? classEntry;
 
   String? groupKey;
 
@@ -64,7 +74,8 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
   @_i1.useResult
   CharacterChoiceData copyWith({
     String? id,
-    _i2.CharacterClassEntryData? classEntry,
+    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
+    _i3.CharacterClassEntryData? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
@@ -74,6 +85,9 @@ abstract class CharacterChoiceData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (replacementHistory != null)
+        'replacementHistory':
+            replacementHistory?.toJson(valueToJson: (v) => v.toJson()),
       if (classEntry != null) 'classEntry': classEntry?.toJson(),
       if (groupKey != null) 'groupKey': groupKey,
       if (optionKey != null) 'optionKey': optionKey,
@@ -93,13 +107,15 @@ class _Undefined {}
 class _CharacterChoiceDataImpl extends CharacterChoiceData {
   _CharacterChoiceDataImpl({
     String? id,
-    _i2.CharacterClassEntryData? classEntry,
+    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
+    _i3.CharacterClassEntryData? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
     DateTime? updatedAt,
   }) : super._(
           id: id,
+          replacementHistory: replacementHistory,
           classEntry: classEntry,
           groupKey: groupKey,
           optionKey: optionKey,
@@ -113,6 +129,7 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
   @override
   CharacterChoiceData copyWith({
     Object? id = _Undefined,
+    Object? replacementHistory = _Undefined,
     Object? classEntry = _Undefined,
     Object? groupKey = _Undefined,
     Object? optionKey = _Undefined,
@@ -121,7 +138,11 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
   }) {
     return CharacterChoiceData(
       id: id is String? ? id : this.id,
-      classEntry: classEntry is _i2.CharacterClassEntryData?
+      replacementHistory:
+          replacementHistory is List<_i2.ChoiceReplacementHistoryData>?
+              ? replacementHistory
+              : this.replacementHistory?.map((e0) => e0.copyWith()).toList(),
+      classEntry: classEntry is _i3.CharacterClassEntryData?
           ? classEntry
           : this.classEntry?.copyWith(),
       groupKey: groupKey is String? ? groupKey : this.groupKey,

@@ -1,0 +1,4 @@
+class: SpellResourceUpcastPolicyData
+fields:
+  resourcePerAdditionalSpellLevel: int
+  maxResourceCostBySourceLevel: Map<int, int>

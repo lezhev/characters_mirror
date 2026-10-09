@@ -19,10 +19,14 @@ import '../../data/general/race/subrace_data.dart' as _i7;
 import '../../data/general/race/race_feature_data.dart' as _i8;
 import '../../data/background_data.dart' as _i9;
 import '../../enums/choice_type.dart' as _i10;
+import '../../data/general/choice_requirement_data.dart' as _i11;
 
 abstract class ChoiceGroupData implements _i1.SerializableModel {
   ChoiceGroupData._({
     this.id,
+    this.progressionKey,
+    this.replacementsAllowed,
+    this.replacementProgressionKeys,
     required this.referenceKey,
     this.name,
     this.description,
@@ -46,6 +50,8 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
     this.type,
     this.selectionCount,
     this.minimumSelectionCount,
+    this.requirements,
+    this.autoSelectSingleEligible,
     this.appliesAtCharacterLevel,
     this.exclusiveKey,
     this.allowDuplicates,
@@ -58,6 +64,9 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
 
   factory ChoiceGroupData({
     int? id,
+    String? progressionKey,
+    int? replacementsAllowed,
+    List<String>? replacementProgressionKeys,
     required String referenceKey,
     String? name,
     String? description,
@@ -81,6 +90,8 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
     _i10.ChoiceType? type,
     int? selectionCount,
     int? minimumSelectionCount,
+    List<_i11.ChoiceRequirementData>? requirements,
+    bool? autoSelectSingleEligible,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
     bool? allowDuplicates,
@@ -94,6 +105,12 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
   factory ChoiceGroupData.fromJson(Map<String, dynamic> jsonSerialization) {
     return ChoiceGroupData(
       id: jsonSerialization['id'] as int?,
+      progressionKey: jsonSerialization['progressionKey'] as String?,
+      replacementsAllowed: jsonSerialization['replacementsAllowed'] as int?,
+      replacementProgressionKeys:
+          (jsonSerialization['replacementProgressionKeys'] as List?)
+              ?.map((e) => e as String)
+              .toList(),
       referenceKey: jsonSerialization['referenceKey'] as String,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -145,6 +162,12 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
           : _i10.ChoiceType.fromJson((jsonSerialization['type'] as String)),
       selectionCount: jsonSerialization['selectionCount'] as int?,
       minimumSelectionCount: jsonSerialization['minimumSelectionCount'] as int?,
+      requirements: (jsonSerialization['requirements'] as List?)
+          ?.map((e) =>
+              _i11.ChoiceRequirementData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      autoSelectSingleEligible:
+          jsonSerialization['autoSelectSingleEligible'] as bool?,
       appliesAtCharacterLevel:
           jsonSerialization['appliesAtCharacterLevel'] as bool?,
       exclusiveKey: jsonSerialization['exclusiveKey'] as String?,
@@ -165,6 +188,12 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  String? progressionKey;
+
+  int? replacementsAllowed;
+
+  List<String>? replacementProgressionKeys;
 
   String referenceKey;
 
@@ -212,6 +241,10 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
 
   int? minimumSelectionCount;
 
+  List<_i11.ChoiceRequirementData>? requirements;
+
+  bool? autoSelectSingleEligible;
+
   bool? appliesAtCharacterLevel;
 
   String? exclusiveKey;
@@ -233,6 +266,9 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
   @_i1.useResult
   ChoiceGroupData copyWith({
     int? id,
+    String? progressionKey,
+    int? replacementsAllowed,
+    List<String>? replacementProgressionKeys,
     String? referenceKey,
     String? name,
     String? description,
@@ -256,6 +292,8 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
     _i10.ChoiceType? type,
     int? selectionCount,
     int? minimumSelectionCount,
+    List<_i11.ChoiceRequirementData>? requirements,
+    bool? autoSelectSingleEligible,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
     bool? allowDuplicates,
@@ -269,6 +307,11 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (progressionKey != null) 'progressionKey': progressionKey,
+      if (replacementsAllowed != null)
+        'replacementsAllowed': replacementsAllowed,
+      if (replacementProgressionKeys != null)
+        'replacementProgressionKeys': replacementProgressionKeys?.toJson(),
       'referenceKey': referenceKey,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -298,6 +341,10 @@ abstract class ChoiceGroupData implements _i1.SerializableModel {
       if (selectionCount != null) 'selectionCount': selectionCount,
       if (minimumSelectionCount != null)
         'minimumSelectionCount': minimumSelectionCount,
+      if (requirements != null)
+        'requirements': requirements?.toJson(valueToJson: (v) => v.toJson()),
+      if (autoSelectSingleEligible != null)
+        'autoSelectSingleEligible': autoSelectSingleEligible,
       if (appliesAtCharacterLevel != null)
         'appliesAtCharacterLevel': appliesAtCharacterLevel,
       if (exclusiveKey != null) 'exclusiveKey': exclusiveKey,
@@ -321,6 +368,9 @@ class _Undefined {}
 class _ChoiceGroupDataImpl extends ChoiceGroupData {
   _ChoiceGroupDataImpl({
     int? id,
+    String? progressionKey,
+    int? replacementsAllowed,
+    List<String>? replacementProgressionKeys,
     required String referenceKey,
     String? name,
     String? description,
@@ -344,6 +394,8 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
     _i10.ChoiceType? type,
     int? selectionCount,
     int? minimumSelectionCount,
+    List<_i11.ChoiceRequirementData>? requirements,
+    bool? autoSelectSingleEligible,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
     bool? allowDuplicates,
@@ -354,6 +406,9 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
     DateTime? updatedAt,
   }) : super._(
           id: id,
+          progressionKey: progressionKey,
+          replacementsAllowed: replacementsAllowed,
+          replacementProgressionKeys: replacementProgressionKeys,
           referenceKey: referenceKey,
           name: name,
           description: description,
@@ -377,6 +432,8 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
           type: type,
           selectionCount: selectionCount,
           minimumSelectionCount: minimumSelectionCount,
+          requirements: requirements,
+          autoSelectSingleEligible: autoSelectSingleEligible,
           appliesAtCharacterLevel: appliesAtCharacterLevel,
           exclusiveKey: exclusiveKey,
           allowDuplicates: allowDuplicates,
@@ -393,6 +450,9 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
   @override
   ChoiceGroupData copyWith({
     Object? id = _Undefined,
+    Object? progressionKey = _Undefined,
+    Object? replacementsAllowed = _Undefined,
+    Object? replacementProgressionKeys = _Undefined,
     String? referenceKey,
     Object? name = _Undefined,
     Object? description = _Undefined,
@@ -416,6 +476,8 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
     Object? type = _Undefined,
     Object? selectionCount = _Undefined,
     Object? minimumSelectionCount = _Undefined,
+    Object? requirements = _Undefined,
+    Object? autoSelectSingleEligible = _Undefined,
     Object? appliesAtCharacterLevel = _Undefined,
     Object? exclusiveKey = _Undefined,
     Object? allowDuplicates = _Undefined,
@@ -427,6 +489,14 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
   }) {
     return ChoiceGroupData(
       id: id is int? ? id : this.id,
+      progressionKey:
+          progressionKey is String? ? progressionKey : this.progressionKey,
+      replacementsAllowed: replacementsAllowed is int?
+          ? replacementsAllowed
+          : this.replacementsAllowed,
+      replacementProgressionKeys: replacementProgressionKeys is List<String>?
+          ? replacementProgressionKeys
+          : this.replacementProgressionKeys?.map((e0) => e0).toList(),
       referenceKey: referenceKey ?? this.referenceKey,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
@@ -478,6 +548,12 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
       minimumSelectionCount: minimumSelectionCount is int?
           ? minimumSelectionCount
           : this.minimumSelectionCount,
+      requirements: requirements is List<_i11.ChoiceRequirementData>?
+          ? requirements
+          : this.requirements?.map((e0) => e0.copyWith()).toList(),
+      autoSelectSingleEligible: autoSelectSingleEligible is bool?
+          ? autoSelectSingleEligible
+          : this.autoSelectSingleEligible,
       appliesAtCharacterLevel: appliesAtCharacterLevel is bool?
           ? appliesAtCharacterLevel
           : this.appliesAtCharacterLevel,
