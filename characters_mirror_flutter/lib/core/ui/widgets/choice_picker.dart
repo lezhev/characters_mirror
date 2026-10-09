@@ -31,13 +31,15 @@ class ChoicePicker extends StatefulWidget {
       required this.maximum,
       this.minimum = 0,
       this.selected = const [],
-      this.allowDuplicates = false});
+      this.allowDuplicates = false,
+      this.selectionAllowed});
   final String title;
   final List<ChoicePickerOption> options;
   final int maximum;
   final int minimum;
   final List<String> selected;
   final bool allowDuplicates;
+  final bool Function(List<String>)? selectionAllowed;
   @override
   State<ChoicePicker> createState() => _ChoicePickerState();
 }
@@ -110,7 +112,14 @@ class _ChoicePickerState extends State<ChoicePicker> {
                               final enabled = option.enabled &&
                                   (count > 0 ||
                                       widget.maximum == 1 ||
-                                      _selected.length < widget.maximum);
+                                      _selected.length < widget.maximum) &&
+                                  (count > 0 ||
+                                      widget.selectionAllowed?.call([
+                                            if (widget.maximum != 1)
+                                              ..._selected,
+                                            option.key,
+                                          ]) !=
+                                          false);
                               void toggle() => setState(() {
                                     if (count > 0) {
                                       _selected.remove(option.key);
@@ -171,7 +180,8 @@ class _ChoicePickerState extends State<ChoicePicker> {
             padding: const EdgeInsets.all(12),
             child: FilledButton(
               onPressed: _selected.length >= widget.minimum &&
-                      _selected.length <= widget.maximum
+                      _selected.length <= widget.maximum &&
+                      widget.selectionAllowed?.call(_selected) != false
                   ? () => Navigator.of(context).pop(List<String>.of(_selected))
                   : null,
               child: const Text('Готово'),

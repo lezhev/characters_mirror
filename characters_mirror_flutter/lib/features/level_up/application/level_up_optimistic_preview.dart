@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:characters_mirror_flutter/core/character_spells/spell_selection_support.dart';
 import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 
@@ -54,7 +55,7 @@ LevelUpPreview optimisticLevelUpPreview(LevelUpPreview confirmed,
   ];
   final entry =
       entries.where((e) => e.id == request.classEntryId).firstOrNull ?? target;
-  final choices = [
+  var choices = [
     ...?confirmed.before.choices,
     for (final selection
         in request.choices?.entries ?? const <MapEntry<String, List<String>>>[])
@@ -65,6 +66,20 @@ LevelUpPreview optimisticLevelUpPreview(LevelUpPreview confirmed,
             optionKey: selection.value[i],
             selectionIndex: i),
   ];
+  if (entry?.id != null && (request.choiceReplacements?.isNotEmpty ?? false)) {
+    choices = replaceProgressionChoices(
+            choices.map((c) => c.toJson()),
+            request.choiceReplacements!.map((r) => r.toJson()),
+            (confirmed.classStep.choiceGroups ?? <ChoiceGroupView>[]).map((v) =>
+                {
+                  ...v.group!.toJson(),
+                  'options': v.options?.map((o) => o.toJson()).toList()
+                }),
+            classEntryId: entry!.id!,
+            classLevel: entry.level!)
+        .map(CharacterChoiceData.fromJson)
+        .toList();
+  }
   final replacements = {
     for (final s in request.spells ?? const <LevelUpSpellChoice>[])
       if (s.replacesSelectionId != null) s.replacesSelectionId
@@ -88,22 +103,46 @@ LevelUpPreview optimisticLevelUpPreview(LevelUpPreview confirmed,
         .expand((group) => group.options ?? const <SpellData>[])
         .where((option) => option.id == choice.spellId)
         .firstOrNull;
-    spellSelections.add(CharacterSpellSelectionData(
-      classEntry: entry,
-      kind: choice.kind,
-      spellId: choice.spellId,
-      spellKey: spell?.referenceKey,
-      spell: spell,
-      selectionIndex: replaced?.selectionIndex ??
-          (replaced == null
-              ? nextSpellSelectionIndex(
-                  spellSelections,
-                  classEntry: entry,
-                  classDataId: entry?.classData?.id,
-                  kind: choice.kind,
-                )
-              : null),
-    ));
+    final group = confirmed.classStep.spellSelectionGroups
+        ?.where((group) => group.kind == choice.kind)
+        .firstOrNull;
+    if (replaced != null && spell != null) {
+      final projected = replaceSpellSelection(
+        selection: replaced.toJson(),
+        replacementSpell: spell.toJson(),
+        currentFilter: group?.selectionFilter?.toJson(),
+        kind: choice.kind.name,
+        currentLevel: entry?.level ?? 1,
+      );
+      if (projected != null) {
+        spellSelections.add(CharacterSpellSelectionData.fromJson(projected));
+      }
+    } else if (spell != null) {
+      final provenance = spellSelectionProvenance(
+        spell.toJson(),
+        group?.selectionFilter?.toJson(),
+        kind: choice.kind.name,
+        level: entry?.level ?? 1,
+      );
+      spellSelections.add(CharacterSpellSelectionData(
+        classEntry: entry,
+        classDataId: entry?.classData?.id,
+        kind: choice.kind,
+        spellId: choice.spellId,
+        spellKey: spell.referenceKey,
+        spell: spell,
+        selectionIndex: nextSpellSelectionIndex(
+          spellSelections,
+          classEntry: entry,
+          classDataId: entry?.classData?.id,
+          kind: choice.kind,
+        ),
+        selectionFilter: SpellSelectionFilterData.fromJson(
+            Map<String, dynamic>.from(provenance['selectionFilter'] as Map)),
+        selectionRuleLevel: provenance['selectionRuleLevel'] as int,
+        selectionUnrestricted: provenance['selectionUnrestricted'] as bool,
+      ));
+    }
   }
   var draft = character.copyWith(
       classEntries: entries,

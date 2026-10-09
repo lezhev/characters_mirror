@@ -1,5 +1,6 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:flutter/material.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/choice_picker.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/sheet_outline_card.dart';
 import '../application/level_up_overview.dart';
@@ -29,6 +30,8 @@ class LevelUpSpells extends StatelessWidget {
           const <CharacterSpellSelectionData>[])
         if (s.classEntry?.id == request.classEntryId &&
             s.kind == kind &&
+            !(request.spells ?? <LevelUpSpellChoice>[])
+                .any((r) => r.replacesSelectionId == s.id) &&
             s.id != replacesSelectionId)
           s.spellId
     };
@@ -40,6 +43,98 @@ class LevelUpSpells extends StatelessWidget {
               maximum: count,
               minimum: replacesSelectionId == null ? count : 0,
               selected: selected,
+              selectionAllowed: (keys) {
+                final group = preview.classStep.spellSelectionGroups
+                    ?.where((g) => g.kind == kind)
+                    .firstOrNull;
+                final all = _options(kind);
+                final chosen = {
+                  ...owned,
+                  for (final s in request.spells ?? <LevelUpSpellChoice>[])
+                    if (s.kind == kind &&
+                        s.replacesSelectionId != replacesSelectionId)
+                      s.spellId,
+                  ...keys.map(int.parse),
+                };
+                final replacedSelectionIds = {
+                  for (final selection
+                      in request.spells ?? const <LevelUpSpellChoice>[])
+                    if (selection.replacesSelectionId != null)
+                      selection.replacesSelectionId,
+                  if (replacesSelectionId != null) replacesSelectionId,
+                };
+                if (replacesSelectionId != null) {
+                  final prior = request.spells
+                      ?.where(
+                          (s) => s.replacesSelectionId == replacesSelectionId)
+                      .firstOrNull;
+                  chosen.remove(prior?.spellId);
+                }
+                final selectedRows = <Map<String, dynamic>>[];
+                for (final spell in all.where((s) => chosen.contains(s.id))) {
+                  final existing = (preview.before.spellSelections ??
+                          const <CharacterSpellSelectionData>[])
+                      .where((s) =>
+                          s.classEntry?.id == request.classEntryId &&
+                          s.kind == kind &&
+                          s.spellId == spell.id &&
+                          !replacedSelectionIds.contains(s.id))
+                      .firstOrNull;
+                  final pendingReplacement =
+                      (request.spells ?? const <LevelUpSpellChoice>[])
+                          .where((s) => s.kind == kind && s.spellId == spell.id)
+                          .firstOrNull;
+                  final replacedId = replacesSelectionId ??
+                      pendingReplacement?.replacesSelectionId;
+                  if (replacedId != null &&
+                      spell.id != (preview.before.spellSelections
+                              ?.where((s) => s.id == replacedId)
+                              .firstOrNull
+                              ?.spellId)) {
+                    final old = preview.before.spellSelections
+                        ?.where((s) => s.id == replacedId)
+                        .firstOrNull;
+                    if (old == null) return false;
+                    final replacement = replaceSpellSelection(
+                      selection: old.toJson(),
+                      replacementSpell: spell.toJson(),
+                      currentFilter: group?.selectionFilter?.toJson(),
+                      kind: kind.name,
+                      currentLevel: group?.classLevel ?? 1,
+                    );
+                    if (replacement == null) return false;
+                    selectedRows.add({
+                      ...spell.toJson(),
+                      'selectionUnrestricted':
+                          replacement['selectionUnrestricted'],
+                    });
+                  } else if (existing != null) {
+                    selectedRows.add({
+                      ...spell.toJson(),
+                      if (existing.selectionUnrestricted != null)
+                        'selectionUnrestricted':
+                            existing.selectionUnrestricted,
+                    });
+                  } else {
+                    final origin = spellSelectionProvenance(
+                      spell.toJson(),
+                      group?.selectionFilter?.toJson(),
+                      kind: kind.name,
+                      level: group?.classLevel ?? 1,
+                    );
+                    selectedRows.add({
+                      ...spell.toJson(),
+                      'selectionUnrestricted':
+                          origin['selectionUnrestricted'],
+                    });
+                  }
+                }
+                return spellSelectionsMatchFilter(
+                    selectedRows,
+                    group?.selectionFilter?.toJson(),
+                    kind: kind.name,
+                    level: group?.classLevel ?? 1);
+              },
               options: [
                 for (final s in _options(kind))
                   if (!owned.contains(s.id) && s.id != null)

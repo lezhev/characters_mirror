@@ -72,4 +72,50 @@ void main() {
     expect(derivedOnly.map((f) => f.name), ['Feature']);
     expect(derivedOnly.single.resources.map((r) => r.key), ['new']);
   });
+
+  test('level-up hides a choice group until its selected-option prerequisite',
+      () {
+    const parentKey = 'boon_fixture';
+    final conditionalGroup = ChoiceGroupData(
+      referenceKey: 'conditional_cantrips_fixture',
+      requirements: [
+        ChoiceRequirementData(
+          type: ChoiceRequirementType.selectedChoiceOption,
+          choiceGroupKey: parentKey,
+          optionKey: 'tome',
+        ),
+      ],
+    );
+    final view = ChoiceGroupView(group: conditionalGroup, options: []);
+    final character = CharacterData(
+      classEntries: [
+        CharacterClassEntryData(
+          id: 'entry',
+          classData: ClassData(referenceKey: 'warlock'),
+          level: 3,
+        ),
+      ],
+      choices: [
+        CharacterChoiceData(groupKey: parentKey, optionKey: 'tome'),
+      ],
+      derived: CharacterDerivedData(totalLevel: 3),
+    );
+    final preview = LevelUpPreview(
+      before: character,
+      character: character,
+      classStep: ClassStepView(),
+      choiceGroups: [view],
+      missingDecisions: [],
+      spellDelta: ClassSpellDeltaView(
+        cantripsToAdd: 0,
+        knownSpellsToAdd: 0,
+        spellbookSpellsToAdd: 0,
+        knownSpellReplacements: 0,
+      ),
+    );
+    expect(eligibleLevelUpGroup(view, preview).group, isNotNull);
+    final withoutParent = preview.copyWith(
+        character: character.copyWith(choices: const <CharacterChoiceData>[]));
+    expect(eligibleLevelUpGroup(view, withoutParent).group, isNull);
+  });
 }

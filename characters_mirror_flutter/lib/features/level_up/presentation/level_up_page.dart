@@ -46,6 +46,8 @@ class LevelUpPage extends ConsumerWidget {
             onRoll: controller.setRoll,
             onAbilityTap: controller.cycleAbility,
             onChoice: controller.choose,
+            onChoiceReplacement: controller.replaceChoice,
+            onClearChoiceReplacement: controller.clearChoiceReplacement,
             onSubclass: controller.chooseSubclass,
             onSpells: (kind, ids, replaces) => controller
                 .chooseSpells(kind, ids, replacesSelectionId: replaces),

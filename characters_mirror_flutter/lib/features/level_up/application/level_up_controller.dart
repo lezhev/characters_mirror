@@ -76,6 +76,21 @@ class LevelUpController extends StateNotifier<LevelUpFlowState> {
     return refresh();
   }
 
+  Future<void> replaceChoice(LevelUpChoiceReplacementData replacement) =>
+      _change(state.request.copyWith(choiceReplacements: [
+        for (final row in state.request.choiceReplacements ??
+            <LevelUpChoiceReplacementData>[])
+          if (row.selectionId != replacement.selectionId) row,
+        replacement,
+      ]));
+
+  Future<void> clearChoiceReplacement(String id) =>
+      _change(state.request.copyWith(choiceReplacements: [
+        for (final row in state.request.choiceReplacements ??
+            <LevelUpChoiceReplacementData>[])
+          if (row.selectionId != id) row
+      ]));
+
   Future<void> setRoll(int? roll) =>
       _change(state.request.copyWith(hitDieRoll: roll));
 

@@ -1,4 +1,7 @@
 import 'package:characters_mirror_flutter/core/character/choice_group_presentation.dart';
+import 'package:characters_mirror_flutter/core/character/conditional_choice_support.dart';
+import 'package:characters_mirror_flutter/features/character_creation/application/choice_option_eligibility.dart';
+import '../application/conditional_class_choices.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/subclass_decision.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/background_step/state/background_state.dart';
@@ -108,6 +111,40 @@ class ClassChoiceGroupCard extends ConsumerWidget {
     return ref.watch(classStateProvider).when(
           data: (data) {
             var eligibleView = groupView;
+            var selectedOptions = data.selectedOptions;
+            final creation = ref.watch(characterCreationProvider);
+            selectedOptions = conditionalClassSelections(
+                data, creation.character, [
+              ...creation.raceChoiceGroups,
+              ...creation.backgroundChoiceGroups
+            ]);
+            final groupContext = conditionalChoiceContext(
+              character: conditionalClassDraft(data, creation.character),
+              group: group,
+              options: groupView.options ?? [],
+              otherOptions: [
+                ...resolveSelectedChoiceOptions(
+                  choiceGroups: [
+                    ...creation.raceChoiceGroups,
+                    ...creation.backgroundChoiceGroups
+                  ],
+                  savedChoices: creation.character.choices ?? [],
+                ),
+                ...selectedOptions.entries
+                    .where((e) => e.key != group.referenceKey)
+                    .expand((e) => e.value),
+              ],
+              classFeatures: data.stepView?.currentLevelFeatures ?? [],
+              subclassFeatures: data.stepView?.currentSubclassFeatures ?? [],
+              selectedOptionsByGroupKey: selectedOptions,
+            );
+            if (!isChoiceGroupAvailable(group, groupContext)) {
+              return const SizedBox.shrink();
+            }
+            if (group.autoSelectSingleEligible == true) {
+              eligibleView =
+                  evaluateChoiceGroupEligibility(groupView, groupContext);
+            }
             if (group.type == ChoiceType.expertise) {
               final creation = ref.watch(characterCreationProvider);
               final background = ref.watch(backgroundStateProvider).valueOrNull;
@@ -138,9 +175,8 @@ class ClassChoiceGroupCard extends ConsumerWidget {
             return CreationChoiceGroupCard(
               groupView: eligibleView,
               showTitle: showTitle,
-              selectedOptions:
-                  data.selectedOptions[classChoiceGroupKey(group)] ??
-                      const <ChoiceOptionData>[],
+              selectedOptions: selectedOptions[classChoiceGroupKey(group)] ??
+                  const <ChoiceOptionData>[],
               onToggleOption:
                   ref.read(classStateProvider.notifier).toggleOption,
               onIncrementOption:
