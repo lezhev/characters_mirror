@@ -18,6 +18,9 @@ import '../../../data/general/character/character_class_entry_record.dart'
 import '../../../data/general/class/class_data.dart' as _i4;
 import '../../../data/spell_data.dart' as _i5;
 import '../../../enums/character_spell_selection_kind.dart' as _i6;
+import '../../../data/general/spell_selection_filter_data.dart' as _i7;
+import '../../../data/general/character/spell_selection_replacement_history_data.dart'
+    as _i8;
 
 abstract class CharacterSpellSelectionRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -35,6 +38,10 @@ abstract class CharacterSpellSelectionRecord
     this.spellKey,
     this.kind,
     this.selectionIndex,
+    this.selectionFilter,
+    this.selectionRuleLevel,
+    this.selectionUnrestricted,
+    this.spellReplacementHistory,
     this.updatedAt,
   });
 
@@ -52,6 +59,10 @@ abstract class CharacterSpellSelectionRecord
     String? spellKey,
     _i6.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
+    _i7.SpellSelectionFilterData? selectionFilter,
+    int? selectionRuleLevel,
+    bool? selectionUnrestricted,
+    List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
     DateTime? updatedAt,
   }) = _CharacterSpellSelectionRecordImpl;
 
@@ -86,6 +97,18 @@ abstract class CharacterSpellSelectionRecord
           : _i6.CharacterSpellSelectionKind.fromJson(
               (jsonSerialization['kind'] as String)),
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
+      selectionFilter: jsonSerialization['selectionFilter'] == null
+          ? null
+          : _i7.SpellSelectionFilterData.fromJson(
+              (jsonSerialization['selectionFilter'] as Map<String, dynamic>)),
+      selectionRuleLevel: jsonSerialization['selectionRuleLevel'] as int?,
+      selectionUnrestricted:
+          jsonSerialization['selectionUnrestricted'] as bool?,
+      spellReplacementHistory:
+          (jsonSerialization['spellReplacementHistory'] as List?)
+              ?.map((e) => _i8.SpellSelectionReplacementHistoryData.fromJson(
+                  (e as Map<String, dynamic>)))
+              .toList(),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
@@ -123,6 +146,14 @@ abstract class CharacterSpellSelectionRecord
 
   int? selectionIndex;
 
+  _i7.SpellSelectionFilterData? selectionFilter;
+
+  int? selectionRuleLevel;
+
+  bool? selectionUnrestricted;
+
+  List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory;
+
   DateTime? updatedAt;
 
   @override
@@ -145,6 +176,10 @@ abstract class CharacterSpellSelectionRecord
     String? spellKey,
     _i6.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
+    _i7.SpellSelectionFilterData? selectionFilter,
+    int? selectionRuleLevel,
+    bool? selectionUnrestricted,
+    List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
     DateTime? updatedAt,
   });
   @override
@@ -163,6 +198,13 @@ abstract class CharacterSpellSelectionRecord
       if (spellKey != null) 'spellKey': spellKey,
       if (kind != null) 'kind': kind?.toJson(),
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
+      if (selectionFilter != null) 'selectionFilter': selectionFilter?.toJson(),
+      if (selectionRuleLevel != null) 'selectionRuleLevel': selectionRuleLevel,
+      if (selectionUnrestricted != null)
+        'selectionUnrestricted': selectionUnrestricted,
+      if (spellReplacementHistory != null)
+        'spellReplacementHistory':
+            spellReplacementHistory?.toJson(valueToJson: (v) => v.toJson()),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
@@ -229,6 +271,10 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
     String? spellKey,
     _i6.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
+    _i7.SpellSelectionFilterData? selectionFilter,
+    int? selectionRuleLevel,
+    bool? selectionUnrestricted,
+    List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
     DateTime? updatedAt,
   }) : super._(
           id: id,
@@ -244,6 +290,10 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
           spellKey: spellKey,
           kind: kind,
           selectionIndex: selectionIndex,
+          selectionFilter: selectionFilter,
+          selectionRuleLevel: selectionRuleLevel,
+          selectionUnrestricted: selectionUnrestricted,
+          spellReplacementHistory: spellReplacementHistory,
           updatedAt: updatedAt,
         );
 
@@ -265,6 +315,10 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
     Object? spellKey = _Undefined,
     Object? kind = _Undefined,
     Object? selectionIndex = _Undefined,
+    Object? selectionFilter = _Undefined,
+    Object? selectionRuleLevel = _Undefined,
+    Object? selectionUnrestricted = _Undefined,
+    Object? spellReplacementHistory = _Undefined,
     Object? updatedAt = _Undefined,
   }) {
     return CharacterSpellSelectionRecord(
@@ -287,6 +341,19 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
       kind: kind is _i6.CharacterSpellSelectionKind? ? kind : this.kind,
       selectionIndex:
           selectionIndex is int? ? selectionIndex : this.selectionIndex,
+      selectionFilter: selectionFilter is _i7.SpellSelectionFilterData?
+          ? selectionFilter
+          : this.selectionFilter?.copyWith(),
+      selectionRuleLevel: selectionRuleLevel is int?
+          ? selectionRuleLevel
+          : this.selectionRuleLevel,
+      selectionUnrestricted: selectionUnrestricted is bool?
+          ? selectionUnrestricted
+          : this.selectionUnrestricted,
+      spellReplacementHistory: spellReplacementHistory
+              is List<_i8.SpellSelectionReplacementHistoryData>?
+          ? spellReplacementHistory
+          : this.spellReplacementHistory?.map((e0) => e0.copyWith()).toList(),
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }
@@ -328,6 +395,22 @@ class CharacterSpellSelectionRecordTable extends _i1.Table<int?> {
       'selectionIndex',
       this,
     );
+    selectionFilter = _i1.ColumnSerializable(
+      'selectionFilter',
+      this,
+    );
+    selectionRuleLevel = _i1.ColumnInt(
+      'selectionRuleLevel',
+      this,
+    );
+    selectionUnrestricted = _i1.ColumnBool(
+      'selectionUnrestricted',
+      this,
+    );
+    spellReplacementHistory = _i1.ColumnSerializable(
+      'spellReplacementHistory',
+      this,
+    );
     updatedAt = _i1.ColumnDateTime(
       'updatedAt',
       this,
@@ -357,6 +440,14 @@ class CharacterSpellSelectionRecordTable extends _i1.Table<int?> {
   late final _i1.ColumnEnum<_i6.CharacterSpellSelectionKind> kind;
 
   late final _i1.ColumnInt selectionIndex;
+
+  late final _i1.ColumnSerializable selectionFilter;
+
+  late final _i1.ColumnInt selectionRuleLevel;
+
+  late final _i1.ColumnBool selectionUnrestricted;
+
+  late final _i1.ColumnSerializable spellReplacementHistory;
 
   late final _i1.ColumnDateTime updatedAt;
 
@@ -423,6 +514,10 @@ class CharacterSpellSelectionRecordTable extends _i1.Table<int?> {
         spellKey,
         kind,
         selectionIndex,
+        selectionFilter,
+        selectionRuleLevel,
+        selectionUnrestricted,
+        spellReplacementHistory,
         updatedAt,
       ];
 

@@ -115,6 +115,6 @@ bool _resourceShouldRestore(
           resource.resetOn == RestType.longRest;
     case RestType.dawn:
     case RestType.special:
-      return false;
+      return resource.resetOn == restType;
   }
 }

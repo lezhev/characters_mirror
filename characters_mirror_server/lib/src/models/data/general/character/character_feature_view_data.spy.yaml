@@ -16,3 +16,5 @@ fields:
   displayProperties: List<FeatureDisplayPropertyView>?
   selectedChoices: List<String>?
   selectedChoiceDetails: List<SelectedFeatureChoiceView>?
+  sourceClassLevel: int?
+  spellSlotRecoveryEffects: List<FeatureResourceEffectData>?

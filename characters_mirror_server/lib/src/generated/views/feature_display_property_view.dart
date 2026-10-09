@@ -17,6 +17,7 @@ abstract class FeatureDisplayPropertyView
     required this.key,
     required this.label,
     required this.value,
+    this.formula,
     this.sortOrder,
   });
 
@@ -24,6 +25,7 @@ abstract class FeatureDisplayPropertyView
     required String key,
     required String label,
     required String value,
+    String? formula,
     int? sortOrder,
   }) = _FeatureDisplayPropertyViewImpl;
 
@@ -33,6 +35,7 @@ abstract class FeatureDisplayPropertyView
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
       value: jsonSerialization['value'] as String,
+      formula: jsonSerialization['formula'] as String?,
       sortOrder: jsonSerialization['sortOrder'] as int?,
     );
   }
@@ -43,6 +46,8 @@ abstract class FeatureDisplayPropertyView
 
   String value;
 
+  String? formula;
+
   int? sortOrder;
 
   /// Returns a shallow copy of this [FeatureDisplayPropertyView]
@@ -52,6 +57,7 @@ abstract class FeatureDisplayPropertyView
     String? key,
     String? label,
     String? value,
+    String? formula,
     int? sortOrder,
   });
   @override
@@ -60,6 +66,7 @@ abstract class FeatureDisplayPropertyView
       'key': key,
       'label': label,
       'value': value,
+      if (formula != null) 'formula': formula,
       if (sortOrder != null) 'sortOrder': sortOrder,
     };
   }
@@ -70,6 +77,7 @@ abstract class FeatureDisplayPropertyView
       'key': key,
       'label': label,
       'value': value,
+      if (formula != null) 'formula': formula,
       if (sortOrder != null) 'sortOrder': sortOrder,
     };
   }
@@ -87,11 +95,13 @@ class _FeatureDisplayPropertyViewImpl extends FeatureDisplayPropertyView {
     required String key,
     required String label,
     required String value,
+    String? formula,
     int? sortOrder,
   }) : super._(
           key: key,
           label: label,
           value: value,
+          formula: formula,
           sortOrder: sortOrder,
         );
 
@@ -103,12 +113,14 @@ class _FeatureDisplayPropertyViewImpl extends FeatureDisplayPropertyView {
     String? key,
     String? label,
     String? value,
+    Object? formula = _Undefined,
     Object? sortOrder = _Undefined,
   }) {
     return FeatureDisplayPropertyView(
       key: key ?? this.key,
       label: label ?? this.label,
       value: value ?? this.value,
+      formula: formula is String? ? formula : this.formula,
       sortOrder: sortOrder is int? ? sortOrder : this.sortOrder,
     );
   }

@@ -1,6 +1,7 @@
 class: SubclassData
 table: subclass_data
 fields:
+  spellSelectionFilter: SpellSelectionFilterData?
   referenceKey: String?
   name: String?
   description: String?

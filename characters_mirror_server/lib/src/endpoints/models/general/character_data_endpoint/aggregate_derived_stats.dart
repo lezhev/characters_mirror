@@ -7,6 +7,7 @@ Future<CharacterDerivedData> _buildDerivedData(
   CharacterData character, {
   Transaction? transaction,
   _CharacterResolveContext? resolveContext,
+  bool allowIncompleteConditionalGroups = false,
 }) async {
   final context = resolveContext ?? _CharacterResolveContext(session);
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
@@ -20,6 +21,7 @@ Future<CharacterDerivedData> _buildDerivedData(
     choices,
     transaction: transaction,
     resolveContext: context,
+    allowIncompleteConditionalGroups: allowIncompleteConditionalGroups,
   );
   final currentRaceFeatures =
       _currentRaceFeaturesBySource(character, totalLevel);
@@ -114,7 +116,9 @@ Future<CharacterDerivedData> _buildDerivedData(
     1,
     _calculateMaxHp(character, entries, conMod) +
         _featureModifierTotal(
-          resolvedSources.featureModifiers, character, entries,
+          resolvedSources.featureModifiers,
+          character,
+          entries,
           resolvedSources.currentClassFeatures,
           resolvedSources.currentSubclassFeatures,
           proficiencyBonus: proficiencyBonus,
@@ -262,15 +266,19 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
     featureModifiers: [
-      ...feature_modifiers.activeFeatureModifierRows(
-        character.toJson(),
-        resolvedSources.featureModifiers
-            .where((modifier) =>
-                modifier.target != FeatureModifierTarget.armorClass)
-            .map((modifier) => modifier.toJson()),
-        classFeatures: resolvedSources.currentClassFeatures.map((f) => f.toJson()),
-        subclassFeatures: resolvedSources.currentSubclassFeatures.map((f) => f.toJson()),
-      ).map(FeatureModifierData.fromJson),
+      ...feature_modifiers
+          .activeFeatureModifierRows(
+            character.toJson(),
+            resolvedSources.featureModifiers
+                .where((modifier) =>
+                    modifier.target != FeatureModifierTarget.armorClass)
+                .map((modifier) => modifier.toJson()),
+            classFeatures:
+                resolvedSources.currentClassFeatures.map((f) => f.toJson()),
+            subclassFeatures:
+                resolvedSources.currentSubclassFeatures.map((f) => f.toJson()),
+          )
+          .map(FeatureModifierData.fromJson),
       ...armorClassModifiers,
     ],
     armorClass: armorClass.value,
@@ -338,7 +346,8 @@ int _featureModifierTotal(
   final evaluated = feature_modifiers.evaluateFeatureModifiers(
       modifiers: input.modifiers, context: input.context);
   return feature_modifiers.sumFeatureModifierValues(evaluated)[
-      feature_modifiers.FeatureModifierTarget.values.byName(target.name)] ?? 0;
+          feature_modifiers.FeatureModifierTarget.values.byName(target.name)] ??
+      0;
 }
 
 Set<String> _effectiveSavingThrowAbilities(

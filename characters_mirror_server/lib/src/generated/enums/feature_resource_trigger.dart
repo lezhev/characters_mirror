@@ -16,7 +16,8 @@ enum FeatureResourceTrigger implements _i1.SerializableModel {
   longRest,
   dawn,
   special,
-  manual;
+  manual,
+  spellCast;
 
   static FeatureResourceTrigger fromJson(String name) {
     switch (name) {
@@ -30,6 +31,8 @@ enum FeatureResourceTrigger implements _i1.SerializableModel {
         return FeatureResourceTrigger.special;
       case 'manual':
         return FeatureResourceTrigger.manual;
+      case 'spellCast':
+        return FeatureResourceTrigger.spellCast;
       default:
         throw ArgumentError(
             'Value "$name" cannot be converted to "FeatureResourceTrigger"');

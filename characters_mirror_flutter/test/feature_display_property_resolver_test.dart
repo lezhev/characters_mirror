@@ -156,6 +156,40 @@ void main() {
       expect(result.map((property) => property.value), ['3', '3']);
     });
 
+    test('proficiency bonus tracks total character level in formulas', () {
+      const definition = FeatureDisplayPropertyDefinition(
+        key: 'ki_save_dc',
+        label: 'DC',
+        valueKind: FeatureDisplayPropertyValueKind.formula,
+        formula: '8 + proficiencyBonus + abilityModifier(wisdom)',
+      );
+      String resolve(int level) => resolveFeatureDisplayProperties(
+            definitions: const [definition],
+            sourceLevel: 3,
+            characterLevel: level,
+            proficiencyBonus: 2 + ((level - 1) ~/ 4),
+            abilityModifiers: const {'wisdom': 3},
+          ).single.value;
+
+      expect(resolve(3), '13');
+      expect(resolve(5), '14');
+      expect(
+          resolveFeatureDisplayProperties(
+            definitions: const [
+              FeatureDisplayPropertyDefinition(
+                key: 'legacy',
+                label: 'Legacy',
+                valueKind: FeatureDisplayPropertyValueKind.formula,
+                formula:
+                    'ceil(classLevel / 2) + max(1, abilityModifier(wisdom))',
+              ),
+            ],
+            sourceLevel: 5,
+            abilityModifiers: const {'wisdom': 3},
+          ).single.value,
+          '6');
+    });
+
     test('formula rejects unsupported identifiers and syntax', () {
       final result = resolveFeatureDisplayProperties(
         definitions: const [

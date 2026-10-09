@@ -11,7 +11,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../enums/ability.dart' as _i2;
-import '../enums/rest_type.dart' as _i3;
+import '../data/general/spell_activation_data.dart' as _i3;
+import '../enums/character_feature_source_type.dart' as _i4;
+import '../enums/rest_type.dart' as _i5;
 
 abstract class SpellSourceContextData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -25,6 +27,9 @@ abstract class SpellSourceContextData
     required this.alwaysPrepared,
     required this.granted,
     required this.canUseSlots,
+    this.activation,
+    this.resourceSourceType,
+    this.resourceSourceId,
     this.castAtSpellLevel,
     this.freeCastsFormula,
     this.freeCastsPerRest,
@@ -40,9 +45,12 @@ abstract class SpellSourceContextData
     required bool alwaysPrepared,
     required bool granted,
     required bool canUseSlots,
+    _i3.SpellActivationData? activation,
+    _i4.CharacterFeatureSourceType? resourceSourceType,
+    int? resourceSourceId,
     int? castAtSpellLevel,
     String? freeCastsFormula,
-    _i3.RestType? freeCastsPerRest,
+    _i5.RestType? freeCastsPerRest,
   }) = _SpellSourceContextDataImpl;
 
   factory SpellSourceContextData.fromJson(
@@ -60,11 +68,20 @@ abstract class SpellSourceContextData
       alwaysPrepared: jsonSerialization['alwaysPrepared'] as bool,
       granted: jsonSerialization['granted'] as bool,
       canUseSlots: jsonSerialization['canUseSlots'] as bool,
+      activation: jsonSerialization['activation'] == null
+          ? null
+          : _i3.SpellActivationData.fromJson(
+              (jsonSerialization['activation'] as Map<String, dynamic>)),
+      resourceSourceType: jsonSerialization['resourceSourceType'] == null
+          ? null
+          : _i4.CharacterFeatureSourceType.fromJson(
+              (jsonSerialization['resourceSourceType'] as String)),
+      resourceSourceId: jsonSerialization['resourceSourceId'] as int?,
       castAtSpellLevel: jsonSerialization['castAtSpellLevel'] as int?,
       freeCastsFormula: jsonSerialization['freeCastsFormula'] as String?,
       freeCastsPerRest: jsonSerialization['freeCastsPerRest'] == null
           ? null
-          : _i3.RestType.fromJson(
+          : _i5.RestType.fromJson(
               (jsonSerialization['freeCastsPerRest'] as String)),
     );
   }
@@ -87,11 +104,17 @@ abstract class SpellSourceContextData
 
   bool canUseSlots;
 
+  _i3.SpellActivationData? activation;
+
+  _i4.CharacterFeatureSourceType? resourceSourceType;
+
+  int? resourceSourceId;
+
   int? castAtSpellLevel;
 
   String? freeCastsFormula;
 
-  _i3.RestType? freeCastsPerRest;
+  _i5.RestType? freeCastsPerRest;
 
   /// Returns a shallow copy of this [SpellSourceContextData]
   /// with some or all fields replaced by the given arguments.
@@ -106,9 +129,12 @@ abstract class SpellSourceContextData
     bool? alwaysPrepared,
     bool? granted,
     bool? canUseSlots,
+    _i3.SpellActivationData? activation,
+    _i4.CharacterFeatureSourceType? resourceSourceType,
+    int? resourceSourceId,
     int? castAtSpellLevel,
     String? freeCastsFormula,
-    _i3.RestType? freeCastsPerRest,
+    _i5.RestType? freeCastsPerRest,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -122,6 +148,10 @@ abstract class SpellSourceContextData
       'alwaysPrepared': alwaysPrepared,
       'granted': granted,
       'canUseSlots': canUseSlots,
+      if (activation != null) 'activation': activation?.toJson(),
+      if (resourceSourceType != null)
+        'resourceSourceType': resourceSourceType?.toJson(),
+      if (resourceSourceId != null) 'resourceSourceId': resourceSourceId,
       if (castAtSpellLevel != null) 'castAtSpellLevel': castAtSpellLevel,
       if (freeCastsFormula != null) 'freeCastsFormula': freeCastsFormula,
       if (freeCastsPerRest != null)
@@ -141,6 +171,10 @@ abstract class SpellSourceContextData
       'alwaysPrepared': alwaysPrepared,
       'granted': granted,
       'canUseSlots': canUseSlots,
+      if (activation != null) 'activation': activation?.toJsonForProtocol(),
+      if (resourceSourceType != null)
+        'resourceSourceType': resourceSourceType?.toJson(),
+      if (resourceSourceId != null) 'resourceSourceId': resourceSourceId,
       if (castAtSpellLevel != null) 'castAtSpellLevel': castAtSpellLevel,
       if (freeCastsFormula != null) 'freeCastsFormula': freeCastsFormula,
       if (freeCastsPerRest != null)
@@ -167,9 +201,12 @@ class _SpellSourceContextDataImpl extends SpellSourceContextData {
     required bool alwaysPrepared,
     required bool granted,
     required bool canUseSlots,
+    _i3.SpellActivationData? activation,
+    _i4.CharacterFeatureSourceType? resourceSourceType,
+    int? resourceSourceId,
     int? castAtSpellLevel,
     String? freeCastsFormula,
-    _i3.RestType? freeCastsPerRest,
+    _i5.RestType? freeCastsPerRest,
   }) : super._(
           sourceKey: sourceKey,
           label: label,
@@ -180,6 +217,9 @@ class _SpellSourceContextDataImpl extends SpellSourceContextData {
           alwaysPrepared: alwaysPrepared,
           granted: granted,
           canUseSlots: canUseSlots,
+          activation: activation,
+          resourceSourceType: resourceSourceType,
+          resourceSourceId: resourceSourceId,
           castAtSpellLevel: castAtSpellLevel,
           freeCastsFormula: freeCastsFormula,
           freeCastsPerRest: freeCastsPerRest,
@@ -199,6 +239,9 @@ class _SpellSourceContextDataImpl extends SpellSourceContextData {
     bool? alwaysPrepared,
     bool? granted,
     bool? canUseSlots,
+    Object? activation = _Undefined,
+    Object? resourceSourceType = _Undefined,
+    Object? resourceSourceId = _Undefined,
     Object? castAtSpellLevel = _Undefined,
     Object? freeCastsFormula = _Undefined,
     Object? freeCastsPerRest = _Undefined,
@@ -214,12 +257,20 @@ class _SpellSourceContextDataImpl extends SpellSourceContextData {
       alwaysPrepared: alwaysPrepared ?? this.alwaysPrepared,
       granted: granted ?? this.granted,
       canUseSlots: canUseSlots ?? this.canUseSlots,
+      activation: activation is _i3.SpellActivationData?
+          ? activation
+          : this.activation?.copyWith(),
+      resourceSourceType: resourceSourceType is _i4.CharacterFeatureSourceType?
+          ? resourceSourceType
+          : this.resourceSourceType,
+      resourceSourceId:
+          resourceSourceId is int? ? resourceSourceId : this.resourceSourceId,
       castAtSpellLevel:
           castAtSpellLevel is int? ? castAtSpellLevel : this.castAtSpellLevel,
       freeCastsFormula: freeCastsFormula is String?
           ? freeCastsFormula
           : this.freeCastsFormula,
-      freeCastsPerRest: freeCastsPerRest is _i3.RestType?
+      freeCastsPerRest: freeCastsPerRest is _i5.RestType?
           ? freeCastsPerRest
           : this.freeCastsPerRest,
     );

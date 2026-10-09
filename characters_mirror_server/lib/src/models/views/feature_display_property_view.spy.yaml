@@ -3,4 +3,5 @@ fields:
   key: String
   label: String
   value: String
+  formula: String?
   sortOrder: int?

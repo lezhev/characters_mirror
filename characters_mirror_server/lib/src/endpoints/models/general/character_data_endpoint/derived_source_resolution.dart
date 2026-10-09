@@ -12,6 +12,8 @@ class _ResolvedDerivedSources {
   final List<FeatureModifierData> featureModifiers;
   final List<String> alwaysPreparedSpellKeys;
   final List<String> grantedClassSpellKeys;
+  final List<CharacterChoiceData> automaticChoices;
+  final List<String> missingAutomaticChoiceGroups;
 
   const _ResolvedDerivedSources({
     required this.selectedOptions,
@@ -23,6 +25,8 @@ class _ResolvedDerivedSources {
     required this.featureModifiers,
     required this.alwaysPreparedSpellKeys,
     required this.grantedClassSpellKeys,
+    this.automaticChoices = const [],
+    this.missingAutomaticChoiceGroups = const [],
   });
 }
 
@@ -86,6 +90,7 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
   List<CharacterChoiceData> choices, {
   Transaction? transaction,
   _CharacterResolveContext? resolveContext,
+  bool allowIncompleteConditionalGroups = false,
 }) async {
   final context = resolveContext ?? _CharacterResolveContext(session);
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
@@ -253,7 +258,14 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
       );
     }
     final selectedGroup = group.single;
-    final option = optionsByGroupKey[groupKey]?[optionKey];
+    var option = optionsByGroupKey[groupKey]?[optionKey];
+    if (option == null && choice.replacementHistory?.isNotEmpty == true) {
+      final resolved = resolveProgressionChoiceOption(
+          choice.toJson(),
+          relevantGroups.map((g) => g.toJson()),
+          options.map((o) => o.toJson()));
+      if (resolved != null) option = ChoiceOptionData.fromJson(resolved);
+    }
     if (option == null || option.choiceGroupId != selectedGroup.id) {
       throw InputValidationException(
         'choices',
@@ -269,13 +281,64 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     selectedOptions.add(option);
   }
 
+  final cantripKeys =
+      choiceCantripCandidateKeys(options.map((o) => o.toJson()));
+  final grantedCantrips = <String, Set<String>>{
+    for (final group in relevantGroups)
+      group.referenceKey: _collectAlwaysPreparedSpellKeys(
+        classSpellGrants
+            .where((grant) =>
+                grant.spell?.level == 0 &&
+                (group.sourceFeatureId == null ||
+                    grant.sourceFeatureId != group.sourceFeatureId) &&
+                (group.sourceSubclassFeatureId == null ||
+                    grant.sourceSubclassFeatureId !=
+                        group.sourceSubclassFeatureId))
+            .toList(),
+        classLevels: classLevels,
+        subclassLevels: subclassLevels,
+        currentClassFeatureIds: currentClassFeatureIds,
+        currentSubclassFeatureIds: currentSubclassFeatureIds,
+        currentClassFeatureLevels: currentClassFeatureLevels,
+        currentSubclassFeatureLevels: currentSubclassFeatureLevels,
+        selectedOptionIds: {
+          for (final entry in selectedByGroupKey.entries)
+            if (entry.key != group.referenceKey)
+              for (final choice in entry.value)
+                if (choice.option.id != null) choice.option.id!,
+        },
+        onlyAlwaysPrepared: false,
+      ).toSet(),
+  };
+  final automatic = _resolveAutomaticChoices(
+    character,
+    relevantGroups,
+    optionsByGroupKey,
+    selectedByGroupKey,
+    currentClassFeatures,
+    currentSubclassFeatures,
+    cantripKeys,
+    grantedCantrips,
+  );
+  selectedOptions.addAll(automatic.choices
+      .map((choice) => optionsByGroupKey[choice.groupKey]![choice.optionKey]!));
   _validateGenericChoiceSelectionRules(selectedByGroupKey, relevantGroups);
+  final acquired = character.id == null ||
+          !relevantGroups.any((g) => g.autoSelectSingleEligible == true)
+      ? <CharacterChoiceRecord>[]
+      : await CharacterChoiceRecord.db.find(session,
+          where: (t) => t.characterId.equals(character.id!),
+          transaction: transaction);
   _validateGenericChoiceEligibility(
     character,
     selectedByGroupKey,
     relevantGroups,
     currentClassFeatures,
     currentSubclassFeatures,
+    cantripKeys,
+    grantedCantrips,
+    acquired,
+    allowIncompleteConditionalGroups: allowIncompleteConditionalGroups,
   );
   await _validateGenericChoiceReferenceKeys(
     session,
@@ -339,6 +402,8 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
         onlyAlwaysPrepared: onlyAlwaysPrepared,
       );
   return _ResolvedDerivedSources(
+    automaticChoices: automatic.choices,
+    missingAutomaticChoiceGroups: automatic.missingGroups,
     selectedOptions: selectedOptions,
     selectedChoicesByClassFeatureId: selectedChoicesByClassFeatureId,
     selectedChoicesBySubclassFeatureId: selectedChoicesBySubclassFeatureId,
@@ -352,12 +417,15 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
 }
 
 void _validateGenericChoiceEligibility(
-  CharacterData character,
-  Map<String, List<_SelectedGenericChoice>> selectedByGroupKey,
-  List<ChoiceGroupData> groups,
-  List<ClassFeatureData> currentClassFeatures,
-  List<SubclassFeatureData> currentSubclassFeatures,
-) {
+    CharacterData character,
+    Map<String, List<_SelectedGenericChoice>> selectedByGroupKey,
+    List<ChoiceGroupData> groups,
+    List<ClassFeatureData> currentClassFeatures,
+    List<SubclassFeatureData> currentSubclassFeatures,
+    Set<String> cantripKeys,
+    Map<String, Set<String>> grantedCantrips,
+    List<CharacterChoiceRecord> acquired,
+    {bool allowIncompleteConditionalGroups = false}) {
   final selectedOptionsByGroupKey = {
     for (final entry in selectedByGroupKey.entries)
       entry.key: [for (final selected in entry.value) selected.option],
@@ -370,7 +438,7 @@ void _validateGenericChoiceEligibility(
     ],
   );
   final contextsByGroupKey = {
-    for (final groupKey in selectedByGroupKey.keys)
+    for (final groupKey in groups.map((group) => group.referenceKey))
       groupKey: buildChoiceEligibilityContext(
         character: character,
         evaluatingGroupKey: groupKey,
@@ -379,10 +447,47 @@ void _validateGenericChoiceEligibility(
         abilityScores: scores,
         currentClassFeatures: currentClassFeatures,
         currentSubclassFeatures: currentSubclassFeatures,
+        cantripReferenceKeys: cantripKeys,
+        grantedCantripKeys: grantedCantrips[groupKey] ?? {},
       ),
   };
+  for (final group in groups) {
+    final requirements = group.requirements ?? const <ChoiceRequirementData>[];
+    if (requirements.isEmpty) continue;
+    final eligible = evaluateChoiceOptionEligibility(
+      requirements: requirements.map(_choiceRequirement),
+      context: contextsByGroupKey[group.referenceKey]!,
+    ).isEligible;
+    final selections = selectedByGroupKey[group.referenceKey] ?? const [];
+    if (!eligible && selections.isNotEmpty) {
+      throw InputValidationException(
+        'choices.${group.referenceKey}',
+        'choice group prerequisites are not met.',
+      );
+    }
+    if (eligible && !allowIncompleteConditionalGroups) {
+      final minimum = group.minimumSelectionCount ?? group.selectionCount ?? 1;
+      if (selections.length < minimum) {
+        throw InputValidationException(
+          'choices.${group.referenceKey}',
+          'requires at least $minimum selections after its prerequisites are met.',
+        );
+      }
+    }
+  }
   for (final entry in selectedByGroupKey.entries) {
     for (final selected in entry.value) {
+      // Conditional grants are decided at acquisition, not reselected when
+      // another source later teaches the same spell.
+      if (groups.any((g) =>
+              g.referenceKey == entry.key &&
+              g.autoSelectSingleEligible == true) &&
+          acquired.any((row) =>
+              row.syncId == selected.choice.id &&
+              row.groupKey == entry.key &&
+              row.optionKey == selected.option.optionKey)) {
+        continue;
+      }
       final requirements = <ChoiceRequirement>[
         for (final data
             in selected.option.requirements ?? const <ChoiceRequirementData>[])
@@ -429,6 +534,7 @@ ChoiceRequirement _choiceRequirement(ChoiceRequirementData data) {
       ChoiceRequirementKind.selectedChoiceOption,
   };
   return ChoiceRequirement(
+    negate: data.negate == true,
     kind: kind,
     classKey: data.classKey,
     ability: data.ability?.name,
@@ -451,6 +557,7 @@ void _validateGenericChoiceSelectionRules(
   List<ChoiceGroupData> groups,
 ) {
   final exclusiveGroups = <String, String>{};
+  final progressionOptions = <String, Set<String>>{};
   for (final group in groups) {
     final selections = selectedByGroupKey[group.referenceKey] ??
         const <_SelectedGenericChoice>[];
@@ -464,6 +571,16 @@ void _validateGenericChoiceSelectionRules(
     final optionKeys = <String>{};
     final selectionIndices = <int>{};
     for (final selection in selections) {
+      if (group.progressionKey != null && group.allowDuplicates != true) {
+        final scope =
+            '${selection.choice.classEntry?.id}:${group.progressionKey}';
+        if (!progressionOptions
+            .putIfAbsent(scope, () => {})
+            .add(selection.option.optionKey)) {
+          throw InputValidationException(
+              'choices', 'Duplicate option in a progression line.');
+        }
+      }
       if (group.allowDuplicates != true &&
           !optionKeys.add(selection.option.optionKey)) {
         throw InputValidationException(
@@ -610,6 +727,22 @@ Future<void> _validateGenericChoiceReferenceKeys(
 }
 
 void _validateChoiceGroupSourceInvariant(ChoiceGroupData group) {
+  final maximum = group.selectionCount ?? 1;
+  final minimum = group.minimumSelectionCount ?? 0;
+  if (maximum < 0 || minimum < 0 || minimum > maximum) {
+    throw InputValidationException(
+      'choiceGroups.${group.referenceKey}',
+      'Choice group selection bounds are invalid.',
+    );
+  }
+  for (final data in group.requirements ?? const <ChoiceRequirementData>[]) {
+    if (!choiceRequirementIsWellFormed(_choiceRequirement(data))) {
+      throw InputValidationException(
+        'choiceGroups.${group.referenceKey}.requirements',
+        'Choice group requirements are invalid.',
+      );
+    }
+  }
   final sourceCount = [
     group.sourceClassId,
     group.sourceSubclassId,

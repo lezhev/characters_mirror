@@ -51,4 +51,27 @@ void main() {
 
     expect(higher.single.value, '20');
   });
+
+  test('display formula evaluates proficiency bonus from character level', () {
+    List<FeatureDisplayPropertyView> resolve(int level) =>
+        resolveDisplayPropertyViews(
+          definitions: [
+            FeatureDisplayPropertyData(
+              key: 'ki_save_dc',
+              label: 'DC',
+              valueKind: FeatureDisplayPropertyValueKind.formula,
+              formula: '8 + proficiencyBonus + abilityModifier(wisdom)',
+            ),
+          ],
+          sourceLevel: 3,
+          characterLevel: level,
+          proficiencyBonus: 2 + ((level - 1) ~/ 4),
+          abilityModifiers: const {'wisdom': 3},
+        );
+
+    expect(resolve(3).single.value, '13');
+    expect(resolve(5).single.value, '14');
+    expect(resolve(5).single.formula,
+        '8 + proficiencyBonus + abilityModifier(wisdom)');
+  });
 }

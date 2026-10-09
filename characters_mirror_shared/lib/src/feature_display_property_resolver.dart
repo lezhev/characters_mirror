@@ -28,12 +28,14 @@ class FeatureDisplayPropertyValue {
     required this.label,
     required this.value,
     this.sortOrder,
+    this.formula,
   });
 
   final String key;
   final String label;
   final String value;
   final int? sortOrder;
+  final String? formula;
 }
 
 /// Resolves only display values; formula dice are rendered and never rolled.
@@ -42,6 +44,7 @@ List<FeatureDisplayPropertyValue> resolveFeatureDisplayProperties({
   required int sourceLevel,
   int? characterLevel,
   int? subclassLevel,
+  int? proficiencyBonus,
   Map<String, int> abilityModifiers = const {},
 }) {
   final resolved = <FeatureDisplayPropertyValue>[];
@@ -60,6 +63,7 @@ List<FeatureDisplayPropertyValue> resolveFeatureDisplayProperties({
           sourceLevel: sourceLevel,
           characterLevel: characterLevel,
           subclassLevel: subclassLevel,
+          proficiencyBonus: proficiencyBonus,
           abilityModifiers: abilityModifiers,
         ),
     };
@@ -70,6 +74,9 @@ List<FeatureDisplayPropertyValue> resolveFeatureDisplayProperties({
         label: label,
         value: value,
         sortOrder: definition.sortOrder,
+        formula: definition.valueKind == FeatureDisplayPropertyValueKind.formula
+            ? definition.formula
+            : null,
       ),
     );
   }
@@ -98,6 +105,7 @@ String? _formulaValue(
   required int sourceLevel,
   required int? characterLevel,
   required int? subclassLevel,
+  required int? proficiencyBonus,
   required Map<String, int> abilityModifiers,
 }) {
   final source = _nonEmpty(formula);
@@ -108,6 +116,7 @@ String? _formulaValue(
       sourceLevel: sourceLevel,
       characterLevel: characterLevel,
       subclassLevel: subclassLevel,
+      proficiencyBonus: proficiencyBonus,
       abilityModifiers: abilityModifiers,
     );
     final result = parser.parse();
@@ -147,6 +156,7 @@ class _DisplayFormulaParser {
     required this.sourceLevel,
     required this.characterLevel,
     required this.subclassLevel,
+    required this.proficiencyBonus,
     required this.abilityModifiers,
   }) : _tokens = _tokenize(source);
 
@@ -154,6 +164,7 @@ class _DisplayFormulaParser {
   final int sourceLevel;
   final int? characterLevel;
   final int? subclassLevel;
+  final int? proficiencyBonus;
   final Map<String, int> abilityModifiers;
   final List<String> _tokens;
   int _index = 0;
@@ -222,6 +233,8 @@ class _DisplayFormulaParser {
         ),
       'characterLevel' when characterLevel != null =>
         _FormulaValue.number(characterLevel!),
+      'proficiencyBonus' when proficiencyBonus != null =>
+        _FormulaValue.number(proficiencyBonus!),
       _ => null,
     };
     if (operand == null) throw FormatException('Unsupported operand: $token');

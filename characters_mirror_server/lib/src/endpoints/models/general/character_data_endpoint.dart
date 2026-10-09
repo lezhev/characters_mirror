@@ -51,6 +51,7 @@ part 'character_data_endpoint/derived_armor_class.dart';
 part 'character_data_endpoint/aggregate_spell_slots.dart';
 part 'character_data_endpoint/derived_resolve_context.dart';
 part 'character_data_endpoint/derived_source_resolution.dart';
+part 'character_data_endpoint/derived_automatic_choices.dart';
 part 'character_data_endpoint/derived_collectors.dart';
 part 'character_data_endpoint/derived_spells.dart';
 part 'character_data_endpoint/derived_starting_equipment.dart';
@@ -62,12 +63,14 @@ part 'character_data_endpoint/normalization_sorting_includes.dart';
 part 'character_data_endpoint/level_up.dart';
 part 'character_data_endpoint/level_up_choices.dart';
 part 'character_data_endpoint/level_up_spells.dart';
+part 'character_data_endpoint/spell_selection_validation.dart';
+part 'character_data_endpoint/choice_replacements.dart';
 part 'character_data_endpoint/level_up_resources.dart';
 part 'character_data_endpoint/level_down.dart';
 
 const _standardSpellSlotTableKey = 'standard';
 const _pactMagicSpellSlotTableKey = 'pact_magic';
-const _characterSyncProtocolVersion = 4;
+const _characterSyncProtocolVersion = 6;
 const _characterSyncCapabilities = <String>[
   'member_operations',
   'logical_feature_override_targets',
@@ -80,6 +83,8 @@ const _characterSyncCapabilities = <String>[
   'spell_cast_sources',
   'separate_pact_slots',
   'authoritative_full_resync',
+  'spell_slot_recovery',
+  'spell_activation_contract',
 ];
 
 class CharacterDataEndpoint extends Endpoint {
@@ -142,6 +147,8 @@ class CharacterDataEndpoint extends Endpoint {
           transaction: transaction,
           expectedVersion: request.expectedVersion,
           requireExistingWhenIdPresent: true,
+          trustedChoiceReplacementHistory: true,
+          trustedSpellSelectionReplacements: true,
           resolveContext: context);
     }, userId: userId);
   }
@@ -189,6 +196,8 @@ class CharacterDataEndpoint extends Endpoint {
           transaction: transaction,
           expectedVersion: request.expectedVersion,
           requireExistingWhenIdPresent: true,
+          trustedChoiceReplacementHistory: true,
+          trustedSpellSelectionReplacements: true,
           resolveContext: context);
     }, userId: userId);
   }

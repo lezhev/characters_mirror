@@ -1,4 +1,5 @@
 import 'spell_source_context.dart';
+import 'spell_activation.dart';
 
 /// Inputs must be canonical reference rows and currently eligible choices.
 /// No persisted selections are synthesized for grants.
@@ -86,6 +87,7 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
     if (spell?['id'] != null)
       catalogById.putIfAbsent(spell!['id'], () => spell);
     if (!catalog.containsKey(key)) return;
+    if (source.activation != null) spellActivationPolicy(source);
     final sources = records.putIfAbsent(key, () => {});
     final old = sources[source.sourceKey];
     sources[source.sourceKey] = old == null
@@ -100,6 +102,10 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
             alwaysPrepared: source.alwaysPrepared || old.alwaysPrepared,
             granted: source.granted || old.granted,
             canUseSlots: source.canUseSlots || old.canUseSlots,
+            activation: source.activation ?? old.activation,
+            resourceSourceType:
+                source.resourceSourceType ?? old.resourceSourceType,
+            resourceSourceId: source.resourceSourceId ?? old.resourceSourceId,
             castAtSpellLevel: source.castAtSpellLevel ?? old.castAtSpellLevel,
             freeCastsFormula: source.freeCastsFormula ?? old.freeCastsFormula,
             freeCastsPerRest: source.freeCastsPerRest ?? old.freeCastsPerRest);
@@ -173,6 +179,7 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
           'feature:${row['sourceFeatureId'] ?? _map(row['sourceFeature'])['id']}'] ??
       featureEntries[
           'subclassFeature:${row['sourceSubclassFeatureId'] ?? _map(row['sourceSubclassFeature'])['id']}'];
+  final activeExplicitGrants = <Map<String, dynamic>>[];
   for (final grant in classGrants) {
     final entry = sourceEntry(grant);
     if (entry == null ||
@@ -181,10 +188,53 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
         (grant['choiceOptionId'] != null &&
             !selectedIds.contains(grant['choiceOptionId']))) continue;
     final spell = referenceSpell(grant);
+    final activation = (grant['activation'] as Map?)?.cast<String, dynamic>();
+    if (activation != null) activeExplicitGrants.add(grant);
+    final resourceOwners = features.where((f) {
+      final ownerEntry = f.containsKey('parentClassId')
+          ? entryFor(classId: f['parentClassId'] as int?)
+          : entryFor(subclassId: f['parentSubclassId'] as int?);
+      return ownerEntry == entry &&
+          _rows(f['resources'])
+              .any((r) => r['key'] == activation?['resourceKey']);
+    }).toList();
+    final owner = resourceOwners.length == 1 ? resourceOwners.single : null;
+    final ordinary = classSource(entry,
+        isAlways: grant['alwaysPrepared'] == true, granted: true);
+    final grantingOption =
+        options.where((o) => o['id'] == grant['choiceOptionId']).firstOrNull;
+    final grantingFeature = features
+        .where((f) => f.containsKey('parentClassId')
+            ? f['id'] == grant['sourceFeatureId']
+            : f['id'] == grant['sourceSubclassFeatureId'])
+        .firstOrNull;
     add(
         _key(spell['referenceKey']) ?? _key(grant['spellReferenceKey']),
-        classSource(entry,
-            isAlways: grant['alwaysPrepared'] == true, granted: true),
+        activation == null && grant['castingAbility'] == null
+            ? ordinary
+            : SpellSourceContext(
+                sourceKey: 'classGrant:${grant['id']}',
+                label: _key(grantingOption?['name']) ??
+                    _key(grantingFeature?['name']) ??
+                    _key(_map(grant['choiceOption'])['name']) ??
+                    _key(_map(grant['sourceSubclassFeature'])['name']) ??
+                    _key(_map(grant['sourceFeature'])['name']) ??
+                    ordinary.label,
+                classDataId: ordinary.classDataId,
+                castingAbility: grant['castingAbility'] as String? ??
+                    ordinary.castingAbility,
+                granted: true,
+                alwaysPrepared: grant['alwaysPrepared'] == true,
+                canUseSlots: activation == null ||
+                    activation['canUseStandardSlots'] == true ||
+                    activation['canUsePactSlots'] == true,
+                activation: activation,
+                resourceSourceType: owner == null
+                    ? null
+                    : owner.containsKey('parentClassId')
+                        ? 'classFeature'
+                        : 'subclassFeature',
+                resourceSourceId: owner?['id'] as int?),
         spell.isEmpty ? null : spell);
   }
   for (final feature in features) {
@@ -192,6 +242,12 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
         ? entryFor(classId: feature['parentClassId'] as int?)
         : entryFor(subclassId: feature['parentSubclassId'] as int?);
     for (final key in feature['grantedSpellKeys'] as List? ?? []) {
+      if (activeExplicitGrants.any((g) =>
+          (g['spellReferenceKey'] ?? referenceSpell(g)['referenceKey']) ==
+              key &&
+          (feature.containsKey('parentClassId')
+              ? g['sourceFeatureId'] == feature['id']
+              : g['sourceSubclassFeatureId'] == feature['id']))) continue;
       add(_key(key), classSource(entry, granted: true));
     }
   }
@@ -200,6 +256,10 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
         groups[option['choiceGroupId']] ?? _map(option['choiceGroup']);
     final entry = sourceEntry(group);
     for (final key in option['grantedSpellKeys'] as List? ?? []) {
+      if (activeExplicitGrants.any((g) =>
+          g['choiceOptionId'] == option['id'] &&
+          (g['spellReferenceKey'] ?? referenceSpell(g)['referenceKey']) == key))
+        continue;
       add(
           _key(key),
           entry != null
@@ -211,7 +271,10 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
                   canUseSlots: false));
     }
   }
-  for (final race in [_map(character['race']), _map(character['subrace'])]) {
+  for (final (isSubrace, race) in [
+    (false, _map(character['race'])),
+    (true, _map(character['subrace']))
+  ]) {
     for (final feature in _rows(race['features'])) {
       if ((feature['level'] as int? ?? 1) > totalLevel) continue;
       for (final grant in _rows(feature['spellGrants'])) {
@@ -219,6 +282,8 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
         final spell = referenceSpell(grant);
         final key = _key(spell['referenceKey']);
         if (key == null) continue;
+        final activation =
+            (grant['activation'] as Map?)?.cast<String, dynamic>();
         add(
             key,
             SpellSourceContext(
@@ -226,10 +291,23 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
                 label: _key(feature['name']) ?? _key(race['name']) ?? 'Раса',
                 castingAbility: grant['castingAbility'] as String?,
                 granted: true,
-                canUseSlots: grant['canAlsoCastWithSpellSlots'] == true,
-                castAtSpellLevel: grant['castAtSpellLevel'] as int?,
-                freeCastsFormula: grant['freeCastsFormula'] as String?,
-                freeCastsPerRest: grant['freeCastsPerRest'] as String?),
+                canUseSlots: activation == null
+                    ? grant['canAlsoCastWithSpellSlots'] == true
+                    : activation['canUseStandardSlots'] == true ||
+                        activation['canUsePactSlots'] == true,
+                activation: activation,
+                resourceSourceType:
+                    isSubrace ? 'subraceFeature' : 'raceFeature',
+                resourceSourceId: feature['id'] as int?,
+                castAtSpellLevel: activation == null
+                    ? grant['castAtSpellLevel'] as int?
+                    : null,
+                freeCastsFormula: activation == null
+                    ? grant['freeCastsFormula'] as String?
+                    : null,
+                freeCastsPerRest: activation == null
+                    ? grant['freeCastsPerRest'] as String?
+                    : null),
             spell);
       }
     }

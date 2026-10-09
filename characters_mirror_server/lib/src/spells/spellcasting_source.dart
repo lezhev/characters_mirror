@@ -14,6 +14,8 @@ ClassData effectiveSpellcastingClass(
     spellcastingProgression:
         subclass!.spellcastingProgression ?? data.spellcastingProgression,
     spellSelectionMode: subclass.spellSelectionMode ?? data.spellSelectionMode,
+    spellSelectionFilter:
+        subclass.spellSelectionFilter ?? data.spellSelectionFilter,
     spellcastingAbilityValue:
         subclass.spellcastingAbilityValue ?? data.spellcastingAbilityValue,
   );

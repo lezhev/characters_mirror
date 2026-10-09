@@ -41,11 +41,14 @@ import '../../../data/general/character/character_feature_override_data.dart'
     as _i19;
 import '../../../data/general/character/character_resource_state_data.dart'
     as _i20;
+import '../../../data/general/character/spell_slot_recovery_trigger_data.dart'
+    as _i21;
 
 abstract class CharacterRecord
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   CharacterRecord._({
     this.id,
+    this.spellActivationUses,
     this.name,
     this.age,
     this.height,
@@ -118,10 +121,12 @@ abstract class CharacterRecord
     this.attacks,
     this.featureOverrides,
     this.resourceStates,
+    this.spellRecoveryTriggers,
   });
 
   factory CharacterRecord({
     int? id,
+    Map<String, int>? spellActivationUses,
     String? name,
     String? age,
     String? height,
@@ -196,11 +201,17 @@ abstract class CharacterRecord
     List<_i18.CharacterAttackData>? attacks,
     List<_i19.CharacterFeatureOverrideData>? featureOverrides,
     List<_i20.CharacterResourceStateData>? resourceStates,
+    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
   }) = _CharacterRecordImpl;
 
   factory CharacterRecord.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterRecord(
       id: jsonSerialization['id'] as int?,
+      spellActivationUses: (jsonSerialization['spellActivationUses'] as Map?)
+          ?.map((k, v) => MapEntry(
+                k as String,
+                v as int,
+              )),
       name: jsonSerialization['name'] as String?,
       age: jsonSerialization['age'] as String?,
       height: jsonSerialization['height'] as String?,
@@ -385,6 +396,13 @@ abstract class CharacterRecord
           ?.map((e) => _i20.CharacterResourceStateData.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
+      spellRecoveryTriggers:
+          (jsonSerialization['spellRecoveryTriggers'] as Map?)
+              ?.map((k, v) => MapEntry(
+                    k as String,
+                    _i21.SpellSlotRecoveryTriggerData.fromJson(
+                        (v as Map<String, dynamic>)),
+                  )),
     );
   }
 
@@ -394,6 +412,8 @@ abstract class CharacterRecord
 
   @override
   int? id;
+
+  Map<String, int>? spellActivationUses;
 
   String? name;
 
@@ -541,6 +561,8 @@ abstract class CharacterRecord
 
   List<_i20.CharacterResourceStateData>? resourceStates;
 
+  Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers;
+
   @override
   _i1.Table<int?> get table => t;
 
@@ -549,6 +571,7 @@ abstract class CharacterRecord
   @_i1.useResult
   CharacterRecord copyWith({
     int? id,
+    Map<String, int>? spellActivationUses,
     String? name,
     String? age,
     String? height,
@@ -623,11 +646,14 @@ abstract class CharacterRecord
     List<_i18.CharacterAttackData>? attacks,
     List<_i19.CharacterFeatureOverrideData>? featureOverrides,
     List<_i20.CharacterResourceStateData>? resourceStates,
+    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      if (spellActivationUses != null)
+        'spellActivationUses': spellActivationUses?.toJson(),
       if (name != null) 'name': name,
       if (age != null) 'age': age,
       if (height != null) 'height': height,
@@ -739,6 +765,9 @@ abstract class CharacterRecord
       if (resourceStates != null)
         'resourceStates':
             resourceStates?.toJson(valueToJson: (v) => v.toJson()),
+      if (spellRecoveryTriggers != null)
+        'spellRecoveryTriggers':
+            spellRecoveryTriggers?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -790,6 +819,7 @@ class _Undefined {}
 class _CharacterRecordImpl extends CharacterRecord {
   _CharacterRecordImpl({
     int? id,
+    Map<String, int>? spellActivationUses,
     String? name,
     String? age,
     String? height,
@@ -864,8 +894,10 @@ class _CharacterRecordImpl extends CharacterRecord {
     List<_i18.CharacterAttackData>? attacks,
     List<_i19.CharacterFeatureOverrideData>? featureOverrides,
     List<_i20.CharacterResourceStateData>? resourceStates,
+    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
   }) : super._(
           id: id,
+          spellActivationUses: spellActivationUses,
           name: name,
           age: age,
           height: height,
@@ -939,6 +971,7 @@ class _CharacterRecordImpl extends CharacterRecord {
           attacks: attacks,
           featureOverrides: featureOverrides,
           resourceStates: resourceStates,
+          spellRecoveryTriggers: spellRecoveryTriggers,
         );
 
   /// Returns a shallow copy of this [CharacterRecord]
@@ -947,6 +980,7 @@ class _CharacterRecordImpl extends CharacterRecord {
   @override
   CharacterRecord copyWith({
     Object? id = _Undefined,
+    Object? spellActivationUses = _Undefined,
     Object? name = _Undefined,
     Object? age = _Undefined,
     Object? height = _Undefined,
@@ -1019,9 +1053,20 @@ class _CharacterRecordImpl extends CharacterRecord {
     Object? attacks = _Undefined,
     Object? featureOverrides = _Undefined,
     Object? resourceStates = _Undefined,
+    Object? spellRecoveryTriggers = _Undefined,
   }) {
     return CharacterRecord(
       id: id is int? ? id : this.id,
+      spellActivationUses: spellActivationUses is Map<String, int>?
+          ? spellActivationUses
+          : this.spellActivationUses?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0,
+                  )),
       name: name is String? ? name : this.name,
       age: age is String? ? age : this.age,
       height: height is String? ? height : this.height,
@@ -1245,12 +1290,27 @@ class _CharacterRecordImpl extends CharacterRecord {
       resourceStates: resourceStates is List<_i20.CharacterResourceStateData>?
           ? resourceStates
           : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
+      spellRecoveryTriggers: spellRecoveryTriggers
+              is Map<String, _i21.SpellSlotRecoveryTriggerData>?
+          ? spellRecoveryTriggers
+          : this.spellRecoveryTriggers?.map((
+                key0,
+                value0,
+              ) =>
+                  MapEntry(
+                    key0,
+                    value0.copyWith(),
+                  )),
     );
   }
 }
 
 class CharacterRecordTable extends _i1.Table<int?> {
   CharacterRecordTable({super.tableRelation}) : super(tableName: 'characters') {
+    spellActivationUses = _i1.ColumnSerializable(
+      'spellActivationUses',
+      this,
+    );
     name = _i1.ColumnString(
       'name',
       this,
@@ -1529,7 +1589,13 @@ class CharacterRecordTable extends _i1.Table<int?> {
       'resourceStates',
       this,
     );
+    spellRecoveryTriggers = _i1.ColumnSerializable(
+      'spellRecoveryTriggers',
+      this,
+    );
   }
+
+  late final _i1.ColumnSerializable spellActivationUses;
 
   late final _i1.ColumnString name;
 
@@ -1675,6 +1741,8 @@ class CharacterRecordTable extends _i1.Table<int?> {
 
   late final _i1.ColumnSerializable resourceStates;
 
+  late final _i1.ColumnSerializable spellRecoveryTriggers;
+
   _i3.RaceDataTable get race {
     if (_race != null) return _race!;
     _race = _i1.createRelationTable(
@@ -1717,6 +1785,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
         id,
+        spellActivationUses,
         name,
         age,
         height,
@@ -1786,6 +1855,7 @@ class CharacterRecordTable extends _i1.Table<int?> {
         attacks,
         featureOverrides,
         resourceStates,
+        spellRecoveryTriggers,
       ];
 
   @override

@@ -6,6 +6,7 @@ fields:
   name: String?
   description: String?
   shortDescription: String?
+  automaticSelection: bool?
   sortOrder: int?
   grantedAbilityBonuses: Map<String, int>?
   grantedSkills: List<Skill>?

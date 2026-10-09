@@ -169,3 +169,12 @@
 20261007141026044-feature-spell-hp-presentation
 20261007170600000-subclass-level1-safe-presentation
 20261007182500000-subclass-level2-presentation
+20261007182600000-feature-choice-slot-recovery
+20261007182700000-conditional-grant-selection
+20261007220404658-spell-activation-selection-replacement
+20261007221219840-spell-grant-ability-filter-format
+20261007231250296-spell-selection-provenance
+20261008054457035-subclass-level3-presentation
+20261008055048240-level3-disciplines-ki-activations
+20261008055353447-level3-discipline-resource-effects
+20261008064554582

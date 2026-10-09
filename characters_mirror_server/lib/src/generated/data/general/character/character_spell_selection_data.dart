@@ -13,6 +13,9 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../../../data/general/character/character_class_entry_data.dart' as _i2;
 import '../../../data/spell_data.dart' as _i3;
 import '../../../enums/character_spell_selection_kind.dart' as _i4;
+import '../../../data/general/spell_selection_filter_data.dart' as _i5;
+import '../../../data/general/character/spell_selection_replacement_history_data.dart'
+    as _i6;
 
 abstract class CharacterSpellSelectionData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -25,6 +28,10 @@ abstract class CharacterSpellSelectionData
     this.spellKey,
     this.kind,
     this.selectionIndex,
+    this.selectionFilter,
+    this.selectionRuleLevel,
+    this.selectionUnrestricted,
+    this.spellReplacementHistory,
     this.updatedAt,
   });
 
@@ -37,6 +44,10 @@ abstract class CharacterSpellSelectionData
     String? spellKey,
     _i4.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
+    _i5.SpellSelectionFilterData? selectionFilter,
+    int? selectionRuleLevel,
+    bool? selectionUnrestricted,
+    List<_i6.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
     DateTime? updatedAt,
   }) = _CharacterSpellSelectionDataImpl;
 
@@ -60,6 +71,18 @@ abstract class CharacterSpellSelectionData
           : _i4.CharacterSpellSelectionKind.fromJson(
               (jsonSerialization['kind'] as String)),
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
+      selectionFilter: jsonSerialization['selectionFilter'] == null
+          ? null
+          : _i5.SpellSelectionFilterData.fromJson(
+              (jsonSerialization['selectionFilter'] as Map<String, dynamic>)),
+      selectionRuleLevel: jsonSerialization['selectionRuleLevel'] as int?,
+      selectionUnrestricted:
+          jsonSerialization['selectionUnrestricted'] as bool?,
+      spellReplacementHistory:
+          (jsonSerialization['spellReplacementHistory'] as List?)
+              ?.map((e) => _i6.SpellSelectionReplacementHistoryData.fromJson(
+                  (e as Map<String, dynamic>)))
+              .toList(),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
@@ -82,6 +105,14 @@ abstract class CharacterSpellSelectionData
 
   int? selectionIndex;
 
+  _i5.SpellSelectionFilterData? selectionFilter;
+
+  int? selectionRuleLevel;
+
+  bool? selectionUnrestricted;
+
+  List<_i6.SpellSelectionReplacementHistoryData>? spellReplacementHistory;
+
   DateTime? updatedAt;
 
   /// Returns a shallow copy of this [CharacterSpellSelectionData]
@@ -96,6 +127,10 @@ abstract class CharacterSpellSelectionData
     String? spellKey,
     _i4.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
+    _i5.SpellSelectionFilterData? selectionFilter,
+    int? selectionRuleLevel,
+    bool? selectionUnrestricted,
+    List<_i6.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
     DateTime? updatedAt,
   });
   @override
@@ -109,6 +144,13 @@ abstract class CharacterSpellSelectionData
       if (spellKey != null) 'spellKey': spellKey,
       if (kind != null) 'kind': kind?.toJson(),
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
+      if (selectionFilter != null) 'selectionFilter': selectionFilter?.toJson(),
+      if (selectionRuleLevel != null) 'selectionRuleLevel': selectionRuleLevel,
+      if (selectionUnrestricted != null)
+        'selectionUnrestricted': selectionUnrestricted,
+      if (spellReplacementHistory != null)
+        'spellReplacementHistory':
+            spellReplacementHistory?.toJson(valueToJson: (v) => v.toJson()),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
@@ -124,6 +166,14 @@ abstract class CharacterSpellSelectionData
       if (spellKey != null) 'spellKey': spellKey,
       if (kind != null) 'kind': kind?.toJson(),
       if (selectionIndex != null) 'selectionIndex': selectionIndex,
+      if (selectionFilter != null)
+        'selectionFilter': selectionFilter?.toJsonForProtocol(),
+      if (selectionRuleLevel != null) 'selectionRuleLevel': selectionRuleLevel,
+      if (selectionUnrestricted != null)
+        'selectionUnrestricted': selectionUnrestricted,
+      if (spellReplacementHistory != null)
+        'spellReplacementHistory': spellReplacementHistory?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
@@ -146,6 +196,10 @@ class _CharacterSpellSelectionDataImpl extends CharacterSpellSelectionData {
     String? spellKey,
     _i4.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
+    _i5.SpellSelectionFilterData? selectionFilter,
+    int? selectionRuleLevel,
+    bool? selectionUnrestricted,
+    List<_i6.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
     DateTime? updatedAt,
   }) : super._(
           id: id,
@@ -156,6 +210,10 @@ class _CharacterSpellSelectionDataImpl extends CharacterSpellSelectionData {
           spellKey: spellKey,
           kind: kind,
           selectionIndex: selectionIndex,
+          selectionFilter: selectionFilter,
+          selectionRuleLevel: selectionRuleLevel,
+          selectionUnrestricted: selectionUnrestricted,
+          spellReplacementHistory: spellReplacementHistory,
           updatedAt: updatedAt,
         );
 
@@ -172,6 +230,10 @@ class _CharacterSpellSelectionDataImpl extends CharacterSpellSelectionData {
     Object? spellKey = _Undefined,
     Object? kind = _Undefined,
     Object? selectionIndex = _Undefined,
+    Object? selectionFilter = _Undefined,
+    Object? selectionRuleLevel = _Undefined,
+    Object? selectionUnrestricted = _Undefined,
+    Object? spellReplacementHistory = _Undefined,
     Object? updatedAt = _Undefined,
   }) {
     return CharacterSpellSelectionData(
@@ -186,6 +248,19 @@ class _CharacterSpellSelectionDataImpl extends CharacterSpellSelectionData {
       kind: kind is _i4.CharacterSpellSelectionKind? ? kind : this.kind,
       selectionIndex:
           selectionIndex is int? ? selectionIndex : this.selectionIndex,
+      selectionFilter: selectionFilter is _i5.SpellSelectionFilterData?
+          ? selectionFilter
+          : this.selectionFilter?.copyWith(),
+      selectionRuleLevel: selectionRuleLevel is int?
+          ? selectionRuleLevel
+          : this.selectionRuleLevel,
+      selectionUnrestricted: selectionUnrestricted is bool?
+          ? selectionUnrestricted
+          : this.selectionUnrestricted,
+      spellReplacementHistory: spellReplacementHistory
+              is List<_i6.SpellSelectionReplacementHistoryData>?
+          ? spellReplacementHistory
+          : this.spellReplacementHistory?.map((e0) => e0.copyWith()).toList(),
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }

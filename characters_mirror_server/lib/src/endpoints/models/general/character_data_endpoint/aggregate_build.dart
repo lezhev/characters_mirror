@@ -132,6 +132,7 @@ Future<CharacterData> _buildCharacterAggregate(
 CharacterData _toCharacterData(CharacterRecord record) {
   return CharacterData(
     id: record.id,
+    spellActivationUses: record.spellActivationUses,
     name: record.name,
     age: record.age,
     height: record.height,
@@ -201,6 +202,7 @@ CharacterData _toCharacterData(CharacterRecord record) {
     attacks: record.attacks,
     featureOverrides: record.featureOverrides,
     resourceStates: _normalizedResourceStates(record.resourceStates),
+    spellRecoveryTriggers: record.spellRecoveryTriggers,
   );
 }
 
@@ -231,6 +233,7 @@ CharacterChoiceData _toCharacterChoiceData(
         ? null
         : entriesById[record.classEntry!.syncId!],
     groupKey: record.groupKey,
+    replacementHistory: record.replacementHistory,
     optionKey: record.optionKey,
     selectionIndex: record.selectionIndex,
     updatedAt: record.updatedAt,
@@ -270,6 +273,10 @@ CharacterSpellSelectionData _toCharacterSpellSelectionData(
     spellKey: record.spellKey,
     kind: record.kind,
     selectionIndex: record.selectionIndex,
+    selectionFilter: record.selectionFilter,
+    selectionRuleLevel: record.selectionRuleLevel,
+    selectionUnrestricted: record.selectionUnrestricted,
+    spellReplacementHistory: record.spellReplacementHistory,
     updatedAt: record.updatedAt,
   );
 }

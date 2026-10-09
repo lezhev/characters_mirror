@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:characters_mirror_flutter/core/character/conditional_choice_support.dart';
 import 'package:characters_mirror_flutter/core/character/armor_class_feature_modifiers.dart';
 import 'package:characters_mirror_flutter/core/character/feature_grants.dart';
 import 'package:characters_mirror_flutter/core/character_spells/spellcasting_source.dart';
@@ -24,11 +25,14 @@ Future<CharacterData> resolveOfflineCharacter(
   OfflineCacheDatabase cache,
   CharacterData character,
 ) async {
+  character = await _pruneInactiveConditionalChoices(cache, character);
+  character = await _materializeOfflineAutomaticChoices(cache, character);
   final derived = await buildOfflineDerivedData(cache, character);
   return character.copyWith(
     experience: character.experience ?? 0,
     derived: derived,
-    currentHp: min(character.currentHp ?? derived.maxHp ?? 0, derived.maxHp ?? 0),
+    currentHp:
+        min(character.currentHp ?? derived.maxHp ?? 0, derived.maxHp ?? 0),
     temporaryHp: character.temporaryHp,
   );
 }
@@ -60,6 +64,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   OfflineCacheDatabase cache,
   CharacterData character,
 ) async {
+  character = await _materializeOfflineAutomaticChoices(cache, character);
   final entries = character.classEntries ?? const <CharacterClassEntryData>[];
   final totalLevel =
       max(1, entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
@@ -119,14 +124,20 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     1,
     _maxHp(character, entries, abilityModifiers[Ability.constitution] ?? 0) +
         await _offlineFeatureModifierTotal(
-          cache, entries, character,
+          cache,
+          entries,
+          character,
           proficiencyBonus: proficiencyBonus,
           target: FeatureModifierTarget.hitPointMaximum,
         ),
   );
   final dexterityModifier = abilityModifiers[Ability.dexterity] ?? 0;
-  final armorClassModifiers = armorClassFeatureModifiers(
-      activeFeatureModifiers, currentClassFeatures, currentSubclassFeatures);
+  final armorClassModifiers = await _offlineArmorClassModifiers(
+      cache,
+      character,
+      activeFeatureModifiers,
+      currentClassFeatures,
+      currentSubclassFeatures);
   final armorClass = await _calculateArmorClass(cache, character,
       abilityModifiers, armorClassModifiers, proficiencyBonus);
   final grantedEquipment = await _collectGrantedEquipment(cache, character);
@@ -246,15 +257,17 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     abilityModifiers: abilityModifiers,
     activeFeatures: activeFeatures,
     featureModifiers: [
-      ...feature_modifiers.activeFeatureModifierRows(
-        character.toJson(),
-        activeFeatureModifiers
-            .where((modifier) =>
-                modifier.target != FeatureModifierTarget.armorClass)
-            .map((modifier) => modifier.toJson()),
-        classFeatures: currentClassFeatures.map((f) => f.toJson()),
-        subclassFeatures: currentSubclassFeatures.map((f) => f.toJson()),
-      ).map(FeatureModifierData.fromJson),
+      ...feature_modifiers
+          .activeFeatureModifierRows(
+            character.toJson(),
+            activeFeatureModifiers
+                .where((modifier) =>
+                    modifier.target != FeatureModifierTarget.armorClass)
+                .map((modifier) => modifier.toJson()),
+            classFeatures: currentClassFeatures.map((f) => f.toJson()),
+            subclassFeatures: currentSubclassFeatures.map((f) => f.toJson()),
+          )
+          .map(FeatureModifierData.fromJson),
       ...armorClassModifiers,
     ],
     armorClass: armorClass.value,

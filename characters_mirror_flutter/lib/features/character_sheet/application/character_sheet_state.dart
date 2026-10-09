@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:characters_mirror_flutter/core/character_spells/spell_cast_application.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_slot_recovery_application.dart';
 import 'package:characters_mirror_flutter/core/character_spells/character_spell_projection.dart';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
@@ -24,6 +25,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'character_sheet_state.g.dart';
 part 'character_sheet_state/combat_operations.dart';
 part 'character_sheet_state/spell_operations.dart';
+part 'character_sheet_state/spell_recovery_operations.dart';
 part 'character_sheet_state/personal_operations.dart';
 part 'character_sheet_state/ability_operations.dart';
 part 'character_sheet_state/feature_resource_operations.dart';

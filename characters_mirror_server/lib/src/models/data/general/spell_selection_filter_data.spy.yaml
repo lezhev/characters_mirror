@@ -1,0 +1,8 @@
+class: SpellSelectionFilterData
+fields:
+  spellListClassKey: String?
+  minimumSpellLevel: int?
+  maximumSpellLevel: int?
+  schools: List<SpellSchool>?
+  kinds: List<CharacterSpellSelectionKind>?
+  unrestrictedChoicesByLevel: Map<int, int>?

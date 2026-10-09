@@ -89,6 +89,7 @@ CharacterRecord _toCharacterRecord(
 }) {
   return CharacterRecord(
     id: id,
+    spellActivationUses: character.spellActivationUses,
     name: character.name,
     age: character.age,
     height: character.height,
@@ -161,5 +162,6 @@ CharacterRecord _toCharacterRecord(
     attacks: character.attacks,
     featureOverrides: _normalizedFeatureOverrides(character.featureOverrides),
     resourceStates: _normalizedResourceStates(character.resourceStates),
+    spellRecoveryTriggers: character.spellRecoveryTriggers,
   );
 }

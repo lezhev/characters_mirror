@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:characters_mirror_flutter/core/character_spells/spell_cast_application.dart';
+import 'package:characters_mirror_flutter/core/character_spells/spell_slot_recovery_application.dart';
 import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
@@ -53,6 +54,7 @@ CharacterData replayCharacterSyncOperation(
     case CharacterSyncOperationType.adjustHitDice:
     case CharacterSyncOperationType.adjustResource:
     case CharacterSyncOperationType.adjustExperience:
+    case CharacterSyncOperationType.recoverSpellSlots:
     case CharacterSyncOperationType.applyRest:
       break;
   }
@@ -74,6 +76,7 @@ bool _isSemantic(CharacterSyncOperationType type) => switch (type) {
       CharacterSyncOperationType.adjustHitDice ||
       CharacterSyncOperationType.adjustResource ||
       CharacterSyncOperationType.adjustExperience ||
+      CharacterSyncOperationType.recoverSpellSlots ||
       CharacterSyncOperationType.applyRest =>
         true,
       _ => false,
@@ -117,7 +120,11 @@ CharacterData _replaySemantic(
       if (action.spellKey != null ||
           action.spellSourceKey != null ||
           action.slotSource != null) {
-        return applyCharacterSpellCast(character, action);
+        return applyCharacterSpellRecoveryEvent(
+            applyCharacterSpellCast(character, action),
+            event: 'spellCast',
+            sourceActionId: operation.id,
+            action: action);
       }
       var next = character;
       final level = action.level;
@@ -161,7 +168,12 @@ CharacterData _replaySemantic(
       if (next < 0) throw StateError('Experience bounds.');
       return character.copyWith(experience: next);
     case CharacterSyncOperationType.applyRest:
-      return _applyRest(character, action.restType);
+      return applyCharacterSpellRecoveryEvent(
+          _applyRest(character, action.restType),
+          event: action.restType!.name,
+          sourceActionId: operation.id);
+    case CharacterSyncOperationType.recoverSpellSlots:
+      return applyCharacterSpellSlotRecovery(character, action);
     default:
       return character;
   }
@@ -223,7 +235,7 @@ CharacterData _adjustResource(
 }
 
 CharacterData _applyRest(CharacterData character, RestType? restType) {
-  if (restType != RestType.shortRest && restType != RestType.longRest) {
+  if (restType == null || restType == RestType.special) {
     throw StateError('Unsupported rest type.');
   }
   final restored = <String>{};
@@ -233,8 +245,10 @@ CharacterData _applyRest(CharacterData character, RestType? restType) {
         in feature.resources ?? const <CharacterResourceViewData>[]) {
       final shouldRestore = restType == RestType.shortRest
           ? resource.resetOn == RestType.shortRest
-          : resource.resetOn == RestType.shortRest ||
-              resource.resetOn == RestType.longRest;
+          : restType == RestType.longRest
+              ? resource.resetOn == RestType.shortRest ||
+                  resource.resetOn == RestType.longRest
+              : resource.resetOn == restType;
       if (shouldRestore) {
         restored.add(
             '${feature.sourceType.name}:${feature.sourceId}:${resource.key}');
@@ -253,12 +267,19 @@ CharacterData _applyRest(CharacterData character, RestType? restType) {
   var next = character.copyWith(
     resourceStates: states.isEmpty ? null : states,
     currentSpellSlots:
-        character.currentPactSlots == null && pools.pactMax.isNotEmpty
+        (restType == RestType.shortRest || restType == RestType.longRest) &&
+                character.currentPactSlots == null &&
+                pools.pactMax.isNotEmpty
             ? (materialized['currentSpellSlots'] == null
                 ? null
                 : spellProtocolIntMap<int>(materialized['currentSpellSlots']))
             : character.currentSpellSlots,
-    currentPactSlots: pools.pactMax.isEmpty ? null : pools.pactMax,
+    currentPactSlots:
+        restType == RestType.shortRest || restType == RestType.longRest
+            ? pools.pactMax.isEmpty
+                ? null
+                : pools.pactMax
+            : character.currentPactSlots,
   );
   if (restType == RestType.longRest) {
     next = next.copyWith(

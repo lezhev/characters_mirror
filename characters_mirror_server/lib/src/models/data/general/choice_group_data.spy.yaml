@@ -1,6 +1,9 @@
 class: ChoiceGroupData
 table: choice_group_data
 fields:
+  progressionKey: String?
+  replacementsAllowed: int?
+  replacementProgressionKeys: List<String>?
   referenceKey: String
   name: String?
   description: String?
@@ -16,6 +19,8 @@ fields:
   type: ChoiceType?
   selectionCount: int?
   minimumSelectionCount: int?
+  requirements: List<ChoiceRequirementData>?
+  autoSelectSingleEligible: bool?
   appliesAtCharacterLevel: bool?
   exclusiveKey: String?
   allowDuplicates: bool?

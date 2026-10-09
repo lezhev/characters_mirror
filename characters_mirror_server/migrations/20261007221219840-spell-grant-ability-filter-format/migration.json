@@ -1,0 +1,28 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "class_spell_grant_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "castingAbility",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:Ability?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

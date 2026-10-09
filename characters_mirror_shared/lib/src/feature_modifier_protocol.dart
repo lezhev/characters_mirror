@@ -4,6 +4,46 @@ import 'spells/spell_protocol_values.dart';
 T _enum<T extends Enum>(List<T> values, dynamic value) =>
     value is int ? values[value] : values.byName(value as String);
 
+FeatureModifierSpec featureModifierSpecFromProtocol(
+  Map<String, dynamic> row, {
+  required String sourceFeatureKey,
+  required String sourceClassKey,
+  String? sourceName,
+}) {
+  final value = row['value'] as Map;
+  final conditions = <FeatureModifierCondition>{};
+  final choices = <String>{};
+  for (final condition in (row['conditions'] as List? ?? []).cast<Map>()) {
+    if (condition['type'] == 'selectedChoiceOption' || condition['type'] == 5) {
+      choices.add('${condition['choiceGroupKey']}::${condition['optionKey']}');
+    } else {
+      conditions.add(_enum(FeatureModifierCondition.values, condition['type']));
+    }
+  }
+  return FeatureModifierSpec(
+    referenceKey: row['referenceKey'] as String,
+    sourceFeatureKey: sourceFeatureKey,
+    sourceClassKey: sourceClassKey,
+    sourceName: sourceName,
+    target: _enum(FeatureModifierTarget.values, row['target']),
+    operation: _enum(FeatureModifierOperation.values, row['operation']),
+    valueKind: _enum(FeatureModifierValueKind.values, value['kind']),
+    staticValue: value['staticValue'] as int?,
+    progression: spellProtocolIntMap<int>(value['progression']),
+    numerator: value['numerator'] as int?,
+    denominator: value['denominator'] as int?,
+    rounding: value['rounding'] == null
+        ? null
+        : _enum(FeatureModifierRounding.values, value['rounding']),
+    abilityModifierKeys:
+        (value['abilityModifiers'] as List? ?? []).cast<String>(),
+    spellKey: row['spellKey'] as String?,
+    minimumCastLevel: row['minimumCastLevel'] as int?,
+    conditions: conditions,
+    requiredChoiceOptions: choices,
+  );
+}
+
 /// Hydrates only active canonical sources; class and subclass ID spaces stay separate.
 List<Map<String, dynamic>> activeFeatureModifierRows(
   Map<String, dynamic> character,
@@ -105,40 +145,11 @@ List<Map<String, dynamic>> activeFeatureModifierRows(
         : ((entry['subclass'] as Map?)?['id'] == feature['parentSubclassId']));
     final sourceKey = feature['referenceKey'] as String? ??
         '${isClass ? 'classFeature' : 'subclassFeature'}:${feature['id']}';
-    final value = row['value'] as Map;
-    final conditions = <FeatureModifierCondition>{};
-    final choices = <String>{};
-    for (final condition in (row['conditions'] as List? ?? []).cast<Map>()) {
-      if (condition['type'] == 'selectedChoiceOption' ||
-          condition['type'] == 5) {
-        choices
-            .add('${condition['choiceGroupKey']}::${condition['optionKey']}');
-      } else {
-        conditions
-            .add(_enum(FeatureModifierCondition.values, condition['type']));
-      }
-    }
-    specs.add(FeatureModifierSpec(
-      referenceKey: row['referenceKey'] as String,
+    specs.add(featureModifierSpecFromProtocol(
+      row,
       sourceFeatureKey: sourceKey,
       sourceClassKey: classKey(entry),
       sourceName: feature['name'] as String?,
-      target: _enum(FeatureModifierTarget.values, row['target']),
-      operation: _enum(FeatureModifierOperation.values, row['operation']),
-      valueKind: _enum(FeatureModifierValueKind.values, value['kind']),
-      staticValue: value['staticValue'] as int?,
-      progression: spellProtocolIntMap<int>(value['progression']),
-      numerator: value['numerator'] as int?,
-      denominator: value['denominator'] as int?,
-      rounding: value['rounding'] == null
-          ? null
-          : _enum(FeatureModifierRounding.values, value['rounding']),
-      abilityModifierKeys:
-          (value['abilityModifiers'] as List? ?? []).cast<String>(),
-      spellKey: row['spellKey'] as String?,
-      minimumCastLevel: row['minimumCastLevel'] as int?,
-      conditions: conditions,
-      requiredChoiceOptions: choices,
     ));
   }
   final totalLevel = levels.values.fold<int>(0, (sum, level) => sum + level);

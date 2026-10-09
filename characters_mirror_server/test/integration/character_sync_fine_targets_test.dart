@@ -46,7 +46,7 @@ void main() {
         CharacterSyncRequest(operations: [operation]),
       );
 
-      expect(probe.syncProtocolVersion, _protocolVersion);
+      expect(probe.syncProtocolVersion, 6);
       expect(probe.capabilities, contains('member_operations'));
       expect(rejected.rejectedChanges, hasLength(1));
       expect(

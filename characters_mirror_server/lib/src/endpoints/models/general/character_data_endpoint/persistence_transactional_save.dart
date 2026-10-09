@@ -58,6 +58,8 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
   bool requireExistingWhenIdPresent = false,
   String? syncChangeId,
   _CharacterResolveContext? resolveContext,
+  bool trustedChoiceReplacementHistory = false,
+  bool trustedSpellSelectionReplacements = false,
 }) async {
   character = await CharacterEquipmentSelectionValidator.normalizeAndValidate(
     session,
@@ -133,6 +135,8 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
     id: existingRecord?.id,
     syncTargetRevisions: null,
     syncBarrierTokens: currentCharacter?.syncBarrierTokens,
+    spellRecoveryTriggers: currentCharacter?.spellRecoveryTriggers,
+    spellActivationUses: currentCharacter?.spellActivationUses,
     featureOverrides: await _pruneFeatureOverrides(
       session,
       character,
@@ -146,6 +150,9 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
       resolveContext: context,
     ),
   );
+  normalizedCharacter = await _preserveChoiceReplacementHistory(
+      session, currentCharacter, normalizedCharacter,
+      trusted: trustedChoiceReplacementHistory, transaction: transaction);
   if (_serverSnapshotIsNewer(existingRecord, normalizedCharacter)) {
     return _buildCharacterAggregate(
       session,
@@ -169,8 +176,32 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
       resolveContext: context,
     );
   }
+  normalizedCharacter = await _stampNewSpellSelectionProvenance(
+    session,
+    normalizedCharacter,
+    transaction: transaction,
+  );
 
   final currentVersion = existingRecord?.version ?? currentCharacter?.version;
+  await _validateSpellSelectionFilters(
+    session,
+    normalizedCharacter,
+    transaction: transaction,
+    allowSpellReplacements: trustedSpellSelectionReplacements,
+  );
+  final choiceSources = await _resolveDerivedSources(
+      session, normalizedCharacter, normalizedCharacter.choices ?? [],
+      transaction: transaction, resolveContext: context);
+  if (choiceSources.missingAutomaticChoiceGroups.isNotEmpty) {
+    throw InputValidationException('choices',
+        'Required choice groups are incomplete: ${choiceSources.missingAutomaticChoiceGroups.join(', ')}.');
+  }
+  if (choiceSources.automaticChoices.isNotEmpty) {
+    normalizedCharacter = normalizedCharacter.copyWith(choices: [
+      ...?normalizedCharacter.choices,
+      ...choiceSources.automaticChoices,
+    ]);
+  }
   final nextVersion = existingRecord == null ? 1 : (currentVersion ?? 0) + 1;
   final targetRevisions = existingRecord == null
       ? _materializedSyncTargetRevisions(
@@ -221,6 +252,7 @@ Future<CharacterData> _saveCharacterSnapshotInTransaction(
     savedRecord,
     stampedCharacter,
     transaction: transaction,
+    replaceSpellSelectionProvenance: trustedSpellSelectionReplacements,
   );
 
   final hydratedRecord = await _requireOwnedCharacterRecord(

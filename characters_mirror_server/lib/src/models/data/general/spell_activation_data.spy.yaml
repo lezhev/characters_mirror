@@ -1,0 +1,14 @@
+class: SpellActivationData
+fields:
+  canUseStandardSlots: bool
+  canUsePactSlots: bool
+  slotless: bool
+  atWill: bool
+  resourceKey: String?
+  resourceCost: int?
+  resourceUpcastPolicy: SpellResourceUpcastPolicyData?
+  freeCasts: int?
+  resetOn: RestType?
+  maxCasts: int?
+  castsResetOn: RestType?
+  castAtSpellLevel: int?

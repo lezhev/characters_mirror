@@ -45,6 +45,9 @@ Future<T> _requireById<T>(
 }
 
 void _validateClassSpellGrant(ClassSpellGrantData item) {
+  if (item.activation != null) {
+    validateSpellActivation(item.activation!.toJson());
+  }
   if (item.spellId == null || item.spellId! <= 0) {
     throw Exception(
       'ClassSpellGrantData must reference a spell by spellId or spellReferenceKey.',
@@ -138,6 +141,10 @@ Future<List<ClassStepFeatureView>> _classStepFeatureViews(
           where: (t) => t.sourceClassFeatureId.inSet(featureIds),
           orderBy: (t) => t.sortOrder,
         );
+  final modifiers = featureIds.isEmpty
+      ? <FeatureModifierData>[]
+      : await FeatureModifierData.db
+          .find(session, where: (t) => t.classFeatureId.inSet(featureIds));
   return [
     for (final feature in features)
       ClassStepFeatureView(
@@ -147,10 +154,14 @@ Future<List<ClassStepFeatureView>> _classStepFeatureViews(
             sourceLevel: sourceLevel,
             abilityModifiers: abilityModifiers),
         displayProperties: resolveDisplayPropertyViews(
+          modifiers: modifiers
+              .where((modifier) => modifier.classFeatureId == feature.id),
           definitions: properties.where(
             (property) => property.sourceClassFeatureId == feature.id,
           ),
           sourceLevel: sourceLevel,
+          characterLevel: sourceLevel,
+          proficiencyBonus: 2 + ((sourceLevel - 1) ~/ 4),
           abilityModifiers: abilityModifiers,
           subclassLevel: sourceLevel,
         ),
@@ -176,6 +187,10 @@ Future<List<ClassStepFeatureView>> _subclassStepFeatureViews(
           where: (t) => t.sourceSubclassFeatureId.inSet(featureIds),
           orderBy: (t) => t.sortOrder,
         );
+  final modifiers = featureIds.isEmpty
+      ? <FeatureModifierData>[]
+      : await FeatureModifierData.db
+          .find(session, where: (t) => t.subclassFeatureId.inSet(featureIds));
   return [
     for (final feature in features)
       ClassStepFeatureView(
@@ -188,7 +203,11 @@ Future<List<ClassStepFeatureView>> _subclassStepFeatureViews(
           definitions: properties.where(
             (property) => property.sourceSubclassFeatureId == feature.id,
           ),
+          modifiers: modifiers
+              .where((modifier) => modifier.subclassFeatureId == feature.id),
           sourceLevel: sourceLevel,
+          characterLevel: sourceLevel,
+          proficiencyBonus: 2 + ((sourceLevel - 1) ~/ 4),
           abilityModifiers: abilityModifiers,
           subclassLevel: sourceLevel,
         ),

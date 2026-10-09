@@ -7,3 +7,4 @@ fields:
   referenceKey: String?
   choiceGroupKey: String?
   optionKey: String?
+  negate: bool?

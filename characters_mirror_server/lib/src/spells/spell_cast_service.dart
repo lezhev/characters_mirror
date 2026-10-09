@@ -11,6 +11,15 @@ CharacterData applyCharacterSpellCast(
   final name = patch['activeConcentrationSpellName'] as String?;
   Rules.shortText('activeConcentrationSpellName', name);
   return character.copyWith(
+      spellActivationUses: patch.containsKey('spellActivationUses')
+          ? (patch['spellActivationUses'] as Map?)?.cast<String, int>()
+          : character.spellActivationUses,
+      resourceStates: patch.containsKey('resourceStates')
+          ? (patch['resourceStates'] as List)
+              .map((r) => CharacterResourceStateData.fromJson(
+                  (r as Map).cast<String, dynamic>()))
+              .toList()
+          : character.resourceStates,
       currentSpellSlots: patch.containsKey('currentSpellSlots')
           ? _slots(patch['currentSpellSlots'])
           : character.currentSpellSlots,

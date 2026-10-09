@@ -8,6 +8,8 @@ fields:
   sourceFeature: ClassFeatureData?, relation(optional, name=class_feature_spell_grants)
   sourceSubclassFeature: SubclassFeatureData?, relation(optional, name=subclass_feature_spell_grants)
   grantedAtLevel: int?
+  activation: SpellActivationData?
+  castingAbility: Ability?
   alwaysPrepared: bool?
   choiceOption: ChoiceOptionData?, relation(optional)
   notes: String?

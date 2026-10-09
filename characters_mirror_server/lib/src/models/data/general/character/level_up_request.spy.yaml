@@ -1,5 +1,6 @@
 class: LevelUpRequest
 fields:
+  choiceReplacements: List<LevelUpChoiceReplacementData>?
   characterId: int
   expectedVersion: int
   classEntryId: String

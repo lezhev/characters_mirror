@@ -1,9 +1,11 @@
 import 'package:characters_mirror_server/src/generated/protocol.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:characters_mirror_server/src/feature_display_properties.dart';
 import 'package:characters_mirror_server/src/feature_resource_summary.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:characters_mirror_server/src/weapon_training_values.dart';
 import 'package:characters_mirror_server/src/validation/rules.dart';
+import 'package:characters_mirror_server/src/validation/validation_exception.dart';
 
 import '../../../spells/class_spell_progression.dart';
 import '../../../spells/spellcasting_source.dart';

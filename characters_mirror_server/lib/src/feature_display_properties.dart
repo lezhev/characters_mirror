@@ -7,7 +7,10 @@ List<FeatureDisplayPropertyView> resolveDisplayPropertyViews({
   required int sourceLevel,
   int? characterLevel,
   int? subclassLevel,
+  int? proficiencyBonus,
   Map<String, int> abilityModifiers = const {},
+  Iterable<FeatureModifierData> modifiers = const [],
+  Set<String> selectedChoiceOptionKeys = const {},
 }) {
   return [
     for (final resolved in shared.resolveFeatureDisplayProperties(
@@ -33,6 +36,7 @@ List<FeatureDisplayPropertyView> resolveDisplayPropertyViews({
       sourceLevel: sourceLevel,
       characterLevel: characterLevel,
       subclassLevel: subclassLevel,
+      proficiencyBonus: proficiencyBonus,
       abilityModifiers: abilityModifiers,
     ))
       FeatureDisplayPropertyView(
@@ -40,6 +44,41 @@ List<FeatureDisplayPropertyView> resolveDisplayPropertyViews({
         label: resolved.label,
         value: resolved.value,
         sortOrder: resolved.sortOrder,
+        formula: resolved.formula,
       ),
+    ...resolveModifierDisplayPropertyViews(
+      modifiers: modifiers,
+      sourceLevel: sourceLevel,
+      characterLevel: characterLevel,
+      proficiencyBonus: proficiencyBonus,
+      abilityModifiers: abilityModifiers,
+      selectedChoiceOptionKeys: selectedChoiceOptionKeys,
+    ),
   ];
 }
+
+List<FeatureDisplayPropertyView> resolveModifierDisplayPropertyViews({
+  required Iterable<FeatureModifierData> modifiers,
+  required int sourceLevel,
+  int? characterLevel,
+  int? proficiencyBonus,
+  Map<String, int> abilityModifiers = const {},
+  Set<String> selectedChoiceOptionKeys = const {},
+}) =>
+    [
+      for (final property
+          in shared.featureModifierDisplayPropertiesFromProtocol(
+        modifiers: modifiers.map((modifier) => modifier.toJson()),
+        sourceLevel: sourceLevel,
+        characterLevel: characterLevel,
+        proficiencyBonus: proficiencyBonus,
+        abilityModifiers: abilityModifiers,
+        selectedChoiceOptionKeys: selectedChoiceOptionKeys,
+      ))
+        FeatureDisplayPropertyView(
+            key: property.key,
+            label: property.label,
+            value: property.value,
+            sortOrder: property.sortOrder,
+            formula: property.formula),
+    ];

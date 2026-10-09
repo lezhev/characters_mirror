@@ -9,6 +9,9 @@ class SpellSourceContext {
       this.alwaysPrepared = false,
       this.granted = false,
       this.canUseSlots = true,
+      this.activation,
+      this.resourceSourceType,
+      this.resourceSourceId,
       this.castAtSpellLevel,
       this.freeCastsFormula,
       this.freeCastsPerRest});
@@ -21,6 +24,9 @@ class SpellSourceContext {
   final bool alwaysPrepared;
   final bool granted;
   final bool canUseSlots;
+  final Map<String, dynamic>? activation;
+  final String? resourceSourceType;
+  final int? resourceSourceId;
   final int? castAtSpellLevel;
   final String? freeCastsFormula;
   final String? freeCastsPerRest;
@@ -36,6 +42,9 @@ class SpellSourceContext {
           alwaysPrepared: json['alwaysPrepared'] == true,
           granted: json['granted'] == true,
           canUseSlots: json['canUseSlots'] as bool? ?? true,
+          activation: (json['activation'] as Map?)?.cast<String, dynamic>(),
+          resourceSourceType: json['resourceSourceType'] as String?,
+          resourceSourceId: json['resourceSourceId'] as int?,
           castAtSpellLevel: json['castAtSpellLevel'] as int?,
           freeCastsFormula: json['freeCastsFormula'] as String?,
           freeCastsPerRest: json['freeCastsPerRest'] as String?);
@@ -49,6 +58,10 @@ class SpellSourceContext {
         'alwaysPrepared': alwaysPrepared,
         'granted': granted,
         'canUseSlots': canUseSlots,
+        if (activation != null) 'activation': activation,
+        if (resourceSourceType != null)
+          'resourceSourceType': resourceSourceType,
+        if (resourceSourceId != null) 'resourceSourceId': resourceSourceId,
         if (castAtSpellLevel != null) 'castAtSpellLevel': castAtSpellLevel,
         if (freeCastsFormula != null) 'freeCastsFormula': freeCastsFormula,
         if (freeCastsPerRest != null) 'freeCastsPerRest': freeCastsPerRest

@@ -27,6 +27,7 @@ Future<LevelDownPreview> _previewLevelDown(
   Transaction? transaction,
   required _CharacterResolveContext resolveContext,
 }) async {
+  final originalBefore = before;
   if (before.version != request.expectedVersion) {
     throw InputValidationException('expectedVersion',
         'Character changed. Refresh the character and try again.');
@@ -81,8 +82,26 @@ Future<LevelDownPreview> _previewLevelDown(
   final removedGroupKeys = oldGroups.keys.toSet()
     ..removeAll(targetGroupViews.keys);
   final removedGroups = [for (final key in removedGroupKeys) oldGroups[key]!];
+  bool belongsToEntry(CharacterChoiceData choice) =>
+      choice.classEntry?.id == entry.id ||
+      (choice.classEntry == null && oldGroups.containsKey(choice.groupKey));
+  before = before.copyWith(
+      choices: rollbackProgressionChoices(
+              (before.choices ?? <CharacterChoiceData>[])
+                  .map((c) => c.toJson()),
+              classEntryId: entry.id!,
+              targetLevel: targetLevel)
+          .map(CharacterChoiceData.fromJson)
+          .toList());
+  before = before.copyWith(
+      spellSelections: rollbackSpellSelectionReplacements(
+    (before.spellSelections ?? const <CharacterSpellSelectionData>[])
+        .map((selection) => selection.toJson()),
+    classEntryId: entry.id!,
+    targetLevel: targetLevel,
+  ).map(CharacterSpellSelectionData.fromJson).toList());
   final classChoices = (before.choices ?? const <CharacterChoiceData>[])
-      .where((choice) => choice.classEntry?.id == entry.id)
+      .where(belongsToEntry)
       .toList();
   final nextEntry = entry.copyWith(
     level: targetLevel,
@@ -106,7 +125,7 @@ Future<LevelDownPreview> _previewLevelDown(
       .toList();
   final choicesForEligibility = [
     for (final choice in before.choices ?? const <CharacterChoiceData>[])
-      if (choice.classEntry?.id != entry.id ||
+      if (!belongsToEntry(choice) ||
           !removedGroupKeys.contains(choice.groupKey))
         choice,
   ];
@@ -124,11 +143,31 @@ Future<LevelDownPreview> _previewLevelDown(
   final selectedOptionsByGroupKey = <String, List<ChoiceOptionData>>{};
   for (final choice in choicesForEligibility) {
     final group = groupsByKey[choice.groupKey];
-    final option = allOptions
+    var option = allOptions
         .where((item) =>
             item.choiceGroupId == group?.id &&
             item.optionKey == choice.optionKey)
         .firstOrNull;
+    if (option == null && choice.replacementHistory?.isNotEmpty == true) {
+      final level = targetCharacter.classEntries
+              ?.where((e) => e.id == choice.classEntry?.id)
+              .firstOrNull
+              ?.level ??
+          targetLevel;
+      final candidates = belongsToEntry(choice)
+          ? targetGroupViews.values.map((v) => v.group!)
+          : allGroups.where((g) => (g.level ?? 1) <= level);
+      final resolved = resolveProgressionChoiceOption(choice.toJson(),
+          candidates.map((g) => g.toJson()), allOptions.map((o) => o.toJson()));
+      if (resolved != null) {
+        option = ChoiceOptionData.fromJson(resolved);
+        final view = targetGroupViews[choice.groupKey];
+        if (view != null) {
+          targetGroupViews[choice.groupKey!] =
+              view.copyWith(options: [...?view.options, option]);
+        }
+      }
+    }
     if (option != null) {
       selectedOptionsByGroupKey
           .putIfAbsent(choice.groupKey!, () => <ChoiceOptionData>[])
@@ -224,8 +263,20 @@ Future<LevelDownPreview> _previewLevelDown(
       throw InputValidationException(
           'choices.$groupKey', 'Choice group is unavailable.');
     }
+    final groupRequirements =
+        groupView.group?.requirements ?? const <ChoiceRequirementData>[];
+    if (groupRequirements.isNotEmpty &&
+        !evaluateChoiceOptionEligibility(
+          requirements: groupRequirements.map(_choiceRequirement),
+          context: context,
+        ).isEligible) {
+      // The parent choice became inactive at the target level; discard the
+      // dependent selection instead of retaining an orphan.
+      continue;
+    }
     final eligibility = _evaluateChoiceOptionData(currentOption, context);
-    if (eligibility.isEligible) {
+    if (eligibility.isEligible ||
+        groupView.group?.autoSelectSingleEligible == true) {
       repairedChoices.add(choice);
       continue;
     }
@@ -278,7 +329,7 @@ Future<LevelDownPreview> _previewLevelDown(
     ],
     choices: [
       for (final choice in before.choices ?? const <CharacterChoiceData>[])
-        if (choice.classEntry?.id != entry.id) choice,
+        if (!belongsToEntry(choice)) choice,
       ...choicesForProjection,
     ],
   );
@@ -304,7 +355,7 @@ Future<LevelDownPreview> _previewLevelDown(
   final oldResources = _levelDownResourceMaxima(before);
   final newResources = _levelDownResourceMaxima(draft);
   return LevelDownPreview(
-    before: before,
+    before: originalBefore,
     character: draft,
     classEntryId: entry.id!,
     oldLevel: oldLevel,

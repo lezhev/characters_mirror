@@ -12,6 +12,7 @@ bool _isSemanticOperation(CharacterSyncOperationData operation) {
     CharacterSyncOperationType.adjustHitDice ||
     CharacterSyncOperationType.adjustResource ||
     CharacterSyncOperationType.adjustExperience ||
+    CharacterSyncOperationType.recoverSpellSlots ||
     CharacterSyncOperationType.applyRest =>
       true,
     _ => false,
@@ -19,6 +20,8 @@ bool _isSemanticOperation(CharacterSyncOperationData operation) {
 }
 
 int _minimumProtocolVersionForOperation(CharacterSyncOperationData operation) {
+  if (operation.value?.semanticActionValue?.spellPayment != null) return 6;
+  if (operation.type == CharacterSyncOperationType.recoverSpellSlots) return 5;
   if (_isSemanticOperation(operation)) return _semanticProtocolVersion;
   if (_isMemberOperation(operation)) return 3;
   return 0;
@@ -48,7 +51,8 @@ List<String> _semanticActionTargetKeys(
           character.toJson(), action?.toJson() ?? {});
     case CharacterSyncOperationType.castSpell:
       return [
-        ...spellSlotActionTargetKeys(
+        ...spellSlotRecoveryEventTargetKeys(character.toJson()),
+        ...spellActivationActionTargets(
             character.toJson(), action?.toJson() ?? {}),
         if (spellCastStartsConcentration(
             character.toJson(), action?.toJson() ?? {}))
@@ -68,6 +72,9 @@ List<String> _semanticActionTargetKeys(
       return [_fieldTargetKey('experience')];
     case CharacterSyncOperationType.applyRest:
       return _restTargetKeys(character, action?.restType);
+    case CharacterSyncOperationType.recoverSpellSlots:
+      return spellSlotRecoveryActionTargetKeys(
+          character.toJson(), action?.toJson() ?? {});
     case CharacterSyncOperationType.createCharacter:
     case CharacterSyncOperationType.deleteCharacter:
     case CharacterSyncOperationType.setField:
@@ -83,15 +90,18 @@ List<String> _semanticActionTargetKeys(
 }
 
 List<String> _restTargetKeys(CharacterData character, RestType? restType) {
-  if (restType != RestType.shortRest && restType != RestType.longRest) {
+  if (restType == null || restType == RestType.special) {
     return const [];
   }
-  final result = <String>{};
+  final result = <String>{
+    ...spellActivationRestTargets(character.toJson(), restType.name),
+    ...spellSlotRecoveryEventTargetKeys(character.toJson())
+  };
   for (final feature in character.derived?.activeFeatures ??
       const <CharacterFeatureViewData>[]) {
     for (final resource
         in feature.resources ?? const <CharacterResourceViewData>[]) {
-      if (_serverResourceShouldRestore(resource, restType!)) {
+      if (_serverResourceShouldRestore(resource, restType)) {
         result.add(_resourceTargetKey(
           feature.sourceType.name,
           feature.sourceId,
@@ -100,10 +110,13 @@ List<String> _restTargetKeys(CharacterData character, RestType? restType) {
       }
     }
   }
-  final pactLevels = {
-    ...?character.derived?.pactSlots?.keys,
-    ...?character.currentPactSlots?.keys
-  };
+  final pactLevels =
+      restType == RestType.shortRest || restType == RestType.longRest
+          ? <int>{
+              ...?character.derived?.pactSlots?.keys,
+              ...?character.currentPactSlots?.keys
+            }
+          : <int>{};
   result.addAll(
       pactLevels.map((level) => _mapTargetKey('currentPactSlots', '$level')));
   if (character.currentPactSlots == null && pactLevels.isNotEmpty) {
@@ -161,6 +174,12 @@ _SemanticActionFailure? _semanticBarrierFailure(
   }
   final expected = action.baseBarrierTokens ?? const <String, String>{};
   for (final target in _semanticActionTargetKeys(character, operation)) {
+    // Protocol 4 clients predate recovery events but still support casts/rests.
+    if (target == _fieldTargetKey('spellRecoveryTriggers') &&
+        !expected.containsKey(target) &&
+        operation.type != CharacterSyncOperationType.recoverSpellSlots) {
+      continue;
+    }
     if (expected[target] != _materializedBarrierToken(character, target)) {
       return const _SemanticActionFailure(
         'crossed_barrier',
@@ -190,6 +209,12 @@ Map<String, String> _barrierTokensAfterOperation({
         result[target] = operation.id;
       }
     }
+    if (targets.contains(_fieldTargetKey('spellRecoveryTriggers')) &&
+        (operation.type == CharacterSyncOperationType.castSpell ||
+            operation.type == CharacterSyncOperationType.applyRest ||
+            operation.type == CharacterSyncOperationType.recoverSpellSlots)) {
+      result[_fieldTargetKey('spellRecoveryTriggers')] = operation.id;
+    }
   } else {
     for (final target in changedTargets.where(_isSemanticBarrierTarget)) {
       result[target] = operation.id;
@@ -200,12 +225,14 @@ Map<String, String> _barrierTokensAfterOperation({
 
 bool _isSemanticBarrierTarget(String target) {
   return target == _fieldTargetKey('currentHp') ||
+      target == _fieldTargetKey('spellRecoveryTriggers') ||
       target == _fieldTargetKey('temporaryHp') ||
       target == _fieldTargetKey('deathSaveSuccesses') ||
       target == _fieldTargetKey('deathSaveFailures') ||
       target == _fieldTargetKey('activeConcentrationSpellName') ||
       target == _fieldTargetKey('experience') ||
       target.startsWith('map:currentSpellSlots:') ||
+      target.startsWith('map:spellActivationUses:') ||
       target.startsWith('map:currentPactSlots:') ||
       target.startsWith('map:currentHitDice:') ||
       target.startsWith('resource:');
@@ -222,7 +249,7 @@ CharacterData _applySemanticActionToCharacter(
       'Semantic operation requires a typed action payload.',
     );
   }
-  return switch (operation.type) {
+  final next = switch (operation.type) {
     CharacterSyncOperationType.applyDamage =>
       _applyServerDamage(character, _requiredPositiveAmount(action)),
     CharacterSyncOperationType.heal =>
@@ -239,11 +266,54 @@ CharacterData _applySemanticActionToCharacter(
     CharacterSyncOperationType.adjustExperience =>
       _adjustServerExperience(character, action),
     CharacterSyncOperationType.applyRest => _applyServerRest(character, action),
+    CharacterSyncOperationType.recoverSpellSlots =>
+      _recoverServerSpellSlots(character, action),
     _ => throw const _SemanticActionFailure(
         'invalid_action',
         'Operation is not a semantic action.',
       ),
   };
+  final event = operation.type == CharacterSyncOperationType.castSpell
+      ? 'spellCast'
+      : operation.type == CharacterSyncOperationType.applyRest
+          ? action.restType?.name
+          : null;
+  return event == null
+      ? next
+      : CharacterData.fromJson({
+          ...next.toJson(),
+          ...spellSlotRecoveryEventPatch(next.toJson(),
+              event: event,
+              sourceActionId: operation.id,
+              castAction: action.toJson()),
+        });
+}
+
+CharacterData _recoverServerSpellSlots(
+    CharacterData character, CharacterSemanticActionData action) {
+  try {
+    final patch = applySpellSlotRecovery(character.toJson(), action.toJson());
+    return character.copyWith(
+      currentSpellSlots: patch['currentSpellSlots'] == null
+          ? null
+          : spellProtocolIntMap<int>(patch['currentSpellSlots']),
+      currentPactSlots: patch['currentPactSlots'] == null
+          ? null
+          : spellProtocolIntMap<int>(patch['currentPactSlots']),
+      resourceStates: (patch['resourceStates'] as List)
+          .cast<Map>()
+          .map((s) =>
+              CharacterResourceStateData.fromJson(s.cast<String, dynamic>()))
+          .toList(),
+      spellRecoveryTriggers: (patch['spellRecoveryTriggers'] as Map?)?.map(
+          (k, v) => MapEntry(
+              k as String,
+              SpellSlotRecoveryTriggerData.fromJson(
+                  (v as Map).cast<String, dynamic>()))),
+    );
+  } on SpellCastFailure catch (error) {
+    throw _SemanticActionFailure(error.code, error.message);
+  }
 }
 
 int _requiredPositiveAmount(CharacterSemanticActionData action) {
@@ -469,10 +539,10 @@ CharacterData _applyServerRest(
   CharacterSemanticActionData action,
 ) {
   final restType = action.restType;
-  if (restType != RestType.shortRest && restType != RestType.longRest) {
+  if (restType == null || restType == RestType.special) {
     throw const _SemanticActionFailure(
       'invalid_action',
-      'Only short and long rest actions are supported.',
+      'Rest type is required.',
     );
   }
   final restoredResources = <String>{};
@@ -480,7 +550,7 @@ CharacterData _applyServerRest(
       const <CharacterFeatureViewData>[]) {
     for (final resource
         in feature.resources ?? const <CharacterResourceViewData>[]) {
-      if (_serverResourceShouldRestore(resource, restType!)) {
+      if (_serverResourceShouldRestore(resource, restType)) {
         restoredResources.add(_resourceTargetKey(
           feature.sourceType.name,
           feature.sourceId,
@@ -504,12 +574,19 @@ CharacterData _applyServerRest(
   var next = character.copyWith(
     resourceStates: resourceStates.isEmpty ? null : resourceStates,
     currentSpellSlots:
-        character.currentPactSlots == null && pools.pactMax.isNotEmpty
+        (restType == RestType.shortRest || restType == RestType.longRest) &&
+                character.currentPactSlots == null &&
+                pools.pactMax.isNotEmpty
             ? (materialized['currentSpellSlots'] == null
                 ? null
                 : spellProtocolIntMap<int>(materialized['currentSpellSlots']))
             : character.currentSpellSlots,
-    currentPactSlots: pools.pactMax.isEmpty ? null : pools.pactMax,
+    currentPactSlots:
+        restType == RestType.shortRest || restType == RestType.longRest
+            ? pools.pactMax.isEmpty
+                ? null
+                : pools.pactMax
+            : character.currentPactSlots,
   );
   if (restType == RestType.longRest) {
     next = next.copyWith(
@@ -532,7 +609,7 @@ bool _serverResourceShouldRestore(
     RestType.shortRest => resource.resetOn == RestType.shortRest,
     RestType.longRest => resource.resetOn == RestType.shortRest ||
         resource.resetOn == RestType.longRest,
-    RestType.dawn || RestType.special => false,
+    RestType.dawn || RestType.special => resource.resetOn == restType,
   };
 }
 

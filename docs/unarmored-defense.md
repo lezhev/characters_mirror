@@ -65,6 +65,14 @@ the migration to development/production and refreshing existing reference caches
 remain deployment steps. Server and regenerated client should be released
 together because the modifier operation enum gained a value.
 
+Offline recalculation also retains AC modifiers from the character's derived
+snapshot when the exact class/level/subclass step is missing from the cache or
+predates modifier metadata. Source class/subclass and feature level are checked,
+and formulas are reevaluated against current ability scores and equipment.
+A cached step with an explicit modifier list takes precedence, including an
+empty list. This keeps both the AC total and its source/formula available in the
+AC settings sheet while reference data is incomplete.
+
 ## Files changed
 
 - Shared: `lib/src/armor_class_resolver.dart`,

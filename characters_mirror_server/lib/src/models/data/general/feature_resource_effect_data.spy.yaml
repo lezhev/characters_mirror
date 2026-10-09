@@ -15,6 +15,7 @@ fields:
   amountAbility: Ability?
   activationTrigger: FeatureResourceTrigger?
   usageResetOn: RestType?
+  recoveryPolicy: SpellSlotRecoveryPolicyData?
   setResetOn: RestType?
   setMaxRule: FeatureResourceMaxRule?
   setMaxValue: int?

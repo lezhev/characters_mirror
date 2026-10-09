@@ -8,4 +8,8 @@ fields:
   spellKey: String?
   kind: CharacterSpellSelectionKind?
   selectionIndex: int?
+  selectionFilter: SpellSelectionFilterData?
+  selectionRuleLevel: int?
+  selectionUnrestricted: bool?
+  spellReplacementHistory: List<SpellSelectionReplacementHistoryData>?
   updatedAt: DateTime?

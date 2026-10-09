@@ -89,12 +89,23 @@ List<ClassSpellSelectionGroupView> buildClassSpellSelectionGroups({
       CharacterSpellSelectionKind kind, int? count, List<SpellData> options,
       {CharacterSpellSelectionKind? source}) {
     if (count == null || count <= 0 || options.isEmpty) return;
+    final filter = classData.spellSelectionFilter;
+    final unrestricted =
+        spellSelectionUnrestrictedCount(filter?.toJson(), selectedLevel);
+    options = options
+        .where((spell) => spellMatchesSelectionFilter(
+            spell.toJson(), filter?.toJson(),
+            kind: kind.name, unrestricted: unrestricted > 0))
+        .toList();
+    if (options.isEmpty) return;
     groups.add(ClassSpellSelectionGroupView(
         kind: kind,
         selectionCount: count,
         classDataId: classData.id,
         classLevel: selectedLevel,
         options: options,
+        selectionFilter: filter,
+        unrestrictedSelectionCount: unrestricted,
         optionSourceSelectionKind: source));
   }
 

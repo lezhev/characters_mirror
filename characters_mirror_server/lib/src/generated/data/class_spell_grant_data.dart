@@ -17,7 +17,9 @@ import '../data/general/class/class_data.dart' as _i3;
 import '../data/general/class/subclass_data.dart' as _i4;
 import '../data/general/class/class_feature_data.dart' as _i5;
 import '../data/general/class/subclass_feature_data.dart' as _i6;
-import '../data/general/choice_option_data.dart' as _i7;
+import '../data/general/spell_activation_data.dart' as _i7;
+import '../enums/ability.dart' as _i8;
+import '../data/general/choice_option_data.dart' as _i9;
 
 abstract class ClassSpellGrantData
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -35,6 +37,8 @@ abstract class ClassSpellGrantData
     this.sourceSubclassFeatureId,
     this.sourceSubclassFeature,
     this.grantedAtLevel,
+    this.activation,
+    this.castingAbility,
     this.alwaysPrepared,
     this.choiceOptionId,
     this.choiceOption,
@@ -59,9 +63,11 @@ abstract class ClassSpellGrantData
     int? sourceSubclassFeatureId,
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
+    _i7.SpellActivationData? activation,
+    _i8.Ability? castingAbility,
     bool? alwaysPrepared,
     int? choiceOptionId,
-    _i7.ChoiceOptionData? choiceOption,
+    _i9.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -101,11 +107,19 @@ abstract class ClassSpellGrantData
               (jsonSerialization['sourceSubclassFeature']
                   as Map<String, dynamic>)),
       grantedAtLevel: jsonSerialization['grantedAtLevel'] as int?,
+      activation: jsonSerialization['activation'] == null
+          ? null
+          : _i7.SpellActivationData.fromJson(
+              (jsonSerialization['activation'] as Map<String, dynamic>)),
+      castingAbility: jsonSerialization['castingAbility'] == null
+          ? null
+          : _i8.Ability.fromJson(
+              (jsonSerialization['castingAbility'] as String)),
       alwaysPrepared: jsonSerialization['alwaysPrepared'] as bool?,
       choiceOptionId: jsonSerialization['choiceOptionId'] as int?,
       choiceOption: jsonSerialization['choiceOption'] == null
           ? null
-          : _i7.ChoiceOptionData.fromJson(
+          : _i9.ChoiceOptionData.fromJson(
               (jsonSerialization['choiceOption'] as Map<String, dynamic>)),
       notes: jsonSerialization['notes'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -150,11 +164,15 @@ abstract class ClassSpellGrantData
 
   int? grantedAtLevel;
 
+  _i7.SpellActivationData? activation;
+
+  _i8.Ability? castingAbility;
+
   bool? alwaysPrepared;
 
   int? choiceOptionId;
 
-  _i7.ChoiceOptionData? choiceOption;
+  _i9.ChoiceOptionData? choiceOption;
 
   String? notes;
 
@@ -186,9 +204,11 @@ abstract class ClassSpellGrantData
     int? sourceSubclassFeatureId,
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
+    _i7.SpellActivationData? activation,
+    _i8.Ability? castingAbility,
     bool? alwaysPrepared,
     int? choiceOptionId,
-    _i7.ChoiceOptionData? choiceOption,
+    _i9.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -213,6 +233,8 @@ abstract class ClassSpellGrantData
       if (sourceSubclassFeature != null)
         'sourceSubclassFeature': sourceSubclassFeature?.toJson(),
       if (grantedAtLevel != null) 'grantedAtLevel': grantedAtLevel,
+      if (activation != null) 'activation': activation?.toJson(),
+      if (castingAbility != null) 'castingAbility': castingAbility?.toJson(),
       if (alwaysPrepared != null) 'alwaysPrepared': alwaysPrepared,
       if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
       if (choiceOption != null) 'choiceOption': choiceOption?.toJson(),
@@ -244,6 +266,8 @@ abstract class ClassSpellGrantData
       if (sourceSubclassFeature != null)
         'sourceSubclassFeature': sourceSubclassFeature?.toJsonForProtocol(),
       if (grantedAtLevel != null) 'grantedAtLevel': grantedAtLevel,
+      if (activation != null) 'activation': activation?.toJsonForProtocol(),
+      if (castingAbility != null) 'castingAbility': castingAbility?.toJson(),
       if (alwaysPrepared != null) 'alwaysPrepared': alwaysPrepared,
       if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
       if (choiceOption != null)
@@ -262,7 +286,7 @@ abstract class ClassSpellGrantData
     _i4.SubclassDataInclude? sourceSubclass,
     _i5.ClassFeatureDataInclude? sourceFeature,
     _i6.SubclassFeatureDataInclude? sourceSubclassFeature,
-    _i7.ChoiceOptionDataInclude? choiceOption,
+    _i9.ChoiceOptionDataInclude? choiceOption,
   }) {
     return ClassSpellGrantDataInclude._(
       spell: spell,
@@ -317,9 +341,11 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
     int? sourceSubclassFeatureId,
     _i6.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
+    _i7.SpellActivationData? activation,
+    _i8.Ability? castingAbility,
     bool? alwaysPrepared,
     int? choiceOptionId,
-    _i7.ChoiceOptionData? choiceOption,
+    _i9.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -339,6 +365,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
           sourceSubclassFeatureId: sourceSubclassFeatureId,
           sourceSubclassFeature: sourceSubclassFeature,
           grantedAtLevel: grantedAtLevel,
+          activation: activation,
+          castingAbility: castingAbility,
           alwaysPrepared: alwaysPrepared,
           choiceOptionId: choiceOptionId,
           choiceOption: choiceOption,
@@ -367,6 +395,8 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
     Object? sourceSubclassFeatureId = _Undefined,
     Object? sourceSubclassFeature = _Undefined,
     Object? grantedAtLevel = _Undefined,
+    Object? activation = _Undefined,
+    Object? castingAbility = _Undefined,
     Object? alwaysPrepared = _Undefined,
     Object? choiceOptionId = _Undefined,
     Object? choiceOption = _Undefined,
@@ -405,11 +435,16 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
           : this.sourceSubclassFeature?.copyWith(),
       grantedAtLevel:
           grantedAtLevel is int? ? grantedAtLevel : this.grantedAtLevel,
+      activation: activation is _i7.SpellActivationData?
+          ? activation
+          : this.activation?.copyWith(),
+      castingAbility:
+          castingAbility is _i8.Ability? ? castingAbility : this.castingAbility,
       alwaysPrepared:
           alwaysPrepared is bool? ? alwaysPrepared : this.alwaysPrepared,
       choiceOptionId:
           choiceOptionId is int? ? choiceOptionId : this.choiceOptionId,
-      choiceOption: choiceOption is _i7.ChoiceOptionData?
+      choiceOption: choiceOption is _i9.ChoiceOptionData?
           ? choiceOption
           : this.choiceOption?.copyWith(),
       notes: notes is String? ? notes : this.notes,
@@ -447,6 +482,15 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
     grantedAtLevel = _i1.ColumnInt(
       'grantedAtLevel',
       this,
+    );
+    activation = _i1.ColumnSerializable(
+      'activation',
+      this,
+    );
+    castingAbility = _i1.ColumnEnum(
+      'castingAbility',
+      this,
+      _i1.EnumSerialization.byName,
     );
     alwaysPrepared = _i1.ColumnBool(
       'alwaysPrepared',
@@ -500,11 +544,15 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt grantedAtLevel;
 
+  late final _i1.ColumnSerializable activation;
+
+  late final _i1.ColumnEnum<_i8.Ability> castingAbility;
+
   late final _i1.ColumnBool alwaysPrepared;
 
   late final _i1.ColumnInt choiceOptionId;
 
-  _i7.ChoiceOptionDataTable? _choiceOption;
+  _i9.ChoiceOptionDataTable? _choiceOption;
 
   late final _i1.ColumnString notes;
 
@@ -581,15 +629,15 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
     return _sourceSubclassFeature!;
   }
 
-  _i7.ChoiceOptionDataTable get choiceOption {
+  _i9.ChoiceOptionDataTable get choiceOption {
     if (_choiceOption != null) return _choiceOption!;
     _choiceOption = _i1.createRelationTable(
       relationFieldName: 'choiceOption',
       field: ClassSpellGrantData.t.choiceOptionId,
-      foreignField: _i7.ChoiceOptionData.t.id,
+      foreignField: _i9.ChoiceOptionData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i7.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
+          _i9.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
     );
     return _choiceOption!;
   }
@@ -603,6 +651,8 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
         sourceFeatureId,
         sourceSubclassFeatureId,
         grantedAtLevel,
+        activation,
+        castingAbility,
         alwaysPrepared,
         choiceOptionId,
         notes,
@@ -643,7 +693,7 @@ class ClassSpellGrantDataInclude extends _i1.IncludeObject {
     _i4.SubclassDataInclude? sourceSubclass,
     _i5.ClassFeatureDataInclude? sourceFeature,
     _i6.SubclassFeatureDataInclude? sourceSubclassFeature,
-    _i7.ChoiceOptionDataInclude? choiceOption,
+    _i9.ChoiceOptionDataInclude? choiceOption,
   }) {
     _spell = spell;
     _sourceClass = sourceClass;
@@ -663,7 +713,7 @@ class ClassSpellGrantDataInclude extends _i1.IncludeObject {
 
   _i6.SubclassFeatureDataInclude? _sourceSubclassFeature;
 
-  _i7.ChoiceOptionDataInclude? _choiceOption;
+  _i9.ChoiceOptionDataInclude? _choiceOption;
 
   @override
   Map<String, _i1.Include?> get includes => {
@@ -1049,7 +1099,7 @@ class ClassSpellGrantDataAttachRowRepository {
   Future<void> choiceOption(
     _i1.Session session,
     ClassSpellGrantData classSpellGrantData,
-    _i7.ChoiceOptionData choiceOption, {
+    _i9.ChoiceOptionData choiceOption, {
     _i1.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {

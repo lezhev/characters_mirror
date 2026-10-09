@@ -10,11 +10,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/character/level_up_spell_choice.dart' as _i2;
+import '../../../data/general/character/level_up_choice_replacement_data.dart'
+    as _i2;
+import '../../../data/general/character/level_up_spell_choice.dart' as _i3;
 
 abstract class LevelUpRequest
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
   LevelUpRequest._({
+    this.choiceReplacements,
     required this.characterId,
     required this.expectedVersion,
     required this.classEntryId,
@@ -25,17 +28,22 @@ abstract class LevelUpRequest
   });
 
   factory LevelUpRequest({
+    List<_i2.LevelUpChoiceReplacementData>? choiceReplacements,
     required int characterId,
     required int expectedVersion,
     required String classEntryId,
     int? hitDieRoll,
     int? subclassId,
     Map<String, List<String>>? choices,
-    List<_i2.LevelUpSpellChoice>? spells,
+    List<_i3.LevelUpSpellChoice>? spells,
   }) = _LevelUpRequestImpl;
 
   factory LevelUpRequest.fromJson(Map<String, dynamic> jsonSerialization) {
     return LevelUpRequest(
+      choiceReplacements: (jsonSerialization['choiceReplacements'] as List?)
+          ?.map((e) => _i2.LevelUpChoiceReplacementData.fromJson(
+              (e as Map<String, dynamic>)))
+          .toList(),
       characterId: jsonSerialization['characterId'] as int,
       expectedVersion: jsonSerialization['expectedVersion'] as int,
       classEntryId: jsonSerialization['classEntryId'] as String,
@@ -47,10 +55,12 @@ abstract class LevelUpRequest
           )),
       spells: (jsonSerialization['spells'] as List?)
           ?.map((e) =>
-              _i2.LevelUpSpellChoice.fromJson((e as Map<String, dynamic>)))
+              _i3.LevelUpSpellChoice.fromJson((e as Map<String, dynamic>)))
           .toList(),
     );
   }
+
+  List<_i2.LevelUpChoiceReplacementData>? choiceReplacements;
 
   int characterId;
 
@@ -64,23 +74,27 @@ abstract class LevelUpRequest
 
   Map<String, List<String>>? choices;
 
-  List<_i2.LevelUpSpellChoice>? spells;
+  List<_i3.LevelUpSpellChoice>? spells;
 
   /// Returns a shallow copy of this [LevelUpRequest]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   LevelUpRequest copyWith({
+    List<_i2.LevelUpChoiceReplacementData>? choiceReplacements,
     int? characterId,
     int? expectedVersion,
     String? classEntryId,
     int? hitDieRoll,
     int? subclassId,
     Map<String, List<String>>? choices,
-    List<_i2.LevelUpSpellChoice>? spells,
+    List<_i3.LevelUpSpellChoice>? spells,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      if (choiceReplacements != null)
+        'choiceReplacements':
+            choiceReplacements?.toJson(valueToJson: (v) => v.toJson()),
       'characterId': characterId,
       'expectedVersion': expectedVersion,
       'classEntryId': classEntryId,
@@ -96,6 +110,9 @@ abstract class LevelUpRequest
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      if (choiceReplacements != null)
+        'choiceReplacements': choiceReplacements?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
       'characterId': characterId,
       'expectedVersion': expectedVersion,
       'classEntryId': classEntryId,
@@ -118,14 +135,16 @@ class _Undefined {}
 
 class _LevelUpRequestImpl extends LevelUpRequest {
   _LevelUpRequestImpl({
+    List<_i2.LevelUpChoiceReplacementData>? choiceReplacements,
     required int characterId,
     required int expectedVersion,
     required String classEntryId,
     int? hitDieRoll,
     int? subclassId,
     Map<String, List<String>>? choices,
-    List<_i2.LevelUpSpellChoice>? spells,
+    List<_i3.LevelUpSpellChoice>? spells,
   }) : super._(
+          choiceReplacements: choiceReplacements,
           characterId: characterId,
           expectedVersion: expectedVersion,
           classEntryId: classEntryId,
@@ -140,6 +159,7 @@ class _LevelUpRequestImpl extends LevelUpRequest {
   @_i1.useResult
   @override
   LevelUpRequest copyWith({
+    Object? choiceReplacements = _Undefined,
     int? characterId,
     int? expectedVersion,
     String? classEntryId,
@@ -149,6 +169,10 @@ class _LevelUpRequestImpl extends LevelUpRequest {
     Object? spells = _Undefined,
   }) {
     return LevelUpRequest(
+      choiceReplacements:
+          choiceReplacements is List<_i2.LevelUpChoiceReplacementData>?
+              ? choiceReplacements
+              : this.choiceReplacements?.map((e0) => e0.copyWith()).toList(),
       characterId: characterId ?? this.characterId,
       expectedVersion: expectedVersion ?? this.expectedVersion,
       classEntryId: classEntryId ?? this.classEntryId,
@@ -164,7 +188,7 @@ class _LevelUpRequestImpl extends LevelUpRequest {
                     key0,
                     value0.map((e1) => e1).toList(),
                   )),
-      spells: spells is List<_i2.LevelUpSpellChoice>?
+      spells: spells is List<_i3.LevelUpSpellChoice>?
           ? spells
           : this.spells?.map((e0) => e0.copyWith()).toList(),
     );

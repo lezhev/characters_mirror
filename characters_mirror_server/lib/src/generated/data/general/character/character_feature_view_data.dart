@@ -16,6 +16,7 @@ import '../../../data/general/character/character_resource_view_data.dart'
     as _i4;
 import '../../../views/feature_display_property_view.dart' as _i5;
 import '../../../views/selected_feature_choice_view.dart' as _i6;
+import '../../../data/general/feature_resource_effect_data.dart' as _i7;
 
 abstract class CharacterFeatureViewData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -36,6 +37,8 @@ abstract class CharacterFeatureViewData
     this.displayProperties,
     this.selectedChoices,
     this.selectedChoiceDetails,
+    this.sourceClassLevel,
+    this.spellSlotRecoveryEffects,
   });
 
   factory CharacterFeatureViewData({
@@ -55,6 +58,8 @@ abstract class CharacterFeatureViewData
     List<_i5.FeatureDisplayPropertyView>? displayProperties,
     List<String>? selectedChoices,
     List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    int? sourceClassLevel,
+    List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   }) = _CharacterFeatureViewDataImpl;
 
   factory CharacterFeatureViewData.fromJson(
@@ -93,6 +98,12 @@ abstract class CharacterFeatureViewData
               ?.map((e) => _i6.SelectedFeatureChoiceView.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
+      sourceClassLevel: jsonSerialization['sourceClassLevel'] as int?,
+      spellSlotRecoveryEffects:
+          (jsonSerialization['spellSlotRecoveryEffects'] as List?)
+              ?.map((e) => _i7.FeatureResourceEffectData.fromJson(
+                  (e as Map<String, dynamic>)))
+              .toList(),
     );
   }
 
@@ -128,6 +139,10 @@ abstract class CharacterFeatureViewData
 
   List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails;
 
+  int? sourceClassLevel;
+
+  List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects;
+
   /// Returns a shallow copy of this [CharacterFeatureViewData]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -148,6 +163,8 @@ abstract class CharacterFeatureViewData
     List<_i5.FeatureDisplayPropertyView>? displayProperties,
     List<String>? selectedChoices,
     List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    int? sourceClassLevel,
+    List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -174,6 +191,10 @@ abstract class CharacterFeatureViewData
       if (selectedChoiceDetails != null)
         'selectedChoiceDetails':
             selectedChoiceDetails?.toJson(valueToJson: (v) => v.toJson()),
+      if (sourceClassLevel != null) 'sourceClassLevel': sourceClassLevel,
+      if (spellSlotRecoveryEffects != null)
+        'spellSlotRecoveryEffects':
+            spellSlotRecoveryEffects?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -202,6 +223,10 @@ abstract class CharacterFeatureViewData
       if (selectedChoices != null) 'selectedChoices': selectedChoices?.toJson(),
       if (selectedChoiceDetails != null)
         'selectedChoiceDetails': selectedChoiceDetails?.toJson(
+            valueToJson: (v) => v.toJsonForProtocol()),
+      if (sourceClassLevel != null) 'sourceClassLevel': sourceClassLevel,
+      if (spellSlotRecoveryEffects != null)
+        'spellSlotRecoveryEffects': spellSlotRecoveryEffects?.toJson(
             valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
@@ -232,6 +257,8 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     List<_i5.FeatureDisplayPropertyView>? displayProperties,
     List<String>? selectedChoices,
     List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    int? sourceClassLevel,
+    List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   }) : super._(
           sourceType: sourceType,
           sourceId: sourceId,
@@ -249,6 +276,8 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           displayProperties: displayProperties,
           selectedChoices: selectedChoices,
           selectedChoiceDetails: selectedChoiceDetails,
+          sourceClassLevel: sourceClassLevel,
+          spellSlotRecoveryEffects: spellSlotRecoveryEffects,
         );
 
   /// Returns a shallow copy of this [CharacterFeatureViewData]
@@ -272,6 +301,8 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     Object? displayProperties = _Undefined,
     Object? selectedChoices = _Undefined,
     Object? selectedChoiceDetails = _Undefined,
+    Object? sourceClassLevel = _Undefined,
+    Object? spellSlotRecoveryEffects = _Undefined,
   }) {
     return CharacterFeatureViewData(
       sourceType: sourceType ?? this.sourceType,
@@ -308,6 +339,12 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           selectedChoiceDetails is List<_i6.SelectedFeatureChoiceView>?
               ? selectedChoiceDetails
               : this.selectedChoiceDetails?.map((e0) => e0.copyWith()).toList(),
+      sourceClassLevel:
+          sourceClassLevel is int? ? sourceClassLevel : this.sourceClassLevel,
+      spellSlotRecoveryEffects: spellSlotRecoveryEffects
+              is List<_i7.FeatureResourceEffectData>?
+          ? spellSlotRecoveryEffects
+          : this.spellSlotRecoveryEffects?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

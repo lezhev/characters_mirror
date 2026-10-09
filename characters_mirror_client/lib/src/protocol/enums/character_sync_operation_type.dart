@@ -30,7 +30,8 @@ enum CharacterSyncOperationType implements _i1.SerializableModel {
   adjustHitDice,
   adjustResource,
   adjustExperience,
-  applyRest;
+  applyRest,
+  recoverSpellSlots;
 
   static CharacterSyncOperationType fromJson(int index) {
     switch (index) {
@@ -72,6 +73,8 @@ enum CharacterSyncOperationType implements _i1.SerializableModel {
         return CharacterSyncOperationType.adjustExperience;
       case 18:
         return CharacterSyncOperationType.applyRest;
+      case 19:
+        return CharacterSyncOperationType.recoverSpellSlots;
       default:
         throw ArgumentError(
             'Value "$index" cannot be converted to "CharacterSyncOperationType"');

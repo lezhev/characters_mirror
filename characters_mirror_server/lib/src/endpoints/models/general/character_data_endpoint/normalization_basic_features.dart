@@ -226,6 +226,20 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
         tags: resolvedTags,
         isCustomized: isCustomized,
         resources: featureResources,
+        sourceClassLevel: sourceClassLevel,
+        spellSlotRecoveryEffects: [
+          for (final effect in resourceEffects ?? <FeatureResourceEffectData>[])
+            if (effect.type == FeatureResourceEffectType.restore &&
+                effect.recoveryPolicy != null &&
+                (effect.choiceOptionId == null ||
+                    resolvedSources.selectedOptions
+                        .any((option) => option.id == effect.choiceOptionId)))
+              effect.copyWith(
+                  classFeature: null,
+                  subclassFeature: null,
+                  raceFeature: null,
+                  choiceOption: null),
+        ],
         selectedChoices: [
           for (final choice in selectedChoices)
             choice.groupTitle == null
@@ -240,8 +254,19 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
                 : resolvedDescription,
         displayProperties: resolveDisplayPropertyViews(
           definitions: displayPropertyDefinitions,
+          modifiers: resolvedSources.featureModifiers.where((modifier) =>
+              sourceType == CharacterFeatureSourceType.classFeature
+                  ? modifier.classFeatureId == sourceId
+                  : sourceType == CharacterFeatureSourceType.subclassFeature &&
+                      modifier.subclassFeatureId == sourceId),
+          selectedChoiceOptionKeys: {
+            for (final choice in character.choices ?? <CharacterChoiceData>[])
+              if (choice.groupKey != null && choice.optionKey != null)
+                '${choice.groupKey}::${choice.optionKey}',
+          },
           sourceLevel: sourceClassLevel,
           characterLevel: totalLevel,
+          proficiencyBonus: proficiencyBonus,
           subclassLevel: sourceClassLevel,
           abilityModifiers: {
             for (final entry in abilityModifiers.entries)

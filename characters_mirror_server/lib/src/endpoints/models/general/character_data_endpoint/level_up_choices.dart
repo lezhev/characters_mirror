@@ -27,7 +27,11 @@ CharacterData _addLevelUpChoices(
 }
 
 List<String> _missingLevelUpChoices(
-    List<ChoiceGroupView> groups, LevelUpRequest request) {
+    List<ChoiceGroupView> groups,
+    LevelUpRequest request,
+    CharacterData character,
+    List<ClassFeatureData> currentClassFeatures,
+    List<SubclassFeatureData> currentSubclassFeatures) {
   final missing = <String>[];
   final selectedExclusive = {
     for (final g in groups)
@@ -38,8 +42,28 @@ List<String> _missingLevelUpChoices(
   final reportedExclusive = <String>{};
   for (final view in groups) {
     final group = view.group!;
+    final groupRequirements =
+        group.requirements ?? const <ChoiceRequirementData>[];
+    if (groupRequirements.isNotEmpty &&
+        !choiceRequirementsEligibilityFromProtocol(
+          groupRequirements.map((requirement) => requirement.toJson()),
+          _levelUpChoiceEligibilityContext(
+            character,
+            currentClassFeatures,
+            currentSubclassFeatures,
+          ),
+        ).isEligible) {
+      continue;
+    }
     final exclusive = group.exclusiveKey;
     final selected = request.choices?[group.referenceKey] ?? const <String>[];
+    if (group.autoSelectSingleEligible == true &&
+        (character.derived?.activeFeatures ?? <CharacterFeatureViewData>[]).any(
+            (feature) =>
+                (feature.selectedChoiceDetails ?? <SelectedFeatureChoiceView>[])
+                    .any((choice) => choice.groupKey == group.referenceKey))) {
+      continue;
+    }
     if (exclusive != null &&
         selectedExclusive.contains(exclusive) &&
         selected.isEmpty) {
@@ -72,6 +96,57 @@ List<String> _missingLevelUpChoices(
     }
   }
   return missing;
+}
+
+ChoiceEligibilityContext _levelUpChoiceEligibilityContext(
+  CharacterData character,
+  List<ClassFeatureData> currentClassFeatures,
+  List<SubclassFeatureData> currentSubclassFeatures,
+) {
+  final entries = character.classEntries ?? const <CharacterClassEntryData>[];
+  final spellFacts = collectChoiceSpellFacts([
+    for (final selection
+        in character.spellSelections ?? const <CharacterSpellSelectionData>[])
+      if (selection.spellKey != null && selection.kind != null)
+        ChoiceSpellSelectionFact(
+          key: selection.spellKey!,
+          kind: selection.kind!.name,
+        ),
+  ]);
+  return ChoiceEligibilityContext(
+    totalCharacterLevel:
+        entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)),
+    classLevelsByReferenceKey: {
+      for (final entry in entries)
+        if (entry.classData?.referenceKey != null)
+          entry.classData!.referenceKey!: entry.level ?? 0,
+    },
+    abilityScores: {
+      for (final entry in character.derived?.abilityScores?.entries ??
+          const <MapEntry<Ability, int>>[])
+        entry.key.name: entry.value,
+    },
+    knownSpellKeys: spellFacts.knownSpellKeys,
+    knownCantripKeys: {
+      ...spellFacts.knownCantripKeys,
+      for (final spell in character.derived?.resolvedSpells ??
+          const <ResolvedCharacterSpellData>[])
+        if (spell.spell.level == 0) spell.spellKey,
+    },
+    featureKeys: {
+      ...currentClassFeatures
+          .map((feature) => feature.referenceKey)
+          .whereType<String>(),
+      ...currentSubclassFeatures
+          .map((feature) => feature.referenceKey)
+          .whereType<String>(),
+    },
+    selectedChoiceOptionKeys: {
+      for (final choice in character.choices ?? const <CharacterChoiceData>[])
+        if (choice.groupKey != null && choice.optionKey != null)
+          encodeSelectedChoiceOptionKey(choice.groupKey!, choice.optionKey!),
+    },
+  );
 }
 
 void _validateLevelUpAsi(CharacterData before, CharacterDerivedData after,

@@ -9,6 +9,8 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
   List<ChoiceOptionData> selectedOptions,
 ) async {
   final result = <CharacterFeatureViewData>[];
+  final modifiers = await _offlineCurrentFeatureModifiers(
+      cache, character.classEntries ?? <CharacterClassEntryData>[]);
   final activeEffects = <({
     int sourceClassLevel,
     FeatureResourceEffectData effect,
@@ -75,6 +77,20 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
         description: resolvedDescription,
         tags: resolvedTags,
         isCustomized: isCustomized,
+        sourceClassLevel: sourceClassLevel,
+        spellSlotRecoveryEffects: [
+          for (final effect in resourceEffects ?? <FeatureResourceEffectData>[])
+            if (effect.type == FeatureResourceEffectType.restore &&
+                effect.recoveryPolicy != null &&
+                (effect.choiceOptionId == null ||
+                    selectedOptions
+                        .any((option) => option.id == effect.choiceOptionId)))
+              effect.copyWith(
+                  classFeature: null,
+                  subclassFeature: null,
+                  raceFeature: null,
+                  choiceOption: null),
+        ],
         resources: _resourceViews(
           defaultName: resolvedName,
           sourceType: sourceType,
@@ -91,7 +107,66 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
           abilityModifiers: abilityModifiers,
           resourceStatesByKey: resourceStatesByKey,
         ),
-        displayProperties: displayProperties,
+        displayProperties: [
+          ...displayProperties
+              .where((property) => !property.key.startsWith('modifier:'))
+              .map((property) {
+            if (property.formula == null) return property;
+            final resolved = feature_modifiers.resolveFeatureDisplayProperties(
+              definitions: [
+                feature_modifiers.FeatureDisplayPropertyDefinition(
+                  key: property.key,
+                  label: property.label,
+                  valueKind:
+                      feature_modifiers.FeatureDisplayPropertyValueKind.formula,
+                  formula: property.formula,
+                  sortOrder: property.sortOrder,
+                ),
+              ],
+              sourceLevel: sourceClassLevel,
+              characterLevel: totalLevel,
+              subclassLevel: sourceClassLevel,
+              proficiencyBonus: proficiencyBonus,
+              abilityModifiers: {
+                for (final item in abilityModifiers.entries)
+                  item.key.name: item.value,
+              },
+            );
+            return resolved.isEmpty
+                ? property
+                : property.copyWith(value: resolved.single.value);
+          }),
+          for (final property
+              in feature_modifiers.featureModifierDisplayPropertiesFromProtocol(
+            modifiers: modifiers
+                .where((modifier) =>
+                    sourceType == CharacterFeatureSourceType.classFeature
+                        ? modifier.classFeatureId == sourceId
+                        : sourceType ==
+                                CharacterFeatureSourceType.subclassFeature &&
+                            modifier.subclassFeatureId == sourceId)
+                .map((modifier) => modifier.toJson()),
+            sourceLevel: sourceClassLevel,
+            characterLevel: totalLevel,
+            proficiencyBonus: proficiencyBonus,
+            abilityModifiers: {
+              for (final item in abilityModifiers.entries)
+                item.key.name: item.value
+            },
+            selectedChoiceOptionKeys: {
+              for (final choice in character.choices ?? <CharacterChoiceData>[])
+                if (choice.groupKey != null && choice.optionKey != null)
+                  feature_modifiers.encodeSelectedChoiceOptionKey(
+                      choice.groupKey!, choice.optionKey!),
+            },
+          ))
+            FeatureDisplayPropertyView(
+                key: property.key,
+                label: property.label,
+                value: property.value,
+                sortOrder: property.sortOrder,
+                formula: property.formula),
+        ],
         selectedChoices: [
           for (final choice in selectedChoices)
             choice.groupTitle == null
@@ -159,6 +234,10 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
           view.classFeature!.id!:
               view.displayProperties ?? const <FeatureDisplayPropertyView>[],
     };
+    final currentClassFeatures = stepView?.currentLevelFeatures ??
+        await _currentClassFeatures(cache, [entry]);
+    final currentSubclassFeatures = stepView?.currentSubclassFeatures ??
+        await _currentSubclassFeatures(cache, [entry]);
     final subclassDisplayProperties = {
       for (final view in stepView?.currentSubclassFeatureViews ??
           const <ClassStepFeatureView>[])
@@ -183,18 +262,15 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
       choiceGroups,
       choiceOptions,
       classFeatureIds: {
-        for (final feature
-            in stepView?.currentLevelFeatures ?? const <ClassFeatureData>[])
+        for (final feature in currentClassFeatures)
           if (feature.id != null) feature.id!: feature.name ?? '',
       },
       subclassFeatureIds: {
-        for (final feature in stepView?.currentSubclassFeatures ??
-            const <SubclassFeatureData>[])
+        for (final feature in currentSubclassFeatures)
           if (feature.id != null) feature.id!: feature.name ?? '',
       },
     );
-    for (final feature
-        in stepView?.currentLevelFeatures ?? const <ClassFeatureData>[]) {
+    for (final feature in currentClassFeatures) {
       addFeature(
         sourceType: CharacterFeatureSourceType.classFeature,
         sourceId: feature.id,
@@ -216,8 +292,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
             const <SelectedFeatureChoiceView>[],
       );
     }
-    for (final feature
-        in stepView?.currentSubclassFeatures ?? const <SubclassFeatureData>[]) {
+    for (final feature in currentSubclassFeatures) {
       addFeature(
         sourceType: CharacterFeatureSourceType.subclassFeature,
         sourceId: feature.id,
@@ -280,8 +355,20 @@ Map<(CharacterFeatureSourceType, int), List<SelectedFeatureChoiceView>>
       List<(int, int, SelectedFeatureChoiceView)>>{};
   for (final choice in character.choices ?? const <CharacterChoiceData>[]) {
     final group = groupsByKey[choice.groupKey];
-    final option =
+    var option =
         group == null ? null : optionsByGroupId[group.id]?[choice.optionKey];
+    if (option == null && choice.replacementHistory?.isNotEmpty == true) {
+      final entry = character.classEntries
+          ?.where((e) => e.id == choice.classEntry?.id)
+          .firstOrNull;
+      final resolved = feature_modifiers.resolveProgressionChoiceOption(
+          choice.toJson(),
+          groups
+              .where((g) => (g.level ?? 1) <= (entry?.level ?? 0))
+              .map((g) => g.toJson()),
+          options.map((o) => o.toJson()));
+      if (resolved != null) option = ChoiceOptionData.fromJson(resolved);
+    }
     if (group == null || option == null) continue;
     final featureId = group.sourceFeatureId ?? group.sourceSubclassFeatureId;
     final sourceType = group.sourceFeatureId != null

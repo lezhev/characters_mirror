@@ -4,6 +4,7 @@ fields:
   feature: RaceFeatureData?, relation(name=race_feature_spell_grants)
   spell: SpellData?, relation
   grantedAtLevel: int?
+  activation: SpellActivationData?
   castingAbility: Ability?
   freeCastsPerRest: RestType?
   freeCastsFormula: String?

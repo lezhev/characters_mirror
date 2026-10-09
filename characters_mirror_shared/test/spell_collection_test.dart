@@ -141,6 +141,41 @@ void main() {
         ]),
         hasLength(1));
   });
+  test('choice-option class spell grant keeps its casting source and policy',
+      () {
+    final result = resolve(
+      {'classEntries': entries},
+      grants: [
+        {
+          'id': 27,
+          'spell': spell,
+          'sourceClassId': 2,
+          'grantedAtLevel': 1,
+          'choiceOptionId': 10,
+          'castingAbility': 'wisdom',
+          'alwaysPrepared': true,
+          'activation': {
+            'canUseStandardSlots': false,
+            'canUsePactSlots': false,
+            'slotless': true,
+            'atWill': false,
+            'freeCasts': 1,
+            'resetOn': 'longRest',
+          },
+        },
+      ],
+      options: [
+        {'id': 10}
+      ],
+    );
+    final source = result.single.sources.single;
+    expect(source.sourceKey, 'classGrant:27');
+    expect(source.castingAbility, 'wisdom');
+    expect(source.canUseSlots, isFalse);
+    expect(source.alwaysPrepared, isTrue);
+    expect(source.activation?['canUseStandardSlots'], isFalse);
+    expect(source.activation?['canUsePactSlots'], isFalse);
+  });
   test(
       'a selection attributed to a removed class cannot become an anonymous source',
       () {
