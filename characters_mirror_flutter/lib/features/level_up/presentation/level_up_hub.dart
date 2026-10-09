@@ -13,6 +13,7 @@ import 'level_up_hp.dart';
 import 'level_up_choice_section.dart';
 import 'level_up_spells.dart';
 import 'level_up_class_header.dart';
+import 'level_up_choice_replacements.dart';
 
 class LevelUpHub extends StatelessWidget {
   const LevelUpHub(
@@ -23,6 +24,8 @@ class LevelUpHub extends StatelessWidget {
       required this.onChoice,
       required this.onSubclass,
       required this.onSpells,
+      this.onChoiceReplacement,
+      this.onClearChoiceReplacement,
       required this.onApply});
   final LevelUpFlowState state;
   final void Function(int?) onRoll;
@@ -31,6 +34,8 @@ class LevelUpHub extends StatelessWidget {
   final void Function(int) onSubclass;
   final void Function(CharacterSpellSelectionKind, List<int>, String?) onSpells;
   final VoidCallback onApply;
+  final ValueChanged<LevelUpChoiceReplacementData>? onChoiceReplacement;
+  final ValueChanged<String>? onClearChoiceReplacement;
   @override
   Widget build(BuildContext context) {
     final preview = state.preview!;
@@ -147,6 +152,13 @@ class LevelUpHub extends StatelessWidget {
                                 preview: preview,
                                 request: state.request,
                                 onChanged: onSpells),
+                            if (onChoiceReplacement != null &&
+                                onClearChoiceReplacement != null)
+                              LevelUpChoiceReplacements(
+                                  preview: preview,
+                                  request: state.request,
+                                  onChanged: onChoiceReplacement!,
+                                  onClear: onClearChoiceReplacement!),
                             if (state.error != null)
                               Padding(
                                   padding: const EdgeInsets.only(top: 12),

@@ -168,46 +168,90 @@ List<int> newSpellLevels(LevelUpPreview preview) {
 ChoiceGroupView eligibleLevelUpGroup(
     ChoiceGroupView view, LevelUpPreview preview) {
   final c = preview.character;
+  if (view.group?.progressionKey != null &&
+      view.group?.allowDuplicates != true) {
+    final otherGroups = {
+      for (final group in preview.classStep.choiceGroups ?? <ChoiceGroupView>[])
+        if (group.group?.progressionKey == view.group?.progressionKey &&
+            group.group?.referenceKey != view.group?.referenceKey)
+          group.group!.referenceKey
+    };
+    final owned = {
+      for (final choice in c.choices ?? <CharacterChoiceData>[])
+        if (otherGroups.contains(choice.groupKey)) choice.optionKey
+    };
+    view = view.copyWith(
+        options:
+            view.options?.where((o) => !owned.contains(o.optionKey)).toList());
+  }
   final spellFacts = collectChoiceSpellFacts([
     for (final s in c.spellSelections ?? const <CharacterSpellSelectionData>[])
       if (s.spellKey != null && s.kind != null)
         ChoiceSpellSelectionFact(key: s.spellKey!, kind: s.kind!.name)
   ]);
-  return evaluateChoiceGroupEligibility(
-      view,
-      ChoiceEligibilityContext(
-        totalCharacterLevel: c.derived?.totalLevel ?? 1,
-        classLevelsByReferenceKey: {
-          for (final e in c.classEntries ?? const <CharacterClassEntryData>[])
-            if (e.classData?.referenceKey != null)
-              e.classData!.referenceKey!: e.level ?? 0
-        },
-        abilityScores: {
-          for (final e in c.derived?.abilityScores?.entries ??
-              const <MapEntry<Ability, int>>[])
-            e.key.name: e.value
-        },
-        knownSpellKeys: spellFacts.knownSpellKeys,
-        knownCantripKeys: spellFacts.knownCantripKeys,
-        featureKeys: {
+  final context = ChoiceEligibilityContext(
+    totalCharacterLevel: c.derived?.totalLevel ?? 1,
+    classLevelsByReferenceKey: {
+      for (final e in c.classEntries ?? const <CharacterClassEntryData>[])
+        if (e.classData?.referenceKey != null)
+          e.classData!.referenceKey!: e.level ?? 0
+    },
+    abilityScores: {
+      for (final e in c.derived?.abilityScores?.entries ??
+          const <MapEntry<Ability, int>>[])
+        e.key.name: e.value
+    },
+    knownSpellKeys: spellFacts.knownSpellKeys,
+    knownCantripKeys: {
+      ...spellFacts.knownCantripKeys,
+      ...knownChoiceCantripKeys(
+        character: c.toJson(),
+        otherGrantedCantripKeys: (preview.before.derived?.resolvedSpells ??
+                <ResolvedCharacterSpellData>[])
+            .where((s) => s.spell.level == 0)
+            .map((s) => s.spellKey),
+        otherFeatures: [
           ...?preview.classStep.currentLevelFeatures
-              ?.map((f) => f.referenceKey)
-              .whereType<String>(),
+              ?.where((f) => f.id != view.group?.sourceFeatureId)
+              .map((f) => f.toJson()),
           ...?preview.classStep.currentSubclassFeatures
-              ?.map((f) => f.referenceKey)
-              .whereType<String>()
-        },
-        selectedChoiceOptionKeys: {
-          for (final s in c.choices ?? const <CharacterChoiceData>[])
-            '${s.groupKey}::${s.optionKey}'
-        },
-        skillKeys: {
-          for (final s in c.derived?.skillProficiencyLevels ??
-              const <CharacterSkillProficiencyState>[])
-            if (s.level != CharacterSkillProficiencyLevel.none) s.skill.name
-        },
-        toolKeys: c.derived?.toolProficiencyKeys?.toSet() ?? {},
-      ));
+              ?.where((f) => f.id != view.group?.sourceSubclassFeatureId)
+              .map((f) => f.toJson()),
+        ],
+        cantripReferenceKeys: choiceCantripCandidateKeys(
+            (view.options ?? <ChoiceOptionData>[]).map((o) => o.toJson())),
+      ),
+    },
+    featureKeys: {
+      ...?preview.classStep.currentLevelFeatures
+          ?.map((f) => f.referenceKey)
+          .whereType<String>(),
+      ...?preview.classStep.currentSubclassFeatures
+          ?.map((f) => f.referenceKey)
+          .whereType<String>()
+    },
+    selectedChoiceOptionKeys: {
+      for (final s in c.choices ?? const <CharacterChoiceData>[])
+        if (s.groupKey != null && s.optionKey != null)
+          encodeSelectedChoiceOptionKey(s.groupKey!, s.optionKey!)
+    },
+    skillKeys: {
+      for (final s in c.derived?.skillProficiencyLevels ??
+          const <CharacterSkillProficiencyState>[])
+        if (s.level != CharacterSkillProficiencyLevel.none) s.skill.name
+    },
+    toolKeys: c.derived?.toolProficiencyKeys?.toSet() ?? {},
+  );
+  final group = view.group;
+  if (group != null &&
+      !choiceRequirementsEligibilityFromProtocol(
+        (group.requirements ?? const <ChoiceRequirementData>[])
+            .map((requirement) => requirement.toJson()),
+        context,
+      ).isEligible) {
+    return view.copyWith(group: null);
+  }
+  return evaluateChoiceGroupEligibility(view, context);
 }
 
 String signedLevelUpValue(int value) => value >= 0 ? '+$value' : '$value';

@@ -113,14 +113,24 @@ String choiceOptionLabel(ChoiceOptionData option) {
 }
 
 String spellGrantLabel(RaceFeatureSpellGrantData grant) {
+  final activation = grant.activation;
+  final castAtSpellLevel =
+      activation == null ? grant.castAtSpellLevel : activation.castAtSpellLevel;
+  final freeCastsFormula = activation == null
+      ? grant.freeCastsFormula
+      : activation.freeCasts?.toString();
+  final freeCastsPerRest =
+      activation == null ? grant.freeCastsPerRest : activation.resetOn;
+  final canAlsoCastWithSpellSlots = activation == null
+      ? grant.canAlsoCastWithSpellSlots == true
+      : activation.canUseStandardSlots || activation.canUsePactSlots;
   final parts = <String>[
     grant.spell?.name ?? 'Заклинание',
-    if (grant.castAtSpellLevel != null) 'ур. ${grant.castAtSpellLevel}',
-    if (grant.freeCastsFormula?.trim().isNotEmpty == true)
-      'бесплатно: ${grant.freeCastsFormula}',
-    if (grant.freeCastsPerRest != null)
-      'за ${grant.freeCastsPerRest!.name}',
-    if (grant.canAlsoCastWithSpellSlots == true) 'можно через ячейки',
+    if (castAtSpellLevel != null) 'ур. $castAtSpellLevel',
+    if (freeCastsFormula?.trim().isNotEmpty == true)
+      'бесплатно: $freeCastsFormula',
+    if (freeCastsPerRest != null) 'за ${freeCastsPerRest.name}',
+    if (canAlsoCastWithSpellSlots) 'можно через ячейки',
   ];
   return parts.join(' • ');
 }

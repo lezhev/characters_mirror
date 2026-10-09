@@ -3,6 +3,7 @@ import '../application/creation_spell_selection_presentation.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/choice_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:gap/gap.dart';
 
 class ClassSpellSelectionSection extends StatelessWidget {
@@ -72,6 +73,14 @@ class _SpellSelectionGroupRow extends StatelessWidget {
                           minimum: p.minimum,
                           maximum: p.maximum,
                           selected: p.selectedKeys,
+                          selectionAllowed: (keys) =>
+                              spellSelectionsMatchFilter(
+                                  p.options
+                                      .where((s) => keys.contains(pickerKey(s)))
+                                      .map((s) => s.toJson()),
+                                  group.selectionFilter?.toJson(),
+                                  kind: group.kind!.name,
+                                  level: group.classLevel ?? 1),
                           options: [
                             for (final spell in p.options)
                               ChoicePickerOption(

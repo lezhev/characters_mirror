@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'package:characters_mirror_flutter/core/ui/widgets/page_size_app_bar.dart';
 import 'package:characters_mirror_flutter/features/level_up/application/level_up_controller.dart';
 import 'package:characters_mirror_flutter/features/level_up/presentation/level_up_hub.dart';
 import 'package:characters_mirror_flutter/features/level_up/presentation/level_up_picker.dart';
@@ -305,7 +306,7 @@ void main() {
             preview: preview.copyWith(
                 classStep:
                     preview.classStep.copyWith(currentLevelFeatures: []))));
-    final appBarBottom = tester.getBottomLeft(find.byType(AppBar)).dy;
+    final appBarBottom = tester.getBottomLeft(find.byType(PageSizeAppBar)).dy;
     final classTop = tester.getTopLeft(find.text('Тестовый класс')).dy;
     expect(classTop - appBarBottom, lessThan(24));
     final multiclass = find.text('Добавить уровень другого класса');

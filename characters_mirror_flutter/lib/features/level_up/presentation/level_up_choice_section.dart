@@ -45,15 +45,32 @@ class LevelUpChoiceSection extends StatelessWidget {
   final LevelUpChoicePresentation? presentation;
   final bool showTitle;
   @override
-  Widget build(BuildContext context) => ChoiceDecision(
-      presentation: ChoiceGroupPresentation.fromView(
-          eligibleLevelUpGroup(view, preview), selected,
-          mode: presentation == null
-              ? null
-              : presentation == LevelUpChoicePresentation.picker
-                  ? ChoicePresentationMode.picker
-                  : ChoicePresentationMode.inline),
-      context: ChoicePresentationContext.levelUp,
-      onChanged: onChanged,
-      showTitle: showTitle);
+  Widget build(BuildContext context) {
+    final eligibleView = eligibleLevelUpGroup(view, preview);
+    if (eligibleView.group == null) return const SizedBox.shrink();
+    return ChoiceDecision(
+        presentation: ChoiceGroupPresentation.fromView(
+            eligibleView,
+            selected.isNotEmpty
+                ? selected
+                : view.group?.autoSelectSingleEligible == true
+                    ? [
+                        for (final feature
+                            in preview.character.derived?.activeFeatures ??
+                                <CharacterFeatureViewData>[])
+                          for (final choice in feature.selectedChoiceDetails ??
+                              <SelectedFeatureChoiceView>[])
+                            if (choice.groupKey == view.group?.referenceKey)
+                              choice.optionKey,
+                      ]
+                    : selected,
+            mode: presentation == null
+                ? null
+                : presentation == LevelUpChoicePresentation.picker
+                    ? ChoicePresentationMode.picker
+                    : ChoicePresentationMode.inline),
+        context: ChoicePresentationContext.levelUp,
+        onChanged: onChanged,
+        showTitle: showTitle);
+  }
 }

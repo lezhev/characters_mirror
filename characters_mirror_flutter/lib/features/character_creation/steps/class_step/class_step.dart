@@ -1,4 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
+import 'application/conditional_class_choices.dart';
 import 'package:characters_mirror_flutter/features/character_creation/state/character_creation_state.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/class_features.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/class_step/class_tile_view.dart';
@@ -37,7 +38,11 @@ class ClassStep extends HookConsumerWidget {
               classData: data.selectedClass,
               subclass: data.selectedSubclass,
               choiceGroups: data.stepView?.choiceGroups ?? const [],
-              selectedOptions: data.selectedOptions,
+              selectedOptions: conditionalClassSelections(
+                  data, ref.read(characterCreationProvider).character, [
+                ...ref.read(characterCreationProvider).raceChoiceGroups,
+                ...ref.read(characterCreationProvider).backgroundChoiceGroups
+              ]),
               skillSelections: data.selectedSkillSelections,
               spellSelections: data.selectedSpellSelections,
               startingEquipmentSelections: data.startingEquipmentSelections,
@@ -94,7 +99,11 @@ void _syncAndGo({
         classData: data.selectedClass,
         subclass: data.selectedSubclass,
         choiceGroups: data.stepView?.choiceGroups ?? const [],
-        selectedOptions: data.selectedOptions,
+        selectedOptions: conditionalClassSelections(
+            data, ref.read(characterCreationProvider).character, [
+          ...ref.read(characterCreationProvider).raceChoiceGroups,
+          ...ref.read(characterCreationProvider).backgroundChoiceGroups
+        ]),
         skillSelections: data.selectedSkillSelections,
         spellSelections: data.selectedSpellSelections,
         startingEquipmentSelections: data.startingEquipmentSelections,

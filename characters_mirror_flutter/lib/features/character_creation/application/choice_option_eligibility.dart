@@ -51,8 +51,19 @@ ChoiceGroupView evaluateChoiceGroupEligibility(
       ],
     );
 
+bool isChoiceGroupAvailable(
+  ChoiceGroupData group,
+  ChoiceEligibilityContext context,
+) =>
+    choiceRequirementsEligibilityFromProtocol(
+      (group.requirements ?? const <ChoiceRequirementData>[])
+          .map((requirement) => requirement.toJson()),
+      context,
+    ).isEligible;
+
 ChoiceRequirement _fromProtocol(ChoiceRequirementData requirement) =>
     ChoiceRequirement(
+      negate: requirement.negate == true,
       kind: switch (requirement.type) {
         ChoiceRequirementType.minimumClassLevel =>
           ChoiceRequirementKind.minimumClassLevel,
