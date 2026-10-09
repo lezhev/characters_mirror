@@ -192,7 +192,8 @@ class _SpellCard extends StatelessWidget {
       spellKey(entry.spell) ?? '',
       entry.spell.level ?? 0,
       entry.sources,
-      SpellSlotPools.fromCharacter(character.toJson()));
+      SpellSlotPools.fromCharacter(character.toJson()),
+      character: character.toJson());
   SpellSourceContext? get defaultSource =>
       castChoices.firstOrNull?.source ??
       entry.sources.where((s) => s.prepared || s.alwaysPrepared).firstOrNull;

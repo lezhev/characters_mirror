@@ -12,6 +12,28 @@ class SpellHighlightView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final h = highlight;
+    if (h.kind == SpellHighlightKind.healing) {
+      return Semantics(
+        container: true,
+        label: '${h.label}: ${h.value}',
+        excludeSemantics: true,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/svg/heal.svg',
+              key: const ValueKey('spell-healing-icon'),
+              width: 18,
+              height: 18,
+              excludeFromSemantics: true,
+            ),
+            const SizedBox(width: 6),
+            if (h.label != 'Лечение') Text('${h.label}: ', style: style),
+            Flexible(child: Text(h.value, style: style)),
+          ],
+        ),
+      );
+    }
     if (h.kind != SpellHighlightKind.damage || h.damageParts.isEmpty) {
       return Text('${h.label}: ${h.value}', style: style);
     }

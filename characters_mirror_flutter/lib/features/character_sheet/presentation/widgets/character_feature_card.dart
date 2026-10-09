@@ -12,10 +12,17 @@ class CharacterFeatureCard extends StatefulWidget {
     required this.onSave,
     required this.onReset,
     required this.onSetResource,
+    this.actions,
+    this.onSpendResource,
+    this.canSpendResource,
     super.key,
   });
 
   final CharacterFeatureViewData feature;
+  final Widget? actions;
+  final Future<void> Function(CharacterResourceViewData resource)?
+      onSpendResource;
+  final bool Function(CharacterResourceViewData resource)? canSpendResource;
   final Future<void> Function({
     String? name,
     String? description,
@@ -172,6 +179,7 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                               properties: feature.displayProperties ??
                                   const <FeatureDisplayPropertyView>[],
                             ),
+                            if (widget.actions case final actions?) actions,
                             if (feature.selectedChoiceDetails
                                 case final choices?
                                 when choices.isNotEmpty) ...[
@@ -200,6 +208,10 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                                   index++) ...[
                                 _FeatureResourceSection(
                                   resource: resources[index],
+                                  recoveryEffect: _resourceRecoveryEffect(
+                                      feature, resources[index]),
+                                  onSpendResource: widget.onSpendResource,
+                                  canSpendResource: widget.canSpendResource,
                                   onChanged: (current) => widget.onSetResource(
                                     resources[index].key,
                                     current,
@@ -306,10 +318,17 @@ class _ResourceSummaryBadge extends StatelessWidget {
 class _FeatureResourceSection extends StatelessWidget {
   const _FeatureResourceSection({
     required this.resource,
+    required this.recoveryEffect,
+    required this.onSpendResource,
+    required this.canSpendResource,
     required this.onChanged,
   });
 
   final CharacterResourceViewData resource;
+  final FeatureResourceEffectData? recoveryEffect;
+  final Future<void> Function(CharacterResourceViewData resource)?
+      onSpendResource;
+  final bool Function(CharacterResourceViewData resource)? canSpendResource;
   final Future<void> Function(int current) onChanged;
 
   @override
@@ -341,7 +360,7 @@ class _FeatureResourceSection extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              _resourceResetLabel(resource),
+              _resourceResetLabel(resource, recoveryEffect),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodySmall?.copyWith(
@@ -351,6 +370,9 @@ class _FeatureResourceSection extends StatelessWidget {
             const SizedBox(height: 10),
             _FeatureResourceControl(
               resource: resource,
+              recoveryEffect: recoveryEffect,
+              onSpendResource: onSpendResource,
+              canSpendResource: canSpendResource,
               onChanged: onChanged,
             ),
           ],
@@ -363,10 +385,17 @@ class _FeatureResourceSection extends StatelessWidget {
 class _FeatureResourceControl extends StatelessWidget {
   const _FeatureResourceControl({
     required this.resource,
+    required this.recoveryEffect,
+    required this.onSpendResource,
+    required this.canSpendResource,
     required this.onChanged,
   });
 
   final CharacterResourceViewData resource;
+  final FeatureResourceEffectData? recoveryEffect;
+  final Future<void> Function(CharacterResourceViewData resource)?
+      onSpendResource;
+  final bool Function(CharacterResourceViewData resource)? canSpendResource;
   final Future<void> Function(int current) onChanged;
 
   @override
@@ -375,6 +404,10 @@ class _FeatureResourceControl extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final isUnlimited = resource.isUnlimited == true;
     final canDecrease = resource.current > 0;
+    final isSpellSlotRecovery = recoveryEffect != null &&
+        onSpendResource != null &&
+        canSpendResource != null;
+    final canRecover = !isSpellSlotRecovery || canSpendResource!(resource);
     final canIncrease = resource.current < resource.max;
 
     return DecoratedBox(
@@ -392,8 +425,10 @@ class _FeatureResourceControl extends StatelessWidget {
             _ResourceRoundButton(
               tooltip: 'Потратить ресурс',
               icon: Icons.remove_rounded,
-              onPressed: !isUnlimited && canDecrease
-                  ? () => onChanged(resource.current - 1)
+              onPressed: !isUnlimited && canDecrease && canRecover
+                  ? () => isSpellSlotRecovery
+                      ? onSpendResource!(resource)
+                      : onChanged(resource.current - 1)
                   : null,
             ),
             Expanded(
@@ -501,7 +536,15 @@ String _resourceTitle(CharacterResourceViewData resource) {
   }
 }
 
-String _resourceResetLabel(CharacterResourceViewData resource) {
+String _resourceResetLabel(
+  CharacterResourceViewData resource,
+  FeatureResourceEffectData? recoveryEffect,
+) {
+  if (recoveryEffect?.recoveryPolicy?.resourceKey == resource.key &&
+      (recoveryEffect?.activationTrigger == FeatureResourceTrigger.shortRest ||
+          resource.activationTrigger == FeatureResourceTrigger.shortRest)) {
+    return 'После короткого отдыха';
+  }
   final resetOn = resource.resetOn;
   if (resetOn == null) {
     return 'Без автоматического восстановления';
@@ -516,6 +559,23 @@ String _resourceResetLabel(CharacterResourceViewData resource) {
     case RestType.special:
       return 'Особое восстановление';
   }
+}
+
+FeatureResourceEffectData? _resourceRecoveryEffect(
+  CharacterFeatureViewData feature,
+  CharacterResourceViewData resource,
+) {
+  for (final effect in feature.spellSlotRecoveryEffects ??
+      const <FeatureResourceEffectData>[]) {
+    if (effect.type == FeatureResourceEffectType.restore &&
+        (effect.targetType == FeatureResourceTargetType.spellSlots ||
+            effect.targetType == FeatureResourceTargetType.pactSlots) &&
+        effect.id != null &&
+        effect.recoveryPolicy?.resourceKey == resource.key) {
+      return effect;
+    }
+  }
+  return null;
 }
 
 String _resourceAmountLabel(CharacterResourceViewData resource) {

@@ -5,7 +5,9 @@ import 'package:characters_mirror_flutter/core/ui/widgets/feature_tag_widgets.da
 import 'package:characters_mirror_flutter/core/ui/widgets/page_size_limiter.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/spell_slot_recovery_flow.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_feature_card.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/spell_slot_recovery_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -62,6 +64,7 @@ class AbilitiesPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   ..._buildFeatureCards(
+                    character: character,
                     features: classFeatures,
                     ref: ref,
                     characterId: characterId,
@@ -76,6 +79,7 @@ class AbilitiesPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   ..._buildFeatureCards(
+                    character: character,
                     features: raceFeatures,
                     ref: ref,
                     characterId: characterId,
@@ -120,6 +124,7 @@ final _allFeatureTags = [...FeatureTag.values]..sort(
   );
 
 List<Widget> _buildFeatureCards({
+  required CharacterData character,
   required List<CharacterFeatureViewData> features,
   required WidgetRef ref,
   required int characterId,
@@ -129,6 +134,20 @@ List<Widget> _buildFeatureCards({
     for (var index = 0; index < features.length; index++) ...[
       CharacterFeatureCard(
         feature: features[index],
+        actions: SpellSlotRecoveryActions(
+            characterId: characterId, feature: features[index]),
+        canSpendResource: (resource) => canRecoverFeatureResource(
+          character.toJson(),
+          features[index],
+          resource,
+        ),
+        onSpendResource: (resource) => runFeatureResourceRecovery(
+          context,
+          ref,
+          characterId,
+          features[index],
+          resource,
+        ),
         onSave: ({
           String? name,
           String? description,

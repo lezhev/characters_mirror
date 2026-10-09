@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:characters_mirror_flutter/core/character_spells/character_spell_projection.dart';
 import '../widgets/spell_cast_dialog.dart';
+import '../helpers/spell_slot_recovery_flow.dart';
 import '../widgets/spell_source_stats.dart';
 import '../widgets/spell_slot_indicator.dart';
 
@@ -69,9 +70,15 @@ class SpellPage extends ConsumerWidget {
                           slotSource: SpellSlotSource.pact));
               return Future.value();
             },
-            onSpellCastContext: (spell, cast) => ref
-                .read(characterSheetControllerProvider(characterId).notifier)
-                .castSpell(spell, castContext: cast),
+            onSpellCastContext: (spell, cast) async {
+              await ref
+                  .read(characterSheetControllerProvider(characterId).notifier)
+                  .castSpell(spell, castContext: cast);
+              if (context.mounted) {
+                await offerTriggeredSpellSlotRecovery(
+                    context, ref, characterId, 'spellCast');
+              }
+            },
             onSpellCast: (spell) {
               runCharacterSheetSave(
                 context,
