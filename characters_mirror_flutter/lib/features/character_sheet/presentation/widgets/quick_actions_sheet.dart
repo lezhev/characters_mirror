@@ -170,6 +170,18 @@ class QuickActionsSheet extends ConsumerWidget {
                 ],
               ),
             ),
+            if ((character.derived?.activeFeatures ??
+                    <CharacterFeatureViewData>[])
+                .any((feature) =>
+                    (feature.resources ?? <CharacterResourceViewData>[])
+                        .any((resource) => resource.resetOn == RestType.dawn)))
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                  child: OutlinedButton.icon(
+                      key: const ValueKey('quick-new-day'),
+                      onPressed: () => _selectRest(context, RestType.dawn),
+                      icon: const Icon(Icons.wb_sunny_outlined),
+                      label: const Text('Новый день'))),
           ],
         ),
       ),

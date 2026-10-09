@@ -7,6 +7,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/roll_results_overlay.d
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_roll_variables.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/spell_slot_recovery_flow.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/abilities_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/attack_dialog_controller.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/fight/helpers/fight_page_formatters.dart';
@@ -231,6 +232,21 @@ class FightPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 24),
                 FeatureListSection(
+                  characterId: characterId,
+                  canRecoverFeatureResource: (feature, resource) =>
+                      canRecoverFeatureResource(
+                    character.toJson(),
+                    feature,
+                    resource,
+                  ),
+                  onRecoverFeatureResource: (feature, resource) =>
+                      runFeatureResourceRecovery(
+                    context,
+                    ref,
+                    characterId,
+                    feature,
+                    resource,
+                  ),
                   activeFeatures: activeFeatures,
                   visibleFeatures: visibleFeatures,
                   onOpenAllAbilities: () => _openAllAbilities(context),

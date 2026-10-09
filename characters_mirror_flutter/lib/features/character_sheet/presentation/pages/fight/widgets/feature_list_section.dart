@@ -1,6 +1,7 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_flutter/core/ui/widgets/app_section_header.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_feature_card.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/spell_slot_recovery_actions.dart';
 import 'package:flutter/material.dart';
 
 class FeatureListSection extends StatelessWidget {
@@ -11,10 +12,22 @@ class FeatureListSection extends StatelessWidget {
     required this.onSaveFeature,
     required this.onResetFeature,
     required this.onSetFeatureResource,
+    required this.canRecoverFeatureResource,
+    required this.onRecoverFeatureResource,
+    this.characterId,
     super.key,
   });
 
   final List<CharacterFeatureViewData> activeFeatures;
+  final int? characterId;
+  final bool Function(
+    CharacterFeatureViewData feature,
+    CharacterResourceViewData resource,
+  ) canRecoverFeatureResource;
+  final Future<void> Function(
+    CharacterFeatureViewData feature,
+    CharacterResourceViewData resource,
+  ) onRecoverFeatureResource;
   final List<CharacterFeatureViewData> visibleFeatures;
   final VoidCallback onOpenAllAbilities;
   final Future<void> Function(
@@ -59,6 +72,18 @@ class FeatureListSection extends StatelessWidget {
         for (var index = 0; index < visibleFeatures.length; index++) ...[
           CharacterFeatureCard(
             feature: visibleFeatures[index],
+            actions: characterId == null
+                ? null
+                : SpellSlotRecoveryActions(
+                    characterId: characterId!, feature: visibleFeatures[index]),
+            canSpendResource: (resource) => canRecoverFeatureResource(
+              visibleFeatures[index],
+              resource,
+            ),
+            onSpendResource: (resource) => onRecoverFeatureResource(
+              visibleFeatures[index],
+              resource,
+            ),
             onSave: ({
               String? name,
               String? description,

@@ -6,6 +6,7 @@ import 'package:characters_mirror_flutter/core/ui/widgets/error_widget.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/application/character_sheet_state.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/character_sheet_tabs.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/sheet_autosave.dart';
+import 'package:characters_mirror_flutter/features/character_sheet/presentation/helpers/spell_slot_recovery_flow.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/pages/attributes/attributes_page.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/character_sheet_app_bar.dart';
 import 'package:characters_mirror_flutter/features/character_sheet/presentation/widgets/quick_actions_sheet.dart';
@@ -181,12 +182,17 @@ class CharacterSheet extends HookConsumerWidget {
                       onRestSelected: (restType) {
                         runCharacterSheetSave(
                           context,
-                          ref
-                              .read(
-                                characterSheetControllerProvider(characterId)
-                                    .notifier,
-                              )
-                              .restoreResources(restType),
+                          () async {
+                            await ref
+                                .read(characterSheetControllerProvider(
+                                        characterId)
+                                    .notifier)
+                                .restoreResources(restType);
+                            if (context.mounted) {
+                              await offerTriggeredSpellSlotRecovery(
+                                  context, ref, characterId, restType.name);
+                            }
+                          }(),
                         );
                       },
                     );

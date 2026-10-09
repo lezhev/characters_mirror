@@ -11,8 +11,8 @@ Future<SpellCastContext?> chooseSpellCast(BuildContext context,
   // Sources with identical casting semantics need no extra visual choice.
   final seen = <String>{};
   final distinct = choices
-      .where((c) =>
-          seen.add('${c.castingAbility}:${c.slotSource.name}:${c.castLevel}'))
+      .where((c) => seen.add(
+          '${c.castingAbility}:${c.slotSource.name}:${c.castLevel}:${c.payment}:${c.payment == 'resource' || c.payment == 'free' ? c.source.sourceKey : ''}'))
       .toList();
   if (distinct.length == 1) return Future.value(distinct.single);
   if (distinct.isEmpty) return Future.value(null);
@@ -76,7 +76,14 @@ class _SpellCastDialogState extends State<_SpellCastDialog> {
 String _choiceLabel(SpellCastContext cast) =>
     '${cast.source.label}${cast.castingAbility == null ? '' : ' · ${_abilities[cast.castingAbility] ?? cast.castingAbility}'} · '
     '${switch (cast.slotSource) {
-      SpellSlotSource.none => 'Заговор',
+      SpellSlotSource.none => switch (cast.payment) {
+          'resource' =>
+            '${cast.source.activation?['resourceKey']} · ${cast.resourceCost ?? cast.source.activation?['resourceCost']} · ур. ${cast.castLevel}',
+          'free' =>
+            'Без ячейки · ${cast.source.activation?['freeCasts'] ?? cast.source.freeCastsFormula} / ${cast.source.activation?['resetOn'] ?? cast.source.freeCastsPerRest}',
+          'atWill' => 'Без ячейки',
+          _ => 'Заговор',
+        },
       SpellSlotSource.standard => 'Ячейка ${cast.castLevel} уровня',
       SpellSlotSource.pact => 'Магия договора · ${cast.castLevel} уровень',
     }}';
