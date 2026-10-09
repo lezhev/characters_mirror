@@ -10,6 +10,7 @@ export 'src/choice_replacement.dart';
 export 'src/spells/spell_slot_recovery.dart';
 export 'src/subclass_display_name.dart';
 export 'src/feature_resource_summary.dart';
+export 'src/prose_spacing.dart';
 export 'src/spells/spell_presentation.dart';
 export 'src/spells/character_spell_presentation_context.dart';
 export 'src/spells/spell_presentation_resolver.dart';

@@ -178,3 +178,7 @@
 20261008055048240-level3-disciplines-ki-activations
 20261008055353447-level3-discipline-resource-effects
 20261008064554582
+20261008085247703-prose-spacing-normalization
+20261008091313220-prose-newline-normalization
+20261008091313221-subclass-level1-short-descriptions
+20261008091313222-ranger-companion-short-description
