@@ -1,0 +1,23 @@
+class: FeatureRelationData
+table: feature_relation_data
+fields:
+  sourceType: CharacterFeatureSourceType
+  sourceReferenceKey: String
+  targetType: CharacterFeatureSourceType
+  targetReferenceKey: String
+  relationType: FeatureRelationType
+  propertyMappings: Map<String, String>?
+  priority: int
+  mergeDisplay: bool?
+  source: String?
+  version: int?
+  createdAt: DateTime?
+  updatedAt: DateTime?
+indexes:
+  feature_relation_source_idx:
+    fields: sourceType, sourceReferenceKey
+  feature_relation_target_idx:
+    fields: targetType, targetReferenceKey
+  feature_relation_pair_idx:
+    fields: sourceType, sourceReferenceKey, targetType, targetReferenceKey, relationType
+    unique: true

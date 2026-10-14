@@ -26,6 +26,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     this.subraceId,
     this.subrace,
     this.name,
+    this.referenceKey,
     this.description,
     this.shortDescription,
     this.source,
@@ -48,6 +49,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     String? source,
@@ -77,6 +79,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
           : _i3.SubraceData.fromJson(
               (jsonSerialization['subrace'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -125,6 +128,8 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
 
   String? name;
 
+  String? referenceKey;
+
   String? description;
 
   String? shortDescription;
@@ -161,6 +166,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     String? source,
@@ -184,6 +190,7 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       if (subraceId != null) 'subraceId': subraceId,
       if (subrace != null) 'subrace': subrace?.toJson(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
@@ -220,6 +227,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     String? source,
@@ -240,6 +248,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           subraceId: subraceId,
           subrace: subrace,
           name: name,
+          referenceKey: referenceKey,
           description: description,
           shortDescription: shortDescription,
           source: source,
@@ -266,6 +275,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? subraceId = _Undefined,
     Object? subrace = _Undefined,
     Object? name = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? description = _Undefined,
     Object? shortDescription = _Undefined,
     Object? source = _Undefined,
@@ -287,6 +297,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       subraceId: subraceId is int? ? subraceId : this.subraceId,
       subrace: subrace is _i3.SubraceData? ? subrace : this.subrace?.copyWith(),
       name: name is String? ? name : this.name,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       description: description is String? ? description : this.description,
       shortDescription: shortDescription is String?
           ? shortDescription

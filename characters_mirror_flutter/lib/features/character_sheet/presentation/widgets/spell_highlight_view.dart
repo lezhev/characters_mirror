@@ -28,8 +28,12 @@ class SpellHighlightView extends StatelessWidget {
               excludeFromSemantics: true,
             ),
             const SizedBox(width: 6),
-            if (h.label != 'Лечение') Text('${h.label}: ', style: style),
-            Flexible(child: Text(h.value, style: style)),
+            Flexible(
+              child: Text(
+                h.label == 'Лечение' ? h.value : '${h.label}: ${h.value}',
+                style: style,
+              ),
+            ),
           ],
         ),
       );

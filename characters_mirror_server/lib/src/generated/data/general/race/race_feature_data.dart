@@ -29,6 +29,7 @@ abstract class RaceFeatureData
     this.subraceId,
     this.subrace,
     this.name,
+    this.referenceKey,
     this.description,
     this.shortDescription,
     this.source,
@@ -51,6 +52,7 @@ abstract class RaceFeatureData
     int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     String? source,
@@ -80,6 +82,7 @@ abstract class RaceFeatureData
           : _i3.SubraceData.fromJson(
               (jsonSerialization['subrace'] as Map<String, dynamic>)),
       name: jsonSerialization['name'] as String?,
+      referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
       source: jsonSerialization['source'] as String?,
@@ -130,6 +133,8 @@ abstract class RaceFeatureData
 
   String? name;
 
+  String? referenceKey;
+
   String? description;
 
   String? shortDescription;
@@ -169,6 +174,7 @@ abstract class RaceFeatureData
     int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     String? source,
@@ -192,6 +198,7 @@ abstract class RaceFeatureData
       if (subraceId != null) 'subraceId': subraceId,
       if (subrace != null) 'subrace': subrace?.toJson(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
@@ -221,6 +228,7 @@ abstract class RaceFeatureData
       if (subraceId != null) 'subraceId': subraceId,
       if (subrace != null) 'subrace': subrace?.toJsonForProtocol(),
       if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
       if (description != null) 'description': description,
       if (shortDescription != null) 'shortDescription': shortDescription,
       if (source != null) 'source': source,
@@ -295,6 +303,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     int? subraceId,
     _i3.SubraceData? subrace,
     String? name,
+    String? referenceKey,
     String? description,
     String? shortDescription,
     String? source,
@@ -315,6 +324,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
           subraceId: subraceId,
           subrace: subrace,
           name: name,
+          referenceKey: referenceKey,
           description: description,
           shortDescription: shortDescription,
           source: source,
@@ -341,6 +351,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     Object? subraceId = _Undefined,
     Object? subrace = _Undefined,
     Object? name = _Undefined,
+    Object? referenceKey = _Undefined,
     Object? description = _Undefined,
     Object? shortDescription = _Undefined,
     Object? source = _Undefined,
@@ -362,6 +373,7 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       subraceId: subraceId is int? ? subraceId : this.subraceId,
       subrace: subrace is _i3.SubraceData? ? subrace : this.subrace?.copyWith(),
       name: name is String? ? name : this.name,
+      referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       description: description is String? ? description : this.description,
       shortDescription: shortDescription is String?
           ? shortDescription
@@ -403,6 +415,10 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
     );
     name = _i1.ColumnString(
       'name',
+      this,
+    );
+    referenceKey = _i1.ColumnString(
+      'referenceKey',
       this,
     );
     description = _i1.ColumnString(
@@ -457,6 +473,8 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
   _i3.SubraceDataTable? _subrace;
 
   late final _i1.ColumnString name;
+
+  late final _i1.ColumnString referenceKey;
 
   late final _i1.ColumnString description;
 
@@ -617,6 +635,7 @@ class RaceFeatureDataTable extends _i1.Table<int?> {
         raceId,
         subraceId,
         name,
+        referenceKey,
         description,
         shortDescription,
         source,

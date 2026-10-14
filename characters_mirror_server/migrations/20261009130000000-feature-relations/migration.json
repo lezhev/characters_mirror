@@ -1,0 +1,207 @@
+{
+  "actions": [
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "feature_relation_data",
+        "dartName": "FeatureRelationData",
+        "module": "characters_mirror",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('feature_relation_data_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "sourceType",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:CharacterFeatureSourceType"
+          },
+          {
+            "name": "sourceReferenceKey",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "targetType",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:CharacterFeatureSourceType"
+          },
+          {
+            "name": "targetReferenceKey",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "relationType",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:FeatureRelationType"
+          },
+          {
+            "name": "propertyMappings",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "Map<String,String>?"
+          },
+          {
+            "name": "priority",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "mergeDisplay",
+            "columnType": 1,
+            "isNullable": true,
+            "dartType": "bool?"
+          },
+          {
+            "name": "source",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "version",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "name": "createdAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "name": "updatedAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "feature_relation_data_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "feature_relation_source_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "sourceType"
+              },
+              {
+                "type": 0,
+                "definition": "sourceReferenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "indexName": "feature_relation_target_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "targetType"
+              },
+              {
+                "type": 0,
+                "definition": "targetReferenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "indexName": "feature_relation_pair_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "sourceType"
+              },
+              {
+                "type": 0,
+                "definition": "sourceReferenceKey"
+              },
+              {
+                "type": 0,
+                "definition": "targetType"
+              },
+              {
+                "type": 0,
+                "definition": "targetReferenceKey"
+              },
+              {
+                "type": 0,
+                "definition": "relationType"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "race_feature_data",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "referenceKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "race_feature_reference_key_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "referenceKey"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

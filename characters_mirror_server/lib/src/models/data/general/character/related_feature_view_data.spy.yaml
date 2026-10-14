@@ -1,0 +1,11 @@
+class: RelatedFeatureViewData
+fields:
+  sourceType: CharacterFeatureSourceType
+  sourceId: int
+  sourceName: String?
+  name: String?
+  description: String?
+  displayProperties: List<FeatureDisplayPropertyView>?
+  resources: List<CharacterResourceViewData>?
+  spellSlotRecoveryEffects: List<FeatureResourceEffectData>?
+  selectedChoices: List<String>?

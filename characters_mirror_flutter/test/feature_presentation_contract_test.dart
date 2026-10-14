@@ -338,7 +338,7 @@ void main() {
                         ]),
                     onSave: ({name, description, tags}) async {},
                     onReset: () async {},
-                    onSetResource: (_, __) async {})))));
+                    onSetResource: (_, __, ___) async {})))));
     await tester.tap(find.byIcon(Icons.expand_more));
     await tester.pumpAndSettle();
     expect(find.text('Short feature'), findsOneWidget);

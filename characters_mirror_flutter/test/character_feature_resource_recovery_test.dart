@@ -141,7 +141,8 @@ Widget _featureCard({
             feature: feature,
             onSave: ({name, description, tags}) async {},
             onReset: () async {},
-            onSetResource: onSetResource,
+            onSetResource: (_, resourceKey, current) =>
+                onSetResource(resourceKey, current),
             onSpendResource: onSpendResource,
             canSpendResource: canSpend,
           ),

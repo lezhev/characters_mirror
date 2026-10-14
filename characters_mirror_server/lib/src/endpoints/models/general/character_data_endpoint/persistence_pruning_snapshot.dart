@@ -35,8 +35,10 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
       ability: _abilityModifier(scores[ability.name] ?? 10),
   };
   final proficiencyBonus = totalLevel <= 0 ? 2 : 2 + ((totalLevel - 1) ~/ 4);
-  final currentRaceFeatures =
-      _currentRaceFeaturesBySource(character, totalLevel);
+  final currentRaceFeatures = _CurrentRaceFeatures(
+    raceFeatures: resolvedSources.currentRaceFeatures,
+    subraceFeatures: resolvedSources.currentSubraceFeatures,
+  );
   final defaultFeatures = _buildActiveFeatures(
     character: character.copyWith(
       featureOverrides: const <CharacterFeatureOverrideData>[],
@@ -55,10 +57,16 @@ Future<List<CharacterFeatureOverrideData>> _pruneFeatureOverrides(
   return [
     for (final override in normalizedOverrides)
       if (_isMeaningfulFeatureOverride(
-        override,
-        defaultByKey[
-            _featureOverrideKey(override.sourceType, override.sourceId)],
-      ))
+            override,
+            defaultByKey[
+                _featureOverrideKey(override.sourceType, override.sourceId)],
+          ) ||
+          await _isFeatureReplacementTarget(
+            session,
+            override.sourceType,
+            override.sourceId,
+            transaction: transaction,
+          ))
         override,
   ];
 }
@@ -93,6 +101,14 @@ Future<List<CharacterResourceStateData>> _pruneResourceStates(
     final resource = activeResourcesByKey[
         _resourceStateKey(state.sourceType, state.sourceId, state.resourceKey)];
     if (resource == null) {
+      if (await _isFeatureReplacementTarget(
+        session,
+        state.sourceType,
+        state.sourceId,
+        transaction: transaction,
+      )) {
+        pruned.add(state);
+      }
       continue;
     }
     if (resource.isUnlimited == true) {
@@ -112,6 +128,49 @@ Future<List<CharacterResourceStateData>> _pruneResourceStates(
     );
   }
   return pruned;
+}
+
+Future<bool> _isFeatureReplacementTarget(
+  Session session,
+  CharacterFeatureSourceType sourceType,
+  int sourceId, {
+  Transaction? transaction,
+}) async {
+  final referenceKey = switch (sourceType) {
+    CharacterFeatureSourceType.classFeature => (await ClassFeatureData.db.find(
+            session,
+            where: (t) => t.id.equals(sourceId),
+            limit: 1,
+            transaction: transaction))
+        .firstOrNull
+        ?.referenceKey,
+    CharacterFeatureSourceType.subclassFeature => (await SubclassFeatureData.db
+            .find(session,
+                where: (t) => t.id.equals(sourceId),
+                limit: 1,
+                transaction: transaction))
+        .firstOrNull
+        ?.referenceKey,
+    CharacterFeatureSourceType.raceFeature ||
+    CharacterFeatureSourceType.subraceFeature =>
+      (await RaceFeatureData.db.find(session,
+              where: (t) => t.id.equals(sourceId),
+              limit: 1,
+              transaction: transaction))
+          .firstOrNull
+          ?.referenceKey,
+  };
+  if (referenceKey == null) return false;
+  final relations = await FeatureRelationData.db.find(
+    session,
+    where: (t) =>
+        t.targetType.equals(sourceType) &
+        t.targetReferenceKey.equals(referenceKey) &
+        t.relationType.equals(FeatureRelationType.replaces),
+    limit: 1,
+    transaction: transaction,
+  );
+  return relations.isNotEmpty;
 }
 
 Future<CharacterData> _applyInitialEquipmentSnapshot(

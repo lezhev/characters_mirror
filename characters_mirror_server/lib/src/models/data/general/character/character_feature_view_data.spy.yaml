@@ -14,6 +14,9 @@ fields:
   isCustomized: bool?
   resources: List<CharacterResourceViewData>?
   displayProperties: List<FeatureDisplayPropertyView>?
+  relatedFeatures: List<RelatedFeatureViewData>?
+  mergedIntoFeatureSourceType: CharacterFeatureSourceType?
+  mergedIntoFeatureSourceId: int?
   selectedChoices: List<String>?
   selectedChoiceDetails: List<SelectedFeatureChoiceView>?
   sourceClassLevel: int?

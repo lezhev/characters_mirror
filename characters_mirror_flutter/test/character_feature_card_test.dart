@@ -42,6 +42,41 @@ void main() {
   }
 
   group('CharacterFeatureCard resource', () {
+    testWidgets('merged feature resources remain interactive', (tester) async {
+      final updates = <(CharacterFeatureSourceType, int, int)>[];
+      await _pumpCard(
+        tester,
+        resource: null,
+        relatedFeatures: [
+          RelatedFeatureViewData(
+            sourceType: CharacterFeatureSourceType.subclassFeature,
+            sourceId: 77,
+            name: 'Improved Feature',
+            resources: [
+              CharacterResourceViewData(
+                key: 'improved',
+                kind: FeatureResourceKind.uses,
+                current: 1,
+                max: 2,
+              ),
+            ],
+          ),
+        ],
+        onSetResource: (_) async {},
+        onSetFeatureResource: (feature, current) async => updates.add((
+          feature.sourceType,
+          feature.sourceId,
+          current,
+        )),
+      );
+      await tester.tap(find.byIcon(Icons.expand_more));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.add_rounded));
+      await tester.pump();
+
+      expect(updates, [(CharacterFeatureSourceType.subclassFeature, 77, 2)]);
+    });
+
     testWidgets('shows compact resource summary while collapsed',
         (tester) async {
       final updates = <int>[];
@@ -285,9 +320,12 @@ Future<void> _pumpCard(
   String? description,
   List<FeatureTag>? tags,
   List<FeatureDisplayPropertyView>? displayProperties,
+  List<RelatedFeatureViewData>? relatedFeatures,
   List<SelectedFeatureChoiceView>? selectedChoiceDetails,
   bool isCustomized = false,
   Future<void> Function()? onReset,
+  Future<void> Function(CharacterFeatureViewData feature, int current)?
+      onSetFeatureResource,
 }) {
   return tester.pumpWidget(
     MaterialApp(
@@ -307,11 +345,14 @@ Future<void> _pumpCard(
               defaultTags: tags,
               resources: resource == null ? null : [resource],
               displayProperties: displayProperties,
+              relatedFeatures: relatedFeatures,
               selectedChoiceDetails: selectedChoiceDetails,
             ),
             onSave: ({name, description, tags}) async {},
             onReset: onReset ?? () async {},
-            onSetResource: (_, current) => onSetResource(current),
+            onSetResource: (feature, _, current) => onSetFeatureResource == null
+                ? onSetResource(current)
+                : onSetFeatureResource(feature, current),
           ),
         ),
       ),

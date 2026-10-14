@@ -29,7 +29,11 @@ class CharacterFeatureCard extends StatefulWidget {
     List<FeatureTag>? tags,
   }) onSave;
   final Future<void> Function() onReset;
-  final Future<void> Function(String resourceKey, int current) onSetResource;
+  final Future<void> Function(
+    CharacterFeatureViewData feature,
+    String resourceKey,
+    int current,
+  ) onSetResource;
 
   @override
   State<CharacterFeatureCard> createState() => _CharacterFeatureCardState();
@@ -66,7 +70,14 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
     final theme = Theme.of(context);
     final feature = widget.feature;
     final featureTags = feature.tags ?? feature.defaultTags;
-    final resources = feature.resources ?? const <CharacterResourceViewData>[];
+    final ownResources =
+        feature.resources ?? const <CharacterResourceViewData>[];
+    final resources = [
+      ...ownResources,
+      for (final related
+          in feature.relatedFeatures ?? const <RelatedFeatureViewData>[])
+        ...?related.resources,
+    ];
     final sourceLabel = _featureSourceLabel(feature);
 
     return SheetOutlineCard(
@@ -179,6 +190,56 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                               properties: feature.displayProperties ??
                                   const <FeatureDisplayPropertyView>[],
                             ),
+                            for (final related in feature.relatedFeatures ??
+                                const <RelatedFeatureViewData>[]) ...[
+                              const Divider(height: 20),
+                              Text(
+                                related.name ?? 'Связанная особенность',
+                                style: theme.textTheme.titleSmall,
+                              ),
+                              if (related.sourceName?.isNotEmpty == true) ...[
+                                const SizedBox(height: 2),
+                                Text(related.sourceName!,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    )),
+                              ],
+                              if (related.description?.isNotEmpty == true) ...[
+                                const SizedBox(height: 4),
+                                Text(related.description!,
+                                    style: theme.textTheme.bodyMedium),
+                              ],
+                              FeatureDisplayProperties(
+                                properties: related.displayProperties ??
+                                    const <FeatureDisplayPropertyView>[],
+                              ),
+                              for (final choice in related.selectedChoices ??
+                                  const <String>[]) ...[
+                                const SizedBox(height: 4),
+                                Text(choice, style: theme.textTheme.bodySmall),
+                              ],
+                              if (related.resources?.isNotEmpty == true) ...[
+                                const SizedBox(height: 8),
+                                for (final resource in related.resources!) ...[
+                                  _FeatureResourceSection(
+                                    resource: resource,
+                                    recoveryEffect: _resourceRecoveryEffect(
+                                      _relatedFeatureView(related),
+                                      resource,
+                                    ),
+                                    onSpendResource: widget.onSpendResource,
+                                    canSpendResource: widget.canSpendResource,
+                                    onChanged: (current) =>
+                                        widget.onSetResource(
+                                      _relatedFeatureView(related),
+                                      resource.key,
+                                      current,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                ],
+                              ],
+                            ],
                             if (widget.actions case final actions?) actions,
                             if (feature.selectedChoiceDetails
                                 case final choices?
@@ -201,23 +262,24 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                                       ]),
                                 ),
                             ],
-                            if (_isExpanded && resources.isNotEmpty) ...[
+                            if (_isExpanded && ownResources.isNotEmpty) ...[
                               const SizedBox(height: 12),
                               for (var index = 0;
-                                  index < resources.length;
+                                  index < ownResources.length;
                                   index++) ...[
                                 _FeatureResourceSection(
-                                  resource: resources[index],
+                                  resource: ownResources[index],
                                   recoveryEffect: _resourceRecoveryEffect(
-                                      feature, resources[index]),
+                                      feature, ownResources[index]),
                                   onSpendResource: widget.onSpendResource,
                                   canSpendResource: widget.canSpendResource,
                                   onChanged: (current) => widget.onSetResource(
-                                    resources[index].key,
+                                    feature,
+                                    ownResources[index].key,
                                     current,
                                   ),
                                 ),
-                                if (index != resources.length - 1)
+                                if (index != ownResources.length - 1)
                                   const SizedBox(height: 10),
                               ],
                               const SizedBox(height: 12),
@@ -602,6 +664,18 @@ String? _featureSourceLabel(CharacterFeatureViewData feature) {
   }
   return parts.join(' • ');
 }
+
+CharacterFeatureViewData _relatedFeatureView(RelatedFeatureViewData related) =>
+    CharacterFeatureViewData(
+      sourceType: related.sourceType,
+      sourceId: related.sourceId,
+      sourceName: related.sourceName,
+      name: related.name,
+      description: related.description,
+      shortDescription: related.description,
+      resources: related.resources,
+      spellSlotRecoveryEffects: related.spellSlotRecoveryEffects,
+    );
 
 String? _normalizedText(String? value) {
   final trimmed = value?.trim();

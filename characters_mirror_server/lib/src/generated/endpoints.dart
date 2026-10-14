@@ -18,59 +18,61 @@ import '../endpoints/models/feat_data_endpoint.dart' as _i6;
 import '../endpoints/models/general/character_data_endpoint.dart' as _i7;
 import '../endpoints/models/general/choice_data_endpoint.dart' as _i8;
 import '../endpoints/models/general/class_endpoints.dart' as _i9;
-import '../endpoints/models/general/race_endpoints.dart' as _i10;
-import '../endpoints/models/general/tool_data_endpoint.dart' as _i11;
-import '../endpoints/models/items/armor_data_endpoint.dart' as _i12;
-import '../endpoints/models/items/item_data_endpoint.dart' as _i13;
-import '../endpoints/models/items/magic_item_endpoint.dart' as _i14;
-import '../endpoints/models/items/weapon_data_endpoint.dart' as _i15;
-import '../endpoints/models/spell_data_endpoint.dart' as _i16;
-import '../endpoints/ping_endpoint.dart' as _i17;
+import '../endpoints/models/general/feature_relation_data_endpoint.dart'
+    as _i10;
+import '../endpoints/models/general/race_endpoints.dart' as _i11;
+import '../endpoints/models/general/tool_data_endpoint.dart' as _i12;
+import '../endpoints/models/items/armor_data_endpoint.dart' as _i13;
+import '../endpoints/models/items/item_data_endpoint.dart' as _i14;
+import '../endpoints/models/items/magic_item_endpoint.dart' as _i15;
+import '../endpoints/models/items/weapon_data_endpoint.dart' as _i16;
+import '../endpoints/models/spell_data_endpoint.dart' as _i17;
+import '../endpoints/ping_endpoint.dart' as _i18;
 import 'package:characters_mirror_server/src/generated/data/background_data.dart'
-    as _i18;
-import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
     as _i19;
-import 'package:characters_mirror_server/src/generated/data/general/character/level_up_request.dart'
+import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
     as _i20;
-import 'package:characters_mirror_server/src/generated/requests/level_down_request.dart'
+import 'package:characters_mirror_server/src/generated/data/general/character/level_up_request.dart'
     as _i21;
-import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
+import 'package:characters_mirror_server/src/generated/requests/level_down_request.dart'
     as _i22;
-import 'package:characters_mirror_server/src/generated/data/general/character/character_sync_request.dart'
+import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
     as _i23;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/character/character_sync_request.dart'
     as _i24;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
     as _i25;
-import 'package:characters_mirror_server/src/generated/data/class_spell_grant_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
     as _i26;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_level_data.dart'
+import 'package:characters_mirror_server/src/generated/data/class_spell_grant_data.dart'
     as _i27;
-import 'package:characters_mirror_server/src/generated/data/general/class/spell_slot_progression_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/class_level_data.dart'
     as _i28;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/spell_slot_progression_data.dart'
     as _i29;
-import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
     as _i30;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
     as _i31;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
     as _i32;
-import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
     as _i33;
-import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
     as _i34;
-import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
+import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
     as _i35;
-import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
     as _i36;
-import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
     as _i37;
-import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
     as _i38;
-import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
     as _i39;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i40;
+import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
+    as _i40;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i41;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -166,67 +168,73 @@ class Endpoints extends _i1.EndpointDispatch {
           'subclassFeatureData',
           null,
         ),
-      'raceData': _i10.RaceDataEndpoint()
+      'featureRelationData': _i10.FeatureRelationDataEndpoint()
+        ..initialize(
+          server,
+          'featureRelationData',
+          null,
+        ),
+      'raceData': _i11.RaceDataEndpoint()
         ..initialize(
           server,
           'raceData',
           null,
         ),
-      'raceFeature': _i10.RaceFeatureEndpoint()
+      'raceFeature': _i11.RaceFeatureEndpoint()
         ..initialize(
           server,
           'raceFeature',
           null,
         ),
-      'subraceData': _i10.SubraceDataEndpoint()
+      'subraceData': _i11.SubraceDataEndpoint()
         ..initialize(
           server,
           'subraceData',
           null,
         ),
-      'raceFeatureSpellGrantData': _i10.RaceFeatureSpellGrantDataEndpoint()
+      'raceFeatureSpellGrantData': _i11.RaceFeatureSpellGrantDataEndpoint()
         ..initialize(
           server,
           'raceFeatureSpellGrantData',
           null,
         ),
-      'toolData': _i11.ToolDataEndpoint()
+      'toolData': _i12.ToolDataEndpoint()
         ..initialize(
           server,
           'toolData',
           null,
         ),
-      'armorData': _i12.ArmorDataEndpoint()
+      'armorData': _i13.ArmorDataEndpoint()
         ..initialize(
           server,
           'armorData',
           null,
         ),
-      'itemData': _i13.ItemDataEndpoint()
+      'itemData': _i14.ItemDataEndpoint()
         ..initialize(
           server,
           'itemData',
           null,
         ),
-      'magicItemData': _i14.MagicItemDataEndpoint()
+      'magicItemData': _i15.MagicItemDataEndpoint()
         ..initialize(
           server,
           'magicItemData',
           null,
         ),
-      'weaponData': _i15.WeaponDataEndpoint()
+      'weaponData': _i16.WeaponDataEndpoint()
         ..initialize(
           server,
           'weaponData',
           null,
         ),
-      'spellData': _i16.SpellDataEndpoint()
+      'spellData': _i17.SpellDataEndpoint()
         ..initialize(
           server,
           'spellData',
           null,
         ),
-      'ping': _i17.PingEndpoint()
+      'ping': _i18.PingEndpoint()
         ..initialize(
           server,
           'ping',
@@ -464,7 +472,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'background': _i1.ParameterDescription(
               name: 'background',
-              type: _i1.getType<_i18.BackgroundData>(),
+              type: _i1.getType<_i19.BackgroundData>(),
               nullable: false,
             )
           },
@@ -482,7 +490,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'background': _i1.ParameterDescription(
               name: 'background',
-              type: _i1.getType<_i18.BackgroundData>(),
+              type: _i1.getType<_i19.BackgroundData>(),
               nullable: false,
             )
           },
@@ -535,7 +543,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'feat': _i1.ParameterDescription(
               name: 'feat',
-              type: _i1.getType<_i19.FeatData>(),
+              type: _i1.getType<_i20.FeatData>(),
               nullable: false,
             )
           },
@@ -553,7 +561,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'feat': _i1.ParameterDescription(
               name: 'feat',
-              type: _i1.getType<_i19.FeatData>(),
+              type: _i1.getType<_i20.FeatData>(),
               nullable: false,
             )
           },
@@ -595,7 +603,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i20.LevelUpRequest>(),
+              type: _i1.getType<_i21.LevelUpRequest>(),
               nullable: false,
             )
           },
@@ -614,7 +622,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i20.LevelUpRequest>(),
+              type: _i1.getType<_i21.LevelUpRequest>(),
               nullable: false,
             )
           },
@@ -633,7 +641,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i21.LevelDownRequest>(),
+              type: _i1.getType<_i22.LevelDownRequest>(),
               nullable: false,
             )
           },
@@ -652,7 +660,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i21.LevelDownRequest>(),
+              type: _i1.getType<_i22.LevelDownRequest>(),
               nullable: false,
             )
           },
@@ -681,7 +689,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'character': _i1.ParameterDescription(
               name: 'character',
-              type: _i1.getType<_i22.CharacterData>(),
+              type: _i1.getType<_i23.CharacterData>(),
               nullable: false,
             )
           },
@@ -700,7 +708,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'character': _i1.ParameterDescription(
               name: 'character',
-              type: _i1.getType<_i22.CharacterData>(),
+              type: _i1.getType<_i23.CharacterData>(),
               nullable: false,
             ),
             'expectedVersion': _i1.ParameterDescription(
@@ -725,7 +733,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'request': _i1.ParameterDescription(
               name: 'request',
-              type: _i1.getType<_i23.CharacterSyncRequest>(),
+              type: _i1.getType<_i24.CharacterSyncRequest>(),
               nullable: false,
             )
           },
@@ -853,7 +861,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'classData': _i1.ParameterDescription(
               name: 'classData',
-              type: _i1.getType<_i24.ClassData>(),
+              type: _i1.getType<_i25.ClassData>(),
               nullable: false,
             )
           },
@@ -871,7 +879,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'classData': _i1.ParameterDescription(
               name: 'classData',
-              type: _i1.getType<_i24.ClassData>(),
+              type: _i1.getType<_i25.ClassData>(),
               nullable: false,
             )
           },
@@ -1007,7 +1015,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i25.ClassFeatureData>(),
+              type: _i1.getType<_i26.ClassFeatureData>(),
               nullable: false,
             )
           },
@@ -1026,7 +1034,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'feature': _i1.ParameterDescription(
               name: 'feature',
-              type: _i1.getType<_i25.ClassFeatureData>(),
+              type: _i1.getType<_i26.ClassFeatureData>(),
               nullable: false,
             )
           },
@@ -1081,7 +1089,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i26.ClassSpellGrantData>(),
+              type: _i1.getType<_i27.ClassSpellGrantData>(),
               nullable: false,
             )
           },
@@ -1101,7 +1109,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i26.ClassSpellGrantData>(),
+              type: _i1.getType<_i27.ClassSpellGrantData>(),
               nullable: false,
             )
           },
@@ -1157,7 +1165,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i27.ClassLevelData>(),
+              type: _i1.getType<_i28.ClassLevelData>(),
               nullable: false,
             )
           },
@@ -1175,7 +1183,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i27.ClassLevelData>(),
+              type: _i1.getType<_i28.ClassLevelData>(),
               nullable: false,
             )
           },
@@ -1230,7 +1238,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i28.SpellSlotProgressionData>(),
+              type: _i1.getType<_i29.SpellSlotProgressionData>(),
               nullable: false,
             )
           },
@@ -1250,7 +1258,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i28.SpellSlotProgressionData>(),
+              type: _i1.getType<_i29.SpellSlotProgressionData>(),
               nullable: false,
             )
           },
@@ -1306,7 +1314,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i29.SubclassData>(),
+              type: _i1.getType<_i30.SubclassData>(),
               nullable: false,
             )
           },
@@ -1324,7 +1332,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subclass': _i1.ParameterDescription(
               name: 'subclass',
-              type: _i1.getType<_i29.SubclassData>(),
+              type: _i1.getType<_i30.SubclassData>(),
               nullable: false,
             )
           },
@@ -1377,7 +1385,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i30.SubclassFeatureData>(),
+              type: _i1.getType<_i31.SubclassFeatureData>(),
               nullable: false,
             )
           },
@@ -1397,7 +1405,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subclassFeature': _i1.ParameterDescription(
               name: 'subclassFeature',
-              type: _i1.getType<_i30.SubclassFeatureData>(),
+              type: _i1.getType<_i31.SubclassFeatureData>(),
               nullable: false,
             )
           },
@@ -1434,6 +1442,23 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['featureRelationData'] = _i1.EndpointConnector(
+      name: 'featureRelationData',
+      endpoint: endpoints['featureRelationData']!,
+      methodConnectors: {
+        'getAll': _i1.MethodConnector(
+          name: 'getAll',
+          params: {},
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['featureRelationData']
+                      as _i10.FeatureRelationDataEndpoint)
+                  .getAll(session),
+        )
+      },
+    );
     connectors['raceData'] = _i1.EndpointConnector(
       name: 'raceData',
       endpoint: endpoints['raceData']!,
@@ -1445,14 +1470,14 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).getAll(session),
+              (endpoints['raceData'] as _i11.RaceDataEndpoint).getAll(session),
         ),
         'add': _i1.MethodConnector(
           name: 'add',
           params: {
             'race': _i1.ParameterDescription(
               name: 'race',
-              type: _i1.getType<_i31.RaceData>(),
+              type: _i1.getType<_i32.RaceData>(),
               nullable: false,
             )
           },
@@ -1460,7 +1485,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).add(
+              (endpoints['raceData'] as _i11.RaceDataEndpoint).add(
             session,
             params['race'],
           ),
@@ -1470,7 +1495,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'race': _i1.ParameterDescription(
               name: 'race',
-              type: _i1.getType<_i31.RaceData>(),
+              type: _i1.getType<_i32.RaceData>(),
               nullable: false,
             )
           },
@@ -1478,7 +1503,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).upsert(
+              (endpoints['raceData'] as _i11.RaceDataEndpoint).upsert(
             session,
             params['race'],
           ),
@@ -1496,7 +1521,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).getStepView(
+              (endpoints['raceData'] as _i11.RaceDataEndpoint).getStepView(
             session,
             params['raceId'],
           ),
@@ -1514,7 +1539,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceData'] as _i10.RaceDataEndpoint).delete(
+              (endpoints['raceData'] as _i11.RaceDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1532,7 +1557,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint)
+              (endpoints['raceFeature'] as _i11.RaceFeatureEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1540,7 +1565,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'raceFeature': _i1.ParameterDescription(
               name: 'raceFeature',
-              type: _i1.getType<_i32.RaceFeatureData>(),
+              type: _i1.getType<_i33.RaceFeatureData>(),
               nullable: false,
             )
           },
@@ -1548,7 +1573,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint).add(
+              (endpoints['raceFeature'] as _i11.RaceFeatureEndpoint).add(
             session,
             params['raceFeature'],
           ),
@@ -1558,7 +1583,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'raceFeature': _i1.ParameterDescription(
               name: 'raceFeature',
-              type: _i1.getType<_i32.RaceFeatureData>(),
+              type: _i1.getType<_i33.RaceFeatureData>(),
               nullable: false,
             )
           },
@@ -1566,7 +1591,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint).upsert(
+              (endpoints['raceFeature'] as _i11.RaceFeatureEndpoint).upsert(
             session,
             params['raceFeature'],
           ),
@@ -1584,7 +1609,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['raceFeature'] as _i10.RaceFeatureEndpoint).delete(
+              (endpoints['raceFeature'] as _i11.RaceFeatureEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1602,7 +1627,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint)
+              (endpoints['subraceData'] as _i11.SubraceDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1610,7 +1635,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subrace': _i1.ParameterDescription(
               name: 'subrace',
-              type: _i1.getType<_i33.SubraceData>(),
+              type: _i1.getType<_i34.SubraceData>(),
               nullable: false,
             )
           },
@@ -1618,7 +1643,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint).add(
+              (endpoints['subraceData'] as _i11.SubraceDataEndpoint).add(
             session,
             params['subrace'],
           ),
@@ -1628,7 +1653,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'subrace': _i1.ParameterDescription(
               name: 'subrace',
-              type: _i1.getType<_i33.SubraceData>(),
+              type: _i1.getType<_i34.SubraceData>(),
               nullable: false,
             )
           },
@@ -1636,7 +1661,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint).upsert(
+              (endpoints['subraceData'] as _i11.SubraceDataEndpoint).upsert(
             session,
             params['subrace'],
           ),
@@ -1654,7 +1679,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['subraceData'] as _i10.SubraceDataEndpoint).delete(
+              (endpoints['subraceData'] as _i11.SubraceDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1673,7 +1698,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i11.RaceFeatureSpellGrantDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1681,7 +1706,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i34.RaceFeatureSpellGrantData>(),
+              type: _i1.getType<_i35.RaceFeatureSpellGrantData>(),
               nullable: false,
             )
           },
@@ -1690,7 +1715,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i11.RaceFeatureSpellGrantDataEndpoint)
                   .add(
             session,
             params['item'],
@@ -1701,7 +1726,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i34.RaceFeatureSpellGrantData>(),
+              type: _i1.getType<_i35.RaceFeatureSpellGrantData>(),
               nullable: false,
             )
           },
@@ -1710,7 +1735,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i11.RaceFeatureSpellGrantDataEndpoint)
                   .upsert(
             session,
             params['item'],
@@ -1730,7 +1755,7 @@ class Endpoints extends _i1.EndpointDispatch {
             Map<String, dynamic> params,
           ) async =>
               (endpoints['raceFeatureSpellGrantData']
-                      as _i10.RaceFeatureSpellGrantDataEndpoint)
+                      as _i11.RaceFeatureSpellGrantDataEndpoint)
                   .delete(
             session,
             params['id'],
@@ -1749,7 +1774,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['toolData'] as _i11.ToolDataEndpoint).getAll(session),
+              (endpoints['toolData'] as _i12.ToolDataEndpoint).getAll(session),
         )
       },
     );
@@ -1764,7 +1789,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['armorData'] as _i12.ArmorDataEndpoint)
+              (endpoints['armorData'] as _i13.ArmorDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1772,7 +1797,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'armor': _i1.ParameterDescription(
               name: 'armor',
-              type: _i1.getType<_i35.ArmorData>(),
+              type: _i1.getType<_i36.ArmorData>(),
               nullable: false,
             )
           },
@@ -1780,7 +1805,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['armorData'] as _i12.ArmorDataEndpoint).add(
+              (endpoints['armorData'] as _i13.ArmorDataEndpoint).add(
             session,
             params['armor'],
           ),
@@ -1790,7 +1815,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'armor': _i1.ParameterDescription(
               name: 'armor',
-              type: _i1.getType<_i35.ArmorData>(),
+              type: _i1.getType<_i36.ArmorData>(),
               nullable: false,
             )
           },
@@ -1798,7 +1823,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['armorData'] as _i12.ArmorDataEndpoint).upsert(
+              (endpoints['armorData'] as _i13.ArmorDataEndpoint).upsert(
             session,
             params['armor'],
           ),
@@ -1816,7 +1841,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['armorData'] as _i12.ArmorDataEndpoint).delete(
+              (endpoints['armorData'] as _i13.ArmorDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1834,14 +1859,14 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['itemData'] as _i13.ItemDataEndpoint).getAll(session),
+              (endpoints['itemData'] as _i14.ItemDataEndpoint).getAll(session),
         ),
         'add': _i1.MethodConnector(
           name: 'add',
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i36.ItemData>(),
+              type: _i1.getType<_i37.ItemData>(),
               nullable: false,
             )
           },
@@ -1849,7 +1874,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['itemData'] as _i13.ItemDataEndpoint).add(
+              (endpoints['itemData'] as _i14.ItemDataEndpoint).add(
             session,
             params['item'],
           ),
@@ -1859,7 +1884,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i36.ItemData>(),
+              type: _i1.getType<_i37.ItemData>(),
               nullable: false,
             )
           },
@@ -1867,7 +1892,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['itemData'] as _i13.ItemDataEndpoint).upsert(
+              (endpoints['itemData'] as _i14.ItemDataEndpoint).upsert(
             session,
             params['item'],
           ),
@@ -1885,7 +1910,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['itemData'] as _i13.ItemDataEndpoint).delete(
+              (endpoints['itemData'] as _i14.ItemDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1903,7 +1928,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['magicItemData'] as _i14.MagicItemDataEndpoint)
+              (endpoints['magicItemData'] as _i15.MagicItemDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1911,7 +1936,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'item': _i1.ParameterDescription(
               name: 'item',
-              type: _i1.getType<_i37.MagicItemData>(),
+              type: _i1.getType<_i38.MagicItemData>(),
               nullable: false,
             )
           },
@@ -1919,7 +1944,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['magicItemData'] as _i14.MagicItemDataEndpoint).add(
+              (endpoints['magicItemData'] as _i15.MagicItemDataEndpoint).add(
             session,
             params['item'],
           ),
@@ -1929,7 +1954,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'magicItem': _i1.ParameterDescription(
               name: 'magicItem',
-              type: _i1.getType<_i37.MagicItemData>(),
+              type: _i1.getType<_i38.MagicItemData>(),
               nullable: false,
             )
           },
@@ -1937,7 +1962,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['magicItemData'] as _i14.MagicItemDataEndpoint).upsert(
+              (endpoints['magicItemData'] as _i15.MagicItemDataEndpoint).upsert(
             session,
             params['magicItem'],
           ),
@@ -1955,7 +1980,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['magicItemData'] as _i14.MagicItemDataEndpoint).delete(
+              (endpoints['magicItemData'] as _i15.MagicItemDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -1973,7 +1998,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['weaponData'] as _i15.WeaponDataEndpoint)
+              (endpoints['weaponData'] as _i16.WeaponDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -1981,7 +2006,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'weapon': _i1.ParameterDescription(
               name: 'weapon',
-              type: _i1.getType<_i38.WeaponData>(),
+              type: _i1.getType<_i39.WeaponData>(),
               nullable: false,
             )
           },
@@ -1989,7 +2014,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['weaponData'] as _i15.WeaponDataEndpoint).add(
+              (endpoints['weaponData'] as _i16.WeaponDataEndpoint).add(
             session,
             params['weapon'],
           ),
@@ -1999,7 +2024,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'weapon': _i1.ParameterDescription(
               name: 'weapon',
-              type: _i1.getType<_i38.WeaponData>(),
+              type: _i1.getType<_i39.WeaponData>(),
               nullable: false,
             )
           },
@@ -2007,7 +2032,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['weaponData'] as _i15.WeaponDataEndpoint).upsert(
+              (endpoints['weaponData'] as _i16.WeaponDataEndpoint).upsert(
             session,
             params['weapon'],
           ),
@@ -2025,7 +2050,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['weaponData'] as _i15.WeaponDataEndpoint).delete(
+              (endpoints['weaponData'] as _i16.WeaponDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -2043,7 +2068,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['spellData'] as _i16.SpellDataEndpoint)
+              (endpoints['spellData'] as _i17.SpellDataEndpoint)
                   .getAll(session),
         ),
         'add': _i1.MethodConnector(
@@ -2051,7 +2076,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'spell': _i1.ParameterDescription(
               name: 'spell',
-              type: _i1.getType<_i39.SpellData>(),
+              type: _i1.getType<_i40.SpellData>(),
               nullable: false,
             )
           },
@@ -2059,7 +2084,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['spellData'] as _i16.SpellDataEndpoint).add(
+              (endpoints['spellData'] as _i17.SpellDataEndpoint).add(
             session,
             params['spell'],
           ),
@@ -2069,7 +2094,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'spell': _i1.ParameterDescription(
               name: 'spell',
-              type: _i1.getType<_i39.SpellData>(),
+              type: _i1.getType<_i40.SpellData>(),
               nullable: false,
             )
           },
@@ -2077,7 +2102,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['spellData'] as _i16.SpellDataEndpoint).upsert(
+              (endpoints['spellData'] as _i17.SpellDataEndpoint).upsert(
             session,
             params['spell'],
           ),
@@ -2095,7 +2120,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['spellData'] as _i16.SpellDataEndpoint).delete(
+              (endpoints['spellData'] as _i17.SpellDataEndpoint).delete(
             session,
             params['id'],
           ),
@@ -2113,10 +2138,10 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['ping'] as _i17.PingEndpoint).ping(session),
+              (endpoints['ping'] as _i18.PingEndpoint).ping(session),
         )
       },
     );
-    modules['serverpod_auth'] = _i40.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i41.Endpoints()..initializeEndpoints(server);
   }
 }

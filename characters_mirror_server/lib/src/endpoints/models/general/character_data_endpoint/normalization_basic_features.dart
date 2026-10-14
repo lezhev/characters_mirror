@@ -372,12 +372,186 @@ List<CharacterFeatureViewData> _buildActiveFeatures({
     );
   }
 
+  _applyFeatureRelationProperties(activeFeatures, resolvedSources);
+
   final modifiedFeatures = _applyFeatureResourceModifiers(
     activeFeatures,
     activeEffects,
     totalLevel: totalLevel,
     proficiencyBonus: proficiencyBonus,
     abilityModifiers: abilityModifiers,
-  )..sort(_compareActiveFeatures);
+  );
+  _applyFeatureRelationMerges(modifiedFeatures, resolvedSources);
+  modifiedFeatures.sort(_compareActiveFeatures);
   return modifiedFeatures;
+}
+
+void _applyFeatureRelationMerges(
+  List<CharacterFeatureViewData> features,
+  _ResolvedDerivedSources resolvedSources,
+) {
+  final references = <String, int>{};
+  for (final feature in resolvedSources.currentClassFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      references[featureRelationIdentity(
+              CharacterFeatureSourceType.classFeature, feature.referenceKey!)] =
+          feature.id!;
+    }
+  }
+  for (final feature in resolvedSources.currentSubclassFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      references[featureRelationIdentity(
+          CharacterFeatureSourceType.subclassFeature,
+          feature.referenceKey!)] = feature.id!;
+    }
+  }
+  for (final feature in resolvedSources.currentRaceFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      references[featureRelationIdentity(
+              CharacterFeatureSourceType.raceFeature, feature.referenceKey!)] =
+          feature.id!;
+    }
+  }
+  for (final feature in resolvedSources.currentSubraceFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      references[featureRelationIdentity(
+          CharacterFeatureSourceType.subraceFeature,
+          feature.referenceKey!)] = feature.id!;
+    }
+  }
+  final indexes = <String, int>{};
+  for (var index = 0; index < features.length; index++) {
+    final view = features[index];
+    for (final entry in references.entries) {
+      if (entry.value == view.sourceId &&
+          entry.key.startsWith('${view.sourceType.name}:')) {
+        indexes[entry.key] = index;
+        break;
+      }
+    }
+  }
+  for (final relation
+      in resolvedSources.featureRelationResolution.displayMerges) {
+    final sourceKey = featureRelationIdentity(
+      relation.sourceType,
+      relation.sourceReferenceKey,
+    );
+    final targetKey = featureRelationIdentity(
+      relation.targetType,
+      relation.targetReferenceKey,
+    );
+    final sourceIndex = indexes[sourceKey];
+    final targetIndex = indexes[targetKey];
+    if (sourceIndex == null ||
+        targetIndex == null ||
+        sourceIndex == targetIndex) {
+      continue;
+    }
+    final source = features[sourceIndex];
+    final target = features[targetIndex];
+    if (source.spellSlotRecoveryEffects?.isNotEmpty ?? false) {
+      continue;
+    }
+    final details = RelatedFeatureViewData(
+      sourceType: source.sourceType,
+      sourceId: source.sourceId,
+      sourceName: source.sourceName,
+      name: source.name,
+      description: source.shortDescription ?? source.description,
+      displayProperties: source.displayProperties,
+      resources: source.resources,
+      spellSlotRecoveryEffects: source.spellSlotRecoveryEffects,
+      selectedChoices: source.selectedChoices,
+    );
+    features[targetIndex] = target.copyWith(
+      relatedFeatures: [...?target.relatedFeatures, details],
+    );
+    features[sourceIndex] = source.copyWith(
+      mergedIntoFeatureSourceType: target.sourceType,
+      mergedIntoFeatureSourceId: target.sourceId,
+    );
+  }
+}
+
+void _applyFeatureRelationProperties(
+  List<CharacterFeatureViewData> features,
+  _ResolvedDerivedSources resolvedSources,
+) {
+  final featureKeys = <String, int>{};
+  for (final feature in resolvedSources.currentClassFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      featureKeys[featureRelationIdentity(
+              CharacterFeatureSourceType.classFeature, feature.referenceKey!)] =
+          feature.id!;
+    }
+  }
+  for (final feature in resolvedSources.currentSubclassFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      featureKeys[featureRelationIdentity(
+          CharacterFeatureSourceType.subclassFeature,
+          feature.referenceKey!)] = feature.id!;
+    }
+  }
+  for (final feature in resolvedSources.currentRaceFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      featureKeys[featureRelationIdentity(
+              CharacterFeatureSourceType.raceFeature, feature.referenceKey!)] =
+          feature.id!;
+    }
+  }
+  for (final feature in resolvedSources.currentSubraceFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      featureKeys[featureRelationIdentity(
+          CharacterFeatureSourceType.subraceFeature,
+          feature.referenceKey!)] = feature.id!;
+    }
+  }
+  final viewsByKey = <String, int>{};
+  for (var index = 0; index < features.length; index++) {
+    final view = features[index];
+    final key = featureKeys.entries
+        .where((entry) =>
+            entry.value == view.sourceId &&
+            entry.key.startsWith('${view.sourceType.name}:'))
+        .map((entry) => entry.key)
+        .firstOrNull;
+    if (key != null) viewsByKey[key] = index;
+  }
+  for (final entry in resolvedSources
+      .featureRelationResolution.enhancementsByTarget.entries) {
+    final targetIndex = viewsByKey[entry.key];
+    if (targetIndex == null) continue;
+    var target = features[targetIndex];
+    final overriddenKeys = <String>{};
+    for (final relation in entry.value) {
+      final sourceKey = featureRelationIdentity(
+        relation.sourceType,
+        relation.sourceReferenceKey,
+      );
+      final sourceIndex = viewsByKey[sourceKey];
+      if (sourceIndex == null) continue;
+      final sourceProperties = {
+        for (final property
+            in features[sourceIndex].displayProperties ?? const [])
+          property.key: property,
+      };
+      final targetProperties = [
+        ...(target.displayProperties ?? const <FeatureDisplayPropertyView>[]),
+      ];
+      for (final mapping in relation.propertyMappings?.entries ??
+          const <MapEntry<String, String>>[]) {
+        if (overriddenKeys.contains(mapping.value)) continue;
+        final sourceProperty = sourceProperties[mapping.key];
+        final targetIndex = targetProperties.indexWhere(
+          (property) => property.key == mapping.value,
+        );
+        if (sourceProperty == null || targetIndex < 0) continue;
+        overriddenKeys.add(mapping.value);
+        targetProperties[targetIndex] =
+            targetProperties[targetIndex].copyWith(value: sourceProperty.value);
+      }
+      target = target.copyWith(displayProperties: targetProperties);
+    }
+    features[targetIndex] = target;
+  }
 }

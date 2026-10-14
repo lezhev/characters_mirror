@@ -515,9 +515,38 @@ Future<CharacterData> _pruneInactiveConditionalChoices(
   }
   final activeClassFeatures = await _currentClassFeatures(cache, entries);
   final activeSubclassFeatures = await _currentSubclassFeatures(cache, entries);
+  final replacedFeatures = await _offlineSuppressedFeatureKeys(
+    cache,
+    character,
+    activeClassFeatures,
+    activeSubclassFeatures,
+  );
+  final suppressedChoiceGroupIds = {
+    for (final group in groups)
+      if (group.id != null &&
+          (classFeatures.any((feature) =>
+                  feature.id == group.sourceFeatureId &&
+                  replacedFeatures
+                      .contains('classFeature:${feature.referenceKey}')) ||
+              subclassFeatures.any((feature) =>
+                  feature.id == group.sourceSubclassFeatureId &&
+                  replacedFeatures
+                      .contains('subclassFeature:${feature.referenceKey}')) ||
+              [
+                ...?character.race?.features,
+                ...?character.subrace?.features
+              ].any((feature) =>
+                  feature.id == group.sourceRaceFeatureId &&
+                  (replacedFeatures
+                          .contains('raceFeature:${feature.referenceKey}') ||
+                      replacedFeatures.contains(
+                          'subraceFeature:${feature.referenceKey}')))))
+        group.id!,
+  };
   final inactive = <String>{};
   for (final group in conditionalGroups) {
     if (!availableGroups.containsKey(group.referenceKey)) continue;
+    if (suppressedChoiceGroupIds.contains(group.id)) continue;
     for (final data in group.requirements!) {
       if (!feature_modifiers.choiceRequirementIsWellFormed(
           feature_modifiers.choiceRequirementFromProtocol(data.toJson()))) {

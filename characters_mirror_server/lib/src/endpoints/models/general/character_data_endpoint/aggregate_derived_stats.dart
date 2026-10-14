@@ -23,8 +23,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     resolveContext: context,
     allowIncompleteConditionalGroups: allowIncompleteConditionalGroups,
   );
-  final currentRaceFeatures =
-      _currentRaceFeaturesBySource(character, totalLevel);
+  final currentRaceFeatures = _CurrentRaceFeatures(
+    raceFeatures: resolvedSources.currentRaceFeatures,
+    subraceFeatures: resolvedSources.currentSubraceFeatures,
+  );
   final scores = _buildAbilityScores(
     character,
     resolvedSources.selectedOptions,

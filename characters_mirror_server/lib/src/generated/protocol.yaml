@@ -74,6 +74,8 @@ subclassFeatureData:
   - add:
   - upsert:
   - delete:
+featureRelationData:
+  - getAll:
 raceData:
   - getAll:
   - add:

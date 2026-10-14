@@ -22,6 +22,7 @@ class OfflineReferencePrewarmer {
     SubclassFeatureRepository? subclassFeatureRepository,
     ChoiceGroupRepository? choiceGroupRepository,
     ChoiceOptionRepository? choiceOptionRepository,
+    FeatureRelationRepository? featureRelationRepository,
   })  : _raceRepository = raceRepository ?? RaceRepository(),
         _classRepository = classRepository ?? ClassRepository(),
         _backgroundRepository = backgroundRepository ?? BackgroundRepository(),
@@ -42,8 +43,12 @@ class OfflineReferencePrewarmer {
         _classLevelRepository = classLevelRepository ?? ClassLevelRepository(),
         _subclassFeatureRepository =
             subclassFeatureRepository ?? SubclassFeatureRepository(),
-        _choiceGroupRepository = choiceGroupRepository ?? ChoiceGroupRepository(),
-        _choiceOptionRepository = choiceOptionRepository ?? ChoiceOptionRepository();
+        _choiceGroupRepository =
+            choiceGroupRepository ?? ChoiceGroupRepository(),
+        _choiceOptionRepository =
+            choiceOptionRepository ?? ChoiceOptionRepository(),
+        _featureRelationRepository =
+            featureRelationRepository ?? FeatureRelationRepository();
 
   final RaceRepository _raceRepository;
   final ClassRepository _classRepository;
@@ -63,6 +68,7 @@ class OfflineReferencePrewarmer {
   final SubclassFeatureRepository _subclassFeatureRepository;
   final ChoiceGroupRepository _choiceGroupRepository;
   final ChoiceOptionRepository _choiceOptionRepository;
+  final FeatureRelationRepository _featureRelationRepository;
 
   bool _isRunning = false;
 
@@ -89,6 +95,7 @@ class OfflineReferencePrewarmer {
         _subclassFeatureRepository.getAll(),
         _choiceGroupRepository.getAll(),
         _choiceOptionRepository.getAll(),
+        _featureRelationRepository.getAll(),
       ]);
 
       await Future.wait([

@@ -38,11 +38,15 @@ class AbilitiesPage extends ConsumerWidget {
             const <CharacterFeatureViewData>[];
         final classFeatures = [
           for (final feature in activeFeatures)
-            if (_isClassFeature(feature)) feature,
+            if (_isClassFeature(feature) &&
+                feature.mergedIntoFeatureSourceId == null)
+              feature,
         ];
         final raceFeatures = [
           for (final feature in activeFeatures)
-            if (_isRaceFeature(feature)) feature,
+            if (_isRaceFeature(feature) &&
+                feature.mergedIntoFeatureSourceId == null)
+              feature,
         ];
 
         return Padding(
@@ -169,14 +173,14 @@ List<Widget> _buildFeatureCards({
               characterSheetControllerProvider(characterId).notifier,
             )
             .resetFeatureOverride(features[index]),
-        onSetResource: (resourceKey, current) {
+        onSetResource: (feature, resourceKey, current) {
           runCharacterSheetSave(
             context,
             ref
                 .read(
                   characterSheetControllerProvider(characterId).notifier,
                 )
-                .setFeatureResource(features[index], resourceKey, current),
+                .setFeatureResource(feature, resourceKey, current),
           );
           return Future.value();
         },

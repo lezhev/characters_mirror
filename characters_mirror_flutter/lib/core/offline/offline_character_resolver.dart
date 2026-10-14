@@ -69,14 +69,82 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   final totalLevel =
       max(1, entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
   final proficiencyBonus = 2 + ((totalLevel - 1) ~/ 4);
+  var currentClassFeatures = await _currentClassFeatures(cache, entries);
+  var currentSubclassFeatures = await _currentSubclassFeatures(cache, entries);
+  final featureRelations = await cache.getReferenceList(
+        'feature_relation',
+        offlineAllKey,
+        FeatureRelationData.fromJson,
+      ) ??
+      const <FeatureRelationData>[];
+  final acquiredIdentities = <String>{
+    for (final feature in currentClassFeatures)
+      if (feature.referenceKey != null) 'classFeature:${feature.referenceKey}',
+    for (final feature in currentSubclassFeatures)
+      if (feature.referenceKey != null)
+        'subclassFeature:${feature.referenceKey}',
+    for (final feature in character.race?.features ?? const <RaceFeatureData>[])
+      if (feature.referenceKey != null && (feature.level ?? 1) <= totalLevel)
+        'raceFeature:${feature.referenceKey}',
+    for (final feature
+        in character.subrace?.features ?? const <RaceFeatureData>[])
+      if (feature.referenceKey != null && (feature.level ?? 1) <= totalLevel)
+        'subraceFeature:${feature.referenceKey}',
+  };
+  final suppressed = _offlineResolveSuppressedFeatureKeys(
+      featureRelations, acquiredIdentities);
+  final suppressedFeatureIds = <int>{
+    for (final feature in currentClassFeatures)
+      if (feature.id != null &&
+          suppressed.contains('classFeature:${feature.referenceKey}'))
+        feature.id!,
+    for (final feature in currentSubclassFeatures)
+      if (feature.id != null &&
+          suppressed.contains('subclassFeature:${feature.referenceKey}'))
+        feature.id!,
+    for (final feature in character.race?.features ?? const <RaceFeatureData>[])
+      if (feature.id != null &&
+          feature.referenceKey != null &&
+          (feature.level ?? 1) <= totalLevel &&
+          suppressed.contains('raceFeature:${feature.referenceKey}'))
+        feature.id!,
+    for (final feature
+        in character.subrace?.features ?? const <RaceFeatureData>[])
+      if (feature.id != null &&
+          feature.referenceKey != null &&
+          (feature.level ?? 1) <= totalLevel &&
+          suppressed.contains('subraceFeature:${feature.referenceKey}'))
+        feature.id!,
+  };
+  currentClassFeatures = currentClassFeatures
+      .where((feature) =>
+          !suppressed.contains('classFeature:${feature.referenceKey}'))
+      .toList();
+  currentSubclassFeatures = currentSubclassFeatures
+      .where((feature) =>
+          !suppressed.contains('subclassFeature:${feature.referenceKey}'))
+      .toList();
   final selectedOptions =
       await _selectedChoiceOptions(cache, character, entries);
-  final currentClassFeatures = await _currentClassFeatures(cache, entries);
-  final currentSubclassFeatures =
-      await _currentSubclassFeatures(cache, entries);
+  final choiceGroups = await cache.getReferenceList(
+          'choice_group', offlineAllKey, ChoiceGroupData.fromJson) ??
+      const <ChoiceGroupData>[];
+  final suppressedChoiceGroupIds = {
+    for (final group in choiceGroups)
+      if (group.id != null &&
+          (suppressedFeatureIds.contains(group.sourceFeatureId) ||
+              suppressedFeatureIds.contains(group.sourceSubclassFeatureId) ||
+              suppressedFeatureIds.contains(group.sourceRaceFeatureId)))
+        group.id!,
+  };
+  final effectiveSelectedOptions = selectedOptions
+      .where(
+          (option) => !suppressedChoiceGroupIds.contains(option.choiceGroupId))
+      .toList();
   final fixedGrants =
       collectFixedFeatureGrants(currentClassFeatures, currentSubclassFeatures);
-  final abilityScoreValues = _abilityScores(character, selectedOptions);
+  final abilityScoreValues =
+      _abilityScores(character, effectiveSelectedOptions);
   final abilityScores = <Ability, int>{
     for (final ability in Ability.values)
       ability: abilityScoreValues[ability.name] ?? 10,
@@ -86,7 +154,8 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
       entry.key: _modifier(entry.value),
   };
   final savingThrowProficiencies = _savingThrowProficiencies(character);
-  final skillLevels = _skillProficiencyLevels(character, selectedOptions,
+  final skillLevels = _skillProficiencyLevels(
+      character, effectiveSelectedOptions,
       fixedSkills: fixedGrants.grantedSkills,
       fixedExpertiseSkills: fixedGrants.grantedExpertiseSkills);
   final savingThrowBonuses = <Ability, int>{
@@ -114,10 +183,14 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     totalLevel,
     proficiencyBonus,
     abilityModifiers,
-    selectedOptions,
+    effectiveSelectedOptions,
+    currentClassFeatures,
+    currentSubclassFeatures,
   );
-  final activeFeatureModifiers =
-      await _offlineCurrentFeatureModifiers(cache, entries);
+  final activeFeatureModifiers = await _offlineCurrentFeatureModifiers(
+      cache, entries,
+      classFeatures: currentClassFeatures,
+      subclassFeatures: currentSubclassFeatures);
   final hitDice = _hitDiceSummary(character, entries);
   final spellSlots = await _spellSlots(cache, entries);
   final maxHp = max(
@@ -147,7 +220,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     entries,
     totalLevel,
     selectedOptionIds: {
-      for (final option in selectedOptions)
+      for (final option in effectiveSelectedOptions)
         if (option.id != null) option.id!
     },
   );
@@ -157,7 +230,7 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     entries,
     totalLevel,
     selectedOptionIds: {
-      for (final option in selectedOptions)
+      for (final option in effectiveSelectedOptions)
         if (option.id != null) option.id!
     },
     onlyAlwaysPrepared: false,
@@ -167,12 +240,12 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     character,
     alwaysPreparedSpellKeys,
     racialSpellKeys,
-    selectedOptions,
+    effectiveSelectedOptions,
   )..addAll([...fixedGrants.grantedSpellKeys, ...grantedClassSpellKeys]);
   final uniqueGrantedSpellKeys = _uniqueStrings(grantedSpellKeys);
   final automaticLanguages = _languages(
     character,
-    selectedOptions,
+    effectiveSelectedOptions,
     currentClassFeatures,
   );
   final languages = _effectiveProficiencyValues<Language>(
@@ -194,7 +267,8 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
   );
   final toolExpertiseKeys = {
     ...fixedGrants.grantedExpertiseToolKeys,
-    for (final option in selectedOptions) ...?option.grantedExpertiseToolKeys,
+    for (final option in effectiveSelectedOptions)
+      ...?option.grantedExpertiseToolKeys,
   }.intersection(toolProficiencyKeys.toSet()).toList()
     ..sort();
   final automaticArmorTraining = await _armorTraining(
@@ -312,15 +386,19 @@ Future<CharacterDerivedData> buildOfflineDerivedData(
     customArmorTraining: _normalizedCustomValues(
       character.manualArmorTrainingOverrides?.custom,
     ),
-    resolvedSpells: await _resolveCharacterSpells(cache, character,
-        currentClassFeatures, currentSubclassFeatures, selectedOptions),
+    resolvedSpells: await _resolveCharacterSpells(
+        cache,
+        character,
+        currentClassFeatures,
+        currentSubclassFeatures,
+        effectiveSelectedOptions),
     grantedSpellKeys: uniqueGrantedSpellKeys,
     alwaysPreparedSpellKeys: alwaysPreparedSpellKeys,
     grantedEquipment: grantedEquipment,
     resistances: _uniqueDamageTypes([
       ...?character.race?.resistances,
       ...?character.subrace?.resistances,
-      for (final option in selectedOptions)
+      for (final option in effectiveSelectedOptions)
         if (option.damageType != null) option.damageType!,
     ]),
   );

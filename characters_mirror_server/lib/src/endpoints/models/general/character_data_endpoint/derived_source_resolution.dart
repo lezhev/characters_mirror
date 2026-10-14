@@ -8,6 +8,9 @@ class _ResolvedDerivedSources {
       selectedChoicesBySubclassFeatureId;
   final List<ClassFeatureData> currentClassFeatures;
   final List<SubclassFeatureData> currentSubclassFeatures;
+  final List<RaceFeatureData> currentRaceFeatures;
+  final List<RaceFeatureData> currentSubraceFeatures;
+  final FeatureRelationResolution featureRelationResolution;
   final List<FeatureDisplayPropertyData> featureDisplayProperties;
   final List<FeatureModifierData> featureModifiers;
   final List<String> alwaysPreparedSpellKeys;
@@ -21,6 +24,9 @@ class _ResolvedDerivedSources {
     required this.selectedChoicesBySubclassFeatureId,
     required this.currentClassFeatures,
     required this.currentSubclassFeatures,
+    required this.currentRaceFeatures,
+    required this.currentSubraceFeatures,
+    required this.featureRelationResolution,
     required this.featureDisplayProperties,
     required this.featureModifiers,
     required this.alwaysPreparedSpellKeys,
@@ -126,12 +132,116 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     }
   }
 
+  final raceFeatures = _currentRaceFeaturesBySource(character,
+      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
+  final allCurrentClassFeatures = [...currentClassFeatures];
+  final allCurrentSubclassFeatures = [...currentSubclassFeatures];
+  final acquiredFeatures = <String>{
+    for (final feature in currentClassFeatures)
+      if (feature.referenceKey != null)
+        featureRelationIdentity(
+          CharacterFeatureSourceType.classFeature,
+          feature.referenceKey!,
+        ),
+    for (final feature in currentSubclassFeatures)
+      if (feature.referenceKey != null)
+        featureRelationIdentity(
+          CharacterFeatureSourceType.subclassFeature,
+          feature.referenceKey!,
+        ),
+    for (final feature in raceFeatures.raceFeatures)
+      if (feature.referenceKey != null)
+        featureRelationIdentity(
+          CharacterFeatureSourceType.raceFeature,
+          feature.referenceKey!,
+        ),
+    for (final feature in raceFeatures.subraceFeatures)
+      if (feature.referenceKey != null)
+        featureRelationIdentity(
+          CharacterFeatureSourceType.subraceFeature,
+          feature.referenceKey!,
+        ),
+  };
+  final featureRelations = await context.featureRelations(
+    transaction: transaction,
+  );
+  final knownFeatureIdentities = {
+    ...acquiredFeatures,
+    for (final relation in featureRelations) ...[
+      featureRelationIdentity(relation.sourceType, relation.sourceReferenceKey),
+      featureRelationIdentity(relation.targetType, relation.targetReferenceKey),
+    ],
+  };
+  final featureRelationResolution = resolveFeatureRelations(
+    relations: featureRelations,
+    knownFeatures: knownFeatureIdentities,
+    acquiredFeatures: acquiredFeatures,
+  );
+  final suppressedFeatureIds = <int>{
+    for (final feature in allCurrentClassFeatures)
+      if (feature.id != null &&
+          feature.referenceKey != null &&
+          featureRelationResolution.suppressed.contains(
+            featureRelationIdentity(
+              CharacterFeatureSourceType.classFeature,
+              feature.referenceKey!,
+            ),
+          ))
+        feature.id!,
+    for (final feature in allCurrentSubclassFeatures)
+      if (feature.id != null &&
+          feature.referenceKey != null &&
+          featureRelationResolution.suppressed.contains(
+            featureRelationIdentity(
+              CharacterFeatureSourceType.subclassFeature,
+              feature.referenceKey!,
+            ),
+          ))
+        feature.id!,
+    for (final feature in raceFeatures.raceFeatures)
+      if (feature.id != null &&
+          feature.referenceKey != null &&
+          featureRelationResolution.suppressed.contains(
+            featureRelationIdentity(
+              CharacterFeatureSourceType.raceFeature,
+              feature.referenceKey!,
+            ),
+          ))
+        feature.id!,
+    for (final feature in raceFeatures.subraceFeatures)
+      if (feature.id != null &&
+          feature.referenceKey != null &&
+          featureRelationResolution.suppressed.contains(
+            featureRelationIdentity(
+              CharacterFeatureSourceType.subraceFeature,
+              feature.referenceKey!,
+            ),
+          ))
+        feature.id!,
+  };
+  bool isActive(CharacterFeatureSourceType type, String? key) =>
+      key == null ||
+      !featureRelationResolution.suppressed
+          .contains(featureRelationIdentity(type, key));
+  currentClassFeatures.removeWhere((feature) =>
+      !isActive(CharacterFeatureSourceType.classFeature, feature.referenceKey));
+  currentSubclassFeatures.removeWhere((feature) => !isActive(
+      CharacterFeatureSourceType.subclassFeature, feature.referenceKey));
+  final activeRaceFeatures = raceFeatures.raceFeatures
+      .where((feature) => isActive(
+          CharacterFeatureSourceType.raceFeature, feature.referenceKey))
+      .toList();
+  final activeSubraceFeatures = raceFeatures.subraceFeatures
+      .where((feature) => isActive(
+          CharacterFeatureSourceType.subraceFeature, feature.referenceKey))
+      .toList();
+
   final currentClassFeatureIds = {
     for (final feature in currentClassFeatures)
       if (feature.id != null) feature.id!,
   };
   final currentClassFeatureLevels = {
-    for (final feature in currentClassFeatures)
+    for (final feature in allCurrentClassFeatures)
       if (feature.id != null)
         feature.id!: classLevels[feature.parentClassId] ?? feature.level,
   };
@@ -140,7 +250,7 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
       if (feature.id != null) feature.id!,
   };
   final currentSubclassFeatureLevels = {
-    for (final feature in currentSubclassFeatures)
+    for (final feature in allCurrentSubclassFeatures)
       if (feature.id != null)
         feature.id!: subclassLevels[feature.parentSubclassId] ?? feature.level,
   };
@@ -169,12 +279,10 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
       ),
   ];
 
-  final currentRaceFeatures = _currentRaceFeaturesBySource(character,
-      entries.fold<int>(0, (sum, entry) => sum + (entry.level ?? 0)));
   final raceFeatureIds = {
     for (final feature in [
-      ...currentRaceFeatures.raceFeatures,
-      ...currentRaceFeatures.subraceFeatures,
+      ...raceFeatures.raceFeatures,
+      ...raceFeatures.subraceFeatures,
     ])
       if (feature.id != null) feature.id!,
   };
@@ -278,7 +386,16 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
           _SelectedGenericChoice(choice, option),
         );
 
-    selectedOptions.add(option);
+    if ((selectedGroup.sourceFeatureId == null ||
+            !suppressedFeatureIds.contains(selectedGroup.sourceFeatureId)) &&
+        (selectedGroup.sourceSubclassFeatureId == null ||
+            !suppressedFeatureIds
+                .contains(selectedGroup.sourceSubclassFeatureId)) &&
+        (selectedGroup.sourceRaceFeatureId == null ||
+            !suppressedFeatureIds
+                .contains(selectedGroup.sourceRaceFeatureId))) {
+      selectedOptions.add(option);
+    }
   }
 
   final cantripKeys =
@@ -320,8 +437,21 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     cantripKeys,
     grantedCantrips,
   );
-  selectedOptions.addAll(automatic.choices
-      .map((choice) => optionsByGroupKey[choice.groupKey]![choice.optionKey]!));
+  for (final choice in automatic.choices) {
+    final group = relevantGroups
+        .where((item) => item.referenceKey == choice.groupKey)
+        .firstOrNull;
+    if (group == null ||
+        (group.sourceFeatureId != null &&
+            suppressedFeatureIds.contains(group.sourceFeatureId)) ||
+        (group.sourceSubclassFeatureId != null &&
+            suppressedFeatureIds.contains(group.sourceSubclassFeatureId)) ||
+        (group.sourceRaceFeatureId != null &&
+            suppressedFeatureIds.contains(group.sourceRaceFeatureId))) {
+      continue;
+    }
+    selectedOptions.add(optionsByGroupKey[choice.groupKey]![choice.optionKey]!);
+  }
   _validateGenericChoiceSelectionRules(selectedByGroupKey, relevantGroups);
   final acquired = character.id == null ||
           !relevantGroups.any((g) => g.autoSelectSingleEligible == true)
@@ -332,7 +462,12 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
   _validateGenericChoiceEligibility(
     character,
     selectedByGroupKey,
-    relevantGroups,
+    relevantGroups
+        .where((group) =>
+            !suppressedFeatureIds.contains(group.sourceFeatureId) &&
+            !suppressedFeatureIds.contains(group.sourceSubclassFeatureId) &&
+            !suppressedFeatureIds.contains(group.sourceRaceFeatureId))
+        .toList(),
     currentClassFeatures,
     currentSubclassFeatures,
     cantripKeys,
@@ -409,6 +544,9 @@ Future<_ResolvedDerivedSources> _resolveDerivedSources(
     selectedChoicesBySubclassFeatureId: selectedChoicesBySubclassFeatureId,
     currentClassFeatures: currentClassFeatures,
     currentSubclassFeatures: currentSubclassFeatures,
+    currentRaceFeatures: activeRaceFeatures,
+    currentSubraceFeatures: activeSubraceFeatures,
+    featureRelationResolution: featureRelationResolution,
     featureDisplayProperties: featureDisplayProperties,
     featureModifiers: featureModifiers,
     alwaysPreparedSpellKeys: spellGrantKeys(onlyAlwaysPrepared: true),

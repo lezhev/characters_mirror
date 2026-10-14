@@ -7,10 +7,22 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
   int proficiencyBonus,
   Map<Ability, int> abilityModifiers,
   List<ChoiceOptionData> selectedOptions,
+  List<ClassFeatureData> activeClassFeatures,
+  List<SubclassFeatureData> activeSubclassFeatures,
 ) async {
   final result = <CharacterFeatureViewData>[];
   final modifiers = await _offlineCurrentFeatureModifiers(
-      cache, character.classEntries ?? <CharacterClassEntryData>[]);
+    cache,
+    character.classEntries ?? <CharacterClassEntryData>[],
+    classFeatures: activeClassFeatures,
+    subclassFeatures: activeSubclassFeatures,
+  );
+  final suppressedFeatureKeys = await _offlineSuppressedFeatureKeys(
+    cache,
+    character,
+    activeClassFeatures,
+    activeSubclassFeatures,
+  );
   final activeEffects = <({
     int sourceClassLevel,
     FeatureResourceEffectData effect,
@@ -185,6 +197,9 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
 
   for (final feature in character.race?.features ?? const <RaceFeatureData>[]) {
     if ((feature.level ?? 1) > max(totalLevel, 1)) continue;
+    if (suppressedFeatureKeys.contains('raceFeature:${feature.referenceKey}')) {
+      continue;
+    }
     addFeature(
       sourceType: CharacterFeatureSourceType.raceFeature,
       sourceId: feature.id,
@@ -201,6 +216,10 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
   for (final feature
       in character.subrace?.features ?? const <RaceFeatureData>[]) {
     if ((feature.level ?? 1) > max(totalLevel, 1)) continue;
+    if (suppressedFeatureKeys
+        .contains('subraceFeature:${feature.referenceKey}')) {
+      continue;
+    }
     addFeature(
       sourceType: CharacterFeatureSourceType.subraceFeature,
       sourceId: feature.id,
@@ -234,10 +253,17 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
           view.classFeature!.id!:
               view.displayProperties ?? const <FeatureDisplayPropertyView>[],
     };
-    final currentClassFeatures = stepView?.currentLevelFeatures ??
-        await _currentClassFeatures(cache, [entry]);
-    final currentSubclassFeatures = stepView?.currentSubclassFeatures ??
-        await _currentSubclassFeatures(cache, [entry]);
+    final classIds = activeClassFeatures.map((feature) => feature.id).toSet();
+    final subclassIds =
+        activeSubclassFeatures.map((feature) => feature.id).toSet();
+    final currentClassFeatures = (stepView?.currentLevelFeatures ??
+            await _currentClassFeatures(cache, [entry]))
+        .where((feature) => classIds.contains(feature.id))
+        .toList();
+    final currentSubclassFeatures = (stepView?.currentSubclassFeatures ??
+            await _currentSubclassFeatures(cache, [entry]))
+        .where((feature) => subclassIds.contains(feature.id))
+        .toList();
     final subclassDisplayProperties = {
       for (final view in stepView?.currentSubclassFeatureViews ??
           const <ClassStepFeatureView>[])
@@ -316,6 +342,7 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
     }
   }
 
+  await _applyOfflineFeatureRelationProperties(cache, result);
   final effective = _applyFeatureResourceEffects(
     result,
     activeEffects,
@@ -335,6 +362,143 @@ Future<List<CharacterFeatureViewData>> _activeFeatures(
     return a.sourceId.compareTo(b.sourceId);
   });
   return effective;
+}
+
+Future<void> _applyOfflineFeatureRelationProperties(
+  OfflineCacheDatabase cache,
+  List<CharacterFeatureViewData> features,
+) async {
+  final relations = await cache.getReferenceList(
+        'feature_relation',
+        offlineAllKey,
+        FeatureRelationData.fromJson,
+      ) ??
+      const <FeatureRelationData>[];
+  if (relations.isEmpty) return;
+  final referenceKeys = <(CharacterFeatureSourceType, int), String>{};
+  final classFeatures = await cache.getReferenceList(
+          'class_feature', offlineAllKey, ClassFeatureData.fromJson) ??
+      const <ClassFeatureData>[];
+  final subclassFeatures = await cache.getReferenceList(
+          'subclass_feature', offlineAllKey, SubclassFeatureData.fromJson) ??
+      const <SubclassFeatureData>[];
+  final raceFeatures = await cache.getReferenceList(
+          'race_feature', offlineAllKey, RaceFeatureData.fromJson) ??
+      const <RaceFeatureData>[];
+  for (final feature in classFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      referenceKeys[(CharacterFeatureSourceType.classFeature, feature.id!)] =
+          feature.referenceKey!;
+    }
+  }
+  for (final feature in subclassFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      referenceKeys[(CharacterFeatureSourceType.subclassFeature, feature.id!)] =
+          feature.referenceKey!;
+    }
+  }
+  for (final feature in raceFeatures) {
+    if (feature.id != null && feature.referenceKey != null) {
+      referenceKeys[(CharacterFeatureSourceType.raceFeature, feature.id!)] =
+          feature.referenceKey!;
+      referenceKeys[(CharacterFeatureSourceType.subraceFeature, feature.id!)] =
+          feature.referenceKey!;
+    }
+  }
+  final viewIndexes = <String, int>{};
+  for (var index = 0; index < features.length; index++) {
+    final view = features[index];
+    final referenceKey = referenceKeys[(view.sourceType, view.sourceId)];
+    if (referenceKey != null) {
+      viewIndexes['${view.sourceType.name}:$referenceKey'] = index;
+    }
+  }
+  final enhancingRelations = relations
+      .where(
+          (relation) => relation.relationType == FeatureRelationType.enhances)
+      .toList()
+    ..sort((a, b) {
+      final priority = b.priority.compareTo(a.priority);
+      if (priority != 0) return priority;
+      final type = a.sourceType.name.compareTo(b.sourceType.name);
+      return type != 0
+          ? type
+          : a.sourceReferenceKey.compareTo(b.sourceReferenceKey);
+    });
+  final overriddenKeysByTarget = <int, Set<String>>{};
+  for (final relation in enhancingRelations) {
+    final targetIndex = viewIndexes[
+        '${relation.targetType.name}:${relation.targetReferenceKey}'];
+    final sourceIndex = viewIndexes[
+        '${relation.sourceType.name}:${relation.sourceReferenceKey}'];
+    if (targetIndex == null || sourceIndex == null) continue;
+    final target = features[targetIndex];
+    final sourceProperties = {
+      for (final property
+          in features[sourceIndex].displayProperties ?? const [])
+        property.key: property,
+    };
+    final targetProperties = [
+      ...(target.displayProperties ?? const <FeatureDisplayPropertyView>[]),
+    ];
+    for (final mapping in relation.propertyMappings?.entries ??
+        const <MapEntry<String, String>>[]) {
+      final overriddenKeys =
+          overriddenKeysByTarget.putIfAbsent(targetIndex, () => <String>{});
+      if (overriddenKeys.contains(mapping.value)) {
+        continue;
+      }
+      final sourceProperty = sourceProperties[mapping.key];
+      final targetPropertyIndex = targetProperties.indexWhere(
+        (property) => property.key == mapping.value,
+      );
+      if (sourceProperty == null || targetPropertyIndex < 0) continue;
+      overriddenKeys.add(mapping.value);
+      targetProperties[targetPropertyIndex] =
+          targetProperties[targetPropertyIndex]
+              .copyWith(value: sourceProperty.value);
+    }
+    features[targetIndex] =
+        target.copyWith(displayProperties: targetProperties);
+  }
+  for (final relation in relations.where(
+    (relation) =>
+        relation.relationType == FeatureRelationType.enhances &&
+        relation.mergeDisplay == true,
+  )) {
+    final targetIndex = viewIndexes[
+        '${relation.targetType.name}:${relation.targetReferenceKey}'];
+    final sourceIndex = viewIndexes[
+        '${relation.sourceType.name}:${relation.sourceReferenceKey}'];
+    if (targetIndex == null ||
+        sourceIndex == null ||
+        targetIndex == sourceIndex) {
+      continue;
+    }
+    final source = features[sourceIndex];
+    if (source.spellSlotRecoveryEffects?.isNotEmpty ?? false) {
+      continue;
+    }
+    final target = features[targetIndex];
+    final detail = RelatedFeatureViewData(
+      sourceType: source.sourceType,
+      sourceId: source.sourceId,
+      sourceName: source.sourceName,
+      name: source.name,
+      description: source.shortDescription ?? source.description,
+      displayProperties: source.displayProperties,
+      resources: source.resources,
+      spellSlotRecoveryEffects: source.spellSlotRecoveryEffects,
+      selectedChoices: source.selectedChoices,
+    );
+    features[targetIndex] = target.copyWith(
+      relatedFeatures: [...?target.relatedFeatures, detail],
+    );
+    features[sourceIndex] = source.copyWith(
+      mergedIntoFeatureSourceType: target.sourceType,
+      mergedIntoFeatureSourceId: target.sourceId,
+    );
+  }
 }
 
 Map<(CharacterFeatureSourceType, int), List<SelectedFeatureChoiceView>>

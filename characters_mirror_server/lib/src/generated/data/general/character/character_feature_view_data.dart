@@ -15,8 +15,9 @@ import '../../../enums/feature_tag.dart' as _i3;
 import '../../../data/general/character/character_resource_view_data.dart'
     as _i4;
 import '../../../views/feature_display_property_view.dart' as _i5;
-import '../../../views/selected_feature_choice_view.dart' as _i6;
-import '../../../data/general/feature_resource_effect_data.dart' as _i7;
+import '../../../data/general/character/related_feature_view_data.dart' as _i6;
+import '../../../views/selected_feature_choice_view.dart' as _i7;
+import '../../../data/general/feature_resource_effect_data.dart' as _i8;
 
 abstract class CharacterFeatureViewData
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -35,6 +36,9 @@ abstract class CharacterFeatureViewData
     this.isCustomized,
     this.resources,
     this.displayProperties,
+    this.relatedFeatures,
+    this.mergedIntoFeatureSourceType,
+    this.mergedIntoFeatureSourceId,
     this.selectedChoices,
     this.selectedChoiceDetails,
     this.sourceClassLevel,
@@ -56,10 +60,13 @@ abstract class CharacterFeatureViewData
     bool? isCustomized,
     List<_i4.CharacterResourceViewData>? resources,
     List<_i5.FeatureDisplayPropertyView>? displayProperties,
+    List<_i6.RelatedFeatureViewData>? relatedFeatures,
+    _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
+    int? mergedIntoFeatureSourceId,
     List<String>? selectedChoices,
-    List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails,
     int? sourceClassLevel,
-    List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects,
+    List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   }) = _CharacterFeatureViewDataImpl;
 
   factory CharacterFeatureViewData.fromJson(
@@ -90,18 +97,29 @@ abstract class CharacterFeatureViewData
           ?.map((e) => _i5.FeatureDisplayPropertyView.fromJson(
               (e as Map<String, dynamic>)))
           .toList(),
+      relatedFeatures: (jsonSerialization['relatedFeatures'] as List?)
+          ?.map((e) =>
+              _i6.RelatedFeatureViewData.fromJson((e as Map<String, dynamic>)))
+          .toList(),
+      mergedIntoFeatureSourceType:
+          jsonSerialization['mergedIntoFeatureSourceType'] == null
+              ? null
+              : _i2.CharacterFeatureSourceType.fromJson(
+                  (jsonSerialization['mergedIntoFeatureSourceType'] as String)),
+      mergedIntoFeatureSourceId:
+          jsonSerialization['mergedIntoFeatureSourceId'] as int?,
       selectedChoices: (jsonSerialization['selectedChoices'] as List?)
           ?.map((e) => e as String)
           .toList(),
       selectedChoiceDetails:
           (jsonSerialization['selectedChoiceDetails'] as List?)
-              ?.map((e) => _i6.SelectedFeatureChoiceView.fromJson(
+              ?.map((e) => _i7.SelectedFeatureChoiceView.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
       sourceClassLevel: jsonSerialization['sourceClassLevel'] as int?,
       spellSlotRecoveryEffects:
           (jsonSerialization['spellSlotRecoveryEffects'] as List?)
-              ?.map((e) => _i7.FeatureResourceEffectData.fromJson(
+              ?.map((e) => _i8.FeatureResourceEffectData.fromJson(
                   (e as Map<String, dynamic>)))
               .toList(),
     );
@@ -135,13 +153,19 @@ abstract class CharacterFeatureViewData
 
   List<_i5.FeatureDisplayPropertyView>? displayProperties;
 
+  List<_i6.RelatedFeatureViewData>? relatedFeatures;
+
+  _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType;
+
+  int? mergedIntoFeatureSourceId;
+
   List<String>? selectedChoices;
 
-  List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails;
+  List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails;
 
   int? sourceClassLevel;
 
-  List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects;
+  List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects;
 
   /// Returns a shallow copy of this [CharacterFeatureViewData]
   /// with some or all fields replaced by the given arguments.
@@ -161,10 +185,13 @@ abstract class CharacterFeatureViewData
     bool? isCustomized,
     List<_i4.CharacterResourceViewData>? resources,
     List<_i5.FeatureDisplayPropertyView>? displayProperties,
+    List<_i6.RelatedFeatureViewData>? relatedFeatures,
+    _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
+    int? mergedIntoFeatureSourceId,
     List<String>? selectedChoices,
-    List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails,
     int? sourceClassLevel,
-    List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects,
+    List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -187,6 +214,13 @@ abstract class CharacterFeatureViewData
       if (displayProperties != null)
         'displayProperties':
             displayProperties?.toJson(valueToJson: (v) => v.toJson()),
+      if (relatedFeatures != null)
+        'relatedFeatures':
+            relatedFeatures?.toJson(valueToJson: (v) => v.toJson()),
+      if (mergedIntoFeatureSourceType != null)
+        'mergedIntoFeatureSourceType': mergedIntoFeatureSourceType?.toJson(),
+      if (mergedIntoFeatureSourceId != null)
+        'mergedIntoFeatureSourceId': mergedIntoFeatureSourceId,
       if (selectedChoices != null) 'selectedChoices': selectedChoices?.toJson(),
       if (selectedChoiceDetails != null)
         'selectedChoiceDetails':
@@ -220,6 +254,13 @@ abstract class CharacterFeatureViewData
       if (displayProperties != null)
         'displayProperties': displayProperties?.toJson(
             valueToJson: (v) => v.toJsonForProtocol()),
+      if (relatedFeatures != null)
+        'relatedFeatures':
+            relatedFeatures?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (mergedIntoFeatureSourceType != null)
+        'mergedIntoFeatureSourceType': mergedIntoFeatureSourceType?.toJson(),
+      if (mergedIntoFeatureSourceId != null)
+        'mergedIntoFeatureSourceId': mergedIntoFeatureSourceId,
       if (selectedChoices != null) 'selectedChoices': selectedChoices?.toJson(),
       if (selectedChoiceDetails != null)
         'selectedChoiceDetails': selectedChoiceDetails?.toJson(
@@ -255,10 +296,13 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     bool? isCustomized,
     List<_i4.CharacterResourceViewData>? resources,
     List<_i5.FeatureDisplayPropertyView>? displayProperties,
+    List<_i6.RelatedFeatureViewData>? relatedFeatures,
+    _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
+    int? mergedIntoFeatureSourceId,
     List<String>? selectedChoices,
-    List<_i6.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails,
     int? sourceClassLevel,
-    List<_i7.FeatureResourceEffectData>? spellSlotRecoveryEffects,
+    List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   }) : super._(
           sourceType: sourceType,
           sourceId: sourceId,
@@ -274,6 +318,9 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           isCustomized: isCustomized,
           resources: resources,
           displayProperties: displayProperties,
+          relatedFeatures: relatedFeatures,
+          mergedIntoFeatureSourceType: mergedIntoFeatureSourceType,
+          mergedIntoFeatureSourceId: mergedIntoFeatureSourceId,
           selectedChoices: selectedChoices,
           selectedChoiceDetails: selectedChoiceDetails,
           sourceClassLevel: sourceClassLevel,
@@ -299,6 +346,9 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
     Object? isCustomized = _Undefined,
     Object? resources = _Undefined,
     Object? displayProperties = _Undefined,
+    Object? relatedFeatures = _Undefined,
+    Object? mergedIntoFeatureSourceType = _Undefined,
+    Object? mergedIntoFeatureSourceId = _Undefined,
     Object? selectedChoices = _Undefined,
     Object? selectedChoiceDetails = _Undefined,
     Object? sourceClassLevel = _Undefined,
@@ -332,17 +382,27 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           displayProperties is List<_i5.FeatureDisplayPropertyView>?
               ? displayProperties
               : this.displayProperties?.map((e0) => e0.copyWith()).toList(),
+      relatedFeatures: relatedFeatures is List<_i6.RelatedFeatureViewData>?
+          ? relatedFeatures
+          : this.relatedFeatures?.map((e0) => e0.copyWith()).toList(),
+      mergedIntoFeatureSourceType:
+          mergedIntoFeatureSourceType is _i2.CharacterFeatureSourceType?
+              ? mergedIntoFeatureSourceType
+              : this.mergedIntoFeatureSourceType,
+      mergedIntoFeatureSourceId: mergedIntoFeatureSourceId is int?
+          ? mergedIntoFeatureSourceId
+          : this.mergedIntoFeatureSourceId,
       selectedChoices: selectedChoices is List<String>?
           ? selectedChoices
           : this.selectedChoices?.map((e0) => e0).toList(),
       selectedChoiceDetails:
-          selectedChoiceDetails is List<_i6.SelectedFeatureChoiceView>?
+          selectedChoiceDetails is List<_i7.SelectedFeatureChoiceView>?
               ? selectedChoiceDetails
               : this.selectedChoiceDetails?.map((e0) => e0.copyWith()).toList(),
       sourceClassLevel:
           sourceClassLevel is int? ? sourceClassLevel : this.sourceClassLevel,
       spellSlotRecoveryEffects: spellSlotRecoveryEffects
-              is List<_i7.FeatureResourceEffectData>?
+              is List<_i8.FeatureResourceEffectData>?
           ? spellSlotRecoveryEffects
           : this.spellSlotRecoveryEffects?.map((e0) => e0.copyWith()).toList(),
     );

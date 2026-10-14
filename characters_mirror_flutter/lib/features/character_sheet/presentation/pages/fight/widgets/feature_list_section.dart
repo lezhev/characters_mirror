@@ -45,6 +45,9 @@ class FeatureListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayedFeatures = visibleFeatures
+        .where((feature) => feature.mergedIntoFeatureSourceId == null)
+        .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -64,24 +67,25 @@ class FeatureListSection extends StatelessWidget {
             'Способности появятся после выбора класса или расы.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-        if (activeFeatures.isNotEmpty && visibleFeatures.isEmpty)
+        if (activeFeatures.isNotEmpty && displayedFeatures.isEmpty)
           Text(
             'Нет способностей по выбранным тегам.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-        for (var index = 0; index < visibleFeatures.length; index++) ...[
+        for (var index = 0; index < displayedFeatures.length; index++) ...[
           CharacterFeatureCard(
-            feature: visibleFeatures[index],
+            feature: displayedFeatures[index],
             actions: characterId == null
                 ? null
                 : SpellSlotRecoveryActions(
-                    characterId: characterId!, feature: visibleFeatures[index]),
+                    characterId: characterId!,
+                    feature: displayedFeatures[index]),
             canSpendResource: (resource) => canRecoverFeatureResource(
-              visibleFeatures[index],
+              displayedFeatures[index],
               resource,
             ),
             onSpendResource: (resource) => onRecoverFeatureResource(
-              visibleFeatures[index],
+              displayedFeatures[index],
               resource,
             ),
             onSave: ({
@@ -90,22 +94,22 @@ class FeatureListSection extends StatelessWidget {
               List<FeatureTag>? tags,
             }) {
               return onSaveFeature(
-                visibleFeatures[index],
+                displayedFeatures[index],
                 name: name,
                 description: description,
                 tags: tags,
               );
             },
-            onReset: () => onResetFeature(visibleFeatures[index]),
-            onSetResource: (resourceKey, current) {
+            onReset: () => onResetFeature(displayedFeatures[index]),
+            onSetResource: (feature, resourceKey, current) {
               return onSetFeatureResource(
-                visibleFeatures[index],
+                feature,
                 resourceKey,
                 current,
               );
             },
           ),
-          if (index < visibleFeatures.length - 1) const SizedBox(height: 8),
+          if (index < displayedFeatures.length - 1) const SizedBox(height: 8),
         ],
       ],
     );
