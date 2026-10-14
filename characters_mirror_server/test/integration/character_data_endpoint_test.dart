@@ -7,6 +7,7 @@ import 'package:test/test.dart';
 
 import '../../../test_fixtures/derived_parity_contract.dart';
 import 'test_tools/serverpod_test_tools.dart';
+import 'test_tools/reference_catalog_fixtures.dart';
 
 part 'character_data_endpoint_test/character_data_endpoint_scenarios.dart';
 part 'character_data_endpoint_test/character_data_creation_scenarios.dart';
@@ -150,7 +151,7 @@ Future<_StartingEquipmentFixture> _seedStartingEquipmentEntries(
         orderIndex: 0,
         lineKind: StartingEquipmentLineKind.catalogRef,
         catalogType: EquipmentCatalogType.item,
-        referenceKey: 'holy_symbol',
+        referenceKey: 'fixture_creation_holy_symbol',
         quantity: 1,
       ),
     );
@@ -162,7 +163,7 @@ Future<_StartingEquipmentFixture> _seedStartingEquipmentEntries(
         orderIndex: 0,
         lineKind: StartingEquipmentLineKind.catalogRef,
         catalogType: EquipmentCatalogType.armor,
-        referenceKey: 'leather_armor',
+        referenceKey: 'fixture_creation_leather_armor',
         quantity: 1,
       ),
     );
@@ -186,7 +187,7 @@ Future<_StartingEquipmentFixture> _seedStartingEquipmentEntries(
         orderIndex: 2,
         lineKind: StartingEquipmentLineKind.catalogRef,
         catalogType: EquipmentCatalogType.weapon,
-        referenceKey: 'dagger',
+        referenceKey: 'fixture_creation_dagger',
         quantity: 2,
       ),
     );
@@ -215,7 +216,7 @@ Future<_StartingEquipmentFixture> _seedStartingEquipmentEntries(
         orderIndex: 0,
         lineKind: StartingEquipmentLineKind.catalogRef,
         catalogType: EquipmentCatalogType.weapon,
-        referenceKey: 'light_crossbow',
+        referenceKey: 'fixture_creation_light_crossbow',
         quantity: 1,
       ),
     );
@@ -227,7 +228,7 @@ Future<_StartingEquipmentFixture> _seedStartingEquipmentEntries(
         orderIndex: 1,
         lineKind: StartingEquipmentLineKind.catalogRef,
         catalogType: EquipmentCatalogType.item,
-        referenceKey: 'bolts',
+        referenceKey: 'fixture_creation_bolts',
         quantity: 20,
       ),
     );
@@ -278,7 +279,7 @@ Future<_StartingEquipmentFixture> _seedStartingEquipmentEntries(
         orderIndex: 0,
         lineKind: StartingEquipmentLineKind.catalogRef,
         catalogType: EquipmentCatalogType.item,
-        referenceKey: 'component_pouch',
+        referenceKey: 'fixture_creation_component_pouch',
         quantity: 1,
       ),
     );
@@ -507,7 +508,7 @@ Future<_CreationFixture> _seedCreationFixture(
   final lightSpell = await endpoints.spellData.add(
     sessionBuilder,
     SpellData(
-      referenceKey: 'light',
+      referenceKey: 'fixture_creation_light',
       name: 'Light',
       level: 0,
       schoolValue: SpellSchool.evocation,
@@ -516,7 +517,7 @@ Future<_CreationFixture> _seedCreationFixture(
   final magicMissileSpell = await endpoints.spellData.add(
     sessionBuilder,
     SpellData(
-      referenceKey: 'magic_missile',
+      referenceKey: 'fixture_creation_magic_missile',
       name: 'Magic Missile',
       level: 1,
       schoolValue: SpellSchool.evocation,
@@ -525,7 +526,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.spellData.add(
     sessionBuilder,
     SpellData(
-      referenceKey: 'shield',
+      referenceKey: 'fixture_creation_shield',
       name: 'Shield',
       level: 1,
       schoolValue: SpellSchool.abjuration,
@@ -645,7 +646,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.itemData.upsert(
     sessionBuilder,
     ItemData(
-      referenceKey: 'holy_symbol',
+      referenceKey: 'fixture_creation_holy_symbol',
       name: 'Holy Symbol',
       category: 'Gear',
     ),
@@ -653,7 +654,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.itemData.upsert(
     sessionBuilder,
     ItemData(
-      referenceKey: 'crystal_focus',
+      referenceKey: 'fixture_creation_crystal_focus',
       name: 'Crystal Focus',
       category: 'Focus',
     ),
@@ -661,7 +662,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.itemData.upsert(
     sessionBuilder,
     ItemData(
-      referenceKey: 'component_pouch',
+      referenceKey: 'fixture_creation_component_pouch',
       name: 'Component Pouch',
       category: 'Gear',
     ),
@@ -669,7 +670,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.itemData.upsert(
     sessionBuilder,
     ItemData(
-      referenceKey: 'bolts',
+      referenceKey: 'fixture_creation_bolts',
       name: 'Crossbow Bolts',
       category: 'Ammunition',
     ),
@@ -677,7 +678,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.weaponData.upsert(
     sessionBuilder,
     WeaponData(
-      referenceKey: 'club',
+      referenceKey: 'fixture_creation_club',
       name: 'Club',
       category: WeaponCategory.simpleMelee,
       damage: '1d4',
@@ -688,7 +689,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.weaponData.upsert(
     sessionBuilder,
     WeaponData(
-      referenceKey: 'dagger',
+      referenceKey: 'fixture_creation_dagger',
       name: 'Dagger',
       category: WeaponCategory.simpleMelee,
       damage: '1d4',
@@ -703,7 +704,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.weaponData.upsert(
     sessionBuilder,
     WeaponData(
-      referenceKey: 'light_crossbow',
+      referenceKey: 'fixture_creation_light_crossbow',
       name: 'Light Crossbow',
       category: WeaponCategory.simpleRanged,
       damage: '1d8',
@@ -718,7 +719,7 @@ Future<_CreationFixture> _seedCreationFixture(
   await endpoints.armorData.upsert(
     sessionBuilder,
     ArmorData(
-      referenceKey: 'leather_armor',
+      referenceKey: 'fixture_creation_leather_armor',
       name: 'Leather Armor',
       categoryValue: ArmorCategory.light,
     ),

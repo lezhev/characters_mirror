@@ -4,6 +4,7 @@ import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
+import 'test_tools/reference_migration_fixtures.dart';
 
 void main() {
   withServerpod('Level 1-3 reference backfill', (sessions, _) {
@@ -11,6 +12,13 @@ void main() {
         () async {
       final session = sessions.build();
       try {
+        await isolateReferenceMigration(session, [
+          'class_data',
+          'subclass_data',
+          'subclass_feature_data',
+          'spell_data',
+          'class_spell_grant_data',
+        ]);
         final data = await ClassData.db.insertRow(
             session, ClassData(referenceKey: 'backfill_fixture_class'));
         final subclass = await SubclassData.db.insertRow(

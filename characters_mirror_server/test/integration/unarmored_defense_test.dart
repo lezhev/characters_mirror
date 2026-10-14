@@ -5,6 +5,8 @@ import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_l
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 import '../../../test_fixtures/armor_class_contract.dart';
+import 'test_tools/reference_catalog_fixtures.dart';
+import 'test_tools/reference_migration_fixtures.dart';
 import 'test_tools/serverpod_test_tools.dart';
 
 void main() {
@@ -143,7 +145,9 @@ void main() {
               categoryValue: ArmorCategory.shield,
               bonusAC: 2),
         ];
-        await ArmorData.db.insert(session, catalog);
+        for (var i = 0; i < catalog.length; i++) {
+          catalog[i] = await ensureArmorFixture(session, catalog[i]);
+        }
 
         for (final scenario in armorClassCases) {
           CharacterSaveRateLimiter.resetForTests();
@@ -226,6 +230,11 @@ void main() {
         () async {
       final session = owner.build();
       try {
+        await isolateReferenceMigration(session, [
+          'class_data',
+          'class_feature_data',
+          'feature_modifier_data',
+        ]);
         final originals = <ClassFeatureData>[];
         for (final pair in [
           ('barbarian', 'constitution'),

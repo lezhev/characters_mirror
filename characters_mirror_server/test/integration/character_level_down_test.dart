@@ -28,6 +28,7 @@ void main() {
       List<CharacterFeatureOverrideData> overrides = const [],
       bool asi = false,
       int? secondClassLevel,
+      int? removedFeatureId,
     }) async {
       final session = owner.build();
       try {
@@ -54,6 +55,7 @@ void main() {
           ClassFeatureData(
             parentClassId: classData.id!,
             referenceKey: featureKey('removed_feature'),
+            id: removedFeatureId,
             level: level,
           ),
         );
@@ -463,21 +465,26 @@ void main() {
     test(
         'colliding class and subclass feature ids preserve foreign feature facts',
         () async {
-      final base = await fixture(level: 5);
       final session = owner.build();
+      late CharacterData base;
       late ClassData otherClass;
       late SubclassData otherSubclass;
       late int collidingFeatureId;
       try {
-        final targetClass = base.classEntries!.first.classData!;
-        collidingFeatureId = (await ClassFeatureData.db.find(
-          session,
-          where: (t) =>
-              t.parentClassId.equals(targetClass.id!) &
-              t.referenceKey.like('removed_feature_%'),
-        ))
-            .single
-            .id!;
+        final classFeatures = await ClassFeatureData.db.find(session,
+            orderBy: (t) => t.id, orderDescending: true, limit: 1);
+        final subclassFeatures = await SubclassFeatureData.db.find(session,
+            orderBy: (t) => t.id, orderDescending: true, limit: 1);
+        final sequence = await session.db.unsafeQuery(
+            "SELECT last_value FROM pg_sequences WHERE schemaname = 'public' "
+            "AND sequencename = 'class_feature_data_id_seq'");
+        collidingFeatureId = [
+              classFeatures.firstOrNull?.id ?? 0,
+              subclassFeatures.firstOrNull?.id ?? 0,
+              sequence.first.first as int? ?? 0,
+            ].reduce((a, b) => a > b ? a : b) +
+            100;
+        base = await fixture(level: 5, removedFeatureId: collidingFeatureId);
         otherClass = await ClassData.db.insertRow(
           session,
           ClassData(

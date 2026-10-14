@@ -550,7 +550,7 @@ void _registerCharacterDataProficiencyScenarios(
         referenceKey: 'smith_tools',
         name: 'Инструменты кузнеца',
       );
-      await WeaponData.db.insertRow(
+      await ensureWeaponFixture(
         session,
         WeaponData(
           referenceKey: 'battleaxe',
@@ -558,7 +558,7 @@ void _registerCharacterDataProficiencyScenarios(
           category: WeaponCategory.martialMelee,
         ),
       );
-      await WeaponData.db.insertRow(
+      await ensureWeaponFixture(
         session,
         WeaponData(
           referenceKey: 'longsword',
@@ -1257,7 +1257,8 @@ void _registerCharacterDataProficiencyScenarios(
           .map((choice) => choice.optionKey),
       [Skill.stealth.name],
     );
-    final reloadedCompleteExpertise = await endpoints.characterData.getCharacter(
+    final reloadedCompleteExpertise =
+        await endpoints.characterData.getCharacter(
       authenticatedSession(717),
       valid.id!,
     );

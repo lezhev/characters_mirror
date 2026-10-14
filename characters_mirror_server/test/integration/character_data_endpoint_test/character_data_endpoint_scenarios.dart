@@ -436,7 +436,23 @@ void _registerCharacterDataEndpointTests() {
       final ownerSession = authenticatedSession(101);
       final classData = await endpoints.classData.upsert(
         sessionBuilder,
-        ClassData(name: 'Delete Cascade Class'),
+        ClassData(
+          name: 'Delete Cascade Class',
+          spellcastingProgression: SpellcastingProgression.full,
+          spellSelectionMode: ClassSpellSelectionMode.known,
+        ),
+      );
+      await endpoints.classLevelData.upsert(
+        sessionBuilder,
+        ClassLevelData(classDataId: classData.id!, level: 1, knownCantrips: 1),
+      );
+      final spell = await endpoints.spellData.add(
+        sessionBuilder,
+        SpellData(
+          referenceKey: 'delete_cascade_spell',
+          level: 0,
+          availableForClassIds: [classData.id!],
+        ),
       );
       final primaryEntry = CharacterClassEntryData(
         classData: classData,
@@ -464,6 +480,7 @@ void _registerCharacterDataEndpointTests() {
               classEntry: primaryEntry,
               classDataId: classData.id,
               spellKey: 'delete_cascade_spell',
+              spellId: spell.id,
               kind: CharacterSpellSelectionKind.knownCantrip,
               selectionIndex: 0,
             ),
@@ -682,7 +699,7 @@ void _registerCharacterDataEndpointTests() {
           ],
           customSpellSaveDcBonus: 1,
           customSpellAttackBonus: -1,
-          preparedSpellKeys: const ['light'],
+          preparedSpellKeys: const ['fixture_creation_light'],
           customInitiativeBonus: 2,
           customArmorClassBonus: 1,
           walkingSpeed: 30,
@@ -791,7 +808,7 @@ void _registerCharacterDataEndpointTests() {
                 CharacterStartingEquipmentResolutionData(
                   sourceLineEntryId: fixture.equipment.classWeaponAnySimple.id,
                   catalogType: EquipmentCatalogType.weapon,
-                  referenceKey: 'club',
+                  referenceKey: 'fixture_creation_club',
                   quantity: 1,
                 ),
               ],
@@ -806,7 +823,7 @@ void _registerCharacterDataEndpointTests() {
                 CharacterStartingEquipmentResolutionData(
                   sourceLineEntryId: fixture.equipment.classFocusAnyFocus.id,
                   catalogType: EquipmentCatalogType.item,
-                  referenceKey: 'crystal_focus',
+                  referenceKey: 'fixture_creation_crystal_focus',
                   quantity: 1,
                 ),
               ],
@@ -820,7 +837,7 @@ void _registerCharacterDataEndpointTests() {
                 CharacterStartingEquipmentResolutionData(
                   sourceLineEntryId: fixture.equipment.classFixedAnySimple.id,
                   catalogType: EquipmentCatalogType.weapon,
-                  referenceKey: 'club',
+                  referenceKey: 'fixture_creation_club',
                   quantity: 1,
                 ),
               ],
@@ -837,7 +854,7 @@ void _registerCharacterDataEndpointTests() {
       expect(loaded.useFlexibleAbilityBonuses, isFalse);
       expect(loaded.customSpellSaveDcBonus, 1);
       expect(loaded.customSpellAttackBonus, -1);
-      expect(loaded.preparedSpellKeys, ['light']);
+      expect(loaded.preparedSpellKeys, ['fixture_creation_light']);
       expect(loaded.customInitiativeBonus, 2);
       expect(loaded.customArmorClassBonus, 1);
       expect(loaded.walkingSpeed, 30);
@@ -884,7 +901,7 @@ void _registerCharacterDataEndpointTests() {
       expect(spellSelections, hasLength(1));
       expect(spellSelections.single.classDataId, fixture.classData.id);
       expect(spellSelections.single.spell?.id, fixture.lightSpell.id);
-      expect(spellSelections.single.spellKey, 'light');
+      expect(spellSelections.single.spellKey, 'fixture_creation_light');
       expect(
         spellSelections.single.kind,
         CharacterSpellSelectionKind.knownCantrip,
@@ -910,7 +927,7 @@ void _registerCharacterDataEndpointTests() {
       );
       expect(
         loadedWeaponSelection.resolutions?.single.referenceKey,
-        'club',
+        'fixture_creation_club',
       );
 
       final raceFeatChoice = loaded.choices!.singleWhere(
@@ -929,23 +946,23 @@ void _registerCharacterDataEndpointTests() {
       expect(derived.armorClass, 14);
       expect(derived.speed, 60);
       expect(derived.toolProficiencyKeys, contains('smith_tools'));
-      expect(derived.grantedSpellKeys, contains('light'));
+      expect(derived.grantedSpellKeys, contains('fixture_creation_light'));
       expect(
         derived.grantedEquipment?.map((entry) => entry.referenceKey),
         containsAll([
-          'holy_symbol',
-          'club',
-          'crystal_focus',
-          'dagger',
-          'leather_armor',
+          'fixture_creation_holy_symbol',
+          'fixture_creation_club',
+          'fixture_creation_crystal_focus',
+          'fixture_creation_dagger',
+          'fixture_creation_leather_armor',
         ]),
       );
       final clubEntry = derived.grantedEquipment!.singleWhere(
-        (entry) => entry.referenceKey == 'club',
+        (entry) => entry.referenceKey == 'fixture_creation_club',
       );
       expect(clubEntry.quantity, 2);
       final daggerEntry = derived.grantedEquipment!.singleWhere(
-        (entry) => entry.referenceKey == 'dagger',
+        (entry) => entry.referenceKey == 'fixture_creation_dagger',
       );
       expect(daggerEntry.quantity, 2);
       final serializedDerived = derived.toJson();

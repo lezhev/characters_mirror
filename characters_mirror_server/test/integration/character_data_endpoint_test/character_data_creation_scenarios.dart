@@ -1054,7 +1054,7 @@ void _registerCharacterDataCreationScenarios(
     expect(cantripGroup.selectionCount, 1);
     expect(
       cantripGroup.options?.map((spell) => spell.referenceKey),
-      contains('light'),
+      contains('fixture_creation_light'),
     );
     final spellGroup = stepView.spellSelectionGroups!.singleWhere(
       (group) => group.kind == CharacterSpellSelectionKind.knownSpell,
@@ -1062,11 +1062,11 @@ void _registerCharacterDataCreationScenarios(
     expect(spellGroup.selectionCount, 1);
     expect(
       spellGroup.options?.map((spell) => spell.referenceKey),
-      contains('magic_missile'),
+      contains('fixture_creation_magic_missile'),
     );
     expect(
       spellGroup.options?.map((spell) => spell.referenceKey),
-      isNot(contains('shield')),
+      isNot(contains('fixture_creation_shield')),
     );
     expect(
       stepView.startingEquipmentBlocks
@@ -1288,27 +1288,27 @@ void _registerCharacterDataCreationScenarios(
         tags: const [FeatureTag.spellcasting],
       ),
     );
-    final lesserRestoration = await endpoints.spellData.add(
-      sessionBuilder,
-      SpellData(
-        referenceKey: 'lesser_restoration',
-        name: 'Lesser Restoration',
-        level: 2,
-        schoolValue: SpellSchool.abjuration,
-      ),
-    );
-    final spiritualWeapon = await endpoints.spellData.add(
-      sessionBuilder,
-      SpellData(
-        referenceKey: 'spiritual_weapon',
-        name: 'Spiritual Weapon',
-        level: 2,
-        schoolValue: SpellSchool.evocation,
-      ),
-    );
-
     final session = sessionBuilder.build();
     try {
+      final lesserRestoration = await ensureSpellFixture(
+        session,
+        SpellData(
+          referenceKey: 'lesser_restoration',
+          name: 'Lesser Restoration',
+          level: 2,
+          schoolValue: SpellSchool.abjuration,
+        ),
+      );
+      final spiritualWeapon = await ensureSpellFixture(
+        session,
+        SpellData(
+          referenceKey: 'spiritual_weapon',
+          name: 'Spiritual Weapon',
+          level: 2,
+          schoolValue: SpellSchool.evocation,
+        ),
+      );
+
       await ClassSpellGrantData.db.insertRow(
         session,
         ClassSpellGrantData(

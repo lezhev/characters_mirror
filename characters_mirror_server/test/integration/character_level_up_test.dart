@@ -100,6 +100,7 @@ void main() {
       late ClassData data;
       late List<SpellData> spells;
       late ClassData? otherData;
+      ClassData? bookData;
       late SpellData? cantrip;
       late SpellData? spellbookSpell;
       late SpellData? otherEntrySpell;
@@ -121,6 +122,7 @@ void main() {
             classDataId: data.id!,
             level: 4,
             knownSpells: 10,
+            knownCantrips: withOtherScopes ? 1 : 0,
           ),
         );
         await ClassLevelData.db.insertRow(
@@ -129,6 +131,7 @@ void main() {
             classDataId: data.id!,
             level: 5,
             knownSpells: nextKnownSpells,
+            knownCantrips: withOtherScopes ? 1 : 0,
             knownSpellReplacements: replacements,
           ),
         );
@@ -153,15 +156,39 @@ void main() {
             session,
             ClassData(
               name: 'Other spell slot class',
+              spellSelectionMode: ClassSpellSelectionMode.known,
+              spellcastingProgression: SpellcastingProgression.full,
               referenceKey:
                   'other_spell_slots_${DateTime.now().microsecondsSinceEpoch}',
               hitDieValue: 6,
             ),
           );
+          bookData = await ClassData.db.insertRow(
+              session,
+              ClassData(
+                name: 'Other spellbook class',
+                spellSelectionMode: ClassSpellSelectionMode.spellbook,
+                spellcastingProgression: SpellcastingProgression.full,
+              ));
+          await ClassLevelData.db.insertRow(
+              session,
+              ClassLevelData(
+                classDataId: otherData.id!,
+                level: 1,
+                knownSpells: 1,
+              ));
+          await ClassLevelData.db.insertRow(
+              session,
+              ClassLevelData(
+                classDataId: bookData.id!,
+                level: 1,
+                spellbookSpells: 1,
+              ));
           cantrip = await SpellData.db.insertRow(
             session,
             SpellData(
                 referenceKey: 'other_kind_cantrip',
+                availableForClassIds: [data.id!],
                 name: 'Other cantrip',
                 level: 0),
           );
@@ -169,6 +196,7 @@ void main() {
             session,
             SpellData(
                 referenceKey: 'other_kind_book',
+                availableForClassIds: [bookData.id!],
                 name: 'Other book spell',
                 level: 1),
           );
@@ -176,6 +204,7 @@ void main() {
             session,
             SpellData(
                 referenceKey: 'other_entry_spell',
+                availableForClassIds: [otherData.id!],
                 name: 'Other entry spell',
                 level: 1),
           );
@@ -199,6 +228,15 @@ void main() {
               hpRolledValues: [4],
             )
           : null;
+      final bookEntry = bookData == null
+          ? null
+          : CharacterClassEntryData(
+              id: 'book-entry',
+              classData: bookData,
+              level: 1,
+              isStartingClass: false,
+              hpRolledValues: [4],
+            );
       final selections = <CharacterSpellSelectionData>[
         for (var i = 0; i < 10; i++)
           CharacterSpellSelectionData(
@@ -224,8 +262,8 @@ void main() {
           ),
           CharacterSpellSelectionData(
             id: 'book-30',
-            classEntry: entry,
-            classDataId: data.id,
+            classEntry: bookEntry,
+            classDataId: bookData!.id,
             spell: spellbookSpell,
             spellId: spellbookSpell!.id,
             spellKey: spellbookSpell.referenceKey,
@@ -250,7 +288,11 @@ void main() {
           name: 'Spell slot test',
           currentHp: 20,
           baseAbilityScores: {'charisma': 14},
-          classEntries: [entry, if (otherEntry != null) otherEntry],
+          classEntries: [
+            entry,
+            if (otherEntry != null) otherEntry,
+            if (bookEntry != null) bookEntry
+          ],
           spellSelections: selections,
         ),
       );
