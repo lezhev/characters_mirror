@@ -41,15 +41,21 @@ class LevelUpAsiDecision extends StatelessWidget {
                     g.group!.exclusiveKey == view.group!.exclusiveKey)
                 .toList();
             if (feats.isEmpty) {
-              await Navigator.of(context).push<void>(MaterialPageRoute(
+              await Navigator.of(context).push<void>(
+                MaterialPageRoute(
                   builder: (_) => Scaffold(
-                      appBar: const PageSizeAppBar(
-                        title: Text('Черты'),
+                    appBar: const PageSizeAppBar(
+                      title: Text('Черты'),
+                    ),
+                    body: const SafeArea(
+                      child: Center(
+                        child:
+                            Text('Выбор черт пока недоступен. Но скоро будет!'),
                       ),
-                      body: const SafeArea(
-                          child: Center(
-                              child: Text(
-                                  'Нет доступных черт для этого класса'))))));
+                    ),
+                  ),
+                ),
+              );
               return;
             }
             final feat = feats.first;

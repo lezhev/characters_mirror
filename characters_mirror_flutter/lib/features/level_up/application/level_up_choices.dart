@@ -10,7 +10,7 @@ Map<Ability, int> cycleAsi(
   var value = (old + 1) % 3;
   if ((scores[ability] ?? 10) + value > 20) value = 0;
   final spent = current.values.fold<int>(0, (a, b) => a + b);
-  if (spent - old + value > 2) return next;
+  if (spent - old + value > 2) value = 0;
   if (value == 0) {
     next.remove(ability);
   } else {
