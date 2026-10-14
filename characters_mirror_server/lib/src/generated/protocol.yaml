@@ -1,6 +1,7 @@
 admin:
   - getAllUsers:
   - setAdminRole:
+  - setGmRole:
   - importChoiceOptions:
   - importFeatureModifiers:
 appAuth:
@@ -10,6 +11,11 @@ characterPortrait:
   - confirmUpload:
   - getUrl:
   - deletePortrait:
+dmCreature:
+  - importCreature:
+  - getCreatures:
+  - getCreature:
+  - deleteCreature:
 backgroundData:
   - getAll:
   - getStepView:

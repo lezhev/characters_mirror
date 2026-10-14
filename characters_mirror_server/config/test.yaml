@@ -8,7 +8,7 @@
 # facing ports.
 
 # Configuration for the main API test server.
-maxRequestSize: 524288
+maxRequestSize: 33554432
 
 apiServer:
   port: 0

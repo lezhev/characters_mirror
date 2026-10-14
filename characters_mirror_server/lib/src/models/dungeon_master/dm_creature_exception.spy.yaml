@@ -1,0 +1,4 @@
+exception: DmCreatureException
+fields:
+  code: String
+  message: String

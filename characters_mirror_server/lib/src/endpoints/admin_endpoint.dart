@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart';
+import '../dungeon_master/dm_access.dart';
 
 class AdminEndpoint extends Endpoint {
   @override
@@ -16,11 +17,34 @@ class AdminEndpoint extends Endpoint {
   }
 
   Future<void> setAdminRole(Session session, int userId, bool isAdmin) async {
-    if (isAdmin) {
-      await Users.updateUserScopes(session, userId, {Scope('admin')});
-    } else {
-      await Users.updateUserScopes(session, userId, <Scope>{});
+    await DmAccess.requireAdmin(session);
+    await _setRole(session, userId, DmAccess.admin, isAdmin);
+  }
+
+  Future<void> setGmRole(Session session, int userId, bool isGm) async {
+    final callerId = await DmAccess.requireAdmin(session);
+    if (isGm && callerId == userId) {
+      throw DmCreatureException(
+          code: 'self_assignment',
+          message: 'Нельзя самостоятельно назначить себе права Мастера.');
     }
+    await _setRole(session, userId, DmAccess.gm, isGm);
+  }
+
+  Future<void> _setRole(
+      Session session, int userId, Scope role, bool enabled) async {
+    final user = await Users.findUserByUserId(session, userId, useCache: false);
+    if (user == null) {
+      throw DmCreatureException(
+          code: 'not_found', message: 'Пользователь не найден.');
+    }
+    final scopes = {...user.scopes};
+    if (enabled) {
+      scopes.add(role);
+    } else {
+      scopes.remove(role);
+    }
+    await Users.updateUserScopes(session, userId, scopes);
   }
 
   /// Imports declarative choice options by stable group and option keys.

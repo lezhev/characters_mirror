@@ -1,0 +1,20 @@
+class: DmCreatureRecord
+table: dm_creatures
+fields:
+  userId: int
+  name: String
+  sourceType: String
+  sourceVersion: String?
+  challengeRating: String?
+  rawJson: String
+  normalizedJson: String
+  importHash: String
+  schemaVersion: int
+  createdAt: DateTime
+  updatedAt: DateTime
+indexes:
+  dm_creatures_user_idx:
+    fields: userId
+  dm_creatures_user_hash_idx:
+    fields: userId, importHash
+    unique: true

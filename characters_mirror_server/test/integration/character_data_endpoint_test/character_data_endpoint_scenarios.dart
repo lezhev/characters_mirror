@@ -78,14 +78,15 @@ void _registerCharacterDataEndpointTests() {
       );
     }
 
-    test('server config enforces 512 KiB character save payload limit',
+    test('transport supports imports and character payload stays limited',
         () async {
       final session = sessionBuilder.build();
       try {
         expect(
           session.serverpod.config.maxRequestSize,
-          ValidationLimits.payloadBytes,
+          32 * 1024 * 1024,
         );
+        expect(ValidationLimits.payloadBytes, 512 * 1024);
       } finally {
         await session.close();
       }

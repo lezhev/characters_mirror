@@ -1,0 +1,7 @@
+class: DmCreatureSummary
+fields:
+  id: int
+  name: String
+  challengeRating: String?
+  hpMax: int?
+  createdAt: DateTime

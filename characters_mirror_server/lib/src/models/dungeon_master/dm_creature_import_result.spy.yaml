@@ -1,0 +1,4 @@
+class: DmCreatureImportResult
+fields:
+  creature: DmCreatureSummary
+  duplicate: bool

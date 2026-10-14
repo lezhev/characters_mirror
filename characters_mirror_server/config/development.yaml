@@ -47,7 +47,7 @@ redis:
   #user: # defaults to empty
   #requireSsl: true # defaults to false
 
-maxRequestSize: 524288 # The maximum size of requests allowed in bytes
+maxRequestSize: 33554432 # Allows a 5 MiB import after JSON string escaping; domain limits remain authoritative.
 
 sessionLogs:
   persistentEnabled: true
