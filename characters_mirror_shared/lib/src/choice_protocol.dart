@@ -1,4 +1,5 @@
 import 'choice_eligibility.dart';
+import 'spells/spell_selection_activity.dart';
 
 Set<String> choiceCantripCandidateKeys(
         Iterable<Map<String, dynamic>> options) =>
@@ -65,10 +66,16 @@ Set<String> knownChoiceCantripKeys({
   Iterable<String> otherGrantedCantripKeys = const [],
 }) {
   final selections = (character['spellSelections'] as List? ?? []).cast<Map>();
+  final entries = (character['classEntries'] as List? ?? [])
+      .cast<Map>()
+      .map((entry) => entry.cast<String, dynamic>())
+      .toList();
   final result = <String>{
     ...otherGrantedCantripKeys,
     for (final row in selections)
-      if (row['kind'] == 'knownCantrip' && row['spellKey'] is String)
+      if (row['kind'] == 'knownCantrip' &&
+          row['spellKey'] is String &&
+          isSpellSelectionActive(row.cast<String, dynamic>(), entries))
         (row['spellKey'] as String).trim(),
     for (final row in [...otherOptions, ...otherFeatures])
       for (final key

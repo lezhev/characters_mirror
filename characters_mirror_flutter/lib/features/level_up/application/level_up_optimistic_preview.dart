@@ -115,7 +115,8 @@ LevelUpPreview optimisticLevelUpPreview(LevelUpPreview confirmed,
         currentLevel: entry?.level ?? 1,
       );
       if (projected != null) {
-        spellSelections.add(CharacterSpellSelectionData.fromJson(projected));
+        spellSelections.add(
+            CharacterSpellSelectionData.fromJson({...projected, 'id': null}));
       }
     } else if (spell != null) {
       final provenance = spellSelectionProvenance(

@@ -118,11 +118,14 @@ Future<LevelUpPreview> _previewLevelUp(
         .copyWith(level: level);
   }
 
-  final delta = buildClassSpellDelta(
-      effectiveSpellcastingClass(entry.classData!, subclass, nextLevel),
-      rowAt(oldLevel),
-      rowAt(nextLevel),
-      abilityScores: scores);
+  final delta = _levelUpSpellDeltaForRetainedSelections(
+      before,
+      nextEntry,
+      buildClassSpellDelta(
+          effectiveSpellcastingClass(entry.classData!, subclass, nextLevel),
+          rowAt(oldLevel),
+          rowAt(nextLevel),
+          abilityScores: scores));
   draft = await _addLevelUpSpells(
       session, draft, nextEntry, step, delta, request,
       transaction: transaction);

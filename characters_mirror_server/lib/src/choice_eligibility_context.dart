@@ -54,10 +54,12 @@ ChoiceEligibilityContext buildChoiceEligibilityContext({
   final spellFacts = collectChoiceSpellFacts([
     for (final selection
         in character.spellSelections ?? const <CharacterSpellSelectionData>[])
-      if (_normalizedText(selection.spellKey) ??
-              _normalizedText(selection.spell?.referenceKey)
-          case final key?)
-        ChoiceSpellSelectionFact(key: key, kind: selection.kind?.name ?? ''),
+      if (isSpellSelectionActive(
+          selection.toJson(), entries.map((entry) => entry.toJson())))
+        if (_normalizedText(selection.spellKey) ??
+                _normalizedText(selection.spell?.referenceKey)
+            case final key?)
+          ChoiceSpellSelectionFact(key: key, kind: selection.kind?.name ?? ''),
   ]);
   final featureKeys = <String>{
     for (final feature in currentClassFeatures)

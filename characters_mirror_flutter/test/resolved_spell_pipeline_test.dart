@@ -67,6 +67,45 @@ void main() {
     expect(reduced.resolvedSpells!.single.sources, hasLength(1));
   });
 
+  test('offline level-down retains selections without exposing their spells',
+      () async {
+    final spell = SpellData(id: 5, referenceKey: 'retained_spell', level: 1);
+    final data = ClassData(
+        id: 1,
+        spellcastingProgression: SpellcastingProgression.none,
+        spellSelectionMode: ClassSpellSelectionMode.none);
+    final entry = CharacterClassEntryData(
+        id: 'caster',
+        classData: data,
+        level: 3,
+        subclass: SubclassData(
+            parentClassId: 1,
+            levelRequired: 3,
+            spellcastingAbilityValue: Ability.intelligence,
+            spellSelectionMode: ClassSpellSelectionMode.known));
+    final character = CharacterData(classEntries: [
+      entry.copyWith(level: 2)
+    ], spellSelections: [
+      CharacterSpellSelectionData(
+          id: 'retained-selection',
+          classEntry: entry,
+          classDataId: data.id,
+          spellId: spell.id,
+          spellKey: spell.referenceKey,
+          kind: CharacterSpellSelectionKind.knownSpell,
+          selectionRuleLevel: 3),
+    ]);
+    await cache.putReferenceList('spell', 'all', [spell], (s) => s.toJson());
+    final reduced = await buildOfflineDerivedData(cache, character);
+    expect(reduced.resolvedSpells, isEmpty);
+    expect(reduced.grantedSpellKeys, isNot(contains(spell.referenceKey)));
+    final restored = await buildOfflineDerivedData(
+        cache, character.copyWith(classEntries: [entry]));
+    expect(restored.resolvedSpells!.single.spellKey, spell.referenceKey);
+    expect(restored.grantedSpellKeys, contains(spell.referenceKey));
+    expect(character.spellSelections!.single.id, 'retained-selection');
+  });
+
   test(
       'protocol maps scale and separate pact casts replay without effect mutations',
       () {

@@ -8,6 +8,42 @@ List<(CharacterSpellSelectionKind, int)> _levelUpSpellCounts(
       (CharacterSpellSelectionKind.spellbookSpell, delta.spellbookSpellsToAdd),
     ];
 
+ClassSpellDeltaView _levelUpSpellDeltaForRetainedSelections(
+    CharacterData before,
+    CharacterClassEntryData entry,
+    ClassSpellDeltaView delta) {
+  final restored = <CharacterSpellSelectionKind, int>{};
+  final previousEntries = (before.classEntries ?? <CharacterClassEntryData>[])
+      .map((e) => e.toJson())
+      .toList();
+  for (final selection
+      in before.spellSelections ?? const <CharacterSpellSelectionData>[]) {
+    final belongs = selection.classEntry?.id != null
+        ? selection.classEntry?.id == entry.id
+        : selection.classDataId == entry.classData?.id;
+    if (belongs &&
+        selection.kind != null &&
+        !isSpellSelectionActive(selection.toJson(), previousEntries) &&
+        isSpellSelectionActive(selection.toJson(), [entry.toJson()])) {
+      restored.update(selection.kind!, (count) => count + 1, ifAbsent: () => 1);
+    }
+  }
+  return delta.copyWith(
+    cantripsToAdd: max(
+        0,
+        delta.cantripsToAdd -
+            (restored[CharacterSpellSelectionKind.knownCantrip] ?? 0)),
+    knownSpellsToAdd: max(
+        0,
+        delta.knownSpellsToAdd -
+            (restored[CharacterSpellSelectionKind.knownSpell] ?? 0)),
+    spellbookSpellsToAdd: max(
+        0,
+        delta.spellbookSpellsToAdd -
+            (restored[CharacterSpellSelectionKind.spellbookSpell] ?? 0)),
+  );
+}
+
 Future<CharacterData> _addLevelUpSpells(
     Session session,
     CharacterData draft,
@@ -59,7 +95,8 @@ Future<CharacterData> _addLevelUpSpells(
         s.classEntry?.id == entry.id &&
         s.kind == choice.kind &&
         (s.spellId == spell.id ||
-            s.spellKey == spell.referenceKey && spell.referenceKey.isNotEmpty))) {
+            s.spellKey == spell.referenceKey &&
+                spell.referenceKey.isNotEmpty))) {
       throw InputValidationException(
           'spells', 'This spell is already selected.');
     }
@@ -94,8 +131,7 @@ Future<CharacterData> _addLevelUpSpells(
           selectionFilter: SpellSelectionFilterData.fromJson(
               Map<String, dynamic>.from(provenance['selectionFilter'] as Map)),
           selectionRuleLevel: provenance['selectionRuleLevel'] as int,
-          selectionUnrestricted:
-              provenance['selectionUnrestricted'] as bool));
+          selectionUnrestricted: provenance['selectionUnrestricted'] as bool));
     }
   }
   final counts = {

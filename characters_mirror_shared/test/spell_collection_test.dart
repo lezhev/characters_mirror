@@ -45,6 +45,110 @@ void main() {
     expect(result.single.sources.map((s) => s.castingAbility),
         ['intelligence', 'wisdom']);
   });
+  test('level-down hides selections until their casting source returns', () {
+    final selections = [
+      {
+        'id': 'selected-spell',
+        'spell': spell,
+        'classDataId': 1,
+        'classEntry': {'id': 'wizard', 'level': 3},
+        'kind': 'knownSpell',
+        'selectionRuleLevel': 3,
+      },
+    ];
+    Map<String, dynamic> character(int level) => {
+          'classEntries': [
+            {
+              ...entries[0],
+              'id': 'wizard',
+              'level': level,
+              'classData': {
+                ...entries[0]['classData'] as Map,
+                'spellSelectionMode': 'none'
+              },
+              'subclass': {
+                'parentClassId': 1,
+                'levelRequired': 3,
+                'spellSelectionMode': 'known'
+              },
+            }
+          ],
+          'spellSelections': selections,
+        };
+    expect(resolve(character(2)), isEmpty);
+    expect(resolve(character(3)).single.spellKey, 'spell');
+    expect(selections.single['id'], 'selected-spell');
+  });
+  test('inactive selections do not hide another multiclass casting source', () {
+    final result = resolve({
+      'classEntries': [
+        {
+          ...entries[0],
+          'level': 2,
+          'classData': {
+            ...entries[0]['classData'] as Map,
+            'spellSelectionMode': 'none'
+          },
+          'subclass': {
+            'parentClassId': 1,
+            'levelRequired': 3,
+            'spellSelectionMode': 'known'
+          },
+        },
+        entries[1]
+      ],
+      'spellSelections': [
+        {'spell': spell, 'classDataId': 1, 'selectionRuleLevel': 3},
+        {'spell': spell, 'classDataId': 2, 'selectionRuleLevel': 3},
+      ],
+    });
+    expect(result.single.sources, hasLength(1));
+    expect(result.single.sources.single.classDataId, 2);
+  });
+  test('inactive preparation does not affect legacy known spells', () {
+    final result = resolve({
+      'classEntries': [
+        {
+          ...entries[0],
+          'classData': {'id': 1}
+        },
+        {
+          ...entries[1],
+          'classData': {
+            ...entries[1]['classData'] as Map,
+            'spellSelectionMode': 'none'
+          },
+          'subclass': {
+            'parentClassId': 2,
+            'levelRequired': 4,
+            'spellSelectionMode': 'prepared'
+          },
+        },
+      ],
+      'spellSelections': [
+        {'spell': spell, 'classDataId': 1, 'kind': 'knownSpell'},
+        {
+          'spell': spell,
+          'classDataId': 2,
+          'kind': 'preparedSpell',
+          'selectionRuleLevel': 4,
+        },
+      ],
+    });
+    expect(result.single.sources, hasLength(1));
+    expect(result.single.sources.single.prepared, isTrue);
+  });
+  test('selection rule level does not hide an available class spell', () {
+    final result = resolve({
+      'classEntries': [
+        {...entries[0], 'level': 1}
+      ],
+      'spellSelections': [
+        {'spell': spell, 'classDataId': 1, 'selectionRuleLevel': 2},
+      ],
+    });
+    expect(result.single.spellKey, 'spell');
+  });
   test(
       'ID-only writes and legacy selection names resolve to canonical identity',
       () {

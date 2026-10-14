@@ -180,7 +180,12 @@ List<String> _collectGrantedSpellKeys(
     for (final option in selectedOptions) ...?option.grantedSpellKeys,
     for (final selection
         in character.spellSelections ?? const <CharacterSpellSelectionData>[])
-      if (_spellSelectionKey(selection) != null) _spellSelectionKey(selection)!,
+      if (feature_modifiers.isSpellSelectionActive(
+              selection.toJson(),
+              (character.classEntries ?? const <CharacterClassEntryData>[])
+                  .map((entry) => entry.toJson())) &&
+          _spellSelectionKey(selection) != null)
+        _spellSelectionKey(selection)!,
   ]);
 }
 

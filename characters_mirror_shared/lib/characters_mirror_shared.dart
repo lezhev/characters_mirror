@@ -21,4 +21,5 @@ export 'src/spells/spell_activation.dart';
 export 'src/spells/spell_activation_validation.dart';
 export 'src/spells/spell_selection_filter.dart';
 export 'src/spells/spell_selection_provenance.dart';
+export 'src/spells/spell_selection_activity.dart';
 export 'src/spells/spell_protocol_values.dart';

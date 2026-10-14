@@ -208,7 +208,10 @@ Future<CharacterDerivedData> _buildDerivedData(
     abilityModifiers: abilityModifiers,
   );
   final grantedSpellKeys = _collectGrantedSpellKeys(
-    character.spellSelections ?? const <CharacterSpellSelectionData>[],
+    (character.spellSelections ?? const <CharacterSpellSelectionData>[])
+        .where((selection) => isSpellSelectionActive(
+            selection.toJson(), entries.map((entry) => entry.toJson())))
+        .toList(),
     resolvedSources.selectedOptions,
     currentRaceFeatures,
     resolvedSources.alwaysPreparedSpellKeys,

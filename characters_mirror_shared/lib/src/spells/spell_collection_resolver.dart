@@ -1,5 +1,6 @@
 import 'spell_source_context.dart';
 import 'spell_activation.dart';
+import 'spell_selection_activity.dart';
 
 /// Inputs must be canonical reference rows and currently eligible choices.
 /// No persisted selections are synthesized for grants.
@@ -39,7 +40,9 @@ List<ResolvedCharacterSpell> resolveCharacterSpellCollection({
   final records = <String, Map<String, SpellSourceContext>>{};
   final always =
       (character['derived'] as Map?)?['alwaysPreparedSpellKeys'] as List? ?? [];
-  final selections = _rows(character['spellSelections']);
+  final selections = _rows(character['spellSelections'])
+      .where((selection) => isSpellSelectionActive(selection, entries))
+      .toList();
   final rawPrepared = character['preparedSpellKeys'] as List?;
   final prepared = rawPrepared == null
       ? null

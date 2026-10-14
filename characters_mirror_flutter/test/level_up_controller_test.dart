@@ -207,7 +207,10 @@ void main() {
         spellSelectionGroups: [
           ClassSpellSelectionGroupView(
             kind: CharacterSpellSelectionKind.knownSpell,
-            options: [SpellData(id: 7, referenceKey: 'replacement-spell')],
+            options: [
+              SpellData(id: 7, referenceKey: 'replacement-spell'),
+              SpellData(id: 8, referenceKey: 'next-replacement-spell'),
+            ],
           ),
         ],
       ),
@@ -231,8 +234,69 @@ void main() {
     expect(selections.map((s) => s.id), ['known-9', null]);
     expect(selections.last.selectionIndex, 4);
     expect(selections.last.spellKey, 'replacement-spell');
-    gateway.pending.last.complete(confirmed);
+    expect(selections.last.spellReplacementHistory!.single.spellId, 4);
+
+    final revised = controller.chooseSpells(
+      CharacterSpellSelectionKind.knownSpell,
+      [8],
+      replacesSelectionId: 'known-4',
+    );
+    final revisedPreview = controller.state.preview!;
+    final revisedSelections = revisedPreview.character.spellSelections!;
+    expect(revisedSelections.map((s) => s.id), ['known-9', null]);
+    expect(revisedSelections.last.selectionIndex, 4);
+    expect(revisedSelections.last.spellId, 8);
+    expect(revisedSelections.last.spellReplacementHistory!.single.spellId, 4);
+    expect(
+        controller.state.request.spells!.single.replacesSelectionId, 'known-4');
+
+    // The server retains the persisted slot ID; its response is authoritative.
+    final serverPreview = revisedPreview.copyWith(
+      character: revisedPreview.character.copyWith(spellSelections: [
+        revisedSelections.first,
+        revisedSelections.last.copyWith(id: 'known-4'),
+      ]),
+    );
+    gateway.pending.last.complete(serverPreview);
+    await revised;
+    gateway.pending[1].complete(confirmed);
     await replacement;
+    expect(controller.state.preview, same(serverPreview));
+    expect(controller.state.previewCurrent, true);
+
+    final changedAgain = controller.chooseSpells(
+      CharacterSpellSelectionKind.knownSpell,
+      [7],
+      replacesSelectionId: 'known-4',
+    );
+    final changedSelections =
+        controller.state.preview!.character.spellSelections!;
+    expect(changedSelections.map((s) => s.id), ['known-9', null]);
+    expect(changedSelections.last.selectionIndex, 4);
+    expect(changedSelections.last.spellId, 7);
+    expect(changedSelections.last.spellReplacementHistory!.single.spellId, 4);
+
+    final cleared = controller.chooseSpells(
+      CharacterSpellSelectionKind.knownSpell,
+      [],
+      replacesSelectionId: 'known-4',
+    );
+    expect(controller.state.request.spells, isEmpty);
+    expect(
+        controller.state.preview!.character.spellSelections!.map((s) => s.id),
+        ['known-4', 'known-9']);
+    expect(
+        controller.state.preview!.character.spellSelections!.first.spellId, 4);
+    expect(
+        controller.state.preview!.character.spellSelections!.first
+            .spellReplacementHistory,
+        isNull);
+    gateway.pending.last.complete(confirmed);
+    await cleared;
+    gateway.pending[gateway.pending.length - 2].complete(serverPreview);
+    await changedAgain;
+    expect(controller.state.preview, same(confirmed));
+    expect(controller.state.previewCurrent, true);
   });
 
   test(

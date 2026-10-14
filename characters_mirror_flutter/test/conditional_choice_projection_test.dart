@@ -6,6 +6,40 @@ import 'package:characters_mirror_flutter/core/offline/offline_reference_cache.d
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('inactive selections cannot satisfy conditional spell prerequisites',
+      () {
+    final entry = CharacterClassEntryData(
+        id: 'caster',
+        classData:
+            ClassData(id: 1, spellSelectionMode: ClassSpellSelectionMode.none),
+        subclass: SubclassData(
+            parentClassId: 1,
+            levelRequired: 3,
+            spellSelectionMode: ClassSpellSelectionMode.known),
+        level: 3);
+    final selections = [
+      for (final kind in [
+        CharacterSpellSelectionKind.knownSpell,
+        CharacterSpellSelectionKind.knownCantrip
+      ])
+        CharacterSpellSelectionData(
+            classEntry: entry,
+            classDataId: 1,
+            spellKey: kind.name,
+            kind: kind,
+            selectionRuleLevel: 3),
+    ];
+    final lowered = conditionalChoiceContext(
+      character: CharacterData(
+          classEntries: [entry.copyWith(level: 2)],
+          spellSelections: selections),
+      group: ChoiceGroupData(referenceKey: 'prerequisites'),
+      options: const [],
+    );
+    expect(lowered.knownSpellKeys, isEmpty);
+    expect(lowered.knownCantripKeys, isEmpty);
+  });
+
   final data = ClassData(
       id: 9101, referenceKey: 'conditional_caster_fixture', hitDieValue: 6);
   final sub = SubclassData(id: 9102, parentClassId: data.id!, levelRequired: 2);

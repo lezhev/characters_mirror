@@ -54,6 +54,10 @@ void main() {
               tableKey: 'pact_magic', level: 5, spellSlots: {3: 2}));
       final db = sessionBuilder.build();
       try {
+        await ClassLevelData.db.insertRow(db,
+            ClassLevelData(classDataId: wizard.id!, level: 5, knownSpells: 1));
+        await SpellData.db
+            .updateRow(db, spell.copyWith(availableForClassIds: [wizard.id!]));
         await ClassSpellGrantData.db.insertRow(
             db,
             ClassSpellGrantData(
@@ -177,7 +181,8 @@ void main() {
       expect(cast.activeConditions, base.activeConditions);
       final invalid =
           await sync(cast, action('standard', 2), 'pipeline-invalid');
-      expect(invalid.rejectedChanges!.single.reason, 'invalid_cast');
+      expect(invalid.rejectedChanges!.single.reason, 'invalid_cast',
+          reason: invalid.rejectedChanges!.single.message);
       final unavailable = await sync(
           cast,
           action('pact', 3).copyWith(spellSourceKey: 'class:unknown'),
@@ -186,6 +191,10 @@ void main() {
       final persisted =
           await endpoints.characterData.getCharacter(owner, base.id!);
       expect(persisted.currentPactSlots, {3: 1});
+      expect(persisted.currentSpellSlots, cast.currentSpellSlots);
+      expect(persisted.version, cast.version);
+      expect(persisted.activeConcentrationSpellName,
+          cast.activeConcentrationSpellName);
       expect(persisted.currentHp, base.currentHp);
     });
 

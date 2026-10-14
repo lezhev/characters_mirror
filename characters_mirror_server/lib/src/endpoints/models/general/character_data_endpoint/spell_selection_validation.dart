@@ -76,9 +76,16 @@ Future<void> _validateSpellSelectionFilters(
           for (final record in await CharacterSpellSelectionRecord.db.find(
               session,
               where: (row) => row.characterId.equals(character.id),
+              include: CharacterSpellSelectionRecord.include(
+                  classEntry: CharacterClassEntryRecord.include()),
               transaction: transaction))
             if (record.syncId != null) record.syncId!: record,
         };
+  for (final selection
+      in character.spellSelections ?? const <CharacterSpellSelectionData>[]) {
+    _validateStoredSpellSelection(selection, stored[selection.id],
+        allowSpellReplacements: allowSpellReplacements);
+  }
   for (final entry in character.classEntries ?? <CharacterClassEntryData>[]) {
     final classId = entry.classData?.id;
     if (classId == null) continue;
@@ -108,7 +115,18 @@ Future<void> _validateSpellSelectionFilters(
               (s.classEntry?.id != null
                   ? s.classEntry?.id == entry.id
                   : (s.classDataId ?? s.classEntry?.classData?.id) == classId))
-          .toList();
+          .where((selection) {
+        final persisted = stored[selection.id];
+        final active = isSpellSelectionActive(selection.toJson(),
+            [entry.copyWith(classData: data, subclass: subclass).toJson()]);
+        if (!active &&
+            (persisted == null ||
+                selection.selectionIndex != persisted.selectionIndex)) {
+          throw InputValidationException('spellSelections',
+              'Inactive spell selections must retain their stored identity.');
+        }
+        return active;
+      }).toList();
       if (selections.isEmpty) continue;
       final group =
           step.spellSelectionGroups?.where((g) => g.kind == kind).firstOrNull;
@@ -133,40 +151,6 @@ Future<void> _validateSpellSelectionFilters(
               'Spell is outside the canonical selection pool.');
         }
         final persisted = stored[selection.id];
-        final changedSpell = persisted != null &&
-            ((selection.spellId ?? selection.spell?.id) != persisted.spellId ||
-                selection.spellKey != persisted.spellKey);
-        if (changedSpell && !allowSpellReplacements) {
-          throw InputValidationException('spellSelections',
-              'Known spells can only be changed by a level-up replacement.');
-        }
-        if (persisted != null) {
-          if (persisted.selectionUnrestricted != null &&
-              selection.selectionUnrestricted != null &&
-              persisted.selectionUnrestricted !=
-                  selection.selectionUnrestricted) {
-            throw InputValidationException(
-                'spellSelections', 'Spell selection origin cannot change.');
-          }
-          if (!allowSpellReplacements &&
-              _spellProvenanceJson(selection.selectionFilter?.toJson()) !=
-                  _spellProvenanceJson(persisted.selectionFilter?.toJson()) &&
-              selection.selectionFilter != null) {
-            throw InputValidationException(
-                'spellSelections', 'Spell selection rule cannot change.');
-          }
-          if (!allowSpellReplacements &&
-              _spellProvenanceJson(selection.spellReplacementHistory
-                      ?.map((h) => h.toJson())
-                      .toList()) !=
-                  _spellProvenanceJson(persisted.spellReplacementHistory
-                      ?.map((h) => h.toJson())
-                      .toList()) &&
-              selection.spellReplacementHistory != null) {
-            throw InputValidationException(
-                'spellSelections', 'Spell replacement history cannot change.');
-          }
-        }
         final origin =
             selection.selectionUnrestricted ?? persisted?.selectionUnrestricted;
         if (origin == true &&
@@ -200,6 +184,68 @@ Future<void> _validateSpellSelectionFilters(
             'Spell selections exceed the unrestricted quota or filter.');
       }
     }
+  }
+}
+
+void _validateStoredSpellSelection(CharacterSpellSelectionData selection,
+    CharacterSpellSelectionRecord? persisted,
+    {required bool allowSpellReplacements}) {
+  if (persisted == null) return;
+  final changedSpell =
+      (selection.spellId ?? selection.spell?.id) != persisted.spellId ||
+          selection.spellKey != persisted.spellKey;
+  if (changedSpell && !allowSpellReplacements) {
+    throw InputValidationException('spellSelections',
+        'Known spells can only be changed by a level-up replacement.');
+  }
+  if (persisted.selectionRuleLevel != null) {
+    if (selection.selectionRuleLevel != null &&
+        selection.selectionRuleLevel != persisted.selectionRuleLevel) {
+      throw InputValidationException(
+          'spellSelections', 'Spell selection level cannot change.');
+    }
+  } else if (selection.selectionRuleLevel != null && !allowSpellReplacements) {
+    throw InputValidationException(
+        'spellSelections', 'Spell selection level cannot change.');
+  }
+  if (persisted.classDataId != null || persisted.classEntryId != null) {
+    final entryId = selection.classEntry?.id;
+    final classId = selection.classDataId ??
+        selection.classEntry?.classData?.id ??
+        (entryId == persisted.classEntry?.syncId
+            ? persisted.classDataId
+            : null);
+    if (selection.kind != persisted.kind ||
+        classId !=
+            (persisted.classDataId ?? persisted.classEntry?.classDataId) ||
+        (entryId != null && entryId != persisted.classEntry?.syncId)) {
+      throw InputValidationException(
+          'spellSelections', 'Spell selection attribution cannot change.');
+    }
+  }
+  if (persisted.selectionUnrestricted != null &&
+      selection.selectionUnrestricted != null &&
+      persisted.selectionUnrestricted != selection.selectionUnrestricted) {
+    throw InputValidationException(
+        'spellSelections', 'Spell selection origin cannot change.');
+  }
+  if (!allowSpellReplacements &&
+      selection.selectionFilter != null &&
+      _spellProvenanceJson(selection.selectionFilter?.toJson()) !=
+          _spellProvenanceJson(persisted.selectionFilter?.toJson())) {
+    throw InputValidationException(
+        'spellSelections', 'Spell selection rule cannot change.');
+  }
+  if (!allowSpellReplacements &&
+      selection.spellReplacementHistory != null &&
+      _spellProvenanceJson(selection.spellReplacementHistory
+              ?.map((h) => h.toJson())
+              .toList()) !=
+          _spellProvenanceJson(persisted.spellReplacementHistory
+              ?.map((h) => h.toJson())
+              .toList())) {
+    throw InputValidationException(
+        'spellSelections', 'Spell replacement history cannot change.');
   }
 }
 

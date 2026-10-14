@@ -14,7 +14,12 @@ ChoiceEligibilityContext conditionalChoiceContext({
   final facts = collectChoiceSpellFacts([
     for (final s
         in character.spellSelections ?? <CharacterSpellSelectionData>[])
-      if (s.spellKey != null && s.kind != null)
+      if (s.spellKey != null &&
+          s.kind != null &&
+          isSpellSelectionActive(
+              s.toJson(),
+              (character.classEntries ?? <CharacterClassEntryData>[])
+                  .map((entry) => entry.toJson())))
         ChoiceSpellSelectionFact(key: s.spellKey!, kind: s.kind!.name),
   ]);
   return ChoiceEligibilityContext(

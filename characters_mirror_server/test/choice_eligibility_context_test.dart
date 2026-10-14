@@ -4,6 +4,48 @@ import 'package:characters_mirror_shared/characters_mirror_shared.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('inactive selections cannot satisfy spell prerequisites', () {
+    final entry = CharacterClassEntryData(
+        id: 'caster',
+        classData:
+            ClassData(id: 1, spellSelectionMode: ClassSpellSelectionMode.none),
+        subclass: SubclassData(
+            parentClassId: 1,
+            levelRequired: 3,
+            spellSelectionMode: ClassSpellSelectionMode.known),
+        level: 3);
+    final selections = [
+      for (final kind in [
+        CharacterSpellSelectionKind.knownSpell,
+        CharacterSpellSelectionKind.knownCantrip
+      ])
+        CharacterSpellSelectionData(
+            classEntry: entry,
+            classDataId: 1,
+            spellKey: kind.name,
+            kind: kind,
+            selectionRuleLevel: 3),
+    ];
+    ChoiceEligibilityContext contextAt(int level) =>
+        buildChoiceEligibilityContext(
+          character: CharacterData(
+              classEntries: [entry.copyWith(level: level)],
+              spellSelections: selections),
+          evaluatingGroupKey: 'prerequisites',
+          selectedOptionsByGroupKey: const {},
+          groups: const [],
+          abilityScores: const {},
+          currentClassFeatures: const [],
+          currentSubclassFeatures: const [],
+        );
+    final lower = contextAt(2);
+    expect(lower.knownSpellKeys, isEmpty);
+    expect(lower.knownCantripKeys, isEmpty);
+    final restored = contextAt(3);
+    expect(restored.knownSpellKeys, contains('knownSpell'));
+    expect(restored.knownCantripKeys, contains('knownCantrip'));
+  });
+
   test('legacy spell selections use the linked spell reference key', () {
     final context = buildChoiceEligibilityContext(
       character: CharacterData(

@@ -241,7 +241,13 @@ void main() {
               replacesSelectionId: selection.id)
         ]));
     final projected = result.character.spellSelections!.single;
-    expect(projected.id, selection.id);
+    expect(projected.id, isNull);
+    expect(spellPreview.before.spellSelections!.single.id, selection.id);
+    expect(projected.classEntry?.id, selection.classEntry?.id);
+    expect(projected.classDataId, selection.classDataId);
+    expect(projected.kind, selection.kind);
+    expect(projected.selectionIndex, selection.selectionIndex);
+    expect(projected.selectionRuleLevel, selection.selectionRuleLevel);
     expect(projected.spellId, replacement.id);
     expect(projected.selectionUnrestricted, isTrue);
     expect(projected.spellReplacementHistory!.single.spellId, original.id);

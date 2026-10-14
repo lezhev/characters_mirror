@@ -62,10 +62,15 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
         changedCharacters[operation.id] = result.character!;
       }
     } catch (error) {
+      final reason = switch (error) {
+        SpellCastFailure() => error.code,
+        _SemanticActionFailure() => error.reason,
+        _ => 'invalid_operation',
+      };
       rejectedChanges.add(
         CharacterRejectedChangeData(
           changeId: operation.id,
-          reason: 'invalid_operation',
+          reason: reason,
           message: error.toString(),
         ),
       );
@@ -73,7 +78,7 @@ Future<CharacterSyncResponse> _syncCharacterOperations(
         session,
         stage: 'rejection',
         operation: operation,
-        reason: 'invalid_operation:${error.runtimeType}',
+        reason: '$reason:${error.runtimeType}',
       );
     }
   }

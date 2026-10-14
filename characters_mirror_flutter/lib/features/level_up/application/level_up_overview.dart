@@ -186,7 +186,12 @@ ChoiceGroupView eligibleLevelUpGroup(
   }
   final spellFacts = collectChoiceSpellFacts([
     for (final s in c.spellSelections ?? const <CharacterSpellSelectionData>[])
-      if (s.spellKey != null && s.kind != null)
+      if (s.spellKey != null &&
+          s.kind != null &&
+          isSpellSelectionActive(
+              s.toJson(),
+              (c.classEntries ?? const <CharacterClassEntryData>[])
+                  .map((entry) => entry.toJson())))
         ChoiceSpellSelectionFact(key: s.spellKey!, kind: s.kind!.name)
   ]);
   final context = ChoiceEligibilityContext(

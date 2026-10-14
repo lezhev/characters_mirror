@@ -107,7 +107,10 @@ ChoiceEligibilityContext _levelUpChoiceEligibilityContext(
   final spellFacts = collectChoiceSpellFacts([
     for (final selection
         in character.spellSelections ?? const <CharacterSpellSelectionData>[])
-      if (selection.spellKey != null && selection.kind != null)
+      if (selection.spellKey != null &&
+          selection.kind != null &&
+          isSpellSelectionActive(
+              selection.toJson(), entries.map((entry) => entry.toJson())))
         ChoiceSpellSelectionFact(
           key: selection.spellKey!,
           kind: selection.kind!.name,

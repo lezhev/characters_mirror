@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:characters_mirror_server/src/generated/protocol.dart';
 import 'package:characters_mirror_server/src/rate_limiting/character_save_rate_limiter.dart';
+import 'package:characters_mirror_server/src/validation/validation_exception.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 
@@ -312,6 +313,94 @@ void main() {
         expect(downAgain.derived!.alwaysPreparedSpellKeys, isEmpty);
         expect(downAgain.spellSelections!.map((s) => s.id),
             up.spellSelections!.map((s) => s.id));
+        final selectedSpellKeys =
+            up.spellSelections!.map((s) => s.spellKey).toSet();
+        expect(downAgain.derived!.resolvedSpells!.map((s) => s.spellKey),
+            isNot(anyElement(isIn(selectedSpellKeys))));
+        expect(downAgain.derived!.grantedSpellKeys,
+            isNot(anyElement(isIn(selectedSpellKeys))));
+        CharacterSaveRateLimiter.resetForTests();
+        final persisted = await endpoints.characterData.saveCharacter(
+            owner, downAgain.copyWith(name: 'Retained inactive selections'));
+        expect(persisted.spellSelections!.map((s) => s.id),
+            up.spellSelections!.map((s) => s.id));
+        for (final forged in [
+          persisted.spellSelections!.first.copyWith(selectionRuleLevel: 99),
+          persisted.spellSelections!.first.copyWith(selectionRuleLevel: 1),
+          persisted.spellSelections!.first
+              .copyWith(id: 'forged-inactive-selection'),
+          persisted.spellSelections!.first
+              .copyWith(spellKey: 'forged-inactive-spell'),
+          persisted.spellSelections!.first
+              .copyWith(classEntry: null, classDataId: null),
+          persisted.spellSelections!.first
+              .copyWith(kind: CharacterSpellSelectionKind.spellbookSpell),
+        ]) {
+          CharacterSaveRateLimiter.resetForTests();
+          await expectLater(
+              endpoints.characterData.saveCharacter(
+                  owner,
+                  persisted.copyWith(spellSelections: [
+                    forged,
+                    ...persisted.spellSelections!.skip(1),
+                  ])),
+              throwsA(isA<InputValidationException>()
+                  .having((error) => error.field, 'field', 'spellSelections')));
+        }
+        CharacterSaveRateLimiter.resetForTests();
+        final restored = await endpoints.characterData.applyLevelUp(
+            owner,
+            LevelUpRequest(
+              characterId: persisted.id!,
+              expectedVersion: persisted.version!,
+              classEntryId: persisted.classEntries!.single.id!,
+              subclassId: subclass.id!,
+              hitDieRoll: 5,
+              choices: {
+                group.referenceKey: [option.optionKey]
+              },
+            ));
+        expect(restored.spellSelections!.map((s) => s.id),
+            up.spellSelections!.map((s) => s.id));
+        expect(restored.derived!.resolvedSpells!.map((s) => s.spellKey),
+            containsAll(selectedSpellKeys));
+        final legacyRecords = await CharacterSpellSelectionRecord.db
+            .find(session, where: (row) => row.characterId.equals(restored.id));
+        for (final record in legacyRecords) {
+          await CharacterSpellSelectionRecord.db
+              .updateRow(session, record.copyWith(selectionRuleLevel: null));
+        }
+        final legacy =
+            await endpoints.characterData.getCharacter(owner, restored.id!);
+        expect(legacy.spellSelections!.map((s) => s.selectionRuleLevel),
+            everyElement(isNull));
+        CharacterSaveRateLimiter.resetForTests();
+        final legacyDown = await endpoints.characterData.applyLevelDown(
+            owner,
+            LevelDownRequest(
+                characterId: legacy.id!,
+                expectedVersion: legacy.version!,
+                classEntryId: legacy.classEntries!.single.id!));
+        expect(legacyDown.spellSelections!.map((s) => s.id),
+            up.spellSelections!.map((s) => s.id));
+        expect(legacyDown.derived!.resolvedSpells!.map((s) => s.spellKey),
+            isNot(anyElement(isIn(selectedSpellKeys))));
+        CharacterSaveRateLimiter.resetForTests();
+        final legacyRestored = await endpoints.characterData.applyLevelUp(
+            owner,
+            LevelUpRequest(
+                characterId: legacyDown.id!,
+                expectedVersion: legacyDown.version!,
+                classEntryId: legacyDown.classEntries!.single.id!,
+                subclassId: subclass.id!,
+                hitDieRoll: 5,
+                choices: {
+                  group.referenceKey: [option.optionKey]
+                }));
+        expect(legacyRestored.spellSelections!.map((s) => s.id),
+            up.spellSelections!.map((s) => s.id));
+        expect(legacyRestored.derived!.resolvedSpells!.map((s) => s.spellKey),
+            containsAll(selectedSpellKeys));
       } finally {
         await session.close();
       }
