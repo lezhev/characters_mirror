@@ -10,6 +10,8 @@ import 'package:characters_mirror_flutter/features/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:characters_mirror_flutter/features/dungeon_master/presentation/dm_library_page.dart';
+import 'package:characters_mirror_flutter/features/dungeon_master/presentation/dm_creature_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -36,6 +38,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/characters';
       }
 
+      if ((location == '/dm' || location.startsWith('/dm/')) &&
+          !authState.hasScope('gm') &&
+          !authState.hasScope('admin')) {
+        return '/characters';
+      }
+
       return null;
     },
     routes: [
@@ -43,6 +51,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/sign-in', builder: (_, __) => const SignInPage()),
       GoRoute(path: '/sign-up', builder: (_, __) => const SignUpPage()),
       GoRoute(path: '/characters', builder: (_, __) => const CharactersList()),
+      GoRoute(path: '/dm', builder: (_, __) => const DmLibraryPage()),
+      GoRoute(
+          path: '/dm/creatures/:id',
+          builder: (_, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+            return id == null || id < 1
+                ? const DmLibraryPage()
+                : DmCreaturePage(creatureId: id);
+          }),
       GoRoute(
         path: '/characters/sheet/:id',
         builder: (_, state) {

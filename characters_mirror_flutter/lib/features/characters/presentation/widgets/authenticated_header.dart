@@ -39,7 +39,8 @@ class AuthenticatedHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ConstrainedBox(
+                    Expanded(
+                        child: ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: compact ? constraints.maxWidth : 420,
                       ),
@@ -59,7 +60,7 @@ class AuthenticatedHeader extends StatelessWidget {
                           ],
                         ],
                       ),
-                    ),
+                    )),
                     if (trailing != null) trailing!,
                   ],
                 );

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
+import 'package:characters_mirror_flutter/features/dungeon_master/presentation/widgets/dm_entry_button.dart';
 
 class CharactersList extends ConsumerWidget {
   const CharactersList({super.key});
@@ -31,9 +32,10 @@ class CharactersList extends ConsumerWidget {
         children: [
           AuthenticatedHeader(
             title: 'Список персонажей',
-            trailing: _CharacterSheetsMenuButton(
-              user: authState.user,
-            ),
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+              const DmEntryButton(),
+              _CharacterSheetsMenuButton(user: authState.user),
+            ]),
           ),
           Expanded(
             child: PageSizeLimiter(

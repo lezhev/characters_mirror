@@ -1,0 +1,75 @@
+import 'dart:convert';
+
+const dmFieldLabels = <String, String>{
+  'name': 'Название',
+  'originalName': 'Исходное название',
+  'englishName': 'Английское название',
+  'creatureType': 'Тип существа',
+  'size': 'Размер',
+  'alignment': 'Мировоззрение',
+  'challengeRating': 'ПО',
+  'challengeRatingValue': 'Числовое ПО',
+  'sourceBook': 'Источник',
+  'tokenUrl': 'Ссылка на токен',
+  'str': 'Сила',
+  'dex': 'Ловкость',
+  'con': 'Телосложение',
+  'int': 'Интеллект',
+  'wis': 'Мудрость',
+  'cha': 'Харизма',
+  'score': 'Значение',
+  'saveProficiency': 'Владение спасброском',
+  'bonuses': 'Дополнительные бонусы',
+  'skills': 'Навыки',
+  'languages': 'Языки',
+  'senses': 'Чувства',
+  'proficiencyBonus': 'Бонус мастерства',
+  'damageResistances': 'Сопротивления урону',
+  'damageImmunities': 'Иммунитеты к урону',
+  'damageVulnerabilities': 'Уязвимости к урону',
+  'conditionImmunities': 'Иммунитеты к состояниям',
+  'armorClassSource': 'Способ определения КД',
+  'armorClassFormula': 'Формула КД',
+  'armorClassSettings': 'Настройки КД Foundry',
+  'hpFormula': 'Формула HP',
+  'hpSettings': 'Настройки HP Foundry',
+  'initiativeAbility': 'Характеристика инициативы',
+  'initiativeExtraBonus': 'Дополнительный бонус инициативы',
+  'initiativeSettings': 'Настройки инициативы Foundry',
+  'movement': 'Перемещение',
+  'sourceItemId': 'ID предмета Foundry',
+  'itemType': 'Тип предмета',
+  'activationType': 'Активация',
+  'activationCost': 'Стоимость активации',
+  'activationCondition': 'Условие активации',
+  'damageParts': 'Формулы и типы урона',
+  'versatileDamage': 'Универсальный урон',
+  'formula': 'Формула',
+  'attackBonus': 'Бонус атаки',
+  'attackAbility': 'Характеристика атаки',
+  'actionType': 'Тип действия',
+  'saveAbility': 'Спасбросок',
+  'saveDc': 'СЛ спасброска',
+  'saveScaling': 'Расчёт СЛ',
+  'range': 'Дистанция',
+  'target': 'Цель',
+  'uses': 'Использования',
+  'recharge': 'Перезарядка',
+  'consume': 'Расход ресурса',
+  'spellLevel': 'Уровень заклинания',
+  'spellProperties': 'Свойства заклинания',
+  'equipmentProperties': 'Свойства экипировки',
+  'legact': 'Легендарные действия',
+  'legres': 'Легендарные сопротивления',
+  'lair': 'Логово',
+};
+
+String dmValueText(Object? value) {
+  if (value == null) return 'Неизвестно';
+  if (value is String) return value.isEmpty ? '—' : value;
+  if (value is bool) return value ? 'Да' : 'Нет';
+  if (value is Map || value is List) {
+    return const JsonEncoder.withIndent('  ').convert(value);
+  }
+  return value.toString();
+}
