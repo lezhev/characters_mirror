@@ -2,3 +2,4 @@
 .scripts/
 .dart_tool/
 .tmp/
+__pycache__/
