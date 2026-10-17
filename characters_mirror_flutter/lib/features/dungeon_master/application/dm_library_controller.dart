@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_shared/dungeon_master.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/dm_creature_file_picker.dart';
 import '../data/dm_creature_repository.dart';
 import 'dm_import_report.dart';
+import 'statblock/dm_statblock.dart';
+import 'statblock/dm_statblock_values.dart';
 
 final dmLibraryProvider =
     StateNotifierProvider.autoDispose<DmLibraryController, DmLibraryState>(
@@ -20,9 +23,12 @@ final dmCreatureDetailProvider =
 });
 
 class DmCreatureDetail {
-  DmCreatureDetail(this.record, this.creature);
+  DmCreatureDetail(this.record, this.creature)
+      : statblock = DmStatblock.fromCreature(creature,
+            sourceActor: dmMap(jsonDecode(record.rawJson)));
   final DmCreatureRecord record;
   final NormalizedCreature creature;
+  final DmStatblock statblock;
 }
 
 class DmLibraryState {

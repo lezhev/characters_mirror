@@ -74,9 +74,22 @@ void main() {
     await tester.tap(find.text('Маг'));
     await tester.pumpAndSettle();
     expect(fixture.routerLocation, '/dm/creatures/1');
-    expect(find.text('КД: 12'), findsOneWidget);
-    expect(find.text('HP: 40 / 40'), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byKey(const ValueKey('dm-stat-ac')),
+            matching: find.text('12')),
+        findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byKey(const ValueKey('dm-stat-hp')),
+            matching: find.text('40')),
+        findsOneWidget);
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pumpAndSettle();
     await tester.drag(find.byType(Scrollable).first, const Offset(0, -600));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Технические сведения'));
+    await tester.tap(find.text('Технические сведения'));
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Исходный JSON'));
     await tester.tap(find.text('Исходный JSON'));
