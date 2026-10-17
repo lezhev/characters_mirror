@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   final manifest = (jsonDecode(
-              File('../docs/spell-structured-pilot.json').readAsStringSync())
+              File('../test_fixtures/spell-structured-pilot.json').readAsStringSync())
           as List)
       .cast<Map<String, dynamic>>();
   for (final entry in manifest) {

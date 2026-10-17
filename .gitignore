@@ -3,3 +3,8 @@
 .dart_tool/
 .tmp/
 __pycache__/
+/docs/
+/refs/
+tmp/
+/AGENTS.md
+/.codex-tmp/
