@@ -1,0 +1,2 @@
+# Generated Serverpod schema snapshots are retained for migrations but excluded from GitHub language statistics.
+characters_mirror_server/migrations/**/definition.sql linguist-generated
