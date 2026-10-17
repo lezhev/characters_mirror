@@ -74,15 +74,12 @@ jobs:
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
       - name: Build the Docker image
-        working-directory: characters_mirror_server
-        run: "docker build -t $IMAGE_NAME ."
+        run: docker build -f characters_mirror_server/Dockerfile -t $IMAGE_NAME .
 
       - name: Tag the Docker image
-        working-directory: characters_mirror_server
         run: docker tag $IMAGE_NAME ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT }}/${{ env.REPOSITORY }}/$IMAGE_NAME
 
       - name: Push Docker image
-        working-directory: characters_mirror_server
         run: docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT }}/${{ env.REPOSITORY }}/$IMAGE_NAME
 
       # Uncomment the following code to automatically restart the servers in the

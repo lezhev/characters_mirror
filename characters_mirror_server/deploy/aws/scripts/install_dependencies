@@ -2,7 +2,7 @@
 set -e  # Exit on any error
 
 # Variables for configuration
-DART_VERSION=3.5.1
+DART_VERSION=3.13.5
 USERNAME=ec2-user
 WORKDIR=/home/$USERNAME
 DART_INSTALL_DIR="/usr/lib/dart$DART_VERSION"

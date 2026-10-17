@@ -26,7 +26,7 @@ jobs:
       - name: Setup Dart SDK
         uses: dart-lang/setup-dart@v1.6.5
         with:
-          sdk: 3.5
+          sdk: 3.13.5
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -51,7 +51,7 @@ jobs:
 
       - name: Compile server
         working-directory: characters_mirror_server
-        run: dart compile kernel bin/main.dart
+        run: dart build cli --target bin/main.dart --output build
 
       - name: Create CodeDeploy Deployment
         id: deploy

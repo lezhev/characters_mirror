@@ -3,6 +3,8 @@ os: linux
 files:
   - source: /vendor/
     destination: /home/ec2-user/serverpod/upload/vendor/
+  - source: /characters_mirror_shared/
+    destination: /home/ec2-user/serverpod/upload/characters_mirror_shared/
   - source: /characters_mirror_server/
     destination: /home/ec2-user/serverpod/upload/characters_mirror_server/
 hooks:
