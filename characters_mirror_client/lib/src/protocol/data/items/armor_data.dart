@@ -7,12 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../enums/armor_category.dart' as _i2;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../enums/armor_category.dart' as _ixuui93s;
 
-abstract class ArmorData implements _i1.SerializableModel {
+abstract class ArmorData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ArmorData._({
     this.id,
     this.referenceKey,
@@ -42,7 +44,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.ArmorCategory? categoryValue,
+    _ixuui93s.ArmorCategory? categoryValue,
     int? baseAC,
     int? bonusAC,
     bool? dexBonus,
@@ -63,20 +65,27 @@ abstract class ArmorData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       categoryValue: jsonSerialization['categoryValue'] == null
           ? null
-          : _i2.ArmorCategory.fromJson(
-              (jsonSerialization['categoryValue'] as String)),
+          : _ixuui93s.ArmorCategory.fromJson(
+              (jsonSerialization['categoryValue'] as String),
+            ),
       baseAC: jsonSerialization['baseAC'] as int?,
       bonusAC: jsonSerialization['bonusAC'] as int?,
-      dexBonus: jsonSerialization['dexBonus'] as bool?,
+      dexBonus: jsonSerialization['dexBonus'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['dexBonus']),
       dexBonusMax: jsonSerialization['dexBonusMax'] as int?,
       strengthRequirement: jsonSerialization['strengthRequirement'] as int?,
-      stealthDisadvantage: jsonSerialization['stealthDisadvantage'] as bool?,
+      stealthDisadvantage: jsonSerialization['stealthDisadvantage'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['stealthDisadvantage'],
+            ),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: jsonSerialization['cost'] as String?,
     );
@@ -101,7 +110,7 @@ abstract class ArmorData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  _i2.ArmorCategory? categoryValue;
+  _ixuui93s.ArmorCategory? categoryValue;
 
   int? baseAC;
 
@@ -121,7 +130,7 @@ abstract class ArmorData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [ArmorData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   ArmorData copyWith({
     int? id,
     String? referenceKey,
@@ -131,7 +140,7 @@ abstract class ArmorData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.ArmorCategory? categoryValue,
+    _ixuui93s.ArmorCategory? categoryValue,
     int? baseAC,
     int? bonusAC,
     bool? dexBonus,
@@ -144,6 +153,33 @@ abstract class ArmorData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ArmorData',
+      if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (categoryValue != null) 'categoryValue': categoryValue?.toJson(),
+      if (baseAC != null) 'baseAC': baseAC,
+      if (bonusAC != null) 'bonusAC': bonusAC,
+      if (dexBonus != null) 'dexBonus': dexBonus,
+      if (dexBonusMax != null) 'dexBonusMax': dexBonusMax,
+      if (strengthRequirement != null)
+        'strengthRequirement': strengthRequirement,
+      if (stealthDisadvantage != null)
+        'stealthDisadvantage': stealthDisadvantage,
+      if (weight != null) 'weight': weight,
+      if (cost != null) 'cost': cost,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ArmorData',
       if (id != null) 'id': id,
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
@@ -168,7 +204,7 @@ abstract class ArmorData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -184,7 +220,7 @@ class _ArmorDataImpl extends ArmorData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.ArmorCategory? categoryValue,
+    _ixuui93s.ArmorCategory? categoryValue,
     int? baseAC,
     int? bonusAC,
     bool? dexBonus,
@@ -194,28 +230,28 @@ class _ArmorDataImpl extends ArmorData {
     double? weight,
     String? cost,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          categoryValue: categoryValue,
-          baseAC: baseAC,
-          bonusAC: bonusAC,
-          dexBonus: dexBonus,
-          dexBonusMax: dexBonusMax,
-          strengthRequirement: strengthRequirement,
-          stealthDisadvantage: stealthDisadvantage,
-          weight: weight,
-          cost: cost,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         categoryValue: categoryValue,
+         baseAC: baseAC,
+         bonusAC: bonusAC,
+         dexBonus: dexBonus,
+         dexBonusMax: dexBonusMax,
+         strengthRequirement: strengthRequirement,
+         stealthDisadvantage: stealthDisadvantage,
+         weight: weight,
+         cost: cost,
+       );
 
   /// Returns a shallow copy of this [ArmorData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   ArmorData copyWith({
     Object? id = _Undefined,
@@ -245,7 +281,7 @@ class _ArmorDataImpl extends ArmorData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      categoryValue: categoryValue is _i2.ArmorCategory?
+      categoryValue: categoryValue is _ixuui93s.ArmorCategory?
           ? categoryValue
           : this.categoryValue,
       baseAC: baseAC is int? ? baseAC : this.baseAC,

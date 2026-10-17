@@ -7,7 +7,9 @@ class PersonalFormBindings {
   PersonalFormBindings({
     required CharacterCreation notifier,
     required CharacterData character,
-  }) : _notifier = notifier {
+  }) : // Keep the public constructor parameter name stable.
+       // ignore: prefer_initializing_formals
+       _notifier = notifier {
     nameController = TextEditingController(text: character.name ?? '');
     ageController = TextEditingController(text: character.age ?? '');
     heightController = TextEditingController(text: character.height ?? '');

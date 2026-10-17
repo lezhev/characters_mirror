@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/spell_selection_filter_data.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/spell_selection_filter_data.dart' as _iv73j5oi;
 
 abstract class SpellSelectionReplacementHistoryData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   SpellSelectionReplacementHistoryData._({
     this.spellId,
     this.spellKey,
@@ -26,24 +29,30 @@ abstract class SpellSelectionReplacementHistoryData
   factory SpellSelectionReplacementHistoryData({
     int? spellId,
     String? spellKey,
-    _i2.SpellSelectionFilterData? selectionFilter,
+    _iv73j5oi.SpellSelectionFilterData? selectionFilter,
     int? selectionRuleLevel,
     bool? selectionUnrestricted,
     required int replacedAtClassLevel,
   }) = _SpellSelectionReplacementHistoryDataImpl;
 
   factory SpellSelectionReplacementHistoryData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SpellSelectionReplacementHistoryData(
       spellId: jsonSerialization['spellId'] as int?,
       spellKey: jsonSerialization['spellKey'] as String?,
       selectionFilter: jsonSerialization['selectionFilter'] == null
           ? null
-          : _i2.SpellSelectionFilterData.fromJson(
-              (jsonSerialization['selectionFilter'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol()
+                .deserialize<_iv73j5oi.SpellSelectionFilterData>(
+                  jsonSerialization['selectionFilter'],
+                ),
       selectionRuleLevel: jsonSerialization['selectionRuleLevel'] as int?,
-      selectionUnrestricted:
-          jsonSerialization['selectionUnrestricted'] as bool?,
+      selectionUnrestricted: jsonSerialization['selectionUnrestricted'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['selectionUnrestricted'],
+            ),
       replacedAtClassLevel: jsonSerialization['replacedAtClassLevel'] as int,
     );
   }
@@ -52,7 +61,7 @@ abstract class SpellSelectionReplacementHistoryData
 
   String? spellKey;
 
-  _i2.SpellSelectionFilterData? selectionFilter;
+  _iv73j5oi.SpellSelectionFilterData? selectionFilter;
 
   int? selectionRuleLevel;
 
@@ -62,11 +71,11 @@ abstract class SpellSelectionReplacementHistoryData
 
   /// Returns a shallow copy of this [SpellSelectionReplacementHistoryData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SpellSelectionReplacementHistoryData copyWith({
     int? spellId,
     String? spellKey,
-    _i2.SpellSelectionFilterData? selectionFilter,
+    _iv73j5oi.SpellSelectionFilterData? selectionFilter,
     int? selectionRuleLevel,
     bool? selectionUnrestricted,
     int? replacedAtClassLevel,
@@ -74,6 +83,7 @@ abstract class SpellSelectionReplacementHistoryData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellSelectionReplacementHistoryData',
       if (spellId != null) 'spellId': spellId,
       if (spellKey != null) 'spellKey': spellKey,
       if (selectionFilter != null) 'selectionFilter': selectionFilter?.toJson(),
@@ -87,6 +97,7 @@ abstract class SpellSelectionReplacementHistoryData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SpellSelectionReplacementHistoryData',
       if (spellId != null) 'spellId': spellId,
       if (spellKey != null) 'spellKey': spellKey,
       if (selectionFilter != null)
@@ -100,7 +111,7 @@ abstract class SpellSelectionReplacementHistoryData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -111,22 +122,22 @@ class _SpellSelectionReplacementHistoryDataImpl
   _SpellSelectionReplacementHistoryDataImpl({
     int? spellId,
     String? spellKey,
-    _i2.SpellSelectionFilterData? selectionFilter,
+    _iv73j5oi.SpellSelectionFilterData? selectionFilter,
     int? selectionRuleLevel,
     bool? selectionUnrestricted,
     required int replacedAtClassLevel,
   }) : super._(
-          spellId: spellId,
-          spellKey: spellKey,
-          selectionFilter: selectionFilter,
-          selectionRuleLevel: selectionRuleLevel,
-          selectionUnrestricted: selectionUnrestricted,
-          replacedAtClassLevel: replacedAtClassLevel,
-        );
+         spellId: spellId,
+         spellKey: spellKey,
+         selectionFilter: selectionFilter,
+         selectionRuleLevel: selectionRuleLevel,
+         selectionUnrestricted: selectionUnrestricted,
+         replacedAtClassLevel: replacedAtClassLevel,
+       );
 
   /// Returns a shallow copy of this [SpellSelectionReplacementHistoryData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SpellSelectionReplacementHistoryData copyWith({
     Object? spellId = _Undefined,
@@ -139,7 +150,7 @@ class _SpellSelectionReplacementHistoryDataImpl
     return SpellSelectionReplacementHistoryData(
       spellId: spellId is int? ? spellId : this.spellId,
       spellKey: spellKey is String? ? spellKey : this.spellKey,
-      selectionFilter: selectionFilter is _i2.SpellSelectionFilterData?
+      selectionFilter: selectionFilter is _iv73j5oi.SpellSelectionFilterData?
           ? selectionFilter
           : this.selectionFilter?.copyWith(),
       selectionRuleLevel: selectionRuleLevel is int?

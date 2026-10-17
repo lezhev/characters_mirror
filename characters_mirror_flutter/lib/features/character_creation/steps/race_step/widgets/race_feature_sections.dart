@@ -138,7 +138,7 @@ class RaceFeatureCard extends HookConsumerWidget {
               ),
             );
           },
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
           loading: () => const Center(child: CircularProgressIndicator()),
         );
   }
@@ -231,7 +231,7 @@ class SubraceChoice extends ConsumerWidget {
               ],
             );
           },
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, _) => const SizedBox.shrink(),
           loading: () => const Center(child: CircularProgressIndicator()),
         );
   }

@@ -624,7 +624,7 @@ class _SummaryIcon extends StatelessWidget {
               height: 78,
               colorFilter: ColorFilter.mode(foreground, BlendMode.srcIn),
               placeholderBuilder: (_) => fallback,
-              errorBuilder: (_, __, ___) => fallback,
+              errorBuilder: (_, _, _) => fallback,
             ),
     );
   }

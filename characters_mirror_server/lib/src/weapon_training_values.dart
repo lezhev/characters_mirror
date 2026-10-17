@@ -5,7 +5,7 @@ List<WeaponCategory> weaponCategoriesFromTrainingValues(
 ) {
   return [
     for (final value in values ?? const <String>[])
-      if (_weaponCategoryByName(value) case final category?) category,
+      ?_weaponCategoryByName(value),
   ];
 }
 

@@ -1,4 +1,5 @@
 enum: CharacterSyncTargetType
+serialized: byIndex
 values:
   - character
   - field

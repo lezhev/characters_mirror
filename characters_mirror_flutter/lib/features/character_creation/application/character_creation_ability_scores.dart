@@ -99,7 +99,7 @@ List<CharacterChoiceData> _racialChoicesForSource(
 }) {
   final groupsByKey = {
     for (final view in choiceGroups)
-      if (view.group case final group?) group.referenceKey: group,
+      view.group?.referenceKey: ?view.group,
   };
   return choices.where((choice) {
     final group = groupsByKey[choice.groupKey];

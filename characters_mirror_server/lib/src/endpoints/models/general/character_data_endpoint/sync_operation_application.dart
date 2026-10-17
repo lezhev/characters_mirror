@@ -702,8 +702,8 @@ int _currentTargetRevisionForOperation(
           revisions,
           [
             targetKey,
-            if (semanticKey != null) semanticKey,
-            if (legacyKey != null) legacyKey,
+            ?semanticKey,
+            ?legacyKey,
           ],
         ) ??
         baselineRevision;

@@ -9,8 +9,8 @@ void main() {
   withServerpod('Feature presentation', (sessions, endpoints) {
     setUp(CharacterSaveRateLimiter.resetForTests);
     final owner = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(967, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (967).toString(), <Scope>{}));
     for (final subclass in [false, true]) {
       test('server selected-choice contract, subclass=$subclass', () async {
         final session = owner.build();
@@ -135,5 +135,7 @@ void main() {
         }
       });
     }
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

@@ -6,21 +6,58 @@ part of 'character_creation_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$characterCreationHash() => r'522497a9131eef7deb87636e6d7cbcae40c98e3e';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [CharacterCreation].
 @ProviderFor(CharacterCreation)
-final characterCreationProvider =
-    NotifierProvider<CharacterCreation, CharacterCreationState>.internal(
-  CharacterCreation.new,
-  name: r'characterCreationProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$characterCreationHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final characterCreationProvider = CharacterCreationProvider._();
 
-typedef _$CharacterCreation = Notifier<CharacterCreationState>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class CharacterCreationProvider
+    extends $NotifierProvider<CharacterCreation, CharacterCreationState> {
+  CharacterCreationProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'characterCreationProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$characterCreationHash();
+
+  @$internal
+  @override
+  CharacterCreation create() => CharacterCreation();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CharacterCreationState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CharacterCreationState>(value),
+    );
+  }
+}
+
+String _$characterCreationHash() => r'6bc5e78ba7a134d5212dfccea7a3e34ae37376c6';
+
+abstract class _$CharacterCreation extends $Notifier<CharacterCreationState> {
+  CharacterCreationState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref as $Ref<CharacterCreationState, CharacterCreationState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<CharacterCreationState, CharacterCreationState>,
+              CharacterCreationState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}

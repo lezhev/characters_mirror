@@ -11,7 +11,8 @@ void main() {
     setUp(CharacterSaveRateLimiter.resetForTests);
 
     final owner = sessionBuilder.copyWith(
-      authentication: AuthenticationOverride.authenticationInfo(781, <Scope>{}),
+      authentication: AuthenticationOverride.authenticationInfo(
+          (781).toString(), <Scope>{}),
     );
 
     test('save and reload preserves canonical catalog armor and shield',
@@ -129,7 +130,7 @@ void main() {
       }) async {
         final isolatedOwner = sessionBuilder.copyWith(
           authentication: AuthenticationOverride.authenticationInfo(
-            78000 + derivedArmorClassScenario++,
+            (78000 + derivedArmorClassScenario++).toString(),
             <Scope>{},
           ),
         );
@@ -573,5 +574,7 @@ void main() {
         );
       }
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

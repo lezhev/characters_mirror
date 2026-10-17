@@ -33,7 +33,7 @@ class CharacterSheet extends HookConsumerWidget {
     final returnPageIndex = useState(0);
     final character = ref.watch(characterSheetControllerProvider(characterId));
     ref.watch(characterSheetLocalSavePendingProvider(characterId));
-    final characterData = character.valueOrNull;
+    final characterData = character.value;
     final characterName = characterData?.name?.trim();
     final isLeaving = useRef(false);
     final tabs = buildCharacterSheetTabs(characterId);

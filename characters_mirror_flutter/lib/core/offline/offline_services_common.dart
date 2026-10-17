@@ -76,8 +76,11 @@ class OfflineSyncCoordinator extends ChangeNotifier {
     List<Duration> retryDelays = _offlineSyncRetryDelays,
   })  : assert(store != null || cache != null),
         _cache = store ?? SqliteCharacterSyncStore(cache!),
+        // Keep the public constructor parameter names stable.
+        // ignore: prefer_initializing_formals
         _currentUserId = currentUserId,
         _syncCharacters = syncCharacters ?? client.characterData.syncCharacters,
+        // ignore: prefer_initializing_formals
         _retryDelays = retryDelays;
 
   final CharacterSyncStore _cache;

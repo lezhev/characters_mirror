@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:characters_mirror_client/characters_mirror_client.dart';
 import 'package:characters_mirror_shared/dungeon_master.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../data/dm_creature_file_picker.dart';
 import '../data/dm_creature_repository.dart';
 import 'dm_import_report.dart';
@@ -147,7 +148,7 @@ class DmLibraryController extends StateNotifier<DmLibraryState> {
         state = DmLibraryState(
             creatures: AsyncData([
               for (final creature
-                  in state.creatures.valueOrNull ?? <DmCreatureSummary>[])
+                  in state.creatures.value ?? <DmCreatureSummary>[])
                 if (creature.id != id) creature,
             ]),
             busy: true);

@@ -7,13 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/character_feature_source_type.dart' as _i2;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../enums/character_feature_source_type.dart' as _ik7og9il;
 
 abstract class CharacterResourceStateData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterResourceStateData._({
     required this.sourceType,
     required this.sourceId,
@@ -22,24 +23,26 @@ abstract class CharacterResourceStateData
   });
 
   factory CharacterResourceStateData({
-    required _i2.CharacterFeatureSourceType sourceType,
+    required _ik7og9il.CharacterFeatureSourceType sourceType,
     required int sourceId,
     required String resourceKey,
     required int current,
   }) = _CharacterResourceStateDataImpl;
 
   factory CharacterResourceStateData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterResourceStateData(
-      sourceType: _i2.CharacterFeatureSourceType.fromJson(
-          (jsonSerialization['sourceType'] as String)),
+      sourceType: _ik7og9il.CharacterFeatureSourceType.fromJson(
+        (jsonSerialization['sourceType'] as String),
+      ),
       sourceId: jsonSerialization['sourceId'] as int,
       resourceKey: jsonSerialization['resourceKey'] as String,
       current: jsonSerialization['current'] as int,
     );
   }
 
-  _i2.CharacterFeatureSourceType sourceType;
+  _ik7og9il.CharacterFeatureSourceType sourceType;
 
   int sourceId;
 
@@ -49,9 +52,9 @@ abstract class CharacterResourceStateData
 
   /// Returns a shallow copy of this [CharacterResourceStateData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterResourceStateData copyWith({
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     String? resourceKey,
     int? current,
@@ -59,6 +62,7 @@ abstract class CharacterResourceStateData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterResourceStateData',
       'sourceType': sourceType.toJson(),
       'sourceId': sourceId,
       'resourceKey': resourceKey,
@@ -69,6 +73,7 @@ abstract class CharacterResourceStateData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterResourceStateData',
       'sourceType': sourceType.toJson(),
       'sourceId': sourceId,
       'resourceKey': resourceKey,
@@ -78,29 +83,29 @@ abstract class CharacterResourceStateData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
 class _CharacterResourceStateDataImpl extends CharacterResourceStateData {
   _CharacterResourceStateDataImpl({
-    required _i2.CharacterFeatureSourceType sourceType,
+    required _ik7og9il.CharacterFeatureSourceType sourceType,
     required int sourceId,
     required String resourceKey,
     required int current,
   }) : super._(
-          sourceType: sourceType,
-          sourceId: sourceId,
-          resourceKey: resourceKey,
-          current: current,
-        );
+         sourceType: sourceType,
+         sourceId: sourceId,
+         resourceKey: resourceKey,
+         current: current,
+       );
 
   /// Returns a shallow copy of this [CharacterResourceStateData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterResourceStateData copyWith({
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     String? resourceKey,
     int? current,

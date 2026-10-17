@@ -7,15 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/character/character_data.dart' as _isbrf1qr;
 import '../../../data/general/character/character_rejected_change_data.dart'
-    as _i2;
-import '../../../data/general/character/character_data.dart' as _i3;
+    as _ihrug7t0;
 
 abstract class CharacterSyncResponse
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterSyncResponse._({
     this.acknowledgedChangeIds,
     this.rejectedChanges,
@@ -30,9 +33,9 @@ abstract class CharacterSyncResponse
 
   factory CharacterSyncResponse({
     List<String>? acknowledgedChangeIds,
-    List<_i2.CharacterRejectedChangeData>? rejectedChanges,
-    List<_i3.CharacterData>? characters,
-    Map<String, _i3.CharacterData>? changedCharacters,
+    List<_ihrug7t0.CharacterRejectedChangeData>? rejectedChanges,
+    List<_isbrf1qr.CharacterData>? characters,
+    Map<String, _isbrf1qr.CharacterData>? changedCharacters,
     DateTime? serverTime,
     int? pullCursor,
     List<int>? deletedCharacterIds,
@@ -41,45 +44,56 @@ abstract class CharacterSyncResponse
   }) = _CharacterSyncResponseImpl;
 
   factory CharacterSyncResponse.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterSyncResponse(
-      acknowledgedChangeIds:
-          (jsonSerialization['acknowledgedChangeIds'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      rejectedChanges: (jsonSerialization['rejectedChanges'] as List?)
-          ?.map((e) => _i2.CharacterRejectedChangeData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      characters: (jsonSerialization['characters'] as List?)
-          ?.map((e) => _i3.CharacterData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      changedCharacters: (jsonSerialization['changedCharacters'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                _i3.CharacterData.fromJson((v as Map<String, dynamic>)),
-              )),
+      acknowledgedChangeIds: jsonSerialization['acknowledgedChangeIds'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['acknowledgedChangeIds'],
+            ),
+      rejectedChanges: jsonSerialization['rejectedChanges'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ihrug7t0.CharacterRejectedChangeData>>(
+                  jsonSerialization['rejectedChanges'],
+                ),
+      characters: jsonSerialization['characters'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_isbrf1qr.CharacterData>>(
+              jsonSerialization['characters'],
+            ),
+      changedCharacters: jsonSerialization['changedCharacters'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<Map<String, _isbrf1qr.CharacterData>>(
+                  jsonSerialization['changedCharacters'],
+                ),
       serverTime: jsonSerialization['serverTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['serverTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['serverTime']),
       pullCursor: jsonSerialization['pullCursor'] as int?,
-      deletedCharacterIds: (jsonSerialization['deletedCharacterIds'] as List?)
-          ?.map((e) => e as int)
-          .toList(),
+      deletedCharacterIds: jsonSerialization['deletedCharacterIds'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<int>>(
+              jsonSerialization['deletedCharacterIds'],
+            ),
       syncProtocolVersion: jsonSerialization['syncProtocolVersion'] as int?,
-      capabilities: (jsonSerialization['capabilities'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      capabilities: jsonSerialization['capabilities'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['capabilities'],
+            ),
     );
   }
 
   List<String>? acknowledgedChangeIds;
 
-  List<_i2.CharacterRejectedChangeData>? rejectedChanges;
+  List<_ihrug7t0.CharacterRejectedChangeData>? rejectedChanges;
 
-  List<_i3.CharacterData>? characters;
+  List<_isbrf1qr.CharacterData>? characters;
 
-  Map<String, _i3.CharacterData>? changedCharacters;
+  Map<String, _isbrf1qr.CharacterData>? changedCharacters;
 
   DateTime? serverTime;
 
@@ -93,12 +107,12 @@ abstract class CharacterSyncResponse
 
   /// Returns a shallow copy of this [CharacterSyncResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterSyncResponse copyWith({
     List<String>? acknowledgedChangeIds,
-    List<_i2.CharacterRejectedChangeData>? rejectedChanges,
-    List<_i3.CharacterData>? characters,
-    Map<String, _i3.CharacterData>? changedCharacters,
+    List<_ihrug7t0.CharacterRejectedChangeData>? rejectedChanges,
+    List<_isbrf1qr.CharacterData>? characters,
+    Map<String, _isbrf1qr.CharacterData>? changedCharacters,
     DateTime? serverTime,
     int? pullCursor,
     List<int>? deletedCharacterIds,
@@ -108,16 +122,19 @@ abstract class CharacterSyncResponse
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterSyncResponse',
       if (acknowledgedChangeIds != null)
         'acknowledgedChangeIds': acknowledgedChangeIds?.toJson(),
       if (rejectedChanges != null)
-        'rejectedChanges':
-            rejectedChanges?.toJson(valueToJson: (v) => v.toJson()),
+        'rejectedChanges': rejectedChanges?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (characters != null)
         'characters': characters?.toJson(valueToJson: (v) => v.toJson()),
       if (changedCharacters != null)
-        'changedCharacters':
-            changedCharacters?.toJson(valueToJson: (v) => v.toJson()),
+        'changedCharacters': changedCharacters?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (serverTime != null) 'serverTime': serverTime?.toJson(),
       if (pullCursor != null) 'pullCursor': pullCursor,
       if (deletedCharacterIds != null)
@@ -131,17 +148,21 @@ abstract class CharacterSyncResponse
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterSyncResponse',
       if (acknowledgedChangeIds != null)
         'acknowledgedChangeIds': acknowledgedChangeIds?.toJson(),
       if (rejectedChanges != null)
-        'rejectedChanges':
-            rejectedChanges?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'rejectedChanges': rejectedChanges?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (characters != null)
-        'characters':
-            characters?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'characters': characters?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (changedCharacters != null)
         'changedCharacters': changedCharacters?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (serverTime != null) 'serverTime': serverTime?.toJson(),
       if (pullCursor != null) 'pullCursor': pullCursor,
       if (deletedCharacterIds != null)
@@ -154,7 +175,7 @@ abstract class CharacterSyncResponse
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -163,29 +184,29 @@ class _Undefined {}
 class _CharacterSyncResponseImpl extends CharacterSyncResponse {
   _CharacterSyncResponseImpl({
     List<String>? acknowledgedChangeIds,
-    List<_i2.CharacterRejectedChangeData>? rejectedChanges,
-    List<_i3.CharacterData>? characters,
-    Map<String, _i3.CharacterData>? changedCharacters,
+    List<_ihrug7t0.CharacterRejectedChangeData>? rejectedChanges,
+    List<_isbrf1qr.CharacterData>? characters,
+    Map<String, _isbrf1qr.CharacterData>? changedCharacters,
     DateTime? serverTime,
     int? pullCursor,
     List<int>? deletedCharacterIds,
     int? syncProtocolVersion,
     List<String>? capabilities,
   }) : super._(
-          acknowledgedChangeIds: acknowledgedChangeIds,
-          rejectedChanges: rejectedChanges,
-          characters: characters,
-          changedCharacters: changedCharacters,
-          serverTime: serverTime,
-          pullCursor: pullCursor,
-          deletedCharacterIds: deletedCharacterIds,
-          syncProtocolVersion: syncProtocolVersion,
-          capabilities: capabilities,
-        );
+         acknowledgedChangeIds: acknowledgedChangeIds,
+         rejectedChanges: rejectedChanges,
+         characters: characters,
+         changedCharacters: changedCharacters,
+         serverTime: serverTime,
+         pullCursor: pullCursor,
+         deletedCharacterIds: deletedCharacterIds,
+         syncProtocolVersion: syncProtocolVersion,
+         capabilities: capabilities,
+       );
 
   /// Returns a shallow copy of this [CharacterSyncResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterSyncResponse copyWith({
     Object? acknowledgedChangeIds = _Undefined,
@@ -202,22 +223,19 @@ class _CharacterSyncResponseImpl extends CharacterSyncResponse {
       acknowledgedChangeIds: acknowledgedChangeIds is List<String>?
           ? acknowledgedChangeIds
           : this.acknowledgedChangeIds?.map((e0) => e0).toList(),
-      rejectedChanges: rejectedChanges is List<_i2.CharacterRejectedChangeData>?
+      rejectedChanges:
+          rejectedChanges is List<_ihrug7t0.CharacterRejectedChangeData>?
           ? rejectedChanges
           : this.rejectedChanges?.map((e0) => e0.copyWith()).toList(),
-      characters: characters is List<_i3.CharacterData>?
+      characters: characters is List<_isbrf1qr.CharacterData>?
           ? characters
           : this.characters?.map((e0) => e0.copyWith()).toList(),
-      changedCharacters: changedCharacters is Map<String, _i3.CharacterData>?
+      changedCharacters:
+          changedCharacters is Map<String, _isbrf1qr.CharacterData>?
           ? changedCharacters
-          : this.changedCharacters?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0.copyWith(),
-                  )),
+          : this.changedCharacters?.map(
+              (key0, value0) => MapEntry(key0, value0.copyWith()),
+            ),
       serverTime: serverTime is DateTime? ? serverTime : this.serverTime,
       pullCursor: pullCursor is int? ? pullCursor : this.pullCursor,
       deletedCharacterIds: deletedCharacterIds is List<int>?

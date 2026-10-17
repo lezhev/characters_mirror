@@ -7,17 +7,19 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/class/class_data.dart' as _i2;
-import '../../../data/general/class/subclass_data.dart' as _i3;
-import '../../../data/general/class/prepared_spell_rule_data.dart' as _i4;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/class/class_data.dart' as _i7s9vfyh;
+import '../../../data/general/class/prepared_spell_rule_data.dart' as _ir5j588e;
+import '../../../data/general/class/subclass_data.dart' as _i6yrac43;
 
 abstract class ClassLevelData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   ClassLevelData._({
     this.id,
     required this.classDataId,
@@ -42,15 +44,15 @@ abstract class ClassLevelData
   factory ClassLevelData({
     int? id,
     required int classDataId,
-    _i2.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? subclassDataId,
-    _i3.SubclassData? subclassData,
+    _i6yrac43.SubclassData? subclassData,
     required int level,
     int? knownCantrips,
     int? knownSpells,
     int? spellbookSpells,
     int? knownSpellReplacements,
-    _i4.PreparedSpellRuleData? preparedSpellRule,
+    _ir5j588e.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -66,13 +68,15 @@ abstract class ClassLevelData
       classDataId: jsonSerialization['classDataId'] as int,
       classData: jsonSerialization['classData'] == null
           ? null
-          : _i2.ClassData.fromJson(
-              (jsonSerialization['classData'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i7s9vfyh.ClassData>(
+              jsonSerialization['classData'],
+            ),
       subclassDataId: jsonSerialization['subclassDataId'] as int?,
       subclassData: jsonSerialization['subclassData'] == null
           ? null
-          : _i3.SubclassData.fromJson(
-              (jsonSerialization['subclassData'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i6yrac43.SubclassData>(
+              jsonSerialization['subclassData'],
+            ),
       level: jsonSerialization['level'] as int,
       knownCantrips: jsonSerialization['knownCantrips'] as int?,
       knownSpells: jsonSerialization['knownSpells'] as int?,
@@ -81,8 +85,9 @@ abstract class ClassLevelData
           jsonSerialization['knownSpellReplacements'] as int?,
       preparedSpellRule: jsonSerialization['preparedSpellRule'] == null
           ? null
-          : _i4.PreparedSpellRuleData.fromJson(
-              (jsonSerialization['preparedSpellRule'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_ir5j588e.PreparedSpellRuleData>(
+              jsonSerialization['preparedSpellRule'],
+            ),
       preparedSpellFormula:
           jsonSerialization['preparedSpellFormula'] as String?,
       resourceSummary: jsonSerialization['resourceSummary'] as String?,
@@ -91,10 +96,10 @@ abstract class ClassLevelData
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -107,11 +112,11 @@ abstract class ClassLevelData
 
   int classDataId;
 
-  _i2.ClassData? classData;
+  _i7s9vfyh.ClassData? classData;
 
   int? subclassDataId;
 
-  _i3.SubclassData? subclassData;
+  _i6yrac43.SubclassData? subclassData;
 
   int level;
 
@@ -123,7 +128,7 @@ abstract class ClassLevelData
 
   int? knownSpellReplacements;
 
-  _i4.PreparedSpellRuleData? preparedSpellRule;
+  _ir5j588e.PreparedSpellRuleData? preparedSpellRule;
 
   String? preparedSpellFormula;
 
@@ -140,23 +145,23 @@ abstract class ClassLevelData
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [ClassLevelData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ClassLevelData copyWith({
     int? id,
     int? classDataId,
-    _i2.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? subclassDataId,
-    _i3.SubclassData? subclassData,
+    _i6yrac43.SubclassData? subclassData,
     int? level,
     int? knownCantrips,
     int? knownSpells,
     int? spellbookSpells,
     int? knownSpellReplacements,
-    _i4.PreparedSpellRuleData? preparedSpellRule,
+    _ir5j588e.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -168,6 +173,7 @@ abstract class ClassLevelData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ClassLevelData',
       if (id != null) 'id': id,
       'classDataId': classDataId,
       if (classData != null) 'classData': classData?.toJson(),
@@ -195,6 +201,7 @@ abstract class ClassLevelData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ClassLevelData',
       if (id != null) 'id': id,
       'classDataId': classDataId,
       if (classData != null) 'classData': classData?.toJsonForProtocol(),
@@ -221,8 +228,8 @@ abstract class ClassLevelData
   }
 
   static ClassLevelDataInclude include({
-    _i2.ClassDataInclude? classData,
-    _i3.SubclassDataInclude? subclassData,
+    _i7s9vfyh.ClassDataInclude? classData,
+    _i6yrac43.SubclassDataInclude? subclassData,
   }) {
     return ClassLevelDataInclude._(
       classData: classData,
@@ -231,12 +238,11 @@ abstract class ClassLevelData
   }
 
   static ClassLevelDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<ClassLevelDataTable>? where,
+    _is.WhereExpressionBuilder<ClassLevelDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ClassLevelDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassLevelDataTable>? orderByList,
+    _is.OrderByBuilder<ClassLevelDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassLevelDataTable>? orderByList,
     ClassLevelDataInclude? include,
   }) {
     return ClassLevelDataIncludeList._(
@@ -244,7 +250,6 @@ abstract class ClassLevelData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(ClassLevelData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(ClassLevelData.t),
       include: include,
     );
@@ -252,7 +257,7 @@ abstract class ClassLevelData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -262,15 +267,15 @@ class _ClassLevelDataImpl extends ClassLevelData {
   _ClassLevelDataImpl({
     int? id,
     required int classDataId,
-    _i2.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? subclassDataId,
-    _i3.SubclassData? subclassData,
+    _i6yrac43.SubclassData? subclassData,
     required int level,
     int? knownCantrips,
     int? knownSpells,
     int? spellbookSpells,
     int? knownSpellReplacements,
-    _i4.PreparedSpellRuleData? preparedSpellRule,
+    _ir5j588e.PreparedSpellRuleData? preparedSpellRule,
     String? preparedSpellFormula,
     String? resourceSummary,
     String? notes,
@@ -279,29 +284,29 @@ class _ClassLevelDataImpl extends ClassLevelData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          classDataId: classDataId,
-          classData: classData,
-          subclassDataId: subclassDataId,
-          subclassData: subclassData,
-          level: level,
-          knownCantrips: knownCantrips,
-          knownSpells: knownSpells,
-          spellbookSpells: spellbookSpells,
-          knownSpellReplacements: knownSpellReplacements,
-          preparedSpellRule: preparedSpellRule,
-          preparedSpellFormula: preparedSpellFormula,
-          resourceSummary: resourceSummary,
-          notes: notes,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         classDataId: classDataId,
+         classData: classData,
+         subclassDataId: subclassDataId,
+         subclassData: subclassData,
+         level: level,
+         knownCantrips: knownCantrips,
+         knownSpells: knownSpells,
+         spellbookSpells: spellbookSpells,
+         knownSpellReplacements: knownSpellReplacements,
+         preparedSpellRule: preparedSpellRule,
+         preparedSpellFormula: preparedSpellFormula,
+         resourceSummary: resourceSummary,
+         notes: notes,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [ClassLevelData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ClassLevelData copyWith({
     Object? id = _Undefined,
@@ -326,29 +331,33 @@ class _ClassLevelDataImpl extends ClassLevelData {
     return ClassLevelData(
       id: id is int? ? id : this.id,
       classDataId: classDataId ?? this.classDataId,
-      classData:
-          classData is _i2.ClassData? ? classData : this.classData?.copyWith(),
-      subclassDataId:
-          subclassDataId is int? ? subclassDataId : this.subclassDataId,
-      subclassData: subclassData is _i3.SubclassData?
+      classData: classData is _i7s9vfyh.ClassData?
+          ? classData
+          : this.classData?.copyWith(),
+      subclassDataId: subclassDataId is int?
+          ? subclassDataId
+          : this.subclassDataId,
+      subclassData: subclassData is _i6yrac43.SubclassData?
           ? subclassData
           : this.subclassData?.copyWith(),
       level: level ?? this.level,
       knownCantrips: knownCantrips is int? ? knownCantrips : this.knownCantrips,
       knownSpells: knownSpells is int? ? knownSpells : this.knownSpells,
-      spellbookSpells:
-          spellbookSpells is int? ? spellbookSpells : this.spellbookSpells,
+      spellbookSpells: spellbookSpells is int?
+          ? spellbookSpells
+          : this.spellbookSpells,
       knownSpellReplacements: knownSpellReplacements is int?
           ? knownSpellReplacements
           : this.knownSpellReplacements,
-      preparedSpellRule: preparedSpellRule is _i4.PreparedSpellRuleData?
+      preparedSpellRule: preparedSpellRule is _ir5j588e.PreparedSpellRuleData?
           ? preparedSpellRule
           : this.preparedSpellRule?.copyWith(),
       preparedSpellFormula: preparedSpellFormula is String?
           ? preparedSpellFormula
           : this.preparedSpellFormula,
-      resourceSummary:
-          resourceSummary is String? ? resourceSummary : this.resourceSummary,
+      resourceSummary: resourceSummary is String?
+          ? resourceSummary
+          : this.resourceSummary,
       notes: notes is String? ? notes : this.notes,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
@@ -358,153 +367,168 @@ class _ClassLevelDataImpl extends ClassLevelData {
   }
 }
 
-class ClassLevelDataTable extends _i1.Table<int?> {
+class ClassLevelDataUpdateTable extends _is.UpdateTable<ClassLevelDataTable> {
+  ClassLevelDataUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> classDataId(int value) =>
+      _is.ColumnValue(table.classDataId, value);
+
+  _is.ColumnValue<int, int> subclassDataId(int? value) =>
+      _is.ColumnValue(table.subclassDataId, value);
+
+  _is.ColumnValue<int, int> level(int value) =>
+      _is.ColumnValue(table.level, value);
+
+  _is.ColumnValue<int, int> knownCantrips(int? value) =>
+      _is.ColumnValue(table.knownCantrips, value);
+
+  _is.ColumnValue<int, int> knownSpells(int? value) =>
+      _is.ColumnValue(table.knownSpells, value);
+
+  _is.ColumnValue<int, int> spellbookSpells(int? value) =>
+      _is.ColumnValue(table.spellbookSpells, value);
+
+  _is.ColumnValue<int, int> knownSpellReplacements(int? value) =>
+      _is.ColumnValue(table.knownSpellReplacements, value);
+
+  _is.ColumnValue<
+    _ir5j588e.PreparedSpellRuleData,
+    _ir5j588e.PreparedSpellRuleData
+  >
+  preparedSpellRule(_ir5j588e.PreparedSpellRuleData? value) =>
+      _is.ColumnValue(table.preparedSpellRule, value);
+
+  _is.ColumnValue<String, String> preparedSpellFormula(String? value) =>
+      _is.ColumnValue(table.preparedSpellFormula, value);
+
+  _is.ColumnValue<String, String> resourceSummary(String? value) =>
+      _is.ColumnValue(table.resourceSummary, value);
+
+  _is.ColumnValue<String, String> notes(String? value) =>
+      _is.ColumnValue(table.notes, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class ClassLevelDataTable extends _is.Table<int?> {
   ClassLevelDataTable({super.tableRelation})
-      : super(tableName: 'class_level_data') {
-    classDataId = _i1.ColumnInt(
-      'classDataId',
-      this,
-    );
-    subclassDataId = _i1.ColumnInt(
-      'subclassDataId',
-      this,
-    );
-    level = _i1.ColumnInt(
-      'level',
-      this,
-    );
-    knownCantrips = _i1.ColumnInt(
-      'knownCantrips',
-      this,
-    );
-    knownSpells = _i1.ColumnInt(
-      'knownSpells',
-      this,
-    );
-    spellbookSpells = _i1.ColumnInt(
-      'spellbookSpells',
-      this,
-    );
-    knownSpellReplacements = _i1.ColumnInt(
-      'knownSpellReplacements',
-      this,
-    );
-    preparedSpellRule = _i1.ColumnSerializable(
+    : super(tableName: 'class_level_data') {
+    updateTable = ClassLevelDataUpdateTable(this);
+    classDataId = _is.ColumnInt('classDataId', this);
+    subclassDataId = _is.ColumnInt('subclassDataId', this);
+    level = _is.ColumnInt('level', this);
+    knownCantrips = _is.ColumnInt('knownCantrips', this);
+    knownSpells = _is.ColumnInt('knownSpells', this);
+    spellbookSpells = _is.ColumnInt('spellbookSpells', this);
+    knownSpellReplacements = _is.ColumnInt('knownSpellReplacements', this);
+    preparedSpellRule = _is.ColumnSerializable<_ir5j588e.PreparedSpellRuleData>(
       'preparedSpellRule',
       this,
     );
-    preparedSpellFormula = _i1.ColumnString(
-      'preparedSpellFormula',
-      this,
-    );
-    resourceSummary = _i1.ColumnString(
-      'resourceSummary',
-      this,
-    );
-    notes = _i1.ColumnString(
-      'notes',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    preparedSpellFormula = _is.ColumnString('preparedSpellFormula', this);
+    resourceSummary = _is.ColumnString('resourceSummary', this);
+    notes = _is.ColumnString('notes', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnInt classDataId;
+  late final ClassLevelDataUpdateTable updateTable;
 
-  _i2.ClassDataTable? _classData;
+  late final _is.ColumnInt classDataId;
 
-  late final _i1.ColumnInt subclassDataId;
+  _i7s9vfyh.ClassDataTable? _classData;
 
-  _i3.SubclassDataTable? _subclassData;
+  late final _is.ColumnInt subclassDataId;
 
-  late final _i1.ColumnInt level;
+  _i6yrac43.SubclassDataTable? _subclassData;
 
-  late final _i1.ColumnInt knownCantrips;
+  late final _is.ColumnInt level;
 
-  late final _i1.ColumnInt knownSpells;
+  late final _is.ColumnInt knownCantrips;
 
-  late final _i1.ColumnInt spellbookSpells;
+  late final _is.ColumnInt knownSpells;
 
-  late final _i1.ColumnInt knownSpellReplacements;
+  late final _is.ColumnInt spellbookSpells;
 
-  late final _i1.ColumnSerializable preparedSpellRule;
+  late final _is.ColumnInt knownSpellReplacements;
 
-  late final _i1.ColumnString preparedSpellFormula;
+  late final _is.ColumnSerializable<_ir5j588e.PreparedSpellRuleData>
+  preparedSpellRule;
 
-  late final _i1.ColumnString resourceSummary;
+  late final _is.ColumnString preparedSpellFormula;
 
-  late final _i1.ColumnString notes;
+  late final _is.ColumnString resourceSummary;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnString notes;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  _i2.ClassDataTable get classData {
+  late final _is.ColumnDateTime updatedAt;
+
+  _i7s9vfyh.ClassDataTable get classData {
     if (_classData != null) return _classData!;
-    _classData = _i1.createRelationTable(
+    _classData = _is.createRelationTable(
       relationFieldName: 'classData',
       field: ClassLevelData.t.classDataId,
-      foreignField: _i2.ClassData.t.id,
+      foreignField: _i7s9vfyh.ClassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ClassDataTable(tableRelation: foreignTableRelation),
+          _i7s9vfyh.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _classData!;
   }
 
-  _i3.SubclassDataTable get subclassData {
+  _i6yrac43.SubclassDataTable get subclassData {
     if (_subclassData != null) return _subclassData!;
-    _subclassData = _i1.createRelationTable(
+    _subclassData = _is.createRelationTable(
       relationFieldName: 'subclassData',
       field: ClassLevelData.t.subclassDataId,
-      foreignField: _i3.SubclassData.t.id,
+      foreignField: _i6yrac43.SubclassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.SubclassDataTable(tableRelation: foreignTableRelation),
+          _i6yrac43.SubclassDataTable(tableRelation: foreignTableRelation),
     );
     return _subclassData!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        classDataId,
-        subclassDataId,
-        level,
-        knownCantrips,
-        knownSpells,
-        spellbookSpells,
-        knownSpellReplacements,
-        preparedSpellRule,
-        preparedSpellFormula,
-        resourceSummary,
-        notes,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    classDataId,
+    subclassDataId,
+    level,
+    knownCantrips,
+    knownSpells,
+    spellbookSpells,
+    knownSpellReplacements,
+    preparedSpellRule,
+    preparedSpellFormula,
+    resourceSummary,
+    notes,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'classData') {
       return classData;
     }
@@ -515,36 +539,35 @@ class ClassLevelDataTable extends _i1.Table<int?> {
   }
 }
 
-class ClassLevelDataInclude extends _i1.IncludeObject {
+class ClassLevelDataInclude extends _is.IncludeObject {
   ClassLevelDataInclude._({
-    _i2.ClassDataInclude? classData,
-    _i3.SubclassDataInclude? subclassData,
+    _i7s9vfyh.ClassDataInclude? classData,
+    _i6yrac43.SubclassDataInclude? subclassData,
   }) {
     _classData = classData;
     _subclassData = subclassData;
   }
 
-  _i2.ClassDataInclude? _classData;
+  _i7s9vfyh.ClassDataInclude? _classData;
 
-  _i3.SubclassDataInclude? _subclassData;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'classData': _classData,
-        'subclassData': _subclassData,
-      };
+  _i6yrac43.SubclassDataInclude? _subclassData;
 
   @override
-  _i1.Table<int?> get table => ClassLevelData.t;
+  Map<String, _is.Include?> get includes => {
+    'classData': _classData,
+    'subclassData': _subclassData,
+  };
+
+  @override
+  _is.Table<int?> get table => ClassLevelData.t;
 }
 
-class ClassLevelDataIncludeList extends _i1.IncludeList {
+class ClassLevelDataIncludeList extends _is.IncludeList {
   ClassLevelDataIncludeList._({
-    _i1.WhereExpressionBuilder<ClassLevelDataTable>? where,
+    _is.WhereExpressionBuilder<ClassLevelDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -552,10 +575,10 @@ class ClassLevelDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => ClassLevelData.t;
+  _is.Table<int?> get table => ClassLevelData.t;
 }
 
 class ClassLevelDataRepository {
@@ -588,25 +611,27 @@ class ClassLevelDataRepository {
   /// );
   /// ```
   Future<List<ClassLevelData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassLevelDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassLevelDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ClassLevelDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassLevelDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassLevelDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassLevelDataTable>? orderByList,
+    _is.Transaction? transaction,
     ClassLevelDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<ClassLevelData>(
       where: where?.call(ClassLevelData.t),
       orderBy: orderBy?.call(ClassLevelData.t),
       orderByList: orderByList?.call(ClassLevelData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -628,37 +653,43 @@ class ClassLevelDataRepository {
   /// );
   /// ```
   Future<ClassLevelData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassLevelDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassLevelDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<ClassLevelDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassLevelDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassLevelDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassLevelDataTable>? orderByList,
+    _is.Transaction? transaction,
     ClassLevelDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<ClassLevelData>(
       where: where?.call(ClassLevelData.t),
       orderBy: orderBy?.call(ClassLevelData.t),
       orderByList: orderByList?.call(ClassLevelData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [ClassLevelData] by its [id] or null if no such row exists.
   Future<ClassLevelData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     ClassLevelDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<ClassLevelData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -668,14 +699,26 @@ class ClassLevelDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassLevelData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassLevelData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<ClassLevelData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -683,12 +726,78 @@ class ClassLevelDataRepository {
   ///
   /// The returned [ClassLevelData] will have its `id` field set.
   Future<ClassLevelData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassLevelData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<ClassLevelData>(
+    return session.db.insertRow<ClassLevelData>(row, transaction: transaction);
+  }
+
+  /// Upserts all [ClassLevelData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [ClassLevelData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ClassLevelData>> upsert(
+    _is.DatabaseSession session,
+    List<ClassLevelData> rows, {
+    required _is.ColumnSelections<ClassLevelDataTable> conflictColumns,
+    _is.ColumnSelections<ClassLevelDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ClassLevelDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<ClassLevelData>(
+      rows,
+      conflictColumns: conflictColumns(ClassLevelData.t),
+      updateColumns: updateColumns?.call(ClassLevelData.t),
+      updateWhere: updateWhere?.call(ClassLevelData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [ClassLevelData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [ClassLevelData] will have its `id` field set.
+  Future<ClassLevelData?> upsertRow(
+    _is.DatabaseSession session,
+    ClassLevelData row, {
+    required _is.ColumnSelections<ClassLevelDataTable> conflictColumns,
+    _is.ColumnSelections<ClassLevelDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ClassLevelDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<ClassLevelData>(
       row,
+      conflictColumns: conflictColumns(ClassLevelData.t),
+      updateColumns: updateColumns?.call(ClassLevelData.t),
+      updateWhere: updateWhere?.call(ClassLevelData.t),
       transaction: transaction,
     );
   }
@@ -698,16 +807,22 @@ class ClassLevelDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassLevelData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassLevelData> rows, {
-    _i1.ColumnSelections<ClassLevelDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ClassLevelDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<ClassLevelData>(
       rows,
       columns: columns?.call(ClassLevelData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -715,10 +830,10 @@ class ClassLevelDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<ClassLevelData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassLevelData row, {
-    _i1.ColumnSelections<ClassLevelDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ClassLevelDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<ClassLevelData>(
       row,
@@ -727,55 +842,139 @@ class ClassLevelDataRepository {
     );
   }
 
+  /// Updates a single [ClassLevelData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<ClassLevelData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<ClassLevelDataUpdateTable> columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<ClassLevelData>(
+      id,
+      columnValues: columnValues(ClassLevelData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [ClassLevelData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ClassLevelData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<ClassLevelDataUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<ClassLevelDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<ClassLevelDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassLevelDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<ClassLevelData>(
+      columnValues: columnValues(ClassLevelData.t.updateTable),
+      where: where(ClassLevelData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(ClassLevelData.t),
+      orderByList: orderByList?.call(ClassLevelData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [ClassLevelData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassLevelData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassLevelData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassLevelDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassLevelDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<ClassLevelData>(
       rows,
+      orderBy: orderBy?.call(ClassLevelData.t),
+      orderByList: orderByList?.call(ClassLevelData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [ClassLevelData].
   Future<ClassLevelData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassLevelData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<ClassLevelData>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<ClassLevelData>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassLevelData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<ClassLevelDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ClassLevelDataTable> where,
+    _is.OrderByBuilder<ClassLevelDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassLevelDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<ClassLevelData>(
       where: where(ClassLevelData.t),
+      orderBy: orderBy?.call(ClassLevelData.t),
+      orderByList: orderByList?.call(ClassLevelData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassLevelDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassLevelDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<ClassLevelData>(
       where: where?.call(ClassLevelData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [ClassLevelData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ClassLevelDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<ClassLevelData>(
+      where: where(ClassLevelData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -787,10 +986,10 @@ class ClassLevelDataAttachRowRepository {
   /// Creates a relation between the given [ClassLevelData] and [ClassData]
   /// by setting the [ClassLevelData]'s foreign key `classDataId` to refer to the [ClassData].
   Future<void> classData(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassLevelData classLevelData,
-    _i2.ClassData classData, {
-    _i1.Transaction? transaction,
+    _i7s9vfyh.ClassData classData, {
+    _is.Transaction? transaction,
   }) async {
     if (classLevelData.id == null) {
       throw ArgumentError.notNull('classLevelData.id');
@@ -810,10 +1009,10 @@ class ClassLevelDataAttachRowRepository {
   /// Creates a relation between the given [ClassLevelData] and [SubclassData]
   /// by setting the [ClassLevelData]'s foreign key `subclassDataId` to refer to the [SubclassData].
   Future<void> subclassData(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassLevelData classLevelData,
-    _i3.SubclassData subclassData, {
-    _i1.Transaction? transaction,
+    _i6yrac43.SubclassData subclassData, {
+    _is.Transaction? transaction,
   }) async {
     if (classLevelData.id == null) {
       throw ArgumentError.notNull('classLevelData.id');
@@ -822,8 +1021,9 @@ class ClassLevelDataAttachRowRepository {
       throw ArgumentError.notNull('subclassData.id');
     }
 
-    var $classLevelData =
-        classLevelData.copyWith(subclassDataId: subclassData.id);
+    var $classLevelData = classLevelData.copyWith(
+      subclassDataId: subclassData.id,
+    );
     await session.db.updateRow<ClassLevelData>(
       $classLevelData,
       columns: [ClassLevelData.t.subclassDataId],
@@ -841,17 +1041,17 @@ class ClassLevelDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> subclassData(
-    _i1.Session session,
-    ClassLevelData classleveldata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ClassLevelData classLevelData, {
+    _is.Transaction? transaction,
   }) async {
-    if (classleveldata.id == null) {
-      throw ArgumentError.notNull('classleveldata.id');
+    if (classLevelData.id == null) {
+      throw ArgumentError.notNull('classLevelData.id');
     }
 
-    var $classleveldata = classleveldata.copyWith(subclassDataId: null);
+    var $classLevelData = classLevelData.copyWith(subclassDataId: null);
     await session.db.updateRow<ClassLevelData>(
-      $classleveldata,
+      $classLevelData,
       columns: [ClassLevelData.t.subclassDataId],
       transaction: transaction,
     );

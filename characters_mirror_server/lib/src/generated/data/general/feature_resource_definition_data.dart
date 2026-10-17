@@ -7,26 +7,28 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../data/general/class/class_feature_data.dart' as _i2;
-import '../../data/general/class/subclass_feature_data.dart' as _i3;
-import '../../data/general/race/race_feature_data.dart' as _i4;
-import '../../data/general/choice_option_data.dart' as _i5;
-import '../../enums/feature_resource_kind.dart' as _i6;
-import '../../enums/feature_resource_max_rule.dart' as _i7;
-import '../../enums/ability.dart' as _i8;
-import '../../enums/rest_type.dart' as _i9;
-import '../../enums/feature_resource_trigger.dart' as _i10;
-import '../../enums/feature_resource_progression_key.dart' as _i11;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../data/general/choice_option_data.dart' as _iu6wj5qy;
+import '../../data/general/class/class_feature_data.dart' as _inxbtq9c;
+import '../../data/general/class/subclass_feature_data.dart' as _i6bcyp7i;
 import '../../data/general/feature_resource_progression_value_data.dart'
-    as _i12;
+    as _i40dz5tv;
+import '../../data/general/race/race_feature_data.dart' as _iga2jap7;
+import '../../enums/ability.dart' as _if5gaqs5;
+import '../../enums/feature_resource_kind.dart' as _idk2deej;
+import '../../enums/feature_resource_max_rule.dart' as _i8eknyg7;
+import '../../enums/feature_resource_progression_key.dart' as _int4z9wn;
+import '../../enums/feature_resource_trigger.dart' as _id68h68o;
+import '../../enums/rest_type.dart' as _i67lztjp;
 
 abstract class FeatureResourceDefinitionData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   FeatureResourceDefinitionData._({
     this.id,
     this.classFeatureId,
@@ -54,82 +56,97 @@ abstract class FeatureResourceDefinitionData
   factory FeatureResourceDefinitionData({
     int? id,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
     int? raceFeatureId,
-    _i4.RaceFeatureData? raceFeature,
+    _iga2jap7.RaceFeatureData? raceFeature,
     required String key,
     int? choiceOptionId,
-    _i5.ChoiceOptionData? choiceOption,
+    _iu6wj5qy.ChoiceOptionData? choiceOption,
     String? name,
-    required _i6.FeatureResourceKind kind,
-    required _i7.FeatureResourceMaxRule maxRule,
+    required _idk2deej.FeatureResourceKind kind,
+    required _i8eknyg7.FeatureResourceMaxRule maxRule,
     int? maxValue,
-    _i8.Ability? maxAbility,
-    _i9.RestType? resetOn,
-    _i10.FeatureResourceTrigger? activationTrigger,
-    _i9.RestType? usageResetOn,
-    _i11.FeatureResourceProgressionKey? progressionKey,
+    _if5gaqs5.Ability? maxAbility,
+    _i67lztjp.RestType? resetOn,
+    _id68h68o.FeatureResourceTrigger? activationTrigger,
+    _i67lztjp.RestType? usageResetOn,
+    _int4z9wn.FeatureResourceProgressionKey? progressionKey,
     int? becomesUnlimitedAtLevel,
-    List<_i12.FeatureResourceProgressionValueData>? progressionValues,
+    List<_i40dz5tv.FeatureResourceProgressionValueData>? progressionValues,
   }) = _FeatureResourceDefinitionDataImpl;
 
   factory FeatureResourceDefinitionData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureResourceDefinitionData(
       id: jsonSerialization['id'] as int?,
       classFeatureId: jsonSerialization['classFeatureId'] as int?,
       classFeature: jsonSerialization['classFeature'] == null
           ? null
-          : _i2.ClassFeatureData.fromJson(
-              (jsonSerialization['classFeature'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_inxbtq9c.ClassFeatureData>(
+              jsonSerialization['classFeature'],
+            ),
       subclassFeatureId: jsonSerialization['subclassFeatureId'] as int?,
       subclassFeature: jsonSerialization['subclassFeature'] == null
           ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['subclassFeature'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i6bcyp7i.SubclassFeatureData>(
+              jsonSerialization['subclassFeature'],
+            ),
       raceFeatureId: jsonSerialization['raceFeatureId'] as int?,
       raceFeature: jsonSerialization['raceFeature'] == null
           ? null
-          : _i4.RaceFeatureData.fromJson(
-              (jsonSerialization['raceFeature'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_iga2jap7.RaceFeatureData>(
+              jsonSerialization['raceFeature'],
+            ),
       key: jsonSerialization['key'] as String,
       choiceOptionId: jsonSerialization['choiceOptionId'] as int?,
       choiceOption: jsonSerialization['choiceOption'] == null
           ? null
-          : _i5.ChoiceOptionData.fromJson(
-              (jsonSerialization['choiceOption'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_iu6wj5qy.ChoiceOptionData>(
+              jsonSerialization['choiceOption'],
+            ),
       name: jsonSerialization['name'] as String?,
-      kind: _i6.FeatureResourceKind.fromJson(
-          (jsonSerialization['kind'] as String)),
-      maxRule: _i7.FeatureResourceMaxRule.fromJson(
-          (jsonSerialization['maxRule'] as String)),
+      kind: _idk2deej.FeatureResourceKind.fromJson(
+        (jsonSerialization['kind'] as String),
+      ),
+      maxRule: _i8eknyg7.FeatureResourceMaxRule.fromJson(
+        (jsonSerialization['maxRule'] as String),
+      ),
       maxValue: jsonSerialization['maxValue'] as int?,
       maxAbility: jsonSerialization['maxAbility'] == null
           ? null
-          : _i8.Ability.fromJson((jsonSerialization['maxAbility'] as String)),
+          : _if5gaqs5.Ability.fromJson(
+              (jsonSerialization['maxAbility'] as String),
+            ),
       resetOn: jsonSerialization['resetOn'] == null
           ? null
-          : _i9.RestType.fromJson((jsonSerialization['resetOn'] as String)),
+          : _i67lztjp.RestType.fromJson(
+              (jsonSerialization['resetOn'] as String),
+            ),
       activationTrigger: jsonSerialization['activationTrigger'] == null
           ? null
-          : _i10.FeatureResourceTrigger.fromJson(
-              (jsonSerialization['activationTrigger'] as String)),
+          : _id68h68o.FeatureResourceTrigger.fromJson(
+              (jsonSerialization['activationTrigger'] as String),
+            ),
       usageResetOn: jsonSerialization['usageResetOn'] == null
           ? null
-          : _i9.RestType.fromJson(
-              (jsonSerialization['usageResetOn'] as String)),
+          : _i67lztjp.RestType.fromJson(
+              (jsonSerialization['usageResetOn'] as String),
+            ),
       progressionKey: jsonSerialization['progressionKey'] == null
           ? null
-          : _i11.FeatureResourceProgressionKey.fromJson(
-              (jsonSerialization['progressionKey'] as String)),
+          : _int4z9wn.FeatureResourceProgressionKey.fromJson(
+              (jsonSerialization['progressionKey'] as String),
+            ),
       becomesUnlimitedAtLevel:
           jsonSerialization['becomesUnlimitedAtLevel'] as int?,
-      progressionValues: (jsonSerialization['progressionValues'] as List?)
-          ?.map((e) => _i12.FeatureResourceProgressionValueData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+      progressionValues: jsonSerialization['progressionValues'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<
+              List<_i40dz5tv.FeatureResourceProgressionValueData>
+            >(jsonSerialization['progressionValues']),
     );
   }
 
@@ -142,76 +159,77 @@ abstract class FeatureResourceDefinitionData
 
   int? classFeatureId;
 
-  _i2.ClassFeatureData? classFeature;
+  _inxbtq9c.ClassFeatureData? classFeature;
 
   int? subclassFeatureId;
 
-  _i3.SubclassFeatureData? subclassFeature;
+  _i6bcyp7i.SubclassFeatureData? subclassFeature;
 
   int? raceFeatureId;
 
-  _i4.RaceFeatureData? raceFeature;
+  _iga2jap7.RaceFeatureData? raceFeature;
 
   String key;
 
   int? choiceOptionId;
 
-  _i5.ChoiceOptionData? choiceOption;
+  _iu6wj5qy.ChoiceOptionData? choiceOption;
 
   String? name;
 
-  _i6.FeatureResourceKind kind;
+  _idk2deej.FeatureResourceKind kind;
 
-  _i7.FeatureResourceMaxRule maxRule;
+  _i8eknyg7.FeatureResourceMaxRule maxRule;
 
   int? maxValue;
 
-  _i8.Ability? maxAbility;
+  _if5gaqs5.Ability? maxAbility;
 
-  _i9.RestType? resetOn;
+  _i67lztjp.RestType? resetOn;
 
-  _i10.FeatureResourceTrigger? activationTrigger;
+  _id68h68o.FeatureResourceTrigger? activationTrigger;
 
-  _i9.RestType? usageResetOn;
+  _i67lztjp.RestType? usageResetOn;
 
-  _i11.FeatureResourceProgressionKey? progressionKey;
+  _int4z9wn.FeatureResourceProgressionKey? progressionKey;
 
   int? becomesUnlimitedAtLevel;
 
-  List<_i12.FeatureResourceProgressionValueData>? progressionValues;
+  List<_i40dz5tv.FeatureResourceProgressionValueData>? progressionValues;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [FeatureResourceDefinitionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FeatureResourceDefinitionData copyWith({
     int? id,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
     int? raceFeatureId,
-    _i4.RaceFeatureData? raceFeature,
+    _iga2jap7.RaceFeatureData? raceFeature,
     String? key,
     int? choiceOptionId,
-    _i5.ChoiceOptionData? choiceOption,
+    _iu6wj5qy.ChoiceOptionData? choiceOption,
     String? name,
-    _i6.FeatureResourceKind? kind,
-    _i7.FeatureResourceMaxRule? maxRule,
+    _idk2deej.FeatureResourceKind? kind,
+    _i8eknyg7.FeatureResourceMaxRule? maxRule,
     int? maxValue,
-    _i8.Ability? maxAbility,
-    _i9.RestType? resetOn,
-    _i10.FeatureResourceTrigger? activationTrigger,
-    _i9.RestType? usageResetOn,
-    _i11.FeatureResourceProgressionKey? progressionKey,
+    _if5gaqs5.Ability? maxAbility,
+    _i67lztjp.RestType? resetOn,
+    _id68h68o.FeatureResourceTrigger? activationTrigger,
+    _i67lztjp.RestType? usageResetOn,
+    _int4z9wn.FeatureResourceProgressionKey? progressionKey,
     int? becomesUnlimitedAtLevel,
-    List<_i12.FeatureResourceProgressionValueData>? progressionValues,
+    List<_i40dz5tv.FeatureResourceProgressionValueData>? progressionValues,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureResourceDefinitionData',
       if (id != null) 'id': id,
       if (classFeatureId != null) 'classFeatureId': classFeatureId,
       if (classFeature != null) 'classFeature': classFeature?.toJson(),
@@ -235,14 +253,16 @@ abstract class FeatureResourceDefinitionData
       if (becomesUnlimitedAtLevel != null)
         'becomesUnlimitedAtLevel': becomesUnlimitedAtLevel,
       if (progressionValues != null)
-        'progressionValues':
-            progressionValues?.toJson(valueToJson: (v) => v.toJson()),
+        'progressionValues': progressionValues?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
     };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeatureResourceDefinitionData',
       if (id != null) 'id': id,
       if (classFeatureId != null) 'classFeatureId': classFeatureId,
       if (classFeature != null)
@@ -270,16 +290,17 @@ abstract class FeatureResourceDefinitionData
         'becomesUnlimitedAtLevel': becomesUnlimitedAtLevel,
       if (progressionValues != null)
         'progressionValues': progressionValues?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
     };
   }
 
   static FeatureResourceDefinitionDataInclude include({
-    _i2.ClassFeatureDataInclude? classFeature,
-    _i3.SubclassFeatureDataInclude? subclassFeature,
-    _i4.RaceFeatureDataInclude? raceFeature,
-    _i5.ChoiceOptionDataInclude? choiceOption,
-    _i12.FeatureResourceProgressionValueDataIncludeList? progressionValues,
+    _inxbtq9c.ClassFeatureDataInclude? classFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? subclassFeature,
+    _iga2jap7.RaceFeatureDataInclude? raceFeature,
+    _iu6wj5qy.ChoiceOptionDataInclude? choiceOption,
+    _i40dz5tv.FeatureResourceProgressionValueDataIncludeList? progressionValues,
   }) {
     return FeatureResourceDefinitionDataInclude._(
       classFeature: classFeature,
@@ -291,12 +312,11 @@ abstract class FeatureResourceDefinitionData
   }
 
   static FeatureResourceDefinitionDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
+    _is.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
     FeatureResourceDefinitionDataInclude? include,
   }) {
     return FeatureResourceDefinitionDataIncludeList._(
@@ -304,7 +324,6 @@ abstract class FeatureResourceDefinitionData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(FeatureResourceDefinitionData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(FeatureResourceDefinitionData.t),
       include: include,
     );
@@ -312,7 +331,7 @@ abstract class FeatureResourceDefinitionData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -322,52 +341,52 @@ class _FeatureResourceDefinitionDataImpl extends FeatureResourceDefinitionData {
   _FeatureResourceDefinitionDataImpl({
     int? id,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
     int? raceFeatureId,
-    _i4.RaceFeatureData? raceFeature,
+    _iga2jap7.RaceFeatureData? raceFeature,
     required String key,
     int? choiceOptionId,
-    _i5.ChoiceOptionData? choiceOption,
+    _iu6wj5qy.ChoiceOptionData? choiceOption,
     String? name,
-    required _i6.FeatureResourceKind kind,
-    required _i7.FeatureResourceMaxRule maxRule,
+    required _idk2deej.FeatureResourceKind kind,
+    required _i8eknyg7.FeatureResourceMaxRule maxRule,
     int? maxValue,
-    _i8.Ability? maxAbility,
-    _i9.RestType? resetOn,
-    _i10.FeatureResourceTrigger? activationTrigger,
-    _i9.RestType? usageResetOn,
-    _i11.FeatureResourceProgressionKey? progressionKey,
+    _if5gaqs5.Ability? maxAbility,
+    _i67lztjp.RestType? resetOn,
+    _id68h68o.FeatureResourceTrigger? activationTrigger,
+    _i67lztjp.RestType? usageResetOn,
+    _int4z9wn.FeatureResourceProgressionKey? progressionKey,
     int? becomesUnlimitedAtLevel,
-    List<_i12.FeatureResourceProgressionValueData>? progressionValues,
+    List<_i40dz5tv.FeatureResourceProgressionValueData>? progressionValues,
   }) : super._(
-          id: id,
-          classFeatureId: classFeatureId,
-          classFeature: classFeature,
-          subclassFeatureId: subclassFeatureId,
-          subclassFeature: subclassFeature,
-          raceFeatureId: raceFeatureId,
-          raceFeature: raceFeature,
-          key: key,
-          choiceOptionId: choiceOptionId,
-          choiceOption: choiceOption,
-          name: name,
-          kind: kind,
-          maxRule: maxRule,
-          maxValue: maxValue,
-          maxAbility: maxAbility,
-          resetOn: resetOn,
-          activationTrigger: activationTrigger,
-          usageResetOn: usageResetOn,
-          progressionKey: progressionKey,
-          becomesUnlimitedAtLevel: becomesUnlimitedAtLevel,
-          progressionValues: progressionValues,
-        );
+         id: id,
+         classFeatureId: classFeatureId,
+         classFeature: classFeature,
+         subclassFeatureId: subclassFeatureId,
+         subclassFeature: subclassFeature,
+         raceFeatureId: raceFeatureId,
+         raceFeature: raceFeature,
+         key: key,
+         choiceOptionId: choiceOptionId,
+         choiceOption: choiceOption,
+         name: name,
+         kind: kind,
+         maxRule: maxRule,
+         maxValue: maxValue,
+         maxAbility: maxAbility,
+         resetOn: resetOn,
+         activationTrigger: activationTrigger,
+         usageResetOn: usageResetOn,
+         progressionKey: progressionKey,
+         becomesUnlimitedAtLevel: becomesUnlimitedAtLevel,
+         progressionValues: progressionValues,
+       );
 
   /// Returns a shallow copy of this [FeatureResourceDefinitionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FeatureResourceDefinitionData copyWith({
     Object? id = _Undefined,
@@ -381,8 +400,8 @@ class _FeatureResourceDefinitionDataImpl extends FeatureResourceDefinitionData {
     Object? choiceOptionId = _Undefined,
     Object? choiceOption = _Undefined,
     Object? name = _Undefined,
-    _i6.FeatureResourceKind? kind,
-    _i7.FeatureResourceMaxRule? maxRule,
+    _idk2deej.FeatureResourceKind? kind,
+    _i8eknyg7.FeatureResourceMaxRule? maxRule,
     Object? maxValue = _Undefined,
     Object? maxAbility = _Undefined,
     Object? resetOn = _Undefined,
@@ -394,278 +413,322 @@ class _FeatureResourceDefinitionDataImpl extends FeatureResourceDefinitionData {
   }) {
     return FeatureResourceDefinitionData(
       id: id is int? ? id : this.id,
-      classFeatureId:
-          classFeatureId is int? ? classFeatureId : this.classFeatureId,
-      classFeature: classFeature is _i2.ClassFeatureData?
+      classFeatureId: classFeatureId is int?
+          ? classFeatureId
+          : this.classFeatureId,
+      classFeature: classFeature is _inxbtq9c.ClassFeatureData?
           ? classFeature
           : this.classFeature?.copyWith(),
       subclassFeatureId: subclassFeatureId is int?
           ? subclassFeatureId
           : this.subclassFeatureId,
-      subclassFeature: subclassFeature is _i3.SubclassFeatureData?
+      subclassFeature: subclassFeature is _i6bcyp7i.SubclassFeatureData?
           ? subclassFeature
           : this.subclassFeature?.copyWith(),
       raceFeatureId: raceFeatureId is int? ? raceFeatureId : this.raceFeatureId,
-      raceFeature: raceFeature is _i4.RaceFeatureData?
+      raceFeature: raceFeature is _iga2jap7.RaceFeatureData?
           ? raceFeature
           : this.raceFeature?.copyWith(),
       key: key ?? this.key,
-      choiceOptionId:
-          choiceOptionId is int? ? choiceOptionId : this.choiceOptionId,
-      choiceOption: choiceOption is _i5.ChoiceOptionData?
+      choiceOptionId: choiceOptionId is int?
+          ? choiceOptionId
+          : this.choiceOptionId,
+      choiceOption: choiceOption is _iu6wj5qy.ChoiceOptionData?
           ? choiceOption
           : this.choiceOption?.copyWith(),
       name: name is String? ? name : this.name,
       kind: kind ?? this.kind,
       maxRule: maxRule ?? this.maxRule,
       maxValue: maxValue is int? ? maxValue : this.maxValue,
-      maxAbility: maxAbility is _i8.Ability? ? maxAbility : this.maxAbility,
-      resetOn: resetOn is _i9.RestType? ? resetOn : this.resetOn,
-      activationTrigger: activationTrigger is _i10.FeatureResourceTrigger?
+      maxAbility: maxAbility is _if5gaqs5.Ability?
+          ? maxAbility
+          : this.maxAbility,
+      resetOn: resetOn is _i67lztjp.RestType? ? resetOn : this.resetOn,
+      activationTrigger: activationTrigger is _id68h68o.FeatureResourceTrigger?
           ? activationTrigger
           : this.activationTrigger,
-      usageResetOn:
-          usageResetOn is _i9.RestType? ? usageResetOn : this.usageResetOn,
-      progressionKey: progressionKey is _i11.FeatureResourceProgressionKey?
+      usageResetOn: usageResetOn is _i67lztjp.RestType?
+          ? usageResetOn
+          : this.usageResetOn,
+      progressionKey: progressionKey is _int4z9wn.FeatureResourceProgressionKey?
           ? progressionKey
           : this.progressionKey,
       becomesUnlimitedAtLevel: becomesUnlimitedAtLevel is int?
           ? becomesUnlimitedAtLevel
           : this.becomesUnlimitedAtLevel,
       progressionValues:
-          progressionValues is List<_i12.FeatureResourceProgressionValueData>?
-              ? progressionValues
-              : this.progressionValues?.map((e0) => e0.copyWith()).toList(),
+          progressionValues
+              is List<_i40dz5tv.FeatureResourceProgressionValueData>?
+          ? progressionValues
+          : this.progressionValues?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
 
-class FeatureResourceDefinitionDataTable extends _i1.Table<int?> {
+class FeatureResourceDefinitionDataUpdateTable
+    extends _is.UpdateTable<FeatureResourceDefinitionDataTable> {
+  FeatureResourceDefinitionDataUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> classFeatureId(int? value) =>
+      _is.ColumnValue(table.classFeatureId, value);
+
+  _is.ColumnValue<int, int> subclassFeatureId(int? value) =>
+      _is.ColumnValue(table.subclassFeatureId, value);
+
+  _is.ColumnValue<int, int> raceFeatureId(int? value) =>
+      _is.ColumnValue(table.raceFeatureId, value);
+
+  _is.ColumnValue<String, String> key(String value) =>
+      _is.ColumnValue(table.key, value);
+
+  _is.ColumnValue<int, int> choiceOptionId(int? value) =>
+      _is.ColumnValue(table.choiceOptionId, value);
+
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<_idk2deej.FeatureResourceKind, _idk2deej.FeatureResourceKind>
+  kind(_idk2deej.FeatureResourceKind value) =>
+      _is.ColumnValue(table.kind, value);
+
+  _is.ColumnValue<
+    _i8eknyg7.FeatureResourceMaxRule,
+    _i8eknyg7.FeatureResourceMaxRule
+  >
+  maxRule(_i8eknyg7.FeatureResourceMaxRule value) =>
+      _is.ColumnValue(table.maxRule, value);
+
+  _is.ColumnValue<int, int> maxValue(int? value) =>
+      _is.ColumnValue(table.maxValue, value);
+
+  _is.ColumnValue<_if5gaqs5.Ability, _if5gaqs5.Ability> maxAbility(
+    _if5gaqs5.Ability? value,
+  ) => _is.ColumnValue(table.maxAbility, value);
+
+  _is.ColumnValue<_i67lztjp.RestType, _i67lztjp.RestType> resetOn(
+    _i67lztjp.RestType? value,
+  ) => _is.ColumnValue(table.resetOn, value);
+
+  _is.ColumnValue<
+    _id68h68o.FeatureResourceTrigger,
+    _id68h68o.FeatureResourceTrigger
+  >
+  activationTrigger(_id68h68o.FeatureResourceTrigger? value) =>
+      _is.ColumnValue(table.activationTrigger, value);
+
+  _is.ColumnValue<_i67lztjp.RestType, _i67lztjp.RestType> usageResetOn(
+    _i67lztjp.RestType? value,
+  ) => _is.ColumnValue(table.usageResetOn, value);
+
+  _is.ColumnValue<
+    _int4z9wn.FeatureResourceProgressionKey,
+    _int4z9wn.FeatureResourceProgressionKey
+  >
+  progressionKey(_int4z9wn.FeatureResourceProgressionKey? value) =>
+      _is.ColumnValue(table.progressionKey, value);
+
+  _is.ColumnValue<int, int> becomesUnlimitedAtLevel(int? value) =>
+      _is.ColumnValue(table.becomesUnlimitedAtLevel, value);
+}
+
+class FeatureResourceDefinitionDataTable extends _is.Table<int?> {
   FeatureResourceDefinitionDataTable({super.tableRelation})
-      : super(tableName: 'feature_resource_definition_data') {
-    classFeatureId = _i1.ColumnInt(
-      'classFeatureId',
-      this,
-    );
-    subclassFeatureId = _i1.ColumnInt(
-      'subclassFeatureId',
-      this,
-    );
-    raceFeatureId = _i1.ColumnInt(
-      'raceFeatureId',
-      this,
-    );
-    key = _i1.ColumnString(
-      'key',
-      this,
-    );
-    choiceOptionId = _i1.ColumnInt(
-      'choiceOptionId',
-      this,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    kind = _i1.ColumnEnum(
-      'kind',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    maxRule = _i1.ColumnEnum(
-      'maxRule',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    maxValue = _i1.ColumnInt(
-      'maxValue',
-      this,
-    );
-    maxAbility = _i1.ColumnEnum(
+    : super(tableName: 'feature_resource_definition_data') {
+    updateTable = FeatureResourceDefinitionDataUpdateTable(this);
+    classFeatureId = _is.ColumnInt('classFeatureId', this);
+    subclassFeatureId = _is.ColumnInt('subclassFeatureId', this);
+    raceFeatureId = _is.ColumnInt('raceFeatureId', this);
+    key = _is.ColumnString('key', this);
+    choiceOptionId = _is.ColumnInt('choiceOptionId', this);
+    name = _is.ColumnString('name', this);
+    kind = _is.ColumnEnum('kind', this, _is.EnumSerialization.byName);
+    maxRule = _is.ColumnEnum('maxRule', this, _is.EnumSerialization.byName);
+    maxValue = _is.ColumnInt('maxValue', this);
+    maxAbility = _is.ColumnEnum(
       'maxAbility',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    resetOn = _i1.ColumnEnum(
-      'resetOn',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    activationTrigger = _i1.ColumnEnum(
+    resetOn = _is.ColumnEnum('resetOn', this, _is.EnumSerialization.byName);
+    activationTrigger = _is.ColumnEnum(
       'activationTrigger',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    usageResetOn = _i1.ColumnEnum(
+    usageResetOn = _is.ColumnEnum(
       'usageResetOn',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    progressionKey = _i1.ColumnEnum(
+    progressionKey = _is.ColumnEnum(
       'progressionKey',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    becomesUnlimitedAtLevel = _i1.ColumnInt(
-      'becomesUnlimitedAtLevel',
-      this,
-    );
+    becomesUnlimitedAtLevel = _is.ColumnInt('becomesUnlimitedAtLevel', this);
   }
 
-  late final _i1.ColumnInt classFeatureId;
+  late final FeatureResourceDefinitionDataUpdateTable updateTable;
 
-  _i2.ClassFeatureDataTable? _classFeature;
+  late final _is.ColumnInt classFeatureId;
 
-  late final _i1.ColumnInt subclassFeatureId;
+  _inxbtq9c.ClassFeatureDataTable? _classFeature;
 
-  _i3.SubclassFeatureDataTable? _subclassFeature;
+  late final _is.ColumnInt subclassFeatureId;
 
-  late final _i1.ColumnInt raceFeatureId;
+  _i6bcyp7i.SubclassFeatureDataTable? _subclassFeature;
 
-  _i4.RaceFeatureDataTable? _raceFeature;
+  late final _is.ColumnInt raceFeatureId;
 
-  late final _i1.ColumnString key;
+  _iga2jap7.RaceFeatureDataTable? _raceFeature;
 
-  late final _i1.ColumnInt choiceOptionId;
+  late final _is.ColumnString key;
 
-  _i5.ChoiceOptionDataTable? _choiceOption;
+  late final _is.ColumnInt choiceOptionId;
 
-  late final _i1.ColumnString name;
+  _iu6wj5qy.ChoiceOptionDataTable? _choiceOption;
 
-  late final _i1.ColumnEnum<_i6.FeatureResourceKind> kind;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnEnum<_i7.FeatureResourceMaxRule> maxRule;
+  late final _is.ColumnEnum<_idk2deej.FeatureResourceKind> kind;
 
-  late final _i1.ColumnInt maxValue;
+  late final _is.ColumnEnum<_i8eknyg7.FeatureResourceMaxRule> maxRule;
 
-  late final _i1.ColumnEnum<_i8.Ability> maxAbility;
+  late final _is.ColumnInt maxValue;
 
-  late final _i1.ColumnEnum<_i9.RestType> resetOn;
+  late final _is.ColumnEnum<_if5gaqs5.Ability> maxAbility;
 
-  late final _i1.ColumnEnum<_i10.FeatureResourceTrigger> activationTrigger;
+  late final _is.ColumnEnum<_i67lztjp.RestType> resetOn;
 
-  late final _i1.ColumnEnum<_i9.RestType> usageResetOn;
+  late final _is.ColumnEnum<_id68h68o.FeatureResourceTrigger> activationTrigger;
 
-  late final _i1.ColumnEnum<_i11.FeatureResourceProgressionKey> progressionKey;
+  late final _is.ColumnEnum<_i67lztjp.RestType> usageResetOn;
 
-  late final _i1.ColumnInt becomesUnlimitedAtLevel;
+  late final _is.ColumnEnum<_int4z9wn.FeatureResourceProgressionKey>
+  progressionKey;
 
-  _i12.FeatureResourceProgressionValueDataTable? ___progressionValues;
+  late final _is.ColumnInt becomesUnlimitedAtLevel;
 
-  _i1.ManyRelation<_i12.FeatureResourceProgressionValueDataTable>?
-      _progressionValues;
+  _i40dz5tv.FeatureResourceProgressionValueDataTable? ___progressionValues;
 
-  _i2.ClassFeatureDataTable get classFeature {
+  _is.ManyRelation<_i40dz5tv.FeatureResourceProgressionValueDataTable>?
+  _progressionValues;
+
+  _inxbtq9c.ClassFeatureDataTable get classFeature {
     if (_classFeature != null) return _classFeature!;
-    _classFeature = _i1.createRelationTable(
+    _classFeature = _is.createRelationTable(
       relationFieldName: 'classFeature',
       field: FeatureResourceDefinitionData.t.classFeatureId,
-      foreignField: _i2.ClassFeatureData.t.id,
+      foreignField: _inxbtq9c.ClassFeatureData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ClassFeatureDataTable(tableRelation: foreignTableRelation),
+          _inxbtq9c.ClassFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return _classFeature!;
   }
 
-  _i3.SubclassFeatureDataTable get subclassFeature {
+  _i6bcyp7i.SubclassFeatureDataTable get subclassFeature {
     if (_subclassFeature != null) return _subclassFeature!;
-    _subclassFeature = _i1.createRelationTable(
+    _subclassFeature = _is.createRelationTable(
       relationFieldName: 'subclassFeature',
       field: FeatureResourceDefinitionData.t.subclassFeatureId,
-      foreignField: _i3.SubclassFeatureData.t.id,
+      foreignField: _i6bcyp7i.SubclassFeatureData.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.SubclassFeatureDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _i6bcyp7i.SubclassFeatureDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
     return _subclassFeature!;
   }
 
-  _i4.RaceFeatureDataTable get raceFeature {
+  _iga2jap7.RaceFeatureDataTable get raceFeature {
     if (_raceFeature != null) return _raceFeature!;
-    _raceFeature = _i1.createRelationTable(
+    _raceFeature = _is.createRelationTable(
       relationFieldName: 'raceFeature',
       field: FeatureResourceDefinitionData.t.raceFeatureId,
-      foreignField: _i4.RaceFeatureData.t.id,
+      foreignField: _iga2jap7.RaceFeatureData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.RaceFeatureDataTable(tableRelation: foreignTableRelation),
+          _iga2jap7.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return _raceFeature!;
   }
 
-  _i5.ChoiceOptionDataTable get choiceOption {
+  _iu6wj5qy.ChoiceOptionDataTable get choiceOption {
     if (_choiceOption != null) return _choiceOption!;
-    _choiceOption = _i1.createRelationTable(
+    _choiceOption = _is.createRelationTable(
       relationFieldName: 'choiceOption',
       field: FeatureResourceDefinitionData.t.choiceOptionId,
-      foreignField: _i5.ChoiceOptionData.t.id,
+      foreignField: _iu6wj5qy.ChoiceOptionData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i5.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
+          _iu6wj5qy.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
     );
     return _choiceOption!;
   }
 
-  _i12.FeatureResourceProgressionValueDataTable get __progressionValues {
+  _i40dz5tv.FeatureResourceProgressionValueDataTable get __progressionValues {
     if (___progressionValues != null) return ___progressionValues!;
-    ___progressionValues = _i1.createRelationTable(
+    ___progressionValues = _is.createRelationTable(
       relationFieldName: '__progressionValues',
       field: FeatureResourceDefinitionData.t.id,
       foreignField:
-          _i12.FeatureResourceProgressionValueData.t.resourceDefinitionId,
+          _i40dz5tv.FeatureResourceProgressionValueData.t.resourceDefinitionId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i12.FeatureResourceProgressionValueDataTable(
-              tableRelation: foreignTableRelation),
+          _i40dz5tv.FeatureResourceProgressionValueDataTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
     return ___progressionValues!;
   }
 
-  _i1.ManyRelation<_i12.FeatureResourceProgressionValueDataTable>
-      get progressionValues {
+  _is.ManyRelation<_i40dz5tv.FeatureResourceProgressionValueDataTable>
+  get progressionValues {
     if (_progressionValues != null) return _progressionValues!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'progressionValues',
       field: FeatureResourceDefinitionData.t.id,
       foreignField:
-          _i12.FeatureResourceProgressionValueData.t.resourceDefinitionId,
+          _i40dz5tv.FeatureResourceProgressionValueData.t.resourceDefinitionId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i12.FeatureResourceProgressionValueDataTable(
-              tableRelation: foreignTableRelation),
+          _i40dz5tv.FeatureResourceProgressionValueDataTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
     _progressionValues =
-        _i1.ManyRelation<_i12.FeatureResourceProgressionValueDataTable>(
-      tableWithRelations: relationTable,
-      table: _i12.FeatureResourceProgressionValueDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
+        _is.ManyRelation<_i40dz5tv.FeatureResourceProgressionValueDataTable>(
+          tableWithRelations: relationTable,
+          table: _i40dz5tv.FeatureResourceProgressionValueDataTable(
+            tableRelation: relationTable.tableRelation!.lastRelation,
+          ),
+        );
     return _progressionValues!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        classFeatureId,
-        subclassFeatureId,
-        raceFeatureId,
-        key,
-        choiceOptionId,
-        name,
-        kind,
-        maxRule,
-        maxValue,
-        maxAbility,
-        resetOn,
-        activationTrigger,
-        usageResetOn,
-        progressionKey,
-        becomesUnlimitedAtLevel,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    classFeatureId,
+    subclassFeatureId,
+    raceFeatureId,
+    key,
+    choiceOptionId,
+    name,
+    kind,
+    maxRule,
+    maxValue,
+    maxAbility,
+    resetOn,
+    activationTrigger,
+    usageResetOn,
+    progressionKey,
+    becomesUnlimitedAtLevel,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'classFeature') {
       return classFeature;
     }
@@ -685,13 +748,13 @@ class FeatureResourceDefinitionDataTable extends _i1.Table<int?> {
   }
 }
 
-class FeatureResourceDefinitionDataInclude extends _i1.IncludeObject {
+class FeatureResourceDefinitionDataInclude extends _is.IncludeObject {
   FeatureResourceDefinitionDataInclude._({
-    _i2.ClassFeatureDataInclude? classFeature,
-    _i3.SubclassFeatureDataInclude? subclassFeature,
-    _i4.RaceFeatureDataInclude? raceFeature,
-    _i5.ChoiceOptionDataInclude? choiceOption,
-    _i12.FeatureResourceProgressionValueDataIncludeList? progressionValues,
+    _inxbtq9c.ClassFeatureDataInclude? classFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? subclassFeature,
+    _iga2jap7.RaceFeatureDataInclude? raceFeature,
+    _iu6wj5qy.ChoiceOptionDataInclude? choiceOption,
+    _i40dz5tv.FeatureResourceProgressionValueDataIncludeList? progressionValues,
   }) {
     _classFeature = classFeature;
     _subclassFeature = subclassFeature;
@@ -700,36 +763,35 @@ class FeatureResourceDefinitionDataInclude extends _i1.IncludeObject {
     _progressionValues = progressionValues;
   }
 
-  _i2.ClassFeatureDataInclude? _classFeature;
+  _inxbtq9c.ClassFeatureDataInclude? _classFeature;
 
-  _i3.SubclassFeatureDataInclude? _subclassFeature;
+  _i6bcyp7i.SubclassFeatureDataInclude? _subclassFeature;
 
-  _i4.RaceFeatureDataInclude? _raceFeature;
+  _iga2jap7.RaceFeatureDataInclude? _raceFeature;
 
-  _i5.ChoiceOptionDataInclude? _choiceOption;
+  _iu6wj5qy.ChoiceOptionDataInclude? _choiceOption;
 
-  _i12.FeatureResourceProgressionValueDataIncludeList? _progressionValues;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'classFeature': _classFeature,
-        'subclassFeature': _subclassFeature,
-        'raceFeature': _raceFeature,
-        'choiceOption': _choiceOption,
-        'progressionValues': _progressionValues,
-      };
+  _i40dz5tv.FeatureResourceProgressionValueDataIncludeList? _progressionValues;
 
   @override
-  _i1.Table<int?> get table => FeatureResourceDefinitionData.t;
+  Map<String, _is.Include?> get includes => {
+    'classFeature': _classFeature,
+    'subclassFeature': _subclassFeature,
+    'raceFeature': _raceFeature,
+    'choiceOption': _choiceOption,
+    'progressionValues': _progressionValues,
+  };
+
+  @override
+  _is.Table<int?> get table => FeatureResourceDefinitionData.t;
 }
 
-class FeatureResourceDefinitionDataIncludeList extends _i1.IncludeList {
+class FeatureResourceDefinitionDataIncludeList extends _is.IncludeList {
   FeatureResourceDefinitionDataIncludeList._({
-    _i1.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -737,10 +799,10 @@ class FeatureResourceDefinitionDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => FeatureResourceDefinitionData.t;
+  _is.Table<int?> get table => FeatureResourceDefinitionData.t;
 }
 
 class FeatureResourceDefinitionDataRepository {
@@ -777,25 +839,27 @@ class FeatureResourceDefinitionDataRepository {
   /// );
   /// ```
   Future<List<FeatureResourceDefinitionData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
+    _is.Transaction? transaction,
     FeatureResourceDefinitionDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<FeatureResourceDefinitionData>(
       where: where?.call(FeatureResourceDefinitionData.t),
       orderBy: orderBy?.call(FeatureResourceDefinitionData.t),
       orderByList: orderByList?.call(FeatureResourceDefinitionData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -817,37 +881,43 @@ class FeatureResourceDefinitionDataRepository {
   /// );
   /// ```
   Future<FeatureResourceDefinitionData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
+    _is.Transaction? transaction,
     FeatureResourceDefinitionDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<FeatureResourceDefinitionData>(
       where: where?.call(FeatureResourceDefinitionData.t),
       orderBy: orderBy?.call(FeatureResourceDefinitionData.t),
       orderByList: orderByList?.call(FeatureResourceDefinitionData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [FeatureResourceDefinitionData] by its [id] or null if no such row exists.
   Future<FeatureResourceDefinitionData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     FeatureResourceDefinitionDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<FeatureResourceDefinitionData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -857,14 +927,26 @@ class FeatureResourceDefinitionDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceDefinitionData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureResourceDefinitionData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<FeatureResourceDefinitionData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -872,12 +954,83 @@ class FeatureResourceDefinitionDataRepository {
   ///
   /// The returned [FeatureResourceDefinitionData] will have its `id` field set.
   Future<FeatureResourceDefinitionData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<FeatureResourceDefinitionData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [FeatureResourceDefinitionData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [FeatureResourceDefinitionData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureResourceDefinitionData>> upsert(
+    _is.DatabaseSession session,
+    List<FeatureResourceDefinitionData> rows, {
+    required _is.ColumnSelections<FeatureResourceDefinitionDataTable>
+    conflictColumns,
+    _is.ColumnSelections<FeatureResourceDefinitionDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<FeatureResourceDefinitionData>(
+      rows,
+      conflictColumns: conflictColumns(FeatureResourceDefinitionData.t),
+      updateColumns: updateColumns?.call(FeatureResourceDefinitionData.t),
+      updateWhere: updateWhere?.call(FeatureResourceDefinitionData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [FeatureResourceDefinitionData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [FeatureResourceDefinitionData] will have its `id` field set.
+  Future<FeatureResourceDefinitionData?> upsertRow(
+    _is.DatabaseSession session,
+    FeatureResourceDefinitionData row, {
+    required _is.ColumnSelections<FeatureResourceDefinitionDataTable>
+    conflictColumns,
+    _is.ColumnSelections<FeatureResourceDefinitionDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<FeatureResourceDefinitionData>(
+      row,
+      conflictColumns: conflictColumns(FeatureResourceDefinitionData.t),
+      updateColumns: updateColumns?.call(FeatureResourceDefinitionData.t),
+      updateWhere: updateWhere?.call(FeatureResourceDefinitionData.t),
       transaction: transaction,
     );
   }
@@ -887,16 +1040,22 @@ class FeatureResourceDefinitionDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceDefinitionData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureResourceDefinitionData> rows, {
-    _i1.ColumnSelections<FeatureResourceDefinitionDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureResourceDefinitionDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<FeatureResourceDefinitionData>(
       rows,
       columns: columns?.call(FeatureResourceDefinitionData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -904,10 +1063,10 @@ class FeatureResourceDefinitionDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<FeatureResourceDefinitionData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData row, {
-    _i1.ColumnSelections<FeatureResourceDefinitionDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureResourceDefinitionDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<FeatureResourceDefinitionData>(
       row,
@@ -916,25 +1075,90 @@ class FeatureResourceDefinitionDataRepository {
     );
   }
 
+  /// Updates a single [FeatureResourceDefinitionData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<FeatureResourceDefinitionData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<
+      FeatureResourceDefinitionDataUpdateTable
+    >
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<FeatureResourceDefinitionData>(
+      id,
+      columnValues: columnValues(FeatureResourceDefinitionData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [FeatureResourceDefinitionData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureResourceDefinitionData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<
+      FeatureResourceDefinitionDataUpdateTable
+    >
+    columnValues,
+    required _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>
+    where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<FeatureResourceDefinitionData>(
+      columnValues: columnValues(FeatureResourceDefinitionData.t.updateTable),
+      where: where(FeatureResourceDefinitionData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(FeatureResourceDefinitionData.t),
+      orderByList: orderByList?.call(FeatureResourceDefinitionData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [FeatureResourceDefinitionData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceDefinitionData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureResourceDefinitionData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<FeatureResourceDefinitionData>(
       rows,
+      orderBy: orderBy?.call(FeatureResourceDefinitionData.t),
+      orderByList: orderByList?.call(FeatureResourceDefinitionData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [FeatureResourceDefinitionData].
   Future<FeatureResourceDefinitionData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<FeatureResourceDefinitionData>(
       row,
@@ -943,29 +1167,59 @@ class FeatureResourceDefinitionDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceDefinitionData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>
-        where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>
+    where,
+    _is.OrderByBuilder<FeatureResourceDefinitionDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceDefinitionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<FeatureResourceDefinitionData>(
       where: where(FeatureResourceDefinitionData.t),
+      orderBy: orderBy?.call(FeatureResourceDefinitionData.t),
+      orderByList: orderByList?.call(FeatureResourceDefinitionData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<FeatureResourceDefinitionData>(
       where: where?.call(FeatureResourceDefinitionData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [FeatureResourceDefinitionData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatureResourceDefinitionDataTable>
+    where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<FeatureResourceDefinitionData>(
+      where: where(FeatureResourceDefinitionData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -977,11 +1231,11 @@ class FeatureResourceDefinitionDataAttachRepository {
   /// Creates a relation between this [FeatureResourceDefinitionData] and the given [FeatureResourceProgressionValueData]s
   /// by setting each [FeatureResourceProgressionValueData]'s foreign key `resourceDefinitionId` to refer to this [FeatureResourceDefinitionData].
   Future<void> progressionValues(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData featureResourceDefinitionData,
-    List<_i12.FeatureResourceProgressionValueData>
-        featureResourceProgressionValueData, {
-    _i1.Transaction? transaction,
+    List<_i40dz5tv.FeatureResourceProgressionValueData>
+    featureResourceProgressionValueData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceProgressionValueData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureResourceProgressionValueData.id');
@@ -992,13 +1246,16 @@ class FeatureResourceDefinitionDataAttachRepository {
 
     var $featureResourceProgressionValueData =
         featureResourceProgressionValueData
-            .map((e) => e.copyWith(
-                resourceDefinitionId: featureResourceDefinitionData.id))
+            .map(
+              (e) => e.copyWith(
+                resourceDefinitionId: featureResourceDefinitionData.id,
+              ),
+            )
             .toList();
-    await session.db.update<_i12.FeatureResourceProgressionValueData>(
+    await session.db.update<_i40dz5tv.FeatureResourceProgressionValueData>(
       $featureResourceProgressionValueData,
       columns: [
-        _i12.FeatureResourceProgressionValueData.t.resourceDefinitionId
+        _i40dz5tv.FeatureResourceProgressionValueData.t.resourceDefinitionId,
       ],
       transaction: transaction,
     );
@@ -1011,10 +1268,10 @@ class FeatureResourceDefinitionDataAttachRowRepository {
   /// Creates a relation between the given [FeatureResourceDefinitionData] and [ClassFeatureData]
   /// by setting the [FeatureResourceDefinitionData]'s foreign key `classFeatureId` to refer to the [ClassFeatureData].
   Future<void> classFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData featureResourceDefinitionData,
-    _i2.ClassFeatureData classFeature, {
-    _i1.Transaction? transaction,
+    _inxbtq9c.ClassFeatureData classFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
@@ -1023,8 +1280,9 @@ class FeatureResourceDefinitionDataAttachRowRepository {
       throw ArgumentError.notNull('classFeature.id');
     }
 
-    var $featureResourceDefinitionData =
-        featureResourceDefinitionData.copyWith(classFeatureId: classFeature.id);
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      classFeatureId: classFeature.id,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.classFeatureId],
@@ -1035,10 +1293,10 @@ class FeatureResourceDefinitionDataAttachRowRepository {
   /// Creates a relation between the given [FeatureResourceDefinitionData] and [SubclassFeatureData]
   /// by setting the [FeatureResourceDefinitionData]'s foreign key `subclassFeatureId` to refer to the [SubclassFeatureData].
   Future<void> subclassFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData featureResourceDefinitionData,
-    _i3.SubclassFeatureData subclassFeature, {
-    _i1.Transaction? transaction,
+    _i6bcyp7i.SubclassFeatureData subclassFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
@@ -1048,7 +1306,8 @@ class FeatureResourceDefinitionDataAttachRowRepository {
     }
 
     var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
-        subclassFeatureId: subclassFeature.id);
+      subclassFeatureId: subclassFeature.id,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.subclassFeatureId],
@@ -1059,10 +1318,10 @@ class FeatureResourceDefinitionDataAttachRowRepository {
   /// Creates a relation between the given [FeatureResourceDefinitionData] and [RaceFeatureData]
   /// by setting the [FeatureResourceDefinitionData]'s foreign key `raceFeatureId` to refer to the [RaceFeatureData].
   Future<void> raceFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData featureResourceDefinitionData,
-    _i4.RaceFeatureData raceFeature, {
-    _i1.Transaction? transaction,
+    _iga2jap7.RaceFeatureData raceFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
@@ -1071,8 +1330,9 @@ class FeatureResourceDefinitionDataAttachRowRepository {
       throw ArgumentError.notNull('raceFeature.id');
     }
 
-    var $featureResourceDefinitionData =
-        featureResourceDefinitionData.copyWith(raceFeatureId: raceFeature.id);
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      raceFeatureId: raceFeature.id,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.raceFeatureId],
@@ -1083,10 +1343,10 @@ class FeatureResourceDefinitionDataAttachRowRepository {
   /// Creates a relation between the given [FeatureResourceDefinitionData] and [ChoiceOptionData]
   /// by setting the [FeatureResourceDefinitionData]'s foreign key `choiceOptionId` to refer to the [ChoiceOptionData].
   Future<void> choiceOption(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData featureResourceDefinitionData,
-    _i5.ChoiceOptionData choiceOption, {
-    _i1.Transaction? transaction,
+    _iu6wj5qy.ChoiceOptionData choiceOption, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
@@ -1095,8 +1355,9 @@ class FeatureResourceDefinitionDataAttachRowRepository {
       throw ArgumentError.notNull('choiceOption.id');
     }
 
-    var $featureResourceDefinitionData =
-        featureResourceDefinitionData.copyWith(choiceOptionId: choiceOption.id);
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      choiceOptionId: choiceOption.id,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.choiceOptionId],
@@ -1107,11 +1368,11 @@ class FeatureResourceDefinitionDataAttachRowRepository {
   /// Creates a relation between this [FeatureResourceDefinitionData] and the given [FeatureResourceProgressionValueData]
   /// by setting the [FeatureResourceProgressionValueData]'s foreign key `resourceDefinitionId` to refer to this [FeatureResourceDefinitionData].
   Future<void> progressionValues(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceDefinitionData featureResourceDefinitionData,
-    _i12.FeatureResourceProgressionValueData
-        featureResourceProgressionValueData, {
-    _i1.Transaction? transaction,
+    _i40dz5tv.FeatureResourceProgressionValueData
+    featureResourceProgressionValueData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceProgressionValueData.id == null) {
       throw ArgumentError.notNull('featureResourceProgressionValueData.id');
@@ -1122,11 +1383,12 @@ class FeatureResourceDefinitionDataAttachRowRepository {
 
     var $featureResourceProgressionValueData =
         featureResourceProgressionValueData.copyWith(
-            resourceDefinitionId: featureResourceDefinitionData.id);
-    await session.db.updateRow<_i12.FeatureResourceProgressionValueData>(
+          resourceDefinitionId: featureResourceDefinitionData.id,
+        );
+    await session.db.updateRow<_i40dz5tv.FeatureResourceProgressionValueData>(
       $featureResourceProgressionValueData,
       columns: [
-        _i12.FeatureResourceProgressionValueData.t.resourceDefinitionId
+        _i40dz5tv.FeatureResourceProgressionValueData.t.resourceDefinitionId,
       ],
       transaction: transaction,
     );
@@ -1142,10 +1404,10 @@ class FeatureResourceDefinitionDataDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> progressionValues(
-    _i1.Session session,
-    List<_i12.FeatureResourceProgressionValueData>
-        featureResourceProgressionValueData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    List<_i40dz5tv.FeatureResourceProgressionValueData>
+    featureResourceProgressionValueData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceProgressionValueData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureResourceProgressionValueData.id');
@@ -1155,10 +1417,10 @@ class FeatureResourceDefinitionDataDetachRepository {
         featureResourceProgressionValueData
             .map((e) => e.copyWith(resourceDefinitionId: null))
             .toList();
-    await session.db.update<_i12.FeatureResourceProgressionValueData>(
+    await session.db.update<_i40dz5tv.FeatureResourceProgressionValueData>(
       $featureResourceProgressionValueData,
       columns: [
-        _i12.FeatureResourceProgressionValueData.t.resourceDefinitionId
+        _i40dz5tv.FeatureResourceProgressionValueData.t.resourceDefinitionId,
       ],
       transaction: transaction,
     );
@@ -1174,18 +1436,19 @@ class FeatureResourceDefinitionDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> classFeature(
-    _i1.Session session,
-    FeatureResourceDefinitionData featureresourcedefinitiondata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featureresourcedefinitiondata.id == null) {
-      throw ArgumentError.notNull('featureresourcedefinitiondata.id');
+    if (featureResourceDefinitionData.id == null) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
     }
 
-    var $featureresourcedefinitiondata =
-        featureresourcedefinitiondata.copyWith(classFeatureId: null);
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      classFeatureId: null,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
-      $featureresourcedefinitiondata,
+      $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.classFeatureId],
       transaction: transaction,
     );
@@ -1197,18 +1460,19 @@ class FeatureResourceDefinitionDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> subclassFeature(
-    _i1.Session session,
-    FeatureResourceDefinitionData featureresourcedefinitiondata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featureresourcedefinitiondata.id == null) {
-      throw ArgumentError.notNull('featureresourcedefinitiondata.id');
+    if (featureResourceDefinitionData.id == null) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
     }
 
-    var $featureresourcedefinitiondata =
-        featureresourcedefinitiondata.copyWith(subclassFeatureId: null);
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      subclassFeatureId: null,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
-      $featureresourcedefinitiondata,
+      $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.subclassFeatureId],
       transaction: transaction,
     );
@@ -1220,18 +1484,19 @@ class FeatureResourceDefinitionDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> raceFeature(
-    _i1.Session session,
-    FeatureResourceDefinitionData featureresourcedefinitiondata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featureresourcedefinitiondata.id == null) {
-      throw ArgumentError.notNull('featureresourcedefinitiondata.id');
+    if (featureResourceDefinitionData.id == null) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
     }
 
-    var $featureresourcedefinitiondata =
-        featureresourcedefinitiondata.copyWith(raceFeatureId: null);
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      raceFeatureId: null,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
-      $featureresourcedefinitiondata,
+      $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.raceFeatureId],
       transaction: transaction,
     );
@@ -1243,18 +1508,19 @@ class FeatureResourceDefinitionDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> choiceOption(
-    _i1.Session session,
-    FeatureResourceDefinitionData featureresourcedefinitiondata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featureresourcedefinitiondata.id == null) {
-      throw ArgumentError.notNull('featureresourcedefinitiondata.id');
+    if (featureResourceDefinitionData.id == null) {
+      throw ArgumentError.notNull('featureResourceDefinitionData.id');
     }
 
-    var $featureresourcedefinitiondata =
-        featureresourcedefinitiondata.copyWith(choiceOptionId: null);
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      choiceOptionId: null,
+    );
     await session.db.updateRow<FeatureResourceDefinitionData>(
-      $featureresourcedefinitiondata,
+      $featureResourceDefinitionData,
       columns: [FeatureResourceDefinitionData.t.choiceOptionId],
       transaction: transaction,
     );
@@ -1266,10 +1532,10 @@ class FeatureResourceDefinitionDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> progressionValues(
-    _i1.Session session,
-    _i12.FeatureResourceProgressionValueData
-        featureResourceProgressionValueData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _i40dz5tv.FeatureResourceProgressionValueData
+    featureResourceProgressionValueData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceProgressionValueData.id == null) {
       throw ArgumentError.notNull('featureResourceProgressionValueData.id');
@@ -1277,11 +1543,12 @@ class FeatureResourceDefinitionDataDetachRowRepository {
 
     var $featureResourceProgressionValueData =
         featureResourceProgressionValueData.copyWith(
-            resourceDefinitionId: null);
-    await session.db.updateRow<_i12.FeatureResourceProgressionValueData>(
+          resourceDefinitionId: null,
+        );
+    await session.db.updateRow<_i40dz5tv.FeatureResourceProgressionValueData>(
       $featureResourceProgressionValueData,
       columns: [
-        _i12.FeatureResourceProgressionValueData.t.resourceDefinitionId
+        _i40dz5tv.FeatureResourceProgressionValueData.t.resourceDefinitionId,
       ],
       transaction: transaction,
     );

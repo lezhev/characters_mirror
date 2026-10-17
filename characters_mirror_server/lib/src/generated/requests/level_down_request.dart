@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../requests/level_down_choice_repair.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../requests/level_down_choice_repair.dart' as _it9fvwyh;
 
 abstract class LevelDownRequest
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   LevelDownRequest._({
     required this.characterId,
     required this.expectedVersion,
@@ -25,7 +28,7 @@ abstract class LevelDownRequest
     required int characterId,
     required int expectedVersion,
     required String classEntryId,
-    List<_i2.LevelDownChoiceRepair>? repairs,
+    List<_it9fvwyh.LevelDownChoiceRepair>? repairs,
   }) = _LevelDownRequestImpl;
 
   factory LevelDownRequest.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -33,10 +36,12 @@ abstract class LevelDownRequest
       characterId: jsonSerialization['characterId'] as int,
       expectedVersion: jsonSerialization['expectedVersion'] as int,
       classEntryId: jsonSerialization['classEntryId'] as String,
-      repairs: (jsonSerialization['repairs'] as List?)
-          ?.map((e) =>
-              _i2.LevelDownChoiceRepair.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      repairs: jsonSerialization['repairs'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_it9fvwyh.LevelDownChoiceRepair>>(
+                  jsonSerialization['repairs'],
+                ),
     );
   }
 
@@ -46,20 +51,21 @@ abstract class LevelDownRequest
 
   String classEntryId;
 
-  List<_i2.LevelDownChoiceRepair>? repairs;
+  List<_it9fvwyh.LevelDownChoiceRepair>? repairs;
 
   /// Returns a shallow copy of this [LevelDownRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   LevelDownRequest copyWith({
     int? characterId,
     int? expectedVersion,
     String? classEntryId,
-    List<_i2.LevelDownChoiceRepair>? repairs,
+    List<_it9fvwyh.LevelDownChoiceRepair>? repairs,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'LevelDownRequest',
       'characterId': characterId,
       'expectedVersion': expectedVersion,
       'classEntryId': classEntryId,
@@ -71,6 +77,7 @@ abstract class LevelDownRequest
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'LevelDownRequest',
       'characterId': characterId,
       'expectedVersion': expectedVersion,
       'classEntryId': classEntryId,
@@ -81,7 +88,7 @@ abstract class LevelDownRequest
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -92,17 +99,17 @@ class _LevelDownRequestImpl extends LevelDownRequest {
     required int characterId,
     required int expectedVersion,
     required String classEntryId,
-    List<_i2.LevelDownChoiceRepair>? repairs,
+    List<_it9fvwyh.LevelDownChoiceRepair>? repairs,
   }) : super._(
-          characterId: characterId,
-          expectedVersion: expectedVersion,
-          classEntryId: classEntryId,
-          repairs: repairs,
-        );
+         characterId: characterId,
+         expectedVersion: expectedVersion,
+         classEntryId: classEntryId,
+         repairs: repairs,
+       );
 
   /// Returns a shallow copy of this [LevelDownRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   LevelDownRequest copyWith({
     int? characterId,
@@ -114,7 +121,7 @@ class _LevelDownRequestImpl extends LevelDownRequest {
       characterId: characterId ?? this.characterId,
       expectedVersion: expectedVersion ?? this.expectedVersion,
       classEntryId: classEntryId ?? this.classEntryId,
-      repairs: repairs is List<_i2.LevelDownChoiceRepair>?
+      repairs: repairs is List<_it9fvwyh.LevelDownChoiceRepair>?
           ? repairs
           : this.repairs?.map((e0) => e0.copyWith()).toList(),
     );

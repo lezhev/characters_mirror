@@ -7,21 +7,20 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 abstract class DmCreatureException
-    implements _i1.SerializableException, _i1.SerializableModel {
-  DmCreatureException._({
-    required this.code,
-    required this.message,
-  });
+    implements
+        _isc.SerializableException,
+        _isc.SerializableModel,
+        _isc.ProtocolSerialization {
+  DmCreatureException._({required this.code, required this.message});
 
-  factory DmCreatureException({
-    required String code,
-    required String message,
-  }) = _DmCreatureExceptionImpl;
+  factory DmCreatureException({required String code, required String message}) =
+      _DmCreatureExceptionImpl;
 
   factory DmCreatureException.fromJson(Map<String, dynamic> jsonSerialization) {
     return DmCreatureException(
@@ -36,14 +35,21 @@ abstract class DmCreatureException
 
   /// Returns a shallow copy of this [DmCreatureException]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
-  DmCreatureException copyWith({
-    String? code,
-    String? message,
-  });
+  @_isc.useResult
+  DmCreatureException copyWith({String? code, String? message});
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'DmCreatureException',
+      'code': code,
+      'message': message,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'DmCreatureException',
       'code': code,
       'message': message,
     };
@@ -51,27 +57,19 @@ abstract class DmCreatureException
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return 'DmCreatureException(code: $code, message: $message)';
   }
 }
 
 class _DmCreatureExceptionImpl extends DmCreatureException {
-  _DmCreatureExceptionImpl({
-    required String code,
-    required String message,
-  }) : super._(
-          code: code,
-          message: message,
-        );
+  _DmCreatureExceptionImpl({required String code, required String message})
+    : super._(code: code, message: message);
 
   /// Returns a shallow copy of this [DmCreatureException]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
-  DmCreatureException copyWith({
-    String? code,
-    String? message,
-  }) {
+  DmCreatureException copyWith({String? code, String? message}) {
     return DmCreatureException(
       code: code ?? this.code,
       message: message ?? this.message,

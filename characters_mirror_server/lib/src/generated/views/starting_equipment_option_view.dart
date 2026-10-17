@@ -7,52 +7,58 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../data/general/class/starting_equipment_option_data.dart' as _i2;
-import '../data/general/class/starting_equipment_line_data.dart' as _i3;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../data/general/class/starting_equipment_line_data.dart' as _iyf3iocy;
+import '../data/general/class/starting_equipment_option_data.dart' as _iyweqvnk;
 
 abstract class StartingEquipmentOptionView
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
-  StartingEquipmentOptionView._({
-    this.option,
-    this.lines,
-  });
+    implements _is.SerializableModel, _is.ProtocolSerialization {
+  StartingEquipmentOptionView._({this.option, this.lines});
 
   factory StartingEquipmentOptionView({
-    _i2.StartingEquipmentOptionData? option,
-    List<_i3.StartingEquipmentLineData>? lines,
+    _iyweqvnk.StartingEquipmentOptionData? option,
+    List<_iyf3iocy.StartingEquipmentLineData>? lines,
   }) = _StartingEquipmentOptionViewImpl;
 
   factory StartingEquipmentOptionView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return StartingEquipmentOptionView(
       option: jsonSerialization['option'] == null
           ? null
-          : _i2.StartingEquipmentOptionData.fromJson(
-              (jsonSerialization['option'] as Map<String, dynamic>)),
-      lines: (jsonSerialization['lines'] as List?)
-          ?.map((e) => _i3.StartingEquipmentLineData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+          : _ikmnmw29.Protocol()
+                .deserialize<_iyweqvnk.StartingEquipmentOptionData>(
+                  jsonSerialization['option'],
+                ),
+      lines: jsonSerialization['lines'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iyf3iocy.StartingEquipmentLineData>>(
+                  jsonSerialization['lines'],
+                ),
     );
   }
 
-  _i2.StartingEquipmentOptionData? option;
+  _iyweqvnk.StartingEquipmentOptionData? option;
 
-  List<_i3.StartingEquipmentLineData>? lines;
+  List<_iyf3iocy.StartingEquipmentLineData>? lines;
 
   /// Returns a shallow copy of this [StartingEquipmentOptionView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   StartingEquipmentOptionView copyWith({
-    _i2.StartingEquipmentOptionData? option,
-    List<_i3.StartingEquipmentLineData>? lines,
+    _iyweqvnk.StartingEquipmentOptionData? option,
+    List<_iyf3iocy.StartingEquipmentLineData>? lines,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StartingEquipmentOptionView',
       if (option != null) 'option': option?.toJson(),
       if (lines != null) 'lines': lines?.toJson(valueToJson: (v) => v.toJson()),
     };
@@ -61,6 +67,7 @@ abstract class StartingEquipmentOptionView
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StartingEquipmentOptionView',
       if (option != null) 'option': option?.toJsonForProtocol(),
       if (lines != null)
         'lines': lines?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -69,7 +76,7 @@ abstract class StartingEquipmentOptionView
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -77,26 +84,23 @@ class _Undefined {}
 
 class _StartingEquipmentOptionViewImpl extends StartingEquipmentOptionView {
   _StartingEquipmentOptionViewImpl({
-    _i2.StartingEquipmentOptionData? option,
-    List<_i3.StartingEquipmentLineData>? lines,
-  }) : super._(
-          option: option,
-          lines: lines,
-        );
+    _iyweqvnk.StartingEquipmentOptionData? option,
+    List<_iyf3iocy.StartingEquipmentLineData>? lines,
+  }) : super._(option: option, lines: lines);
 
   /// Returns a shallow copy of this [StartingEquipmentOptionView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   StartingEquipmentOptionView copyWith({
     Object? option = _Undefined,
     Object? lines = _Undefined,
   }) {
     return StartingEquipmentOptionView(
-      option: option is _i2.StartingEquipmentOptionData?
+      option: option is _iyweqvnk.StartingEquipmentOptionData?
           ? option
           : this.option?.copyWith(),
-      lines: lines is List<_i3.StartingEquipmentLineData>?
+      lines: lines is List<_iyf3iocy.StartingEquipmentLineData>?
           ? lines
           : this.lines?.map((e0) => e0.copyWith()).toList(),
     );

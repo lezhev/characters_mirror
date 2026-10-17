@@ -1,4 +1,5 @@
 enum: ToolCategory
+serialized: byIndex
 values:
   - artisan
   - musicalInstrument

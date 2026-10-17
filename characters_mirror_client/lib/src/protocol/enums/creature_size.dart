@@ -7,11 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-enum CreatureSize implements _i1.SerializableModel {
+enum CreatureSize implements _isc.SerializableModel {
   tiny,
   small,
   medium,
@@ -35,7 +36,8 @@ enum CreatureSize implements _i1.SerializableModel {
         return CreatureSize.gargantuan;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "CreatureSize"');
+          'Value "$index" cannot be converted to "CreatureSize"',
+        );
     }
   }
 

@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../enums/feature_tag.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../enums/feature_tag.dart' as _ij7cgcpq;
 
 abstract class FeatData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   FeatData._({
     this.id,
     this.name,
@@ -40,7 +43,7 @@ abstract class FeatData
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<_i2.FeatureTag>? tags,
+    List<_ij7cgcpq.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
@@ -55,32 +58,40 @@ abstract class FeatData
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      abilityBonuses:
-          (jsonSerialization['abilityBonuses'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      traits: (jsonSerialization['traits'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i2.FeatureTag.fromJson((e as String)))
-          .toList(),
-      specialAbilities: (jsonSerialization['specialAbilities'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      proficiencies: (jsonSerialization['proficiencies'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      prerequisites:
-          (jsonSerialization['prerequisites'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      abilityBonuses: jsonSerialization['abilityBonuses'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['abilityBonuses'],
+            ),
+      traits: jsonSerialization['traits'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['traits'],
+            ),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ij7cgcpq.FeatureTag>>(
+              jsonSerialization['tags'],
+            ),
+      specialAbilities: jsonSerialization['specialAbilities'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['specialAbilities'],
+            ),
+      proficiencies: jsonSerialization['proficiencies'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['proficiencies'],
+            ),
+      prerequisites: jsonSerialization['prerequisites'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['prerequisites'],
+            ),
     );
   }
 
@@ -107,7 +118,7 @@ abstract class FeatData
 
   List<String>? traits;
 
-  List<_i2.FeatureTag>? tags;
+  List<_ij7cgcpq.FeatureTag>? tags;
 
   List<String>? specialAbilities;
 
@@ -116,11 +127,11 @@ abstract class FeatData
   Map<String, int>? prerequisites;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [FeatData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FeatData copyWith({
     int? id,
     String? name,
@@ -131,7 +142,7 @@ abstract class FeatData
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<_i2.FeatureTag>? tags,
+    List<_ij7cgcpq.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
@@ -139,6 +150,7 @@ abstract class FeatData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -159,6 +171,7 @@ abstract class FeatData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeatData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -181,12 +194,11 @@ abstract class FeatData
   }
 
   static FeatDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<FeatDataTable>? where,
+    _is.WhereExpressionBuilder<FeatDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatDataTable>? orderByList,
+    _is.OrderByBuilder<FeatDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatDataTable>? orderByList,
     FeatDataInclude? include,
   }) {
     return FeatDataIncludeList._(
@@ -194,7 +206,6 @@ abstract class FeatData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(FeatData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(FeatData.t),
       include: include,
     );
@@ -202,7 +213,7 @@ abstract class FeatData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -219,29 +230,29 @@ class _FeatDataImpl extends FeatData {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<_i2.FeatureTag>? tags,
+    List<_ij7cgcpq.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          abilityBonuses: abilityBonuses,
-          traits: traits,
-          tags: tags,
-          specialAbilities: specialAbilities,
-          proficiencies: proficiencies,
-          prerequisites: prerequisites,
-        );
+         id: id,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         abilityBonuses: abilityBonuses,
+         traits: traits,
+         tags: tags,
+         specialAbilities: specialAbilities,
+         proficiencies: proficiencies,
+         prerequisites: prerequisites,
+       );
 
   /// Returns a shallow copy of this [FeatData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FeatData copyWith({
     Object? id = _Undefined,
@@ -268,18 +279,11 @@ class _FeatDataImpl extends FeatData {
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       abilityBonuses: abilityBonuses is Map<String, int>?
           ? abilityBonuses
-          : this.abilityBonuses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.abilityBonuses?.map((key0, value0) => MapEntry(key0, value0)),
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
-      tags: tags is List<_i2.FeatureTag>?
+      tags: tags is List<_ij7cgcpq.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
       specialAbilities: specialAbilities is List<String>?
@@ -290,129 +294,142 @@ class _FeatDataImpl extends FeatData {
           : this.proficiencies?.map((e0) => e0).toList(),
       prerequisites: prerequisites is Map<String, int>?
           ? prerequisites
-          : this.prerequisites?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.prerequisites?.map((key0, value0) => MapEntry(key0, value0)),
     );
   }
 }
 
-class FeatDataTable extends _i1.Table<int?> {
+class FeatDataUpdateTable extends _is.UpdateTable<FeatDataTable> {
+  FeatDataUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+
+  _is.ColumnValue<Map<String, int>, Map<String, int>> abilityBonuses(
+    Map<String, int>? value,
+  ) => _is.ColumnValue(table.abilityBonuses, value);
+
+  _is.ColumnValue<List<String>, List<String>> traits(List<String>? value) =>
+      _is.ColumnValue(table.traits, value);
+
+  _is.ColumnValue<List<_ij7cgcpq.FeatureTag>, List<_ij7cgcpq.FeatureTag>> tags(
+    List<_ij7cgcpq.FeatureTag>? value,
+  ) => _is.ColumnValue(table.tags, value);
+
+  _is.ColumnValue<List<String>, List<String>> specialAbilities(
+    List<String>? value,
+  ) => _is.ColumnValue(table.specialAbilities, value);
+
+  _is.ColumnValue<List<String>, List<String>> proficiencies(
+    List<String>? value,
+  ) => _is.ColumnValue(table.proficiencies, value);
+
+  _is.ColumnValue<Map<String, int>, Map<String, int>> prerequisites(
+    Map<String, int>? value,
+  ) => _is.ColumnValue(table.prerequisites, value);
+}
+
+class FeatDataTable extends _is.Table<int?> {
   FeatDataTable({super.tableRelation}) : super(tableName: 'feat_data') {
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-    abilityBonuses = _i1.ColumnSerializable(
+    updateTable = FeatDataUpdateTable(this);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
+    abilityBonuses = _is.ColumnSerializable<Map<String, int>>(
       'abilityBonuses',
       this,
     );
-    traits = _i1.ColumnSerializable(
-      'traits',
-      this,
-    );
-    tags = _i1.ColumnSerializable(
-      'tags',
-      this,
-    );
-    specialAbilities = _i1.ColumnSerializable(
+    traits = _is.ColumnSerializable<List<String>>('traits', this);
+    tags = _is.ColumnSerializable<List<_ij7cgcpq.FeatureTag>>('tags', this);
+    specialAbilities = _is.ColumnSerializable<List<String>>(
       'specialAbilities',
       this,
     );
-    proficiencies = _i1.ColumnSerializable(
-      'proficiencies',
-      this,
-    );
-    prerequisites = _i1.ColumnSerializable(
+    proficiencies = _is.ColumnSerializable<List<String>>('proficiencies', this);
+    prerequisites = _is.ColumnSerializable<Map<String, int>>(
       'prerequisites',
       this,
     );
   }
 
-  late final _i1.ColumnString name;
+  late final FeatDataUpdateTable updateTable;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  late final _i1.ColumnSerializable abilityBonuses;
+  late final _is.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnSerializable traits;
+  late final _is.ColumnSerializable<Map<String, int>> abilityBonuses;
 
-  late final _i1.ColumnSerializable tags;
+  late final _is.ColumnSerializable<List<String>> traits;
 
-  late final _i1.ColumnSerializable specialAbilities;
+  late final _is.ColumnSerializable<List<_ij7cgcpq.FeatureTag>> tags;
 
-  late final _i1.ColumnSerializable proficiencies;
+  late final _is.ColumnSerializable<List<String>> specialAbilities;
 
-  late final _i1.ColumnSerializable prerequisites;
+  late final _is.ColumnSerializable<List<String>> proficiencies;
+
+  late final _is.ColumnSerializable<Map<String, int>> prerequisites;
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        abilityBonuses,
-        traits,
-        tags,
-        specialAbilities,
-        proficiencies,
-        prerequisites,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    name,
+    description,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+    abilityBonuses,
+    traits,
+    tags,
+    specialAbilities,
+    proficiencies,
+    prerequisites,
+  ];
 }
 
-class FeatDataInclude extends _i1.IncludeObject {
+class FeatDataInclude extends _is.IncludeObject {
   FeatDataInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => FeatData.t;
+  _is.Table<int?> get table => FeatData.t;
 }
 
-class FeatDataIncludeList extends _i1.IncludeList {
+class FeatDataIncludeList extends _is.IncludeList {
   FeatDataIncludeList._({
-    _i1.WhereExpressionBuilder<FeatDataTable>? where,
+    _is.WhereExpressionBuilder<FeatDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -420,10 +437,10 @@ class FeatDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => FeatData.t;
+  _is.Table<int?> get table => FeatData.t;
 }
 
 class FeatDataRepository {
@@ -452,23 +469,25 @@ class FeatDataRepository {
   /// );
   /// ```
   Future<List<FeatData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<FeatData>(
       where: where?.call(FeatData.t),
       orderBy: orderBy?.call(FeatData.t),
       orderByList: orderByList?.call(FeatData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -490,33 +509,39 @@ class FeatDataRepository {
   /// );
   /// ```
   Future<FeatData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<FeatDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<FeatData>(
       where: where?.call(FeatData.t),
       orderBy: orderBy?.call(FeatData.t),
       orderByList: orderByList?.call(FeatData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [FeatData] by its [id] or null if no such row exists.
   Future<FeatData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<FeatData>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -526,14 +551,26 @@ class FeatDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<FeatData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -541,12 +578,78 @@ class FeatDataRepository {
   ///
   /// The returned [FeatData] will have its `id` field set.
   Future<FeatData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<FeatData>(
+    return session.db.insertRow<FeatData>(row, transaction: transaction);
+  }
+
+  /// Upserts all [FeatData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [FeatData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatData>> upsert(
+    _is.DatabaseSession session,
+    List<FeatData> rows, {
+    required _is.ColumnSelections<FeatDataTable> conflictColumns,
+    _is.ColumnSelections<FeatDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<FeatData>(
+      rows,
+      conflictColumns: conflictColumns(FeatData.t),
+      updateColumns: updateColumns?.call(FeatData.t),
+      updateWhere: updateWhere?.call(FeatData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [FeatData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [FeatData] will have its `id` field set.
+  Future<FeatData?> upsertRow(
+    _is.DatabaseSession session,
+    FeatData row, {
+    required _is.ColumnSelections<FeatDataTable> conflictColumns,
+    _is.ColumnSelections<FeatDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<FeatData>(
       row,
+      conflictColumns: conflictColumns(FeatData.t),
+      updateColumns: updateColumns?.call(FeatData.t),
+      updateWhere: updateWhere?.call(FeatData.t),
       transaction: transaction,
     );
   }
@@ -556,16 +659,22 @@ class FeatDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatData> rows, {
-    _i1.ColumnSelections<FeatDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<FeatData>(
       rows,
       columns: columns?.call(FeatData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -573,10 +682,10 @@ class FeatDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<FeatData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatData row, {
-    _i1.ColumnSelections<FeatDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<FeatData>(
       row,
@@ -585,55 +694,139 @@ class FeatDataRepository {
     );
   }
 
+  /// Updates a single [FeatData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<FeatData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<FeatDataUpdateTable> columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<FeatData>(
+      id,
+      columnValues: columnValues(FeatData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [FeatData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<FeatDataUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<FeatDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<FeatDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<FeatData>(
+      columnValues: columnValues(FeatData.t.updateTable),
+      where: where(FeatData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(FeatData.t),
+      orderByList: orderByList?.call(FeatData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [FeatData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<FeatData>(
       rows,
+      orderBy: orderBy?.call(FeatData.t),
+      orderByList: orderByList?.call(FeatData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [FeatData].
   Future<FeatData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<FeatData>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<FeatData>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<FeatDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatDataTable> where,
+    _is.OrderByBuilder<FeatDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<FeatData>(
       where: where(FeatData.t),
+      orderBy: orderBy?.call(FeatData.t),
+      orderByList: orderByList?.call(FeatData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<FeatData>(
       where: where?.call(FeatData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [FeatData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<FeatData>(
+      where: where(FeatData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

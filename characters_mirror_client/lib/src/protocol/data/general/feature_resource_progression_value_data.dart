@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../data/general/feature_resource_definition_data.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../data/general/feature_resource_definition_data.dart' as _i1wsflhj;
 
 abstract class FeatureResourceProgressionValueData
-    implements _i1.SerializableModel {
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   FeatureResourceProgressionValueData._({
     this.id,
     this.resourceDefinitionId,
@@ -25,21 +28,23 @@ abstract class FeatureResourceProgressionValueData
   factory FeatureResourceProgressionValueData({
     int? id,
     int? resourceDefinitionId,
-    _i2.FeatureResourceDefinitionData? resourceDefinition,
+    _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition,
     required int level,
     required int value,
   }) = _FeatureResourceProgressionValueDataImpl;
 
   factory FeatureResourceProgressionValueData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureResourceProgressionValueData(
       id: jsonSerialization['id'] as int?,
       resourceDefinitionId: jsonSerialization['resourceDefinitionId'] as int?,
       resourceDefinition: jsonSerialization['resourceDefinition'] == null
           ? null
-          : _i2.FeatureResourceDefinitionData.fromJson(
-              (jsonSerialization['resourceDefinition']
-                  as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol()
+                .deserialize<_i1wsflhj.FeatureResourceDefinitionData>(
+                  jsonSerialization['resourceDefinition'],
+                ),
       level: jsonSerialization['level'] as int,
       value: jsonSerialization['value'] as int,
     );
@@ -52,7 +57,7 @@ abstract class FeatureResourceProgressionValueData
 
   int? resourceDefinitionId;
 
-  _i2.FeatureResourceDefinitionData? resourceDefinition;
+  _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition;
 
   int level;
 
@@ -60,17 +65,18 @@ abstract class FeatureResourceProgressionValueData
 
   /// Returns a shallow copy of this [FeatureResourceProgressionValueData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   FeatureResourceProgressionValueData copyWith({
     int? id,
     int? resourceDefinitionId,
-    _i2.FeatureResourceDefinitionData? resourceDefinition,
+    _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition,
     int? level,
     int? value,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureResourceProgressionValueData',
       if (id != null) 'id': id,
       if (resourceDefinitionId != null)
         'resourceDefinitionId': resourceDefinitionId,
@@ -82,8 +88,22 @@ abstract class FeatureResourceProgressionValueData
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'FeatureResourceProgressionValueData',
+      if (id != null) 'id': id,
+      if (resourceDefinitionId != null)
+        'resourceDefinitionId': resourceDefinitionId,
+      if (resourceDefinition != null)
+        'resourceDefinition': resourceDefinition?.toJsonForProtocol(),
+      'level': level,
+      'value': value,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -94,20 +114,20 @@ class _FeatureResourceProgressionValueDataImpl
   _FeatureResourceProgressionValueDataImpl({
     int? id,
     int? resourceDefinitionId,
-    _i2.FeatureResourceDefinitionData? resourceDefinition,
+    _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition,
     required int level,
     required int value,
   }) : super._(
-          id: id,
-          resourceDefinitionId: resourceDefinitionId,
-          resourceDefinition: resourceDefinition,
-          level: level,
-          value: value,
-        );
+         id: id,
+         resourceDefinitionId: resourceDefinitionId,
+         resourceDefinition: resourceDefinition,
+         level: level,
+         value: value,
+       );
 
   /// Returns a shallow copy of this [FeatureResourceProgressionValueData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   FeatureResourceProgressionValueData copyWith({
     Object? id = _Undefined,
@@ -122,9 +142,9 @@ class _FeatureResourceProgressionValueDataImpl
           ? resourceDefinitionId
           : this.resourceDefinitionId,
       resourceDefinition:
-          resourceDefinition is _i2.FeatureResourceDefinitionData?
-              ? resourceDefinition
-              : this.resourceDefinition?.copyWith(),
+          resourceDefinition is _i1wsflhj.FeatureResourceDefinitionData?
+          ? resourceDefinition
+          : this.resourceDefinition?.copyWith(),
       level: level ?? this.level,
       value: value ?? this.value,
     );

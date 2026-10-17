@@ -7,15 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../enums/weapon_category.dart' as _i2;
-import '../../enums/damage_type.dart' as _i3;
-import '../../enums/weapon_property.dart' as _i4;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../enums/damage_type.dart' as _iei1ksog;
+import '../../enums/weapon_category.dart' as _iya6mjd5;
+import '../../enums/weapon_property.dart' as _iw4a05a7;
 
 abstract class WeaponData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   WeaponData._({
     this.id,
     this.referenceKey,
@@ -44,10 +47,10 @@ abstract class WeaponData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.WeaponCategory? category,
+    _iya6mjd5.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageType,
-    List<_i4.WeaponProperty>? properties,
+    _iei1ksog.DamageType? damageType,
+    List<_iw4a05a7.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -64,22 +67,26 @@ abstract class WeaponData
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       category: jsonSerialization['category'] == null
           ? null
-          : _i2.WeaponCategory.fromJson(
-              (jsonSerialization['category'] as String)),
+          : _iya6mjd5.WeaponCategory.fromJson(
+              (jsonSerialization['category'] as String),
+            ),
       damage: jsonSerialization['damage'] as String?,
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i3.DamageType.fromJson(
-              (jsonSerialization['damageType'] as String)),
-      properties: (jsonSerialization['properties'] as List?)
-          ?.map((e) => _i4.WeaponProperty.fromJson((e as String)))
-          .toList(),
+          : _iei1ksog.DamageType.fromJson(
+              (jsonSerialization['damageType'] as String),
+            ),
+      properties: jsonSerialization['properties'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iw4a05a7.WeaponProperty>>(
+              jsonSerialization['properties'],
+            ),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: (jsonSerialization['cost'] as num?)?.toDouble(),
       rangeNormal: jsonSerialization['rangeNormal'] as int?,
@@ -108,13 +115,13 @@ abstract class WeaponData
 
   DateTime? updatedAt;
 
-  _i2.WeaponCategory? category;
+  _iya6mjd5.WeaponCategory? category;
 
   String? damage;
 
-  _i3.DamageType? damageType;
+  _iei1ksog.DamageType? damageType;
 
-  List<_i4.WeaponProperty>? properties;
+  List<_iw4a05a7.WeaponProperty>? properties;
 
   double? weight;
 
@@ -125,11 +132,11 @@ abstract class WeaponData
   int? rangeMax;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [WeaponData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   WeaponData copyWith({
     int? id,
     String? referenceKey,
@@ -139,10 +146,10 @@ abstract class WeaponData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.WeaponCategory? category,
+    _iya6mjd5.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageType,
-    List<_i4.WeaponProperty>? properties,
+    _iei1ksog.DamageType? damageType,
+    List<_iw4a05a7.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -151,6 +158,7 @@ abstract class WeaponData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'WeaponData',
       if (id != null) 'id': id,
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
@@ -174,6 +182,7 @@ abstract class WeaponData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'WeaponData',
       if (id != null) 'id': id,
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
@@ -199,12 +208,11 @@ abstract class WeaponData
   }
 
   static WeaponDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<WeaponDataTable>? where,
+    _is.WhereExpressionBuilder<WeaponDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<WeaponDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<WeaponDataTable>? orderByList,
+    _is.OrderByBuilder<WeaponDataTable>? orderBy,
+    _is.OrderByListBuilder<WeaponDataTable>? orderByList,
     WeaponDataInclude? include,
   }) {
     return WeaponDataIncludeList._(
@@ -212,7 +220,6 @@ abstract class WeaponData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(WeaponData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(WeaponData.t),
       include: include,
     );
@@ -220,7 +227,7 @@ abstract class WeaponData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -236,36 +243,36 @@ class _WeaponDataImpl extends WeaponData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.WeaponCategory? category,
+    _iya6mjd5.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageType,
-    List<_i4.WeaponProperty>? properties,
+    _iei1ksog.DamageType? damageType,
+    List<_iw4a05a7.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
     int? rangeMax,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          category: category,
-          damage: damage,
-          damageType: damageType,
-          properties: properties,
-          weight: weight,
-          cost: cost,
-          rangeNormal: rangeNormal,
-          rangeMax: rangeMax,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         category: category,
+         damage: damage,
+         damageType: damageType,
+         properties: properties,
+         weight: weight,
+         cost: cost,
+         rangeNormal: rangeNormal,
+         rangeMax: rangeMax,
+       );
 
   /// Returns a shallow copy of this [WeaponData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   WeaponData copyWith({
     Object? id = _Undefined,
@@ -294,10 +301,14 @@ class _WeaponDataImpl extends WeaponData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      category: category is _i2.WeaponCategory? ? category : this.category,
+      category: category is _iya6mjd5.WeaponCategory?
+          ? category
+          : this.category,
       damage: damage is String? ? damage : this.damage,
-      damageType: damageType is _i3.DamageType? ? damageType : this.damageType,
-      properties: properties is List<_i4.WeaponProperty>?
+      damageType: damageType is _iei1ksog.DamageType?
+          ? damageType
+          : this.damageType,
+      properties: properties is List<_iw4a05a7.WeaponProperty>?
           ? properties
           : this.properties?.map((e0) => e0).toList(),
       weight: weight is double? ? weight : this.weight,
@@ -308,140 +319,157 @@ class _WeaponDataImpl extends WeaponData {
   }
 }
 
-class WeaponDataTable extends _i1.Table<int?> {
+class WeaponDataUpdateTable extends _is.UpdateTable<WeaponDataTable> {
+  WeaponDataUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> referenceKey(String? value) =>
+      _is.ColumnValue(table.referenceKey, value);
+
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+
+  _is.ColumnValue<_iya6mjd5.WeaponCategory, _iya6mjd5.WeaponCategory> category(
+    _iya6mjd5.WeaponCategory? value,
+  ) => _is.ColumnValue(table.category, value);
+
+  _is.ColumnValue<String, String> damage(String? value) =>
+      _is.ColumnValue(table.damage, value);
+
+  _is.ColumnValue<_iei1ksog.DamageType, _iei1ksog.DamageType> damageType(
+    _iei1ksog.DamageType? value,
+  ) => _is.ColumnValue(table.damageType, value);
+
+  _is.ColumnValue<
+    List<_iw4a05a7.WeaponProperty>,
+    List<_iw4a05a7.WeaponProperty>
+  >
+  properties(List<_iw4a05a7.WeaponProperty>? value) =>
+      _is.ColumnValue(table.properties, value);
+
+  _is.ColumnValue<double, double> weight(double? value) =>
+      _is.ColumnValue(table.weight, value);
+
+  _is.ColumnValue<double, double> cost(double? value) =>
+      _is.ColumnValue(table.cost, value);
+
+  _is.ColumnValue<int, int> rangeNormal(int? value) =>
+      _is.ColumnValue(table.rangeNormal, value);
+
+  _is.ColumnValue<int, int> rangeMax(int? value) =>
+      _is.ColumnValue(table.rangeMax, value);
+}
+
+class WeaponDataTable extends _is.Table<int?> {
   WeaponDataTable({super.tableRelation}) : super(tableName: 'weapon_data') {
-    referenceKey = _i1.ColumnString(
-      'referenceKey',
-      this,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-    category = _i1.ColumnEnum(
-      'category',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    damage = _i1.ColumnString(
-      'damage',
-      this,
-    );
-    damageType = _i1.ColumnEnum(
+    updateTable = WeaponDataUpdateTable(this);
+    referenceKey = _is.ColumnString('referenceKey', this);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
+    category = _is.ColumnEnum('category', this, _is.EnumSerialization.byName);
+    damage = _is.ColumnString('damage', this);
+    damageType = _is.ColumnEnum(
       'damageType',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    properties = _i1.ColumnSerializable(
+    properties = _is.ColumnSerializable<List<_iw4a05a7.WeaponProperty>>(
       'properties',
       this,
     );
-    weight = _i1.ColumnDouble(
-      'weight',
-      this,
-    );
-    cost = _i1.ColumnDouble(
-      'cost',
-      this,
-    );
-    rangeNormal = _i1.ColumnInt(
-      'rangeNormal',
-      this,
-    );
-    rangeMax = _i1.ColumnInt(
-      'rangeMax',
-      this,
-    );
+    weight = _is.ColumnDouble('weight', this);
+    cost = _is.ColumnDouble('cost', this);
+    rangeNormal = _is.ColumnInt('rangeNormal', this);
+    rangeMax = _is.ColumnInt('rangeMax', this);
   }
 
-  late final _i1.ColumnString referenceKey;
+  late final WeaponDataUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString referenceKey;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  late final _i1.ColumnEnum<_i2.WeaponCategory> category;
+  late final _is.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnString damage;
+  late final _is.ColumnEnum<_iya6mjd5.WeaponCategory> category;
 
-  late final _i1.ColumnEnum<_i3.DamageType> damageType;
+  late final _is.ColumnString damage;
 
-  late final _i1.ColumnSerializable properties;
+  late final _is.ColumnEnum<_iei1ksog.DamageType> damageType;
 
-  late final _i1.ColumnDouble weight;
+  late final _is.ColumnSerializable<List<_iw4a05a7.WeaponProperty>> properties;
 
-  late final _i1.ColumnDouble cost;
+  late final _is.ColumnDouble weight;
 
-  late final _i1.ColumnInt rangeNormal;
+  late final _is.ColumnDouble cost;
 
-  late final _i1.ColumnInt rangeMax;
+  late final _is.ColumnInt rangeNormal;
+
+  late final _is.ColumnInt rangeMax;
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        referenceKey,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        category,
-        damage,
-        damageType,
-        properties,
-        weight,
-        cost,
-        rangeNormal,
-        rangeMax,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    referenceKey,
+    name,
+    description,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+    category,
+    damage,
+    damageType,
+    properties,
+    weight,
+    cost,
+    rangeNormal,
+    rangeMax,
+  ];
 }
 
-class WeaponDataInclude extends _i1.IncludeObject {
+class WeaponDataInclude extends _is.IncludeObject {
   WeaponDataInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => WeaponData.t;
+  _is.Table<int?> get table => WeaponData.t;
 }
 
-class WeaponDataIncludeList extends _i1.IncludeList {
+class WeaponDataIncludeList extends _is.IncludeList {
   WeaponDataIncludeList._({
-    _i1.WhereExpressionBuilder<WeaponDataTable>? where,
+    _is.WhereExpressionBuilder<WeaponDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -449,10 +477,10 @@ class WeaponDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => WeaponData.t;
+  _is.Table<int?> get table => WeaponData.t;
 }
 
 class WeaponDataRepository {
@@ -481,23 +509,25 @@ class WeaponDataRepository {
   /// );
   /// ```
   Future<List<WeaponData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<WeaponDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<WeaponDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<WeaponDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<WeaponDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<WeaponDataTable>? orderBy,
+    _is.OrderByListBuilder<WeaponDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<WeaponData>(
       where: where?.call(WeaponData.t),
       orderBy: orderBy?.call(WeaponData.t),
       orderByList: orderByList?.call(WeaponData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -519,33 +549,39 @@ class WeaponDataRepository {
   /// );
   /// ```
   Future<WeaponData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<WeaponDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<WeaponDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<WeaponDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<WeaponDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<WeaponDataTable>? orderBy,
+    _is.OrderByListBuilder<WeaponDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<WeaponData>(
       where: where?.call(WeaponData.t),
       orderBy: orderBy?.call(WeaponData.t),
       orderByList: orderByList?.call(WeaponData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [WeaponData] by its [id] or null if no such row exists.
   Future<WeaponData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<WeaponData>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -555,14 +591,26 @@ class WeaponDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<WeaponData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<WeaponData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<WeaponData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -570,12 +618,78 @@ class WeaponDataRepository {
   ///
   /// The returned [WeaponData] will have its `id` field set.
   Future<WeaponData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     WeaponData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<WeaponData>(
+    return session.db.insertRow<WeaponData>(row, transaction: transaction);
+  }
+
+  /// Upserts all [WeaponData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [WeaponData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<WeaponData>> upsert(
+    _is.DatabaseSession session,
+    List<WeaponData> rows, {
+    required _is.ColumnSelections<WeaponDataTable> conflictColumns,
+    _is.ColumnSelections<WeaponDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<WeaponDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<WeaponData>(
+      rows,
+      conflictColumns: conflictColumns(WeaponData.t),
+      updateColumns: updateColumns?.call(WeaponData.t),
+      updateWhere: updateWhere?.call(WeaponData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [WeaponData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [WeaponData] will have its `id` field set.
+  Future<WeaponData?> upsertRow(
+    _is.DatabaseSession session,
+    WeaponData row, {
+    required _is.ColumnSelections<WeaponDataTable> conflictColumns,
+    _is.ColumnSelections<WeaponDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<WeaponDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<WeaponData>(
       row,
+      conflictColumns: conflictColumns(WeaponData.t),
+      updateColumns: updateColumns?.call(WeaponData.t),
+      updateWhere: updateWhere?.call(WeaponData.t),
       transaction: transaction,
     );
   }
@@ -585,16 +699,22 @@ class WeaponDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<WeaponData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<WeaponData> rows, {
-    _i1.ColumnSelections<WeaponDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<WeaponDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<WeaponData>(
       rows,
       columns: columns?.call(WeaponData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -602,10 +722,10 @@ class WeaponDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<WeaponData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     WeaponData row, {
-    _i1.ColumnSelections<WeaponDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<WeaponDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<WeaponData>(
       row,
@@ -614,55 +734,139 @@ class WeaponDataRepository {
     );
   }
 
+  /// Updates a single [WeaponData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<WeaponData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<WeaponDataUpdateTable> columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<WeaponData>(
+      id,
+      columnValues: columnValues(WeaponData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [WeaponData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<WeaponData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<WeaponDataUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<WeaponDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<WeaponDataTable>? orderBy,
+    _is.OrderByListBuilder<WeaponDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<WeaponData>(
+      columnValues: columnValues(WeaponData.t.updateTable),
+      where: where(WeaponData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(WeaponData.t),
+      orderByList: orderByList?.call(WeaponData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [WeaponData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<WeaponData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<WeaponData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<WeaponDataTable>? orderBy,
+    _is.OrderByListBuilder<WeaponDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<WeaponData>(
       rows,
+      orderBy: orderBy?.call(WeaponData.t),
+      orderByList: orderByList?.call(WeaponData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [WeaponData].
   Future<WeaponData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     WeaponData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<WeaponData>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<WeaponData>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<WeaponData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<WeaponDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<WeaponDataTable> where,
+    _is.OrderByBuilder<WeaponDataTable>? orderBy,
+    _is.OrderByListBuilder<WeaponDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<WeaponData>(
       where: where(WeaponData.t),
+      orderBy: orderBy?.call(WeaponData.t),
+      orderByList: orderByList?.call(WeaponData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<WeaponDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<WeaponDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<WeaponData>(
       where: where?.call(WeaponData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [WeaponData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<WeaponDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<WeaponData>(
+      where: where(WeaponData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

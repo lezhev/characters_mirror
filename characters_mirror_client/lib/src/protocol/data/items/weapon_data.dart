@@ -7,14 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../enums/weapon_category.dart' as _i2;
-import '../../enums/damage_type.dart' as _i3;
-import '../../enums/weapon_property.dart' as _i4;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../enums/damage_type.dart' as _iei1ksog;
+import '../../enums/weapon_category.dart' as _iya6mjd5;
+import '../../enums/weapon_property.dart' as _iw4a05a7;
 
-abstract class WeaponData implements _i1.SerializableModel {
+abstract class WeaponData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   WeaponData._({
     this.id,
     this.referenceKey,
@@ -43,10 +47,10 @@ abstract class WeaponData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.WeaponCategory? category,
+    _iya6mjd5.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageType,
-    List<_i4.WeaponProperty>? properties,
+    _iei1ksog.DamageType? damageType,
+    List<_iw4a05a7.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -63,22 +67,26 @@ abstract class WeaponData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       category: jsonSerialization['category'] == null
           ? null
-          : _i2.WeaponCategory.fromJson(
-              (jsonSerialization['category'] as String)),
+          : _iya6mjd5.WeaponCategory.fromJson(
+              (jsonSerialization['category'] as String),
+            ),
       damage: jsonSerialization['damage'] as String?,
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i3.DamageType.fromJson(
-              (jsonSerialization['damageType'] as String)),
-      properties: (jsonSerialization['properties'] as List?)
-          ?.map((e) => _i4.WeaponProperty.fromJson((e as String)))
-          .toList(),
+          : _iei1ksog.DamageType.fromJson(
+              (jsonSerialization['damageType'] as String),
+            ),
+      properties: jsonSerialization['properties'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iw4a05a7.WeaponProperty>>(
+              jsonSerialization['properties'],
+            ),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: (jsonSerialization['cost'] as num?)?.toDouble(),
       rangeNormal: jsonSerialization['rangeNormal'] as int?,
@@ -105,13 +113,13 @@ abstract class WeaponData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  _i2.WeaponCategory? category;
+  _iya6mjd5.WeaponCategory? category;
 
   String? damage;
 
-  _i3.DamageType? damageType;
+  _iei1ksog.DamageType? damageType;
 
-  List<_i4.WeaponProperty>? properties;
+  List<_iw4a05a7.WeaponProperty>? properties;
 
   double? weight;
 
@@ -123,7 +131,7 @@ abstract class WeaponData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [WeaponData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   WeaponData copyWith({
     int? id,
     String? referenceKey,
@@ -133,10 +141,10 @@ abstract class WeaponData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.WeaponCategory? category,
+    _iya6mjd5.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageType,
-    List<_i4.WeaponProperty>? properties,
+    _iei1ksog.DamageType? damageType,
+    List<_iw4a05a7.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
@@ -145,6 +153,31 @@ abstract class WeaponData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'WeaponData',
+      if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (category != null) 'category': category?.toJson(),
+      if (damage != null) 'damage': damage,
+      if (damageType != null) 'damageType': damageType?.toJson(),
+      if (properties != null)
+        'properties': properties?.toJson(valueToJson: (v) => v.toJson()),
+      if (weight != null) 'weight': weight,
+      if (cost != null) 'cost': cost,
+      if (rangeNormal != null) 'rangeNormal': rangeNormal,
+      if (rangeMax != null) 'rangeMax': rangeMax,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'WeaponData',
       if (id != null) 'id': id,
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
@@ -167,7 +200,7 @@ abstract class WeaponData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -183,36 +216,36 @@ class _WeaponDataImpl extends WeaponData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.WeaponCategory? category,
+    _iya6mjd5.WeaponCategory? category,
     String? damage,
-    _i3.DamageType? damageType,
-    List<_i4.WeaponProperty>? properties,
+    _iei1ksog.DamageType? damageType,
+    List<_iw4a05a7.WeaponProperty>? properties,
     double? weight,
     double? cost,
     int? rangeNormal,
     int? rangeMax,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          category: category,
-          damage: damage,
-          damageType: damageType,
-          properties: properties,
-          weight: weight,
-          cost: cost,
-          rangeNormal: rangeNormal,
-          rangeMax: rangeMax,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         category: category,
+         damage: damage,
+         damageType: damageType,
+         properties: properties,
+         weight: weight,
+         cost: cost,
+         rangeNormal: rangeNormal,
+         rangeMax: rangeMax,
+       );
 
   /// Returns a shallow copy of this [WeaponData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   WeaponData copyWith({
     Object? id = _Undefined,
@@ -241,10 +274,14 @@ class _WeaponDataImpl extends WeaponData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      category: category is _i2.WeaponCategory? ? category : this.category,
+      category: category is _iya6mjd5.WeaponCategory?
+          ? category
+          : this.category,
       damage: damage is String? ? damage : this.damage,
-      damageType: damageType is _i3.DamageType? ? damageType : this.damageType,
-      properties: properties is List<_i4.WeaponProperty>?
+      damageType: damageType is _iei1ksog.DamageType?
+          ? damageType
+          : this.damageType,
+      properties: properties is List<_iw4a05a7.WeaponProperty>?
           ? properties
           : this.properties?.map((e0) => e0).toList(),
       weight: weight is double? ? weight : this.weight,

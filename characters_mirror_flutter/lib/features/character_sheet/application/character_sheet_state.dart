@@ -20,6 +20,7 @@ import 'package:characters_mirror_flutter/features/character_sheet/application/h
 import 'package:characters_mirror_flutter/utils/calculate_max_hp_for_character.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'character_sheet_state.g.dart';
@@ -73,10 +74,11 @@ final characterSheetControllerProvider = AsyncNotifierProvider.autoDispose
   CharacterSheetController.new,
 );
 
-class CharacterSheetController
-    extends AutoDisposeFamilyAsyncNotifier<CharacterData, int> {
+class CharacterSheetController extends AsyncNotifier<CharacterData> {
+  CharacterSheetController(this._characterId);
+
   late final CharacterRepository _repository;
-  late final int _characterId;
+  final int _characterId;
   int? _canonicalCharacterId;
   int _saveRevision = 0;
   Timer? _saveDebounceTimer;
@@ -127,8 +129,7 @@ class CharacterSheetController
   }
 
   @override
-  Future<CharacterData> build(int characterId) async {
-    _characterId = characterId;
+  Future<CharacterData> build() async {
     _repository = ref.watch(characterRepositoryProvider);
     ref.onDispose(_disposeSaveQueue);
     final coordinator = offlineSyncCoordinator;
@@ -136,9 +137,9 @@ class CharacterSheetController
       coordinator.addListener(_reloadAfterSync);
       ref.onDispose(() => coordinator.removeListener(_reloadAfterSync));
     }
-    final character = await _repository.getCharacter(characterId);
+    final character = await _repository.getCharacter(_characterId);
     _rememberCanonicalCharacter(character);
-    final record = await _repository.getOfflineRecord(characterId);
+    final record = await _repository.getOfflineRecord(_characterId);
     _rememberCanonicalId(record?.serverId);
     _lastPersistedCharacter = character;
     return character;
@@ -195,7 +196,7 @@ class CharacterSheetController
       () => _repository.getCharacter(_effectiveCharacterId),
     );
     state = nextState;
-    final character = nextState.valueOrNull;
+    final character = nextState.value;
     if (character != null) {
       _rememberCanonicalCharacter(character);
       final record = await _repository.getOfflineRecord(_effectiveCharacterId);
@@ -241,7 +242,7 @@ class CharacterSheetController
   }
 
   CharacterData _requireCharacter() {
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) {
       throw StateError('Character sheet is not loaded yet.');
     }
@@ -499,7 +500,7 @@ class CharacterSheetController
         } catch (error, stackTrace) {
           if (!_isDisposed && nextRevision == _saveRevision) {
             final rollbackCharacter =
-                _lastPersistedCharacter ?? state.valueOrNull ?? nextCharacter;
+                _lastPersistedCharacter ?? state.value ?? nextCharacter;
             state = AsyncValue.data(rollbackCharacter);
             _setLocalSavePending(false);
             if (activeCompleter?.isCompleted == false) {

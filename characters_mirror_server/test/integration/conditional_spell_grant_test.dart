@@ -8,8 +8,8 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Conditional generic cantrip grants', (sessions, endpoints) {
     final owner = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9515, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9515).toString(), <Scope>{}));
     setUp(CharacterSaveRateLimiter.resetForTests);
 
     Future<(ClassData, SubclassData, ChoiceGroupData, List<SpellData>)>
@@ -353,5 +353,7 @@ void main() {
               .where((choice) => choice.groupKey == child.referenceKey),
           hasLength(3));
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

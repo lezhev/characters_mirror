@@ -7,57 +7,64 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/language.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../enums/language.dart' as _iiw0j43j;
 
 abstract class CharacterLanguageOverridesData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
-  CharacterLanguageOverridesData._({
-    this.added,
-    this.removed,
-    this.custom,
-  });
+    implements _is.SerializableModel, _is.ProtocolSerialization {
+  CharacterLanguageOverridesData._({this.added, this.removed, this.custom});
 
   factory CharacterLanguageOverridesData({
-    List<_i2.Language>? added,
-    List<_i2.Language>? removed,
+    List<_iiw0j43j.Language>? added,
+    List<_iiw0j43j.Language>? removed,
     List<String>? custom,
   }) = _CharacterLanguageOverridesDataImpl;
 
   factory CharacterLanguageOverridesData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterLanguageOverridesData(
-      added: (jsonSerialization['added'] as List?)
-          ?.map((e) => _i2.Language.fromJson((e as String)))
-          .toList(),
-      removed: (jsonSerialization['removed'] as List?)
-          ?.map((e) => _i2.Language.fromJson((e as String)))
-          .toList(),
-      custom: (jsonSerialization['custom'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      added: jsonSerialization['added'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iiw0j43j.Language>>(
+              jsonSerialization['added'],
+            ),
+      removed: jsonSerialization['removed'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iiw0j43j.Language>>(
+              jsonSerialization['removed'],
+            ),
+      custom: jsonSerialization['custom'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['custom'],
+            ),
     );
   }
 
-  List<_i2.Language>? added;
+  List<_iiw0j43j.Language>? added;
 
-  List<_i2.Language>? removed;
+  List<_iiw0j43j.Language>? removed;
 
   List<String>? custom;
 
   /// Returns a shallow copy of this [CharacterLanguageOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterLanguageOverridesData copyWith({
-    List<_i2.Language>? added,
-    List<_i2.Language>? removed,
+    List<_iiw0j43j.Language>? added,
+    List<_iiw0j43j.Language>? removed,
     List<String>? custom,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterLanguageOverridesData',
       if (added != null) 'added': added?.toJson(valueToJson: (v) => v.toJson()),
       if (removed != null)
         'removed': removed?.toJson(valueToJson: (v) => v.toJson()),
@@ -68,6 +75,7 @@ abstract class CharacterLanguageOverridesData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterLanguageOverridesData',
       if (added != null) 'added': added?.toJson(valueToJson: (v) => v.toJson()),
       if (removed != null)
         'removed': removed?.toJson(valueToJson: (v) => v.toJson()),
@@ -77,7 +85,7 @@ abstract class CharacterLanguageOverridesData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -86,18 +94,14 @@ class _Undefined {}
 class _CharacterLanguageOverridesDataImpl
     extends CharacterLanguageOverridesData {
   _CharacterLanguageOverridesDataImpl({
-    List<_i2.Language>? added,
-    List<_i2.Language>? removed,
+    List<_iiw0j43j.Language>? added,
+    List<_iiw0j43j.Language>? removed,
     List<String>? custom,
-  }) : super._(
-          added: added,
-          removed: removed,
-          custom: custom,
-        );
+  }) : super._(added: added, removed: removed, custom: custom);
 
   /// Returns a shallow copy of this [CharacterLanguageOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterLanguageOverridesData copyWith({
     Object? added = _Undefined,
@@ -105,10 +109,10 @@ class _CharacterLanguageOverridesDataImpl
     Object? custom = _Undefined,
   }) {
     return CharacterLanguageOverridesData(
-      added: added is List<_i2.Language>?
+      added: added is List<_iiw0j43j.Language>?
           ? added
           : this.added?.map((e0) => e0).toList(),
-      removed: removed is List<_i2.Language>?
+      removed: removed is List<_iiw0j43j.Language>?
           ? removed
           : this.removed?.map((e0) => e0).toList(),
       custom: custom is List<String>?

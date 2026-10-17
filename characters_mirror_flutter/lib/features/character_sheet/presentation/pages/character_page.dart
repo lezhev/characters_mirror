@@ -39,12 +39,12 @@ class CharacterPage extends ConsumerWidget {
       data: (character) {
         final levelExperience = LevelExperience(character);
         final toolNames = {
-          for (final tool in ref.watch(toolCatalogProvider).valueOrNull ??
+          for (final tool in ref.watch(toolCatalogProvider).value ??
               const <ToolData>[])
             tool.referenceKey: tool.name,
         };
         final weaponNames = {
-          for (final weapon in ref.watch(weaponCatalogProvider).valueOrNull ??
+          for (final weapon in ref.watch(weaponCatalogProvider).value ??
               const <WeaponData>[])
             if (weapon.referenceKey != null && weapon.name != null)
               weapon.referenceKey!: weapon.name!,

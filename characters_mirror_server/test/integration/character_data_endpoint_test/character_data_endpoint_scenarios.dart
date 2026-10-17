@@ -5,7 +5,7 @@ void _registerCharacterDataEndpointTests() {
     TestSessionBuilder authenticatedSession(int userId) {
       return sessionBuilder.copyWith(
         authentication: AuthenticationOverride.authenticationInfo(
-          userId,
+          (userId).toString(),
           <Scope>{},
         ),
       );
@@ -1307,7 +1307,9 @@ void _registerCharacterDataEndpointTests() {
       endpoints,
       authenticatedSession,
     );
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }
 
 String _textOfLength(int length) => List.filled(length, 'a').join();

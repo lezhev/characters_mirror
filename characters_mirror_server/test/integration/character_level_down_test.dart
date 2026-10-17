@@ -10,7 +10,8 @@ void main() {
   withServerpod('Atomic level-down', (sessions, endpoints) {
     setUp(CharacterSaveRateLimiter.resetForTests);
     final owner = sessions.copyWith(
-      authentication: AuthenticationOverride.authenticationInfo(951, <Scope>{}),
+      authentication: AuthenticationOverride.authenticationInfo(
+          (951).toString(), <Scope>{}),
     );
 
     Future<CharacterData> fixture({
@@ -125,7 +126,7 @@ void main() {
           isStartingClass: true,
           hpRolledValues: hpRolls ?? [8, ...List.filled(level - 1, 5)],
         );
-        return endpoints.characterData.saveCharacter(
+        return await endpoints.characterData.saveCharacter(
           owner,
           CharacterData(
             name: 'Level-down test',
@@ -472,9 +473,9 @@ void main() {
       late int collidingFeatureId;
       try {
         final classFeatures = await ClassFeatureData.db.find(session,
-            orderBy: (t) => t.id, orderDescending: true, limit: 1);
+            orderBy: (t) => t.id.desc(), limit: 1);
         final subclassFeatures = await SubclassFeatureData.db.find(session,
-            orderBy: (t) => t.id, orderDescending: true, limit: 1);
+            orderBy: (t) => t.id.desc(), limit: 1);
         final sequence = await session.db.unsafeQuery(
             "SELECT last_value FROM pg_sequences WHERE schemaname = 'public' "
             "AND sequencename = 'class_feature_data_id_seq'");
@@ -792,5 +793,7 @@ void main() {
       expect(after.classEntries!.map((e) => e.level), [2, 2]);
       expect(after.classEntries!.map((e) => e.id), ['entry', 'other']);
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

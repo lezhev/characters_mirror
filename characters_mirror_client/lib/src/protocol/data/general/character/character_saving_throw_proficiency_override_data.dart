@@ -7,47 +7,63 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../enums/ability.dart' as _i2;
-import '../../../enums/character_saving_throw_proficiency_override.dart' as _i3;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../enums/ability.dart' as _iw3bk51e;
+import '../../../enums/character_saving_throw_proficiency_override.dart'
+    as _iy696g8m;
 
 abstract class CharacterSavingThrowProficiencyOverrideData
-    implements _i1.SerializableModel {
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterSavingThrowProficiencyOverrideData._({
     required this.ability,
     required this.state,
   });
 
   factory CharacterSavingThrowProficiencyOverrideData({
-    required _i2.Ability ability,
-    required _i3.CharacterSavingThrowProficiencyOverride state,
+    required _iw3bk51e.Ability ability,
+    required _iy696g8m.CharacterSavingThrowProficiencyOverride state,
   }) = _CharacterSavingThrowProficiencyOverrideDataImpl;
 
   factory CharacterSavingThrowProficiencyOverrideData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterSavingThrowProficiencyOverrideData(
-      ability: _i2.Ability.fromJson((jsonSerialization['ability'] as String)),
-      state: _i3.CharacterSavingThrowProficiencyOverride.fromJson(
-          (jsonSerialization['state'] as String)),
+      ability: _iw3bk51e.Ability.fromJson(
+        (jsonSerialization['ability'] as String),
+      ),
+      state: _iy696g8m.CharacterSavingThrowProficiencyOverride.fromJson(
+        (jsonSerialization['state'] as String),
+      ),
     );
   }
 
-  _i2.Ability ability;
+  _iw3bk51e.Ability ability;
 
-  _i3.CharacterSavingThrowProficiencyOverride state;
+  _iy696g8m.CharacterSavingThrowProficiencyOverride state;
 
   /// Returns a shallow copy of this [CharacterSavingThrowProficiencyOverrideData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterSavingThrowProficiencyOverrideData copyWith({
-    _i2.Ability? ability,
-    _i3.CharacterSavingThrowProficiencyOverride? state,
+    _iw3bk51e.Ability? ability,
+    _iy696g8m.CharacterSavingThrowProficiencyOverride? state,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterSavingThrowProficiencyOverrideData',
+      'ability': ability.toJson(),
+      'state': state.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterSavingThrowProficiencyOverrideData',
       'ability': ability.toJson(),
       'state': state.toJson(),
     };
@@ -55,27 +71,24 @@ abstract class CharacterSavingThrowProficiencyOverrideData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
 class _CharacterSavingThrowProficiencyOverrideDataImpl
     extends CharacterSavingThrowProficiencyOverrideData {
   _CharacterSavingThrowProficiencyOverrideDataImpl({
-    required _i2.Ability ability,
-    required _i3.CharacterSavingThrowProficiencyOverride state,
-  }) : super._(
-          ability: ability,
-          state: state,
-        );
+    required _iw3bk51e.Ability ability,
+    required _iy696g8m.CharacterSavingThrowProficiencyOverride state,
+  }) : super._(ability: ability, state: state);
 
   /// Returns a shallow copy of this [CharacterSavingThrowProficiencyOverrideData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterSavingThrowProficiencyOverrideData copyWith({
-    _i2.Ability? ability,
-    _i3.CharacterSavingThrowProficiencyOverride? state,
+    _iw3bk51e.Ability? ability,
+    _iy696g8m.CharacterSavingThrowProficiencyOverride? state,
   }) {
     return CharacterSavingThrowProficiencyOverrideData(
       ability: ability ?? this.ability,

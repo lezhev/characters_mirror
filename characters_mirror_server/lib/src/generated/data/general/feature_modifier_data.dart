@@ -7,20 +7,22 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../data/general/class/class_feature_data.dart' as _i2;
-import '../../data/general/class/subclass_feature_data.dart' as _i3;
-import '../../enums/feature_modifier_target.dart' as _i4;
-import '../../enums/feature_modifier_operation.dart' as _i5;
-import '../../data/general/feature_modifier_value_data.dart' as _i6;
-import '../../data/general/feature_modifier_condition_data.dart' as _i7;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../data/general/class/class_feature_data.dart' as _inxbtq9c;
+import '../../data/general/class/subclass_feature_data.dart' as _i6bcyp7i;
+import '../../data/general/feature_modifier_condition_data.dart' as _ig9xtn4u;
+import '../../data/general/feature_modifier_value_data.dart' as _iby00w8q;
+import '../../enums/feature_modifier_operation.dart' as _iiz9cg73;
+import '../../enums/feature_modifier_target.dart' as _i4cfd6vr;
 
 abstract class FeatureModifierData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   FeatureModifierData._({
     this.id,
     required this.referenceKey,
@@ -44,13 +46,13 @@ abstract class FeatureModifierData
     int? id,
     required String referenceKey,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
-    required _i4.FeatureModifierTarget target,
-    required _i5.FeatureModifierOperation operation,
-    required _i6.FeatureModifierValueData value,
-    List<_i7.FeatureModifierConditionData>? conditions,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
+    required _i4cfd6vr.FeatureModifierTarget target,
+    required _iiz9cg73.FeatureModifierOperation operation,
+    required _iby00w8q.FeatureModifierValueData value,
+    List<_ig9xtn4u.FeatureModifierConditionData>? conditions,
     String? spellKey,
     int? minimumCastLevel,
     String? source,
@@ -66,33 +68,41 @@ abstract class FeatureModifierData
       classFeatureId: jsonSerialization['classFeatureId'] as int?,
       classFeature: jsonSerialization['classFeature'] == null
           ? null
-          : _i2.ClassFeatureData.fromJson(
-              (jsonSerialization['classFeature'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_inxbtq9c.ClassFeatureData>(
+              jsonSerialization['classFeature'],
+            ),
       subclassFeatureId: jsonSerialization['subclassFeatureId'] as int?,
       subclassFeature: jsonSerialization['subclassFeature'] == null
           ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['subclassFeature'] as Map<String, dynamic>)),
-      target: _i4.FeatureModifierTarget.fromJson(
-          (jsonSerialization['target'] as int)),
-      operation: _i5.FeatureModifierOperation.fromJson(
-          (jsonSerialization['operation'] as int)),
-      value: _i6.FeatureModifierValueData.fromJson(
-          (jsonSerialization['value'] as Map<String, dynamic>)),
-      conditions: (jsonSerialization['conditions'] as List?)
-          ?.map((e) => _i7.FeatureModifierConditionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+          : _ikmnmw29.Protocol().deserialize<_i6bcyp7i.SubclassFeatureData>(
+              jsonSerialization['subclassFeature'],
+            ),
+      target: _i4cfd6vr.FeatureModifierTarget.fromJson(
+        (jsonSerialization['target'] as int),
+      ),
+      operation: _iiz9cg73.FeatureModifierOperation.fromJson(
+        (jsonSerialization['operation'] as int),
+      ),
+      value: _ikmnmw29.Protocol()
+          .deserialize<_iby00w8q.FeatureModifierValueData>(
+            jsonSerialization['value'],
+          ),
+      conditions: jsonSerialization['conditions'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ig9xtn4u.FeatureModifierConditionData>>(
+                  jsonSerialization['conditions'],
+                ),
       spellKey: jsonSerialization['spellKey'] as String?,
       minimumCastLevel: jsonSerialization['minimumCastLevel'] as int?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -107,19 +117,19 @@ abstract class FeatureModifierData
 
   int? classFeatureId;
 
-  _i2.ClassFeatureData? classFeature;
+  _inxbtq9c.ClassFeatureData? classFeature;
 
   int? subclassFeatureId;
 
-  _i3.SubclassFeatureData? subclassFeature;
+  _i6bcyp7i.SubclassFeatureData? subclassFeature;
 
-  _i4.FeatureModifierTarget target;
+  _i4cfd6vr.FeatureModifierTarget target;
 
-  _i5.FeatureModifierOperation operation;
+  _iiz9cg73.FeatureModifierOperation operation;
 
-  _i6.FeatureModifierValueData value;
+  _iby00w8q.FeatureModifierValueData value;
 
-  List<_i7.FeatureModifierConditionData>? conditions;
+  List<_ig9xtn4u.FeatureModifierConditionData>? conditions;
 
   String? spellKey;
 
@@ -134,22 +144,22 @@ abstract class FeatureModifierData
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [FeatureModifierData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FeatureModifierData copyWith({
     int? id,
     String? referenceKey,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
-    _i4.FeatureModifierTarget? target,
-    _i5.FeatureModifierOperation? operation,
-    _i6.FeatureModifierValueData? value,
-    List<_i7.FeatureModifierConditionData>? conditions,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
+    _i4cfd6vr.FeatureModifierTarget? target,
+    _iiz9cg73.FeatureModifierOperation? operation,
+    _iby00w8q.FeatureModifierValueData? value,
+    List<_ig9xtn4u.FeatureModifierConditionData>? conditions,
     String? spellKey,
     int? minimumCastLevel,
     String? source,
@@ -160,6 +170,7 @@ abstract class FeatureModifierData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureModifierData',
       if (id != null) 'id': id,
       'referenceKey': referenceKey,
       if (classFeatureId != null) 'classFeatureId': classFeatureId,
@@ -183,6 +194,7 @@ abstract class FeatureModifierData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeatureModifierData',
       if (id != null) 'id': id,
       'referenceKey': referenceKey,
       if (classFeatureId != null) 'classFeatureId': classFeatureId,
@@ -195,8 +207,9 @@ abstract class FeatureModifierData
       'operation': operation.toJson(),
       'value': value.toJsonForProtocol(),
       if (conditions != null)
-        'conditions':
-            conditions?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'conditions': conditions?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (spellKey != null) 'spellKey': spellKey,
       if (minimumCastLevel != null) 'minimumCastLevel': minimumCastLevel,
       if (source != null) 'source': source,
@@ -207,8 +220,8 @@ abstract class FeatureModifierData
   }
 
   static FeatureModifierDataInclude include({
-    _i2.ClassFeatureDataInclude? classFeature,
-    _i3.SubclassFeatureDataInclude? subclassFeature,
+    _inxbtq9c.ClassFeatureDataInclude? classFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? subclassFeature,
   }) {
     return FeatureModifierDataInclude._(
       classFeature: classFeature,
@@ -217,12 +230,11 @@ abstract class FeatureModifierData
   }
 
   static FeatureModifierDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<FeatureModifierDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureModifierDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureModifierDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
+    _is.OrderByBuilder<FeatureModifierDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
     FeatureModifierDataInclude? include,
   }) {
     return FeatureModifierDataIncludeList._(
@@ -230,7 +242,6 @@ abstract class FeatureModifierData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(FeatureModifierData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(FeatureModifierData.t),
       include: include,
     );
@@ -238,7 +249,7 @@ abstract class FeatureModifierData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -249,13 +260,13 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     int? id,
     required String referenceKey,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
-    required _i4.FeatureModifierTarget target,
-    required _i5.FeatureModifierOperation operation,
-    required _i6.FeatureModifierValueData value,
-    List<_i7.FeatureModifierConditionData>? conditions,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
+    required _i4cfd6vr.FeatureModifierTarget target,
+    required _iiz9cg73.FeatureModifierOperation operation,
+    required _iby00w8q.FeatureModifierValueData value,
+    List<_ig9xtn4u.FeatureModifierConditionData>? conditions,
     String? spellKey,
     int? minimumCastLevel,
     String? source,
@@ -263,27 +274,27 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          classFeatureId: classFeatureId,
-          classFeature: classFeature,
-          subclassFeatureId: subclassFeatureId,
-          subclassFeature: subclassFeature,
-          target: target,
-          operation: operation,
-          value: value,
-          conditions: conditions,
-          spellKey: spellKey,
-          minimumCastLevel: minimumCastLevel,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         classFeatureId: classFeatureId,
+         classFeature: classFeature,
+         subclassFeatureId: subclassFeatureId,
+         subclassFeature: subclassFeature,
+         target: target,
+         operation: operation,
+         value: value,
+         conditions: conditions,
+         spellKey: spellKey,
+         minimumCastLevel: minimumCastLevel,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [FeatureModifierData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FeatureModifierData copyWith({
     Object? id = _Undefined,
@@ -292,9 +303,9 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     Object? classFeature = _Undefined,
     Object? subclassFeatureId = _Undefined,
     Object? subclassFeature = _Undefined,
-    _i4.FeatureModifierTarget? target,
-    _i5.FeatureModifierOperation? operation,
-    _i6.FeatureModifierValueData? value,
+    _i4cfd6vr.FeatureModifierTarget? target,
+    _iiz9cg73.FeatureModifierOperation? operation,
+    _iby00w8q.FeatureModifierValueData? value,
     Object? conditions = _Undefined,
     Object? spellKey = _Undefined,
     Object? minimumCastLevel = _Undefined,
@@ -306,26 +317,28 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     return FeatureModifierData(
       id: id is int? ? id : this.id,
       referenceKey: referenceKey ?? this.referenceKey,
-      classFeatureId:
-          classFeatureId is int? ? classFeatureId : this.classFeatureId,
-      classFeature: classFeature is _i2.ClassFeatureData?
+      classFeatureId: classFeatureId is int?
+          ? classFeatureId
+          : this.classFeatureId,
+      classFeature: classFeature is _inxbtq9c.ClassFeatureData?
           ? classFeature
           : this.classFeature?.copyWith(),
       subclassFeatureId: subclassFeatureId is int?
           ? subclassFeatureId
           : this.subclassFeatureId,
-      subclassFeature: subclassFeature is _i3.SubclassFeatureData?
+      subclassFeature: subclassFeature is _i6bcyp7i.SubclassFeatureData?
           ? subclassFeature
           : this.subclassFeature?.copyWith(),
       target: target ?? this.target,
       operation: operation ?? this.operation,
       value: value ?? this.value.copyWith(),
-      conditions: conditions is List<_i7.FeatureModifierConditionData>?
+      conditions: conditions is List<_ig9xtn4u.FeatureModifierConditionData>?
           ? conditions
           : this.conditions?.map((e0) => e0.copyWith()).toList(),
       spellKey: spellKey is String? ? spellKey : this.spellKey,
-      minimumCastLevel:
-          minimumCastLevel is int? ? minimumCastLevel : this.minimumCastLevel,
+      minimumCastLevel: minimumCastLevel is int?
+          ? minimumCastLevel
+          : this.minimumCastLevel,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
@@ -334,141 +347,178 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
   }
 }
 
-class FeatureModifierDataTable extends _i1.Table<int?> {
+class FeatureModifierDataUpdateTable
+    extends _is.UpdateTable<FeatureModifierDataTable> {
+  FeatureModifierDataUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> referenceKey(String value) =>
+      _is.ColumnValue(table.referenceKey, value);
+
+  _is.ColumnValue<int, int> classFeatureId(int? value) =>
+      _is.ColumnValue(table.classFeatureId, value);
+
+  _is.ColumnValue<int, int> subclassFeatureId(int? value) =>
+      _is.ColumnValue(table.subclassFeatureId, value);
+
+  _is.ColumnValue<
+    _i4cfd6vr.FeatureModifierTarget,
+    _i4cfd6vr.FeatureModifierTarget
+  >
+  target(_i4cfd6vr.FeatureModifierTarget value) =>
+      _is.ColumnValue(table.target, value);
+
+  _is.ColumnValue<
+    _iiz9cg73.FeatureModifierOperation,
+    _iiz9cg73.FeatureModifierOperation
+  >
+  operation(_iiz9cg73.FeatureModifierOperation value) =>
+      _is.ColumnValue(table.operation, value);
+
+  _is.ColumnValue<
+    _iby00w8q.FeatureModifierValueData,
+    _iby00w8q.FeatureModifierValueData
+  >
+  value(_iby00w8q.FeatureModifierValueData value) =>
+      _is.ColumnValue(table.value, value);
+
+  _is.ColumnValue<
+    List<_ig9xtn4u.FeatureModifierConditionData>,
+    List<_ig9xtn4u.FeatureModifierConditionData>
+  >
+  conditions(List<_ig9xtn4u.FeatureModifierConditionData>? value) =>
+      _is.ColumnValue(table.conditions, value);
+
+  _is.ColumnValue<String, String> spellKey(String? value) =>
+      _is.ColumnValue(table.spellKey, value);
+
+  _is.ColumnValue<int, int> minimumCastLevel(int? value) =>
+      _is.ColumnValue(table.minimumCastLevel, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class FeatureModifierDataTable extends _is.Table<int?> {
   FeatureModifierDataTable({super.tableRelation})
-      : super(tableName: 'feature_modifier_data') {
-    referenceKey = _i1.ColumnString(
-      'referenceKey',
-      this,
-    );
-    classFeatureId = _i1.ColumnInt(
-      'classFeatureId',
-      this,
-    );
-    subclassFeatureId = _i1.ColumnInt(
-      'subclassFeatureId',
-      this,
-    );
-    target = _i1.ColumnEnum(
-      'target',
-      this,
-      _i1.EnumSerialization.byIndex,
-    );
-    operation = _i1.ColumnEnum(
+    : super(tableName: 'feature_modifier_data') {
+    updateTable = FeatureModifierDataUpdateTable(this);
+    referenceKey = _is.ColumnString('referenceKey', this);
+    classFeatureId = _is.ColumnInt('classFeatureId', this);
+    subclassFeatureId = _is.ColumnInt('subclassFeatureId', this);
+    target = _is.ColumnEnum('target', this, _is.EnumSerialization.byIndex);
+    operation = _is.ColumnEnum(
       'operation',
       this,
-      _i1.EnumSerialization.byIndex,
+      _is.EnumSerialization.byIndex,
     );
-    value = _i1.ColumnSerializable(
+    value = _is.ColumnSerializable<_iby00w8q.FeatureModifierValueData>(
       'value',
       this,
     );
-    conditions = _i1.ColumnSerializable(
-      'conditions',
-      this,
-    );
-    spellKey = _i1.ColumnString(
-      'spellKey',
-      this,
-    );
-    minimumCastLevel = _i1.ColumnInt(
-      'minimumCastLevel',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    conditions =
+        _is.ColumnSerializable<List<_ig9xtn4u.FeatureModifierConditionData>>(
+          'conditions',
+          this,
+        );
+    spellKey = _is.ColumnString('spellKey', this);
+    minimumCastLevel = _is.ColumnInt('minimumCastLevel', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnString referenceKey;
+  late final FeatureModifierDataUpdateTable updateTable;
 
-  late final _i1.ColumnInt classFeatureId;
+  late final _is.ColumnString referenceKey;
 
-  _i2.ClassFeatureDataTable? _classFeature;
+  late final _is.ColumnInt classFeatureId;
 
-  late final _i1.ColumnInt subclassFeatureId;
+  _inxbtq9c.ClassFeatureDataTable? _classFeature;
 
-  _i3.SubclassFeatureDataTable? _subclassFeature;
+  late final _is.ColumnInt subclassFeatureId;
 
-  late final _i1.ColumnEnum<_i4.FeatureModifierTarget> target;
+  _i6bcyp7i.SubclassFeatureDataTable? _subclassFeature;
 
-  late final _i1.ColumnEnum<_i5.FeatureModifierOperation> operation;
+  late final _is.ColumnEnum<_i4cfd6vr.FeatureModifierTarget> target;
 
-  late final _i1.ColumnSerializable value;
+  late final _is.ColumnEnum<_iiz9cg73.FeatureModifierOperation> operation;
 
-  late final _i1.ColumnSerializable conditions;
+  late final _is.ColumnSerializable<_iby00w8q.FeatureModifierValueData> value;
 
-  late final _i1.ColumnString spellKey;
+  late final _is.ColumnSerializable<
+    List<_ig9xtn4u.FeatureModifierConditionData>
+  >
+  conditions;
 
-  late final _i1.ColumnInt minimumCastLevel;
+  late final _is.ColumnString spellKey;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnInt minimumCastLevel;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  _i2.ClassFeatureDataTable get classFeature {
+  late final _is.ColumnDateTime updatedAt;
+
+  _inxbtq9c.ClassFeatureDataTable get classFeature {
     if (_classFeature != null) return _classFeature!;
-    _classFeature = _i1.createRelationTable(
+    _classFeature = _is.createRelationTable(
       relationFieldName: 'classFeature',
       field: FeatureModifierData.t.classFeatureId,
-      foreignField: _i2.ClassFeatureData.t.id,
+      foreignField: _inxbtq9c.ClassFeatureData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ClassFeatureDataTable(tableRelation: foreignTableRelation),
+          _inxbtq9c.ClassFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return _classFeature!;
   }
 
-  _i3.SubclassFeatureDataTable get subclassFeature {
+  _i6bcyp7i.SubclassFeatureDataTable get subclassFeature {
     if (_subclassFeature != null) return _subclassFeature!;
-    _subclassFeature = _i1.createRelationTable(
+    _subclassFeature = _is.createRelationTable(
       relationFieldName: 'subclassFeature',
       field: FeatureModifierData.t.subclassFeatureId,
-      foreignField: _i3.SubclassFeatureData.t.id,
+      foreignField: _i6bcyp7i.SubclassFeatureData.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.SubclassFeatureDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _i6bcyp7i.SubclassFeatureDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
     return _subclassFeature!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        referenceKey,
-        classFeatureId,
-        subclassFeatureId,
-        target,
-        operation,
-        value,
-        conditions,
-        spellKey,
-        minimumCastLevel,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    referenceKey,
+    classFeatureId,
+    subclassFeatureId,
+    target,
+    operation,
+    value,
+    conditions,
+    spellKey,
+    minimumCastLevel,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'classFeature') {
       return classFeature;
     }
@@ -479,36 +529,35 @@ class FeatureModifierDataTable extends _i1.Table<int?> {
   }
 }
 
-class FeatureModifierDataInclude extends _i1.IncludeObject {
+class FeatureModifierDataInclude extends _is.IncludeObject {
   FeatureModifierDataInclude._({
-    _i2.ClassFeatureDataInclude? classFeature,
-    _i3.SubclassFeatureDataInclude? subclassFeature,
+    _inxbtq9c.ClassFeatureDataInclude? classFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? subclassFeature,
   }) {
     _classFeature = classFeature;
     _subclassFeature = subclassFeature;
   }
 
-  _i2.ClassFeatureDataInclude? _classFeature;
+  _inxbtq9c.ClassFeatureDataInclude? _classFeature;
 
-  _i3.SubclassFeatureDataInclude? _subclassFeature;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'classFeature': _classFeature,
-        'subclassFeature': _subclassFeature,
-      };
+  _i6bcyp7i.SubclassFeatureDataInclude? _subclassFeature;
 
   @override
-  _i1.Table<int?> get table => FeatureModifierData.t;
+  Map<String, _is.Include?> get includes => {
+    'classFeature': _classFeature,
+    'subclassFeature': _subclassFeature,
+  };
+
+  @override
+  _is.Table<int?> get table => FeatureModifierData.t;
 }
 
-class FeatureModifierDataIncludeList extends _i1.IncludeList {
+class FeatureModifierDataIncludeList extends _is.IncludeList {
   FeatureModifierDataIncludeList._({
-    _i1.WhereExpressionBuilder<FeatureModifierDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureModifierDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -516,10 +565,10 @@ class FeatureModifierDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => FeatureModifierData.t;
+  _is.Table<int?> get table => FeatureModifierData.t;
 }
 
 class FeatureModifierDataRepository {
@@ -552,25 +601,27 @@ class FeatureModifierDataRepository {
   /// );
   /// ```
   Future<List<FeatureModifierData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureModifierDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureModifierDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureModifierDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureModifierDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
+    _is.Transaction? transaction,
     FeatureModifierDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<FeatureModifierData>(
       where: where?.call(FeatureModifierData.t),
       orderBy: orderBy?.call(FeatureModifierData.t),
       orderByList: orderByList?.call(FeatureModifierData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -592,37 +643,43 @@ class FeatureModifierDataRepository {
   /// );
   /// ```
   Future<FeatureModifierData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureModifierDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureModifierDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<FeatureModifierDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureModifierDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
+    _is.Transaction? transaction,
     FeatureModifierDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<FeatureModifierData>(
       where: where?.call(FeatureModifierData.t),
       orderBy: orderBy?.call(FeatureModifierData.t),
       orderByList: orderByList?.call(FeatureModifierData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [FeatureModifierData] by its [id] or null if no such row exists.
   Future<FeatureModifierData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     FeatureModifierDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<FeatureModifierData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -632,14 +689,26 @@ class FeatureModifierDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureModifierData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureModifierData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<FeatureModifierData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -647,12 +716,81 @@ class FeatureModifierDataRepository {
   ///
   /// The returned [FeatureModifierData] will have its `id` field set.
   Future<FeatureModifierData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureModifierData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<FeatureModifierData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [FeatureModifierData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [FeatureModifierData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureModifierData>> upsert(
+    _is.DatabaseSession session,
+    List<FeatureModifierData> rows, {
+    required _is.ColumnSelections<FeatureModifierDataTable> conflictColumns,
+    _is.ColumnSelections<FeatureModifierDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatureModifierDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<FeatureModifierData>(
+      rows,
+      conflictColumns: conflictColumns(FeatureModifierData.t),
+      updateColumns: updateColumns?.call(FeatureModifierData.t),
+      updateWhere: updateWhere?.call(FeatureModifierData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [FeatureModifierData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [FeatureModifierData] will have its `id` field set.
+  Future<FeatureModifierData?> upsertRow(
+    _is.DatabaseSession session,
+    FeatureModifierData row, {
+    required _is.ColumnSelections<FeatureModifierDataTable> conflictColumns,
+    _is.ColumnSelections<FeatureModifierDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatureModifierDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<FeatureModifierData>(
+      row,
+      conflictColumns: conflictColumns(FeatureModifierData.t),
+      updateColumns: updateColumns?.call(FeatureModifierData.t),
+      updateWhere: updateWhere?.call(FeatureModifierData.t),
       transaction: transaction,
     );
   }
@@ -662,16 +800,22 @@ class FeatureModifierDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureModifierData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureModifierData> rows, {
-    _i1.ColumnSelections<FeatureModifierDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureModifierDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<FeatureModifierData>(
       rows,
       columns: columns?.call(FeatureModifierData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -679,10 +823,10 @@ class FeatureModifierDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<FeatureModifierData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureModifierData row, {
-    _i1.ColumnSelections<FeatureModifierDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureModifierDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<FeatureModifierData>(
       row,
@@ -691,25 +835,85 @@ class FeatureModifierDataRepository {
     );
   }
 
+  /// Updates a single [FeatureModifierData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<FeatureModifierData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<FeatureModifierDataUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<FeatureModifierData>(
+      id,
+      columnValues: columnValues(FeatureModifierData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [FeatureModifierData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureModifierData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<FeatureModifierDataUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<FeatureModifierDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<FeatureModifierDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<FeatureModifierData>(
+      columnValues: columnValues(FeatureModifierData.t.updateTable),
+      where: where(FeatureModifierData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(FeatureModifierData.t),
+      orderByList: orderByList?.call(FeatureModifierData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [FeatureModifierData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureModifierData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureModifierData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureModifierDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<FeatureModifierData>(
       rows,
+      orderBy: orderBy?.call(FeatureModifierData.t),
+      orderByList: orderByList?.call(FeatureModifierData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [FeatureModifierData].
   Future<FeatureModifierData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureModifierData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<FeatureModifierData>(
       row,
@@ -718,28 +922,57 @@ class FeatureModifierDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureModifierData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<FeatureModifierDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatureModifierDataTable> where,
+    _is.OrderByBuilder<FeatureModifierDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureModifierDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<FeatureModifierData>(
       where: where(FeatureModifierData.t),
+      orderBy: orderBy?.call(FeatureModifierData.t),
+      orderByList: orderByList?.call(FeatureModifierData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureModifierDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureModifierDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<FeatureModifierData>(
       where: where?.call(FeatureModifierData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [FeatureModifierData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatureModifierDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<FeatureModifierData>(
+      where: where(FeatureModifierData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -751,10 +984,10 @@ class FeatureModifierDataAttachRowRepository {
   /// Creates a relation between the given [FeatureModifierData] and [ClassFeatureData]
   /// by setting the [FeatureModifierData]'s foreign key `classFeatureId` to refer to the [ClassFeatureData].
   Future<void> classFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureModifierData featureModifierData,
-    _i2.ClassFeatureData classFeature, {
-    _i1.Transaction? transaction,
+    _inxbtq9c.ClassFeatureData classFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (featureModifierData.id == null) {
       throw ArgumentError.notNull('featureModifierData.id');
@@ -763,8 +996,9 @@ class FeatureModifierDataAttachRowRepository {
       throw ArgumentError.notNull('classFeature.id');
     }
 
-    var $featureModifierData =
-        featureModifierData.copyWith(classFeatureId: classFeature.id);
+    var $featureModifierData = featureModifierData.copyWith(
+      classFeatureId: classFeature.id,
+    );
     await session.db.updateRow<FeatureModifierData>(
       $featureModifierData,
       columns: [FeatureModifierData.t.classFeatureId],
@@ -775,10 +1009,10 @@ class FeatureModifierDataAttachRowRepository {
   /// Creates a relation between the given [FeatureModifierData] and [SubclassFeatureData]
   /// by setting the [FeatureModifierData]'s foreign key `subclassFeatureId` to refer to the [SubclassFeatureData].
   Future<void> subclassFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureModifierData featureModifierData,
-    _i3.SubclassFeatureData subclassFeature, {
-    _i1.Transaction? transaction,
+    _i6bcyp7i.SubclassFeatureData subclassFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (featureModifierData.id == null) {
       throw ArgumentError.notNull('featureModifierData.id');
@@ -787,8 +1021,9 @@ class FeatureModifierDataAttachRowRepository {
       throw ArgumentError.notNull('subclassFeature.id');
     }
 
-    var $featureModifierData =
-        featureModifierData.copyWith(subclassFeatureId: subclassFeature.id);
+    var $featureModifierData = featureModifierData.copyWith(
+      subclassFeatureId: subclassFeature.id,
+    );
     await session.db.updateRow<FeatureModifierData>(
       $featureModifierData,
       columns: [FeatureModifierData.t.subclassFeatureId],
@@ -806,18 +1041,19 @@ class FeatureModifierDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> classFeature(
-    _i1.Session session,
-    FeatureModifierData featuremodifierdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureModifierData featureModifierData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featuremodifierdata.id == null) {
-      throw ArgumentError.notNull('featuremodifierdata.id');
+    if (featureModifierData.id == null) {
+      throw ArgumentError.notNull('featureModifierData.id');
     }
 
-    var $featuremodifierdata =
-        featuremodifierdata.copyWith(classFeatureId: null);
+    var $featureModifierData = featureModifierData.copyWith(
+      classFeatureId: null,
+    );
     await session.db.updateRow<FeatureModifierData>(
-      $featuremodifierdata,
+      $featureModifierData,
       columns: [FeatureModifierData.t.classFeatureId],
       transaction: transaction,
     );
@@ -829,18 +1065,19 @@ class FeatureModifierDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> subclassFeature(
-    _i1.Session session,
-    FeatureModifierData featuremodifierdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureModifierData featureModifierData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featuremodifierdata.id == null) {
-      throw ArgumentError.notNull('featuremodifierdata.id');
+    if (featureModifierData.id == null) {
+      throw ArgumentError.notNull('featureModifierData.id');
     }
 
-    var $featuremodifierdata =
-        featuremodifierdata.copyWith(subclassFeatureId: null);
+    var $featureModifierData = featureModifierData.copyWith(
+      subclassFeatureId: null,
+    );
     await session.db.updateRow<FeatureModifierData>(
-      $featuremodifierdata,
+      $featureModifierData,
       columns: [FeatureModifierData.t.subclassFeatureId],
       transaction: transaction,
     );

@@ -15,6 +15,7 @@ import 'package:characters_mirror_server/src/validation/validation_exception.dar
 import 'package:characters_mirror_shared/characters_mirror_shared.dart'
     as feature_modifiers;
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 import 'package:characters_mirror_shared/characters_mirror_shared.dart'
     hide
         FeatureModifierTarget,
@@ -90,8 +91,8 @@ const _characterSyncCapabilities = <String>[
 
 class CharacterDataEndpoint extends Endpoint {
   CharacterDataEndpoint({
-    void Function(String key)? referenceQueryObserver,
-  }) : _referenceQueryObserver = referenceQueryObserver;
+    this._referenceQueryObserver,
+  });
 
   final void Function(String key)? _referenceQueryObserver;
 
@@ -209,8 +210,7 @@ class CharacterDataEndpoint extends Endpoint {
     final records = await CharacterRecord.db.find(
       session,
       where: (t) => t.userId.equals(userId),
-      orderBy: (t) => t.updatedAt,
-      orderDescending: true,
+      orderBy: (t) => t.updatedAt.desc(),
       include: _characterRecordInclude(),
     );
 

@@ -85,7 +85,7 @@ CustomTransitionPage<void> _stepPage(GoRouterState state, Widget child) {
     child: child,
     transitionDuration: duration,
     reverseTransitionDuration: duration,
-    transitionsBuilder: (_, __, ___, child) => child,
+    transitionsBuilder: (_, _, _, child) => child,
   );
 }
 

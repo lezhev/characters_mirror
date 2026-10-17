@@ -48,5 +48,7 @@ void main() {
         containsAll([Skill.animalHandling, Skill.survival]),
       );
     });
-  }, rollbackDatabase: RollbackDatabase.disabled);
+  }, rollbackDatabase: RollbackDatabase.disabled,
+    ephemeralDatabase: false,
+  );
 }

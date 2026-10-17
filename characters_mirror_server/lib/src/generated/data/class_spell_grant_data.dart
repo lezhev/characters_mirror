@@ -7,22 +7,24 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../data/spell_data.dart' as _i2;
-import '../data/general/class/class_data.dart' as _i3;
-import '../data/general/class/subclass_data.dart' as _i4;
-import '../data/general/class/class_feature_data.dart' as _i5;
-import '../data/general/class/subclass_feature_data.dart' as _i6;
-import '../data/general/spell_activation_data.dart' as _i7;
-import '../enums/ability.dart' as _i8;
-import '../data/general/choice_option_data.dart' as _i9;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../data/general/choice_option_data.dart' as _ivap0b5b;
+import '../data/general/class/class_data.dart' as _iazz3r73;
+import '../data/general/class/class_feature_data.dart' as _ikfzlvib;
+import '../data/general/class/subclass_data.dart' as _ijcb6jld;
+import '../data/general/class/subclass_feature_data.dart' as _itaxdcfb;
+import '../data/general/spell_activation_data.dart' as _iyix4imv;
+import '../data/spell_data.dart' as _iavpgfjb;
+import '../enums/ability.dart' as _i26h74c2;
 
 abstract class ClassSpellGrantData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   ClassSpellGrantData._({
     this.id,
     this.spellId,
@@ -52,22 +54,22 @@ abstract class ClassSpellGrantData
   factory ClassSpellGrantData({
     int? id,
     int? spellId,
-    _i2.SpellData? spell,
+    _iavpgfjb.SpellData? spell,
     String? spellReferenceKey,
     int? sourceClassId,
-    _i3.ClassData? sourceClass,
+    _iazz3r73.ClassData? sourceClass,
     int? sourceSubclassId,
-    _i4.SubclassData? sourceSubclass,
+    _ijcb6jld.SubclassData? sourceSubclass,
     int? sourceFeatureId,
-    _i5.ClassFeatureData? sourceFeature,
+    _ikfzlvib.ClassFeatureData? sourceFeature,
     int? sourceSubclassFeatureId,
-    _i6.SubclassFeatureData? sourceSubclassFeature,
+    _itaxdcfb.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
-    _i7.SpellActivationData? activation,
-    _i8.Ability? castingAbility,
+    _iyix4imv.SpellActivationData? activation,
+    _i26h74c2.Ability? castingAbility,
     bool? alwaysPrepared,
     int? choiceOptionId,
-    _i9.ChoiceOptionData? choiceOption,
+    _ivap0b5b.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -81,55 +83,64 @@ abstract class ClassSpellGrantData
       spellId: jsonSerialization['spellId'] as int?,
       spell: jsonSerialization['spell'] == null
           ? null
-          : _i2.SpellData.fromJson(
-              (jsonSerialization['spell'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_iavpgfjb.SpellData>(
+              jsonSerialization['spell'],
+            ),
       spellReferenceKey: jsonSerialization['spellReferenceKey'] as String?,
       sourceClassId: jsonSerialization['sourceClassId'] as int?,
       sourceClass: jsonSerialization['sourceClass'] == null
           ? null
-          : _i3.ClassData.fromJson(
-              (jsonSerialization['sourceClass'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_iazz3r73.ClassData>(
+              jsonSerialization['sourceClass'],
+            ),
       sourceSubclassId: jsonSerialization['sourceSubclassId'] as int?,
       sourceSubclass: jsonSerialization['sourceSubclass'] == null
           ? null
-          : _i4.SubclassData.fromJson(
-              (jsonSerialization['sourceSubclass'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_ijcb6jld.SubclassData>(
+              jsonSerialization['sourceSubclass'],
+            ),
       sourceFeatureId: jsonSerialization['sourceFeatureId'] as int?,
       sourceFeature: jsonSerialization['sourceFeature'] == null
           ? null
-          : _i5.ClassFeatureData.fromJson(
-              (jsonSerialization['sourceFeature'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_ikfzlvib.ClassFeatureData>(
+              jsonSerialization['sourceFeature'],
+            ),
       sourceSubclassFeatureId:
           jsonSerialization['sourceSubclassFeatureId'] as int?,
       sourceSubclassFeature: jsonSerialization['sourceSubclassFeature'] == null
           ? null
-          : _i6.SubclassFeatureData.fromJson(
-              (jsonSerialization['sourceSubclassFeature']
-                  as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_itaxdcfb.SubclassFeatureData>(
+              jsonSerialization['sourceSubclassFeature'],
+            ),
       grantedAtLevel: jsonSerialization['grantedAtLevel'] as int?,
       activation: jsonSerialization['activation'] == null
           ? null
-          : _i7.SpellActivationData.fromJson(
-              (jsonSerialization['activation'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_iyix4imv.SpellActivationData>(
+              jsonSerialization['activation'],
+            ),
       castingAbility: jsonSerialization['castingAbility'] == null
           ? null
-          : _i8.Ability.fromJson(
-              (jsonSerialization['castingAbility'] as String)),
-      alwaysPrepared: jsonSerialization['alwaysPrepared'] as bool?,
+          : _i26h74c2.Ability.fromJson(
+              (jsonSerialization['castingAbility'] as String),
+            ),
+      alwaysPrepared: jsonSerialization['alwaysPrepared'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['alwaysPrepared']),
       choiceOptionId: jsonSerialization['choiceOptionId'] as int?,
       choiceOption: jsonSerialization['choiceOption'] == null
           ? null
-          : _i9.ChoiceOptionData.fromJson(
-              (jsonSerialization['choiceOption'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_ivap0b5b.ChoiceOptionData>(
+              jsonSerialization['choiceOption'],
+            ),
       notes: jsonSerialization['notes'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -142,37 +153,37 @@ abstract class ClassSpellGrantData
 
   int? spellId;
 
-  _i2.SpellData? spell;
+  _iavpgfjb.SpellData? spell;
 
   String? spellReferenceKey;
 
   int? sourceClassId;
 
-  _i3.ClassData? sourceClass;
+  _iazz3r73.ClassData? sourceClass;
 
   int? sourceSubclassId;
 
-  _i4.SubclassData? sourceSubclass;
+  _ijcb6jld.SubclassData? sourceSubclass;
 
   int? sourceFeatureId;
 
-  _i5.ClassFeatureData? sourceFeature;
+  _ikfzlvib.ClassFeatureData? sourceFeature;
 
   int? sourceSubclassFeatureId;
 
-  _i6.SubclassFeatureData? sourceSubclassFeature;
+  _itaxdcfb.SubclassFeatureData? sourceSubclassFeature;
 
   int? grantedAtLevel;
 
-  _i7.SpellActivationData? activation;
+  _iyix4imv.SpellActivationData? activation;
 
-  _i8.Ability? castingAbility;
+  _i26h74c2.Ability? castingAbility;
 
   bool? alwaysPrepared;
 
   int? choiceOptionId;
 
-  _i9.ChoiceOptionData? choiceOption;
+  _ivap0b5b.ChoiceOptionData? choiceOption;
 
   String? notes;
 
@@ -185,30 +196,30 @@ abstract class ClassSpellGrantData
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [ClassSpellGrantData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ClassSpellGrantData copyWith({
     int? id,
     int? spellId,
-    _i2.SpellData? spell,
+    _iavpgfjb.SpellData? spell,
     String? spellReferenceKey,
     int? sourceClassId,
-    _i3.ClassData? sourceClass,
+    _iazz3r73.ClassData? sourceClass,
     int? sourceSubclassId,
-    _i4.SubclassData? sourceSubclass,
+    _ijcb6jld.SubclassData? sourceSubclass,
     int? sourceFeatureId,
-    _i5.ClassFeatureData? sourceFeature,
+    _ikfzlvib.ClassFeatureData? sourceFeature,
     int? sourceSubclassFeatureId,
-    _i6.SubclassFeatureData? sourceSubclassFeature,
+    _itaxdcfb.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
-    _i7.SpellActivationData? activation,
-    _i8.Ability? castingAbility,
+    _iyix4imv.SpellActivationData? activation,
+    _i26h74c2.Ability? castingAbility,
     bool? alwaysPrepared,
     int? choiceOptionId,
-    _i9.ChoiceOptionData? choiceOption,
+    _ivap0b5b.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
@@ -218,6 +229,7 @@ abstract class ClassSpellGrantData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ClassSpellGrantData',
       if (id != null) 'id': id,
       if (spellId != null) 'spellId': spellId,
       if (spell != null) 'spell': spell?.toJson(),
@@ -249,6 +261,7 @@ abstract class ClassSpellGrantData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ClassSpellGrantData',
       if (id != null) 'id': id,
       if (spellId != null) 'spellId': spellId,
       if (spell != null) 'spell': spell?.toJsonForProtocol(),
@@ -281,12 +294,12 @@ abstract class ClassSpellGrantData
   }
 
   static ClassSpellGrantDataInclude include({
-    _i2.SpellDataInclude? spell,
-    _i3.ClassDataInclude? sourceClass,
-    _i4.SubclassDataInclude? sourceSubclass,
-    _i5.ClassFeatureDataInclude? sourceFeature,
-    _i6.SubclassFeatureDataInclude? sourceSubclassFeature,
-    _i9.ChoiceOptionDataInclude? choiceOption,
+    _iavpgfjb.SpellDataInclude? spell,
+    _iazz3r73.ClassDataInclude? sourceClass,
+    _ijcb6jld.SubclassDataInclude? sourceSubclass,
+    _ikfzlvib.ClassFeatureDataInclude? sourceFeature,
+    _itaxdcfb.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _ivap0b5b.ChoiceOptionDataInclude? choiceOption,
   }) {
     return ClassSpellGrantDataInclude._(
       spell: spell,
@@ -299,12 +312,11 @@ abstract class ClassSpellGrantData
   }
 
   static ClassSpellGrantDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
+    _is.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
+    _is.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
     ClassSpellGrantDataInclude? include,
   }) {
     return ClassSpellGrantDataIncludeList._(
@@ -312,7 +324,6 @@ abstract class ClassSpellGrantData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(ClassSpellGrantData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(ClassSpellGrantData.t),
       include: include,
     );
@@ -320,7 +331,7 @@ abstract class ClassSpellGrantData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -330,56 +341,56 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
   _ClassSpellGrantDataImpl({
     int? id,
     int? spellId,
-    _i2.SpellData? spell,
+    _iavpgfjb.SpellData? spell,
     String? spellReferenceKey,
     int? sourceClassId,
-    _i3.ClassData? sourceClass,
+    _iazz3r73.ClassData? sourceClass,
     int? sourceSubclassId,
-    _i4.SubclassData? sourceSubclass,
+    _ijcb6jld.SubclassData? sourceSubclass,
     int? sourceFeatureId,
-    _i5.ClassFeatureData? sourceFeature,
+    _ikfzlvib.ClassFeatureData? sourceFeature,
     int? sourceSubclassFeatureId,
-    _i6.SubclassFeatureData? sourceSubclassFeature,
+    _itaxdcfb.SubclassFeatureData? sourceSubclassFeature,
     int? grantedAtLevel,
-    _i7.SpellActivationData? activation,
-    _i8.Ability? castingAbility,
+    _iyix4imv.SpellActivationData? activation,
+    _i26h74c2.Ability? castingAbility,
     bool? alwaysPrepared,
     int? choiceOptionId,
-    _i9.ChoiceOptionData? choiceOption,
+    _ivap0b5b.ChoiceOptionData? choiceOption,
     String? notes,
     String? source,
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          spellId: spellId,
-          spell: spell,
-          spellReferenceKey: spellReferenceKey,
-          sourceClassId: sourceClassId,
-          sourceClass: sourceClass,
-          sourceSubclassId: sourceSubclassId,
-          sourceSubclass: sourceSubclass,
-          sourceFeatureId: sourceFeatureId,
-          sourceFeature: sourceFeature,
-          sourceSubclassFeatureId: sourceSubclassFeatureId,
-          sourceSubclassFeature: sourceSubclassFeature,
-          grantedAtLevel: grantedAtLevel,
-          activation: activation,
-          castingAbility: castingAbility,
-          alwaysPrepared: alwaysPrepared,
-          choiceOptionId: choiceOptionId,
-          choiceOption: choiceOption,
-          notes: notes,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         spellId: spellId,
+         spell: spell,
+         spellReferenceKey: spellReferenceKey,
+         sourceClassId: sourceClassId,
+         sourceClass: sourceClass,
+         sourceSubclassId: sourceSubclassId,
+         sourceSubclass: sourceSubclass,
+         sourceFeatureId: sourceFeatureId,
+         sourceFeature: sourceFeature,
+         sourceSubclassFeatureId: sourceSubclassFeatureId,
+         sourceSubclassFeature: sourceSubclassFeature,
+         grantedAtLevel: grantedAtLevel,
+         activation: activation,
+         castingAbility: castingAbility,
+         alwaysPrepared: alwaysPrepared,
+         choiceOptionId: choiceOptionId,
+         choiceOption: choiceOption,
+         notes: notes,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [ClassSpellGrantData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ClassSpellGrantData copyWith({
     Object? id = _Undefined,
@@ -409,42 +420,49 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
     return ClassSpellGrantData(
       id: id is int? ? id : this.id,
       spellId: spellId is int? ? spellId : this.spellId,
-      spell: spell is _i2.SpellData? ? spell : this.spell?.copyWith(),
+      spell: spell is _iavpgfjb.SpellData? ? spell : this.spell?.copyWith(),
       spellReferenceKey: spellReferenceKey is String?
           ? spellReferenceKey
           : this.spellReferenceKey,
       sourceClassId: sourceClassId is int? ? sourceClassId : this.sourceClassId,
-      sourceClass: sourceClass is _i3.ClassData?
+      sourceClass: sourceClass is _iazz3r73.ClassData?
           ? sourceClass
           : this.sourceClass?.copyWith(),
-      sourceSubclassId:
-          sourceSubclassId is int? ? sourceSubclassId : this.sourceSubclassId,
-      sourceSubclass: sourceSubclass is _i4.SubclassData?
+      sourceSubclassId: sourceSubclassId is int?
+          ? sourceSubclassId
+          : this.sourceSubclassId,
+      sourceSubclass: sourceSubclass is _ijcb6jld.SubclassData?
           ? sourceSubclass
           : this.sourceSubclass?.copyWith(),
-      sourceFeatureId:
-          sourceFeatureId is int? ? sourceFeatureId : this.sourceFeatureId,
-      sourceFeature: sourceFeature is _i5.ClassFeatureData?
+      sourceFeatureId: sourceFeatureId is int?
+          ? sourceFeatureId
+          : this.sourceFeatureId,
+      sourceFeature: sourceFeature is _ikfzlvib.ClassFeatureData?
           ? sourceFeature
           : this.sourceFeature?.copyWith(),
       sourceSubclassFeatureId: sourceSubclassFeatureId is int?
           ? sourceSubclassFeatureId
           : this.sourceSubclassFeatureId,
-      sourceSubclassFeature: sourceSubclassFeature is _i6.SubclassFeatureData?
+      sourceSubclassFeature:
+          sourceSubclassFeature is _itaxdcfb.SubclassFeatureData?
           ? sourceSubclassFeature
           : this.sourceSubclassFeature?.copyWith(),
-      grantedAtLevel:
-          grantedAtLevel is int? ? grantedAtLevel : this.grantedAtLevel,
-      activation: activation is _i7.SpellActivationData?
+      grantedAtLevel: grantedAtLevel is int?
+          ? grantedAtLevel
+          : this.grantedAtLevel,
+      activation: activation is _iyix4imv.SpellActivationData?
           ? activation
           : this.activation?.copyWith(),
-      castingAbility:
-          castingAbility is _i8.Ability? ? castingAbility : this.castingAbility,
-      alwaysPrepared:
-          alwaysPrepared is bool? ? alwaysPrepared : this.alwaysPrepared,
-      choiceOptionId:
-          choiceOptionId is int? ? choiceOptionId : this.choiceOptionId,
-      choiceOption: choiceOption is _i9.ChoiceOptionData?
+      castingAbility: castingAbility is _i26h74c2.Ability?
+          ? castingAbility
+          : this.castingAbility,
+      alwaysPrepared: alwaysPrepared is bool?
+          ? alwaysPrepared
+          : this.alwaysPrepared,
+      choiceOptionId: choiceOptionId is int?
+          ? choiceOptionId
+          : this.choiceOptionId,
+      choiceOption: choiceOption is _ivap0b5b.ChoiceOptionData?
           ? choiceOption
           : this.choiceOption?.copyWith(),
       notes: notes is String? ? notes : this.notes,
@@ -456,214 +474,231 @@ class _ClassSpellGrantDataImpl extends ClassSpellGrantData {
   }
 }
 
-class ClassSpellGrantDataTable extends _i1.Table<int?> {
+class ClassSpellGrantDataUpdateTable
+    extends _is.UpdateTable<ClassSpellGrantDataTable> {
+  ClassSpellGrantDataUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> spellId(int? value) =>
+      _is.ColumnValue(table.spellId, value);
+
+  _is.ColumnValue<int, int> sourceClassId(int? value) =>
+      _is.ColumnValue(table.sourceClassId, value);
+
+  _is.ColumnValue<int, int> sourceSubclassId(int? value) =>
+      _is.ColumnValue(table.sourceSubclassId, value);
+
+  _is.ColumnValue<int, int> sourceFeatureId(int? value) =>
+      _is.ColumnValue(table.sourceFeatureId, value);
+
+  _is.ColumnValue<int, int> sourceSubclassFeatureId(int? value) =>
+      _is.ColumnValue(table.sourceSubclassFeatureId, value);
+
+  _is.ColumnValue<int, int> grantedAtLevel(int? value) =>
+      _is.ColumnValue(table.grantedAtLevel, value);
+
+  _is.ColumnValue<_iyix4imv.SpellActivationData, _iyix4imv.SpellActivationData>
+  activation(_iyix4imv.SpellActivationData? value) =>
+      _is.ColumnValue(table.activation, value);
+
+  _is.ColumnValue<_i26h74c2.Ability, _i26h74c2.Ability> castingAbility(
+    _i26h74c2.Ability? value,
+  ) => _is.ColumnValue(table.castingAbility, value);
+
+  _is.ColumnValue<bool, bool> alwaysPrepared(bool? value) =>
+      _is.ColumnValue(table.alwaysPrepared, value);
+
+  _is.ColumnValue<int, int> choiceOptionId(int? value) =>
+      _is.ColumnValue(table.choiceOptionId, value);
+
+  _is.ColumnValue<String, String> notes(String? value) =>
+      _is.ColumnValue(table.notes, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class ClassSpellGrantDataTable extends _is.Table<int?> {
   ClassSpellGrantDataTable({super.tableRelation})
-      : super(tableName: 'class_spell_grant_data') {
-    spellId = _i1.ColumnInt(
-      'spellId',
-      this,
-    );
-    sourceClassId = _i1.ColumnInt(
-      'sourceClassId',
-      this,
-    );
-    sourceSubclassId = _i1.ColumnInt(
-      'sourceSubclassId',
-      this,
-    );
-    sourceFeatureId = _i1.ColumnInt(
-      'sourceFeatureId',
-      this,
-    );
-    sourceSubclassFeatureId = _i1.ColumnInt(
-      'sourceSubclassFeatureId',
-      this,
-    );
-    grantedAtLevel = _i1.ColumnInt(
-      'grantedAtLevel',
-      this,
-    );
-    activation = _i1.ColumnSerializable(
+    : super(tableName: 'class_spell_grant_data') {
+    updateTable = ClassSpellGrantDataUpdateTable(this);
+    spellId = _is.ColumnInt('spellId', this);
+    sourceClassId = _is.ColumnInt('sourceClassId', this);
+    sourceSubclassId = _is.ColumnInt('sourceSubclassId', this);
+    sourceFeatureId = _is.ColumnInt('sourceFeatureId', this);
+    sourceSubclassFeatureId = _is.ColumnInt('sourceSubclassFeatureId', this);
+    grantedAtLevel = _is.ColumnInt('grantedAtLevel', this);
+    activation = _is.ColumnSerializable<_iyix4imv.SpellActivationData>(
       'activation',
       this,
     );
-    castingAbility = _i1.ColumnEnum(
+    castingAbility = _is.ColumnEnum(
       'castingAbility',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    alwaysPrepared = _i1.ColumnBool(
-      'alwaysPrepared',
-      this,
-    );
-    choiceOptionId = _i1.ColumnInt(
-      'choiceOptionId',
-      this,
-    );
-    notes = _i1.ColumnString(
-      'notes',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    alwaysPrepared = _is.ColumnBool('alwaysPrepared', this);
+    choiceOptionId = _is.ColumnInt('choiceOptionId', this);
+    notes = _is.ColumnString('notes', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnInt spellId;
+  late final ClassSpellGrantDataUpdateTable updateTable;
 
-  _i2.SpellDataTable? _spell;
+  late final _is.ColumnInt spellId;
 
-  late final _i1.ColumnInt sourceClassId;
+  _iavpgfjb.SpellDataTable? _spell;
 
-  _i3.ClassDataTable? _sourceClass;
+  late final _is.ColumnInt sourceClassId;
 
-  late final _i1.ColumnInt sourceSubclassId;
+  _iazz3r73.ClassDataTable? _sourceClass;
 
-  _i4.SubclassDataTable? _sourceSubclass;
+  late final _is.ColumnInt sourceSubclassId;
 
-  late final _i1.ColumnInt sourceFeatureId;
+  _ijcb6jld.SubclassDataTable? _sourceSubclass;
 
-  _i5.ClassFeatureDataTable? _sourceFeature;
+  late final _is.ColumnInt sourceFeatureId;
 
-  late final _i1.ColumnInt sourceSubclassFeatureId;
+  _ikfzlvib.ClassFeatureDataTable? _sourceFeature;
 
-  _i6.SubclassFeatureDataTable? _sourceSubclassFeature;
+  late final _is.ColumnInt sourceSubclassFeatureId;
 
-  late final _i1.ColumnInt grantedAtLevel;
+  _itaxdcfb.SubclassFeatureDataTable? _sourceSubclassFeature;
 
-  late final _i1.ColumnSerializable activation;
+  late final _is.ColumnInt grantedAtLevel;
 
-  late final _i1.ColumnEnum<_i8.Ability> castingAbility;
+  late final _is.ColumnSerializable<_iyix4imv.SpellActivationData> activation;
 
-  late final _i1.ColumnBool alwaysPrepared;
+  late final _is.ColumnEnum<_i26h74c2.Ability> castingAbility;
 
-  late final _i1.ColumnInt choiceOptionId;
+  late final _is.ColumnBool alwaysPrepared;
 
-  _i9.ChoiceOptionDataTable? _choiceOption;
+  late final _is.ColumnInt choiceOptionId;
 
-  late final _i1.ColumnString notes;
+  _ivap0b5b.ChoiceOptionDataTable? _choiceOption;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnString notes;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  _i2.SpellDataTable get spell {
+  late final _is.ColumnDateTime updatedAt;
+
+  _iavpgfjb.SpellDataTable get spell {
     if (_spell != null) return _spell!;
-    _spell = _i1.createRelationTable(
+    _spell = _is.createRelationTable(
       relationFieldName: 'spell',
       field: ClassSpellGrantData.t.spellId,
-      foreignField: _i2.SpellData.t.id,
+      foreignField: _iavpgfjb.SpellData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.SpellDataTable(tableRelation: foreignTableRelation),
+          _iavpgfjb.SpellDataTable(tableRelation: foreignTableRelation),
     );
     return _spell!;
   }
 
-  _i3.ClassDataTable get sourceClass {
+  _iazz3r73.ClassDataTable get sourceClass {
     if (_sourceClass != null) return _sourceClass!;
-    _sourceClass = _i1.createRelationTable(
+    _sourceClass = _is.createRelationTable(
       relationFieldName: 'sourceClass',
       field: ClassSpellGrantData.t.sourceClassId,
-      foreignField: _i3.ClassData.t.id,
+      foreignField: _iazz3r73.ClassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.ClassDataTable(tableRelation: foreignTableRelation),
+          _iazz3r73.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceClass!;
   }
 
-  _i4.SubclassDataTable get sourceSubclass {
+  _ijcb6jld.SubclassDataTable get sourceSubclass {
     if (_sourceSubclass != null) return _sourceSubclass!;
-    _sourceSubclass = _i1.createRelationTable(
+    _sourceSubclass = _is.createRelationTable(
       relationFieldName: 'sourceSubclass',
       field: ClassSpellGrantData.t.sourceSubclassId,
-      foreignField: _i4.SubclassData.t.id,
+      foreignField: _ijcb6jld.SubclassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.SubclassDataTable(tableRelation: foreignTableRelation),
+          _ijcb6jld.SubclassDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceSubclass!;
   }
 
-  _i5.ClassFeatureDataTable get sourceFeature {
+  _ikfzlvib.ClassFeatureDataTable get sourceFeature {
     if (_sourceFeature != null) return _sourceFeature!;
-    _sourceFeature = _i1.createRelationTable(
+    _sourceFeature = _is.createRelationTable(
       relationFieldName: 'sourceFeature',
       field: ClassSpellGrantData.t.sourceFeatureId,
-      foreignField: _i5.ClassFeatureData.t.id,
+      foreignField: _ikfzlvib.ClassFeatureData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i5.ClassFeatureDataTable(tableRelation: foreignTableRelation),
+          _ikfzlvib.ClassFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceFeature!;
   }
 
-  _i6.SubclassFeatureDataTable get sourceSubclassFeature {
+  _itaxdcfb.SubclassFeatureDataTable get sourceSubclassFeature {
     if (_sourceSubclassFeature != null) return _sourceSubclassFeature!;
-    _sourceSubclassFeature = _i1.createRelationTable(
+    _sourceSubclassFeature = _is.createRelationTable(
       relationFieldName: 'sourceSubclassFeature',
       field: ClassSpellGrantData.t.sourceSubclassFeatureId,
-      foreignField: _i6.SubclassFeatureData.t.id,
+      foreignField: _itaxdcfb.SubclassFeatureData.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i6.SubclassFeatureDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _itaxdcfb.SubclassFeatureDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
     return _sourceSubclassFeature!;
   }
 
-  _i9.ChoiceOptionDataTable get choiceOption {
+  _ivap0b5b.ChoiceOptionDataTable get choiceOption {
     if (_choiceOption != null) return _choiceOption!;
-    _choiceOption = _i1.createRelationTable(
+    _choiceOption = _is.createRelationTable(
       relationFieldName: 'choiceOption',
       field: ClassSpellGrantData.t.choiceOptionId,
-      foreignField: _i9.ChoiceOptionData.t.id,
+      foreignField: _ivap0b5b.ChoiceOptionData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i9.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
+          _ivap0b5b.ChoiceOptionDataTable(tableRelation: foreignTableRelation),
     );
     return _choiceOption!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        spellId,
-        sourceClassId,
-        sourceSubclassId,
-        sourceFeatureId,
-        sourceSubclassFeatureId,
-        grantedAtLevel,
-        activation,
-        castingAbility,
-        alwaysPrepared,
-        choiceOptionId,
-        notes,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    spellId,
+    sourceClassId,
+    sourceSubclassId,
+    sourceFeatureId,
+    sourceSubclassFeatureId,
+    grantedAtLevel,
+    activation,
+    castingAbility,
+    alwaysPrepared,
+    choiceOptionId,
+    notes,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'spell') {
       return spell;
     }
@@ -686,14 +721,14 @@ class ClassSpellGrantDataTable extends _i1.Table<int?> {
   }
 }
 
-class ClassSpellGrantDataInclude extends _i1.IncludeObject {
+class ClassSpellGrantDataInclude extends _is.IncludeObject {
   ClassSpellGrantDataInclude._({
-    _i2.SpellDataInclude? spell,
-    _i3.ClassDataInclude? sourceClass,
-    _i4.SubclassDataInclude? sourceSubclass,
-    _i5.ClassFeatureDataInclude? sourceFeature,
-    _i6.SubclassFeatureDataInclude? sourceSubclassFeature,
-    _i9.ChoiceOptionDataInclude? choiceOption,
+    _iavpgfjb.SpellDataInclude? spell,
+    _iazz3r73.ClassDataInclude? sourceClass,
+    _ijcb6jld.SubclassDataInclude? sourceSubclass,
+    _ikfzlvib.ClassFeatureDataInclude? sourceFeature,
+    _itaxdcfb.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _ivap0b5b.ChoiceOptionDataInclude? choiceOption,
   }) {
     _spell = spell;
     _sourceClass = sourceClass;
@@ -703,39 +738,38 @@ class ClassSpellGrantDataInclude extends _i1.IncludeObject {
     _choiceOption = choiceOption;
   }
 
-  _i2.SpellDataInclude? _spell;
+  _iavpgfjb.SpellDataInclude? _spell;
 
-  _i3.ClassDataInclude? _sourceClass;
+  _iazz3r73.ClassDataInclude? _sourceClass;
 
-  _i4.SubclassDataInclude? _sourceSubclass;
+  _ijcb6jld.SubclassDataInclude? _sourceSubclass;
 
-  _i5.ClassFeatureDataInclude? _sourceFeature;
+  _ikfzlvib.ClassFeatureDataInclude? _sourceFeature;
 
-  _i6.SubclassFeatureDataInclude? _sourceSubclassFeature;
+  _itaxdcfb.SubclassFeatureDataInclude? _sourceSubclassFeature;
 
-  _i9.ChoiceOptionDataInclude? _choiceOption;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'spell': _spell,
-        'sourceClass': _sourceClass,
-        'sourceSubclass': _sourceSubclass,
-        'sourceFeature': _sourceFeature,
-        'sourceSubclassFeature': _sourceSubclassFeature,
-        'choiceOption': _choiceOption,
-      };
+  _ivap0b5b.ChoiceOptionDataInclude? _choiceOption;
 
   @override
-  _i1.Table<int?> get table => ClassSpellGrantData.t;
+  Map<String, _is.Include?> get includes => {
+    'spell': _spell,
+    'sourceClass': _sourceClass,
+    'sourceSubclass': _sourceSubclass,
+    'sourceFeature': _sourceFeature,
+    'sourceSubclassFeature': _sourceSubclassFeature,
+    'choiceOption': _choiceOption,
+  };
+
+  @override
+  _is.Table<int?> get table => ClassSpellGrantData.t;
 }
 
-class ClassSpellGrantDataIncludeList extends _i1.IncludeList {
+class ClassSpellGrantDataIncludeList extends _is.IncludeList {
   ClassSpellGrantDataIncludeList._({
-    _i1.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
+    _is.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -743,10 +777,10 @@ class ClassSpellGrantDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => ClassSpellGrantData.t;
+  _is.Table<int?> get table => ClassSpellGrantData.t;
 }
 
 class ClassSpellGrantDataRepository {
@@ -779,25 +813,27 @@ class ClassSpellGrantDataRepository {
   /// );
   /// ```
   Future<List<ClassSpellGrantData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
+    _is.Transaction? transaction,
     ClassSpellGrantDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<ClassSpellGrantData>(
       where: where?.call(ClassSpellGrantData.t),
       orderBy: orderBy?.call(ClassSpellGrantData.t),
       orderByList: orderByList?.call(ClassSpellGrantData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -819,37 +855,43 @@ class ClassSpellGrantDataRepository {
   /// );
   /// ```
   Future<ClassSpellGrantData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
+    _is.Transaction? transaction,
     ClassSpellGrantDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<ClassSpellGrantData>(
       where: where?.call(ClassSpellGrantData.t),
       orderBy: orderBy?.call(ClassSpellGrantData.t),
       orderByList: orderByList?.call(ClassSpellGrantData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [ClassSpellGrantData] by its [id] or null if no such row exists.
   Future<ClassSpellGrantData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     ClassSpellGrantDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<ClassSpellGrantData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -859,14 +901,26 @@ class ClassSpellGrantDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassSpellGrantData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassSpellGrantData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<ClassSpellGrantData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -874,12 +928,81 @@ class ClassSpellGrantDataRepository {
   ///
   /// The returned [ClassSpellGrantData] will have its `id` field set.
   Future<ClassSpellGrantData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<ClassSpellGrantData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [ClassSpellGrantData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [ClassSpellGrantData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ClassSpellGrantData>> upsert(
+    _is.DatabaseSession session,
+    List<ClassSpellGrantData> rows, {
+    required _is.ColumnSelections<ClassSpellGrantDataTable> conflictColumns,
+    _is.ColumnSelections<ClassSpellGrantDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ClassSpellGrantDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<ClassSpellGrantData>(
+      rows,
+      conflictColumns: conflictColumns(ClassSpellGrantData.t),
+      updateColumns: updateColumns?.call(ClassSpellGrantData.t),
+      updateWhere: updateWhere?.call(ClassSpellGrantData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [ClassSpellGrantData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [ClassSpellGrantData] will have its `id` field set.
+  Future<ClassSpellGrantData?> upsertRow(
+    _is.DatabaseSession session,
+    ClassSpellGrantData row, {
+    required _is.ColumnSelections<ClassSpellGrantDataTable> conflictColumns,
+    _is.ColumnSelections<ClassSpellGrantDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ClassSpellGrantDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<ClassSpellGrantData>(
+      row,
+      conflictColumns: conflictColumns(ClassSpellGrantData.t),
+      updateColumns: updateColumns?.call(ClassSpellGrantData.t),
+      updateWhere: updateWhere?.call(ClassSpellGrantData.t),
       transaction: transaction,
     );
   }
@@ -889,16 +1012,22 @@ class ClassSpellGrantDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassSpellGrantData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassSpellGrantData> rows, {
-    _i1.ColumnSelections<ClassSpellGrantDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ClassSpellGrantDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<ClassSpellGrantData>(
       rows,
       columns: columns?.call(ClassSpellGrantData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -906,10 +1035,10 @@ class ClassSpellGrantDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<ClassSpellGrantData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData row, {
-    _i1.ColumnSelections<ClassSpellGrantDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ClassSpellGrantDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<ClassSpellGrantData>(
       row,
@@ -918,25 +1047,85 @@ class ClassSpellGrantDataRepository {
     );
   }
 
+  /// Updates a single [ClassSpellGrantData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<ClassSpellGrantData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<ClassSpellGrantDataUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<ClassSpellGrantData>(
+      id,
+      columnValues: columnValues(ClassSpellGrantData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [ClassSpellGrantData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ClassSpellGrantData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<ClassSpellGrantDataUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<ClassSpellGrantDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<ClassSpellGrantData>(
+      columnValues: columnValues(ClassSpellGrantData.t.updateTable),
+      where: where(ClassSpellGrantData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(ClassSpellGrantData.t),
+      orderByList: orderByList?.call(ClassSpellGrantData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [ClassSpellGrantData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassSpellGrantData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassSpellGrantData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<ClassSpellGrantData>(
       rows,
+      orderBy: orderBy?.call(ClassSpellGrantData.t),
+      orderByList: orderByList?.call(ClassSpellGrantData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [ClassSpellGrantData].
   Future<ClassSpellGrantData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<ClassSpellGrantData>(
       row,
@@ -945,28 +1134,57 @@ class ClassSpellGrantDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassSpellGrantData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<ClassSpellGrantDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ClassSpellGrantDataTable> where,
+    _is.OrderByBuilder<ClassSpellGrantDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassSpellGrantDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<ClassSpellGrantData>(
       where: where(ClassSpellGrantData.t),
+      orderBy: orderBy?.call(ClassSpellGrantData.t),
+      orderByList: orderByList?.call(ClassSpellGrantData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassSpellGrantDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<ClassSpellGrantData>(
       where: where?.call(ClassSpellGrantData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [ClassSpellGrantData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ClassSpellGrantDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<ClassSpellGrantData>(
+      where: where(ClassSpellGrantData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -978,10 +1196,10 @@ class ClassSpellGrantDataAttachRowRepository {
   /// Creates a relation between the given [ClassSpellGrantData] and [SpellData]
   /// by setting the [ClassSpellGrantData]'s foreign key `spellId` to refer to the [SpellData].
   Future<void> spell(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData classSpellGrantData,
-    _i2.SpellData spell, {
-    _i1.Transaction? transaction,
+    _iavpgfjb.SpellData spell, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1001,10 +1219,10 @@ class ClassSpellGrantDataAttachRowRepository {
   /// Creates a relation between the given [ClassSpellGrantData] and [ClassData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceClassId` to refer to the [ClassData].
   Future<void> sourceClass(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData classSpellGrantData,
-    _i3.ClassData sourceClass, {
-    _i1.Transaction? transaction,
+    _iazz3r73.ClassData sourceClass, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1013,8 +1231,9 @@ class ClassSpellGrantDataAttachRowRepository {
       throw ArgumentError.notNull('sourceClass.id');
     }
 
-    var $classSpellGrantData =
-        classSpellGrantData.copyWith(sourceClassId: sourceClass.id);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceClassId: sourceClass.id,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
       $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceClassId],
@@ -1025,10 +1244,10 @@ class ClassSpellGrantDataAttachRowRepository {
   /// Creates a relation between the given [ClassSpellGrantData] and [SubclassData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceSubclassId` to refer to the [SubclassData].
   Future<void> sourceSubclass(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData classSpellGrantData,
-    _i4.SubclassData sourceSubclass, {
-    _i1.Transaction? transaction,
+    _ijcb6jld.SubclassData sourceSubclass, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1037,8 +1256,9 @@ class ClassSpellGrantDataAttachRowRepository {
       throw ArgumentError.notNull('sourceSubclass.id');
     }
 
-    var $classSpellGrantData =
-        classSpellGrantData.copyWith(sourceSubclassId: sourceSubclass.id);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceSubclassId: sourceSubclass.id,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
       $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceSubclassId],
@@ -1049,10 +1269,10 @@ class ClassSpellGrantDataAttachRowRepository {
   /// Creates a relation between the given [ClassSpellGrantData] and [ClassFeatureData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceFeatureId` to refer to the [ClassFeatureData].
   Future<void> sourceFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData classSpellGrantData,
-    _i5.ClassFeatureData sourceFeature, {
-    _i1.Transaction? transaction,
+    _ikfzlvib.ClassFeatureData sourceFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1061,8 +1281,9 @@ class ClassSpellGrantDataAttachRowRepository {
       throw ArgumentError.notNull('sourceFeature.id');
     }
 
-    var $classSpellGrantData =
-        classSpellGrantData.copyWith(sourceFeatureId: sourceFeature.id);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceFeatureId: sourceFeature.id,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
       $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceFeatureId],
@@ -1073,10 +1294,10 @@ class ClassSpellGrantDataAttachRowRepository {
   /// Creates a relation between the given [ClassSpellGrantData] and [SubclassFeatureData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceSubclassFeatureId` to refer to the [SubclassFeatureData].
   Future<void> sourceSubclassFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData classSpellGrantData,
-    _i6.SubclassFeatureData sourceSubclassFeature, {
-    _i1.Transaction? transaction,
+    _itaxdcfb.SubclassFeatureData sourceSubclassFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1086,7 +1307,8 @@ class ClassSpellGrantDataAttachRowRepository {
     }
 
     var $classSpellGrantData = classSpellGrantData.copyWith(
-        sourceSubclassFeatureId: sourceSubclassFeature.id);
+      sourceSubclassFeatureId: sourceSubclassFeature.id,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
       $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceSubclassFeatureId],
@@ -1097,10 +1319,10 @@ class ClassSpellGrantDataAttachRowRepository {
   /// Creates a relation between the given [ClassSpellGrantData] and [ChoiceOptionData]
   /// by setting the [ClassSpellGrantData]'s foreign key `choiceOptionId` to refer to the [ChoiceOptionData].
   Future<void> choiceOption(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassSpellGrantData classSpellGrantData,
-    _i9.ChoiceOptionData choiceOption, {
-    _i1.Transaction? transaction,
+    _ivap0b5b.ChoiceOptionData choiceOption, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1109,8 +1331,9 @@ class ClassSpellGrantDataAttachRowRepository {
       throw ArgumentError.notNull('choiceOption.id');
     }
 
-    var $classSpellGrantData =
-        classSpellGrantData.copyWith(choiceOptionId: choiceOption.id);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      choiceOptionId: choiceOption.id,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
       $classSpellGrantData,
       columns: [ClassSpellGrantData.t.choiceOptionId],
@@ -1128,17 +1351,17 @@ class ClassSpellGrantDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> spell(
-    _i1.Session session,
-    ClassSpellGrantData classspellgrantdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
-    if (classspellgrantdata.id == null) {
-      throw ArgumentError.notNull('classspellgrantdata.id');
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
     }
 
-    var $classspellgrantdata = classspellgrantdata.copyWith(spellId: null);
+    var $classSpellGrantData = classSpellGrantData.copyWith(spellId: null);
     await session.db.updateRow<ClassSpellGrantData>(
-      $classspellgrantdata,
+      $classSpellGrantData,
       columns: [ClassSpellGrantData.t.spellId],
       transaction: transaction,
     );
@@ -1150,18 +1373,19 @@ class ClassSpellGrantDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceClass(
-    _i1.Session session,
-    ClassSpellGrantData classspellgrantdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
-    if (classspellgrantdata.id == null) {
-      throw ArgumentError.notNull('classspellgrantdata.id');
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
     }
 
-    var $classspellgrantdata =
-        classspellgrantdata.copyWith(sourceClassId: null);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceClassId: null,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
-      $classspellgrantdata,
+      $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceClassId],
       transaction: transaction,
     );
@@ -1173,18 +1397,19 @@ class ClassSpellGrantDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceSubclass(
-    _i1.Session session,
-    ClassSpellGrantData classspellgrantdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
-    if (classspellgrantdata.id == null) {
-      throw ArgumentError.notNull('classspellgrantdata.id');
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
     }
 
-    var $classspellgrantdata =
-        classspellgrantdata.copyWith(sourceSubclassId: null);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceSubclassId: null,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
-      $classspellgrantdata,
+      $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceSubclassId],
       transaction: transaction,
     );
@@ -1196,18 +1421,19 @@ class ClassSpellGrantDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceFeature(
-    _i1.Session session,
-    ClassSpellGrantData classspellgrantdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
-    if (classspellgrantdata.id == null) {
-      throw ArgumentError.notNull('classspellgrantdata.id');
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
     }
 
-    var $classspellgrantdata =
-        classspellgrantdata.copyWith(sourceFeatureId: null);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceFeatureId: null,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
-      $classspellgrantdata,
+      $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceFeatureId],
       transaction: transaction,
     );
@@ -1219,18 +1445,19 @@ class ClassSpellGrantDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceSubclassFeature(
-    _i1.Session session,
-    ClassSpellGrantData classspellgrantdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
-    if (classspellgrantdata.id == null) {
-      throw ArgumentError.notNull('classspellgrantdata.id');
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
     }
 
-    var $classspellgrantdata =
-        classspellgrantdata.copyWith(sourceSubclassFeatureId: null);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceSubclassFeatureId: null,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
-      $classspellgrantdata,
+      $classSpellGrantData,
       columns: [ClassSpellGrantData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
@@ -1242,18 +1469,19 @@ class ClassSpellGrantDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> choiceOption(
-    _i1.Session session,
-    ClassSpellGrantData classspellgrantdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
-    if (classspellgrantdata.id == null) {
-      throw ArgumentError.notNull('classspellgrantdata.id');
+    if (classSpellGrantData.id == null) {
+      throw ArgumentError.notNull('classSpellGrantData.id');
     }
 
-    var $classspellgrantdata =
-        classspellgrantdata.copyWith(choiceOptionId: null);
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      choiceOptionId: null,
+    );
     await session.db.updateRow<ClassSpellGrantData>(
-      $classspellgrantdata,
+      $classSpellGrantData,
       columns: [ClassSpellGrantData.t.choiceOptionId],
       transaction: transaction,
     );

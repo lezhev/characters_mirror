@@ -8,7 +8,6 @@ import 'package:characters_mirror_flutter/features/dungeon_master/data/dm_creatu
 import 'package:characters_mirror_flutter/features/dungeon_master/data/dm_creature_repository.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as path;
 
@@ -55,7 +54,7 @@ void main() {
     final result = await controller.importFile();
     expect(repository.inputs, ['goblin', 'mage', 'dragon']);
     expect(result.success, true);
-    expect(controller.state.creatures.valueOrNull, hasLength(3));
+    expect(controller.state.creatures.value, hasLength(3));
     expect(repository.listCalls, initialLoads + 1);
     expect(repository.maxConcurrent, 1);
     expect(controller.state.busy, false);
@@ -77,7 +76,7 @@ void main() {
     final result = await controller.importFile();
     expect(repository.inputs, ['goblin', 'rejected', 'mage']);
     expect(result.success, true);
-    expect(controller.state.creatures.valueOrNull, hasLength(2));
+    expect(controller.state.creatures.value, hasLength(2));
     expect(result.message, contains('Импортировано: 2'));
     expect(result.message, contains('Ошибок: 2'));
     expect(result.importReport!.files.map((file) => file.fileName),
@@ -106,7 +105,7 @@ void main() {
     addTearDown(controller.dispose);
     final result = await controller.importFile();
     expect(repository.inputs, ['dragon', 'dragon', 'mage']);
-    expect(controller.state.creatures.valueOrNull, hasLength(2));
+    expect(controller.state.creatures.value, hasLength(2));
     expect(result.message, contains('Импортировано: 2'));
     expect(result.message, contains('Уже в библиотеке: 1'));
     expect(result.importReport!.files[1].status, DmFileImportStatus.duplicate);
@@ -201,7 +200,7 @@ void main() {
     expect(result.success, false);
     expect(result.importReport!.failed, 2);
     expect(result.importReport!.imported, 0);
-    expect(controller.state.creatures.valueOrNull, isEmpty);
+    expect(controller.state.creatures.value, isEmpty);
     expect(repository.listCalls, initialLoads);
     expect(controller.state.busy, false);
   });

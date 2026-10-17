@@ -7,15 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../enums/feature_modifier_value_kind.dart' as _i2;
-import '../../enums/feature_modifier_rounding.dart' as _i3;
-import '../../enums/ability.dart' as _i4;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../enums/ability.dart' as _if5gaqs5;
+import '../../enums/feature_modifier_rounding.dart' as _ijlxkxqt;
+import '../../enums/feature_modifier_value_kind.dart' as _irkf8rfu;
 
 abstract class FeatureModifierValueData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   FeatureModifierValueData._({
     required this.kind,
     this.staticValue,
@@ -27,37 +30,44 @@ abstract class FeatureModifierValueData
   });
 
   factory FeatureModifierValueData({
-    required _i2.FeatureModifierValueKind kind,
+    required _irkf8rfu.FeatureModifierValueKind kind,
     int? staticValue,
     Map<int, int>? progression,
     int? numerator,
     int? denominator,
-    _i3.FeatureModifierRounding? rounding,
-    List<_i4.Ability>? abilityModifiers,
+    _ijlxkxqt.FeatureModifierRounding? rounding,
+    List<_if5gaqs5.Ability>? abilityModifiers,
   }) = _FeatureModifierValueDataImpl;
 
   factory FeatureModifierValueData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureModifierValueData(
-      kind: _i2.FeatureModifierValueKind.fromJson(
-          (jsonSerialization['kind'] as int)),
+      kind: _irkf8rfu.FeatureModifierValueKind.fromJson(
+        (jsonSerialization['kind'] as int),
+      ),
       staticValue: jsonSerialization['staticValue'] as int?,
-      progression: (jsonSerialization['progression'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      progression: jsonSerialization['progression'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['progression'],
+            ),
       numerator: jsonSerialization['numerator'] as int?,
       denominator: jsonSerialization['denominator'] as int?,
       rounding: jsonSerialization['rounding'] == null
           ? null
-          : _i3.FeatureModifierRounding.fromJson(
-              (jsonSerialization['rounding'] as int)),
-      abilityModifiers: (jsonSerialization['abilityModifiers'] as List?)
-          ?.map((e) => _i4.Ability.fromJson((e as String)))
-          .toList(),
+          : _ijlxkxqt.FeatureModifierRounding.fromJson(
+              (jsonSerialization['rounding'] as int),
+            ),
+      abilityModifiers: jsonSerialization['abilityModifiers'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_if5gaqs5.Ability>>(
+              jsonSerialization['abilityModifiers'],
+            ),
     );
   }
 
-  _i2.FeatureModifierValueKind kind;
+  _irkf8rfu.FeatureModifierValueKind kind;
 
   int? staticValue;
 
@@ -67,25 +77,26 @@ abstract class FeatureModifierValueData
 
   int? denominator;
 
-  _i3.FeatureModifierRounding? rounding;
+  _ijlxkxqt.FeatureModifierRounding? rounding;
 
-  List<_i4.Ability>? abilityModifiers;
+  List<_if5gaqs5.Ability>? abilityModifiers;
 
   /// Returns a shallow copy of this [FeatureModifierValueData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FeatureModifierValueData copyWith({
-    _i2.FeatureModifierValueKind? kind,
+    _irkf8rfu.FeatureModifierValueKind? kind,
     int? staticValue,
     Map<int, int>? progression,
     int? numerator,
     int? denominator,
-    _i3.FeatureModifierRounding? rounding,
-    List<_i4.Ability>? abilityModifiers,
+    _ijlxkxqt.FeatureModifierRounding? rounding,
+    List<_if5gaqs5.Ability>? abilityModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureModifierValueData',
       'kind': kind.toJson(),
       if (staticValue != null) 'staticValue': staticValue,
       if (progression != null) 'progression': progression?.toJson(),
@@ -93,14 +104,16 @@ abstract class FeatureModifierValueData
       if (denominator != null) 'denominator': denominator,
       if (rounding != null) 'rounding': rounding?.toJson(),
       if (abilityModifiers != null)
-        'abilityModifiers':
-            abilityModifiers?.toJson(valueToJson: (v) => v.toJson()),
+        'abilityModifiers': abilityModifiers?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
     };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeatureModifierValueData',
       'kind': kind.toJson(),
       if (staticValue != null) 'staticValue': staticValue,
       if (progression != null) 'progression': progression?.toJson(),
@@ -108,14 +121,15 @@ abstract class FeatureModifierValueData
       if (denominator != null) 'denominator': denominator,
       if (rounding != null) 'rounding': rounding?.toJson(),
       if (abilityModifiers != null)
-        'abilityModifiers':
-            abilityModifiers?.toJson(valueToJson: (v) => v.toJson()),
+        'abilityModifiers': abilityModifiers?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
     };
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -123,29 +137,29 @@ class _Undefined {}
 
 class _FeatureModifierValueDataImpl extends FeatureModifierValueData {
   _FeatureModifierValueDataImpl({
-    required _i2.FeatureModifierValueKind kind,
+    required _irkf8rfu.FeatureModifierValueKind kind,
     int? staticValue,
     Map<int, int>? progression,
     int? numerator,
     int? denominator,
-    _i3.FeatureModifierRounding? rounding,
-    List<_i4.Ability>? abilityModifiers,
+    _ijlxkxqt.FeatureModifierRounding? rounding,
+    List<_if5gaqs5.Ability>? abilityModifiers,
   }) : super._(
-          kind: kind,
-          staticValue: staticValue,
-          progression: progression,
-          numerator: numerator,
-          denominator: denominator,
-          rounding: rounding,
-          abilityModifiers: abilityModifiers,
-        );
+         kind: kind,
+         staticValue: staticValue,
+         progression: progression,
+         numerator: numerator,
+         denominator: denominator,
+         rounding: rounding,
+         abilityModifiers: abilityModifiers,
+       );
 
   /// Returns a shallow copy of this [FeatureModifierValueData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FeatureModifierValueData copyWith({
-    _i2.FeatureModifierValueKind? kind,
+    _irkf8rfu.FeatureModifierValueKind? kind,
     Object? staticValue = _Undefined,
     Object? progression = _Undefined,
     Object? numerator = _Undefined,
@@ -158,19 +172,13 @@ class _FeatureModifierValueDataImpl extends FeatureModifierValueData {
       staticValue: staticValue is int? ? staticValue : this.staticValue,
       progression: progression is Map<int, int>?
           ? progression
-          : this.progression?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.progression?.map((key0, value0) => MapEntry(key0, value0)),
       numerator: numerator is int? ? numerator : this.numerator,
       denominator: denominator is int? ? denominator : this.denominator,
-      rounding:
-          rounding is _i3.FeatureModifierRounding? ? rounding : this.rounding,
-      abilityModifiers: abilityModifiers is List<_i4.Ability>?
+      rounding: rounding is _ijlxkxqt.FeatureModifierRounding?
+          ? rounding
+          : this.rounding,
+      abilityModifiers: abilityModifiers is List<_if5gaqs5.Ability>?
           ? abilityModifiers
           : this.abilityModifiers?.map((e0) => e0).toList(),
     );

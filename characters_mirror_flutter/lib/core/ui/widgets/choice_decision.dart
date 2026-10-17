@@ -30,7 +30,9 @@ class ChoiceDecision extends StatelessWidget {
       if (picker || p.selectedKeys.isNotEmpty) Text(p.selectionSummary),
     ]);
     if (picker) {
-      return ListTile(
+      return Material(
+        color: Colors.transparent,
+        child: ListTile(
           contentPadding: EdgeInsets.zero,
           title: header,
           trailing: const Icon(Icons.chevron_right),
@@ -57,12 +59,16 @@ class ChoiceDecision extends StatelessWidget {
                                         reason: o.reason)
                                 ])));
                 if (result != null) onChanged(result);
-              });
+              },
+        ),
+      );
     }
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       header,
       for (final o in p.options)
-        ListTile(
+        Material(
+          color: Colors.transparent,
+          child: ListTile(
             key: ValueKey('choice-card-${o.key}'),
             contentPadding: EdgeInsets.zero,
             title: Text(o.name),
@@ -113,7 +119,9 @@ class ChoiceDecision extends StatelessWidget {
                             !o.enabled || p.selectedKeys.length >= p.maximum
                                 ? null
                                 : () => onChanged([...p.selectedKeys, o.key])),
-                  ])),
+                  ]),
+          ),
+        ),
       if (p.options.isEmpty)
         const Text('Нет доступных вариантов в данных класса'),
     ]);

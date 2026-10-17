@@ -1,4 +1,5 @@
 enum: CharacterSpeedKind
+serialized: byIndex
 values:
   - walking
   - swimming

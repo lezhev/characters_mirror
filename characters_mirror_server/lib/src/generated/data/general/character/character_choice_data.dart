@@ -7,15 +7,19 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/character/character_class_entry_data.dart'
+    as _inzx0vvj;
 import '../../../data/general/character/choice_replacement_history_data.dart'
-    as _i2;
-import '../../../data/general/character/character_class_entry_data.dart' as _i3;
+    as _ikw9ov94;
 
 abstract class CharacterChoiceData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterChoiceData._({
     this.id,
     this.replacementHistory,
@@ -28,8 +32,8 @@ abstract class CharacterChoiceData
 
   factory CharacterChoiceData({
     String? id,
-    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
-    _i3.CharacterClassEntryData? classEntry,
+    List<_ikw9ov94.ChoiceReplacementHistoryData>? replacementHistory,
+    _inzx0vvj.CharacterClassEntryData? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
@@ -39,28 +43,31 @@ abstract class CharacterChoiceData
   factory CharacterChoiceData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterChoiceData(
       id: jsonSerialization['id'] as String?,
-      replacementHistory: (jsonSerialization['replacementHistory'] as List?)
-          ?.map((e) => _i2.ChoiceReplacementHistoryData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+      replacementHistory: jsonSerialization['replacementHistory'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ikw9ov94.ChoiceReplacementHistoryData>>(
+                  jsonSerialization['replacementHistory'],
+                ),
       classEntry: jsonSerialization['classEntry'] == null
           ? null
-          : _i3.CharacterClassEntryData.fromJson(
-              (jsonSerialization['classEntry'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_inzx0vvj.CharacterClassEntryData>(
+              jsonSerialization['classEntry'],
+            ),
       groupKey: jsonSerialization['groupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
-  List<_i2.ChoiceReplacementHistoryData>? replacementHistory;
+  List<_ikw9ov94.ChoiceReplacementHistoryData>? replacementHistory;
 
   String? id;
 
-  _i3.CharacterClassEntryData? classEntry;
+  _inzx0vvj.CharacterClassEntryData? classEntry;
 
   String? groupKey;
 
@@ -72,11 +79,11 @@ abstract class CharacterChoiceData
 
   /// Returns a shallow copy of this [CharacterChoiceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterChoiceData copyWith({
     String? id,
-    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
-    _i3.CharacterClassEntryData? classEntry,
+    List<_ikw9ov94.ChoiceReplacementHistoryData>? replacementHistory,
+    _inzx0vvj.CharacterClassEntryData? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
@@ -85,10 +92,12 @@ abstract class CharacterChoiceData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterChoiceData',
       if (id != null) 'id': id,
       if (replacementHistory != null)
-        'replacementHistory':
-            replacementHistory?.toJson(valueToJson: (v) => v.toJson()),
+        'replacementHistory': replacementHistory?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (classEntry != null) 'classEntry': classEntry?.toJson(),
       if (groupKey != null) 'groupKey': groupKey,
       if (optionKey != null) 'optionKey': optionKey,
@@ -100,10 +109,12 @@ abstract class CharacterChoiceData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterChoiceData',
       if (id != null) 'id': id,
       if (replacementHistory != null)
         'replacementHistory': replacementHistory?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (classEntry != null) 'classEntry': classEntry?.toJsonForProtocol(),
       if (groupKey != null) 'groupKey': groupKey,
       if (optionKey != null) 'optionKey': optionKey,
@@ -114,7 +125,7 @@ abstract class CharacterChoiceData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -123,25 +134,25 @@ class _Undefined {}
 class _CharacterChoiceDataImpl extends CharacterChoiceData {
   _CharacterChoiceDataImpl({
     String? id,
-    List<_i2.ChoiceReplacementHistoryData>? replacementHistory,
-    _i3.CharacterClassEntryData? classEntry,
+    List<_ikw9ov94.ChoiceReplacementHistoryData>? replacementHistory,
+    _inzx0vvj.CharacterClassEntryData? classEntry,
     String? groupKey,
     String? optionKey,
     int? selectionIndex,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          replacementHistory: replacementHistory,
-          classEntry: classEntry,
-          groupKey: groupKey,
-          optionKey: optionKey,
-          selectionIndex: selectionIndex,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         replacementHistory: replacementHistory,
+         classEntry: classEntry,
+         groupKey: groupKey,
+         optionKey: optionKey,
+         selectionIndex: selectionIndex,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [CharacterChoiceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterChoiceData copyWith({
     Object? id = _Undefined,
@@ -155,16 +166,17 @@ class _CharacterChoiceDataImpl extends CharacterChoiceData {
     return CharacterChoiceData(
       id: id is String? ? id : this.id,
       replacementHistory:
-          replacementHistory is List<_i2.ChoiceReplacementHistoryData>?
-              ? replacementHistory
-              : this.replacementHistory?.map((e0) => e0.copyWith()).toList(),
-      classEntry: classEntry is _i3.CharacterClassEntryData?
+          replacementHistory is List<_ikw9ov94.ChoiceReplacementHistoryData>?
+          ? replacementHistory
+          : this.replacementHistory?.map((e0) => e0.copyWith()).toList(),
+      classEntry: classEntry is _inzx0vvj.CharacterClassEntryData?
           ? classEntry
           : this.classEntry?.copyWith(),
       groupKey: groupKey is String? ? groupKey : this.groupKey,
       optionKey: optionKey is String? ? optionKey : this.optionKey,
-      selectionIndex:
-          selectionIndex is int? ? selectionIndex : this.selectionIndex,
+      selectionIndex: selectionIndex is int?
+          ? selectionIndex
+          : this.selectionIndex,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
     );
   }

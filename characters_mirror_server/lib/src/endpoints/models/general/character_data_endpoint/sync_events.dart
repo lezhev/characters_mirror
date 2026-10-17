@@ -104,8 +104,7 @@ Future<_CharacterSyncPullDelta> _loadCharacterSyncDeltaAfterEventId(
   final events = await CharacterSyncEventRecord.db.find(
     session,
     where: (t) => t.userId.equals(userId) & (t.id > pullAfterEventId),
-    orderBy: (t) => t.id,
-    orderDescending: false,
+    orderBy: (t) => t.id.asc(),
   );
   if (events.isEmpty) {
     return _CharacterSyncPullDelta(
@@ -163,8 +162,7 @@ Future<int?> _latestCharacterSyncEventId(
   final latest = await CharacterSyncEventRecord.db.findFirstRow(
     session,
     where: (t) => t.userId.equals(userId),
-    orderBy: (t) => t.id,
-    orderDescending: true,
+    orderBy: (t) => t.id.desc(),
     transaction: transaction,
   );
   return latest?.id;

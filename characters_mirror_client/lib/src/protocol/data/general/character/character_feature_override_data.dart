@@ -7,13 +7,17 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../enums/character_feature_source_type.dart' as _i2;
-import '../../../enums/feature_tag.dart' as _i3;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../enums/character_feature_source_type.dart' as _ik7og9il;
+import '../../../enums/feature_tag.dart' as _ixkx8coo;
 
-abstract class CharacterFeatureOverrideData implements _i1.SerializableModel {
+abstract class CharacterFeatureOverrideData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterFeatureOverrideData._({
     this.id,
     required this.sourceType,
@@ -26,35 +30,39 @@ abstract class CharacterFeatureOverrideData implements _i1.SerializableModel {
 
   factory CharacterFeatureOverrideData({
     String? id,
-    required _i2.CharacterFeatureSourceType sourceType,
+    required _ik7og9il.CharacterFeatureSourceType sourceType,
     required int sourceId,
     String? name,
     String? description,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     DateTime? updatedAt,
   }) = _CharacterFeatureOverrideDataImpl;
 
   factory CharacterFeatureOverrideData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterFeatureOverrideData(
       id: jsonSerialization['id'] as String?,
-      sourceType: _i2.CharacterFeatureSourceType.fromJson(
-          (jsonSerialization['sourceType'] as String)),
+      sourceType: _ik7og9il.CharacterFeatureSourceType.fromJson(
+        (jsonSerialization['sourceType'] as String),
+      ),
       sourceId: jsonSerialization['sourceId'] as int,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
-          .toList(),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ixkx8coo.FeatureTag>>(
+              jsonSerialization['tags'],
+            ),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
   String? id;
 
-  _i2.CharacterFeatureSourceType sourceType;
+  _ik7og9il.CharacterFeatureSourceType sourceType;
 
   int sourceId;
 
@@ -62,25 +70,40 @@ abstract class CharacterFeatureOverrideData implements _i1.SerializableModel {
 
   String? description;
 
-  List<_i3.FeatureTag>? tags;
+  List<_ixkx8coo.FeatureTag>? tags;
 
   DateTime? updatedAt;
 
   /// Returns a shallow copy of this [CharacterFeatureOverrideData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterFeatureOverrideData copyWith({
     String? id,
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     String? name,
     String? description,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterFeatureOverrideData',
+      if (id != null) 'id': id,
+      'sourceType': sourceType.toJson(),
+      'sourceId': sourceId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterFeatureOverrideData',
       if (id != null) 'id': id,
       'sourceType': sourceType.toJson(),
       'sourceId': sourceId,
@@ -93,7 +116,7 @@ abstract class CharacterFeatureOverrideData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -102,29 +125,29 @@ class _Undefined {}
 class _CharacterFeatureOverrideDataImpl extends CharacterFeatureOverrideData {
   _CharacterFeatureOverrideDataImpl({
     String? id,
-    required _i2.CharacterFeatureSourceType sourceType,
+    required _ik7og9il.CharacterFeatureSourceType sourceType,
     required int sourceId,
     String? name,
     String? description,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          sourceType: sourceType,
-          sourceId: sourceId,
-          name: name,
-          description: description,
-          tags: tags,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         sourceType: sourceType,
+         sourceId: sourceId,
+         name: name,
+         description: description,
+         tags: tags,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [CharacterFeatureOverrideData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterFeatureOverrideData copyWith({
     Object? id = _Undefined,
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     Object? name = _Undefined,
     Object? description = _Undefined,
@@ -137,7 +160,7 @@ class _CharacterFeatureOverrideDataImpl extends CharacterFeatureOverrideData {
       sourceId: sourceId ?? this.sourceId,
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
-      tags: tags is List<_i3.FeatureTag>?
+      tags: tags is List<_ixkx8coo.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,

@@ -1,9 +1,27 @@
+import 'dart:convert';
+
 import 'package:characters_mirror_flutter/core/serverpod/remember_me_persistence.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 void main() {
   group('Remember me persistence', () {
+    test('auth key provider reads the existing persisted legacy key', () async {
+      final backingStorage = _FakeStorage();
+      final keyManager = RememberMeAuthenticationKeyManager(
+        runMode: 'test',
+        persistentStorage: backingStorage,
+      );
+      backingStorage.values[keyManager.persistentKey] = '1:secret';
+
+      expect(
+        await keyManager.authHeaderValue,
+        'Basic ${base64Encode(utf8.encode('1:secret'))}',
+      );
+      await keyManager.remove();
+      expect(await keyManager.authHeaderValue, isNull);
+    });
+
     test('writes auth and session data to backing storage when enabled',
         () async {
       final backingStorage = _FakeStorage();

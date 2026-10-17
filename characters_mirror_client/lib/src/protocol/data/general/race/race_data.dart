@@ -7,18 +7,22 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../enums/creature_size.dart' as _i2;
-import '../../../enums/language.dart' as _i3;
-import '../../../enums/sense_type.dart' as _i4;
-import '../../../enums/damage_type.dart' as _i5;
-import '../../../enums/skill.dart' as _i6;
-import '../../../enums/armor_category.dart' as _i7;
-import '../../../data/general/race/race_feature_data.dart' as _i8;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../data/general/race/race_feature_data.dart' as _ib72xv5p;
+import '../../../enums/armor_category.dart' as _irzuusaf;
+import '../../../enums/creature_size.dart' as _i0folz3s;
+import '../../../enums/damage_type.dart' as _ij9bzpyl;
+import '../../../enums/language.dart' as _iiw0j43j;
+import '../../../enums/sense_type.dart' as _irak22vn;
+import '../../../enums/skill.dart' as _iqrhamom;
 
-abstract class RaceData implements _i1.SerializableModel {
+abstract class RaceData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   RaceData._({
     this.id,
     this.name,
@@ -57,7 +61,7 @@ abstract class RaceData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    _i2.CreatureSize? size,
+    _i0folz3s.CreatureSize? size,
     int? strengthBonus,
     int? dexterityBonus,
     int? constitutionBonus,
@@ -65,15 +69,15 @@ abstract class RaceData implements _i1.SerializableModel {
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<_i3.Language>? languages,
-    _i4.SenseType? visionType,
+    List<_iiw0j43j.Language>? languages,
+    _irak22vn.SenseType? visionType,
     int? visionRange,
-    List<_i5.DamageType>? resistances,
-    List<_i6.Skill>? skillProficiencies,
-    List<_i7.ArmorCategory>? armorProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i8.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
     String? imageURL,
   }) = _RaceDataImpl;
 
@@ -86,50 +90,66 @@ abstract class RaceData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       speed: jsonSerialization['speed'] as int?,
       size: jsonSerialization['size'] == null
           ? null
-          : _i2.CreatureSize.fromJson((jsonSerialization['size'] as int)),
+          : _i0folz3s.CreatureSize.fromJson((jsonSerialization['size'] as int)),
       strengthBonus: jsonSerialization['strengthBonus'] as int?,
       dexterityBonus: jsonSerialization['dexterityBonus'] as int?,
       constitutionBonus: jsonSerialization['constitutionBonus'] as int?,
       intelligenceBonus: jsonSerialization['intelligenceBonus'] as int?,
       wisdomBonus: jsonSerialization['wisdomBonus'] as int?,
       charismaBonus: jsonSerialization['charismaBonus'] as int?,
-      traits: (jsonSerialization['traits'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      languages: (jsonSerialization['languages'] as List?)
-          ?.map((e) => _i3.Language.fromJson((e as String)))
-          .toList(),
+      traits: jsonSerialization['traits'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['traits'],
+            ),
+      languages: jsonSerialization['languages'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iiw0j43j.Language>>(
+              jsonSerialization['languages'],
+            ),
       visionType: jsonSerialization['visionType'] == null
           ? null
-          : _i4.SenseType.fromJson((jsonSerialization['visionType'] as String)),
+          : _irak22vn.SenseType.fromJson(
+              (jsonSerialization['visionType'] as String),
+            ),
       visionRange: jsonSerialization['visionRange'] as int?,
-      resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i5.DamageType.fromJson((e as String)))
-          .toList(),
-      skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => _i6.Skill.fromJson((e as String)))
-          .toList(),
-      armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
-          ?.map((e) => _i7.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      weaponProficiencyKeys:
-          (jsonSerialization['weaponProficiencyKeys'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      features: (jsonSerialization['features'] as List?)
-          ?.map(
-              (e) => _i8.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      resistances: jsonSerialization['resistances'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ij9bzpyl.DamageType>>(
+              jsonSerialization['resistances'],
+            ),
+      skillProficiencies: jsonSerialization['skillProficiencies'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iqrhamom.Skill>>(
+              jsonSerialization['skillProficiencies'],
+            ),
+      armorProficiencies: jsonSerialization['armorProficiencies'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_irzuusaf.ArmorCategory>>(
+              jsonSerialization['armorProficiencies'],
+            ),
+      weaponProficiencyKeys: jsonSerialization['weaponProficiencyKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['weaponProficiencyKeys'],
+            ),
+      toolProficiencyKeys: jsonSerialization['toolProficiencyKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['toolProficiencyKeys'],
+            ),
+      features: jsonSerialization['features'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ib72xv5p.RaceFeatureData>>(
+              jsonSerialization['features'],
+            ),
       imageURL: jsonSerialization['imageURL'] as String?,
     );
   }
@@ -153,7 +173,7 @@ abstract class RaceData implements _i1.SerializableModel {
 
   int? speed;
 
-  _i2.CreatureSize? size;
+  _i0folz3s.CreatureSize? size;
 
   int? strengthBonus;
 
@@ -169,29 +189,29 @@ abstract class RaceData implements _i1.SerializableModel {
 
   List<String>? traits;
 
-  List<_i3.Language>? languages;
+  List<_iiw0j43j.Language>? languages;
 
-  _i4.SenseType? visionType;
+  _irak22vn.SenseType? visionType;
 
   int? visionRange;
 
-  List<_i5.DamageType>? resistances;
+  List<_ij9bzpyl.DamageType>? resistances;
 
-  List<_i6.Skill>? skillProficiencies;
+  List<_iqrhamom.Skill>? skillProficiencies;
 
-  List<_i7.ArmorCategory>? armorProficiencies;
+  List<_irzuusaf.ArmorCategory>? armorProficiencies;
 
   List<String>? weaponProficiencyKeys;
 
   List<String>? toolProficiencyKeys;
 
-  List<_i8.RaceFeatureData>? features;
+  List<_ib72xv5p.RaceFeatureData>? features;
 
   String? imageURL;
 
   /// Returns a shallow copy of this [RaceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   RaceData copyWith({
     int? id,
     String? name,
@@ -201,7 +221,7 @@ abstract class RaceData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    _i2.CreatureSize? size,
+    _i0folz3s.CreatureSize? size,
     int? strengthBonus,
     int? dexterityBonus,
     int? constitutionBonus,
@@ -209,20 +229,21 @@ abstract class RaceData implements _i1.SerializableModel {
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<_i3.Language>? languages,
-    _i4.SenseType? visionType,
+    List<_iiw0j43j.Language>? languages,
+    _irak22vn.SenseType? visionType,
     int? visionRange,
-    List<_i5.DamageType>? resistances,
-    List<_i6.Skill>? skillProficiencies,
-    List<_i7.ArmorCategory>? armorProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i8.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
     String? imageURL,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'RaceData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -246,11 +267,13 @@ abstract class RaceData implements _i1.SerializableModel {
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (skillProficiencies != null)
-        'skillProficiencies':
-            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (armorProficiencies != null)
-        'armorProficiencies':
-            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'armorProficiencies': armorProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (weaponProficiencyKeys != null)
         'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
       if (toolProficiencyKeys != null)
@@ -262,8 +285,52 @@ abstract class RaceData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'RaceData',
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (speed != null) 'speed': speed,
+      if (size != null) 'size': size?.toJson(),
+      if (strengthBonus != null) 'strengthBonus': strengthBonus,
+      if (dexterityBonus != null) 'dexterityBonus': dexterityBonus,
+      if (constitutionBonus != null) 'constitutionBonus': constitutionBonus,
+      if (intelligenceBonus != null) 'intelligenceBonus': intelligenceBonus,
+      if (wisdomBonus != null) 'wisdomBonus': wisdomBonus,
+      if (charismaBonus != null) 'charismaBonus': charismaBonus,
+      if (traits != null) 'traits': traits?.toJson(),
+      if (languages != null)
+        'languages': languages?.toJson(valueToJson: (v) => v.toJson()),
+      if (visionType != null) 'visionType': visionType?.toJson(),
+      if (visionRange != null) 'visionRange': visionRange,
+      if (resistances != null)
+        'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
+      if (skillProficiencies != null)
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (armorProficiencies != null)
+        'armorProficiencies': armorProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (weaponProficiencyKeys != null)
+        'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
+      if (toolProficiencyKeys != null)
+        'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
+      if (features != null)
+        'features': features?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (imageURL != null) 'imageURL': imageURL,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -279,7 +346,7 @@ class _RaceDataImpl extends RaceData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    _i2.CreatureSize? size,
+    _i0folz3s.CreatureSize? size,
     int? strengthBonus,
     int? dexterityBonus,
     int? constitutionBonus,
@@ -287,48 +354,48 @@ class _RaceDataImpl extends RaceData {
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<_i3.Language>? languages,
-    _i4.SenseType? visionType,
+    List<_iiw0j43j.Language>? languages,
+    _irak22vn.SenseType? visionType,
     int? visionRange,
-    List<_i5.DamageType>? resistances,
-    List<_i6.Skill>? skillProficiencies,
-    List<_i7.ArmorCategory>? armorProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i8.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
     String? imageURL,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          speed: speed,
-          size: size,
-          strengthBonus: strengthBonus,
-          dexterityBonus: dexterityBonus,
-          constitutionBonus: constitutionBonus,
-          intelligenceBonus: intelligenceBonus,
-          wisdomBonus: wisdomBonus,
-          charismaBonus: charismaBonus,
-          traits: traits,
-          languages: languages,
-          visionType: visionType,
-          visionRange: visionRange,
-          resistances: resistances,
-          skillProficiencies: skillProficiencies,
-          armorProficiencies: armorProficiencies,
-          weaponProficiencyKeys: weaponProficiencyKeys,
-          toolProficiencyKeys: toolProficiencyKeys,
-          features: features,
-          imageURL: imageURL,
-        );
+         id: id,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         speed: speed,
+         size: size,
+         strengthBonus: strengthBonus,
+         dexterityBonus: dexterityBonus,
+         constitutionBonus: constitutionBonus,
+         intelligenceBonus: intelligenceBonus,
+         wisdomBonus: wisdomBonus,
+         charismaBonus: charismaBonus,
+         traits: traits,
+         languages: languages,
+         visionType: visionType,
+         visionRange: visionRange,
+         resistances: resistances,
+         skillProficiencies: skillProficiencies,
+         armorProficiencies: armorProficiencies,
+         weaponProficiencyKeys: weaponProficiencyKeys,
+         toolProficiencyKeys: toolProficiencyKeys,
+         features: features,
+         imageURL: imageURL,
+       );
 
   /// Returns a shallow copy of this [RaceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   RaceData copyWith({
     Object? id = _Undefined,
@@ -367,10 +434,11 @@ class _RaceDataImpl extends RaceData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       speed: speed is int? ? speed : this.speed,
-      size: size is _i2.CreatureSize? ? size : this.size,
+      size: size is _i0folz3s.CreatureSize? ? size : this.size,
       strengthBonus: strengthBonus is int? ? strengthBonus : this.strengthBonus,
-      dexterityBonus:
-          dexterityBonus is int? ? dexterityBonus : this.dexterityBonus,
+      dexterityBonus: dexterityBonus is int?
+          ? dexterityBonus
+          : this.dexterityBonus,
       constitutionBonus: constitutionBonus is int?
           ? constitutionBonus
           : this.constitutionBonus,
@@ -382,18 +450,20 @@ class _RaceDataImpl extends RaceData {
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
-      languages: languages is List<_i3.Language>?
+      languages: languages is List<_iiw0j43j.Language>?
           ? languages
           : this.languages?.map((e0) => e0).toList(),
-      visionType: visionType is _i4.SenseType? ? visionType : this.visionType,
+      visionType: visionType is _irak22vn.SenseType?
+          ? visionType
+          : this.visionType,
       visionRange: visionRange is int? ? visionRange : this.visionRange,
-      resistances: resistances is List<_i5.DamageType>?
+      resistances: resistances is List<_ij9bzpyl.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      skillProficiencies: skillProficiencies is List<_i6.Skill>?
+      skillProficiencies: skillProficiencies is List<_iqrhamom.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      armorProficiencies: armorProficiencies is List<_i7.ArmorCategory>?
+      armorProficiencies: armorProficiencies is List<_irzuusaf.ArmorCategory>?
           ? armorProficiencies
           : this.armorProficiencies?.map((e0) => e0).toList(),
       weaponProficiencyKeys: weaponProficiencyKeys is List<String>?
@@ -402,7 +472,7 @@ class _RaceDataImpl extends RaceData {
       toolProficiencyKeys: toolProficiencyKeys is List<String>?
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),
-      features: features is List<_i8.RaceFeatureData>?
+      features: features is List<_ib72xv5p.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,

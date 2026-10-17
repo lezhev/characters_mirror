@@ -31,6 +31,7 @@ void main() {
           void onLoad() => loadCount++;
 
           final container = ProviderContainer(
+            retry: (retryCount, error) => null,
             overrides: [
               classStateProvider.overrideWith(
                 () => _TestClassState(name == 'class' ? onLoad : null),
@@ -58,7 +59,7 @@ void main() {
           final router = GoRouter(
             initialLocation: '/create/$name',
             routes: [
-              GoRoute(path: '/create/$name', builder: (_, __) => page),
+              GoRoute(path: '/create/$name', builder: (_, _) => page),
             ],
           );
           addTearDown(router.dispose);
@@ -118,7 +119,7 @@ class _TestClassState extends ClassState {
   Future<ClassStateModel> build() async {
     if (onLoad == null) return const ClassStateModel();
     onLoad!();
-    throw const ServerpodClientException('Failed to fetch', 0);
+    throw const ServerpodClientNetworkException('Failed to fetch');
   }
 }
 
@@ -130,7 +131,7 @@ class _TestRaceState extends RaceState {
   @override
   Future<RaceStateModel> build() async {
     onLoad();
-    throw const ServerpodClientException('Failed to fetch', 0);
+    throw const ServerpodClientNetworkException('Failed to fetch');
   }
 }
 
@@ -142,6 +143,6 @@ class _TestBackgroundState extends BackgroundState {
   @override
   Future<BackgroundStateModel> build() async {
     onLoad();
-    throw const ServerpodClientException('Failed to fetch', 0);
+    throw const ServerpodClientNetworkException('Failed to fetch');
   }
 }

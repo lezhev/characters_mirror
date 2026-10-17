@@ -7,243 +7,259 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import 'package:serverpod/protocol.dart' as _i2;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
-import 'data/general/class/prepared_spell_rule_data.dart' as _i4;
-import 'data/background_data.dart' as _i5;
-import 'data/class_spell_grant_data.dart' as _i6;
-import 'data/damage_part_data.dart' as _i7;
-import 'data/feat_data.dart' as _i8;
-import 'data/general/character/character_applied_change_record.dart' as _i9;
-import 'data/general/character/character_armor_training_overrides_data.dart'
-    as _i10;
-import 'data/general/character/character_attack_data.dart' as _i11;
-import 'data/general/character/character_change_data.dart' as _i12;
-import 'data/general/character/character_choice_data.dart' as _i13;
-import 'data/general/character/character_choice_record.dart' as _i14;
-import 'data/general/character/character_class_entry_data.dart' as _i15;
-import 'data/general/character/character_class_entry_record.dart' as _i16;
-import 'data/general/character/character_data.dart' as _i17;
-import 'data/general/character/character_derived_data.dart' as _i18;
-import 'data/general/character/character_equipment_selection_data.dart' as _i19;
-import 'data/general/character/character_feature_override_data.dart' as _i20;
-import 'data/general/character/character_feature_view_data.dart' as _i21;
-import 'data/general/character/character_inventory_item_data.dart' as _i22;
-import 'data/general/character/character_language_overrides_data.dart' as _i23;
-import 'data/general/character/character_note_data.dart' as _i24;
-import 'data/general/character/character_record.dart' as _i25;
-import 'data/general/character/character_rejected_change_data.dart' as _i26;
-import 'data/general/character/character_resource_state_data.dart' as _i27;
-import 'data/general/character/character_resource_view_data.dart' as _i28;
-import 'data/general/character/character_saving_throw_proficiency_override_data.dart'
-    as _i29;
-import 'data/general/character/character_semantic_action_data.dart' as _i30;
-import 'data/general/character/character_skill_proficiency_state.dart' as _i31;
-import 'data/general/character/character_skill_selection_data.dart' as _i32;
-import 'data/general/character/character_skill_selection_record.dart' as _i33;
-import 'data/general/character/character_spell_selection_data.dart' as _i34;
-import 'data/general/character/character_spell_selection_record.dart' as _i35;
-import 'data/general/character/character_starting_equipment_resolution_data.dart'
-    as _i36;
-import 'data/general/character/character_starting_equipment_resolution_record.dart'
-    as _i37;
-import 'data/general/character/character_starting_equipment_selection_data.dart'
-    as _i38;
-import 'data/general/character/character_starting_equipment_selection_record.dart'
-    as _i39;
-import 'data/general/character/character_sync_event_record.dart' as _i40;
-import 'data/general/character/character_sync_operation_data.dart' as _i41;
-import 'data/general/character/character_sync_request.dart' as _i42;
-import 'data/general/character/character_sync_response.dart' as _i43;
-import 'data/general/character/character_sync_result.dart' as _i44;
-import 'data/general/character/character_sync_status.dart' as _i45;
-import 'data/general/character/character_sync_value_data.dart' as _i46;
-import 'data/general/character/character_tool_proficiency_overrides_data.dart'
-    as _i47;
-import 'data/general/character/character_weapon_proficiency_overrides_data.dart'
-    as _i48;
-import 'data/general/character/choice_replacement_history_data.dart' as _i49;
-import 'data/general/character/level_up_choice_replacement_data.dart' as _i50;
-import 'data/general/character/level_up_request.dart' as _i51;
-import 'data/general/character/level_up_spell_choice.dart' as _i52;
-import 'data/general/character/related_feature_view_data.dart' as _i53;
-import 'data/general/character/spell_selection_replacement_history_data.dart'
-    as _i54;
-import 'data/general/character/spell_slot_recovery_trigger_data.dart' as _i55;
-import 'data/general/choice_group_data.dart' as _i56;
-import 'data/general/choice_option_data.dart' as _i57;
-import 'data/general/choice_requirement_data.dart' as _i58;
-import 'data/general/class/class_data.dart' as _i59;
-import 'data/general/class/class_feature_data.dart' as _i60;
-import 'data/general/class/class_level_data.dart' as _i61;
-import 'auth/auth_action_result.dart' as _i62;
-import 'data/general/class/spell_slot_progression_data.dart' as _i63;
-import 'data/general/class/starting_equipment_block_data.dart' as _i64;
-import 'data/general/class/starting_equipment_entry_data.dart' as _i65;
-import 'data/general/class/starting_equipment_line_data.dart' as _i66;
-import 'data/general/class/starting_equipment_option_data.dart' as _i67;
-import 'data/general/class/subclass_data.dart' as _i68;
-import 'data/general/class/subclass_feature_data.dart' as _i69;
-import 'data/general/feature_display_property_data.dart' as _i70;
-import 'data/general/feature_modifier_condition_data.dart' as _i71;
-import 'data/general/feature_modifier_data.dart' as _i72;
-import 'data/general/feature_modifier_value_data.dart' as _i73;
-import 'data/general/feature_relation_data.dart' as _i74;
-import 'data/general/feature_resource_definition_data.dart' as _i75;
-import 'data/general/feature_resource_effect_data.dart' as _i76;
-import 'data/general/feature_resource_progression_value_data.dart' as _i77;
-import 'data/general/race/race_data.dart' as _i78;
-import 'data/general/race/race_feature_data.dart' as _i79;
-import 'data/general/race/race_feature_spell_grant_data.dart' as _i80;
-import 'data/general/race/subrace_data.dart' as _i81;
-import 'data/general/spell_activation_data.dart' as _i82;
-import 'data/general/spell_resource_upcast_policy_data.dart' as _i83;
-import 'data/general/spell_selection_filter_data.dart' as _i84;
-import 'data/general/spell_slot_recovery_policy_data.dart' as _i85;
-import 'data/general/tool_data.dart' as _i86;
-import 'data/items/armor_data.dart' as _i87;
-import 'data/items/item_data.dart' as _i88;
-import 'data/items/magic_item_data.dart' as _i89;
-import 'data/items/weapon_data.dart' as _i90;
-import 'data/spell_data.dart' as _i91;
-import 'data/spell_scaling_data.dart' as _i92;
-import 'dungeon_master/dm_creature_exception.dart' as _i93;
-import 'dungeon_master/dm_creature_import_result.dart' as _i94;
-import 'dungeon_master/dm_creature_record.dart' as _i95;
-import 'dungeon_master/dm_creature_summary.dart' as _i96;
-import 'enums/ability.dart' as _i97;
-import 'enums/armor_category.dart' as _i98;
-import 'enums/character_alignment.dart' as _i99;
-import 'enums/character_change_type.dart' as _i100;
-import 'enums/character_entity_type.dart' as _i101;
-import 'enums/character_feature_source_type.dart' as _i102;
-import 'enums/character_inventory_item_type.dart' as _i103;
-import 'enums/character_saving_throw_proficiency_override.dart' as _i104;
-import 'enums/character_skill_proficiency_level.dart' as _i105;
-import 'enums/character_skill_selection_kind.dart' as _i106;
-import 'enums/character_speed_kind.dart' as _i107;
-import 'enums/character_spell_selection_kind.dart' as _i108;
-import 'enums/character_sync_operation_type.dart' as _i109;
-import 'enums/character_sync_target_type.dart' as _i110;
-import 'enums/choice_requirement_type.dart' as _i111;
-import 'enums/choice_source_type.dart' as _i112;
-import 'enums/choice_type.dart' as _i113;
-import 'enums/class_spell_selection_mode.dart' as _i114;
-import 'enums/condition_type.dart' as _i115;
-import 'enums/creature_size.dart' as _i116;
-import 'enums/damage_type.dart' as _i117;
-import 'enums/equipment_catalog_type.dart' as _i118;
-import 'enums/feature_display_property_value_kind.dart' as _i119;
-import 'views/starting_equipment_option_view.dart' as _i120;
-import 'enums/feature_modifier_operation.dart' as _i121;
-import 'enums/feature_modifier_rounding.dart' as _i122;
-import 'enums/feature_modifier_target.dart' as _i123;
-import 'enums/feature_modifier_value_kind.dart' as _i124;
-import 'enums/feature_relation_type.dart' as _i125;
-import 'enums/feature_resource_effect_type.dart' as _i126;
-import 'enums/feature_resource_kind.dart' as _i127;
-import 'enums/feature_resource_max_rule.dart' as _i128;
-import 'enums/feature_resource_progression_key.dart' as _i129;
-import 'enums/feature_resource_target_type.dart' as _i130;
-import 'enums/feature_resource_trigger.dart' as _i131;
-import 'enums/feature_tag.dart' as _i132;
-import 'enums/hit_point_mode.dart' as _i133;
-import 'enums/language.dart' as _i134;
-import 'enums/prepared_spell_rounding.dart' as _i135;
-import 'enums/rest_type.dart' as _i136;
-import 'enums/sense_type.dart' as _i137;
-import 'enums/skill.dart' as _i138;
-import 'enums/spell/area_of_effect_type.dart' as _i139;
-import 'enums/spell/area_size_measurement.dart' as _i140;
-import 'enums/spell/spell_attack_type.dart' as _i141;
-import 'enums/spell/spell_duration_type.dart' as _i142;
-import 'enums/spell/spell_scaling_mode.dart' as _i143;
-import 'enums/spell/spell_school.dart' as _i144;
-import 'enums/spell/spell_target_type.dart' as _i145;
-import 'enums/spell_slot_recovery_mode.dart' as _i146;
-import 'enums/spellcasting_progression.dart' as _i147;
-import 'enums/starting_equipment_block_kind.dart' as _i148;
-import 'enums/starting_equipment_entry_kind.dart' as _i149;
-import 'enums/starting_equipment_line_kind.dart' as _i150;
-import 'enums/tool_category.dart' as _i151;
-import 'enums/unarmored_defense_rule.dart' as _i152;
-import 'enums/weapon_category.dart' as _i153;
-import 'enums/weapon_property.dart' as _i154;
-import 'requests/level_down_choice_repair.dart' as _i155;
-import 'requests/level_down_request.dart' as _i156;
-import 'views/background_step_view.dart' as _i157;
-import 'views/character_equipment_entry_view.dart' as _i158;
-import 'views/choice_group_view.dart' as _i159;
-import 'views/choice_option_eligibility_view.dart' as _i160;
-import 'views/choice_requirement_failure_view.dart' as _i161;
-import 'views/class_spell_delta_view.dart' as _i162;
-import 'views/class_spell_selection_group_view.dart' as _i163;
-import 'views/class_step_feature_view.dart' as _i164;
-import 'views/class_step_subclass_choice_view.dart' as _i165;
-import 'views/class_step_view.dart' as _i166;
-import 'views/feature_display_property_view.dart' as _i167;
-import 'views/level_down_invalid_choice_view.dart' as _i168;
-import 'views/level_down_preview.dart' as _i169;
-import 'views/level_up_preview.dart' as _i170;
-import 'views/proficiency_bundle_view.dart' as _i171;
-import 'views/race_step_view.dart' as _i172;
-import 'views/resolved_character_spell_data.dart' as _i173;
-import 'views/selected_feature_choice_view.dart' as _i174;
-import 'views/skill_selection_group_view.dart' as _i175;
-import 'views/spell_source_context_data.dart' as _i176;
-import 'views/starting_equipment_block_view.dart' as _i177;
-import 'enums/feature_modifier_condition_type.dart' as _i178;
-import 'package:characters_mirror_server/src/generated/dungeon_master/dm_creature_summary.dart'
-    as _i179;
 import 'package:characters_mirror_server/src/generated/data/background_data.dart'
-    as _i180;
-import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
-    as _i181;
-import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
-    as _i182;
-import 'package:characters_mirror_server/src/generated/data/general/choice_group_data.dart'
-    as _i183;
-import 'package:characters_mirror_server/src/generated/data/general/choice_option_data.dart'
-    as _i184;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
-    as _i185;
-import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
-    as _i186;
+    as _ini8luu6;
 import 'package:characters_mirror_server/src/generated/data/class_spell_grant_data.dart'
-    as _i187;
+    as _iwivgnzd;
+import 'package:characters_mirror_server/src/generated/data/feat_data.dart'
+    as _i77nrd14;
+import 'package:characters_mirror_server/src/generated/data/general/character/character_data.dart'
+    as _i7kkgt8y;
+import 'package:characters_mirror_server/src/generated/data/general/choice_group_data.dart'
+    as _ioxj5inc;
+import 'package:characters_mirror_server/src/generated/data/general/choice_option_data.dart'
+    as _iosenkkh;
+import 'package:characters_mirror_server/src/generated/data/general/class/class_data.dart'
+    as _iemrti6x;
+import 'package:characters_mirror_server/src/generated/data/general/class/class_feature_data.dart'
+    as _i77hkaes;
 import 'package:characters_mirror_server/src/generated/data/general/class/class_level_data.dart'
-    as _i188;
+    as _ivbho7q1;
 import 'package:characters_mirror_server/src/generated/data/general/class/spell_slot_progression_data.dart'
-    as _i189;
+    as _ig2i76sa;
 import 'package:characters_mirror_server/src/generated/data/general/class/subclass_data.dart'
-    as _i190;
+    as _ing7r6e2;
 import 'package:characters_mirror_server/src/generated/data/general/class/subclass_feature_data.dart'
-    as _i191;
+    as _ix0ni9v9;
 import 'package:characters_mirror_server/src/generated/data/general/feature_relation_data.dart'
-    as _i192;
+    as _iwsgy0dv;
 import 'package:characters_mirror_server/src/generated/data/general/race/race_data.dart'
-    as _i193;
+    as _iueyhinu;
 import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_data.dart'
-    as _i194;
-import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
-    as _i195;
+    as _ikrrnfpk;
 import 'package:characters_mirror_server/src/generated/data/general/race/race_feature_spell_grant_data.dart'
-    as _i196;
+    as _iwbrjjtm;
+import 'package:characters_mirror_server/src/generated/data/general/race/subrace_data.dart'
+    as _iasgt0sa;
 import 'package:characters_mirror_server/src/generated/data/general/tool_data.dart'
-    as _i197;
+    as _imen179o;
 import 'package:characters_mirror_server/src/generated/data/items/armor_data.dart'
-    as _i198;
+    as _if6xo2mf;
 import 'package:characters_mirror_server/src/generated/data/items/item_data.dart'
-    as _i199;
+    as _ilfoaqak;
 import 'package:characters_mirror_server/src/generated/data/items/magic_item_data.dart'
-    as _i200;
+    as _ihxnsrg8;
 import 'package:characters_mirror_server/src/generated/data/items/weapon_data.dart'
-    as _i201;
+    as _ixvqnkv0;
 import 'package:characters_mirror_server/src/generated/data/spell_data.dart'
-    as _i202;
+    as _iphj40lo;
+import 'package:characters_mirror_server/src/generated/dungeon_master/dm_creature_summary.dart'
+    as _ijv7obuo;
+import 'package:serverpod/protocol.dart' as _isp;
+import 'package:serverpod/serverpod.dart' as _is;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i1n3uhu0;
+import 'auth/auth_action_result.dart' as _iydli74w;
+import 'data/background_data.dart' as _i3katqli;
+import 'data/class_spell_grant_data.dart' as _i68we1de;
+import 'data/damage_part_data.dart' as _iqilpl6d;
+import 'data/feat_data.dart' as _i1l5wul2;
+import 'data/general/character/character_applied_change_record.dart'
+    as _iaskjtek;
+import 'data/general/character/character_armor_training_overrides_data.dart'
+    as _ijpj2a9u;
+import 'data/general/character/character_attack_data.dart' as _iykib7lv;
+import 'data/general/character/character_change_data.dart' as _ibkyvw07;
+import 'data/general/character/character_choice_data.dart' as _iwf32wta;
+import 'data/general/character/character_choice_record.dart' as _i1l3jk2d;
+import 'data/general/character/character_class_entry_data.dart' as _iqjjxby6;
+import 'data/general/character/character_class_entry_record.dart' as _i1goyn5n;
+import 'data/general/character/character_data.dart' as _im2o0tmj;
+import 'data/general/character/character_derived_data.dart' as _ir4negfy;
+import 'data/general/character/character_equipment_selection_data.dart'
+    as _i7jkadr4;
+import 'data/general/character/character_feature_override_data.dart'
+    as _iggvk3az;
+import 'data/general/character/character_feature_view_data.dart' as _imlxp0ix;
+import 'data/general/character/character_inventory_item_data.dart' as _id5dgxdg;
+import 'data/general/character/character_language_overrides_data.dart'
+    as _ibvj7xz5;
+import 'data/general/character/character_note_data.dart' as _iqjbme11;
+import 'data/general/character/character_record.dart' as _is140f48;
+import 'data/general/character/character_rejected_change_data.dart'
+    as _ig0fia1r;
+import 'data/general/character/character_resource_state_data.dart' as _iu6zjs5s;
+import 'data/general/character/character_resource_view_data.dart' as _io9jihae;
+import 'data/general/character/character_saving_throw_proficiency_override_data.dart'
+    as _i3yrtkjn;
+import 'data/general/character/character_semantic_action_data.dart'
+    as _ivfw6q0y;
+import 'data/general/character/character_skill_proficiency_state.dart'
+    as _isl5krdt;
+import 'data/general/character/character_skill_selection_data.dart'
+    as _itkzfry3;
+import 'data/general/character/character_skill_selection_record.dart'
+    as _ic0tmv5d;
+import 'data/general/character/character_spell_selection_data.dart'
+    as _iesndgzw;
+import 'data/general/character/character_spell_selection_record.dart'
+    as _icqki103;
+import 'data/general/character/character_starting_equipment_resolution_data.dart'
+    as _ieudcx2k;
+import 'data/general/character/character_starting_equipment_resolution_record.dart'
+    as _ipbr5hem;
+import 'data/general/character/character_starting_equipment_selection_data.dart'
+    as _ixmjb4z5;
+import 'data/general/character/character_starting_equipment_selection_record.dart'
+    as _ikk28htr;
+import 'data/general/character/character_sync_event_record.dart' as _i2rqx8lk;
+import 'data/general/character/character_sync_operation_data.dart' as _is9ng6da;
+import 'data/general/character/character_sync_request.dart' as _icxp0ddy;
+import 'data/general/character/character_sync_response.dart' as _i29bgu3e;
+import 'data/general/character/character_sync_result.dart' as _ix5qhw9w;
+import 'data/general/character/character_sync_status.dart' as _ixfhi6l8;
+import 'data/general/character/character_sync_value_data.dart' as _iz49jt9b;
+import 'data/general/character/character_tool_proficiency_overrides_data.dart'
+    as _idvpwngn;
+import 'data/general/character/character_weapon_proficiency_overrides_data.dart'
+    as _i5e0copu;
+import 'data/general/character/choice_replacement_history_data.dart'
+    as _i2mamrrk;
+import 'data/general/character/level_up_choice_replacement_data.dart'
+    as _iij0mpeo;
+import 'data/general/character/level_up_request.dart' as _ipxtly6g;
+import 'data/general/character/level_up_spell_choice.dart' as _i4b5l3un;
+import 'data/general/character/related_feature_view_data.dart' as _i0tavl9b;
+import 'data/general/character/spell_selection_replacement_history_data.dart'
+    as _it45kp8q;
+import 'data/general/character/spell_slot_recovery_trigger_data.dart'
+    as _i9cfge83;
+import 'data/general/choice_group_data.dart' as _i3zkka4q;
+import 'data/general/choice_option_data.dart' as _iprx2upt;
+import 'data/general/choice_requirement_data.dart' as _iax2s634;
+import 'data/general/class/class_data.dart' as _i4e8ker2;
+import 'data/general/class/class_feature_data.dart' as _ijvqpc4v;
+import 'data/general/class/class_level_data.dart' as _isxi9i4e;
+import 'data/general/class/prepared_spell_rule_data.dart' as _ihr52fes;
+import 'data/general/class/spell_slot_progression_data.dart' as _ig6b5pj2;
+import 'data/general/class/starting_equipment_block_data.dart' as _igasg47n;
+import 'data/general/class/starting_equipment_entry_data.dart' as _impna1yi;
+import 'data/general/class/starting_equipment_line_data.dart' as _iozcdomq;
+import 'data/general/class/starting_equipment_option_data.dart' as _iyz352zl;
+import 'data/general/class/subclass_data.dart' as _ijic8hve;
+import 'data/general/class/subclass_feature_data.dart' as _iel0dp9q;
+import 'data/general/feature_display_property_data.dart' as _i0aiwhe6;
+import 'data/general/feature_modifier_condition_data.dart' as _iwfr4tm0;
+import 'data/general/feature_modifier_data.dart' as _ilhpjxpt;
+import 'data/general/feature_modifier_value_data.dart' as _ircf4zmd;
+import 'data/general/feature_relation_data.dart' as _isecmqna;
+import 'data/general/feature_resource_definition_data.dart' as _iflv344v;
+import 'data/general/feature_resource_effect_data.dart' as _i86imp4g;
+import 'data/general/feature_resource_progression_value_data.dart' as _iafoerth;
+import 'data/general/race/race_data.dart' as _irh2914h;
+import 'data/general/race/race_feature_data.dart' as _imnymvhh;
+import 'data/general/race/race_feature_spell_grant_data.dart' as _ilhjydvh;
+import 'data/general/race/subrace_data.dart' as _iqoglfsm;
+import 'data/general/spell_activation_data.dart' as _idolx2sf;
+import 'data/general/spell_resource_upcast_policy_data.dart' as _i9erq8kp;
+import 'data/general/spell_selection_filter_data.dart' as _in2nv22i;
+import 'data/general/spell_slot_recovery_policy_data.dart' as _ipwf59gx;
+import 'data/general/tool_data.dart' as _ivjna1ls;
+import 'data/items/armor_data.dart' as _iv545qv3;
+import 'data/items/item_data.dart' as _ibuwh0hc;
+import 'data/items/magic_item_data.dart' as _i41tgptx;
+import 'data/items/weapon_data.dart' as _inpmmgks;
+import 'data/spell_data.dart' as _itvh88br;
+import 'data/spell_scaling_data.dart' as _iq5q0wh8;
+import 'dungeon_master/dm_creature_exception.dart' as _ivey3rvd;
+import 'dungeon_master/dm_creature_import_result.dart' as _i11aekbu;
+import 'dungeon_master/dm_creature_record.dart' as _ipuprlj7;
+import 'dungeon_master/dm_creature_summary.dart' as _idf6hpk3;
+import 'enums/ability.dart' as _i5rga0su;
+import 'enums/armor_category.dart' as _ix11b24x;
+import 'enums/character_alignment.dart' as _ik1o33an;
+import 'enums/character_change_type.dart' as _idqm1edw;
+import 'enums/character_entity_type.dart' as _icxxpsvd;
+import 'enums/character_feature_source_type.dart' as _i1fix3of;
+import 'enums/character_inventory_item_type.dart' as _ik9iz51c;
+import 'enums/character_saving_throw_proficiency_override.dart' as _ixbcln74;
+import 'enums/character_skill_proficiency_level.dart' as _ixj33h5c;
+import 'enums/character_skill_selection_kind.dart' as _i3ppfbzb;
+import 'enums/character_speed_kind.dart' as _ikyxycuo;
+import 'enums/character_spell_selection_kind.dart' as _ie0q5aqi;
+import 'enums/character_sync_operation_type.dart' as _i6jbrxie;
+import 'enums/character_sync_target_type.dart' as _ia4qs68v;
+import 'enums/choice_requirement_type.dart' as _ia6aulam;
+import 'enums/choice_source_type.dart' as _iam6xy91;
+import 'enums/choice_type.dart' as _iotu8r29;
+import 'enums/class_spell_selection_mode.dart' as _ijyz5fbs;
+import 'enums/condition_type.dart' as _ikb1pesi;
+import 'enums/creature_size.dart' as _i6cngs6w;
+import 'enums/damage_type.dart' as _i6q2t5mj;
+import 'enums/equipment_catalog_type.dart' as _ia851nk8;
+import 'enums/feature_display_property_value_kind.dart' as _i9idws3v;
+import 'enums/feature_modifier_condition_type.dart' as _ilgpxa54;
+import 'enums/feature_modifier_operation.dart' as _i56op7oq;
+import 'enums/feature_modifier_rounding.dart' as _i6asfa9j;
+import 'enums/feature_modifier_target.dart' as _izn79nb9;
+import 'enums/feature_modifier_value_kind.dart' as _il8rk55k;
+import 'enums/feature_relation_type.dart' as _ih812opj;
+import 'enums/feature_resource_effect_type.dart' as _ijb3cn5v;
+import 'enums/feature_resource_kind.dart' as _ia1vmwiq;
+import 'enums/feature_resource_max_rule.dart' as _ib4g5i7q;
+import 'enums/feature_resource_progression_key.dart' as _if07r66f;
+import 'enums/feature_resource_target_type.dart' as _iyk5jgys;
+import 'enums/feature_resource_trigger.dart' as _ir3q1cdf;
+import 'enums/feature_tag.dart' as _i2l7bpu3;
+import 'enums/hit_point_mode.dart' as _izodp5lk;
+import 'enums/language.dart' as _iftbsk4q;
+import 'enums/prepared_spell_rounding.dart' as _ieum0m7f;
+import 'enums/rest_type.dart' as _ibgbgp52;
+import 'enums/sense_type.dart' as _iy62ln0z;
+import 'enums/skill.dart' as _iabgjh08;
+import 'enums/spell/area_of_effect_type.dart' as _ieavm63l;
+import 'enums/spell/area_size_measurement.dart' as _iatx40hq;
+import 'enums/spell/spell_attack_type.dart' as _inf83u33;
+import 'enums/spell/spell_duration_type.dart' as _i9u2urpu;
+import 'enums/spell/spell_scaling_mode.dart' as _iw7hp9dc;
+import 'enums/spell/spell_school.dart' as _ioahu9w9;
+import 'enums/spell/spell_target_type.dart' as _iupu1e0e;
+import 'enums/spell_slot_recovery_mode.dart' as _ik43ztmo;
+import 'enums/spellcasting_progression.dart' as _ilfh4rku;
+import 'enums/starting_equipment_block_kind.dart' as _iag2d6aj;
+import 'enums/starting_equipment_entry_kind.dart' as _ipm8xyg1;
+import 'enums/starting_equipment_line_kind.dart' as _iniqanjc;
+import 'enums/tool_category.dart' as _ic2cpv54;
+import 'enums/unarmored_defense_rule.dart' as _i4vk4r4o;
+import 'enums/weapon_category.dart' as _iiyileog;
+import 'enums/weapon_property.dart' as _iur813s4;
+import 'requests/level_down_choice_repair.dart' as _i1l5m7qw;
+import 'requests/level_down_request.dart' as _irktv0ea;
+import 'views/background_step_view.dart' as _iqeghuxo;
+import 'views/character_equipment_entry_view.dart' as _isbrs5qf;
+import 'views/choice_group_view.dart' as _i6xbclit;
+import 'views/choice_option_eligibility_view.dart' as _iil6pw38;
+import 'views/choice_requirement_failure_view.dart' as _iob9tmlr;
+import 'views/class_spell_delta_view.dart' as _ik4ex2us;
+import 'views/class_spell_selection_group_view.dart' as _ixvig4n8;
+import 'views/class_step_feature_view.dart' as _ih120cff;
+import 'views/class_step_subclass_choice_view.dart' as _i3cyal5j;
+import 'views/class_step_view.dart' as _ib3duw15;
+import 'views/feature_display_property_view.dart' as _i9kpkyz2;
+import 'views/level_down_invalid_choice_view.dart' as _iu8i64vu;
+import 'views/level_down_preview.dart' as _ipbxh79i;
+import 'views/level_up_preview.dart' as _ipqjgw5e;
+import 'views/proficiency_bundle_view.dart' as _ifavv51o;
+import 'views/race_step_view.dart' as _id360bq3;
+import 'views/resolved_character_spell_data.dart' as _i8p2oglu;
+import 'views/selected_feature_choice_view.dart' as _im19jsv2;
+import 'views/skill_selection_group_view.dart' as _ihn36a1g;
+import 'views/spell_source_context_data.dart' as _iam7pkuu;
+import 'views/starting_equipment_block_view.dart' as _izjjz5hc;
+import 'views/starting_equipment_option_view.dart' as _i3vgjwh2;
 export 'auth/auth_action_result.dart';
 export 'data/background_data.dart';
 export 'data/class_spell_grant_data.dart';
@@ -420,147 +436,134 @@ export 'views/spell_source_context_data.dart';
 export 'views/starting_equipment_block_view.dart';
 export 'views/starting_equipment_option_view.dart';
 
-class Protocol extends _i1.SerializationManagerServer {
+class Protocol extends _is.DatabaseSerializationManager {
   Protocol._();
 
   factory Protocol() => _instance;
 
-  static final Protocol _instance = Protocol._();
+  static final Protocol _instance = Protocol._().._registerHostProtocols();
 
-  static final List<_i2.TableDefinition> targetTableDefinitions = [
-    _i2.TableDefinition(
+  static List<_isp.TableDefinition> get targetTableDefinitions => [
+    _isp.TableDefinition(
       name: 'armor_data',
       dartName: 'ArmorData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'armor_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'categoryValue',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ArmorCategory?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'baseAC',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'bonusAC',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'dexBonus',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'dexBonusMax',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'strengthRequirement',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'stealthDisadvantage',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'weight',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _isp.ColumnType.doublePrecision,
           isNullable: true,
           dartType: 'double?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'cost',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'armor_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'armor_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -569,216 +572,188 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'background_data',
       dartName: 'BackgroundData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'background_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'skillProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'availableSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'skillCount',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'toolProficiencyKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'languageCount',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'items',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'coins',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _isp.ColumnType.doublePrecision,
           isNullable: true,
           dartType: 'double?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'feature',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'suggestedPersonality',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'suggestedIdeal',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'suggestedBond',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'suggestedFlaw',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
       ],
       foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'background_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_applied_changes',
       dartName: 'CharacterAppliedChangeRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'character_applied_changes_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'changeId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'revision',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_applied_changes_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'character_applied_changes_user_change_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'userId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'changeId',
             ),
           ],
@@ -789,806 +764,704 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_choice_data',
       dartName: 'CharacterChoiceRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'character_choice_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'replacementHistory',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ChoiceReplacementHistoryData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classEntryId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'groupKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'optionKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionIndex',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_choice_data_fk_0',
           columns: ['characterId'],
           referenceTable: 'characters',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_choice_data_fk_1',
           columns: ['classEntryId'],
           referenceTable: 'character_class_relation',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_choice_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_class_relation',
       dartName: 'CharacterClassEntryRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'character_class_relation_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classDataId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'isStartingClass',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classOrder',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'hpMode',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:HitPointMode?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'hpRolledValues',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'notes',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_class_relation_fk_0',
           columns: ['characterId'],
           referenceTable: 'characters',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_class_relation_fk_1',
           columns: ['classDataId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_class_relation_fk_2',
           columns: ['subclassId'],
           referenceTable: 'subclass_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_class_relation_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_skill_selection_data',
       dartName: 'CharacterSkillSelectionRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'character_skill_selection_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classEntryId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classDataId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'backgroundDataId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'skill',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Skill?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'kind',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:CharacterSkillSelectionKind?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionIndex',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_skill_selection_data_fk_0',
           columns: ['characterId'],
           referenceTable: 'characters',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_skill_selection_data_fk_1',
           columns: ['classEntryId'],
           referenceTable: 'character_class_relation',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_skill_selection_data_fk_2',
           columns: ['classDataId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_skill_selection_data_fk_3',
           columns: ['backgroundDataId'],
           referenceTable: 'background_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_skill_selection_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_spell_selection_data',
       dartName: 'CharacterSpellSelectionRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'character_spell_selection_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classEntryId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classDataId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'kind',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:CharacterSpellSelectionKind?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionIndex',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionFilter',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellSelectionFilterData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionRuleLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionUnrestricted',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellReplacementHistory',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:SpellSelectionReplacementHistoryData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_spell_selection_data_fk_0',
           columns: ['characterId'],
           referenceTable: 'characters',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_spell_selection_data_fk_1',
           columns: ['classEntryId'],
           referenceTable: 'character_class_relation',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_spell_selection_data_fk_2',
           columns: ['classDataId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_spell_selection_data_fk_3',
           columns: ['spellId'],
           referenceTable: 'spell_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_spell_selection_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_starting_equipment_resolution_data',
       dartName: 'CharacterStartingEquipmentResolutionRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'character_starting_equipment_resolution_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceLineEntryId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'catalogType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:EquipmentCatalogType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'quantity',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_starting_equipment_resolution_data_fk_0',
           columns: ['selectionId'],
           referenceTable: 'character_starting_equipment_selection_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_starting_equipment_resolution_data_fk_1',
           columns: ['sourceLineEntryId'],
           referenceTable: 'starting_equipment_entry_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_starting_equipment_resolution_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_starting_equipment_selection_data',
       dartName: 'CharacterStartingEquipmentSelectionRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'character_starting_equipment_selection_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ChoiceSourceType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceEntryId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'choiceOptionEntryId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'isSelected',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionIndex',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_starting_equipment_selection_data_fk_0',
           columns: ['characterId'],
           referenceTable: 'characters',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_starting_equipment_selection_data_fk_1',
           columns: ['sourceEntryId'],
           referenceTable: 'starting_equipment_entry_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'character_starting_equipment_selection_data_fk_2',
           columns: ['choiceOptionEntryId'],
           referenceTable: 'starting_equipment_entry_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_starting_equipment_selection_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'character_sync_events',
       dartName: 'CharacterSyncEventRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'character_sync_events_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'characterVersion',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'eventType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'changeId',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'character_sync_events_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'character_sync_events_user_id_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'userId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'id',
             ),
           ],
@@ -1596,16 +1469,16 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'character_sync_events_character_id_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'userId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'characterId',
             ),
           ],
@@ -1616,782 +1489,755 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'characters',
       dartName: 'CharacterRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'characters_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellActivationUses',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'age',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'height',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'weight',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'eyes',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'skin',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'hair',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'appearance',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'backstory',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'goals',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'alliesOrganizations',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'personalityTraits',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'ideals',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'bonds',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'flaws',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'portraitVersion',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncTargetRevisions',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'syncBarrierTokens',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'experience',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'alignmentValue',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:CharacterAlignment?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'raceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subraceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'backgroundId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'baseAbilityScores',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'customAbilityBonuses',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'useFlexibleAbilityBonuses',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'temporaryHp',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'currentHp',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'deathSaveSuccesses',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'deathSaveFailures',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'hpPerLevelBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'hpFlatBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'currentHitDice',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'hitDiceMaxOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'currentSpellSlots',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<int,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'currentPactSlots',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<int,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'activeConcentrationSpellName',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'customInitiativeBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'customArmorClassBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'walkingSpeed',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'swimmingSpeed',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'climbingSpeed',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'flyingSpeed',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'displayedSpeedKind',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'protocol:CharacterSpeedKind?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'customSpellSaveDcBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'customSpellAttackBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'preparedSpellKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'activeConditions',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ConditionType>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'exhaustionLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'inspiration',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'equipment',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:CharacterInventoryItemData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'equippedArmor',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:CharacterEquipmentSelectionData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'equippedShield',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:CharacterEquipmentSelectionData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualSkillProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:CharacterSkillProficiencyState>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualSavingThrowProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Ability>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualSkillProficiencyOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:CharacterSkillProficiencyState>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualSavingThrowProficiencyOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType:
               'List<protocol:CharacterSavingThrowProficiencyOverrideData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualLanguageOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:CharacterLanguageOverridesData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualToolProficiencyOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:CharacterToolProficiencyOverridesData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualWeaponProficiencyOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:CharacterWeaponProficiencyOverridesData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'manualArmorTrainingOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:CharacterArmorTrainingOverridesData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'notes',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:CharacterNoteData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'attacks',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:CharacterAttackData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'featureOverrides',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:CharacterFeatureOverrideData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'resourceStates',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:CharacterResourceStateData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellRecoveryTriggers',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,protocol:SpellSlotRecoveryTriggerData>?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'characters_fk_0',
           columns: ['raceId'],
           referenceTable: 'race_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'characters_fk_1',
           columns: ['subraceId'],
           referenceTable: 'subrace_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'characters_fk_2',
           columns: ['backgroundId'],
           referenceTable: 'background_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'characters_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'choice_group_data',
       dartName: 'ChoiceGroupData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'choice_group_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'progressionKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'replacementsAllowed',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'replacementProgressionKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceClassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceSubclassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceSubclassFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceRaceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceSubraceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceRaceFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceBackgroundId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'type',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ChoiceType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionCount',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'minimumSelectionCount',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requirements',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ChoiceRequirementData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'autoSelectSingleEligible',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'appliesAtCharacterLevel',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'exclusiveKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'allowDuplicates',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sortOrder',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_0',
           columns: ['sourceClassId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_1',
           columns: ['sourceSubclassId'],
           referenceTable: 'subclass_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_2',
           columns: ['sourceFeatureId'],
           referenceTable: 'class_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_3',
           columns: ['sourceSubclassFeatureId'],
           referenceTable: 'subclass_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_4',
           columns: ['sourceRaceId'],
           referenceTable: 'race_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_5',
           columns: ['sourceSubraceId'],
           referenceTable: 'subrace_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_6',
           columns: ['sourceRaceFeatureId'],
           referenceTable: 'race_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_group_data_fk_7',
           columns: ['sourceBackgroundId'],
           referenceTable: 'background_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'choice_group_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'choice_group_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2400,224 +2246,211 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'choice_option_data',
       dartName: 'ChoiceOptionData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'choice_option_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'choiceGroupId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'optionKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'shortDescription',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'automaticSelection',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sortOrder',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedAbilityBonuses',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedExpertiseSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedLanguages',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Language>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedArmorTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ArmorCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedWeaponTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:WeaponCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedToolKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedExpertiseToolKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiredExistingSkill',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Skill?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiredExistingToolKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requirements',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ChoiceRequirementData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedSpellKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedFeatureTags',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:FeatureTag>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damageType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:DamageType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'areaOfEffectType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:AreaOfEffectType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'areaText',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damageByLevel',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'choice_option_data_fk_0',
           columns: ['choiceGroupId'],
           referenceTable: 'choice_group_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'choice_option_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'choice_option_group_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'choiceGroupId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'optionKey',
             ),
           ],
@@ -2628,210 +2461,197 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'class_data',
       dartName: 'ClassData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'class_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellSelectionFilter',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellSelectionFilterData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'hitDieValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'primaryAbilities',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Ability>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'savingThrowProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Ability>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'armorTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ArmorCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'weaponTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'toolTrainingKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'availableSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'skillCount',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassChoiceLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassChoiceFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellcastingProgression',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellcastingProgression?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellSelectionMode',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ClassSpellSelectionMode?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellcastingAbilityValue',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'multiclassPrerequisites',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'multiclassArmorTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ArmorCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'multiclassWeaponTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'multiclassToolTrainingKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'imageURL',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_data_fk_0',
           columns: ['subclassChoiceFeatureId'],
           referenceTable: 'class_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'class_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'class_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -2840,186 +2660,173 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'class_feature_data',
       dartName: 'ClassFeatureData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'class_feature_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'parentClassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'shortDescription',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'tags',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:FeatureTag>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'choiceGroupKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedLanguages',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Language>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedExpertiseSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedArmorTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ArmorCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedWeaponTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:WeaponCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedToolKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedExpertiseToolKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedSpellKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'unarmoredDefenseRule',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:UnarmoredDefenseRule?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'relatedTable',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_feature_data_fk_0',
           columns: ['parentClassId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'class_feature_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'class_feature_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -3028,450 +2835,409 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'class_level_data',
       dartName: 'ClassLevelData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'class_level_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classDataId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassDataId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'knownCantrips',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'knownSpells',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellbookSpells',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'knownSpellReplacements',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'preparedSpellRule',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:PreparedSpellRuleData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'preparedSpellFormula',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'resourceSummary',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'notes',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_level_data_fk_0',
           columns: ['classDataId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_level_data_fk_1',
           columns: ['subclassDataId'],
           referenceTable: 'subclass_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'class_level_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'class_spell_grant_data',
       dartName: 'ClassSpellGrantData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'class_spell_grant_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceClassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceSubclassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceSubclassFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedAtLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'activation',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellActivationData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'castingAbility',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'alwaysPrepared',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'choiceOptionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'notes',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_spell_grant_data_fk_0',
           columns: ['spellId'],
           referenceTable: 'spell_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_spell_grant_data_fk_1',
           columns: ['sourceClassId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_spell_grant_data_fk_2',
           columns: ['sourceSubclassId'],
           referenceTable: 'subclass_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_spell_grant_data_fk_3',
           columns: ['sourceFeatureId'],
           referenceTable: 'class_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_spell_grant_data_fk_4',
           columns: ['sourceSubclassFeatureId'],
           referenceTable: 'subclass_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'class_spell_grant_data_fk_5',
           columns: ['choiceOptionId'],
           referenceTable: 'choice_option_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'class_spell_grant_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'dm_creatures',
       dartName: 'DmCreatureRecord',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'dm_creatures_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'userId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceVersion',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'challengeRating',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'rawJson',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'normalizedJson',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'importHash',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'schemaVersion',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'dm_creatures_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'dm_creatures_user_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'userId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'dm_creatures_user_hash_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'userId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'importHash',
             ),
           ],
@@ -3482,249 +3248,221 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'feat_data',
       dartName: 'FeatData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'feat_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'abilityBonuses',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'traits',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'tags',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:FeatureTag>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'specialAbilities',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'proficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'prerequisites',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
       ],
       foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'feat_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'feature_display_property_data',
       dartName: 'FeatureDisplayPropertyData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'feature_display_property_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceClassFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceSubclassFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'key',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'label',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'valueKind',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:FeatureDisplayPropertyValueKind',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'staticValue',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'progression',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<int,String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'formula',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sortOrder',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_display_property_data_fk_0',
           columns: ['sourceClassFeatureId'],
           referenceTable: 'class_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_display_property_data_fk_1',
           columns: ['sourceSubclassFeatureId'],
           referenceTable: 'subclass_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'feature_display_property_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_display_property_class_feature_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceClassFeatureId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'key',
             ),
           ],
@@ -3732,16 +3470,16 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_display_property_subclass_feature_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceSubclassFeatureId',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'key',
             ),
           ],
@@ -3752,168 +3490,155 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'feature_modifier_data',
       dartName: 'FeatureModifierData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'feature_modifier_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'target',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'protocol:FeatureModifierTarget',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'operation',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'protocol:FeatureModifierOperation',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'value',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: false,
           dartType: 'protocol:FeatureModifierValueData',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'conditions',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:FeatureModifierConditionData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'minimumCastLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_modifier_data_fk_0',
           columns: ['classFeatureId'],
           referenceTable: 'class_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_modifier_data_fk_1',
           columns: ['subclassFeatureId'],
           referenceTable: 'subclass_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'feature_modifier_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_modifier_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_modifier_class_feature_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'classFeatureId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_modifier_subclass_feature_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'subclassFeatureId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -3922,117 +3647,104 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'feature_relation_data',
       dartName: 'FeatureRelationData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'feature_relation_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:CharacterFeatureSourceType',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceReferenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'targetType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:CharacterFeatureSourceType',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'targetReferenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'relationType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:FeatureRelationType',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'propertyMappings',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'priority',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'mergeDisplay',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'feature_relation_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_relation_source_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceType',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceReferenceKey',
             ),
           ],
@@ -4040,16 +3752,16 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_relation_target_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'targetType',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'targetReferenceKey',
             ),
           ],
@@ -4057,28 +3769,28 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'feature_relation_pair_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceType',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceReferenceKey',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'targetType',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'targetReferenceKey',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'relationType',
             ),
           ],
@@ -4089,541 +3801,483 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'feature_resource_definition_data',
       dartName: 'FeatureResourceDefinitionData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'feature_resource_definition_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'raceFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'key',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'choiceOptionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'kind',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:FeatureResourceKind',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'maxRule',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:FeatureResourceMaxRule',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'maxValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'maxAbility',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'resetOn',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RestType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'activationTrigger',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:FeatureResourceTrigger?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'usageResetOn',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RestType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'progressionKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:FeatureResourceProgressionKey?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'becomesUnlimitedAtLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_definition_data_fk_0',
           columns: ['classFeatureId'],
           referenceTable: 'class_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_definition_data_fk_1',
           columns: ['subclassFeatureId'],
           referenceTable: 'subclass_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_definition_data_fk_2',
           columns: ['raceFeatureId'],
           referenceTable: 'race_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_definition_data_fk_3',
           columns: ['choiceOptionId'],
           referenceTable: 'choice_option_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'feature_resource_definition_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'feature_resource_effect_data',
       dartName: 'FeatureResourceEffectData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'feature_resource_effect_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'classFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'raceFeatureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'type',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'protocol:FeatureResourceEffectType',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'choiceOptionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'targetType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:FeatureResourceTargetType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'targetResourceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'targetSourceType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:CharacterFeatureSourceType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'targetSourceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'amountRule',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:FeatureResourceMaxRule?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'amountValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'amountAbility',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'activationTrigger',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:FeatureResourceTrigger?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'usageResetOn',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RestType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'recoveryPolicy',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellSlotRecoveryPolicyData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'setResetOn',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RestType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'setMaxRule',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:FeatureResourceMaxRule?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'setMaxValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'setMaxAbility',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'addMaxValue',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'setUnlimited',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'becomesUnlimitedAtLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_effect_data_fk_0',
           columns: ['classFeatureId'],
           referenceTable: 'class_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_effect_data_fk_1',
           columns: ['subclassFeatureId'],
           referenceTable: 'subclass_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_effect_data_fk_2',
           columns: ['raceFeatureId'],
           referenceTable: 'race_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_effect_data_fk_3',
           columns: ['choiceOptionId'],
           referenceTable: 'choice_option_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'feature_resource_effect_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'feature_resource_progression_value_data',
       dartName: 'FeatureResourceProgressionValueData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'feature_resource_progression_value_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'resourceDefinitionId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'value',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'feature_resource_progression_value_data_fk_0',
           columns: ['resourceDefinitionId'],
           referenceTable: 'feature_resource_definition_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'feature_resource_progression_value_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'item_data',
       dartName: 'ItemData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'item_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'category',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'weight',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _isp.ColumnType.doublePrecision,
           isNullable: true,
           dartType: 'double?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'cost',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'effects',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'item_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'item_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -4632,133 +4286,120 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'magic_item_data',
       dartName: 'MagicItemData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'magic_item_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'rarity',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'type',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresAttunement',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'attunementCondition',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'bonus',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<String,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'charges',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'rechargeCondition',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'effects',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'magic_item_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'magic_item_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -4767,324 +4408,297 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'race_data',
       dartName: 'RaceData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'race_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'speed',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'size',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'protocol:CreatureSize?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'strengthBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'dexterityBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'constitutionBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'intelligenceBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'wisdomBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'charismaBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'traits',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'languages',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Language>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'visionType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SenseType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'visionRange',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'resistances',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:DamageType>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'skillProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'armorProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ArmorCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'weaponProficiencyKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'toolProficiencyKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'imageURL',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
       ],
       foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'race_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'race_feature_data',
       dartName: 'RaceFeatureData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'race_feature_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'raceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subraceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'shortDescription',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'usesPerRest',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RestType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'usesFormula',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'tags',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:FeatureTag>?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'race_feature_data_fk_0',
           columns: ['raceId'],
           referenceTable: 'race_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'race_feature_data_fk_1',
           columns: ['subraceId'],
           referenceTable: 'subrace_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'race_feature_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'race_feature_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -5093,451 +4707,423 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'race_feature_spell_grant_data',
       dartName: 'RaceFeatureSpellGrantData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'race_feature_spell_grant_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'featureId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedAtLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'activation',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellActivationData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'castingAbility',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'freeCastsPerRest',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:RestType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'freeCastsFormula',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'castAtSpellLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'canAlsoCastWithSpellSlots',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'notes',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'race_feature_spell_grant_data_fk_0',
           columns: ['featureId'],
           referenceTable: 'race_feature_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'race_feature_spell_grant_data_fk_1',
           columns: ['spellId'],
           referenceTable: 'spell_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'race_feature_spell_grant_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'spell_data',
       dartName: 'SpellData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'spell_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'shortDescription',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'schoolValue',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellSchool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'castingTime',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'range',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'duration',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'concentration',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'ritual',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'higherLevel',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'savingThrowAbility',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresSavingThrow',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'attackType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellAttackType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresAttackRoll',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damageType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:DamageType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damageDice',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damageScaling',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellScalingData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damageParts',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:DamagePartData>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'conditions',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ConditionType>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'targetType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellTargetType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'areaOfEffectType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:AreaOfEffectType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'areaOfEffectSize',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'areaOfEffectSizeKind',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:AreaSizeMeasurement?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'areaOfEffectSecondarySize',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'areaOfEffectHeight',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'materialDescription',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'materialCost',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'materialConsumed',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'durationType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellDurationType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'isHealing',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'healingDice',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'healingScaling',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellScalingData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'healingAddsCastingModifier',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresLineOfSight',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresVerbal',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresSomatic',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'requiresMaterial',
-          columnType: _i2.ColumnType.boolean,
+          columnType: _isp.ColumnType.boolean,
           isNullable: true,
           dartType: 'bool?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'availableForClassIds',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'availableForSubclassIds',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<int>?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'spell_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'spell_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -5546,88 +5132,74 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'spell_slot_progression_data',
       dartName: 'SpellSlotProgressionData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'spell_slot_progression_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'tableKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellSlots',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'Map<int,int>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'spell_slot_progression_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'spell_slot_progression_table_level_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'tableKey',
             ),
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'level',
             ),
           ],
@@ -5638,187 +5210,173 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'starting_equipment_entry_data',
       dartName: 'StartingEquipmentEntryData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault:
-              'nextval(\'starting_equipment_entry_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceClassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'sourceBackgroundId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'parentEntryId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'kind',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:StartingEquipmentEntryKind?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'orderIndex',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'selectionCount',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'lineKind',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:StartingEquipmentLineKind?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'quantity',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'catalogType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:EquipmentCatalogType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'allowedWeaponCategories',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:WeaponCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'allowedItemCategories',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'starting_equipment_entry_data_fk_0',
           columns: ['sourceClassId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'starting_equipment_entry_data_fk_1',
           columns: ['sourceBackgroundId'],
           referenceTable: 'background_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
         ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'starting_equipment_entry_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'starting_equipment_entry_class_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceClassId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'starting_equipment_entry_background_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'sourceBackgroundId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
           isPrimary: false,
         ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'starting_equipment_entry_parent_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'parentEntryId',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: false,
@@ -5827,150 +5385,137 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'subclass_data',
       dartName: 'SubclassData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'subclass_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellSelectionFilter',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'protocol:SpellSelectionFilterData?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'shortDescription',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'subclassName',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'parentClassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'levelRequired',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellcastingStartLevel',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellcastingProgression',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:SpellcastingProgression?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellSelectionMode',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:ClassSpellSelectionMode?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'spellcastingAbilityValue',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:Ability?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'subclass_data_fk_0',
           columns: ['parentClassId'],
           referenceTable: 'class_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'subclass_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'subclass_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -5979,180 +5524,167 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'subclass_feature_data',
       dartName: 'SubclassFeatureData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'subclass_feature_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'parentSubclassId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'shortDescription',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'level',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'tags',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:FeatureTag>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'choiceGroupKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedExpertiseSkills',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedLanguages',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Language>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedArmorTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ArmorCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedWeaponTraining',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:WeaponCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedToolKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedExpertiseToolKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'grantedSpellKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'relatedTable',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'subclass_feature_data_fk_0',
           columns: ['parentSubclassId'],
           referenceTable: 'subclass_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'subclass_feature_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'subclass_feature_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -6161,230 +5693,203 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'subrace_data',
       dartName: 'SubraceData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'subrace_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'parentRaceId',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'strengthBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'dexterityBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'constitutionBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'intelligenceBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'wisdomBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'charismaBonus',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'traits',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'speedOverride',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'visionRangeOverride',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'skillProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:Skill>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'resistances',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:DamageType>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'armorProficiencies',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:ArmorCategory>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'weaponProficiencyKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'toolProficiencyKeys',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<String>?',
         ),
       ],
       foreignKeys: [
-        _i2.ForeignKeyDefinition(
+        _isp.ForeignKeyDefinition(
           constraintName: 'subrace_data_fk_0',
           columns: ['parentRaceId'],
           referenceTable: 'race_data',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
       ],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'subrace_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
+      indexes: [],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'tool_data',
       dartName: 'ToolData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'tool_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'category',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'protocol:ToolCategory?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'tool_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'tool_data_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -6393,133 +5898,120 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    _i2.TableDefinition(
+    _isp.TableDefinition(
       name: 'weapon_data',
       dartName: 'WeaponData',
       schema: 'public',
       module: 'characters_mirror',
       columns: [
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'id',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'weapon_data_id_seq\'::regclass)',
+          columnDefault: 'serial',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'referenceKey',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'description',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'source',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'version',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'createdAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'updatedAt',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'category',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:WeaponCategory?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damage',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'damageType',
-          columnType: _i2.ColumnType.text,
+          columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'protocol:DamageType?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'properties',
-          columnType: _i2.ColumnType.json,
+          columnType: _isp.ColumnType.json,
           isNullable: true,
           dartType: 'List<protocol:WeaponProperty>?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'weight',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _isp.ColumnType.doublePrecision,
           isNullable: true,
           dartType: 'double?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'cost',
-          columnType: _i2.ColumnType.doublePrecision,
+          columnType: _isp.ColumnType.doublePrecision,
           isNullable: true,
           dartType: 'double?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'rangeNormal',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
-        _i2.ColumnDefinition(
+        _isp.ColumnDefinition(
           name: 'rangeMax',
-          columnType: _i2.ColumnType.bigint,
+          columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
         ),
       ],
       foreignKeys: [],
       indexes: [
-        _i2.IndexDefinition(
-          indexName: 'weapon_data_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
+        _isp.IndexDefinition(
           indexName: 'weapon_reference_key_idx',
           tableSpace: null,
           elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'referenceKey',
-            )
+            ),
           ],
           type: 'btree',
           isUnique: true,
@@ -6528,3691 +6020,3582 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
-    ..._i3.Protocol.targetTableDefinitions,
-    ..._i2.Protocol.targetTableDefinitions,
+    ..._i1n3uhu0.Protocol.targetTableDefinitions,
+    ..._isp.Protocol.targetTableDefinitions,
   ];
 
+  static String? getClassNameFromObjectJson(dynamic data) {
+    if (data is! Map) return null;
+    final className = data['__className__'] as String?;
+    return className;
+  }
+
   @override
-  T deserialize<T>(
-    dynamic data, [
-    Type? t,
-  ]) {
+  T deserialize<T>(dynamic data, [Type? t]) {
     t ??= T;
-    if (t == _i4.PreparedSpellRuleData) {
-      return _i4.PreparedSpellRuleData.fromJson(data) as T;
+
+    final dataClassName = getClassNameFromObjectJson(data);
+    if (dataClassName != null && dataClassName != getClassNameForType(t)) {
+      try {
+        return deserializeByClassName({
+          'className': dataClassName,
+          'data': data,
+        });
+      } on _is.DeserializationClassNameNotFoundException catch (_) {
+        // If the className is not recognized (e.g., older client receiving
+        // data with a new subtype), fall back to deserializing without the
+        // className, using the expected type T.
+      }
     }
-    if (t == _i5.BackgroundData) {
-      return _i5.BackgroundData.fromJson(data) as T;
+
+    if (t == _iydli74w.AuthActionResult) {
+      return _iydli74w.AuthActionResult.fromJson(data) as T;
     }
-    if (t == _i6.ClassSpellGrantData) {
-      return _i6.ClassSpellGrantData.fromJson(data) as T;
+    if (t == _i3katqli.BackgroundData) {
+      return _i3katqli.BackgroundData.fromJson(data) as T;
     }
-    if (t == _i7.DamagePartData) {
-      return _i7.DamagePartData.fromJson(data) as T;
+    if (t == _i68we1de.ClassSpellGrantData) {
+      return _i68we1de.ClassSpellGrantData.fromJson(data) as T;
     }
-    if (t == _i8.FeatData) {
-      return _i8.FeatData.fromJson(data) as T;
+    if (t == _iqilpl6d.DamagePartData) {
+      return _iqilpl6d.DamagePartData.fromJson(data) as T;
     }
-    if (t == _i9.CharacterAppliedChangeRecord) {
-      return _i9.CharacterAppliedChangeRecord.fromJson(data) as T;
+    if (t == _i1l5wul2.FeatData) {
+      return _i1l5wul2.FeatData.fromJson(data) as T;
     }
-    if (t == _i10.CharacterArmorTrainingOverridesData) {
-      return _i10.CharacterArmorTrainingOverridesData.fromJson(data) as T;
+    if (t == _iaskjtek.CharacterAppliedChangeRecord) {
+      return _iaskjtek.CharacterAppliedChangeRecord.fromJson(data) as T;
     }
-    if (t == _i11.CharacterAttackData) {
-      return _i11.CharacterAttackData.fromJson(data) as T;
+    if (t == _ijpj2a9u.CharacterArmorTrainingOverridesData) {
+      return _ijpj2a9u.CharacterArmorTrainingOverridesData.fromJson(data) as T;
     }
-    if (t == _i12.CharacterChangeData) {
-      return _i12.CharacterChangeData.fromJson(data) as T;
+    if (t == _iykib7lv.CharacterAttackData) {
+      return _iykib7lv.CharacterAttackData.fromJson(data) as T;
     }
-    if (t == _i13.CharacterChoiceData) {
-      return _i13.CharacterChoiceData.fromJson(data) as T;
+    if (t == _ibkyvw07.CharacterChangeData) {
+      return _ibkyvw07.CharacterChangeData.fromJson(data) as T;
     }
-    if (t == _i14.CharacterChoiceRecord) {
-      return _i14.CharacterChoiceRecord.fromJson(data) as T;
+    if (t == _iwf32wta.CharacterChoiceData) {
+      return _iwf32wta.CharacterChoiceData.fromJson(data) as T;
     }
-    if (t == _i15.CharacterClassEntryData) {
-      return _i15.CharacterClassEntryData.fromJson(data) as T;
+    if (t == _i1l3jk2d.CharacterChoiceRecord) {
+      return _i1l3jk2d.CharacterChoiceRecord.fromJson(data) as T;
     }
-    if (t == _i16.CharacterClassEntryRecord) {
-      return _i16.CharacterClassEntryRecord.fromJson(data) as T;
+    if (t == _iqjjxby6.CharacterClassEntryData) {
+      return _iqjjxby6.CharacterClassEntryData.fromJson(data) as T;
     }
-    if (t == _i17.CharacterData) {
-      return _i17.CharacterData.fromJson(data) as T;
+    if (t == _i1goyn5n.CharacterClassEntryRecord) {
+      return _i1goyn5n.CharacterClassEntryRecord.fromJson(data) as T;
     }
-    if (t == _i18.CharacterDerivedData) {
-      return _i18.CharacterDerivedData.fromJson(data) as T;
+    if (t == _im2o0tmj.CharacterData) {
+      return _im2o0tmj.CharacterData.fromJson(data) as T;
     }
-    if (t == _i19.CharacterEquipmentSelectionData) {
-      return _i19.CharacterEquipmentSelectionData.fromJson(data) as T;
+    if (t == _ir4negfy.CharacterDerivedData) {
+      return _ir4negfy.CharacterDerivedData.fromJson(data) as T;
     }
-    if (t == _i20.CharacterFeatureOverrideData) {
-      return _i20.CharacterFeatureOverrideData.fromJson(data) as T;
+    if (t == _i7jkadr4.CharacterEquipmentSelectionData) {
+      return _i7jkadr4.CharacterEquipmentSelectionData.fromJson(data) as T;
     }
-    if (t == _i21.CharacterFeatureViewData) {
-      return _i21.CharacterFeatureViewData.fromJson(data) as T;
+    if (t == _iggvk3az.CharacterFeatureOverrideData) {
+      return _iggvk3az.CharacterFeatureOverrideData.fromJson(data) as T;
     }
-    if (t == _i22.CharacterInventoryItemData) {
-      return _i22.CharacterInventoryItemData.fromJson(data) as T;
+    if (t == _imlxp0ix.CharacterFeatureViewData) {
+      return _imlxp0ix.CharacterFeatureViewData.fromJson(data) as T;
     }
-    if (t == _i23.CharacterLanguageOverridesData) {
-      return _i23.CharacterLanguageOverridesData.fromJson(data) as T;
+    if (t == _id5dgxdg.CharacterInventoryItemData) {
+      return _id5dgxdg.CharacterInventoryItemData.fromJson(data) as T;
     }
-    if (t == _i24.CharacterNoteData) {
-      return _i24.CharacterNoteData.fromJson(data) as T;
+    if (t == _ibvj7xz5.CharacterLanguageOverridesData) {
+      return _ibvj7xz5.CharacterLanguageOverridesData.fromJson(data) as T;
     }
-    if (t == _i25.CharacterRecord) {
-      return _i25.CharacterRecord.fromJson(data) as T;
+    if (t == _iqjbme11.CharacterNoteData) {
+      return _iqjbme11.CharacterNoteData.fromJson(data) as T;
     }
-    if (t == _i26.CharacterRejectedChangeData) {
-      return _i26.CharacterRejectedChangeData.fromJson(data) as T;
+    if (t == _is140f48.CharacterRecord) {
+      return _is140f48.CharacterRecord.fromJson(data) as T;
     }
-    if (t == _i27.CharacterResourceStateData) {
-      return _i27.CharacterResourceStateData.fromJson(data) as T;
+    if (t == _ig0fia1r.CharacterRejectedChangeData) {
+      return _ig0fia1r.CharacterRejectedChangeData.fromJson(data) as T;
     }
-    if (t == _i28.CharacterResourceViewData) {
-      return _i28.CharacterResourceViewData.fromJson(data) as T;
+    if (t == _iu6zjs5s.CharacterResourceStateData) {
+      return _iu6zjs5s.CharacterResourceStateData.fromJson(data) as T;
     }
-    if (t == _i29.CharacterSavingThrowProficiencyOverrideData) {
-      return _i29.CharacterSavingThrowProficiencyOverrideData.fromJson(data)
+    if (t == _io9jihae.CharacterResourceViewData) {
+      return _io9jihae.CharacterResourceViewData.fromJson(data) as T;
+    }
+    if (t == _i3yrtkjn.CharacterSavingThrowProficiencyOverrideData) {
+      return _i3yrtkjn.CharacterSavingThrowProficiencyOverrideData.fromJson(
+            data,
+          )
           as T;
     }
-    if (t == _i30.CharacterSemanticActionData) {
-      return _i30.CharacterSemanticActionData.fromJson(data) as T;
+    if (t == _ivfw6q0y.CharacterSemanticActionData) {
+      return _ivfw6q0y.CharacterSemanticActionData.fromJson(data) as T;
     }
-    if (t == _i31.CharacterSkillProficiencyState) {
-      return _i31.CharacterSkillProficiencyState.fromJson(data) as T;
+    if (t == _isl5krdt.CharacterSkillProficiencyState) {
+      return _isl5krdt.CharacterSkillProficiencyState.fromJson(data) as T;
     }
-    if (t == _i32.CharacterSkillSelectionData) {
-      return _i32.CharacterSkillSelectionData.fromJson(data) as T;
+    if (t == _itkzfry3.CharacterSkillSelectionData) {
+      return _itkzfry3.CharacterSkillSelectionData.fromJson(data) as T;
     }
-    if (t == _i33.CharacterSkillSelectionRecord) {
-      return _i33.CharacterSkillSelectionRecord.fromJson(data) as T;
+    if (t == _ic0tmv5d.CharacterSkillSelectionRecord) {
+      return _ic0tmv5d.CharacterSkillSelectionRecord.fromJson(data) as T;
     }
-    if (t == _i34.CharacterSpellSelectionData) {
-      return _i34.CharacterSpellSelectionData.fromJson(data) as T;
+    if (t == _iesndgzw.CharacterSpellSelectionData) {
+      return _iesndgzw.CharacterSpellSelectionData.fromJson(data) as T;
     }
-    if (t == _i35.CharacterSpellSelectionRecord) {
-      return _i35.CharacterSpellSelectionRecord.fromJson(data) as T;
+    if (t == _icqki103.CharacterSpellSelectionRecord) {
+      return _icqki103.CharacterSpellSelectionRecord.fromJson(data) as T;
     }
-    if (t == _i36.CharacterStartingEquipmentResolutionData) {
-      return _i36.CharacterStartingEquipmentResolutionData.fromJson(data) as T;
-    }
-    if (t == _i37.CharacterStartingEquipmentResolutionRecord) {
-      return _i37.CharacterStartingEquipmentResolutionRecord.fromJson(data)
+    if (t == _ieudcx2k.CharacterStartingEquipmentResolutionData) {
+      return _ieudcx2k.CharacterStartingEquipmentResolutionData.fromJson(data)
           as T;
     }
-    if (t == _i38.CharacterStartingEquipmentSelectionData) {
-      return _i38.CharacterStartingEquipmentSelectionData.fromJson(data) as T;
-    }
-    if (t == _i39.CharacterStartingEquipmentSelectionRecord) {
-      return _i39.CharacterStartingEquipmentSelectionRecord.fromJson(data) as T;
-    }
-    if (t == _i40.CharacterSyncEventRecord) {
-      return _i40.CharacterSyncEventRecord.fromJson(data) as T;
-    }
-    if (t == _i41.CharacterSyncOperationData) {
-      return _i41.CharacterSyncOperationData.fromJson(data) as T;
-    }
-    if (t == _i42.CharacterSyncRequest) {
-      return _i42.CharacterSyncRequest.fromJson(data) as T;
-    }
-    if (t == _i43.CharacterSyncResponse) {
-      return _i43.CharacterSyncResponse.fromJson(data) as T;
-    }
-    if (t == _i44.CharacterSyncResult) {
-      return _i44.CharacterSyncResult.fromJson(data) as T;
-    }
-    if (t == _i45.CharacterSyncStatus) {
-      return _i45.CharacterSyncStatus.fromJson(data) as T;
-    }
-    if (t == _i46.CharacterSyncValueData) {
-      return _i46.CharacterSyncValueData.fromJson(data) as T;
-    }
-    if (t == _i47.CharacterToolProficiencyOverridesData) {
-      return _i47.CharacterToolProficiencyOverridesData.fromJson(data) as T;
-    }
-    if (t == _i48.CharacterWeaponProficiencyOverridesData) {
-      return _i48.CharacterWeaponProficiencyOverridesData.fromJson(data) as T;
-    }
-    if (t == _i49.ChoiceReplacementHistoryData) {
-      return _i49.ChoiceReplacementHistoryData.fromJson(data) as T;
-    }
-    if (t == _i50.LevelUpChoiceReplacementData) {
-      return _i50.LevelUpChoiceReplacementData.fromJson(data) as T;
-    }
-    if (t == _i51.LevelUpRequest) {
-      return _i51.LevelUpRequest.fromJson(data) as T;
-    }
-    if (t == _i52.LevelUpSpellChoice) {
-      return _i52.LevelUpSpellChoice.fromJson(data) as T;
-    }
-    if (t == _i53.RelatedFeatureViewData) {
-      return _i53.RelatedFeatureViewData.fromJson(data) as T;
-    }
-    if (t == _i54.SpellSelectionReplacementHistoryData) {
-      return _i54.SpellSelectionReplacementHistoryData.fromJson(data) as T;
-    }
-    if (t == _i55.SpellSlotRecoveryTriggerData) {
-      return _i55.SpellSlotRecoveryTriggerData.fromJson(data) as T;
-    }
-    if (t == _i56.ChoiceGroupData) {
-      return _i56.ChoiceGroupData.fromJson(data) as T;
-    }
-    if (t == _i57.ChoiceOptionData) {
-      return _i57.ChoiceOptionData.fromJson(data) as T;
-    }
-    if (t == _i58.ChoiceRequirementData) {
-      return _i58.ChoiceRequirementData.fromJson(data) as T;
-    }
-    if (t == _i59.ClassData) {
-      return _i59.ClassData.fromJson(data) as T;
-    }
-    if (t == _i60.ClassFeatureData) {
-      return _i60.ClassFeatureData.fromJson(data) as T;
-    }
-    if (t == _i61.ClassLevelData) {
-      return _i61.ClassLevelData.fromJson(data) as T;
-    }
-    if (t == _i62.AuthActionResult) {
-      return _i62.AuthActionResult.fromJson(data) as T;
-    }
-    if (t == _i63.SpellSlotProgressionData) {
-      return _i63.SpellSlotProgressionData.fromJson(data) as T;
-    }
-    if (t == _i64.StartingEquipmentBlockData) {
-      return _i64.StartingEquipmentBlockData.fromJson(data) as T;
-    }
-    if (t == _i65.StartingEquipmentEntryData) {
-      return _i65.StartingEquipmentEntryData.fromJson(data) as T;
-    }
-    if (t == _i66.StartingEquipmentLineData) {
-      return _i66.StartingEquipmentLineData.fromJson(data) as T;
-    }
-    if (t == _i67.StartingEquipmentOptionData) {
-      return _i67.StartingEquipmentOptionData.fromJson(data) as T;
-    }
-    if (t == _i68.SubclassData) {
-      return _i68.SubclassData.fromJson(data) as T;
-    }
-    if (t == _i69.SubclassFeatureData) {
-      return _i69.SubclassFeatureData.fromJson(data) as T;
-    }
-    if (t == _i70.FeatureDisplayPropertyData) {
-      return _i70.FeatureDisplayPropertyData.fromJson(data) as T;
-    }
-    if (t == _i71.FeatureModifierConditionData) {
-      return _i71.FeatureModifierConditionData.fromJson(data) as T;
-    }
-    if (t == _i72.FeatureModifierData) {
-      return _i72.FeatureModifierData.fromJson(data) as T;
-    }
-    if (t == _i73.FeatureModifierValueData) {
-      return _i73.FeatureModifierValueData.fromJson(data) as T;
-    }
-    if (t == _i74.FeatureRelationData) {
-      return _i74.FeatureRelationData.fromJson(data) as T;
-    }
-    if (t == _i75.FeatureResourceDefinitionData) {
-      return _i75.FeatureResourceDefinitionData.fromJson(data) as T;
-    }
-    if (t == _i76.FeatureResourceEffectData) {
-      return _i76.FeatureResourceEffectData.fromJson(data) as T;
-    }
-    if (t == _i77.FeatureResourceProgressionValueData) {
-      return _i77.FeatureResourceProgressionValueData.fromJson(data) as T;
-    }
-    if (t == _i78.RaceData) {
-      return _i78.RaceData.fromJson(data) as T;
-    }
-    if (t == _i79.RaceFeatureData) {
-      return _i79.RaceFeatureData.fromJson(data) as T;
-    }
-    if (t == _i80.RaceFeatureSpellGrantData) {
-      return _i80.RaceFeatureSpellGrantData.fromJson(data) as T;
-    }
-    if (t == _i81.SubraceData) {
-      return _i81.SubraceData.fromJson(data) as T;
-    }
-    if (t == _i82.SpellActivationData) {
-      return _i82.SpellActivationData.fromJson(data) as T;
-    }
-    if (t == _i83.SpellResourceUpcastPolicyData) {
-      return _i83.SpellResourceUpcastPolicyData.fromJson(data) as T;
-    }
-    if (t == _i84.SpellSelectionFilterData) {
-      return _i84.SpellSelectionFilterData.fromJson(data) as T;
-    }
-    if (t == _i85.SpellSlotRecoveryPolicyData) {
-      return _i85.SpellSlotRecoveryPolicyData.fromJson(data) as T;
-    }
-    if (t == _i86.ToolData) {
-      return _i86.ToolData.fromJson(data) as T;
-    }
-    if (t == _i87.ArmorData) {
-      return _i87.ArmorData.fromJson(data) as T;
-    }
-    if (t == _i88.ItemData) {
-      return _i88.ItemData.fromJson(data) as T;
-    }
-    if (t == _i89.MagicItemData) {
-      return _i89.MagicItemData.fromJson(data) as T;
-    }
-    if (t == _i90.WeaponData) {
-      return _i90.WeaponData.fromJson(data) as T;
-    }
-    if (t == _i91.SpellData) {
-      return _i91.SpellData.fromJson(data) as T;
-    }
-    if (t == _i92.SpellScalingData) {
-      return _i92.SpellScalingData.fromJson(data) as T;
-    }
-    if (t == _i93.DmCreatureException) {
-      return _i93.DmCreatureException.fromJson(data) as T;
-    }
-    if (t == _i94.DmCreatureImportResult) {
-      return _i94.DmCreatureImportResult.fromJson(data) as T;
-    }
-    if (t == _i95.DmCreatureRecord) {
-      return _i95.DmCreatureRecord.fromJson(data) as T;
-    }
-    if (t == _i96.DmCreatureSummary) {
-      return _i96.DmCreatureSummary.fromJson(data) as T;
-    }
-    if (t == _i97.Ability) {
-      return _i97.Ability.fromJson(data) as T;
-    }
-    if (t == _i98.ArmorCategory) {
-      return _i98.ArmorCategory.fromJson(data) as T;
-    }
-    if (t == _i99.CharacterAlignment) {
-      return _i99.CharacterAlignment.fromJson(data) as T;
-    }
-    if (t == _i100.CharacterChangeType) {
-      return _i100.CharacterChangeType.fromJson(data) as T;
-    }
-    if (t == _i101.CharacterEntityType) {
-      return _i101.CharacterEntityType.fromJson(data) as T;
-    }
-    if (t == _i102.CharacterFeatureSourceType) {
-      return _i102.CharacterFeatureSourceType.fromJson(data) as T;
-    }
-    if (t == _i103.CharacterInventoryItemType) {
-      return _i103.CharacterInventoryItemType.fromJson(data) as T;
-    }
-    if (t == _i104.CharacterSavingThrowProficiencyOverride) {
-      return _i104.CharacterSavingThrowProficiencyOverride.fromJson(data) as T;
-    }
-    if (t == _i105.CharacterSkillProficiencyLevel) {
-      return _i105.CharacterSkillProficiencyLevel.fromJson(data) as T;
-    }
-    if (t == _i106.CharacterSkillSelectionKind) {
-      return _i106.CharacterSkillSelectionKind.fromJson(data) as T;
-    }
-    if (t == _i107.CharacterSpeedKind) {
-      return _i107.CharacterSpeedKind.fromJson(data) as T;
-    }
-    if (t == _i108.CharacterSpellSelectionKind) {
-      return _i108.CharacterSpellSelectionKind.fromJson(data) as T;
-    }
-    if (t == _i109.CharacterSyncOperationType) {
-      return _i109.CharacterSyncOperationType.fromJson(data) as T;
-    }
-    if (t == _i110.CharacterSyncTargetType) {
-      return _i110.CharacterSyncTargetType.fromJson(data) as T;
-    }
-    if (t == _i111.ChoiceRequirementType) {
-      return _i111.ChoiceRequirementType.fromJson(data) as T;
-    }
-    if (t == _i112.ChoiceSourceType) {
-      return _i112.ChoiceSourceType.fromJson(data) as T;
-    }
-    if (t == _i113.ChoiceType) {
-      return _i113.ChoiceType.fromJson(data) as T;
-    }
-    if (t == _i114.ClassSpellSelectionMode) {
-      return _i114.ClassSpellSelectionMode.fromJson(data) as T;
-    }
-    if (t == _i115.ConditionType) {
-      return _i115.ConditionType.fromJson(data) as T;
-    }
-    if (t == _i116.CreatureSize) {
-      return _i116.CreatureSize.fromJson(data) as T;
-    }
-    if (t == _i117.DamageType) {
-      return _i117.DamageType.fromJson(data) as T;
-    }
-    if (t == _i118.EquipmentCatalogType) {
-      return _i118.EquipmentCatalogType.fromJson(data) as T;
-    }
-    if (t == _i119.FeatureDisplayPropertyValueKind) {
-      return _i119.FeatureDisplayPropertyValueKind.fromJson(data) as T;
-    }
-    if (t == _i120.StartingEquipmentOptionView) {
-      return _i120.StartingEquipmentOptionView.fromJson(data) as T;
-    }
-    if (t == _i121.FeatureModifierOperation) {
-      return _i121.FeatureModifierOperation.fromJson(data) as T;
-    }
-    if (t == _i122.FeatureModifierRounding) {
-      return _i122.FeatureModifierRounding.fromJson(data) as T;
-    }
-    if (t == _i123.FeatureModifierTarget) {
-      return _i123.FeatureModifierTarget.fromJson(data) as T;
-    }
-    if (t == _i124.FeatureModifierValueKind) {
-      return _i124.FeatureModifierValueKind.fromJson(data) as T;
-    }
-    if (t == _i125.FeatureRelationType) {
-      return _i125.FeatureRelationType.fromJson(data) as T;
-    }
-    if (t == _i126.FeatureResourceEffectType) {
-      return _i126.FeatureResourceEffectType.fromJson(data) as T;
-    }
-    if (t == _i127.FeatureResourceKind) {
-      return _i127.FeatureResourceKind.fromJson(data) as T;
-    }
-    if (t == _i128.FeatureResourceMaxRule) {
-      return _i128.FeatureResourceMaxRule.fromJson(data) as T;
-    }
-    if (t == _i129.FeatureResourceProgressionKey) {
-      return _i129.FeatureResourceProgressionKey.fromJson(data) as T;
-    }
-    if (t == _i130.FeatureResourceTargetType) {
-      return _i130.FeatureResourceTargetType.fromJson(data) as T;
-    }
-    if (t == _i131.FeatureResourceTrigger) {
-      return _i131.FeatureResourceTrigger.fromJson(data) as T;
-    }
-    if (t == _i132.FeatureTag) {
-      return _i132.FeatureTag.fromJson(data) as T;
-    }
-    if (t == _i133.HitPointMode) {
-      return _i133.HitPointMode.fromJson(data) as T;
-    }
-    if (t == _i134.Language) {
-      return _i134.Language.fromJson(data) as T;
-    }
-    if (t == _i135.PreparedSpellRounding) {
-      return _i135.PreparedSpellRounding.fromJson(data) as T;
-    }
-    if (t == _i136.RestType) {
-      return _i136.RestType.fromJson(data) as T;
-    }
-    if (t == _i137.SenseType) {
-      return _i137.SenseType.fromJson(data) as T;
-    }
-    if (t == _i138.Skill) {
-      return _i138.Skill.fromJson(data) as T;
-    }
-    if (t == _i139.AreaOfEffectType) {
-      return _i139.AreaOfEffectType.fromJson(data) as T;
-    }
-    if (t == _i140.AreaSizeMeasurement) {
-      return _i140.AreaSizeMeasurement.fromJson(data) as T;
-    }
-    if (t == _i141.SpellAttackType) {
-      return _i141.SpellAttackType.fromJson(data) as T;
-    }
-    if (t == _i142.SpellDurationType) {
-      return _i142.SpellDurationType.fromJson(data) as T;
-    }
-    if (t == _i143.SpellScalingMode) {
-      return _i143.SpellScalingMode.fromJson(data) as T;
-    }
-    if (t == _i144.SpellSchool) {
-      return _i144.SpellSchool.fromJson(data) as T;
-    }
-    if (t == _i145.SpellTargetType) {
-      return _i145.SpellTargetType.fromJson(data) as T;
-    }
-    if (t == _i146.SpellSlotRecoveryMode) {
-      return _i146.SpellSlotRecoveryMode.fromJson(data) as T;
-    }
-    if (t == _i147.SpellcastingProgression) {
-      return _i147.SpellcastingProgression.fromJson(data) as T;
-    }
-    if (t == _i148.StartingEquipmentBlockKind) {
-      return _i148.StartingEquipmentBlockKind.fromJson(data) as T;
-    }
-    if (t == _i149.StartingEquipmentEntryKind) {
-      return _i149.StartingEquipmentEntryKind.fromJson(data) as T;
-    }
-    if (t == _i150.StartingEquipmentLineKind) {
-      return _i150.StartingEquipmentLineKind.fromJson(data) as T;
-    }
-    if (t == _i151.ToolCategory) {
-      return _i151.ToolCategory.fromJson(data) as T;
-    }
-    if (t == _i152.UnarmoredDefenseRule) {
-      return _i152.UnarmoredDefenseRule.fromJson(data) as T;
-    }
-    if (t == _i153.WeaponCategory) {
-      return _i153.WeaponCategory.fromJson(data) as T;
-    }
-    if (t == _i154.WeaponProperty) {
-      return _i154.WeaponProperty.fromJson(data) as T;
-    }
-    if (t == _i155.LevelDownChoiceRepair) {
-      return _i155.LevelDownChoiceRepair.fromJson(data) as T;
-    }
-    if (t == _i156.LevelDownRequest) {
-      return _i156.LevelDownRequest.fromJson(data) as T;
-    }
-    if (t == _i157.BackgroundStepView) {
-      return _i157.BackgroundStepView.fromJson(data) as T;
-    }
-    if (t == _i158.CharacterEquipmentEntryView) {
-      return _i158.CharacterEquipmentEntryView.fromJson(data) as T;
-    }
-    if (t == _i159.ChoiceGroupView) {
-      return _i159.ChoiceGroupView.fromJson(data) as T;
-    }
-    if (t == _i160.ChoiceOptionEligibilityView) {
-      return _i160.ChoiceOptionEligibilityView.fromJson(data) as T;
-    }
-    if (t == _i161.ChoiceRequirementFailureView) {
-      return _i161.ChoiceRequirementFailureView.fromJson(data) as T;
-    }
-    if (t == _i162.ClassSpellDeltaView) {
-      return _i162.ClassSpellDeltaView.fromJson(data) as T;
-    }
-    if (t == _i163.ClassSpellSelectionGroupView) {
-      return _i163.ClassSpellSelectionGroupView.fromJson(data) as T;
-    }
-    if (t == _i164.ClassStepFeatureView) {
-      return _i164.ClassStepFeatureView.fromJson(data) as T;
-    }
-    if (t == _i165.ClassStepSubclassChoiceView) {
-      return _i165.ClassStepSubclassChoiceView.fromJson(data) as T;
-    }
-    if (t == _i166.ClassStepView) {
-      return _i166.ClassStepView.fromJson(data) as T;
-    }
-    if (t == _i167.FeatureDisplayPropertyView) {
-      return _i167.FeatureDisplayPropertyView.fromJson(data) as T;
-    }
-    if (t == _i168.LevelDownInvalidChoiceView) {
-      return _i168.LevelDownInvalidChoiceView.fromJson(data) as T;
-    }
-    if (t == _i169.LevelDownPreview) {
-      return _i169.LevelDownPreview.fromJson(data) as T;
-    }
-    if (t == _i170.LevelUpPreview) {
-      return _i170.LevelUpPreview.fromJson(data) as T;
-    }
-    if (t == _i171.ProficiencyBundleView) {
-      return _i171.ProficiencyBundleView.fromJson(data) as T;
-    }
-    if (t == _i172.RaceStepView) {
-      return _i172.RaceStepView.fromJson(data) as T;
-    }
-    if (t == _i173.ResolvedCharacterSpellData) {
-      return _i173.ResolvedCharacterSpellData.fromJson(data) as T;
-    }
-    if (t == _i174.SelectedFeatureChoiceView) {
-      return _i174.SelectedFeatureChoiceView.fromJson(data) as T;
-    }
-    if (t == _i175.SkillSelectionGroupView) {
-      return _i175.SkillSelectionGroupView.fromJson(data) as T;
-    }
-    if (t == _i176.SpellSourceContextData) {
-      return _i176.SpellSourceContextData.fromJson(data) as T;
-    }
-    if (t == _i177.StartingEquipmentBlockView) {
-      return _i177.StartingEquipmentBlockView.fromJson(data) as T;
-    }
-    if (t == _i178.FeatureModifierConditionType) {
-      return _i178.FeatureModifierConditionType.fromJson(data) as T;
-    }
-    if (t == _i1.getType<_i4.PreparedSpellRuleData?>()) {
-      return (data != null ? _i4.PreparedSpellRuleData.fromJson(data) : null)
+    if (t == _ipbr5hem.CharacterStartingEquipmentResolutionRecord) {
+      return _ipbr5hem.CharacterStartingEquipmentResolutionRecord.fromJson(data)
           as T;
     }
-    if (t == _i1.getType<_i5.BackgroundData?>()) {
-      return (data != null ? _i5.BackgroundData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i6.ClassSpellGrantData?>()) {
-      return (data != null ? _i6.ClassSpellGrantData.fromJson(data) : null)
+    if (t == _ixmjb4z5.CharacterStartingEquipmentSelectionData) {
+      return _ixmjb4z5.CharacterStartingEquipmentSelectionData.fromJson(data)
           as T;
     }
-    if (t == _i1.getType<_i7.DamagePartData?>()) {
-      return (data != null ? _i7.DamagePartData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i8.FeatData?>()) {
-      return (data != null ? _i8.FeatData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i9.CharacterAppliedChangeRecord?>()) {
-      return (data != null
-          ? _i9.CharacterAppliedChangeRecord.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i10.CharacterArmorTrainingOverridesData?>()) {
-      return (data != null
-          ? _i10.CharacterArmorTrainingOverridesData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i11.CharacterAttackData?>()) {
-      return (data != null ? _i11.CharacterAttackData.fromJson(data) : null)
+    if (t == _ikk28htr.CharacterStartingEquipmentSelectionRecord) {
+      return _ikk28htr.CharacterStartingEquipmentSelectionRecord.fromJson(data)
           as T;
     }
-    if (t == _i1.getType<_i12.CharacterChangeData?>()) {
-      return (data != null ? _i12.CharacterChangeData.fromJson(data) : null)
+    if (t == _i2rqx8lk.CharacterSyncEventRecord) {
+      return _i2rqx8lk.CharacterSyncEventRecord.fromJson(data) as T;
+    }
+    if (t == _is9ng6da.CharacterSyncOperationData) {
+      return _is9ng6da.CharacterSyncOperationData.fromJson(data) as T;
+    }
+    if (t == _icxp0ddy.CharacterSyncRequest) {
+      return _icxp0ddy.CharacterSyncRequest.fromJson(data) as T;
+    }
+    if (t == _i29bgu3e.CharacterSyncResponse) {
+      return _i29bgu3e.CharacterSyncResponse.fromJson(data) as T;
+    }
+    if (t == _ix5qhw9w.CharacterSyncResult) {
+      return _ix5qhw9w.CharacterSyncResult.fromJson(data) as T;
+    }
+    if (t == _ixfhi6l8.CharacterSyncStatus) {
+      return _ixfhi6l8.CharacterSyncStatus.fromJson(data) as T;
+    }
+    if (t == _iz49jt9b.CharacterSyncValueData) {
+      return _iz49jt9b.CharacterSyncValueData.fromJson(data) as T;
+    }
+    if (t == _idvpwngn.CharacterToolProficiencyOverridesData) {
+      return _idvpwngn.CharacterToolProficiencyOverridesData.fromJson(data)
           as T;
     }
-    if (t == _i1.getType<_i13.CharacterChoiceData?>()) {
-      return (data != null ? _i13.CharacterChoiceData.fromJson(data) : null)
+    if (t == _i5e0copu.CharacterWeaponProficiencyOverridesData) {
+      return _i5e0copu.CharacterWeaponProficiencyOverridesData.fromJson(data)
           as T;
     }
-    if (t == _i1.getType<_i14.CharacterChoiceRecord?>()) {
-      return (data != null ? _i14.CharacterChoiceRecord.fromJson(data) : null)
+    if (t == _i2mamrrk.ChoiceReplacementHistoryData) {
+      return _i2mamrrk.ChoiceReplacementHistoryData.fromJson(data) as T;
+    }
+    if (t == _iij0mpeo.LevelUpChoiceReplacementData) {
+      return _iij0mpeo.LevelUpChoiceReplacementData.fromJson(data) as T;
+    }
+    if (t == _ipxtly6g.LevelUpRequest) {
+      return _ipxtly6g.LevelUpRequest.fromJson(data) as T;
+    }
+    if (t == _i4b5l3un.LevelUpSpellChoice) {
+      return _i4b5l3un.LevelUpSpellChoice.fromJson(data) as T;
+    }
+    if (t == _i0tavl9b.RelatedFeatureViewData) {
+      return _i0tavl9b.RelatedFeatureViewData.fromJson(data) as T;
+    }
+    if (t == _it45kp8q.SpellSelectionReplacementHistoryData) {
+      return _it45kp8q.SpellSelectionReplacementHistoryData.fromJson(data) as T;
+    }
+    if (t == _i9cfge83.SpellSlotRecoveryTriggerData) {
+      return _i9cfge83.SpellSlotRecoveryTriggerData.fromJson(data) as T;
+    }
+    if (t == _i3zkka4q.ChoiceGroupData) {
+      return _i3zkka4q.ChoiceGroupData.fromJson(data) as T;
+    }
+    if (t == _iprx2upt.ChoiceOptionData) {
+      return _iprx2upt.ChoiceOptionData.fromJson(data) as T;
+    }
+    if (t == _iax2s634.ChoiceRequirementData) {
+      return _iax2s634.ChoiceRequirementData.fromJson(data) as T;
+    }
+    if (t == _i4e8ker2.ClassData) {
+      return _i4e8ker2.ClassData.fromJson(data) as T;
+    }
+    if (t == _ijvqpc4v.ClassFeatureData) {
+      return _ijvqpc4v.ClassFeatureData.fromJson(data) as T;
+    }
+    if (t == _isxi9i4e.ClassLevelData) {
+      return _isxi9i4e.ClassLevelData.fromJson(data) as T;
+    }
+    if (t == _ihr52fes.PreparedSpellRuleData) {
+      return _ihr52fes.PreparedSpellRuleData.fromJson(data) as T;
+    }
+    if (t == _ig6b5pj2.SpellSlotProgressionData) {
+      return _ig6b5pj2.SpellSlotProgressionData.fromJson(data) as T;
+    }
+    if (t == _igasg47n.StartingEquipmentBlockData) {
+      return _igasg47n.StartingEquipmentBlockData.fromJson(data) as T;
+    }
+    if (t == _impna1yi.StartingEquipmentEntryData) {
+      return _impna1yi.StartingEquipmentEntryData.fromJson(data) as T;
+    }
+    if (t == _iozcdomq.StartingEquipmentLineData) {
+      return _iozcdomq.StartingEquipmentLineData.fromJson(data) as T;
+    }
+    if (t == _iyz352zl.StartingEquipmentOptionData) {
+      return _iyz352zl.StartingEquipmentOptionData.fromJson(data) as T;
+    }
+    if (t == _ijic8hve.SubclassData) {
+      return _ijic8hve.SubclassData.fromJson(data) as T;
+    }
+    if (t == _iel0dp9q.SubclassFeatureData) {
+      return _iel0dp9q.SubclassFeatureData.fromJson(data) as T;
+    }
+    if (t == _i0aiwhe6.FeatureDisplayPropertyData) {
+      return _i0aiwhe6.FeatureDisplayPropertyData.fromJson(data) as T;
+    }
+    if (t == _iwfr4tm0.FeatureModifierConditionData) {
+      return _iwfr4tm0.FeatureModifierConditionData.fromJson(data) as T;
+    }
+    if (t == _ilhpjxpt.FeatureModifierData) {
+      return _ilhpjxpt.FeatureModifierData.fromJson(data) as T;
+    }
+    if (t == _ircf4zmd.FeatureModifierValueData) {
+      return _ircf4zmd.FeatureModifierValueData.fromJson(data) as T;
+    }
+    if (t == _isecmqna.FeatureRelationData) {
+      return _isecmqna.FeatureRelationData.fromJson(data) as T;
+    }
+    if (t == _iflv344v.FeatureResourceDefinitionData) {
+      return _iflv344v.FeatureResourceDefinitionData.fromJson(data) as T;
+    }
+    if (t == _i86imp4g.FeatureResourceEffectData) {
+      return _i86imp4g.FeatureResourceEffectData.fromJson(data) as T;
+    }
+    if (t == _iafoerth.FeatureResourceProgressionValueData) {
+      return _iafoerth.FeatureResourceProgressionValueData.fromJson(data) as T;
+    }
+    if (t == _irh2914h.RaceData) {
+      return _irh2914h.RaceData.fromJson(data) as T;
+    }
+    if (t == _imnymvhh.RaceFeatureData) {
+      return _imnymvhh.RaceFeatureData.fromJson(data) as T;
+    }
+    if (t == _ilhjydvh.RaceFeatureSpellGrantData) {
+      return _ilhjydvh.RaceFeatureSpellGrantData.fromJson(data) as T;
+    }
+    if (t == _iqoglfsm.SubraceData) {
+      return _iqoglfsm.SubraceData.fromJson(data) as T;
+    }
+    if (t == _idolx2sf.SpellActivationData) {
+      return _idolx2sf.SpellActivationData.fromJson(data) as T;
+    }
+    if (t == _i9erq8kp.SpellResourceUpcastPolicyData) {
+      return _i9erq8kp.SpellResourceUpcastPolicyData.fromJson(data) as T;
+    }
+    if (t == _in2nv22i.SpellSelectionFilterData) {
+      return _in2nv22i.SpellSelectionFilterData.fromJson(data) as T;
+    }
+    if (t == _ipwf59gx.SpellSlotRecoveryPolicyData) {
+      return _ipwf59gx.SpellSlotRecoveryPolicyData.fromJson(data) as T;
+    }
+    if (t == _ivjna1ls.ToolData) {
+      return _ivjna1ls.ToolData.fromJson(data) as T;
+    }
+    if (t == _iv545qv3.ArmorData) {
+      return _iv545qv3.ArmorData.fromJson(data) as T;
+    }
+    if (t == _ibuwh0hc.ItemData) {
+      return _ibuwh0hc.ItemData.fromJson(data) as T;
+    }
+    if (t == _i41tgptx.MagicItemData) {
+      return _i41tgptx.MagicItemData.fromJson(data) as T;
+    }
+    if (t == _inpmmgks.WeaponData) {
+      return _inpmmgks.WeaponData.fromJson(data) as T;
+    }
+    if (t == _itvh88br.SpellData) {
+      return _itvh88br.SpellData.fromJson(data) as T;
+    }
+    if (t == _iq5q0wh8.SpellScalingData) {
+      return _iq5q0wh8.SpellScalingData.fromJson(data) as T;
+    }
+    if (t == _ivey3rvd.DmCreatureException) {
+      return _ivey3rvd.DmCreatureException.fromJson(data) as T;
+    }
+    if (t == _i11aekbu.DmCreatureImportResult) {
+      return _i11aekbu.DmCreatureImportResult.fromJson(data) as T;
+    }
+    if (t == _ipuprlj7.DmCreatureRecord) {
+      return _ipuprlj7.DmCreatureRecord.fromJson(data) as T;
+    }
+    if (t == _idf6hpk3.DmCreatureSummary) {
+      return _idf6hpk3.DmCreatureSummary.fromJson(data) as T;
+    }
+    if (t == _i5rga0su.Ability) {
+      return _i5rga0su.Ability.fromJson(data) as T;
+    }
+    if (t == _ix11b24x.ArmorCategory) {
+      return _ix11b24x.ArmorCategory.fromJson(data) as T;
+    }
+    if (t == _ik1o33an.CharacterAlignment) {
+      return _ik1o33an.CharacterAlignment.fromJson(data) as T;
+    }
+    if (t == _idqm1edw.CharacterChangeType) {
+      return _idqm1edw.CharacterChangeType.fromJson(data) as T;
+    }
+    if (t == _icxxpsvd.CharacterEntityType) {
+      return _icxxpsvd.CharacterEntityType.fromJson(data) as T;
+    }
+    if (t == _i1fix3of.CharacterFeatureSourceType) {
+      return _i1fix3of.CharacterFeatureSourceType.fromJson(data) as T;
+    }
+    if (t == _ik9iz51c.CharacterInventoryItemType) {
+      return _ik9iz51c.CharacterInventoryItemType.fromJson(data) as T;
+    }
+    if (t == _ixbcln74.CharacterSavingThrowProficiencyOverride) {
+      return _ixbcln74.CharacterSavingThrowProficiencyOverride.fromJson(data)
           as T;
     }
-    if (t == _i1.getType<_i15.CharacterClassEntryData?>()) {
-      return (data != null ? _i15.CharacterClassEntryData.fromJson(data) : null)
+    if (t == _ixj33h5c.CharacterSkillProficiencyLevel) {
+      return _ixj33h5c.CharacterSkillProficiencyLevel.fromJson(data) as T;
+    }
+    if (t == _i3ppfbzb.CharacterSkillSelectionKind) {
+      return _i3ppfbzb.CharacterSkillSelectionKind.fromJson(data) as T;
+    }
+    if (t == _ikyxycuo.CharacterSpeedKind) {
+      return _ikyxycuo.CharacterSpeedKind.fromJson(data) as T;
+    }
+    if (t == _ie0q5aqi.CharacterSpellSelectionKind) {
+      return _ie0q5aqi.CharacterSpellSelectionKind.fromJson(data) as T;
+    }
+    if (t == _i6jbrxie.CharacterSyncOperationType) {
+      return _i6jbrxie.CharacterSyncOperationType.fromJson(data) as T;
+    }
+    if (t == _ia4qs68v.CharacterSyncTargetType) {
+      return _ia4qs68v.CharacterSyncTargetType.fromJson(data) as T;
+    }
+    if (t == _ia6aulam.ChoiceRequirementType) {
+      return _ia6aulam.ChoiceRequirementType.fromJson(data) as T;
+    }
+    if (t == _iam6xy91.ChoiceSourceType) {
+      return _iam6xy91.ChoiceSourceType.fromJson(data) as T;
+    }
+    if (t == _iotu8r29.ChoiceType) {
+      return _iotu8r29.ChoiceType.fromJson(data) as T;
+    }
+    if (t == _ijyz5fbs.ClassSpellSelectionMode) {
+      return _ijyz5fbs.ClassSpellSelectionMode.fromJson(data) as T;
+    }
+    if (t == _ikb1pesi.ConditionType) {
+      return _ikb1pesi.ConditionType.fromJson(data) as T;
+    }
+    if (t == _i6cngs6w.CreatureSize) {
+      return _i6cngs6w.CreatureSize.fromJson(data) as T;
+    }
+    if (t == _i6q2t5mj.DamageType) {
+      return _i6q2t5mj.DamageType.fromJson(data) as T;
+    }
+    if (t == _ia851nk8.EquipmentCatalogType) {
+      return _ia851nk8.EquipmentCatalogType.fromJson(data) as T;
+    }
+    if (t == _i9idws3v.FeatureDisplayPropertyValueKind) {
+      return _i9idws3v.FeatureDisplayPropertyValueKind.fromJson(data) as T;
+    }
+    if (t == _ilgpxa54.FeatureModifierConditionType) {
+      return _ilgpxa54.FeatureModifierConditionType.fromJson(data) as T;
+    }
+    if (t == _i56op7oq.FeatureModifierOperation) {
+      return _i56op7oq.FeatureModifierOperation.fromJson(data) as T;
+    }
+    if (t == _i6asfa9j.FeatureModifierRounding) {
+      return _i6asfa9j.FeatureModifierRounding.fromJson(data) as T;
+    }
+    if (t == _izn79nb9.FeatureModifierTarget) {
+      return _izn79nb9.FeatureModifierTarget.fromJson(data) as T;
+    }
+    if (t == _il8rk55k.FeatureModifierValueKind) {
+      return _il8rk55k.FeatureModifierValueKind.fromJson(data) as T;
+    }
+    if (t == _ih812opj.FeatureRelationType) {
+      return _ih812opj.FeatureRelationType.fromJson(data) as T;
+    }
+    if (t == _ijb3cn5v.FeatureResourceEffectType) {
+      return _ijb3cn5v.FeatureResourceEffectType.fromJson(data) as T;
+    }
+    if (t == _ia1vmwiq.FeatureResourceKind) {
+      return _ia1vmwiq.FeatureResourceKind.fromJson(data) as T;
+    }
+    if (t == _ib4g5i7q.FeatureResourceMaxRule) {
+      return _ib4g5i7q.FeatureResourceMaxRule.fromJson(data) as T;
+    }
+    if (t == _if07r66f.FeatureResourceProgressionKey) {
+      return _if07r66f.FeatureResourceProgressionKey.fromJson(data) as T;
+    }
+    if (t == _iyk5jgys.FeatureResourceTargetType) {
+      return _iyk5jgys.FeatureResourceTargetType.fromJson(data) as T;
+    }
+    if (t == _ir3q1cdf.FeatureResourceTrigger) {
+      return _ir3q1cdf.FeatureResourceTrigger.fromJson(data) as T;
+    }
+    if (t == _i2l7bpu3.FeatureTag) {
+      return _i2l7bpu3.FeatureTag.fromJson(data) as T;
+    }
+    if (t == _izodp5lk.HitPointMode) {
+      return _izodp5lk.HitPointMode.fromJson(data) as T;
+    }
+    if (t == _iftbsk4q.Language) {
+      return _iftbsk4q.Language.fromJson(data) as T;
+    }
+    if (t == _ieum0m7f.PreparedSpellRounding) {
+      return _ieum0m7f.PreparedSpellRounding.fromJson(data) as T;
+    }
+    if (t == _ibgbgp52.RestType) {
+      return _ibgbgp52.RestType.fromJson(data) as T;
+    }
+    if (t == _iy62ln0z.SenseType) {
+      return _iy62ln0z.SenseType.fromJson(data) as T;
+    }
+    if (t == _iabgjh08.Skill) {
+      return _iabgjh08.Skill.fromJson(data) as T;
+    }
+    if (t == _ieavm63l.AreaOfEffectType) {
+      return _ieavm63l.AreaOfEffectType.fromJson(data) as T;
+    }
+    if (t == _iatx40hq.AreaSizeMeasurement) {
+      return _iatx40hq.AreaSizeMeasurement.fromJson(data) as T;
+    }
+    if (t == _inf83u33.SpellAttackType) {
+      return _inf83u33.SpellAttackType.fromJson(data) as T;
+    }
+    if (t == _i9u2urpu.SpellDurationType) {
+      return _i9u2urpu.SpellDurationType.fromJson(data) as T;
+    }
+    if (t == _iw7hp9dc.SpellScalingMode) {
+      return _iw7hp9dc.SpellScalingMode.fromJson(data) as T;
+    }
+    if (t == _ioahu9w9.SpellSchool) {
+      return _ioahu9w9.SpellSchool.fromJson(data) as T;
+    }
+    if (t == _iupu1e0e.SpellTargetType) {
+      return _iupu1e0e.SpellTargetType.fromJson(data) as T;
+    }
+    if (t == _ik43ztmo.SpellSlotRecoveryMode) {
+      return _ik43ztmo.SpellSlotRecoveryMode.fromJson(data) as T;
+    }
+    if (t == _ilfh4rku.SpellcastingProgression) {
+      return _ilfh4rku.SpellcastingProgression.fromJson(data) as T;
+    }
+    if (t == _iag2d6aj.StartingEquipmentBlockKind) {
+      return _iag2d6aj.StartingEquipmentBlockKind.fromJson(data) as T;
+    }
+    if (t == _ipm8xyg1.StartingEquipmentEntryKind) {
+      return _ipm8xyg1.StartingEquipmentEntryKind.fromJson(data) as T;
+    }
+    if (t == _iniqanjc.StartingEquipmentLineKind) {
+      return _iniqanjc.StartingEquipmentLineKind.fromJson(data) as T;
+    }
+    if (t == _ic2cpv54.ToolCategory) {
+      return _ic2cpv54.ToolCategory.fromJson(data) as T;
+    }
+    if (t == _i4vk4r4o.UnarmoredDefenseRule) {
+      return _i4vk4r4o.UnarmoredDefenseRule.fromJson(data) as T;
+    }
+    if (t == _iiyileog.WeaponCategory) {
+      return _iiyileog.WeaponCategory.fromJson(data) as T;
+    }
+    if (t == _iur813s4.WeaponProperty) {
+      return _iur813s4.WeaponProperty.fromJson(data) as T;
+    }
+    if (t == _i1l5m7qw.LevelDownChoiceRepair) {
+      return _i1l5m7qw.LevelDownChoiceRepair.fromJson(data) as T;
+    }
+    if (t == _irktv0ea.LevelDownRequest) {
+      return _irktv0ea.LevelDownRequest.fromJson(data) as T;
+    }
+    if (t == _iqeghuxo.BackgroundStepView) {
+      return _iqeghuxo.BackgroundStepView.fromJson(data) as T;
+    }
+    if (t == _isbrs5qf.CharacterEquipmentEntryView) {
+      return _isbrs5qf.CharacterEquipmentEntryView.fromJson(data) as T;
+    }
+    if (t == _i6xbclit.ChoiceGroupView) {
+      return _i6xbclit.ChoiceGroupView.fromJson(data) as T;
+    }
+    if (t == _iil6pw38.ChoiceOptionEligibilityView) {
+      return _iil6pw38.ChoiceOptionEligibilityView.fromJson(data) as T;
+    }
+    if (t == _iob9tmlr.ChoiceRequirementFailureView) {
+      return _iob9tmlr.ChoiceRequirementFailureView.fromJson(data) as T;
+    }
+    if (t == _ik4ex2us.ClassSpellDeltaView) {
+      return _ik4ex2us.ClassSpellDeltaView.fromJson(data) as T;
+    }
+    if (t == _ixvig4n8.ClassSpellSelectionGroupView) {
+      return _ixvig4n8.ClassSpellSelectionGroupView.fromJson(data) as T;
+    }
+    if (t == _ih120cff.ClassStepFeatureView) {
+      return _ih120cff.ClassStepFeatureView.fromJson(data) as T;
+    }
+    if (t == _i3cyal5j.ClassStepSubclassChoiceView) {
+      return _i3cyal5j.ClassStepSubclassChoiceView.fromJson(data) as T;
+    }
+    if (t == _ib3duw15.ClassStepView) {
+      return _ib3duw15.ClassStepView.fromJson(data) as T;
+    }
+    if (t == _i9kpkyz2.FeatureDisplayPropertyView) {
+      return _i9kpkyz2.FeatureDisplayPropertyView.fromJson(data) as T;
+    }
+    if (t == _iu8i64vu.LevelDownInvalidChoiceView) {
+      return _iu8i64vu.LevelDownInvalidChoiceView.fromJson(data) as T;
+    }
+    if (t == _ipbxh79i.LevelDownPreview) {
+      return _ipbxh79i.LevelDownPreview.fromJson(data) as T;
+    }
+    if (t == _ipqjgw5e.LevelUpPreview) {
+      return _ipqjgw5e.LevelUpPreview.fromJson(data) as T;
+    }
+    if (t == _ifavv51o.ProficiencyBundleView) {
+      return _ifavv51o.ProficiencyBundleView.fromJson(data) as T;
+    }
+    if (t == _id360bq3.RaceStepView) {
+      return _id360bq3.RaceStepView.fromJson(data) as T;
+    }
+    if (t == _i8p2oglu.ResolvedCharacterSpellData) {
+      return _i8p2oglu.ResolvedCharacterSpellData.fromJson(data) as T;
+    }
+    if (t == _im19jsv2.SelectedFeatureChoiceView) {
+      return _im19jsv2.SelectedFeatureChoiceView.fromJson(data) as T;
+    }
+    if (t == _ihn36a1g.SkillSelectionGroupView) {
+      return _ihn36a1g.SkillSelectionGroupView.fromJson(data) as T;
+    }
+    if (t == _iam7pkuu.SpellSourceContextData) {
+      return _iam7pkuu.SpellSourceContextData.fromJson(data) as T;
+    }
+    if (t == _izjjz5hc.StartingEquipmentBlockView) {
+      return _izjjz5hc.StartingEquipmentBlockView.fromJson(data) as T;
+    }
+    if (t == _i3vgjwh2.StartingEquipmentOptionView) {
+      return _i3vgjwh2.StartingEquipmentOptionView.fromJson(data) as T;
+    }
+    if (t == _is.getType<_iydli74w.AuthActionResult?>()) {
+      return (data != null ? _iydli74w.AuthActionResult.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i16.CharacterClassEntryRecord?>()) {
-      return (data != null
-          ? _i16.CharacterClassEntryRecord.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i17.CharacterData?>()) {
-      return (data != null ? _i17.CharacterData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i18.CharacterDerivedData?>()) {
-      return (data != null ? _i18.CharacterDerivedData.fromJson(data) : null)
+    if (t == _is.getType<_i3katqli.BackgroundData?>()) {
+      return (data != null ? _i3katqli.BackgroundData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i19.CharacterEquipmentSelectionData?>()) {
+    if (t == _is.getType<_i68we1de.ClassSpellGrantData?>()) {
       return (data != null
-          ? _i19.CharacterEquipmentSelectionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i20.CharacterFeatureOverrideData?>()) {
-      return (data != null
-          ? _i20.CharacterFeatureOverrideData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i21.CharacterFeatureViewData?>()) {
-      return (data != null
-          ? _i21.CharacterFeatureViewData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i22.CharacterInventoryItemData?>()) {
-      return (data != null
-          ? _i22.CharacterInventoryItemData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i23.CharacterLanguageOverridesData?>()) {
-      return (data != null
-          ? _i23.CharacterLanguageOverridesData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i24.CharacterNoteData?>()) {
-      return (data != null ? _i24.CharacterNoteData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i25.CharacterRecord?>()) {
-      return (data != null ? _i25.CharacterRecord.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i26.CharacterRejectedChangeData?>()) {
-      return (data != null
-          ? _i26.CharacterRejectedChangeData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i27.CharacterResourceStateData?>()) {
-      return (data != null
-          ? _i27.CharacterResourceStateData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i28.CharacterResourceViewData?>()) {
-      return (data != null
-          ? _i28.CharacterResourceViewData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i29.CharacterSavingThrowProficiencyOverrideData?>()) {
-      return (data != null
-          ? _i29.CharacterSavingThrowProficiencyOverrideData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i30.CharacterSemanticActionData?>()) {
-      return (data != null
-          ? _i30.CharacterSemanticActionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i31.CharacterSkillProficiencyState?>()) {
-      return (data != null
-          ? _i31.CharacterSkillProficiencyState.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i32.CharacterSkillSelectionData?>()) {
-      return (data != null
-          ? _i32.CharacterSkillSelectionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i33.CharacterSkillSelectionRecord?>()) {
-      return (data != null
-          ? _i33.CharacterSkillSelectionRecord.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i34.CharacterSpellSelectionData?>()) {
-      return (data != null
-          ? _i34.CharacterSpellSelectionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i35.CharacterSpellSelectionRecord?>()) {
-      return (data != null
-          ? _i35.CharacterSpellSelectionRecord.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i36.CharacterStartingEquipmentResolutionData?>()) {
-      return (data != null
-          ? _i36.CharacterStartingEquipmentResolutionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i37.CharacterStartingEquipmentResolutionRecord?>()) {
-      return (data != null
-          ? _i37.CharacterStartingEquipmentResolutionRecord.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i38.CharacterStartingEquipmentSelectionData?>()) {
-      return (data != null
-          ? _i38.CharacterStartingEquipmentSelectionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i39.CharacterStartingEquipmentSelectionRecord?>()) {
-      return (data != null
-          ? _i39.CharacterStartingEquipmentSelectionRecord.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i40.CharacterSyncEventRecord?>()) {
-      return (data != null
-          ? _i40.CharacterSyncEventRecord.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i41.CharacterSyncOperationData?>()) {
-      return (data != null
-          ? _i41.CharacterSyncOperationData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i42.CharacterSyncRequest?>()) {
-      return (data != null ? _i42.CharacterSyncRequest.fromJson(data) : null)
+              ? _i68we1de.ClassSpellGrantData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i43.CharacterSyncResponse?>()) {
-      return (data != null ? _i43.CharacterSyncResponse.fromJson(data) : null)
+    if (t == _is.getType<_iqilpl6d.DamagePartData?>()) {
+      return (data != null ? _iqilpl6d.DamagePartData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i44.CharacterSyncResult?>()) {
-      return (data != null ? _i44.CharacterSyncResult.fromJson(data) : null)
+    if (t == _is.getType<_i1l5wul2.FeatData?>()) {
+      return (data != null ? _i1l5wul2.FeatData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iaskjtek.CharacterAppliedChangeRecord?>()) {
+      return (data != null
+              ? _iaskjtek.CharacterAppliedChangeRecord.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i45.CharacterSyncStatus?>()) {
-      return (data != null ? _i45.CharacterSyncStatus.fromJson(data) : null)
+    if (t == _is.getType<_ijpj2a9u.CharacterArmorTrainingOverridesData?>()) {
+      return (data != null
+              ? _ijpj2a9u.CharacterArmorTrainingOverridesData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i46.CharacterSyncValueData?>()) {
-      return (data != null ? _i46.CharacterSyncValueData.fromJson(data) : null)
+    if (t == _is.getType<_iykib7lv.CharacterAttackData?>()) {
+      return (data != null
+              ? _iykib7lv.CharacterAttackData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i47.CharacterToolProficiencyOverridesData?>()) {
+    if (t == _is.getType<_ibkyvw07.CharacterChangeData?>()) {
       return (data != null
-          ? _i47.CharacterToolProficiencyOverridesData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i48.CharacterWeaponProficiencyOverridesData?>()) {
-      return (data != null
-          ? _i48.CharacterWeaponProficiencyOverridesData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i49.ChoiceReplacementHistoryData?>()) {
-      return (data != null
-          ? _i49.ChoiceReplacementHistoryData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i50.LevelUpChoiceReplacementData?>()) {
-      return (data != null
-          ? _i50.LevelUpChoiceReplacementData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i51.LevelUpRequest?>()) {
-      return (data != null ? _i51.LevelUpRequest.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i52.LevelUpSpellChoice?>()) {
-      return (data != null ? _i52.LevelUpSpellChoice.fromJson(data) : null)
+              ? _ibkyvw07.CharacterChangeData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i53.RelatedFeatureViewData?>()) {
-      return (data != null ? _i53.RelatedFeatureViewData.fromJson(data) : null)
+    if (t == _is.getType<_iwf32wta.CharacterChoiceData?>()) {
+      return (data != null
+              ? _iwf32wta.CharacterChoiceData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i54.SpellSelectionReplacementHistoryData?>()) {
+    if (t == _is.getType<_i1l3jk2d.CharacterChoiceRecord?>()) {
       return (data != null
-          ? _i54.SpellSelectionReplacementHistoryData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i55.SpellSlotRecoveryTriggerData?>()) {
-      return (data != null
-          ? _i55.SpellSlotRecoveryTriggerData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i56.ChoiceGroupData?>()) {
-      return (data != null ? _i56.ChoiceGroupData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i57.ChoiceOptionData?>()) {
-      return (data != null ? _i57.ChoiceOptionData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i58.ChoiceRequirementData?>()) {
-      return (data != null ? _i58.ChoiceRequirementData.fromJson(data) : null)
+              ? _i1l3jk2d.CharacterChoiceRecord.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i59.ClassData?>()) {
-      return (data != null ? _i59.ClassData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i60.ClassFeatureData?>()) {
-      return (data != null ? _i60.ClassFeatureData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i61.ClassLevelData?>()) {
-      return (data != null ? _i61.ClassLevelData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i62.AuthActionResult?>()) {
-      return (data != null ? _i62.AuthActionResult.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i63.SpellSlotProgressionData?>()) {
+    if (t == _is.getType<_iqjjxby6.CharacterClassEntryData?>()) {
       return (data != null
-          ? _i63.SpellSlotProgressionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i64.StartingEquipmentBlockData?>()) {
-      return (data != null
-          ? _i64.StartingEquipmentBlockData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i65.StartingEquipmentEntryData?>()) {
-      return (data != null
-          ? _i65.StartingEquipmentEntryData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i66.StartingEquipmentLineData?>()) {
-      return (data != null
-          ? _i66.StartingEquipmentLineData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i67.StartingEquipmentOptionData?>()) {
-      return (data != null
-          ? _i67.StartingEquipmentOptionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i68.SubclassData?>()) {
-      return (data != null ? _i68.SubclassData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i69.SubclassFeatureData?>()) {
-      return (data != null ? _i69.SubclassFeatureData.fromJson(data) : null)
+              ? _iqjjxby6.CharacterClassEntryData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i70.FeatureDisplayPropertyData?>()) {
+    if (t == _is.getType<_i1goyn5n.CharacterClassEntryRecord?>()) {
       return (data != null
-          ? _i70.FeatureDisplayPropertyData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i71.FeatureModifierConditionData?>()) {
-      return (data != null
-          ? _i71.FeatureModifierConditionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i72.FeatureModifierData?>()) {
-      return (data != null ? _i72.FeatureModifierData.fromJson(data) : null)
+              ? _i1goyn5n.CharacterClassEntryRecord.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i73.FeatureModifierValueData?>()) {
-      return (data != null
-          ? _i73.FeatureModifierValueData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i74.FeatureRelationData?>()) {
-      return (data != null ? _i74.FeatureRelationData.fromJson(data) : null)
+    if (t == _is.getType<_im2o0tmj.CharacterData?>()) {
+      return (data != null ? _im2o0tmj.CharacterData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i75.FeatureResourceDefinitionData?>()) {
+    if (t == _is.getType<_ir4negfy.CharacterDerivedData?>()) {
       return (data != null
-          ? _i75.FeatureResourceDefinitionData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i76.FeatureResourceEffectData?>()) {
-      return (data != null
-          ? _i76.FeatureResourceEffectData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i77.FeatureResourceProgressionValueData?>()) {
-      return (data != null
-          ? _i77.FeatureResourceProgressionValueData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i78.RaceData?>()) {
-      return (data != null ? _i78.RaceData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i79.RaceFeatureData?>()) {
-      return (data != null ? _i79.RaceFeatureData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i80.RaceFeatureSpellGrantData?>()) {
-      return (data != null
-          ? _i80.RaceFeatureSpellGrantData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i81.SubraceData?>()) {
-      return (data != null ? _i81.SubraceData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i82.SpellActivationData?>()) {
-      return (data != null ? _i82.SpellActivationData.fromJson(data) : null)
+              ? _ir4negfy.CharacterDerivedData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i83.SpellResourceUpcastPolicyData?>()) {
+    if (t == _is.getType<_i7jkadr4.CharacterEquipmentSelectionData?>()) {
       return (data != null
-          ? _i83.SpellResourceUpcastPolicyData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i84.SpellSelectionFilterData?>()) {
-      return (data != null
-          ? _i84.SpellSelectionFilterData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i85.SpellSlotRecoveryPolicyData?>()) {
-      return (data != null
-          ? _i85.SpellSlotRecoveryPolicyData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i86.ToolData?>()) {
-      return (data != null ? _i86.ToolData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i87.ArmorData?>()) {
-      return (data != null ? _i87.ArmorData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i88.ItemData?>()) {
-      return (data != null ? _i88.ItemData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i89.MagicItemData?>()) {
-      return (data != null ? _i89.MagicItemData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i90.WeaponData?>()) {
-      return (data != null ? _i90.WeaponData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i91.SpellData?>()) {
-      return (data != null ? _i91.SpellData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i92.SpellScalingData?>()) {
-      return (data != null ? _i92.SpellScalingData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i93.DmCreatureException?>()) {
-      return (data != null ? _i93.DmCreatureException.fromJson(data) : null)
+              ? _i7jkadr4.CharacterEquipmentSelectionData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i94.DmCreatureImportResult?>()) {
-      return (data != null ? _i94.DmCreatureImportResult.fromJson(data) : null)
+    if (t == _is.getType<_iggvk3az.CharacterFeatureOverrideData?>()) {
+      return (data != null
+              ? _iggvk3az.CharacterFeatureOverrideData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i95.DmCreatureRecord?>()) {
-      return (data != null ? _i95.DmCreatureRecord.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i96.DmCreatureSummary?>()) {
-      return (data != null ? _i96.DmCreatureSummary.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i97.Ability?>()) {
-      return (data != null ? _i97.Ability.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i98.ArmorCategory?>()) {
-      return (data != null ? _i98.ArmorCategory.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i99.CharacterAlignment?>()) {
-      return (data != null ? _i99.CharacterAlignment.fromJson(data) : null)
+    if (t == _is.getType<_imlxp0ix.CharacterFeatureViewData?>()) {
+      return (data != null
+              ? _imlxp0ix.CharacterFeatureViewData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i100.CharacterChangeType?>()) {
-      return (data != null ? _i100.CharacterChangeType.fromJson(data) : null)
+    if (t == _is.getType<_id5dgxdg.CharacterInventoryItemData?>()) {
+      return (data != null
+              ? _id5dgxdg.CharacterInventoryItemData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i101.CharacterEntityType?>()) {
-      return (data != null ? _i101.CharacterEntityType.fromJson(data) : null)
+    if (t == _is.getType<_ibvj7xz5.CharacterLanguageOverridesData?>()) {
+      return (data != null
+              ? _ibvj7xz5.CharacterLanguageOverridesData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i102.CharacterFeatureSourceType?>()) {
-      return (data != null
-          ? _i102.CharacterFeatureSourceType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i103.CharacterInventoryItemType?>()) {
-      return (data != null
-          ? _i103.CharacterInventoryItemType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i104.CharacterSavingThrowProficiencyOverride?>()) {
-      return (data != null
-          ? _i104.CharacterSavingThrowProficiencyOverride.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i105.CharacterSkillProficiencyLevel?>()) {
-      return (data != null
-          ? _i105.CharacterSkillProficiencyLevel.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i106.CharacterSkillSelectionKind?>()) {
-      return (data != null
-          ? _i106.CharacterSkillSelectionKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i107.CharacterSpeedKind?>()) {
-      return (data != null ? _i107.CharacterSpeedKind.fromJson(data) : null)
+    if (t == _is.getType<_iqjbme11.CharacterNoteData?>()) {
+      return (data != null ? _iqjbme11.CharacterNoteData.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i108.CharacterSpellSelectionKind?>()) {
-      return (data != null
-          ? _i108.CharacterSpellSelectionKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i109.CharacterSyncOperationType?>()) {
-      return (data != null
-          ? _i109.CharacterSyncOperationType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i110.CharacterSyncTargetType?>()) {
-      return (data != null
-          ? _i110.CharacterSyncTargetType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i111.ChoiceRequirementType?>()) {
-      return (data != null ? _i111.ChoiceRequirementType.fromJson(data) : null)
+    if (t == _is.getType<_is140f48.CharacterRecord?>()) {
+      return (data != null ? _is140f48.CharacterRecord.fromJson(data) : null)
           as T;
     }
-    if (t == _i1.getType<_i112.ChoiceSourceType?>()) {
-      return (data != null ? _i112.ChoiceSourceType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i113.ChoiceType?>()) {
-      return (data != null ? _i113.ChoiceType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i114.ClassSpellSelectionMode?>()) {
+    if (t == _is.getType<_ig0fia1r.CharacterRejectedChangeData?>()) {
       return (data != null
-          ? _i114.ClassSpellSelectionMode.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i115.ConditionType?>()) {
-      return (data != null ? _i115.ConditionType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i116.CreatureSize?>()) {
-      return (data != null ? _i116.CreatureSize.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i117.DamageType?>()) {
-      return (data != null ? _i117.DamageType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i118.EquipmentCatalogType?>()) {
-      return (data != null ? _i118.EquipmentCatalogType.fromJson(data) : null)
+              ? _ig0fia1r.CharacterRejectedChangeData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i119.FeatureDisplayPropertyValueKind?>()) {
+    if (t == _is.getType<_iu6zjs5s.CharacterResourceStateData?>()) {
       return (data != null
-          ? _i119.FeatureDisplayPropertyValueKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i120.StartingEquipmentOptionView?>()) {
-      return (data != null
-          ? _i120.StartingEquipmentOptionView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i121.FeatureModifierOperation?>()) {
-      return (data != null
-          ? _i121.FeatureModifierOperation.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i122.FeatureModifierRounding?>()) {
-      return (data != null
-          ? _i122.FeatureModifierRounding.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i123.FeatureModifierTarget?>()) {
-      return (data != null ? _i123.FeatureModifierTarget.fromJson(data) : null)
+              ? _iu6zjs5s.CharacterResourceStateData.fromJson(data)
+              : null)
           as T;
     }
-    if (t == _i1.getType<_i124.FeatureModifierValueKind?>()) {
+    if (t == _is.getType<_io9jihae.CharacterResourceViewData?>()) {
       return (data != null
-          ? _i124.FeatureModifierValueKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i125.FeatureRelationType?>()) {
-      return (data != null ? _i125.FeatureRelationType.fromJson(data) : null)
+              ? _io9jihae.CharacterResourceViewData.fromJson(data)
+              : null)
           as T;
-    }
-    if (t == _i1.getType<_i126.FeatureResourceEffectType?>()) {
-      return (data != null
-          ? _i126.FeatureResourceEffectType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i127.FeatureResourceKind?>()) {
-      return (data != null ? _i127.FeatureResourceKind.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i128.FeatureResourceMaxRule?>()) {
-      return (data != null ? _i128.FeatureResourceMaxRule.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i129.FeatureResourceProgressionKey?>()) {
-      return (data != null
-          ? _i129.FeatureResourceProgressionKey.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i130.FeatureResourceTargetType?>()) {
-      return (data != null
-          ? _i130.FeatureResourceTargetType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i131.FeatureResourceTrigger?>()) {
-      return (data != null ? _i131.FeatureResourceTrigger.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i132.FeatureTag?>()) {
-      return (data != null ? _i132.FeatureTag.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i133.HitPointMode?>()) {
-      return (data != null ? _i133.HitPointMode.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i134.Language?>()) {
-      return (data != null ? _i134.Language.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i135.PreparedSpellRounding?>()) {
-      return (data != null ? _i135.PreparedSpellRounding.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i136.RestType?>()) {
-      return (data != null ? _i136.RestType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i137.SenseType?>()) {
-      return (data != null ? _i137.SenseType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i138.Skill?>()) {
-      return (data != null ? _i138.Skill.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i139.AreaOfEffectType?>()) {
-      return (data != null ? _i139.AreaOfEffectType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i140.AreaSizeMeasurement?>()) {
-      return (data != null ? _i140.AreaSizeMeasurement.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i141.SpellAttackType?>()) {
-      return (data != null ? _i141.SpellAttackType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i142.SpellDurationType?>()) {
-      return (data != null ? _i142.SpellDurationType.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i143.SpellScalingMode?>()) {
-      return (data != null ? _i143.SpellScalingMode.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i144.SpellSchool?>()) {
-      return (data != null ? _i144.SpellSchool.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i145.SpellTargetType?>()) {
-      return (data != null ? _i145.SpellTargetType.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i146.SpellSlotRecoveryMode?>()) {
-      return (data != null ? _i146.SpellSlotRecoveryMode.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i147.SpellcastingProgression?>()) {
-      return (data != null
-          ? _i147.SpellcastingProgression.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i148.StartingEquipmentBlockKind?>()) {
-      return (data != null
-          ? _i148.StartingEquipmentBlockKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i149.StartingEquipmentEntryKind?>()) {
-      return (data != null
-          ? _i149.StartingEquipmentEntryKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i150.StartingEquipmentLineKind?>()) {
-      return (data != null
-          ? _i150.StartingEquipmentLineKind.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i151.ToolCategory?>()) {
-      return (data != null ? _i151.ToolCategory.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i152.UnarmoredDefenseRule?>()) {
-      return (data != null ? _i152.UnarmoredDefenseRule.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i153.WeaponCategory?>()) {
-      return (data != null ? _i153.WeaponCategory.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i154.WeaponProperty?>()) {
-      return (data != null ? _i154.WeaponProperty.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i155.LevelDownChoiceRepair?>()) {
-      return (data != null ? _i155.LevelDownChoiceRepair.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i156.LevelDownRequest?>()) {
-      return (data != null ? _i156.LevelDownRequest.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i157.BackgroundStepView?>()) {
-      return (data != null ? _i157.BackgroundStepView.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i158.CharacterEquipmentEntryView?>()) {
-      return (data != null
-          ? _i158.CharacterEquipmentEntryView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i159.ChoiceGroupView?>()) {
-      return (data != null ? _i159.ChoiceGroupView.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i160.ChoiceOptionEligibilityView?>()) {
-      return (data != null
-          ? _i160.ChoiceOptionEligibilityView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i161.ChoiceRequirementFailureView?>()) {
-      return (data != null
-          ? _i161.ChoiceRequirementFailureView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i162.ClassSpellDeltaView?>()) {
-      return (data != null ? _i162.ClassSpellDeltaView.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i163.ClassSpellSelectionGroupView?>()) {
-      return (data != null
-          ? _i163.ClassSpellSelectionGroupView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i164.ClassStepFeatureView?>()) {
-      return (data != null ? _i164.ClassStepFeatureView.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i165.ClassStepSubclassChoiceView?>()) {
-      return (data != null
-          ? _i165.ClassStepSubclassChoiceView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i166.ClassStepView?>()) {
-      return (data != null ? _i166.ClassStepView.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i167.FeatureDisplayPropertyView?>()) {
-      return (data != null
-          ? _i167.FeatureDisplayPropertyView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i168.LevelDownInvalidChoiceView?>()) {
-      return (data != null
-          ? _i168.LevelDownInvalidChoiceView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i169.LevelDownPreview?>()) {
-      return (data != null ? _i169.LevelDownPreview.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i170.LevelUpPreview?>()) {
-      return (data != null ? _i170.LevelUpPreview.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i171.ProficiencyBundleView?>()) {
-      return (data != null ? _i171.ProficiencyBundleView.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i172.RaceStepView?>()) {
-      return (data != null ? _i172.RaceStepView.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i173.ResolvedCharacterSpellData?>()) {
-      return (data != null
-          ? _i173.ResolvedCharacterSpellData.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i174.SelectedFeatureChoiceView?>()) {
-      return (data != null
-          ? _i174.SelectedFeatureChoiceView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i175.SkillSelectionGroupView?>()) {
-      return (data != null
-          ? _i175.SkillSelectionGroupView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i176.SpellSourceContextData?>()) {
-      return (data != null ? _i176.SpellSourceContextData.fromJson(data) : null)
-          as T;
-    }
-    if (t == _i1.getType<_i177.StartingEquipmentBlockView?>()) {
-      return (data != null
-          ? _i177.StartingEquipmentBlockView.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<_i178.FeatureModifierConditionType?>()) {
-      return (data != null
-          ? _i178.FeatureModifierConditionType.fromJson(data)
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i7.DamagePartData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i7.DamagePartData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i49.ChoiceReplacementHistoryData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i49.ChoiceReplacementHistoryData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i49.ChoiceReplacementHistoryData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i49.ChoiceReplacementHistoryData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<int>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<int>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<int>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<int>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, String>?>()) {
-      return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<String>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i115.ConditionType>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i115.ConditionType>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i22.CharacterInventoryItemData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i22.CharacterInventoryItemData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i31.CharacterSkillProficiencyState>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i31.CharacterSkillProficiencyState>(e))
-              .toList()
-          : null) as T;
     }
     if (t ==
-        _i1.getType<
-            List<_i29.CharacterSavingThrowProficiencyOverrideData>?>()) {
+        _is.getType<_i3yrtkjn.CharacterSavingThrowProficiencyOverrideData?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) =>
-                  deserialize<_i29.CharacterSavingThrowProficiencyOverrideData>(
-                      e))
-              .toList()
-          : null) as T;
+              ? _i3yrtkjn.CharacterSavingThrowProficiencyOverrideData.fromJson(
+                  data,
+                )
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i24.CharacterNoteData>?>()) {
+    if (t == _is.getType<_ivfw6q0y.CharacterSemanticActionData?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i24.CharacterNoteData>(e))
-              .toList()
-          : null) as T;
+              ? _ivfw6q0y.CharacterSemanticActionData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i11.CharacterAttackData>?>()) {
+    if (t == _is.getType<_isl5krdt.CharacterSkillProficiencyState?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i11.CharacterAttackData>(e))
-              .toList()
-          : null) as T;
+              ? _isl5krdt.CharacterSkillProficiencyState.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i20.CharacterFeatureOverrideData>?>()) {
+    if (t == _is.getType<_itkzfry3.CharacterSkillSelectionData?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i20.CharacterFeatureOverrideData>(e))
-              .toList()
-          : null) as T;
+              ? _itkzfry3.CharacterSkillSelectionData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i27.CharacterResourceStateData>?>()) {
+    if (t == _is.getType<_ic0tmv5d.CharacterSkillSelectionRecord?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i27.CharacterResourceStateData>(e))
-              .toList()
-          : null) as T;
+              ? _ic0tmv5d.CharacterSkillSelectionRecord.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<Map<String, _i55.SpellSlotRecoveryTriggerData>?>()) {
+    if (t == _is.getType<_iesndgzw.CharacterSpellSelectionData?>()) {
       return (data != null
-          ? (data as Map).map((k, v) => MapEntry(deserialize<String>(k),
-              deserialize<_i55.SpellSlotRecoveryTriggerData>(v)))
-          : null) as T;
+              ? _iesndgzw.CharacterSpellSelectionData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i15.CharacterClassEntryData>?>()) {
+    if (t == _is.getType<_icqki103.CharacterSpellSelectionRecord?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i15.CharacterClassEntryData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i13.CharacterChoiceData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i13.CharacterChoiceData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i32.CharacterSkillSelectionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i32.CharacterSkillSelectionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i34.CharacterSpellSelectionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i34.CharacterSpellSelectionData>(e))
-              .toList()
-          : null) as T;
+              ? _icqki103.CharacterSpellSelectionRecord.fromJson(data)
+              : null)
+          as T;
     }
     if (t ==
-        _i1.getType<List<_i38.CharacterStartingEquipmentSelectionData>?>()) {
+        _is.getType<_ieudcx2k.CharacterStartingEquipmentResolutionData?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) =>
-                  deserialize<_i38.CharacterStartingEquipmentSelectionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<_i97.Ability, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i97.Ability>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<_i97.Ability, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i97.Ability>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i21.CharacterFeatureViewData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i21.CharacterFeatureViewData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i72.FeatureModifierData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i72.FeatureModifierData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<_i97.Ability, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i97.Ability>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<_i138.Skill, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) => MapEntry(
-              deserialize<_i138.Skill>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i31.CharacterSkillProficiencyState>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i173.ResolvedCharacterSpellData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i173.ResolvedCharacterSpellData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i158.CharacterEquipmentEntryView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i158.CharacterEquipmentEntryView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i117.DamageType>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i117.DamageType>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i28.CharacterResourceViewData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i28.CharacterResourceViewData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i167.FeatureDisplayPropertyView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i167.FeatureDisplayPropertyView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i53.RelatedFeatureViewData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i53.RelatedFeatureViewData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i174.SelectedFeatureChoiceView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i174.SelectedFeatureChoiceView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i76.FeatureResourceEffectData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i76.FeatureResourceEffectData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, String>?>()) {
-      return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<String>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i115.ConditionType>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i115.ConditionType>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i22.CharacterInventoryItemData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i22.CharacterInventoryItemData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i31.CharacterSkillProficiencyState>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i31.CharacterSkillProficiencyState>(e))
-              .toList()
-          : null) as T;
+              ? _ieudcx2k.CharacterStartingEquipmentResolutionData.fromJson(
+                  data,
+                )
+              : null)
+          as T;
     }
     if (t ==
-        _i1.getType<
-            List<_i29.CharacterSavingThrowProficiencyOverrideData>?>()) {
+        _is.getType<_ipbr5hem.CharacterStartingEquipmentResolutionRecord?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) =>
-                  deserialize<_i29.CharacterSavingThrowProficiencyOverrideData>(
-                      e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i24.CharacterNoteData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i24.CharacterNoteData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i11.CharacterAttackData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i11.CharacterAttackData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i20.CharacterFeatureOverrideData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i20.CharacterFeatureOverrideData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i27.CharacterResourceStateData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i27.CharacterResourceStateData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, _i55.SpellSlotRecoveryTriggerData>?>()) {
-      return (data != null
-          ? (data as Map).map((k, v) => MapEntry(deserialize<String>(k),
-              deserialize<_i55.SpellSlotRecoveryTriggerData>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, String>?>()) {
-      return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<String>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i54.SpellSelectionReplacementHistoryData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) =>
-                  deserialize<_i54.SpellSelectionReplacementHistoryData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i54.SpellSelectionReplacementHistoryData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) =>
-                  deserialize<_i54.SpellSelectionReplacementHistoryData>(e))
-              .toList()
-          : null) as T;
+              ? _ipbr5hem.CharacterStartingEquipmentResolutionRecord.fromJson(
+                  data,
+                )
+              : null)
+          as T;
     }
     if (t ==
-        _i1.getType<List<_i36.CharacterStartingEquipmentResolutionData>?>()) {
+        _is.getType<_ixmjb4z5.CharacterStartingEquipmentSelectionData?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) =>
-                  deserialize<_i36.CharacterStartingEquipmentResolutionData>(e))
-              .toList()
-          : null) as T;
+              ? _ixmjb4z5.CharacterStartingEquipmentSelectionData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i12.CharacterChangeData>?>()) {
+    if (t ==
+        _is.getType<_ikk28htr.CharacterStartingEquipmentSelectionRecord?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i12.CharacterChangeData>(e))
-              .toList()
-          : null) as T;
+              ? _ikk28htr.CharacterStartingEquipmentSelectionRecord.fromJson(
+                  data,
+                )
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i41.CharacterSyncOperationData>?>()) {
+    if (t == _is.getType<_i2rqx8lk.CharacterSyncEventRecord?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i41.CharacterSyncOperationData>(e))
-              .toList()
-          : null) as T;
+              ? _i2rqx8lk.CharacterSyncEventRecord.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _is.getType<_is9ng6da.CharacterSyncOperationData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? _is9ng6da.CharacterSyncOperationData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i26.CharacterRejectedChangeData>?>()) {
+    if (t == _is.getType<_icxp0ddy.CharacterSyncRequest?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i26.CharacterRejectedChangeData>(e))
-              .toList()
-          : null) as T;
+              ? _icxp0ddy.CharacterSyncRequest.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i17.CharacterData>?>()) {
+    if (t == _is.getType<_i29bgu3e.CharacterSyncResponse?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i17.CharacterData>(e))
-              .toList()
-          : null) as T;
+              ? _i29bgu3e.CharacterSyncResponse.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<Map<String, _i17.CharacterData>?>()) {
+    if (t == _is.getType<_ix5qhw9w.CharacterSyncResult?>()) {
       return (data != null
-          ? (data as Map).map((k, v) => MapEntry(
-              deserialize<String>(k), deserialize<_i17.CharacterData>(v)))
-          : null) as T;
+              ? _ix5qhw9w.CharacterSyncResult.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<int>?>()) {
+    if (t == _is.getType<_ixfhi6l8.CharacterSyncStatus?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<int>(e)).toList()
-          : null) as T;
+              ? _ixfhi6l8.CharacterSyncStatus.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _is.getType<_iz49jt9b.CharacterSyncValueData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? _iz49jt9b.CharacterSyncValueData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i115.ConditionType>?>()) {
+    if (t == _is.getType<_idvpwngn.CharacterToolProficiencyOverridesData?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i115.ConditionType>(e))
-              .toList()
-          : null) as T;
+              ? _idvpwngn.CharacterToolProficiencyOverridesData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t ==
+        _is.getType<_i5e0copu.CharacterWeaponProficiencyOverridesData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? _i5e0copu.CharacterWeaponProficiencyOverridesData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
+    if (t == _is.getType<_i2mamrrk.ChoiceReplacementHistoryData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
+              ? _i2mamrrk.ChoiceReplacementHistoryData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<Map<String, int>?>()) {
+    if (t == _is.getType<_iij0mpeo.LevelUpChoiceReplacementData?>()) {
       return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
+              ? _iij0mpeo.LevelUpChoiceReplacementData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
+    if (t == _is.getType<_ipxtly6g.LevelUpRequest?>()) {
+      return (data != null ? _ipxtly6g.LevelUpRequest.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i31.CharacterSkillProficiencyState>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i31.CharacterSkillProficiencyState>(e))
-              .toList()
-          : null) as T;
+    if (t == _is.getType<_i4b5l3un.LevelUpSpellChoice?>()) {
+      return (data != null ? _i4b5l3un.LevelUpSpellChoice.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _is.getType<_i0tavl9b.RelatedFeatureViewData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? _i0tavl9b.RelatedFeatureViewData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _is.getType<_it45kp8q.SpellSelectionReplacementHistoryData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? _it45kp8q.SpellSelectionReplacementHistoryData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _is.getType<_i9cfge83.SpellSlotRecoveryTriggerData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? _i9cfge83.SpellSlotRecoveryTriggerData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
+    if (t == _is.getType<_i3zkka4q.ChoiceGroupData?>()) {
+      return (data != null ? _i3zkka4q.ChoiceGroupData.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
+    if (t == _is.getType<_iprx2upt.ChoiceOptionData?>()) {
+      return (data != null ? _iprx2upt.ChoiceOptionData.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
+    if (t == _is.getType<_iax2s634.ChoiceRequirementData?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+              ? _iax2s634.ChoiceRequirementData.fromJson(data)
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+    if (t == _is.getType<_i4e8ker2.ClassData?>()) {
+      return (data != null ? _i4e8ker2.ClassData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
+    if (t == _is.getType<_ijvqpc4v.ClassFeatureData?>()) {
+      return (data != null ? _ijvqpc4v.ClassFeatureData.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i50.LevelUpChoiceReplacementData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i50.LevelUpChoiceReplacementData>(e))
-              .toList()
-          : null) as T;
+    if (t == _is.getType<_isxi9i4e.ClassLevelData?>()) {
+      return (data != null ? _isxi9i4e.ClassLevelData.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<Map<String, List<String>>?>()) {
+    if (t == _is.getType<_ihr52fes.PreparedSpellRuleData?>()) {
       return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<List<String>>(v)))
-          : null) as T;
+              ? _ihr52fes.PreparedSpellRuleData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ig6b5pj2.SpellSlotProgressionData?>()) {
+      return (data != null
+              ? _ig6b5pj2.SpellSlotProgressionData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_igasg47n.StartingEquipmentBlockData?>()) {
+      return (data != null
+              ? _igasg47n.StartingEquipmentBlockData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_impna1yi.StartingEquipmentEntryData?>()) {
+      return (data != null
+              ? _impna1yi.StartingEquipmentEntryData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iozcdomq.StartingEquipmentLineData?>()) {
+      return (data != null
+              ? _iozcdomq.StartingEquipmentLineData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iyz352zl.StartingEquipmentOptionData?>()) {
+      return (data != null
+              ? _iyz352zl.StartingEquipmentOptionData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ijic8hve.SubclassData?>()) {
+      return (data != null ? _ijic8hve.SubclassData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iel0dp9q.SubclassFeatureData?>()) {
+      return (data != null
+              ? _iel0dp9q.SubclassFeatureData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i0aiwhe6.FeatureDisplayPropertyData?>()) {
+      return (data != null
+              ? _i0aiwhe6.FeatureDisplayPropertyData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iwfr4tm0.FeatureModifierConditionData?>()) {
+      return (data != null
+              ? _iwfr4tm0.FeatureModifierConditionData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ilhpjxpt.FeatureModifierData?>()) {
+      return (data != null
+              ? _ilhpjxpt.FeatureModifierData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ircf4zmd.FeatureModifierValueData?>()) {
+      return (data != null
+              ? _ircf4zmd.FeatureModifierValueData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_isecmqna.FeatureRelationData?>()) {
+      return (data != null
+              ? _isecmqna.FeatureRelationData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iflv344v.FeatureResourceDefinitionData?>()) {
+      return (data != null
+              ? _iflv344v.FeatureResourceDefinitionData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i86imp4g.FeatureResourceEffectData?>()) {
+      return (data != null
+              ? _i86imp4g.FeatureResourceEffectData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iafoerth.FeatureResourceProgressionValueData?>()) {
+      return (data != null
+              ? _iafoerth.FeatureResourceProgressionValueData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_irh2914h.RaceData?>()) {
+      return (data != null ? _irh2914h.RaceData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_imnymvhh.RaceFeatureData?>()) {
+      return (data != null ? _imnymvhh.RaceFeatureData.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ilhjydvh.RaceFeatureSpellGrantData?>()) {
+      return (data != null
+              ? _ilhjydvh.RaceFeatureSpellGrantData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iqoglfsm.SubraceData?>()) {
+      return (data != null ? _iqoglfsm.SubraceData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_idolx2sf.SpellActivationData?>()) {
+      return (data != null
+              ? _idolx2sf.SpellActivationData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i9erq8kp.SpellResourceUpcastPolicyData?>()) {
+      return (data != null
+              ? _i9erq8kp.SpellResourceUpcastPolicyData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_in2nv22i.SpellSelectionFilterData?>()) {
+      return (data != null
+              ? _in2nv22i.SpellSelectionFilterData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ipwf59gx.SpellSlotRecoveryPolicyData?>()) {
+      return (data != null
+              ? _ipwf59gx.SpellSlotRecoveryPolicyData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ivjna1ls.ToolData?>()) {
+      return (data != null ? _ivjna1ls.ToolData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iv545qv3.ArmorData?>()) {
+      return (data != null ? _iv545qv3.ArmorData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ibuwh0hc.ItemData?>()) {
+      return (data != null ? _ibuwh0hc.ItemData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i41tgptx.MagicItemData?>()) {
+      return (data != null ? _i41tgptx.MagicItemData.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_inpmmgks.WeaponData?>()) {
+      return (data != null ? _inpmmgks.WeaponData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_itvh88br.SpellData?>()) {
+      return (data != null ? _itvh88br.SpellData.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iq5q0wh8.SpellScalingData?>()) {
+      return (data != null ? _iq5q0wh8.SpellScalingData.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ivey3rvd.DmCreatureException?>()) {
+      return (data != null
+              ? _ivey3rvd.DmCreatureException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i11aekbu.DmCreatureImportResult?>()) {
+      return (data != null
+              ? _i11aekbu.DmCreatureImportResult.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ipuprlj7.DmCreatureRecord?>()) {
+      return (data != null ? _ipuprlj7.DmCreatureRecord.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_idf6hpk3.DmCreatureSummary?>()) {
+      return (data != null ? _idf6hpk3.DmCreatureSummary.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i5rga0su.Ability?>()) {
+      return (data != null ? _i5rga0su.Ability.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ix11b24x.ArmorCategory?>()) {
+      return (data != null ? _ix11b24x.ArmorCategory.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ik1o33an.CharacterAlignment?>()) {
+      return (data != null ? _ik1o33an.CharacterAlignment.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_idqm1edw.CharacterChangeType?>()) {
+      return (data != null
+              ? _idqm1edw.CharacterChangeType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_icxxpsvd.CharacterEntityType?>()) {
+      return (data != null
+              ? _icxxpsvd.CharacterEntityType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i1fix3of.CharacterFeatureSourceType?>()) {
+      return (data != null
+              ? _i1fix3of.CharacterFeatureSourceType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ik9iz51c.CharacterInventoryItemType?>()) {
+      return (data != null
+              ? _ik9iz51c.CharacterInventoryItemType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t ==
+        _is.getType<_ixbcln74.CharacterSavingThrowProficiencyOverride?>()) {
+      return (data != null
+              ? _ixbcln74.CharacterSavingThrowProficiencyOverride.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ixj33h5c.CharacterSkillProficiencyLevel?>()) {
+      return (data != null
+              ? _ixj33h5c.CharacterSkillProficiencyLevel.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i3ppfbzb.CharacterSkillSelectionKind?>()) {
+      return (data != null
+              ? _i3ppfbzb.CharacterSkillSelectionKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ikyxycuo.CharacterSpeedKind?>()) {
+      return (data != null ? _ikyxycuo.CharacterSpeedKind.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ie0q5aqi.CharacterSpellSelectionKind?>()) {
+      return (data != null
+              ? _ie0q5aqi.CharacterSpellSelectionKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i6jbrxie.CharacterSyncOperationType?>()) {
+      return (data != null
+              ? _i6jbrxie.CharacterSyncOperationType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ia4qs68v.CharacterSyncTargetType?>()) {
+      return (data != null
+              ? _ia4qs68v.CharacterSyncTargetType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ia6aulam.ChoiceRequirementType?>()) {
+      return (data != null
+              ? _ia6aulam.ChoiceRequirementType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iam6xy91.ChoiceSourceType?>()) {
+      return (data != null ? _iam6xy91.ChoiceSourceType.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iotu8r29.ChoiceType?>()) {
+      return (data != null ? _iotu8r29.ChoiceType.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ijyz5fbs.ClassSpellSelectionMode?>()) {
+      return (data != null
+              ? _ijyz5fbs.ClassSpellSelectionMode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ikb1pesi.ConditionType?>()) {
+      return (data != null ? _ikb1pesi.ConditionType.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i6cngs6w.CreatureSize?>()) {
+      return (data != null ? _i6cngs6w.CreatureSize.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i6q2t5mj.DamageType?>()) {
+      return (data != null ? _i6q2t5mj.DamageType.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ia851nk8.EquipmentCatalogType?>()) {
+      return (data != null
+              ? _ia851nk8.EquipmentCatalogType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i9idws3v.FeatureDisplayPropertyValueKind?>()) {
+      return (data != null
+              ? _i9idws3v.FeatureDisplayPropertyValueKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ilgpxa54.FeatureModifierConditionType?>()) {
+      return (data != null
+              ? _ilgpxa54.FeatureModifierConditionType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i56op7oq.FeatureModifierOperation?>()) {
+      return (data != null
+              ? _i56op7oq.FeatureModifierOperation.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i6asfa9j.FeatureModifierRounding?>()) {
+      return (data != null
+              ? _i6asfa9j.FeatureModifierRounding.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_izn79nb9.FeatureModifierTarget?>()) {
+      return (data != null
+              ? _izn79nb9.FeatureModifierTarget.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_il8rk55k.FeatureModifierValueKind?>()) {
+      return (data != null
+              ? _il8rk55k.FeatureModifierValueKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ih812opj.FeatureRelationType?>()) {
+      return (data != null
+              ? _ih812opj.FeatureRelationType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ijb3cn5v.FeatureResourceEffectType?>()) {
+      return (data != null
+              ? _ijb3cn5v.FeatureResourceEffectType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ia1vmwiq.FeatureResourceKind?>()) {
+      return (data != null
+              ? _ia1vmwiq.FeatureResourceKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ib4g5i7q.FeatureResourceMaxRule?>()) {
+      return (data != null
+              ? _ib4g5i7q.FeatureResourceMaxRule.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_if07r66f.FeatureResourceProgressionKey?>()) {
+      return (data != null
+              ? _if07r66f.FeatureResourceProgressionKey.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iyk5jgys.FeatureResourceTargetType?>()) {
+      return (data != null
+              ? _iyk5jgys.FeatureResourceTargetType.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ir3q1cdf.FeatureResourceTrigger?>()) {
+      return (data != null
+              ? _ir3q1cdf.FeatureResourceTrigger.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i2l7bpu3.FeatureTag?>()) {
+      return (data != null ? _i2l7bpu3.FeatureTag.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_izodp5lk.HitPointMode?>()) {
+      return (data != null ? _izodp5lk.HitPointMode.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iftbsk4q.Language?>()) {
+      return (data != null ? _iftbsk4q.Language.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ieum0m7f.PreparedSpellRounding?>()) {
+      return (data != null
+              ? _ieum0m7f.PreparedSpellRounding.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ibgbgp52.RestType?>()) {
+      return (data != null ? _ibgbgp52.RestType.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iy62ln0z.SenseType?>()) {
+      return (data != null ? _iy62ln0z.SenseType.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iabgjh08.Skill?>()) {
+      return (data != null ? _iabgjh08.Skill.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ieavm63l.AreaOfEffectType?>()) {
+      return (data != null ? _ieavm63l.AreaOfEffectType.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iatx40hq.AreaSizeMeasurement?>()) {
+      return (data != null
+              ? _iatx40hq.AreaSizeMeasurement.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_inf83u33.SpellAttackType?>()) {
+      return (data != null ? _inf83u33.SpellAttackType.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i9u2urpu.SpellDurationType?>()) {
+      return (data != null ? _i9u2urpu.SpellDurationType.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iw7hp9dc.SpellScalingMode?>()) {
+      return (data != null ? _iw7hp9dc.SpellScalingMode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ioahu9w9.SpellSchool?>()) {
+      return (data != null ? _ioahu9w9.SpellSchool.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iupu1e0e.SpellTargetType?>()) {
+      return (data != null ? _iupu1e0e.SpellTargetType.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ik43ztmo.SpellSlotRecoveryMode?>()) {
+      return (data != null
+              ? _ik43ztmo.SpellSlotRecoveryMode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ilfh4rku.SpellcastingProgression?>()) {
+      return (data != null
+              ? _ilfh4rku.SpellcastingProgression.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iag2d6aj.StartingEquipmentBlockKind?>()) {
+      return (data != null
+              ? _iag2d6aj.StartingEquipmentBlockKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ipm8xyg1.StartingEquipmentEntryKind?>()) {
+      return (data != null
+              ? _ipm8xyg1.StartingEquipmentEntryKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iniqanjc.StartingEquipmentLineKind?>()) {
+      return (data != null
+              ? _iniqanjc.StartingEquipmentLineKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ic2cpv54.ToolCategory?>()) {
+      return (data != null ? _ic2cpv54.ToolCategory.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i4vk4r4o.UnarmoredDefenseRule?>()) {
+      return (data != null
+              ? _i4vk4r4o.UnarmoredDefenseRule.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iiyileog.WeaponCategory?>()) {
+      return (data != null ? _iiyileog.WeaponCategory.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iur813s4.WeaponProperty?>()) {
+      return (data != null ? _iur813s4.WeaponProperty.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i1l5m7qw.LevelDownChoiceRepair?>()) {
+      return (data != null
+              ? _i1l5m7qw.LevelDownChoiceRepair.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_irktv0ea.LevelDownRequest?>()) {
+      return (data != null ? _irktv0ea.LevelDownRequest.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iqeghuxo.BackgroundStepView?>()) {
+      return (data != null ? _iqeghuxo.BackgroundStepView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_isbrs5qf.CharacterEquipmentEntryView?>()) {
+      return (data != null
+              ? _isbrs5qf.CharacterEquipmentEntryView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i6xbclit.ChoiceGroupView?>()) {
+      return (data != null ? _i6xbclit.ChoiceGroupView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iil6pw38.ChoiceOptionEligibilityView?>()) {
+      return (data != null
+              ? _iil6pw38.ChoiceOptionEligibilityView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iob9tmlr.ChoiceRequirementFailureView?>()) {
+      return (data != null
+              ? _iob9tmlr.ChoiceRequirementFailureView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ik4ex2us.ClassSpellDeltaView?>()) {
+      return (data != null
+              ? _ik4ex2us.ClassSpellDeltaView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ixvig4n8.ClassSpellSelectionGroupView?>()) {
+      return (data != null
+              ? _ixvig4n8.ClassSpellSelectionGroupView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ih120cff.ClassStepFeatureView?>()) {
+      return (data != null
+              ? _ih120cff.ClassStepFeatureView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i3cyal5j.ClassStepSubclassChoiceView?>()) {
+      return (data != null
+              ? _i3cyal5j.ClassStepSubclassChoiceView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ib3duw15.ClassStepView?>()) {
+      return (data != null ? _ib3duw15.ClassStepView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i9kpkyz2.FeatureDisplayPropertyView?>()) {
+      return (data != null
+              ? _i9kpkyz2.FeatureDisplayPropertyView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iu8i64vu.LevelDownInvalidChoiceView?>()) {
+      return (data != null
+              ? _iu8i64vu.LevelDownInvalidChoiceView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ipbxh79i.LevelDownPreview?>()) {
+      return (data != null ? _ipbxh79i.LevelDownPreview.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ipqjgw5e.LevelUpPreview?>()) {
+      return (data != null ? _ipqjgw5e.LevelUpPreview.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ifavv51o.ProficiencyBundleView?>()) {
+      return (data != null
+              ? _ifavv51o.ProficiencyBundleView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_id360bq3.RaceStepView?>()) {
+      return (data != null ? _id360bq3.RaceStepView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i8p2oglu.ResolvedCharacterSpellData?>()) {
+      return (data != null
+              ? _i8p2oglu.ResolvedCharacterSpellData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_im19jsv2.SelectedFeatureChoiceView?>()) {
+      return (data != null
+              ? _im19jsv2.SelectedFeatureChoiceView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ihn36a1g.SkillSelectionGroupView?>()) {
+      return (data != null
+              ? _ihn36a1g.SkillSelectionGroupView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iam7pkuu.SpellSourceContextData?>()) {
+      return (data != null
+              ? _iam7pkuu.SpellSourceContextData.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_izjjz5hc.StartingEquipmentBlockView?>()) {
+      return (data != null
+              ? _izjjz5hc.StartingEquipmentBlockView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i3vgjwh2.StartingEquipmentOptionView?>()) {
+      return (data != null
+              ? _i3vgjwh2.StartingEquipmentOptionView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == List<_iabgjh08.Skill>) {
+      return (data as List).map((e) => deserialize<_iabgjh08.Skill>(e)).toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iabgjh08.Skill>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iabgjh08.Skill>(e))
+                    .toList()
+              : null)
+          as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == _i1.getType<List<_i52.LevelUpSpellChoice>?>()) {
+    if (t == _is.getType<List<String>?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i52.LevelUpSpellChoice>(e))
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
+          as T;
+    }
+    if (t == Map<String, int>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)),
+          )
+          as T;
+    }
+    if (t == _is.getType<Map<String, int>?>()) {
+      return (data != null
+              ? (data as Map).map(
+                  (k, v) =>
+                      MapEntry(deserialize<String>(k), deserialize<int>(v)),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_i2l7bpu3.FeatureTag>) {
+      return (data as List)
+              .map((e) => deserialize<_i2l7bpu3.FeatureTag>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == _i1.getType<List<_i167.FeatureDisplayPropertyView>?>()) {
+    if (t == _is.getType<List<_i2l7bpu3.FeatureTag>?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i167.FeatureDisplayPropertyView>(e))
+              ? (data as List)
+                    .map((e) => deserialize<_i2l7bpu3.FeatureTag>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ix11b24x.ArmorCategory>) {
+      return (data as List)
+              .map((e) => deserialize<_ix11b24x.ArmorCategory>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == _i1.getType<List<_i28.CharacterResourceViewData>?>()) {
+    if (t == _is.getType<List<_ix11b24x.ArmorCategory>?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i28.CharacterResourceViewData>(e))
+              ? (data as List)
+                    .map((e) => deserialize<_ix11b24x.ArmorCategory>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iqilpl6d.DamagePartData>) {
+      return (data as List)
+              .map((e) => deserialize<_iqilpl6d.DamagePartData>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == _i1.getType<List<_i76.FeatureResourceEffectData>?>()) {
+    if (t == _is.getType<List<_iqilpl6d.DamagePartData>?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i76.FeatureResourceEffectData>(e))
+              ? (data as List)
+                    .map((e) => deserialize<_iqilpl6d.DamagePartData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i2mamrrk.ChoiceReplacementHistoryData>) {
+      return (data as List)
+              .map(
+                (e) => deserialize<_i2mamrrk.ChoiceReplacementHistoryData>(e),
+              )
               .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i58.ChoiceRequirementData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i58.ChoiceRequirementData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i58.ChoiceRequirementData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i58.ChoiceRequirementData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, String>?>()) {
-      return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<String>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i75.FeatureResourceDefinitionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i75.FeatureResourceDefinitionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i76.FeatureResourceEffectData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i76.FeatureResourceEffectData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i6.ClassSpellGrantData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i6.ClassSpellGrantData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i72.FeatureModifierData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i72.FeatureModifierData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i66.StartingEquipmentLineData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i66.StartingEquipmentLineData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i67.StartingEquipmentOptionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i67.StartingEquipmentOptionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i66.StartingEquipmentLineData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i66.StartingEquipmentLineData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i75.FeatureResourceDefinitionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i75.FeatureResourceDefinitionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i76.FeatureResourceEffectData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i76.FeatureResourceEffectData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i6.ClassSpellGrantData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i6.ClassSpellGrantData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i72.FeatureModifierData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i72.FeatureModifierData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, String>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<String>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i71.FeatureModifierConditionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i71.FeatureModifierConditionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, String>?>()) {
-      return (data != null
-          ? (data as Map).map((k, v) =>
-              MapEntry(deserialize<String>(k), deserialize<String>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i77.FeatureResourceProgressionValueData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) =>
-                  deserialize<_i77.FeatureResourceProgressionValueData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i117.DamageType>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i117.DamageType>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i79.RaceFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i79.RaceFeatureData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i75.FeatureResourceDefinitionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i75.FeatureResourceDefinitionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i76.FeatureResourceEffectData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i76.FeatureResourceEffectData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i132.FeatureTag>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i132.FeatureTag>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i80.RaceFeatureSpellGrantData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i80.RaceFeatureSpellGrantData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i117.DamageType>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i117.DamageType>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i79.RaceFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i79.RaceFeatureData>(e))
-              .toList()
-          : null) as T;
+          as T;
+    }
+    if (t == _is.getType<List<_i2mamrrk.ChoiceReplacementHistoryData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_i2mamrrk.ChoiceReplacementHistoryData>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
+    if (t == _is.getType<List<int>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<int>(e)).toList()
+              : null)
+          as T;
+    }
+    if (t == Map<String, String>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<String>(v)),
+          )
+          as T;
+    }
+    if (t == _is.getType<Map<String, String>?>()) {
+      return (data != null
+              ? (data as Map).map(
+                  (k, v) =>
+                      MapEntry(deserialize<String>(k), deserialize<String>(v)),
+                )
+              : null)
+          as T;
     }
     if (t == Map<int, int>) {
-      return Map.fromEntries((data as List).map((e) =>
-          MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v'])))) as T;
+      return Map.fromEntries(
+            (data as List).map(
+              (e) =>
+                  MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v'])),
+            ),
+          )
+          as T;
     }
-    if (t == _i1.getType<List<_i144.SpellSchool>?>()) {
+    if (t == _is.getType<Map<int, int>?>()) {
       return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i144.SpellSchool>(e))
-              .toList()
-          : null) as T;
+              ? Map.fromEntries(
+                  (data as List).map(
+                    (e) => MapEntry(
+                      deserialize<int>(e['k']),
+                      deserialize<int>(e['v']),
+                    ),
+                  ),
+                )
+              : null)
+          as T;
     }
-    if (t == _i1.getType<List<_i108.CharacterSpellSelectionKind>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i108.CharacterSpellSelectionKind>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, int>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<int>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i154.WeaponProperty>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i154.WeaponProperty>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i7.DamagePartData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i7.DamagePartData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i115.ConditionType>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i115.ConditionType>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<int>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<int>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<int>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<int>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, String>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<String>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<Map<int, String>?>()) {
-      return (data != null
-          ? Map.fromEntries((data as List).map((e) =>
-              MapEntry(deserialize<int>(e['k']), deserialize<String>(e['v']))))
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i66.StartingEquipmentLineData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i66.StartingEquipmentLineData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i155.LevelDownChoiceRepair>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i155.LevelDownChoiceRepair>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i159.ChoiceGroupView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i159.ChoiceGroupView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i175.SkillSelectionGroupView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i175.SkillSelectionGroupView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i177.StartingEquipmentBlockView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i177.StartingEquipmentBlockView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i57.ChoiceOptionData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i57.ChoiceOptionData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i160.ChoiceOptionEligibilityView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i160.ChoiceOptionEligibilityView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i161.ChoiceRequirementFailureView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i161.ChoiceRequirementFailureView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i91.SpellData>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i91.SpellData>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i167.FeatureDisplayPropertyView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i167.FeatureDisplayPropertyView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i28.CharacterResourceViewData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i28.CharacterResourceViewData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i68.SubclassData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i68.SubclassData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i60.ClassFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i60.ClassFeatureData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i60.ClassFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i60.ClassFeatureData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i69.SubclassFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i69.SubclassFeatureData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i69.SubclassFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i69.SubclassFeatureData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i164.ClassStepFeatureView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i164.ClassStepFeatureView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i164.ClassStepFeatureView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i164.ClassStepFeatureView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i164.ClassStepFeatureView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i164.ClassStepFeatureView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i164.ClassStepFeatureView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i164.ClassStepFeatureView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i159.ChoiceGroupView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i159.ChoiceGroupView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i175.SkillSelectionGroupView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i175.SkillSelectionGroupView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i163.ClassSpellSelectionGroupView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i163.ClassSpellSelectionGroupView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i177.StartingEquipmentBlockView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i177.StartingEquipmentBlockView>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i61.ClassLevelData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i61.ClassLevelData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i72.FeatureModifierData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i72.FeatureModifierData>(e))
-              .toList()
-          : null) as T;
-    }
-    if (t == List<_i60.ClassFeatureData>) {
+    if (t == List<_ikb1pesi.ConditionType>) {
       return (data as List)
-          .map((e) => deserialize<_i60.ClassFeatureData>(e))
-          .toList() as T;
+              .map((e) => deserialize<_ikb1pesi.ConditionType>(e))
+              .toList()
+          as T;
     }
-    if (t == List<_i69.SubclassFeatureData>) {
-      return (data as List)
-          .map((e) => deserialize<_i69.SubclassFeatureData>(e))
-          .toList() as T;
+    if (t == _is.getType<List<_ikb1pesi.ConditionType>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ikb1pesi.ConditionType>(e))
+                    .toList()
+              : null)
+          as T;
     }
-    if (t == List<_i56.ChoiceGroupData>) {
+    if (t == List<_id5dgxdg.CharacterInventoryItemData>) {
       return (data as List)
-          .map((e) => deserialize<_i56.ChoiceGroupData>(e))
-          .toList() as T;
+              .map((e) => deserialize<_id5dgxdg.CharacterInventoryItemData>(e))
+              .toList()
+          as T;
     }
-    if (t == List<_i13.CharacterChoiceData>) {
-      return (data as List)
-          .map((e) => deserialize<_i13.CharacterChoiceData>(e))
-          .toList() as T;
+    if (t == _is.getType<List<_id5dgxdg.CharacterInventoryItemData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_id5dgxdg.CharacterInventoryItemData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
     }
-    if (t == List<_i168.LevelDownInvalidChoiceView>) {
+    if (t == List<_isl5krdt.CharacterSkillProficiencyState>) {
       return (data as List)
-          .map((e) => deserialize<_i168.LevelDownInvalidChoiceView>(e))
-          .toList() as T;
+              .map(
+                (e) => deserialize<_isl5krdt.CharacterSkillProficiencyState>(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_isl5krdt.CharacterSkillProficiencyState>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_isl5krdt.CharacterSkillProficiencyState>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i5rga0su.Ability>) {
+      return (data as List)
+              .map((e) => deserialize<_i5rga0su.Ability>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i5rga0su.Ability>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i5rga0su.Ability>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i3yrtkjn.CharacterSavingThrowProficiencyOverrideData>) {
+      return (data as List)
+              .map(
+                (e) =>
+                    deserialize<
+                      _i3yrtkjn.CharacterSavingThrowProficiencyOverrideData
+                    >(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t ==
+        _is
+            .getType<
+              List<_i3yrtkjn.CharacterSavingThrowProficiencyOverrideData>?
+            >()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<
+                            _i3yrtkjn.CharacterSavingThrowProficiencyOverrideData
+                          >(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iqjbme11.CharacterNoteData>) {
+      return (data as List)
+              .map((e) => deserialize<_iqjbme11.CharacterNoteData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iqjbme11.CharacterNoteData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iqjbme11.CharacterNoteData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iykib7lv.CharacterAttackData>) {
+      return (data as List)
+              .map((e) => deserialize<_iykib7lv.CharacterAttackData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iykib7lv.CharacterAttackData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iykib7lv.CharacterAttackData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iggvk3az.CharacterFeatureOverrideData>) {
+      return (data as List)
+              .map(
+                (e) => deserialize<_iggvk3az.CharacterFeatureOverrideData>(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iggvk3az.CharacterFeatureOverrideData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iggvk3az.CharacterFeatureOverrideData>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iu6zjs5s.CharacterResourceStateData>) {
+      return (data as List)
+              .map((e) => deserialize<_iu6zjs5s.CharacterResourceStateData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iu6zjs5s.CharacterResourceStateData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iu6zjs5s.CharacterResourceStateData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == Map<String, _i9cfge83.SpellSlotRecoveryTriggerData>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(
+              deserialize<String>(k),
+              deserialize<_i9cfge83.SpellSlotRecoveryTriggerData>(v),
+            ),
+          )
+          as T;
+    }
+    if (t ==
+        _is.getType<Map<String, _i9cfge83.SpellSlotRecoveryTriggerData>?>()) {
+      return (data != null
+              ? (data as Map).map(
+                  (k, v) => MapEntry(
+                    deserialize<String>(k),
+                    deserialize<_i9cfge83.SpellSlotRecoveryTriggerData>(v),
+                  ),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_iqjjxby6.CharacterClassEntryData>) {
+      return (data as List)
+              .map((e) => deserialize<_iqjjxby6.CharacterClassEntryData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iqjjxby6.CharacterClassEntryData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) => deserialize<_iqjjxby6.CharacterClassEntryData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iwf32wta.CharacterChoiceData>) {
+      return (data as List)
+              .map((e) => deserialize<_iwf32wta.CharacterChoiceData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iwf32wta.CharacterChoiceData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iwf32wta.CharacterChoiceData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_itkzfry3.CharacterSkillSelectionData>) {
+      return (data as List)
+              .map((e) => deserialize<_itkzfry3.CharacterSkillSelectionData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_itkzfry3.CharacterSkillSelectionData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_itkzfry3.CharacterSkillSelectionData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iesndgzw.CharacterSpellSelectionData>) {
+      return (data as List)
+              .map((e) => deserialize<_iesndgzw.CharacterSpellSelectionData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iesndgzw.CharacterSpellSelectionData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iesndgzw.CharacterSpellSelectionData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ixmjb4z5.CharacterStartingEquipmentSelectionData>) {
+      return (data as List)
+              .map(
+                (e) =>
+                    deserialize<
+                      _ixmjb4z5.CharacterStartingEquipmentSelectionData
+                    >(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t ==
+        _is
+            .getType<
+              List<_ixmjb4z5.CharacterStartingEquipmentSelectionData>?
+            >()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<
+                            _ixmjb4z5.CharacterStartingEquipmentSelectionData
+                          >(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == Map<_i5rga0su.Ability, int>) {
+      return Map.fromEntries(
+            (data as List).map(
+              (e) => MapEntry(
+                deserialize<_i5rga0su.Ability>(e['k']),
+                deserialize<int>(e['v']),
+              ),
+            ),
+          )
+          as T;
+    }
+    if (t == _is.getType<Map<_i5rga0su.Ability, int>?>()) {
+      return (data != null
+              ? Map.fromEntries(
+                  (data as List).map(
+                    (e) => MapEntry(
+                      deserialize<_i5rga0su.Ability>(e['k']),
+                      deserialize<int>(e['v']),
+                    ),
+                  ),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_imlxp0ix.CharacterFeatureViewData>) {
+      return (data as List)
+              .map((e) => deserialize<_imlxp0ix.CharacterFeatureViewData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_imlxp0ix.CharacterFeatureViewData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) => deserialize<_imlxp0ix.CharacterFeatureViewData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ilhpjxpt.FeatureModifierData>) {
+      return (data as List)
+              .map((e) => deserialize<_ilhpjxpt.FeatureModifierData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ilhpjxpt.FeatureModifierData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ilhpjxpt.FeatureModifierData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == Map<_iabgjh08.Skill, int>) {
+      return Map.fromEntries(
+            (data as List).map(
+              (e) => MapEntry(
+                deserialize<_iabgjh08.Skill>(e['k']),
+                deserialize<int>(e['v']),
+              ),
+            ),
+          )
+          as T;
+    }
+    if (t == _is.getType<Map<_iabgjh08.Skill, int>?>()) {
+      return (data != null
+              ? Map.fromEntries(
+                  (data as List).map(
+                    (e) => MapEntry(
+                      deserialize<_iabgjh08.Skill>(e['k']),
+                      deserialize<int>(e['v']),
+                    ),
+                  ),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_iftbsk4q.Language>) {
+      return (data as List)
+              .map((e) => deserialize<_iftbsk4q.Language>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iftbsk4q.Language>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iftbsk4q.Language>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iiyileog.WeaponCategory>) {
+      return (data as List)
+              .map((e) => deserialize<_iiyileog.WeaponCategory>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iiyileog.WeaponCategory>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iiyileog.WeaponCategory>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i8p2oglu.ResolvedCharacterSpellData>) {
+      return (data as List)
+              .map((e) => deserialize<_i8p2oglu.ResolvedCharacterSpellData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i8p2oglu.ResolvedCharacterSpellData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_i8p2oglu.ResolvedCharacterSpellData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_isbrs5qf.CharacterEquipmentEntryView>) {
+      return (data as List)
+              .map((e) => deserialize<_isbrs5qf.CharacterEquipmentEntryView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_isbrs5qf.CharacterEquipmentEntryView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_isbrs5qf.CharacterEquipmentEntryView>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i6q2t5mj.DamageType>) {
+      return (data as List)
+              .map((e) => deserialize<_i6q2t5mj.DamageType>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i6q2t5mj.DamageType>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i6q2t5mj.DamageType>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_io9jihae.CharacterResourceViewData>) {
+      return (data as List)
+              .map((e) => deserialize<_io9jihae.CharacterResourceViewData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_io9jihae.CharacterResourceViewData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_io9jihae.CharacterResourceViewData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i9kpkyz2.FeatureDisplayPropertyView>) {
+      return (data as List)
+              .map((e) => deserialize<_i9kpkyz2.FeatureDisplayPropertyView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i9kpkyz2.FeatureDisplayPropertyView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_i9kpkyz2.FeatureDisplayPropertyView>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i0tavl9b.RelatedFeatureViewData>) {
+      return (data as List)
+              .map((e) => deserialize<_i0tavl9b.RelatedFeatureViewData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i0tavl9b.RelatedFeatureViewData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) => deserialize<_i0tavl9b.RelatedFeatureViewData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_im19jsv2.SelectedFeatureChoiceView>) {
+      return (data as List)
+              .map((e) => deserialize<_im19jsv2.SelectedFeatureChoiceView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_im19jsv2.SelectedFeatureChoiceView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_im19jsv2.SelectedFeatureChoiceView>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i86imp4g.FeatureResourceEffectData>) {
+      return (data as List)
+              .map((e) => deserialize<_i86imp4g.FeatureResourceEffectData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i86imp4g.FeatureResourceEffectData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_i86imp4g.FeatureResourceEffectData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_it45kp8q.SpellSelectionReplacementHistoryData>) {
+      return (data as List)
+              .map(
+                (e) =>
+                    deserialize<_it45kp8q.SpellSelectionReplacementHistoryData>(
+                      e,
+                    ),
+              )
+              .toList()
+          as T;
+    }
+    if (t ==
+        _is.getType<List<_it45kp8q.SpellSelectionReplacementHistoryData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<
+                            _it45kp8q.SpellSelectionReplacementHistoryData
+                          >(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ieudcx2k.CharacterStartingEquipmentResolutionData>) {
+      return (data as List)
+              .map(
+                (e) =>
+                    deserialize<
+                      _ieudcx2k.CharacterStartingEquipmentResolutionData
+                    >(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t ==
+        _is
+            .getType<
+              List<_ieudcx2k.CharacterStartingEquipmentResolutionData>?
+            >()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<
+                            _ieudcx2k.CharacterStartingEquipmentResolutionData
+                          >(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ibkyvw07.CharacterChangeData>) {
+      return (data as List)
+              .map((e) => deserialize<_ibkyvw07.CharacterChangeData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ibkyvw07.CharacterChangeData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ibkyvw07.CharacterChangeData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_is9ng6da.CharacterSyncOperationData>) {
+      return (data as List)
+              .map((e) => deserialize<_is9ng6da.CharacterSyncOperationData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_is9ng6da.CharacterSyncOperationData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_is9ng6da.CharacterSyncOperationData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ig0fia1r.CharacterRejectedChangeData>) {
+      return (data as List)
+              .map((e) => deserialize<_ig0fia1r.CharacterRejectedChangeData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ig0fia1r.CharacterRejectedChangeData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_ig0fia1r.CharacterRejectedChangeData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_im2o0tmj.CharacterData>) {
+      return (data as List)
+              .map((e) => deserialize<_im2o0tmj.CharacterData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_im2o0tmj.CharacterData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_im2o0tmj.CharacterData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == Map<String, _im2o0tmj.CharacterData>) {
+      return (data as Map).map(
+            (k, v) => MapEntry(
+              deserialize<String>(k),
+              deserialize<_im2o0tmj.CharacterData>(v),
+            ),
+          )
+          as T;
+    }
+    if (t == _is.getType<Map<String, _im2o0tmj.CharacterData>?>()) {
+      return (data != null
+              ? (data as Map).map(
+                  (k, v) => MapEntry(
+                    deserialize<String>(k),
+                    deserialize<_im2o0tmj.CharacterData>(v),
+                  ),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_iij0mpeo.LevelUpChoiceReplacementData>) {
+      return (data as List)
+              .map(
+                (e) => deserialize<_iij0mpeo.LevelUpChoiceReplacementData>(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iij0mpeo.LevelUpChoiceReplacementData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iij0mpeo.LevelUpChoiceReplacementData>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == Map<String, List<String>>) {
+      return (data as Map).map(
+            (k, v) =>
+                MapEntry(deserialize<String>(k), deserialize<List<String>>(v)),
+          )
+          as T;
+    }
+    if (t == _is.getType<Map<String, List<String>>?>()) {
+      return (data != null
+              ? (data as Map).map(
+                  (k, v) => MapEntry(
+                    deserialize<String>(k),
+                    deserialize<List<String>>(v),
+                  ),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_i4b5l3un.LevelUpSpellChoice>) {
+      return (data as List)
+              .map((e) => deserialize<_i4b5l3un.LevelUpSpellChoice>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i4b5l3un.LevelUpSpellChoice>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i4b5l3un.LevelUpSpellChoice>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iax2s634.ChoiceRequirementData>) {
+      return (data as List)
+              .map((e) => deserialize<_iax2s634.ChoiceRequirementData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iax2s634.ChoiceRequirementData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iax2s634.ChoiceRequirementData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iflv344v.FeatureResourceDefinitionData>) {
+      return (data as List)
+              .map(
+                (e) => deserialize<_iflv344v.FeatureResourceDefinitionData>(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iflv344v.FeatureResourceDefinitionData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iflv344v.FeatureResourceDefinitionData>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i68we1de.ClassSpellGrantData>) {
+      return (data as List)
+              .map((e) => deserialize<_i68we1de.ClassSpellGrantData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i68we1de.ClassSpellGrantData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i68we1de.ClassSpellGrantData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iozcdomq.StartingEquipmentLineData>) {
+      return (data as List)
+              .map((e) => deserialize<_iozcdomq.StartingEquipmentLineData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iozcdomq.StartingEquipmentLineData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iozcdomq.StartingEquipmentLineData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iyz352zl.StartingEquipmentOptionData>) {
+      return (data as List)
+              .map((e) => deserialize<_iyz352zl.StartingEquipmentOptionData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iyz352zl.StartingEquipmentOptionData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iyz352zl.StartingEquipmentOptionData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == Map<int, String>) {
+      return Map.fromEntries(
+            (data as List).map(
+              (e) => MapEntry(
+                deserialize<int>(e['k']),
+                deserialize<String>(e['v']),
+              ),
+            ),
+          )
+          as T;
+    }
+    if (t == _is.getType<Map<int, String>?>()) {
+      return (data != null
+              ? Map.fromEntries(
+                  (data as List).map(
+                    (e) => MapEntry(
+                      deserialize<int>(e['k']),
+                      deserialize<String>(e['v']),
+                    ),
+                  ),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_iwfr4tm0.FeatureModifierConditionData>) {
+      return (data as List)
+              .map(
+                (e) => deserialize<_iwfr4tm0.FeatureModifierConditionData>(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iwfr4tm0.FeatureModifierConditionData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iwfr4tm0.FeatureModifierConditionData>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iafoerth.FeatureResourceProgressionValueData>) {
+      return (data as List)
+              .map(
+                (e) =>
+                    deserialize<_iafoerth.FeatureResourceProgressionValueData>(
+                      e,
+                    ),
+              )
+              .toList()
+          as T;
+    }
+    if (t ==
+        _is.getType<List<_iafoerth.FeatureResourceProgressionValueData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<
+                            _iafoerth.FeatureResourceProgressionValueData
+                          >(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_imnymvhh.RaceFeatureData>) {
+      return (data as List)
+              .map((e) => deserialize<_imnymvhh.RaceFeatureData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_imnymvhh.RaceFeatureData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_imnymvhh.RaceFeatureData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ilhjydvh.RaceFeatureSpellGrantData>) {
+      return (data as List)
+              .map((e) => deserialize<_ilhjydvh.RaceFeatureSpellGrantData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ilhjydvh.RaceFeatureSpellGrantData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_ilhjydvh.RaceFeatureSpellGrantData>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ioahu9w9.SpellSchool>) {
+      return (data as List)
+              .map((e) => deserialize<_ioahu9w9.SpellSchool>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ioahu9w9.SpellSchool>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ioahu9w9.SpellSchool>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ie0q5aqi.CharacterSpellSelectionKind>) {
+      return (data as List)
+              .map((e) => deserialize<_ie0q5aqi.CharacterSpellSelectionKind>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ie0q5aqi.CharacterSpellSelectionKind>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_ie0q5aqi.CharacterSpellSelectionKind>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iur813s4.WeaponProperty>) {
+      return (data as List)
+              .map((e) => deserialize<_iur813s4.WeaponProperty>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iur813s4.WeaponProperty>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iur813s4.WeaponProperty>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i1l5m7qw.LevelDownChoiceRepair>) {
+      return (data as List)
+              .map((e) => deserialize<_i1l5m7qw.LevelDownChoiceRepair>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i1l5m7qw.LevelDownChoiceRepair>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i1l5m7qw.LevelDownChoiceRepair>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i6xbclit.ChoiceGroupView>) {
+      return (data as List)
+              .map((e) => deserialize<_i6xbclit.ChoiceGroupView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i6xbclit.ChoiceGroupView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i6xbclit.ChoiceGroupView>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ihn36a1g.SkillSelectionGroupView>) {
+      return (data as List)
+              .map((e) => deserialize<_ihn36a1g.SkillSelectionGroupView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ihn36a1g.SkillSelectionGroupView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) => deserialize<_ihn36a1g.SkillSelectionGroupView>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_izjjz5hc.StartingEquipmentBlockView>) {
+      return (data as List)
+              .map((e) => deserialize<_izjjz5hc.StartingEquipmentBlockView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_izjjz5hc.StartingEquipmentBlockView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_izjjz5hc.StartingEquipmentBlockView>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iprx2upt.ChoiceOptionData>) {
+      return (data as List)
+              .map((e) => deserialize<_iprx2upt.ChoiceOptionData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iprx2upt.ChoiceOptionData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iprx2upt.ChoiceOptionData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iil6pw38.ChoiceOptionEligibilityView>) {
+      return (data as List)
+              .map((e) => deserialize<_iil6pw38.ChoiceOptionEligibilityView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iil6pw38.ChoiceOptionEligibilityView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iil6pw38.ChoiceOptionEligibilityView>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iob9tmlr.ChoiceRequirementFailureView>) {
+      return (data as List)
+              .map(
+                (e) => deserialize<_iob9tmlr.ChoiceRequirementFailureView>(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iob9tmlr.ChoiceRequirementFailureView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_iob9tmlr.ChoiceRequirementFailureView>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_itvh88br.SpellData>) {
+      return (data as List)
+              .map((e) => deserialize<_itvh88br.SpellData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_itvh88br.SpellData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_itvh88br.SpellData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ijic8hve.SubclassData>) {
+      return (data as List)
+              .map((e) => deserialize<_ijic8hve.SubclassData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ijic8hve.SubclassData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ijic8hve.SubclassData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ijvqpc4v.ClassFeatureData>) {
+      return (data as List)
+              .map((e) => deserialize<_ijvqpc4v.ClassFeatureData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ijvqpc4v.ClassFeatureData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ijvqpc4v.ClassFeatureData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iel0dp9q.SubclassFeatureData>) {
+      return (data as List)
+              .map((e) => deserialize<_iel0dp9q.SubclassFeatureData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iel0dp9q.SubclassFeatureData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iel0dp9q.SubclassFeatureData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ih120cff.ClassStepFeatureView>) {
+      return (data as List)
+              .map((e) => deserialize<_ih120cff.ClassStepFeatureView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ih120cff.ClassStepFeatureView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ih120cff.ClassStepFeatureView>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ixvig4n8.ClassSpellSelectionGroupView>) {
+      return (data as List)
+              .map(
+                (e) => deserialize<_ixvig4n8.ClassSpellSelectionGroupView>(e),
+              )
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ixvig4n8.ClassSpellSelectionGroupView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_ixvig4n8.ClassSpellSelectionGroupView>(
+                            e,
+                          ),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_isxi9i4e.ClassLevelData>) {
+      return (data as List)
+              .map((e) => deserialize<_isxi9i4e.ClassLevelData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_isxi9i4e.ClassLevelData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_isxi9i4e.ClassLevelData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i3zkka4q.ChoiceGroupData>) {
+      return (data as List)
+              .map((e) => deserialize<_i3zkka4q.ChoiceGroupData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iu8i64vu.LevelDownInvalidChoiceView>) {
+      return (data as List)
+              .map((e) => deserialize<_iu8i64vu.LevelDownInvalidChoiceView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iqoglfsm.SubraceData>) {
+      return (data as List)
+              .map((e) => deserialize<_iqoglfsm.SubraceData>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iqoglfsm.SubraceData>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iqoglfsm.SubraceData>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_iam7pkuu.SpellSourceContextData>) {
+      return (data as List)
+              .map((e) => deserialize<_iam7pkuu.SpellSourceContextData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i3vgjwh2.StartingEquipmentOptionView>) {
+      return (data as List)
+              .map((e) => deserialize<_i3vgjwh2.StartingEquipmentOptionView>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i3vgjwh2.StartingEquipmentOptionView>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) =>
+                          deserialize<_i3vgjwh2.StartingEquipmentOptionView>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i1n3uhu0.UserInfo>) {
+      return (data as List)
+              .map((e) => deserialize<_i1n3uhu0.UserInfo>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ijv7obuo.DmCreatureSummary>) {
+      return (data as List)
+              .map((e) => deserialize<_ijv7obuo.DmCreatureSummary>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ini8luu6.BackgroundData>) {
+      return (data as List)
+              .map((e) => deserialize<_ini8luu6.BackgroundData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i77nrd14.FeatData>) {
+      return (data as List)
+              .map((e) => deserialize<_i77nrd14.FeatData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i7kkgt8y.CharacterData>) {
+      return (data as List)
+              .map((e) => deserialize<_i7kkgt8y.CharacterData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ioxj5inc.ChoiceGroupData>) {
+      return (data as List)
+              .map((e) => deserialize<_ioxj5inc.ChoiceGroupData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iosenkkh.ChoiceOptionData>) {
+      return (data as List)
+              .map((e) => deserialize<_iosenkkh.ChoiceOptionData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iemrti6x.ClassData>) {
+      return (data as List)
+              .map((e) => deserialize<_iemrti6x.ClassData>(e))
+              .toList()
+          as T;
     }
     if (t == Map<String, int>) {
       return (data as Map).map(
-          (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v))) as T;
+            (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)),
+          )
+          as T;
     }
-    if (t == List<_i159.ChoiceGroupView>) {
+    if (t == _is.getType<Map<String, int>?>()) {
+      return (data != null
+              ? (data as Map).map(
+                  (k, v) =>
+                      MapEntry(deserialize<String>(k), deserialize<int>(v)),
+                )
+              : null)
+          as T;
+    }
+    if (t == List<_i77hkaes.ClassFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i159.ChoiceGroupView>(e))
-          .toList() as T;
-    }
-    if (t == _i1.getType<List<_i97.Ability>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i97.Ability>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i98.ArmorCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i98.ArmorCategory>(e))
+              .map((e) => deserialize<_i77hkaes.ClassFeatureData>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == _i1.getType<List<_i153.WeaponCategory>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i153.WeaponCategory>(e))
+    if (t == List<_iwivgnzd.ClassSpellGrantData>) {
+      return (data as List)
+              .map((e) => deserialize<_iwivgnzd.ClassSpellGrantData>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i134.Language>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i134.Language>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i81.SubraceData>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i81.SubraceData>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i79.RaceFeatureData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i79.RaceFeatureData>(e))
+    if (t == List<_ivbho7q1.ClassLevelData>) {
+      return (data as List)
+              .map((e) => deserialize<_ivbho7q1.ClassLevelData>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == _i1.getType<List<_i159.ChoiceGroupView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i159.ChoiceGroupView>(e))
+    if (t == List<_ig2i76sa.SpellSlotProgressionData>) {
+      return (data as List)
+              .map((e) => deserialize<_ig2i76sa.SpellSlotProgressionData>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == List<_i176.SpellSourceContextData>) {
+    if (t == List<_ing7r6e2.SubclassData>) {
       return (data as List)
-          .map((e) => deserialize<_i176.SpellSourceContextData>(e))
-          .toList() as T;
-    }
-    if (t == _i1.getType<List<_i138.Skill>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i138.Skill>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i66.StartingEquipmentLineData>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i66.StartingEquipmentLineData>(e))
+              .map((e) => deserialize<_ing7r6e2.SubclassData>(e))
               .toList()
-          : null) as T;
+          as T;
     }
-    if (t == _i1.getType<List<_i120.StartingEquipmentOptionView>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i120.StartingEquipmentOptionView>(e))
+    if (t == List<_ix0ni9v9.SubclassFeatureData>) {
+      return (data as List)
+              .map((e) => deserialize<_ix0ni9v9.SubclassFeatureData>(e))
               .toList()
-          : null) as T;
-    }
-    if (t == List<_i3.UserInfo>) {
-      return (data as List).map((e) => deserialize<_i3.UserInfo>(e)).toList()
           as T;
     }
-    if (t == List<_i179.DmCreatureSummary>) {
+    if (t == List<_iwsgy0dv.FeatureRelationData>) {
       return (data as List)
-          .map((e) => deserialize<_i179.DmCreatureSummary>(e))
-          .toList() as T;
-    }
-    if (t == List<_i180.BackgroundData>) {
-      return (data as List)
-          .map((e) => deserialize<_i180.BackgroundData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i181.FeatData>) {
-      return (data as List).map((e) => deserialize<_i181.FeatData>(e)).toList()
+              .map((e) => deserialize<_iwsgy0dv.FeatureRelationData>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i182.CharacterData>) {
+    if (t == List<_iueyhinu.RaceData>) {
       return (data as List)
-          .map((e) => deserialize<_i182.CharacterData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i183.ChoiceGroupData>) {
-      return (data as List)
-          .map((e) => deserialize<_i183.ChoiceGroupData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i184.ChoiceOptionData>) {
-      return (data as List)
-          .map((e) => deserialize<_i184.ChoiceOptionData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i185.ClassData>) {
-      return (data as List).map((e) => deserialize<_i185.ClassData>(e)).toList()
+              .map((e) => deserialize<_iueyhinu.RaceData>(e))
+              .toList()
           as T;
     }
-    if (t == _i1.getType<Map<String, int>?>()) {
-      return (data != null
-          ? (data as Map).map(
-              (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v)))
-          : null) as T;
-    }
-    if (t == Map<String, int>) {
-      return (data as Map).map(
-          (k, v) => MapEntry(deserialize<String>(k), deserialize<int>(v))) as T;
-    }
-    if (t == List<_i186.ClassFeatureData>) {
+    if (t == List<_ikrrnfpk.RaceFeatureData>) {
       return (data as List)
-          .map((e) => deserialize<_i186.ClassFeatureData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i187.ClassSpellGrantData>) {
-      return (data as List)
-          .map((e) => deserialize<_i187.ClassSpellGrantData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i188.ClassLevelData>) {
-      return (data as List)
-          .map((e) => deserialize<_i188.ClassLevelData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i189.SpellSlotProgressionData>) {
-      return (data as List)
-          .map((e) => deserialize<_i189.SpellSlotProgressionData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i190.SubclassData>) {
-      return (data as List)
-          .map((e) => deserialize<_i190.SubclassData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i191.SubclassFeatureData>) {
-      return (data as List)
-          .map((e) => deserialize<_i191.SubclassFeatureData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i192.FeatureRelationData>) {
-      return (data as List)
-          .map((e) => deserialize<_i192.FeatureRelationData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i193.RaceData>) {
-      return (data as List).map((e) => deserialize<_i193.RaceData>(e)).toList()
+              .map((e) => deserialize<_ikrrnfpk.RaceFeatureData>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i194.RaceFeatureData>) {
+    if (t == List<_iasgt0sa.SubraceData>) {
       return (data as List)
-          .map((e) => deserialize<_i194.RaceFeatureData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i195.SubraceData>) {
-      return (data as List)
-          .map((e) => deserialize<_i195.SubraceData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i196.RaceFeatureSpellGrantData>) {
-      return (data as List)
-          .map((e) => deserialize<_i196.RaceFeatureSpellGrantData>(e))
-          .toList() as T;
-    }
-    if (t == List<_i197.ToolData>) {
-      return (data as List).map((e) => deserialize<_i197.ToolData>(e)).toList()
+              .map((e) => deserialize<_iasgt0sa.SubraceData>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i198.ArmorData>) {
-      return (data as List).map((e) => deserialize<_i198.ArmorData>(e)).toList()
+    if (t == List<_iwbrjjtm.RaceFeatureSpellGrantData>) {
+      return (data as List)
+              .map((e) => deserialize<_iwbrjjtm.RaceFeatureSpellGrantData>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i199.ItemData>) {
-      return (data as List).map((e) => deserialize<_i199.ItemData>(e)).toList()
+    if (t == List<_imen179o.ToolData>) {
+      return (data as List)
+              .map((e) => deserialize<_imen179o.ToolData>(e))
+              .toList()
           as T;
     }
-    if (t == List<_i200.MagicItemData>) {
+    if (t == List<_if6xo2mf.ArmorData>) {
       return (data as List)
-          .map((e) => deserialize<_i200.MagicItemData>(e))
-          .toList() as T;
+              .map((e) => deserialize<_if6xo2mf.ArmorData>(e))
+              .toList()
+          as T;
     }
-    if (t == List<_i201.WeaponData>) {
+    if (t == List<_ilfoaqak.ItemData>) {
       return (data as List)
-          .map((e) => deserialize<_i201.WeaponData>(e))
-          .toList() as T;
+              .map((e) => deserialize<_ilfoaqak.ItemData>(e))
+              .toList()
+          as T;
     }
-    if (t == List<_i202.SpellData>) {
-      return (data as List).map((e) => deserialize<_i202.SpellData>(e)).toList()
+    if (t == List<_ihxnsrg8.MagicItemData>) {
+      return (data as List)
+              .map((e) => deserialize<_ihxnsrg8.MagicItemData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ixvqnkv0.WeaponData>) {
+      return (data as List)
+              .map((e) => deserialize<_ixvqnkv0.WeaponData>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iphj40lo.SpellData>) {
+      return (data as List)
+              .map((e) => deserialize<_iphj40lo.SpellData>(e))
+              .toList()
           as T;
     }
     try {
-      return _i3.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+      return _i1n3uhu0.Protocol().deserialize<T>(data, t);
+    } on _is.DeserializationTypeNotFoundException catch (_) {}
     try {
-      return _i2.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+      return _isp.Protocol().deserialize<T>(data, t);
+    } on _is.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
+  }
+
+  static String? getClassNameForType(Type type) {
+    return switch (type) {
+      _iydli74w.AuthActionResult => 'AuthActionResult',
+      _i3katqli.BackgroundData => 'BackgroundData',
+      _i68we1de.ClassSpellGrantData => 'ClassSpellGrantData',
+      _iqilpl6d.DamagePartData => 'DamagePartData',
+      _i1l5wul2.FeatData => 'FeatData',
+      _iaskjtek.CharacterAppliedChangeRecord => 'CharacterAppliedChangeRecord',
+      _ijpj2a9u.CharacterArmorTrainingOverridesData =>
+        'CharacterArmorTrainingOverridesData',
+      _iykib7lv.CharacterAttackData => 'CharacterAttackData',
+      _ibkyvw07.CharacterChangeData => 'CharacterChangeData',
+      _iwf32wta.CharacterChoiceData => 'CharacterChoiceData',
+      _i1l3jk2d.CharacterChoiceRecord => 'CharacterChoiceRecord',
+      _iqjjxby6.CharacterClassEntryData => 'CharacterClassEntryData',
+      _i1goyn5n.CharacterClassEntryRecord => 'CharacterClassEntryRecord',
+      _im2o0tmj.CharacterData => 'CharacterData',
+      _ir4negfy.CharacterDerivedData => 'CharacterDerivedData',
+      _i7jkadr4.CharacterEquipmentSelectionData =>
+        'CharacterEquipmentSelectionData',
+      _iggvk3az.CharacterFeatureOverrideData => 'CharacterFeatureOverrideData',
+      _imlxp0ix.CharacterFeatureViewData => 'CharacterFeatureViewData',
+      _id5dgxdg.CharacterInventoryItemData => 'CharacterInventoryItemData',
+      _ibvj7xz5.CharacterLanguageOverridesData =>
+        'CharacterLanguageOverridesData',
+      _iqjbme11.CharacterNoteData => 'CharacterNoteData',
+      _is140f48.CharacterRecord => 'CharacterRecord',
+      _ig0fia1r.CharacterRejectedChangeData => 'CharacterRejectedChangeData',
+      _iu6zjs5s.CharacterResourceStateData => 'CharacterResourceStateData',
+      _io9jihae.CharacterResourceViewData => 'CharacterResourceViewData',
+      _i3yrtkjn.CharacterSavingThrowProficiencyOverrideData =>
+        'CharacterSavingThrowProficiencyOverrideData',
+      _ivfw6q0y.CharacterSemanticActionData => 'CharacterSemanticActionData',
+      _isl5krdt.CharacterSkillProficiencyState =>
+        'CharacterSkillProficiencyState',
+      _itkzfry3.CharacterSkillSelectionData => 'CharacterSkillSelectionData',
+      _ic0tmv5d.CharacterSkillSelectionRecord =>
+        'CharacterSkillSelectionRecord',
+      _iesndgzw.CharacterSpellSelectionData => 'CharacterSpellSelectionData',
+      _icqki103.CharacterSpellSelectionRecord =>
+        'CharacterSpellSelectionRecord',
+      _ieudcx2k.CharacterStartingEquipmentResolutionData =>
+        'CharacterStartingEquipmentResolutionData',
+      _ipbr5hem.CharacterStartingEquipmentResolutionRecord =>
+        'CharacterStartingEquipmentResolutionRecord',
+      _ixmjb4z5.CharacterStartingEquipmentSelectionData =>
+        'CharacterStartingEquipmentSelectionData',
+      _ikk28htr.CharacterStartingEquipmentSelectionRecord =>
+        'CharacterStartingEquipmentSelectionRecord',
+      _i2rqx8lk.CharacterSyncEventRecord => 'CharacterSyncEventRecord',
+      _is9ng6da.CharacterSyncOperationData => 'CharacterSyncOperationData',
+      _icxp0ddy.CharacterSyncRequest => 'CharacterSyncRequest',
+      _i29bgu3e.CharacterSyncResponse => 'CharacterSyncResponse',
+      _ix5qhw9w.CharacterSyncResult => 'CharacterSyncResult',
+      _ixfhi6l8.CharacterSyncStatus => 'CharacterSyncStatus',
+      _iz49jt9b.CharacterSyncValueData => 'CharacterSyncValueData',
+      _idvpwngn.CharacterToolProficiencyOverridesData =>
+        'CharacterToolProficiencyOverridesData',
+      _i5e0copu.CharacterWeaponProficiencyOverridesData =>
+        'CharacterWeaponProficiencyOverridesData',
+      _i2mamrrk.ChoiceReplacementHistoryData => 'ChoiceReplacementHistoryData',
+      _iij0mpeo.LevelUpChoiceReplacementData => 'LevelUpChoiceReplacementData',
+      _ipxtly6g.LevelUpRequest => 'LevelUpRequest',
+      _i4b5l3un.LevelUpSpellChoice => 'LevelUpSpellChoice',
+      _i0tavl9b.RelatedFeatureViewData => 'RelatedFeatureViewData',
+      _it45kp8q.SpellSelectionReplacementHistoryData =>
+        'SpellSelectionReplacementHistoryData',
+      _i9cfge83.SpellSlotRecoveryTriggerData => 'SpellSlotRecoveryTriggerData',
+      _i3zkka4q.ChoiceGroupData => 'ChoiceGroupData',
+      _iprx2upt.ChoiceOptionData => 'ChoiceOptionData',
+      _iax2s634.ChoiceRequirementData => 'ChoiceRequirementData',
+      _i4e8ker2.ClassData => 'ClassData',
+      _ijvqpc4v.ClassFeatureData => 'ClassFeatureData',
+      _isxi9i4e.ClassLevelData => 'ClassLevelData',
+      _ihr52fes.PreparedSpellRuleData => 'PreparedSpellRuleData',
+      _ig6b5pj2.SpellSlotProgressionData => 'SpellSlotProgressionData',
+      _igasg47n.StartingEquipmentBlockData => 'StartingEquipmentBlockData',
+      _impna1yi.StartingEquipmentEntryData => 'StartingEquipmentEntryData',
+      _iozcdomq.StartingEquipmentLineData => 'StartingEquipmentLineData',
+      _iyz352zl.StartingEquipmentOptionData => 'StartingEquipmentOptionData',
+      _ijic8hve.SubclassData => 'SubclassData',
+      _iel0dp9q.SubclassFeatureData => 'SubclassFeatureData',
+      _i0aiwhe6.FeatureDisplayPropertyData => 'FeatureDisplayPropertyData',
+      _iwfr4tm0.FeatureModifierConditionData => 'FeatureModifierConditionData',
+      _ilhpjxpt.FeatureModifierData => 'FeatureModifierData',
+      _ircf4zmd.FeatureModifierValueData => 'FeatureModifierValueData',
+      _isecmqna.FeatureRelationData => 'FeatureRelationData',
+      _iflv344v.FeatureResourceDefinitionData =>
+        'FeatureResourceDefinitionData',
+      _i86imp4g.FeatureResourceEffectData => 'FeatureResourceEffectData',
+      _iafoerth.FeatureResourceProgressionValueData =>
+        'FeatureResourceProgressionValueData',
+      _irh2914h.RaceData => 'RaceData',
+      _imnymvhh.RaceFeatureData => 'RaceFeatureData',
+      _ilhjydvh.RaceFeatureSpellGrantData => 'RaceFeatureSpellGrantData',
+      _iqoglfsm.SubraceData => 'SubraceData',
+      _idolx2sf.SpellActivationData => 'SpellActivationData',
+      _i9erq8kp.SpellResourceUpcastPolicyData =>
+        'SpellResourceUpcastPolicyData',
+      _in2nv22i.SpellSelectionFilterData => 'SpellSelectionFilterData',
+      _ipwf59gx.SpellSlotRecoveryPolicyData => 'SpellSlotRecoveryPolicyData',
+      _ivjna1ls.ToolData => 'ToolData',
+      _iv545qv3.ArmorData => 'ArmorData',
+      _ibuwh0hc.ItemData => 'ItemData',
+      _i41tgptx.MagicItemData => 'MagicItemData',
+      _inpmmgks.WeaponData => 'WeaponData',
+      _itvh88br.SpellData => 'SpellData',
+      _iq5q0wh8.SpellScalingData => 'SpellScalingData',
+      _ivey3rvd.DmCreatureException => 'DmCreatureException',
+      _i11aekbu.DmCreatureImportResult => 'DmCreatureImportResult',
+      _ipuprlj7.DmCreatureRecord => 'DmCreatureRecord',
+      _idf6hpk3.DmCreatureSummary => 'DmCreatureSummary',
+      _i5rga0su.Ability => 'Ability',
+      _ix11b24x.ArmorCategory => 'ArmorCategory',
+      _ik1o33an.CharacterAlignment => 'CharacterAlignment',
+      _idqm1edw.CharacterChangeType => 'CharacterChangeType',
+      _icxxpsvd.CharacterEntityType => 'CharacterEntityType',
+      _i1fix3of.CharacterFeatureSourceType => 'CharacterFeatureSourceType',
+      _ik9iz51c.CharacterInventoryItemType => 'CharacterInventoryItemType',
+      _ixbcln74.CharacterSavingThrowProficiencyOverride =>
+        'CharacterSavingThrowProficiencyOverride',
+      _ixj33h5c.CharacterSkillProficiencyLevel =>
+        'CharacterSkillProficiencyLevel',
+      _i3ppfbzb.CharacterSkillSelectionKind => 'CharacterSkillSelectionKind',
+      _ikyxycuo.CharacterSpeedKind => 'CharacterSpeedKind',
+      _ie0q5aqi.CharacterSpellSelectionKind => 'CharacterSpellSelectionKind',
+      _i6jbrxie.CharacterSyncOperationType => 'CharacterSyncOperationType',
+      _ia4qs68v.CharacterSyncTargetType => 'CharacterSyncTargetType',
+      _ia6aulam.ChoiceRequirementType => 'ChoiceRequirementType',
+      _iam6xy91.ChoiceSourceType => 'ChoiceSourceType',
+      _iotu8r29.ChoiceType => 'ChoiceType',
+      _ijyz5fbs.ClassSpellSelectionMode => 'ClassSpellSelectionMode',
+      _ikb1pesi.ConditionType => 'ConditionType',
+      _i6cngs6w.CreatureSize => 'CreatureSize',
+      _i6q2t5mj.DamageType => 'DamageType',
+      _ia851nk8.EquipmentCatalogType => 'EquipmentCatalogType',
+      _i9idws3v.FeatureDisplayPropertyValueKind =>
+        'FeatureDisplayPropertyValueKind',
+      _ilgpxa54.FeatureModifierConditionType => 'FeatureModifierConditionType',
+      _i56op7oq.FeatureModifierOperation => 'FeatureModifierOperation',
+      _i6asfa9j.FeatureModifierRounding => 'FeatureModifierRounding',
+      _izn79nb9.FeatureModifierTarget => 'FeatureModifierTarget',
+      _il8rk55k.FeatureModifierValueKind => 'FeatureModifierValueKind',
+      _ih812opj.FeatureRelationType => 'FeatureRelationType',
+      _ijb3cn5v.FeatureResourceEffectType => 'FeatureResourceEffectType',
+      _ia1vmwiq.FeatureResourceKind => 'FeatureResourceKind',
+      _ib4g5i7q.FeatureResourceMaxRule => 'FeatureResourceMaxRule',
+      _if07r66f.FeatureResourceProgressionKey =>
+        'FeatureResourceProgressionKey',
+      _iyk5jgys.FeatureResourceTargetType => 'FeatureResourceTargetType',
+      _ir3q1cdf.FeatureResourceTrigger => 'FeatureResourceTrigger',
+      _i2l7bpu3.FeatureTag => 'FeatureTag',
+      _izodp5lk.HitPointMode => 'HitPointMode',
+      _iftbsk4q.Language => 'Language',
+      _ieum0m7f.PreparedSpellRounding => 'PreparedSpellRounding',
+      _ibgbgp52.RestType => 'RestType',
+      _iy62ln0z.SenseType => 'SenseType',
+      _iabgjh08.Skill => 'Skill',
+      _ieavm63l.AreaOfEffectType => 'AreaOfEffectType',
+      _iatx40hq.AreaSizeMeasurement => 'AreaSizeMeasurement',
+      _inf83u33.SpellAttackType => 'SpellAttackType',
+      _i9u2urpu.SpellDurationType => 'SpellDurationType',
+      _iw7hp9dc.SpellScalingMode => 'SpellScalingMode',
+      _ioahu9w9.SpellSchool => 'SpellSchool',
+      _iupu1e0e.SpellTargetType => 'SpellTargetType',
+      _ik43ztmo.SpellSlotRecoveryMode => 'SpellSlotRecoveryMode',
+      _ilfh4rku.SpellcastingProgression => 'SpellcastingProgression',
+      _iag2d6aj.StartingEquipmentBlockKind => 'StartingEquipmentBlockKind',
+      _ipm8xyg1.StartingEquipmentEntryKind => 'StartingEquipmentEntryKind',
+      _iniqanjc.StartingEquipmentLineKind => 'StartingEquipmentLineKind',
+      _ic2cpv54.ToolCategory => 'ToolCategory',
+      _i4vk4r4o.UnarmoredDefenseRule => 'UnarmoredDefenseRule',
+      _iiyileog.WeaponCategory => 'WeaponCategory',
+      _iur813s4.WeaponProperty => 'WeaponProperty',
+      _i1l5m7qw.LevelDownChoiceRepair => 'LevelDownChoiceRepair',
+      _irktv0ea.LevelDownRequest => 'LevelDownRequest',
+      _iqeghuxo.BackgroundStepView => 'BackgroundStepView',
+      _isbrs5qf.CharacterEquipmentEntryView => 'CharacterEquipmentEntryView',
+      _i6xbclit.ChoiceGroupView => 'ChoiceGroupView',
+      _iil6pw38.ChoiceOptionEligibilityView => 'ChoiceOptionEligibilityView',
+      _iob9tmlr.ChoiceRequirementFailureView => 'ChoiceRequirementFailureView',
+      _ik4ex2us.ClassSpellDeltaView => 'ClassSpellDeltaView',
+      _ixvig4n8.ClassSpellSelectionGroupView => 'ClassSpellSelectionGroupView',
+      _ih120cff.ClassStepFeatureView => 'ClassStepFeatureView',
+      _i3cyal5j.ClassStepSubclassChoiceView => 'ClassStepSubclassChoiceView',
+      _ib3duw15.ClassStepView => 'ClassStepView',
+      _i9kpkyz2.FeatureDisplayPropertyView => 'FeatureDisplayPropertyView',
+      _iu8i64vu.LevelDownInvalidChoiceView => 'LevelDownInvalidChoiceView',
+      _ipbxh79i.LevelDownPreview => 'LevelDownPreview',
+      _ipqjgw5e.LevelUpPreview => 'LevelUpPreview',
+      _ifavv51o.ProficiencyBundleView => 'ProficiencyBundleView',
+      _id360bq3.RaceStepView => 'RaceStepView',
+      _i8p2oglu.ResolvedCharacterSpellData => 'ResolvedCharacterSpellData',
+      _im19jsv2.SelectedFeatureChoiceView => 'SelectedFeatureChoiceView',
+      _ihn36a1g.SkillSelectionGroupView => 'SkillSelectionGroupView',
+      _iam7pkuu.SpellSourceContextData => 'SpellSourceContextData',
+      _izjjz5hc.StartingEquipmentBlockView => 'StartingEquipmentBlockView',
+      _i3vgjwh2.StartingEquipmentOptionView => 'StartingEquipmentOptionView',
+      _ => null,
+    };
   }
 
   @override
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i4.PreparedSpellRuleData) {
-      return 'PreparedSpellRuleData';
-    }
-    if (data is _i5.BackgroundData) {
-      return 'BackgroundData';
-    }
-    if (data is _i6.ClassSpellGrantData) {
-      return 'ClassSpellGrantData';
-    }
-    if (data is _i7.DamagePartData) {
-      return 'DamagePartData';
-    }
-    if (data is _i8.FeatData) {
-      return 'FeatData';
-    }
-    if (data is _i9.CharacterAppliedChangeRecord) {
-      return 'CharacterAppliedChangeRecord';
-    }
-    if (data is _i10.CharacterArmorTrainingOverridesData) {
-      return 'CharacterArmorTrainingOverridesData';
-    }
-    if (data is _i11.CharacterAttackData) {
-      return 'CharacterAttackData';
-    }
-    if (data is _i12.CharacterChangeData) {
-      return 'CharacterChangeData';
-    }
-    if (data is _i13.CharacterChoiceData) {
-      return 'CharacterChoiceData';
-    }
-    if (data is _i14.CharacterChoiceRecord) {
-      return 'CharacterChoiceRecord';
-    }
-    if (data is _i15.CharacterClassEntryData) {
-      return 'CharacterClassEntryData';
-    }
-    if (data is _i16.CharacterClassEntryRecord) {
-      return 'CharacterClassEntryRecord';
-    }
-    if (data is _i17.CharacterData) {
-      return 'CharacterData';
-    }
-    if (data is _i18.CharacterDerivedData) {
-      return 'CharacterDerivedData';
-    }
-    if (data is _i19.CharacterEquipmentSelectionData) {
-      return 'CharacterEquipmentSelectionData';
-    }
-    if (data is _i20.CharacterFeatureOverrideData) {
-      return 'CharacterFeatureOverrideData';
-    }
-    if (data is _i21.CharacterFeatureViewData) {
-      return 'CharacterFeatureViewData';
-    }
-    if (data is _i22.CharacterInventoryItemData) {
-      return 'CharacterInventoryItemData';
-    }
-    if (data is _i23.CharacterLanguageOverridesData) {
-      return 'CharacterLanguageOverridesData';
-    }
-    if (data is _i24.CharacterNoteData) {
-      return 'CharacterNoteData';
-    }
-    if (data is _i25.CharacterRecord) {
-      return 'CharacterRecord';
-    }
-    if (data is _i26.CharacterRejectedChangeData) {
-      return 'CharacterRejectedChangeData';
-    }
-    if (data is _i27.CharacterResourceStateData) {
-      return 'CharacterResourceStateData';
-    }
-    if (data is _i28.CharacterResourceViewData) {
-      return 'CharacterResourceViewData';
-    }
-    if (data is _i29.CharacterSavingThrowProficiencyOverrideData) {
-      return 'CharacterSavingThrowProficiencyOverrideData';
-    }
-    if (data is _i30.CharacterSemanticActionData) {
-      return 'CharacterSemanticActionData';
-    }
-    if (data is _i31.CharacterSkillProficiencyState) {
-      return 'CharacterSkillProficiencyState';
-    }
-    if (data is _i32.CharacterSkillSelectionData) {
-      return 'CharacterSkillSelectionData';
-    }
-    if (data is _i33.CharacterSkillSelectionRecord) {
-      return 'CharacterSkillSelectionRecord';
-    }
-    if (data is _i34.CharacterSpellSelectionData) {
-      return 'CharacterSpellSelectionData';
-    }
-    if (data is _i35.CharacterSpellSelectionRecord) {
-      return 'CharacterSpellSelectionRecord';
-    }
-    if (data is _i36.CharacterStartingEquipmentResolutionData) {
-      return 'CharacterStartingEquipmentResolutionData';
-    }
-    if (data is _i37.CharacterStartingEquipmentResolutionRecord) {
-      return 'CharacterStartingEquipmentResolutionRecord';
-    }
-    if (data is _i38.CharacterStartingEquipmentSelectionData) {
-      return 'CharacterStartingEquipmentSelectionData';
-    }
-    if (data is _i39.CharacterStartingEquipmentSelectionRecord) {
-      return 'CharacterStartingEquipmentSelectionRecord';
-    }
-    if (data is _i40.CharacterSyncEventRecord) {
-      return 'CharacterSyncEventRecord';
-    }
-    if (data is _i41.CharacterSyncOperationData) {
-      return 'CharacterSyncOperationData';
-    }
-    if (data is _i42.CharacterSyncRequest) {
-      return 'CharacterSyncRequest';
-    }
-    if (data is _i43.CharacterSyncResponse) {
-      return 'CharacterSyncResponse';
-    }
-    if (data is _i44.CharacterSyncResult) {
-      return 'CharacterSyncResult';
-    }
-    if (data is _i45.CharacterSyncStatus) {
-      return 'CharacterSyncStatus';
-    }
-    if (data is _i46.CharacterSyncValueData) {
-      return 'CharacterSyncValueData';
-    }
-    if (data is _i47.CharacterToolProficiencyOverridesData) {
-      return 'CharacterToolProficiencyOverridesData';
-    }
-    if (data is _i48.CharacterWeaponProficiencyOverridesData) {
-      return 'CharacterWeaponProficiencyOverridesData';
-    }
-    if (data is _i49.ChoiceReplacementHistoryData) {
-      return 'ChoiceReplacementHistoryData';
-    }
-    if (data is _i50.LevelUpChoiceReplacementData) {
-      return 'LevelUpChoiceReplacementData';
-    }
-    if (data is _i51.LevelUpRequest) {
-      return 'LevelUpRequest';
-    }
-    if (data is _i52.LevelUpSpellChoice) {
-      return 'LevelUpSpellChoice';
-    }
-    if (data is _i53.RelatedFeatureViewData) {
-      return 'RelatedFeatureViewData';
-    }
-    if (data is _i54.SpellSelectionReplacementHistoryData) {
-      return 'SpellSelectionReplacementHistoryData';
-    }
-    if (data is _i55.SpellSlotRecoveryTriggerData) {
-      return 'SpellSlotRecoveryTriggerData';
-    }
-    if (data is _i56.ChoiceGroupData) {
-      return 'ChoiceGroupData';
-    }
-    if (data is _i57.ChoiceOptionData) {
-      return 'ChoiceOptionData';
-    }
-    if (data is _i58.ChoiceRequirementData) {
-      return 'ChoiceRequirementData';
-    }
-    if (data is _i59.ClassData) {
-      return 'ClassData';
-    }
-    if (data is _i60.ClassFeatureData) {
-      return 'ClassFeatureData';
-    }
-    if (data is _i61.ClassLevelData) {
-      return 'ClassLevelData';
-    }
-    if (data is _i62.AuthActionResult) {
-      return 'AuthActionResult';
-    }
-    if (data is _i63.SpellSlotProgressionData) {
-      return 'SpellSlotProgressionData';
-    }
-    if (data is _i64.StartingEquipmentBlockData) {
-      return 'StartingEquipmentBlockData';
-    }
-    if (data is _i65.StartingEquipmentEntryData) {
-      return 'StartingEquipmentEntryData';
-    }
-    if (data is _i66.StartingEquipmentLineData) {
-      return 'StartingEquipmentLineData';
-    }
-    if (data is _i67.StartingEquipmentOptionData) {
-      return 'StartingEquipmentOptionData';
-    }
-    if (data is _i68.SubclassData) {
-      return 'SubclassData';
-    }
-    if (data is _i69.SubclassFeatureData) {
-      return 'SubclassFeatureData';
-    }
-    if (data is _i70.FeatureDisplayPropertyData) {
-      return 'FeatureDisplayPropertyData';
-    }
-    if (data is _i71.FeatureModifierConditionData) {
-      return 'FeatureModifierConditionData';
-    }
-    if (data is _i72.FeatureModifierData) {
-      return 'FeatureModifierData';
-    }
-    if (data is _i73.FeatureModifierValueData) {
-      return 'FeatureModifierValueData';
-    }
-    if (data is _i74.FeatureRelationData) {
-      return 'FeatureRelationData';
-    }
-    if (data is _i75.FeatureResourceDefinitionData) {
-      return 'FeatureResourceDefinitionData';
-    }
-    if (data is _i76.FeatureResourceEffectData) {
-      return 'FeatureResourceEffectData';
-    }
-    if (data is _i77.FeatureResourceProgressionValueData) {
-      return 'FeatureResourceProgressionValueData';
-    }
-    if (data is _i78.RaceData) {
-      return 'RaceData';
-    }
-    if (data is _i79.RaceFeatureData) {
-      return 'RaceFeatureData';
-    }
-    if (data is _i80.RaceFeatureSpellGrantData) {
-      return 'RaceFeatureSpellGrantData';
-    }
-    if (data is _i81.SubraceData) {
-      return 'SubraceData';
-    }
-    if (data is _i82.SpellActivationData) {
-      return 'SpellActivationData';
-    }
-    if (data is _i83.SpellResourceUpcastPolicyData) {
-      return 'SpellResourceUpcastPolicyData';
-    }
-    if (data is _i84.SpellSelectionFilterData) {
-      return 'SpellSelectionFilterData';
-    }
-    if (data is _i85.SpellSlotRecoveryPolicyData) {
-      return 'SpellSlotRecoveryPolicyData';
-    }
-    if (data is _i86.ToolData) {
-      return 'ToolData';
-    }
-    if (data is _i87.ArmorData) {
-      return 'ArmorData';
-    }
-    if (data is _i88.ItemData) {
-      return 'ItemData';
-    }
-    if (data is _i89.MagicItemData) {
-      return 'MagicItemData';
-    }
-    if (data is _i90.WeaponData) {
-      return 'WeaponData';
-    }
-    if (data is _i91.SpellData) {
-      return 'SpellData';
-    }
-    if (data is _i92.SpellScalingData) {
-      return 'SpellScalingData';
-    }
-    if (data is _i93.DmCreatureException) {
-      return 'DmCreatureException';
-    }
-    if (data is _i94.DmCreatureImportResult) {
-      return 'DmCreatureImportResult';
-    }
-    if (data is _i95.DmCreatureRecord) {
-      return 'DmCreatureRecord';
-    }
-    if (data is _i96.DmCreatureSummary) {
-      return 'DmCreatureSummary';
-    }
-    if (data is _i97.Ability) {
-      return 'Ability';
-    }
-    if (data is _i98.ArmorCategory) {
-      return 'ArmorCategory';
-    }
-    if (data is _i99.CharacterAlignment) {
-      return 'CharacterAlignment';
-    }
-    if (data is _i100.CharacterChangeType) {
-      return 'CharacterChangeType';
-    }
-    if (data is _i101.CharacterEntityType) {
-      return 'CharacterEntityType';
-    }
-    if (data is _i102.CharacterFeatureSourceType) {
-      return 'CharacterFeatureSourceType';
-    }
-    if (data is _i103.CharacterInventoryItemType) {
-      return 'CharacterInventoryItemType';
-    }
-    if (data is _i104.CharacterSavingThrowProficiencyOverride) {
-      return 'CharacterSavingThrowProficiencyOverride';
-    }
-    if (data is _i105.CharacterSkillProficiencyLevel) {
-      return 'CharacterSkillProficiencyLevel';
-    }
-    if (data is _i106.CharacterSkillSelectionKind) {
-      return 'CharacterSkillSelectionKind';
-    }
-    if (data is _i107.CharacterSpeedKind) {
-      return 'CharacterSpeedKind';
-    }
-    if (data is _i108.CharacterSpellSelectionKind) {
-      return 'CharacterSpellSelectionKind';
-    }
-    if (data is _i109.CharacterSyncOperationType) {
-      return 'CharacterSyncOperationType';
-    }
-    if (data is _i110.CharacterSyncTargetType) {
-      return 'CharacterSyncTargetType';
-    }
-    if (data is _i111.ChoiceRequirementType) {
-      return 'ChoiceRequirementType';
-    }
-    if (data is _i112.ChoiceSourceType) {
-      return 'ChoiceSourceType';
-    }
-    if (data is _i113.ChoiceType) {
-      return 'ChoiceType';
-    }
-    if (data is _i114.ClassSpellSelectionMode) {
-      return 'ClassSpellSelectionMode';
-    }
-    if (data is _i115.ConditionType) {
-      return 'ConditionType';
-    }
-    if (data is _i116.CreatureSize) {
-      return 'CreatureSize';
-    }
-    if (data is _i117.DamageType) {
-      return 'DamageType';
-    }
-    if (data is _i118.EquipmentCatalogType) {
-      return 'EquipmentCatalogType';
-    }
-    if (data is _i119.FeatureDisplayPropertyValueKind) {
-      return 'FeatureDisplayPropertyValueKind';
-    }
-    if (data is _i120.StartingEquipmentOptionView) {
-      return 'StartingEquipmentOptionView';
-    }
-    if (data is _i121.FeatureModifierOperation) {
-      return 'FeatureModifierOperation';
-    }
-    if (data is _i122.FeatureModifierRounding) {
-      return 'FeatureModifierRounding';
-    }
-    if (data is _i123.FeatureModifierTarget) {
-      return 'FeatureModifierTarget';
-    }
-    if (data is _i124.FeatureModifierValueKind) {
-      return 'FeatureModifierValueKind';
-    }
-    if (data is _i125.FeatureRelationType) {
-      return 'FeatureRelationType';
-    }
-    if (data is _i126.FeatureResourceEffectType) {
-      return 'FeatureResourceEffectType';
-    }
-    if (data is _i127.FeatureResourceKind) {
-      return 'FeatureResourceKind';
-    }
-    if (data is _i128.FeatureResourceMaxRule) {
-      return 'FeatureResourceMaxRule';
-    }
-    if (data is _i129.FeatureResourceProgressionKey) {
-      return 'FeatureResourceProgressionKey';
-    }
-    if (data is _i130.FeatureResourceTargetType) {
-      return 'FeatureResourceTargetType';
-    }
-    if (data is _i131.FeatureResourceTrigger) {
-      return 'FeatureResourceTrigger';
-    }
-    if (data is _i132.FeatureTag) {
-      return 'FeatureTag';
-    }
-    if (data is _i133.HitPointMode) {
-      return 'HitPointMode';
-    }
-    if (data is _i134.Language) {
-      return 'Language';
-    }
-    if (data is _i135.PreparedSpellRounding) {
-      return 'PreparedSpellRounding';
-    }
-    if (data is _i136.RestType) {
-      return 'RestType';
-    }
-    if (data is _i137.SenseType) {
-      return 'SenseType';
-    }
-    if (data is _i138.Skill) {
-      return 'Skill';
-    }
-    if (data is _i139.AreaOfEffectType) {
-      return 'AreaOfEffectType';
-    }
-    if (data is _i140.AreaSizeMeasurement) {
-      return 'AreaSizeMeasurement';
-    }
-    if (data is _i141.SpellAttackType) {
-      return 'SpellAttackType';
-    }
-    if (data is _i142.SpellDurationType) {
-      return 'SpellDurationType';
-    }
-    if (data is _i143.SpellScalingMode) {
-      return 'SpellScalingMode';
-    }
-    if (data is _i144.SpellSchool) {
-      return 'SpellSchool';
-    }
-    if (data is _i145.SpellTargetType) {
-      return 'SpellTargetType';
-    }
-    if (data is _i146.SpellSlotRecoveryMode) {
-      return 'SpellSlotRecoveryMode';
-    }
-    if (data is _i147.SpellcastingProgression) {
-      return 'SpellcastingProgression';
-    }
-    if (data is _i148.StartingEquipmentBlockKind) {
-      return 'StartingEquipmentBlockKind';
-    }
-    if (data is _i149.StartingEquipmentEntryKind) {
-      return 'StartingEquipmentEntryKind';
-    }
-    if (data is _i150.StartingEquipmentLineKind) {
-      return 'StartingEquipmentLineKind';
-    }
-    if (data is _i151.ToolCategory) {
-      return 'ToolCategory';
-    }
-    if (data is _i152.UnarmoredDefenseRule) {
-      return 'UnarmoredDefenseRule';
-    }
-    if (data is _i153.WeaponCategory) {
-      return 'WeaponCategory';
-    }
-    if (data is _i154.WeaponProperty) {
-      return 'WeaponProperty';
-    }
-    if (data is _i155.LevelDownChoiceRepair) {
-      return 'LevelDownChoiceRepair';
-    }
-    if (data is _i156.LevelDownRequest) {
-      return 'LevelDownRequest';
-    }
-    if (data is _i157.BackgroundStepView) {
-      return 'BackgroundStepView';
-    }
-    if (data is _i158.CharacterEquipmentEntryView) {
-      return 'CharacterEquipmentEntryView';
-    }
-    if (data is _i159.ChoiceGroupView) {
-      return 'ChoiceGroupView';
-    }
-    if (data is _i160.ChoiceOptionEligibilityView) {
-      return 'ChoiceOptionEligibilityView';
-    }
-    if (data is _i161.ChoiceRequirementFailureView) {
-      return 'ChoiceRequirementFailureView';
-    }
-    if (data is _i162.ClassSpellDeltaView) {
-      return 'ClassSpellDeltaView';
-    }
-    if (data is _i163.ClassSpellSelectionGroupView) {
-      return 'ClassSpellSelectionGroupView';
-    }
-    if (data is _i164.ClassStepFeatureView) {
-      return 'ClassStepFeatureView';
-    }
-    if (data is _i165.ClassStepSubclassChoiceView) {
-      return 'ClassStepSubclassChoiceView';
-    }
-    if (data is _i166.ClassStepView) {
-      return 'ClassStepView';
-    }
-    if (data is _i167.FeatureDisplayPropertyView) {
-      return 'FeatureDisplayPropertyView';
-    }
-    if (data is _i168.LevelDownInvalidChoiceView) {
-      return 'LevelDownInvalidChoiceView';
-    }
-    if (data is _i169.LevelDownPreview) {
-      return 'LevelDownPreview';
-    }
-    if (data is _i170.LevelUpPreview) {
-      return 'LevelUpPreview';
-    }
-    if (data is _i171.ProficiencyBundleView) {
-      return 'ProficiencyBundleView';
-    }
-    if (data is _i172.RaceStepView) {
-      return 'RaceStepView';
-    }
-    if (data is _i173.ResolvedCharacterSpellData) {
-      return 'ResolvedCharacterSpellData';
-    }
-    if (data is _i174.SelectedFeatureChoiceView) {
-      return 'SelectedFeatureChoiceView';
-    }
-    if (data is _i175.SkillSelectionGroupView) {
-      return 'SkillSelectionGroupView';
-    }
-    if (data is _i176.SpellSourceContextData) {
-      return 'SpellSourceContextData';
-    }
-    if (data is _i177.StartingEquipmentBlockView) {
-      return 'StartingEquipmentBlockView';
-    }
-    if (data is _i178.FeatureModifierConditionType) {
-      return 'FeatureModifierConditionType';
-    }
-    className = _i2.Protocol().getClassNameForObject(data);
+
+    if (data is Map<String, dynamic> && data['__className__'] is String) {
+      return (data['__className__'] as String).replaceFirst(
+        'characters_mirror.',
+        '',
+      );
+    }
+
+    switch (data) {
+      case _iydli74w.AuthActionResult():
+        return 'AuthActionResult';
+      case _i3katqli.BackgroundData():
+        return 'BackgroundData';
+      case _i68we1de.ClassSpellGrantData():
+        return 'ClassSpellGrantData';
+      case _iqilpl6d.DamagePartData():
+        return 'DamagePartData';
+      case _i1l5wul2.FeatData():
+        return 'FeatData';
+      case _iaskjtek.CharacterAppliedChangeRecord():
+        return 'CharacterAppliedChangeRecord';
+      case _ijpj2a9u.CharacterArmorTrainingOverridesData():
+        return 'CharacterArmorTrainingOverridesData';
+      case _iykib7lv.CharacterAttackData():
+        return 'CharacterAttackData';
+      case _ibkyvw07.CharacterChangeData():
+        return 'CharacterChangeData';
+      case _iwf32wta.CharacterChoiceData():
+        return 'CharacterChoiceData';
+      case _i1l3jk2d.CharacterChoiceRecord():
+        return 'CharacterChoiceRecord';
+      case _iqjjxby6.CharacterClassEntryData():
+        return 'CharacterClassEntryData';
+      case _i1goyn5n.CharacterClassEntryRecord():
+        return 'CharacterClassEntryRecord';
+      case _im2o0tmj.CharacterData():
+        return 'CharacterData';
+      case _ir4negfy.CharacterDerivedData():
+        return 'CharacterDerivedData';
+      case _i7jkadr4.CharacterEquipmentSelectionData():
+        return 'CharacterEquipmentSelectionData';
+      case _iggvk3az.CharacterFeatureOverrideData():
+        return 'CharacterFeatureOverrideData';
+      case _imlxp0ix.CharacterFeatureViewData():
+        return 'CharacterFeatureViewData';
+      case _id5dgxdg.CharacterInventoryItemData():
+        return 'CharacterInventoryItemData';
+      case _ibvj7xz5.CharacterLanguageOverridesData():
+        return 'CharacterLanguageOverridesData';
+      case _iqjbme11.CharacterNoteData():
+        return 'CharacterNoteData';
+      case _is140f48.CharacterRecord():
+        return 'CharacterRecord';
+      case _ig0fia1r.CharacterRejectedChangeData():
+        return 'CharacterRejectedChangeData';
+      case _iu6zjs5s.CharacterResourceStateData():
+        return 'CharacterResourceStateData';
+      case _io9jihae.CharacterResourceViewData():
+        return 'CharacterResourceViewData';
+      case _i3yrtkjn.CharacterSavingThrowProficiencyOverrideData():
+        return 'CharacterSavingThrowProficiencyOverrideData';
+      case _ivfw6q0y.CharacterSemanticActionData():
+        return 'CharacterSemanticActionData';
+      case _isl5krdt.CharacterSkillProficiencyState():
+        return 'CharacterSkillProficiencyState';
+      case _itkzfry3.CharacterSkillSelectionData():
+        return 'CharacterSkillSelectionData';
+      case _ic0tmv5d.CharacterSkillSelectionRecord():
+        return 'CharacterSkillSelectionRecord';
+      case _iesndgzw.CharacterSpellSelectionData():
+        return 'CharacterSpellSelectionData';
+      case _icqki103.CharacterSpellSelectionRecord():
+        return 'CharacterSpellSelectionRecord';
+      case _ieudcx2k.CharacterStartingEquipmentResolutionData():
+        return 'CharacterStartingEquipmentResolutionData';
+      case _ipbr5hem.CharacterStartingEquipmentResolutionRecord():
+        return 'CharacterStartingEquipmentResolutionRecord';
+      case _ixmjb4z5.CharacterStartingEquipmentSelectionData():
+        return 'CharacterStartingEquipmentSelectionData';
+      case _ikk28htr.CharacterStartingEquipmentSelectionRecord():
+        return 'CharacterStartingEquipmentSelectionRecord';
+      case _i2rqx8lk.CharacterSyncEventRecord():
+        return 'CharacterSyncEventRecord';
+      case _is9ng6da.CharacterSyncOperationData():
+        return 'CharacterSyncOperationData';
+      case _icxp0ddy.CharacterSyncRequest():
+        return 'CharacterSyncRequest';
+      case _i29bgu3e.CharacterSyncResponse():
+        return 'CharacterSyncResponse';
+      case _ix5qhw9w.CharacterSyncResult():
+        return 'CharacterSyncResult';
+      case _ixfhi6l8.CharacterSyncStatus():
+        return 'CharacterSyncStatus';
+      case _iz49jt9b.CharacterSyncValueData():
+        return 'CharacterSyncValueData';
+      case _idvpwngn.CharacterToolProficiencyOverridesData():
+        return 'CharacterToolProficiencyOverridesData';
+      case _i5e0copu.CharacterWeaponProficiencyOverridesData():
+        return 'CharacterWeaponProficiencyOverridesData';
+      case _i2mamrrk.ChoiceReplacementHistoryData():
+        return 'ChoiceReplacementHistoryData';
+      case _iij0mpeo.LevelUpChoiceReplacementData():
+        return 'LevelUpChoiceReplacementData';
+      case _ipxtly6g.LevelUpRequest():
+        return 'LevelUpRequest';
+      case _i4b5l3un.LevelUpSpellChoice():
+        return 'LevelUpSpellChoice';
+      case _i0tavl9b.RelatedFeatureViewData():
+        return 'RelatedFeatureViewData';
+      case _it45kp8q.SpellSelectionReplacementHistoryData():
+        return 'SpellSelectionReplacementHistoryData';
+      case _i9cfge83.SpellSlotRecoveryTriggerData():
+        return 'SpellSlotRecoveryTriggerData';
+      case _i3zkka4q.ChoiceGroupData():
+        return 'ChoiceGroupData';
+      case _iprx2upt.ChoiceOptionData():
+        return 'ChoiceOptionData';
+      case _iax2s634.ChoiceRequirementData():
+        return 'ChoiceRequirementData';
+      case _i4e8ker2.ClassData():
+        return 'ClassData';
+      case _ijvqpc4v.ClassFeatureData():
+        return 'ClassFeatureData';
+      case _isxi9i4e.ClassLevelData():
+        return 'ClassLevelData';
+      case _ihr52fes.PreparedSpellRuleData():
+        return 'PreparedSpellRuleData';
+      case _ig6b5pj2.SpellSlotProgressionData():
+        return 'SpellSlotProgressionData';
+      case _igasg47n.StartingEquipmentBlockData():
+        return 'StartingEquipmentBlockData';
+      case _impna1yi.StartingEquipmentEntryData():
+        return 'StartingEquipmentEntryData';
+      case _iozcdomq.StartingEquipmentLineData():
+        return 'StartingEquipmentLineData';
+      case _iyz352zl.StartingEquipmentOptionData():
+        return 'StartingEquipmentOptionData';
+      case _ijic8hve.SubclassData():
+        return 'SubclassData';
+      case _iel0dp9q.SubclassFeatureData():
+        return 'SubclassFeatureData';
+      case _i0aiwhe6.FeatureDisplayPropertyData():
+        return 'FeatureDisplayPropertyData';
+      case _iwfr4tm0.FeatureModifierConditionData():
+        return 'FeatureModifierConditionData';
+      case _ilhpjxpt.FeatureModifierData():
+        return 'FeatureModifierData';
+      case _ircf4zmd.FeatureModifierValueData():
+        return 'FeatureModifierValueData';
+      case _isecmqna.FeatureRelationData():
+        return 'FeatureRelationData';
+      case _iflv344v.FeatureResourceDefinitionData():
+        return 'FeatureResourceDefinitionData';
+      case _i86imp4g.FeatureResourceEffectData():
+        return 'FeatureResourceEffectData';
+      case _iafoerth.FeatureResourceProgressionValueData():
+        return 'FeatureResourceProgressionValueData';
+      case _irh2914h.RaceData():
+        return 'RaceData';
+      case _imnymvhh.RaceFeatureData():
+        return 'RaceFeatureData';
+      case _ilhjydvh.RaceFeatureSpellGrantData():
+        return 'RaceFeatureSpellGrantData';
+      case _iqoglfsm.SubraceData():
+        return 'SubraceData';
+      case _idolx2sf.SpellActivationData():
+        return 'SpellActivationData';
+      case _i9erq8kp.SpellResourceUpcastPolicyData():
+        return 'SpellResourceUpcastPolicyData';
+      case _in2nv22i.SpellSelectionFilterData():
+        return 'SpellSelectionFilterData';
+      case _ipwf59gx.SpellSlotRecoveryPolicyData():
+        return 'SpellSlotRecoveryPolicyData';
+      case _ivjna1ls.ToolData():
+        return 'ToolData';
+      case _iv545qv3.ArmorData():
+        return 'ArmorData';
+      case _ibuwh0hc.ItemData():
+        return 'ItemData';
+      case _i41tgptx.MagicItemData():
+        return 'MagicItemData';
+      case _inpmmgks.WeaponData():
+        return 'WeaponData';
+      case _itvh88br.SpellData():
+        return 'SpellData';
+      case _iq5q0wh8.SpellScalingData():
+        return 'SpellScalingData';
+      case _ivey3rvd.DmCreatureException():
+        return 'DmCreatureException';
+      case _i11aekbu.DmCreatureImportResult():
+        return 'DmCreatureImportResult';
+      case _ipuprlj7.DmCreatureRecord():
+        return 'DmCreatureRecord';
+      case _idf6hpk3.DmCreatureSummary():
+        return 'DmCreatureSummary';
+      case _i5rga0su.Ability():
+        return 'Ability';
+      case _ix11b24x.ArmorCategory():
+        return 'ArmorCategory';
+      case _ik1o33an.CharacterAlignment():
+        return 'CharacterAlignment';
+      case _idqm1edw.CharacterChangeType():
+        return 'CharacterChangeType';
+      case _icxxpsvd.CharacterEntityType():
+        return 'CharacterEntityType';
+      case _i1fix3of.CharacterFeatureSourceType():
+        return 'CharacterFeatureSourceType';
+      case _ik9iz51c.CharacterInventoryItemType():
+        return 'CharacterInventoryItemType';
+      case _ixbcln74.CharacterSavingThrowProficiencyOverride():
+        return 'CharacterSavingThrowProficiencyOverride';
+      case _ixj33h5c.CharacterSkillProficiencyLevel():
+        return 'CharacterSkillProficiencyLevel';
+      case _i3ppfbzb.CharacterSkillSelectionKind():
+        return 'CharacterSkillSelectionKind';
+      case _ikyxycuo.CharacterSpeedKind():
+        return 'CharacterSpeedKind';
+      case _ie0q5aqi.CharacterSpellSelectionKind():
+        return 'CharacterSpellSelectionKind';
+      case _i6jbrxie.CharacterSyncOperationType():
+        return 'CharacterSyncOperationType';
+      case _ia4qs68v.CharacterSyncTargetType():
+        return 'CharacterSyncTargetType';
+      case _ia6aulam.ChoiceRequirementType():
+        return 'ChoiceRequirementType';
+      case _iam6xy91.ChoiceSourceType():
+        return 'ChoiceSourceType';
+      case _iotu8r29.ChoiceType():
+        return 'ChoiceType';
+      case _ijyz5fbs.ClassSpellSelectionMode():
+        return 'ClassSpellSelectionMode';
+      case _ikb1pesi.ConditionType():
+        return 'ConditionType';
+      case _i6cngs6w.CreatureSize():
+        return 'CreatureSize';
+      case _i6q2t5mj.DamageType():
+        return 'DamageType';
+      case _ia851nk8.EquipmentCatalogType():
+        return 'EquipmentCatalogType';
+      case _i9idws3v.FeatureDisplayPropertyValueKind():
+        return 'FeatureDisplayPropertyValueKind';
+      case _ilgpxa54.FeatureModifierConditionType():
+        return 'FeatureModifierConditionType';
+      case _i56op7oq.FeatureModifierOperation():
+        return 'FeatureModifierOperation';
+      case _i6asfa9j.FeatureModifierRounding():
+        return 'FeatureModifierRounding';
+      case _izn79nb9.FeatureModifierTarget():
+        return 'FeatureModifierTarget';
+      case _il8rk55k.FeatureModifierValueKind():
+        return 'FeatureModifierValueKind';
+      case _ih812opj.FeatureRelationType():
+        return 'FeatureRelationType';
+      case _ijb3cn5v.FeatureResourceEffectType():
+        return 'FeatureResourceEffectType';
+      case _ia1vmwiq.FeatureResourceKind():
+        return 'FeatureResourceKind';
+      case _ib4g5i7q.FeatureResourceMaxRule():
+        return 'FeatureResourceMaxRule';
+      case _if07r66f.FeatureResourceProgressionKey():
+        return 'FeatureResourceProgressionKey';
+      case _iyk5jgys.FeatureResourceTargetType():
+        return 'FeatureResourceTargetType';
+      case _ir3q1cdf.FeatureResourceTrigger():
+        return 'FeatureResourceTrigger';
+      case _i2l7bpu3.FeatureTag():
+        return 'FeatureTag';
+      case _izodp5lk.HitPointMode():
+        return 'HitPointMode';
+      case _iftbsk4q.Language():
+        return 'Language';
+      case _ieum0m7f.PreparedSpellRounding():
+        return 'PreparedSpellRounding';
+      case _ibgbgp52.RestType():
+        return 'RestType';
+      case _iy62ln0z.SenseType():
+        return 'SenseType';
+      case _iabgjh08.Skill():
+        return 'Skill';
+      case _ieavm63l.AreaOfEffectType():
+        return 'AreaOfEffectType';
+      case _iatx40hq.AreaSizeMeasurement():
+        return 'AreaSizeMeasurement';
+      case _inf83u33.SpellAttackType():
+        return 'SpellAttackType';
+      case _i9u2urpu.SpellDurationType():
+        return 'SpellDurationType';
+      case _iw7hp9dc.SpellScalingMode():
+        return 'SpellScalingMode';
+      case _ioahu9w9.SpellSchool():
+        return 'SpellSchool';
+      case _iupu1e0e.SpellTargetType():
+        return 'SpellTargetType';
+      case _ik43ztmo.SpellSlotRecoveryMode():
+        return 'SpellSlotRecoveryMode';
+      case _ilfh4rku.SpellcastingProgression():
+        return 'SpellcastingProgression';
+      case _iag2d6aj.StartingEquipmentBlockKind():
+        return 'StartingEquipmentBlockKind';
+      case _ipm8xyg1.StartingEquipmentEntryKind():
+        return 'StartingEquipmentEntryKind';
+      case _iniqanjc.StartingEquipmentLineKind():
+        return 'StartingEquipmentLineKind';
+      case _ic2cpv54.ToolCategory():
+        return 'ToolCategory';
+      case _i4vk4r4o.UnarmoredDefenseRule():
+        return 'UnarmoredDefenseRule';
+      case _iiyileog.WeaponCategory():
+        return 'WeaponCategory';
+      case _iur813s4.WeaponProperty():
+        return 'WeaponProperty';
+      case _i1l5m7qw.LevelDownChoiceRepair():
+        return 'LevelDownChoiceRepair';
+      case _irktv0ea.LevelDownRequest():
+        return 'LevelDownRequest';
+      case _iqeghuxo.BackgroundStepView():
+        return 'BackgroundStepView';
+      case _isbrs5qf.CharacterEquipmentEntryView():
+        return 'CharacterEquipmentEntryView';
+      case _i6xbclit.ChoiceGroupView():
+        return 'ChoiceGroupView';
+      case _iil6pw38.ChoiceOptionEligibilityView():
+        return 'ChoiceOptionEligibilityView';
+      case _iob9tmlr.ChoiceRequirementFailureView():
+        return 'ChoiceRequirementFailureView';
+      case _ik4ex2us.ClassSpellDeltaView():
+        return 'ClassSpellDeltaView';
+      case _ixvig4n8.ClassSpellSelectionGroupView():
+        return 'ClassSpellSelectionGroupView';
+      case _ih120cff.ClassStepFeatureView():
+        return 'ClassStepFeatureView';
+      case _i3cyal5j.ClassStepSubclassChoiceView():
+        return 'ClassStepSubclassChoiceView';
+      case _ib3duw15.ClassStepView():
+        return 'ClassStepView';
+      case _i9kpkyz2.FeatureDisplayPropertyView():
+        return 'FeatureDisplayPropertyView';
+      case _iu8i64vu.LevelDownInvalidChoiceView():
+        return 'LevelDownInvalidChoiceView';
+      case _ipbxh79i.LevelDownPreview():
+        return 'LevelDownPreview';
+      case _ipqjgw5e.LevelUpPreview():
+        return 'LevelUpPreview';
+      case _ifavv51o.ProficiencyBundleView():
+        return 'ProficiencyBundleView';
+      case _id360bq3.RaceStepView():
+        return 'RaceStepView';
+      case _i8p2oglu.ResolvedCharacterSpellData():
+        return 'ResolvedCharacterSpellData';
+      case _im19jsv2.SelectedFeatureChoiceView():
+        return 'SelectedFeatureChoiceView';
+      case _ihn36a1g.SkillSelectionGroupView():
+        return 'SkillSelectionGroupView';
+      case _iam7pkuu.SpellSourceContextData():
+        return 'SpellSourceContextData';
+      case _izjjz5hc.StartingEquipmentBlockView():
+        return 'StartingEquipmentBlockView';
+      case _i3vgjwh2.StartingEquipmentOptionView():
+        return 'StartingEquipmentOptionView';
+    }
+    className = _i1n3uhu0.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return 'serverpod.$className';
+      return className.contains('.') ? className : 'serverpod_auth.$className';
     }
-    className = _i3.Protocol().getClassNameForObject(data);
+    className = _isp.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return 'serverpod_auth.$className';
+      return className.contains('.') ? className : 'serverpod.$className';
     }
     return null;
   }
@@ -10223,652 +9606,692 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
-    if (dataClassName == 'PreparedSpellRuleData') {
-      return deserialize<_i4.PreparedSpellRuleData>(data['data']);
+    if (dataClassName == 'AuthActionResult') {
+      return deserialize<_iydli74w.AuthActionResult>(data['data']);
     }
     if (dataClassName == 'BackgroundData') {
-      return deserialize<_i5.BackgroundData>(data['data']);
+      return deserialize<_i3katqli.BackgroundData>(data['data']);
     }
     if (dataClassName == 'ClassSpellGrantData') {
-      return deserialize<_i6.ClassSpellGrantData>(data['data']);
+      return deserialize<_i68we1de.ClassSpellGrantData>(data['data']);
     }
     if (dataClassName == 'DamagePartData') {
-      return deserialize<_i7.DamagePartData>(data['data']);
+      return deserialize<_iqilpl6d.DamagePartData>(data['data']);
     }
     if (dataClassName == 'FeatData') {
-      return deserialize<_i8.FeatData>(data['data']);
+      return deserialize<_i1l5wul2.FeatData>(data['data']);
     }
     if (dataClassName == 'CharacterAppliedChangeRecord') {
-      return deserialize<_i9.CharacterAppliedChangeRecord>(data['data']);
+      return deserialize<_iaskjtek.CharacterAppliedChangeRecord>(data['data']);
     }
     if (dataClassName == 'CharacterArmorTrainingOverridesData') {
-      return deserialize<_i10.CharacterArmorTrainingOverridesData>(
-          data['data']);
+      return deserialize<_ijpj2a9u.CharacterArmorTrainingOverridesData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterAttackData') {
-      return deserialize<_i11.CharacterAttackData>(data['data']);
+      return deserialize<_iykib7lv.CharacterAttackData>(data['data']);
     }
     if (dataClassName == 'CharacterChangeData') {
-      return deserialize<_i12.CharacterChangeData>(data['data']);
+      return deserialize<_ibkyvw07.CharacterChangeData>(data['data']);
     }
     if (dataClassName == 'CharacterChoiceData') {
-      return deserialize<_i13.CharacterChoiceData>(data['data']);
+      return deserialize<_iwf32wta.CharacterChoiceData>(data['data']);
     }
     if (dataClassName == 'CharacterChoiceRecord') {
-      return deserialize<_i14.CharacterChoiceRecord>(data['data']);
+      return deserialize<_i1l3jk2d.CharacterChoiceRecord>(data['data']);
     }
     if (dataClassName == 'CharacterClassEntryData') {
-      return deserialize<_i15.CharacterClassEntryData>(data['data']);
+      return deserialize<_iqjjxby6.CharacterClassEntryData>(data['data']);
     }
     if (dataClassName == 'CharacterClassEntryRecord') {
-      return deserialize<_i16.CharacterClassEntryRecord>(data['data']);
+      return deserialize<_i1goyn5n.CharacterClassEntryRecord>(data['data']);
     }
     if (dataClassName == 'CharacterData') {
-      return deserialize<_i17.CharacterData>(data['data']);
+      return deserialize<_im2o0tmj.CharacterData>(data['data']);
     }
     if (dataClassName == 'CharacterDerivedData') {
-      return deserialize<_i18.CharacterDerivedData>(data['data']);
+      return deserialize<_ir4negfy.CharacterDerivedData>(data['data']);
     }
     if (dataClassName == 'CharacterEquipmentSelectionData') {
-      return deserialize<_i19.CharacterEquipmentSelectionData>(data['data']);
+      return deserialize<_i7jkadr4.CharacterEquipmentSelectionData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterFeatureOverrideData') {
-      return deserialize<_i20.CharacterFeatureOverrideData>(data['data']);
+      return deserialize<_iggvk3az.CharacterFeatureOverrideData>(data['data']);
     }
     if (dataClassName == 'CharacterFeatureViewData') {
-      return deserialize<_i21.CharacterFeatureViewData>(data['data']);
+      return deserialize<_imlxp0ix.CharacterFeatureViewData>(data['data']);
     }
     if (dataClassName == 'CharacterInventoryItemData') {
-      return deserialize<_i22.CharacterInventoryItemData>(data['data']);
+      return deserialize<_id5dgxdg.CharacterInventoryItemData>(data['data']);
     }
     if (dataClassName == 'CharacterLanguageOverridesData') {
-      return deserialize<_i23.CharacterLanguageOverridesData>(data['data']);
+      return deserialize<_ibvj7xz5.CharacterLanguageOverridesData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterNoteData') {
-      return deserialize<_i24.CharacterNoteData>(data['data']);
+      return deserialize<_iqjbme11.CharacterNoteData>(data['data']);
     }
     if (dataClassName == 'CharacterRecord') {
-      return deserialize<_i25.CharacterRecord>(data['data']);
+      return deserialize<_is140f48.CharacterRecord>(data['data']);
     }
     if (dataClassName == 'CharacterRejectedChangeData') {
-      return deserialize<_i26.CharacterRejectedChangeData>(data['data']);
+      return deserialize<_ig0fia1r.CharacterRejectedChangeData>(data['data']);
     }
     if (dataClassName == 'CharacterResourceStateData') {
-      return deserialize<_i27.CharacterResourceStateData>(data['data']);
+      return deserialize<_iu6zjs5s.CharacterResourceStateData>(data['data']);
     }
     if (dataClassName == 'CharacterResourceViewData') {
-      return deserialize<_i28.CharacterResourceViewData>(data['data']);
+      return deserialize<_io9jihae.CharacterResourceViewData>(data['data']);
     }
     if (dataClassName == 'CharacterSavingThrowProficiencyOverrideData') {
-      return deserialize<_i29.CharacterSavingThrowProficiencyOverrideData>(
-          data['data']);
+      return deserialize<_i3yrtkjn.CharacterSavingThrowProficiencyOverrideData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterSemanticActionData') {
-      return deserialize<_i30.CharacterSemanticActionData>(data['data']);
+      return deserialize<_ivfw6q0y.CharacterSemanticActionData>(data['data']);
     }
     if (dataClassName == 'CharacterSkillProficiencyState') {
-      return deserialize<_i31.CharacterSkillProficiencyState>(data['data']);
+      return deserialize<_isl5krdt.CharacterSkillProficiencyState>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterSkillSelectionData') {
-      return deserialize<_i32.CharacterSkillSelectionData>(data['data']);
+      return deserialize<_itkzfry3.CharacterSkillSelectionData>(data['data']);
     }
     if (dataClassName == 'CharacterSkillSelectionRecord') {
-      return deserialize<_i33.CharacterSkillSelectionRecord>(data['data']);
+      return deserialize<_ic0tmv5d.CharacterSkillSelectionRecord>(data['data']);
     }
     if (dataClassName == 'CharacterSpellSelectionData') {
-      return deserialize<_i34.CharacterSpellSelectionData>(data['data']);
+      return deserialize<_iesndgzw.CharacterSpellSelectionData>(data['data']);
     }
     if (dataClassName == 'CharacterSpellSelectionRecord') {
-      return deserialize<_i35.CharacterSpellSelectionRecord>(data['data']);
+      return deserialize<_icqki103.CharacterSpellSelectionRecord>(data['data']);
     }
     if (dataClassName == 'CharacterStartingEquipmentResolutionData') {
-      return deserialize<_i36.CharacterStartingEquipmentResolutionData>(
-          data['data']);
+      return deserialize<_ieudcx2k.CharacterStartingEquipmentResolutionData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterStartingEquipmentResolutionRecord') {
-      return deserialize<_i37.CharacterStartingEquipmentResolutionRecord>(
-          data['data']);
+      return deserialize<_ipbr5hem.CharacterStartingEquipmentResolutionRecord>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterStartingEquipmentSelectionData') {
-      return deserialize<_i38.CharacterStartingEquipmentSelectionData>(
-          data['data']);
+      return deserialize<_ixmjb4z5.CharacterStartingEquipmentSelectionData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterStartingEquipmentSelectionRecord') {
-      return deserialize<_i39.CharacterStartingEquipmentSelectionRecord>(
-          data['data']);
+      return deserialize<_ikk28htr.CharacterStartingEquipmentSelectionRecord>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterSyncEventRecord') {
-      return deserialize<_i40.CharacterSyncEventRecord>(data['data']);
+      return deserialize<_i2rqx8lk.CharacterSyncEventRecord>(data['data']);
     }
     if (dataClassName == 'CharacterSyncOperationData') {
-      return deserialize<_i41.CharacterSyncOperationData>(data['data']);
+      return deserialize<_is9ng6da.CharacterSyncOperationData>(data['data']);
     }
     if (dataClassName == 'CharacterSyncRequest') {
-      return deserialize<_i42.CharacterSyncRequest>(data['data']);
+      return deserialize<_icxp0ddy.CharacterSyncRequest>(data['data']);
     }
     if (dataClassName == 'CharacterSyncResponse') {
-      return deserialize<_i43.CharacterSyncResponse>(data['data']);
+      return deserialize<_i29bgu3e.CharacterSyncResponse>(data['data']);
     }
     if (dataClassName == 'CharacterSyncResult') {
-      return deserialize<_i44.CharacterSyncResult>(data['data']);
+      return deserialize<_ix5qhw9w.CharacterSyncResult>(data['data']);
     }
     if (dataClassName == 'CharacterSyncStatus') {
-      return deserialize<_i45.CharacterSyncStatus>(data['data']);
+      return deserialize<_ixfhi6l8.CharacterSyncStatus>(data['data']);
     }
     if (dataClassName == 'CharacterSyncValueData') {
-      return deserialize<_i46.CharacterSyncValueData>(data['data']);
+      return deserialize<_iz49jt9b.CharacterSyncValueData>(data['data']);
     }
     if (dataClassName == 'CharacterToolProficiencyOverridesData') {
-      return deserialize<_i47.CharacterToolProficiencyOverridesData>(
-          data['data']);
+      return deserialize<_idvpwngn.CharacterToolProficiencyOverridesData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterWeaponProficiencyOverridesData') {
-      return deserialize<_i48.CharacterWeaponProficiencyOverridesData>(
-          data['data']);
+      return deserialize<_i5e0copu.CharacterWeaponProficiencyOverridesData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'ChoiceReplacementHistoryData') {
-      return deserialize<_i49.ChoiceReplacementHistoryData>(data['data']);
+      return deserialize<_i2mamrrk.ChoiceReplacementHistoryData>(data['data']);
     }
     if (dataClassName == 'LevelUpChoiceReplacementData') {
-      return deserialize<_i50.LevelUpChoiceReplacementData>(data['data']);
+      return deserialize<_iij0mpeo.LevelUpChoiceReplacementData>(data['data']);
     }
     if (dataClassName == 'LevelUpRequest') {
-      return deserialize<_i51.LevelUpRequest>(data['data']);
+      return deserialize<_ipxtly6g.LevelUpRequest>(data['data']);
     }
     if (dataClassName == 'LevelUpSpellChoice') {
-      return deserialize<_i52.LevelUpSpellChoice>(data['data']);
+      return deserialize<_i4b5l3un.LevelUpSpellChoice>(data['data']);
     }
     if (dataClassName == 'RelatedFeatureViewData') {
-      return deserialize<_i53.RelatedFeatureViewData>(data['data']);
+      return deserialize<_i0tavl9b.RelatedFeatureViewData>(data['data']);
     }
     if (dataClassName == 'SpellSelectionReplacementHistoryData') {
-      return deserialize<_i54.SpellSelectionReplacementHistoryData>(
-          data['data']);
+      return deserialize<_it45kp8q.SpellSelectionReplacementHistoryData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'SpellSlotRecoveryTriggerData') {
-      return deserialize<_i55.SpellSlotRecoveryTriggerData>(data['data']);
+      return deserialize<_i9cfge83.SpellSlotRecoveryTriggerData>(data['data']);
     }
     if (dataClassName == 'ChoiceGroupData') {
-      return deserialize<_i56.ChoiceGroupData>(data['data']);
+      return deserialize<_i3zkka4q.ChoiceGroupData>(data['data']);
     }
     if (dataClassName == 'ChoiceOptionData') {
-      return deserialize<_i57.ChoiceOptionData>(data['data']);
+      return deserialize<_iprx2upt.ChoiceOptionData>(data['data']);
     }
     if (dataClassName == 'ChoiceRequirementData') {
-      return deserialize<_i58.ChoiceRequirementData>(data['data']);
+      return deserialize<_iax2s634.ChoiceRequirementData>(data['data']);
     }
     if (dataClassName == 'ClassData') {
-      return deserialize<_i59.ClassData>(data['data']);
+      return deserialize<_i4e8ker2.ClassData>(data['data']);
     }
     if (dataClassName == 'ClassFeatureData') {
-      return deserialize<_i60.ClassFeatureData>(data['data']);
+      return deserialize<_ijvqpc4v.ClassFeatureData>(data['data']);
     }
     if (dataClassName == 'ClassLevelData') {
-      return deserialize<_i61.ClassLevelData>(data['data']);
+      return deserialize<_isxi9i4e.ClassLevelData>(data['data']);
     }
-    if (dataClassName == 'AuthActionResult') {
-      return deserialize<_i62.AuthActionResult>(data['data']);
+    if (dataClassName == 'PreparedSpellRuleData') {
+      return deserialize<_ihr52fes.PreparedSpellRuleData>(data['data']);
     }
     if (dataClassName == 'SpellSlotProgressionData') {
-      return deserialize<_i63.SpellSlotProgressionData>(data['data']);
+      return deserialize<_ig6b5pj2.SpellSlotProgressionData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentBlockData') {
-      return deserialize<_i64.StartingEquipmentBlockData>(data['data']);
+      return deserialize<_igasg47n.StartingEquipmentBlockData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentEntryData') {
-      return deserialize<_i65.StartingEquipmentEntryData>(data['data']);
+      return deserialize<_impna1yi.StartingEquipmentEntryData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentLineData') {
-      return deserialize<_i66.StartingEquipmentLineData>(data['data']);
+      return deserialize<_iozcdomq.StartingEquipmentLineData>(data['data']);
     }
     if (dataClassName == 'StartingEquipmentOptionData') {
-      return deserialize<_i67.StartingEquipmentOptionData>(data['data']);
+      return deserialize<_iyz352zl.StartingEquipmentOptionData>(data['data']);
     }
     if (dataClassName == 'SubclassData') {
-      return deserialize<_i68.SubclassData>(data['data']);
+      return deserialize<_ijic8hve.SubclassData>(data['data']);
     }
     if (dataClassName == 'SubclassFeatureData') {
-      return deserialize<_i69.SubclassFeatureData>(data['data']);
+      return deserialize<_iel0dp9q.SubclassFeatureData>(data['data']);
     }
     if (dataClassName == 'FeatureDisplayPropertyData') {
-      return deserialize<_i70.FeatureDisplayPropertyData>(data['data']);
+      return deserialize<_i0aiwhe6.FeatureDisplayPropertyData>(data['data']);
     }
     if (dataClassName == 'FeatureModifierConditionData') {
-      return deserialize<_i71.FeatureModifierConditionData>(data['data']);
+      return deserialize<_iwfr4tm0.FeatureModifierConditionData>(data['data']);
     }
     if (dataClassName == 'FeatureModifierData') {
-      return deserialize<_i72.FeatureModifierData>(data['data']);
+      return deserialize<_ilhpjxpt.FeatureModifierData>(data['data']);
     }
     if (dataClassName == 'FeatureModifierValueData') {
-      return deserialize<_i73.FeatureModifierValueData>(data['data']);
+      return deserialize<_ircf4zmd.FeatureModifierValueData>(data['data']);
     }
     if (dataClassName == 'FeatureRelationData') {
-      return deserialize<_i74.FeatureRelationData>(data['data']);
+      return deserialize<_isecmqna.FeatureRelationData>(data['data']);
     }
     if (dataClassName == 'FeatureResourceDefinitionData') {
-      return deserialize<_i75.FeatureResourceDefinitionData>(data['data']);
+      return deserialize<_iflv344v.FeatureResourceDefinitionData>(data['data']);
     }
     if (dataClassName == 'FeatureResourceEffectData') {
-      return deserialize<_i76.FeatureResourceEffectData>(data['data']);
+      return deserialize<_i86imp4g.FeatureResourceEffectData>(data['data']);
     }
     if (dataClassName == 'FeatureResourceProgressionValueData') {
-      return deserialize<_i77.FeatureResourceProgressionValueData>(
-          data['data']);
+      return deserialize<_iafoerth.FeatureResourceProgressionValueData>(
+        data['data'],
+      );
     }
     if (dataClassName == 'RaceData') {
-      return deserialize<_i78.RaceData>(data['data']);
+      return deserialize<_irh2914h.RaceData>(data['data']);
     }
     if (dataClassName == 'RaceFeatureData') {
-      return deserialize<_i79.RaceFeatureData>(data['data']);
+      return deserialize<_imnymvhh.RaceFeatureData>(data['data']);
     }
     if (dataClassName == 'RaceFeatureSpellGrantData') {
-      return deserialize<_i80.RaceFeatureSpellGrantData>(data['data']);
+      return deserialize<_ilhjydvh.RaceFeatureSpellGrantData>(data['data']);
     }
     if (dataClassName == 'SubraceData') {
-      return deserialize<_i81.SubraceData>(data['data']);
+      return deserialize<_iqoglfsm.SubraceData>(data['data']);
     }
     if (dataClassName == 'SpellActivationData') {
-      return deserialize<_i82.SpellActivationData>(data['data']);
+      return deserialize<_idolx2sf.SpellActivationData>(data['data']);
     }
     if (dataClassName == 'SpellResourceUpcastPolicyData') {
-      return deserialize<_i83.SpellResourceUpcastPolicyData>(data['data']);
+      return deserialize<_i9erq8kp.SpellResourceUpcastPolicyData>(data['data']);
     }
     if (dataClassName == 'SpellSelectionFilterData') {
-      return deserialize<_i84.SpellSelectionFilterData>(data['data']);
+      return deserialize<_in2nv22i.SpellSelectionFilterData>(data['data']);
     }
     if (dataClassName == 'SpellSlotRecoveryPolicyData') {
-      return deserialize<_i85.SpellSlotRecoveryPolicyData>(data['data']);
+      return deserialize<_ipwf59gx.SpellSlotRecoveryPolicyData>(data['data']);
     }
     if (dataClassName == 'ToolData') {
-      return deserialize<_i86.ToolData>(data['data']);
+      return deserialize<_ivjna1ls.ToolData>(data['data']);
     }
     if (dataClassName == 'ArmorData') {
-      return deserialize<_i87.ArmorData>(data['data']);
+      return deserialize<_iv545qv3.ArmorData>(data['data']);
     }
     if (dataClassName == 'ItemData') {
-      return deserialize<_i88.ItemData>(data['data']);
+      return deserialize<_ibuwh0hc.ItemData>(data['data']);
     }
     if (dataClassName == 'MagicItemData') {
-      return deserialize<_i89.MagicItemData>(data['data']);
+      return deserialize<_i41tgptx.MagicItemData>(data['data']);
     }
     if (dataClassName == 'WeaponData') {
-      return deserialize<_i90.WeaponData>(data['data']);
+      return deserialize<_inpmmgks.WeaponData>(data['data']);
     }
     if (dataClassName == 'SpellData') {
-      return deserialize<_i91.SpellData>(data['data']);
+      return deserialize<_itvh88br.SpellData>(data['data']);
     }
     if (dataClassName == 'SpellScalingData') {
-      return deserialize<_i92.SpellScalingData>(data['data']);
+      return deserialize<_iq5q0wh8.SpellScalingData>(data['data']);
     }
     if (dataClassName == 'DmCreatureException') {
-      return deserialize<_i93.DmCreatureException>(data['data']);
+      return deserialize<_ivey3rvd.DmCreatureException>(data['data']);
     }
     if (dataClassName == 'DmCreatureImportResult') {
-      return deserialize<_i94.DmCreatureImportResult>(data['data']);
+      return deserialize<_i11aekbu.DmCreatureImportResult>(data['data']);
     }
     if (dataClassName == 'DmCreatureRecord') {
-      return deserialize<_i95.DmCreatureRecord>(data['data']);
+      return deserialize<_ipuprlj7.DmCreatureRecord>(data['data']);
     }
     if (dataClassName == 'DmCreatureSummary') {
-      return deserialize<_i96.DmCreatureSummary>(data['data']);
+      return deserialize<_idf6hpk3.DmCreatureSummary>(data['data']);
     }
     if (dataClassName == 'Ability') {
-      return deserialize<_i97.Ability>(data['data']);
+      return deserialize<_i5rga0su.Ability>(data['data']);
     }
     if (dataClassName == 'ArmorCategory') {
-      return deserialize<_i98.ArmorCategory>(data['data']);
+      return deserialize<_ix11b24x.ArmorCategory>(data['data']);
     }
     if (dataClassName == 'CharacterAlignment') {
-      return deserialize<_i99.CharacterAlignment>(data['data']);
+      return deserialize<_ik1o33an.CharacterAlignment>(data['data']);
     }
     if (dataClassName == 'CharacterChangeType') {
-      return deserialize<_i100.CharacterChangeType>(data['data']);
+      return deserialize<_idqm1edw.CharacterChangeType>(data['data']);
     }
     if (dataClassName == 'CharacterEntityType') {
-      return deserialize<_i101.CharacterEntityType>(data['data']);
+      return deserialize<_icxxpsvd.CharacterEntityType>(data['data']);
     }
     if (dataClassName == 'CharacterFeatureSourceType') {
-      return deserialize<_i102.CharacterFeatureSourceType>(data['data']);
+      return deserialize<_i1fix3of.CharacterFeatureSourceType>(data['data']);
     }
     if (dataClassName == 'CharacterInventoryItemType') {
-      return deserialize<_i103.CharacterInventoryItemType>(data['data']);
+      return deserialize<_ik9iz51c.CharacterInventoryItemType>(data['data']);
     }
     if (dataClassName == 'CharacterSavingThrowProficiencyOverride') {
-      return deserialize<_i104.CharacterSavingThrowProficiencyOverride>(
-          data['data']);
+      return deserialize<_ixbcln74.CharacterSavingThrowProficiencyOverride>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterSkillProficiencyLevel') {
-      return deserialize<_i105.CharacterSkillProficiencyLevel>(data['data']);
+      return deserialize<_ixj33h5c.CharacterSkillProficiencyLevel>(
+        data['data'],
+      );
     }
     if (dataClassName == 'CharacterSkillSelectionKind') {
-      return deserialize<_i106.CharacterSkillSelectionKind>(data['data']);
+      return deserialize<_i3ppfbzb.CharacterSkillSelectionKind>(data['data']);
     }
     if (dataClassName == 'CharacterSpeedKind') {
-      return deserialize<_i107.CharacterSpeedKind>(data['data']);
+      return deserialize<_ikyxycuo.CharacterSpeedKind>(data['data']);
     }
     if (dataClassName == 'CharacterSpellSelectionKind') {
-      return deserialize<_i108.CharacterSpellSelectionKind>(data['data']);
+      return deserialize<_ie0q5aqi.CharacterSpellSelectionKind>(data['data']);
     }
     if (dataClassName == 'CharacterSyncOperationType') {
-      return deserialize<_i109.CharacterSyncOperationType>(data['data']);
+      return deserialize<_i6jbrxie.CharacterSyncOperationType>(data['data']);
     }
     if (dataClassName == 'CharacterSyncTargetType') {
-      return deserialize<_i110.CharacterSyncTargetType>(data['data']);
+      return deserialize<_ia4qs68v.CharacterSyncTargetType>(data['data']);
     }
     if (dataClassName == 'ChoiceRequirementType') {
-      return deserialize<_i111.ChoiceRequirementType>(data['data']);
+      return deserialize<_ia6aulam.ChoiceRequirementType>(data['data']);
     }
     if (dataClassName == 'ChoiceSourceType') {
-      return deserialize<_i112.ChoiceSourceType>(data['data']);
+      return deserialize<_iam6xy91.ChoiceSourceType>(data['data']);
     }
     if (dataClassName == 'ChoiceType') {
-      return deserialize<_i113.ChoiceType>(data['data']);
+      return deserialize<_iotu8r29.ChoiceType>(data['data']);
     }
     if (dataClassName == 'ClassSpellSelectionMode') {
-      return deserialize<_i114.ClassSpellSelectionMode>(data['data']);
+      return deserialize<_ijyz5fbs.ClassSpellSelectionMode>(data['data']);
     }
     if (dataClassName == 'ConditionType') {
-      return deserialize<_i115.ConditionType>(data['data']);
+      return deserialize<_ikb1pesi.ConditionType>(data['data']);
     }
     if (dataClassName == 'CreatureSize') {
-      return deserialize<_i116.CreatureSize>(data['data']);
+      return deserialize<_i6cngs6w.CreatureSize>(data['data']);
     }
     if (dataClassName == 'DamageType') {
-      return deserialize<_i117.DamageType>(data['data']);
+      return deserialize<_i6q2t5mj.DamageType>(data['data']);
     }
     if (dataClassName == 'EquipmentCatalogType') {
-      return deserialize<_i118.EquipmentCatalogType>(data['data']);
+      return deserialize<_ia851nk8.EquipmentCatalogType>(data['data']);
     }
     if (dataClassName == 'FeatureDisplayPropertyValueKind') {
-      return deserialize<_i119.FeatureDisplayPropertyValueKind>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentOptionView') {
-      return deserialize<_i120.StartingEquipmentOptionView>(data['data']);
-    }
-    if (dataClassName == 'FeatureModifierOperation') {
-      return deserialize<_i121.FeatureModifierOperation>(data['data']);
-    }
-    if (dataClassName == 'FeatureModifierRounding') {
-      return deserialize<_i122.FeatureModifierRounding>(data['data']);
-    }
-    if (dataClassName == 'FeatureModifierTarget') {
-      return deserialize<_i123.FeatureModifierTarget>(data['data']);
-    }
-    if (dataClassName == 'FeatureModifierValueKind') {
-      return deserialize<_i124.FeatureModifierValueKind>(data['data']);
-    }
-    if (dataClassName == 'FeatureRelationType') {
-      return deserialize<_i125.FeatureRelationType>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceEffectType') {
-      return deserialize<_i126.FeatureResourceEffectType>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceKind') {
-      return deserialize<_i127.FeatureResourceKind>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceMaxRule') {
-      return deserialize<_i128.FeatureResourceMaxRule>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceProgressionKey') {
-      return deserialize<_i129.FeatureResourceProgressionKey>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceTargetType') {
-      return deserialize<_i130.FeatureResourceTargetType>(data['data']);
-    }
-    if (dataClassName == 'FeatureResourceTrigger') {
-      return deserialize<_i131.FeatureResourceTrigger>(data['data']);
-    }
-    if (dataClassName == 'FeatureTag') {
-      return deserialize<_i132.FeatureTag>(data['data']);
-    }
-    if (dataClassName == 'HitPointMode') {
-      return deserialize<_i133.HitPointMode>(data['data']);
-    }
-    if (dataClassName == 'Language') {
-      return deserialize<_i134.Language>(data['data']);
-    }
-    if (dataClassName == 'PreparedSpellRounding') {
-      return deserialize<_i135.PreparedSpellRounding>(data['data']);
-    }
-    if (dataClassName == 'RestType') {
-      return deserialize<_i136.RestType>(data['data']);
-    }
-    if (dataClassName == 'SenseType') {
-      return deserialize<_i137.SenseType>(data['data']);
-    }
-    if (dataClassName == 'Skill') {
-      return deserialize<_i138.Skill>(data['data']);
-    }
-    if (dataClassName == 'AreaOfEffectType') {
-      return deserialize<_i139.AreaOfEffectType>(data['data']);
-    }
-    if (dataClassName == 'AreaSizeMeasurement') {
-      return deserialize<_i140.AreaSizeMeasurement>(data['data']);
-    }
-    if (dataClassName == 'SpellAttackType') {
-      return deserialize<_i141.SpellAttackType>(data['data']);
-    }
-    if (dataClassName == 'SpellDurationType') {
-      return deserialize<_i142.SpellDurationType>(data['data']);
-    }
-    if (dataClassName == 'SpellScalingMode') {
-      return deserialize<_i143.SpellScalingMode>(data['data']);
-    }
-    if (dataClassName == 'SpellSchool') {
-      return deserialize<_i144.SpellSchool>(data['data']);
-    }
-    if (dataClassName == 'SpellTargetType') {
-      return deserialize<_i145.SpellTargetType>(data['data']);
-    }
-    if (dataClassName == 'SpellSlotRecoveryMode') {
-      return deserialize<_i146.SpellSlotRecoveryMode>(data['data']);
-    }
-    if (dataClassName == 'SpellcastingProgression') {
-      return deserialize<_i147.SpellcastingProgression>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentBlockKind') {
-      return deserialize<_i148.StartingEquipmentBlockKind>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentEntryKind') {
-      return deserialize<_i149.StartingEquipmentEntryKind>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentLineKind') {
-      return deserialize<_i150.StartingEquipmentLineKind>(data['data']);
-    }
-    if (dataClassName == 'ToolCategory') {
-      return deserialize<_i151.ToolCategory>(data['data']);
-    }
-    if (dataClassName == 'UnarmoredDefenseRule') {
-      return deserialize<_i152.UnarmoredDefenseRule>(data['data']);
-    }
-    if (dataClassName == 'WeaponCategory') {
-      return deserialize<_i153.WeaponCategory>(data['data']);
-    }
-    if (dataClassName == 'WeaponProperty') {
-      return deserialize<_i154.WeaponProperty>(data['data']);
-    }
-    if (dataClassName == 'LevelDownChoiceRepair') {
-      return deserialize<_i155.LevelDownChoiceRepair>(data['data']);
-    }
-    if (dataClassName == 'LevelDownRequest') {
-      return deserialize<_i156.LevelDownRequest>(data['data']);
-    }
-    if (dataClassName == 'BackgroundStepView') {
-      return deserialize<_i157.BackgroundStepView>(data['data']);
-    }
-    if (dataClassName == 'CharacterEquipmentEntryView') {
-      return deserialize<_i158.CharacterEquipmentEntryView>(data['data']);
-    }
-    if (dataClassName == 'ChoiceGroupView') {
-      return deserialize<_i159.ChoiceGroupView>(data['data']);
-    }
-    if (dataClassName == 'ChoiceOptionEligibilityView') {
-      return deserialize<_i160.ChoiceOptionEligibilityView>(data['data']);
-    }
-    if (dataClassName == 'ChoiceRequirementFailureView') {
-      return deserialize<_i161.ChoiceRequirementFailureView>(data['data']);
-    }
-    if (dataClassName == 'ClassSpellDeltaView') {
-      return deserialize<_i162.ClassSpellDeltaView>(data['data']);
-    }
-    if (dataClassName == 'ClassSpellSelectionGroupView') {
-      return deserialize<_i163.ClassSpellSelectionGroupView>(data['data']);
-    }
-    if (dataClassName == 'ClassStepFeatureView') {
-      return deserialize<_i164.ClassStepFeatureView>(data['data']);
-    }
-    if (dataClassName == 'ClassStepSubclassChoiceView') {
-      return deserialize<_i165.ClassStepSubclassChoiceView>(data['data']);
-    }
-    if (dataClassName == 'ClassStepView') {
-      return deserialize<_i166.ClassStepView>(data['data']);
-    }
-    if (dataClassName == 'FeatureDisplayPropertyView') {
-      return deserialize<_i167.FeatureDisplayPropertyView>(data['data']);
-    }
-    if (dataClassName == 'LevelDownInvalidChoiceView') {
-      return deserialize<_i168.LevelDownInvalidChoiceView>(data['data']);
-    }
-    if (dataClassName == 'LevelDownPreview') {
-      return deserialize<_i169.LevelDownPreview>(data['data']);
-    }
-    if (dataClassName == 'LevelUpPreview') {
-      return deserialize<_i170.LevelUpPreview>(data['data']);
-    }
-    if (dataClassName == 'ProficiencyBundleView') {
-      return deserialize<_i171.ProficiencyBundleView>(data['data']);
-    }
-    if (dataClassName == 'RaceStepView') {
-      return deserialize<_i172.RaceStepView>(data['data']);
-    }
-    if (dataClassName == 'ResolvedCharacterSpellData') {
-      return deserialize<_i173.ResolvedCharacterSpellData>(data['data']);
-    }
-    if (dataClassName == 'SelectedFeatureChoiceView') {
-      return deserialize<_i174.SelectedFeatureChoiceView>(data['data']);
-    }
-    if (dataClassName == 'SkillSelectionGroupView') {
-      return deserialize<_i175.SkillSelectionGroupView>(data['data']);
-    }
-    if (dataClassName == 'SpellSourceContextData') {
-      return deserialize<_i176.SpellSourceContextData>(data['data']);
-    }
-    if (dataClassName == 'StartingEquipmentBlockView') {
-      return deserialize<_i177.StartingEquipmentBlockView>(data['data']);
+      return deserialize<_i9idws3v.FeatureDisplayPropertyValueKind>(
+        data['data'],
+      );
     }
     if (dataClassName == 'FeatureModifierConditionType') {
-      return deserialize<_i178.FeatureModifierConditionType>(data['data']);
+      return deserialize<_ilgpxa54.FeatureModifierConditionType>(data['data']);
     }
-    if (dataClassName.startsWith('serverpod.')) {
-      data['className'] = dataClassName.substring(10);
-      return _i2.Protocol().deserializeByClassName(data);
+    if (dataClassName == 'FeatureModifierOperation') {
+      return deserialize<_i56op7oq.FeatureModifierOperation>(data['data']);
+    }
+    if (dataClassName == 'FeatureModifierRounding') {
+      return deserialize<_i6asfa9j.FeatureModifierRounding>(data['data']);
+    }
+    if (dataClassName == 'FeatureModifierTarget') {
+      return deserialize<_izn79nb9.FeatureModifierTarget>(data['data']);
+    }
+    if (dataClassName == 'FeatureModifierValueKind') {
+      return deserialize<_il8rk55k.FeatureModifierValueKind>(data['data']);
+    }
+    if (dataClassName == 'FeatureRelationType') {
+      return deserialize<_ih812opj.FeatureRelationType>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceEffectType') {
+      return deserialize<_ijb3cn5v.FeatureResourceEffectType>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceKind') {
+      return deserialize<_ia1vmwiq.FeatureResourceKind>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceMaxRule') {
+      return deserialize<_ib4g5i7q.FeatureResourceMaxRule>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceProgressionKey') {
+      return deserialize<_if07r66f.FeatureResourceProgressionKey>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceTargetType') {
+      return deserialize<_iyk5jgys.FeatureResourceTargetType>(data['data']);
+    }
+    if (dataClassName == 'FeatureResourceTrigger') {
+      return deserialize<_ir3q1cdf.FeatureResourceTrigger>(data['data']);
+    }
+    if (dataClassName == 'FeatureTag') {
+      return deserialize<_i2l7bpu3.FeatureTag>(data['data']);
+    }
+    if (dataClassName == 'HitPointMode') {
+      return deserialize<_izodp5lk.HitPointMode>(data['data']);
+    }
+    if (dataClassName == 'Language') {
+      return deserialize<_iftbsk4q.Language>(data['data']);
+    }
+    if (dataClassName == 'PreparedSpellRounding') {
+      return deserialize<_ieum0m7f.PreparedSpellRounding>(data['data']);
+    }
+    if (dataClassName == 'RestType') {
+      return deserialize<_ibgbgp52.RestType>(data['data']);
+    }
+    if (dataClassName == 'SenseType') {
+      return deserialize<_iy62ln0z.SenseType>(data['data']);
+    }
+    if (dataClassName == 'Skill') {
+      return deserialize<_iabgjh08.Skill>(data['data']);
+    }
+    if (dataClassName == 'AreaOfEffectType') {
+      return deserialize<_ieavm63l.AreaOfEffectType>(data['data']);
+    }
+    if (dataClassName == 'AreaSizeMeasurement') {
+      return deserialize<_iatx40hq.AreaSizeMeasurement>(data['data']);
+    }
+    if (dataClassName == 'SpellAttackType') {
+      return deserialize<_inf83u33.SpellAttackType>(data['data']);
+    }
+    if (dataClassName == 'SpellDurationType') {
+      return deserialize<_i9u2urpu.SpellDurationType>(data['data']);
+    }
+    if (dataClassName == 'SpellScalingMode') {
+      return deserialize<_iw7hp9dc.SpellScalingMode>(data['data']);
+    }
+    if (dataClassName == 'SpellSchool') {
+      return deserialize<_ioahu9w9.SpellSchool>(data['data']);
+    }
+    if (dataClassName == 'SpellTargetType') {
+      return deserialize<_iupu1e0e.SpellTargetType>(data['data']);
+    }
+    if (dataClassName == 'SpellSlotRecoveryMode') {
+      return deserialize<_ik43ztmo.SpellSlotRecoveryMode>(data['data']);
+    }
+    if (dataClassName == 'SpellcastingProgression') {
+      return deserialize<_ilfh4rku.SpellcastingProgression>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentBlockKind') {
+      return deserialize<_iag2d6aj.StartingEquipmentBlockKind>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentEntryKind') {
+      return deserialize<_ipm8xyg1.StartingEquipmentEntryKind>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentLineKind') {
+      return deserialize<_iniqanjc.StartingEquipmentLineKind>(data['data']);
+    }
+    if (dataClassName == 'ToolCategory') {
+      return deserialize<_ic2cpv54.ToolCategory>(data['data']);
+    }
+    if (dataClassName == 'UnarmoredDefenseRule') {
+      return deserialize<_i4vk4r4o.UnarmoredDefenseRule>(data['data']);
+    }
+    if (dataClassName == 'WeaponCategory') {
+      return deserialize<_iiyileog.WeaponCategory>(data['data']);
+    }
+    if (dataClassName == 'WeaponProperty') {
+      return deserialize<_iur813s4.WeaponProperty>(data['data']);
+    }
+    if (dataClassName == 'LevelDownChoiceRepair') {
+      return deserialize<_i1l5m7qw.LevelDownChoiceRepair>(data['data']);
+    }
+    if (dataClassName == 'LevelDownRequest') {
+      return deserialize<_irktv0ea.LevelDownRequest>(data['data']);
+    }
+    if (dataClassName == 'BackgroundStepView') {
+      return deserialize<_iqeghuxo.BackgroundStepView>(data['data']);
+    }
+    if (dataClassName == 'CharacterEquipmentEntryView') {
+      return deserialize<_isbrs5qf.CharacterEquipmentEntryView>(data['data']);
+    }
+    if (dataClassName == 'ChoiceGroupView') {
+      return deserialize<_i6xbclit.ChoiceGroupView>(data['data']);
+    }
+    if (dataClassName == 'ChoiceOptionEligibilityView') {
+      return deserialize<_iil6pw38.ChoiceOptionEligibilityView>(data['data']);
+    }
+    if (dataClassName == 'ChoiceRequirementFailureView') {
+      return deserialize<_iob9tmlr.ChoiceRequirementFailureView>(data['data']);
+    }
+    if (dataClassName == 'ClassSpellDeltaView') {
+      return deserialize<_ik4ex2us.ClassSpellDeltaView>(data['data']);
+    }
+    if (dataClassName == 'ClassSpellSelectionGroupView') {
+      return deserialize<_ixvig4n8.ClassSpellSelectionGroupView>(data['data']);
+    }
+    if (dataClassName == 'ClassStepFeatureView') {
+      return deserialize<_ih120cff.ClassStepFeatureView>(data['data']);
+    }
+    if (dataClassName == 'ClassStepSubclassChoiceView') {
+      return deserialize<_i3cyal5j.ClassStepSubclassChoiceView>(data['data']);
+    }
+    if (dataClassName == 'ClassStepView') {
+      return deserialize<_ib3duw15.ClassStepView>(data['data']);
+    }
+    if (dataClassName == 'FeatureDisplayPropertyView') {
+      return deserialize<_i9kpkyz2.FeatureDisplayPropertyView>(data['data']);
+    }
+    if (dataClassName == 'LevelDownInvalidChoiceView') {
+      return deserialize<_iu8i64vu.LevelDownInvalidChoiceView>(data['data']);
+    }
+    if (dataClassName == 'LevelDownPreview') {
+      return deserialize<_ipbxh79i.LevelDownPreview>(data['data']);
+    }
+    if (dataClassName == 'LevelUpPreview') {
+      return deserialize<_ipqjgw5e.LevelUpPreview>(data['data']);
+    }
+    if (dataClassName == 'ProficiencyBundleView') {
+      return deserialize<_ifavv51o.ProficiencyBundleView>(data['data']);
+    }
+    if (dataClassName == 'RaceStepView') {
+      return deserialize<_id360bq3.RaceStepView>(data['data']);
+    }
+    if (dataClassName == 'ResolvedCharacterSpellData') {
+      return deserialize<_i8p2oglu.ResolvedCharacterSpellData>(data['data']);
+    }
+    if (dataClassName == 'SelectedFeatureChoiceView') {
+      return deserialize<_im19jsv2.SelectedFeatureChoiceView>(data['data']);
+    }
+    if (dataClassName == 'SkillSelectionGroupView') {
+      return deserialize<_ihn36a1g.SkillSelectionGroupView>(data['data']);
+    }
+    if (dataClassName == 'SpellSourceContextData') {
+      return deserialize<_iam7pkuu.SpellSourceContextData>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentBlockView') {
+      return deserialize<_izjjz5hc.StartingEquipmentBlockView>(data['data']);
+    }
+    if (dataClassName == 'StartingEquipmentOptionView') {
+      return deserialize<_i3vgjwh2.StartingEquipmentOptionView>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i3.Protocol().deserializeByClassName(data);
+      return _i1n3uhu0.Protocol().deserializeByClassName(data);
+    }
+    if (dataClassName.startsWith('serverpod.')) {
+      data['className'] = dataClassName.substring(10);
+      return _isp.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
 
+  void _registerHostProtocols() {
+    _i1n3uhu0.Protocol().registerHostProtocol('characters_mirror', this);
+  }
+
   @override
-  _i1.Table? getTableForType(Type t) {
+  _is.Table? getTableForType(Type t) {
     {
-      var table = _i3.Protocol().getTableForType(t);
+      var table = _i1n3uhu0.Protocol().getTableForType(t);
       if (table != null) {
         return table;
       }
     }
     {
-      var table = _i2.Protocol().getTableForType(t);
+      var table = _isp.Protocol().getTableForType(t);
       if (table != null) {
         return table;
       }
     }
     switch (t) {
-      case _i5.BackgroundData:
-        return _i5.BackgroundData.t;
-      case _i6.ClassSpellGrantData:
-        return _i6.ClassSpellGrantData.t;
-      case _i8.FeatData:
-        return _i8.FeatData.t;
-      case _i9.CharacterAppliedChangeRecord:
-        return _i9.CharacterAppliedChangeRecord.t;
-      case _i14.CharacterChoiceRecord:
-        return _i14.CharacterChoiceRecord.t;
-      case _i16.CharacterClassEntryRecord:
-        return _i16.CharacterClassEntryRecord.t;
-      case _i25.CharacterRecord:
-        return _i25.CharacterRecord.t;
-      case _i33.CharacterSkillSelectionRecord:
-        return _i33.CharacterSkillSelectionRecord.t;
-      case _i35.CharacterSpellSelectionRecord:
-        return _i35.CharacterSpellSelectionRecord.t;
-      case _i37.CharacterStartingEquipmentResolutionRecord:
-        return _i37.CharacterStartingEquipmentResolutionRecord.t;
-      case _i39.CharacterStartingEquipmentSelectionRecord:
-        return _i39.CharacterStartingEquipmentSelectionRecord.t;
-      case _i40.CharacterSyncEventRecord:
-        return _i40.CharacterSyncEventRecord.t;
-      case _i56.ChoiceGroupData:
-        return _i56.ChoiceGroupData.t;
-      case _i57.ChoiceOptionData:
-        return _i57.ChoiceOptionData.t;
-      case _i59.ClassData:
-        return _i59.ClassData.t;
-      case _i60.ClassFeatureData:
-        return _i60.ClassFeatureData.t;
-      case _i61.ClassLevelData:
-        return _i61.ClassLevelData.t;
-      case _i63.SpellSlotProgressionData:
-        return _i63.SpellSlotProgressionData.t;
-      case _i65.StartingEquipmentEntryData:
-        return _i65.StartingEquipmentEntryData.t;
-      case _i68.SubclassData:
-        return _i68.SubclassData.t;
-      case _i69.SubclassFeatureData:
-        return _i69.SubclassFeatureData.t;
-      case _i70.FeatureDisplayPropertyData:
-        return _i70.FeatureDisplayPropertyData.t;
-      case _i72.FeatureModifierData:
-        return _i72.FeatureModifierData.t;
-      case _i74.FeatureRelationData:
-        return _i74.FeatureRelationData.t;
-      case _i75.FeatureResourceDefinitionData:
-        return _i75.FeatureResourceDefinitionData.t;
-      case _i76.FeatureResourceEffectData:
-        return _i76.FeatureResourceEffectData.t;
-      case _i77.FeatureResourceProgressionValueData:
-        return _i77.FeatureResourceProgressionValueData.t;
-      case _i78.RaceData:
-        return _i78.RaceData.t;
-      case _i79.RaceFeatureData:
-        return _i79.RaceFeatureData.t;
-      case _i80.RaceFeatureSpellGrantData:
-        return _i80.RaceFeatureSpellGrantData.t;
-      case _i81.SubraceData:
-        return _i81.SubraceData.t;
-      case _i86.ToolData:
-        return _i86.ToolData.t;
-      case _i87.ArmorData:
-        return _i87.ArmorData.t;
-      case _i88.ItemData:
-        return _i88.ItemData.t;
-      case _i89.MagicItemData:
-        return _i89.MagicItemData.t;
-      case _i90.WeaponData:
-        return _i90.WeaponData.t;
-      case _i91.SpellData:
-        return _i91.SpellData.t;
-      case _i95.DmCreatureRecord:
-        return _i95.DmCreatureRecord.t;
+      case _i3katqli.BackgroundData:
+        return _i3katqli.BackgroundData.t;
+      case _i68we1de.ClassSpellGrantData:
+        return _i68we1de.ClassSpellGrantData.t;
+      case _i1l5wul2.FeatData:
+        return _i1l5wul2.FeatData.t;
+      case _iaskjtek.CharacterAppliedChangeRecord:
+        return _iaskjtek.CharacterAppliedChangeRecord.t;
+      case _i1l3jk2d.CharacterChoiceRecord:
+        return _i1l3jk2d.CharacterChoiceRecord.t;
+      case _i1goyn5n.CharacterClassEntryRecord:
+        return _i1goyn5n.CharacterClassEntryRecord.t;
+      case _is140f48.CharacterRecord:
+        return _is140f48.CharacterRecord.t;
+      case _ic0tmv5d.CharacterSkillSelectionRecord:
+        return _ic0tmv5d.CharacterSkillSelectionRecord.t;
+      case _icqki103.CharacterSpellSelectionRecord:
+        return _icqki103.CharacterSpellSelectionRecord.t;
+      case _ipbr5hem.CharacterStartingEquipmentResolutionRecord:
+        return _ipbr5hem.CharacterStartingEquipmentResolutionRecord.t;
+      case _ikk28htr.CharacterStartingEquipmentSelectionRecord:
+        return _ikk28htr.CharacterStartingEquipmentSelectionRecord.t;
+      case _i2rqx8lk.CharacterSyncEventRecord:
+        return _i2rqx8lk.CharacterSyncEventRecord.t;
+      case _i3zkka4q.ChoiceGroupData:
+        return _i3zkka4q.ChoiceGroupData.t;
+      case _iprx2upt.ChoiceOptionData:
+        return _iprx2upt.ChoiceOptionData.t;
+      case _i4e8ker2.ClassData:
+        return _i4e8ker2.ClassData.t;
+      case _ijvqpc4v.ClassFeatureData:
+        return _ijvqpc4v.ClassFeatureData.t;
+      case _isxi9i4e.ClassLevelData:
+        return _isxi9i4e.ClassLevelData.t;
+      case _ig6b5pj2.SpellSlotProgressionData:
+        return _ig6b5pj2.SpellSlotProgressionData.t;
+      case _impna1yi.StartingEquipmentEntryData:
+        return _impna1yi.StartingEquipmentEntryData.t;
+      case _ijic8hve.SubclassData:
+        return _ijic8hve.SubclassData.t;
+      case _iel0dp9q.SubclassFeatureData:
+        return _iel0dp9q.SubclassFeatureData.t;
+      case _i0aiwhe6.FeatureDisplayPropertyData:
+        return _i0aiwhe6.FeatureDisplayPropertyData.t;
+      case _ilhpjxpt.FeatureModifierData:
+        return _ilhpjxpt.FeatureModifierData.t;
+      case _isecmqna.FeatureRelationData:
+        return _isecmqna.FeatureRelationData.t;
+      case _iflv344v.FeatureResourceDefinitionData:
+        return _iflv344v.FeatureResourceDefinitionData.t;
+      case _i86imp4g.FeatureResourceEffectData:
+        return _i86imp4g.FeatureResourceEffectData.t;
+      case _iafoerth.FeatureResourceProgressionValueData:
+        return _iafoerth.FeatureResourceProgressionValueData.t;
+      case _irh2914h.RaceData:
+        return _irh2914h.RaceData.t;
+      case _imnymvhh.RaceFeatureData:
+        return _imnymvhh.RaceFeatureData.t;
+      case _ilhjydvh.RaceFeatureSpellGrantData:
+        return _ilhjydvh.RaceFeatureSpellGrantData.t;
+      case _iqoglfsm.SubraceData:
+        return _iqoglfsm.SubraceData.t;
+      case _ivjna1ls.ToolData:
+        return _ivjna1ls.ToolData.t;
+      case _iv545qv3.ArmorData:
+        return _iv545qv3.ArmorData.t;
+      case _ibuwh0hc.ItemData:
+        return _ibuwh0hc.ItemData.t;
+      case _i41tgptx.MagicItemData:
+        return _i41tgptx.MagicItemData.t;
+      case _inpmmgks.WeaponData:
+        return _inpmmgks.WeaponData.t;
+      case _itvh88br.SpellData:
+        return _itvh88br.SpellData.t;
+      case _ipuprlj7.DmCreatureRecord:
+        return _ipuprlj7.DmCreatureRecord.t;
     }
     return null;
   }
 
   @override
-  List<_i2.TableDefinition> getTargetTableDefinitions() =>
+  List<_isp.TableDefinition> getTargetTableDefinitions() =>
       targetTableDefinitions;
 
   @override
   String getModuleName() => 'characters_mirror';
+
+  /// Maps any `Record`s known to this [Protocol] to their JSON representation
+  ///
+  /// Throws in case the record type is not known.
+  ///
+  /// This method will return `null` (only) for `null` inputs.
+  Map<String, dynamic>? mapRecordToJson(Record? record) {
+    if (record == null) {
+      return null;
+    }
+    try {
+      return _i1n3uhu0.Protocol().mapRecordToJson(record);
+    } catch (_) {}
+    throw Exception('Unsupported record type ${record.runtimeType}');
+  }
 }

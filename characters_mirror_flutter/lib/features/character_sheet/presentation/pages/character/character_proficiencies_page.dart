@@ -20,9 +20,9 @@ class CharacterProficienciesPage extends ConsumerWidget {
     final characterState =
         ref.watch(characterSheetControllerProvider(characterId));
     final tools =
-        ref.watch(toolCatalogProvider).valueOrNull ?? const <ToolData>[];
+        ref.watch(toolCatalogProvider).value ?? const <ToolData>[];
     final weapons =
-        ref.watch(weaponCatalogProvider).valueOrNull ?? const <WeaponData>[];
+        ref.watch(weaponCatalogProvider).value ?? const <WeaponData>[];
 
     return Scaffold(
       appBar: const PageSizeAppBar(title: Text('Владения персонажа')),

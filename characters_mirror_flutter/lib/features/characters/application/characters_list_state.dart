@@ -3,6 +3,7 @@ import 'package:characters_mirror_flutter/core/offline/offline_cache_database.da
 import 'package:characters_mirror_flutter/core/offline/offline_services.dart';
 import 'package:characters_mirror_flutter/core/serverpod/data/reference_repositories.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 final charactersListControllerProvider = StateNotifierProvider.autoDispose<
     CharactersListController, CharactersListState>((ref) {

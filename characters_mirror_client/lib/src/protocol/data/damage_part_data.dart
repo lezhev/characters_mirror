@@ -7,24 +7,23 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../enums/damage_type.dart' as _i2;
-import '../data/spell_scaling_data.dart' as _i3;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../data/spell_scaling_data.dart' as _i5v09j9p;
+import '../enums/damage_type.dart' as _ijnkp14j;
 
-abstract class DamagePartData implements _i1.SerializableModel {
-  DamagePartData._({
-    this.formula,
-    this.damageType,
-    this.scaling,
-    this.notes,
-  });
+abstract class DamagePartData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+  DamagePartData._({this.formula, this.damageType, this.scaling, this.notes});
 
   factory DamagePartData({
     String? formula,
-    _i2.DamageType? damageType,
-    _i3.SpellScalingData? scaling,
+    _ijnkp14j.DamageType? damageType,
+    _i5v09j9p.SpellScalingData? scaling,
     String? notes,
   }) = _DamagePartDataImpl;
 
@@ -33,36 +32,39 @@ abstract class DamagePartData implements _i1.SerializableModel {
       formula: jsonSerialization['formula'] as String?,
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i2.DamageType.fromJson(
-              (jsonSerialization['damageType'] as String)),
+          : _ijnkp14j.DamageType.fromJson(
+              (jsonSerialization['damageType'] as String),
+            ),
       scaling: jsonSerialization['scaling'] == null
           ? null
-          : _i3.SpellScalingData.fromJson(
-              (jsonSerialization['scaling'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_i5v09j9p.SpellScalingData>(
+              jsonSerialization['scaling'],
+            ),
       notes: jsonSerialization['notes'] as String?,
     );
   }
 
   String? formula;
 
-  _i2.DamageType? damageType;
+  _ijnkp14j.DamageType? damageType;
 
-  _i3.SpellScalingData? scaling;
+  _i5v09j9p.SpellScalingData? scaling;
 
   String? notes;
 
   /// Returns a shallow copy of this [DamagePartData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   DamagePartData copyWith({
     String? formula,
-    _i2.DamageType? damageType,
-    _i3.SpellScalingData? scaling,
+    _ijnkp14j.DamageType? damageType,
+    _i5v09j9p.SpellScalingData? scaling,
     String? notes,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'DamagePartData',
       if (formula != null) 'formula': formula,
       if (damageType != null) 'damageType': damageType?.toJson(),
       if (scaling != null) 'scaling': scaling?.toJson(),
@@ -71,8 +73,19 @@ abstract class DamagePartData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'DamagePartData',
+      if (formula != null) 'formula': formula,
+      if (damageType != null) 'damageType': damageType?.toJson(),
+      if (scaling != null) 'scaling': scaling?.toJsonForProtocol(),
+      if (notes != null) 'notes': notes,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -81,19 +94,19 @@ class _Undefined {}
 class _DamagePartDataImpl extends DamagePartData {
   _DamagePartDataImpl({
     String? formula,
-    _i2.DamageType? damageType,
-    _i3.SpellScalingData? scaling,
+    _ijnkp14j.DamageType? damageType,
+    _i5v09j9p.SpellScalingData? scaling,
     String? notes,
   }) : super._(
-          formula: formula,
-          damageType: damageType,
-          scaling: scaling,
-          notes: notes,
-        );
+         formula: formula,
+         damageType: damageType,
+         scaling: scaling,
+         notes: notes,
+       );
 
   /// Returns a shallow copy of this [DamagePartData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   DamagePartData copyWith({
     Object? formula = _Undefined,
@@ -103,9 +116,12 @@ class _DamagePartDataImpl extends DamagePartData {
   }) {
     return DamagePartData(
       formula: formula is String? ? formula : this.formula,
-      damageType: damageType is _i2.DamageType? ? damageType : this.damageType,
-      scaling:
-          scaling is _i3.SpellScalingData? ? scaling : this.scaling?.copyWith(),
+      damageType: damageType is _ijnkp14j.DamageType?
+          ? damageType
+          : this.damageType,
+      scaling: scaling is _i5v09j9p.SpellScalingData?
+          ? scaling
+          : this.scaling?.copyWith(),
       notes: notes is String? ? notes : this.notes,
     );
   }

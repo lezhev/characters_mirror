@@ -7,14 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../enums/feature_resource_kind.dart' as _i2;
-import '../../../enums/rest_type.dart' as _i3;
-import '../../../enums/feature_resource_trigger.dart' as _i4;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../enums/feature_resource_kind.dart' as _iw0jwyyw;
+import '../../../enums/feature_resource_trigger.dart' as _i8tdz0hj;
+import '../../../enums/rest_type.dart' as _igwcjrvt;
 
-abstract class CharacterResourceViewData implements _i1.SerializableModel {
+abstract class CharacterResourceViewData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterResourceViewData._({
     required this.key,
     this.name,
@@ -30,36 +32,44 @@ abstract class CharacterResourceViewData implements _i1.SerializableModel {
   factory CharacterResourceViewData({
     required String key,
     String? name,
-    required _i2.FeatureResourceKind kind,
+    required _iw0jwyyw.FeatureResourceKind kind,
     required int current,
     required int max,
     bool? isUnlimited,
-    _i3.RestType? resetOn,
-    _i3.RestType? usageResetOn,
-    _i4.FeatureResourceTrigger? activationTrigger,
+    _igwcjrvt.RestType? resetOn,
+    _igwcjrvt.RestType? usageResetOn,
+    _i8tdz0hj.FeatureResourceTrigger? activationTrigger,
   }) = _CharacterResourceViewDataImpl;
 
   factory CharacterResourceViewData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterResourceViewData(
       key: jsonSerialization['key'] as String,
       name: jsonSerialization['name'] as String?,
-      kind: _i2.FeatureResourceKind.fromJson(
-          (jsonSerialization['kind'] as String)),
+      kind: _iw0jwyyw.FeatureResourceKind.fromJson(
+        (jsonSerialization['kind'] as String),
+      ),
       current: jsonSerialization['current'] as int,
       max: jsonSerialization['max'] as int,
-      isUnlimited: jsonSerialization['isUnlimited'] as bool?,
+      isUnlimited: jsonSerialization['isUnlimited'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isUnlimited']),
       resetOn: jsonSerialization['resetOn'] == null
           ? null
-          : _i3.RestType.fromJson((jsonSerialization['resetOn'] as String)),
+          : _igwcjrvt.RestType.fromJson(
+              (jsonSerialization['resetOn'] as String),
+            ),
       usageResetOn: jsonSerialization['usageResetOn'] == null
           ? null
-          : _i3.RestType.fromJson(
-              (jsonSerialization['usageResetOn'] as String)),
+          : _igwcjrvt.RestType.fromJson(
+              (jsonSerialization['usageResetOn'] as String),
+            ),
       activationTrigger: jsonSerialization['activationTrigger'] == null
           ? null
-          : _i4.FeatureResourceTrigger.fromJson(
-              (jsonSerialization['activationTrigger'] as String)),
+          : _i8tdz0hj.FeatureResourceTrigger.fromJson(
+              (jsonSerialization['activationTrigger'] as String),
+            ),
     );
   }
 
@@ -67,7 +77,7 @@ abstract class CharacterResourceViewData implements _i1.SerializableModel {
 
   String? name;
 
-  _i2.FeatureResourceKind kind;
+  _iw0jwyyw.FeatureResourceKind kind;
 
   int current;
 
@@ -75,29 +85,47 @@ abstract class CharacterResourceViewData implements _i1.SerializableModel {
 
   bool? isUnlimited;
 
-  _i3.RestType? resetOn;
+  _igwcjrvt.RestType? resetOn;
 
-  _i3.RestType? usageResetOn;
+  _igwcjrvt.RestType? usageResetOn;
 
-  _i4.FeatureResourceTrigger? activationTrigger;
+  _i8tdz0hj.FeatureResourceTrigger? activationTrigger;
 
   /// Returns a shallow copy of this [CharacterResourceViewData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterResourceViewData copyWith({
     String? key,
     String? name,
-    _i2.FeatureResourceKind? kind,
+    _iw0jwyyw.FeatureResourceKind? kind,
     int? current,
     int? max,
     bool? isUnlimited,
-    _i3.RestType? resetOn,
-    _i3.RestType? usageResetOn,
-    _i4.FeatureResourceTrigger? activationTrigger,
+    _igwcjrvt.RestType? resetOn,
+    _igwcjrvt.RestType? usageResetOn,
+    _i8tdz0hj.FeatureResourceTrigger? activationTrigger,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterResourceViewData',
+      'key': key,
+      if (name != null) 'name': name,
+      'kind': kind.toJson(),
+      'current': current,
+      'max': max,
+      if (isUnlimited != null) 'isUnlimited': isUnlimited,
+      if (resetOn != null) 'resetOn': resetOn?.toJson(),
+      if (usageResetOn != null) 'usageResetOn': usageResetOn?.toJson(),
+      if (activationTrigger != null)
+        'activationTrigger': activationTrigger?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterResourceViewData',
       'key': key,
       if (name != null) 'name': name,
       'kind': kind.toJson(),
@@ -113,7 +141,7 @@ abstract class CharacterResourceViewData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -123,33 +151,33 @@ class _CharacterResourceViewDataImpl extends CharacterResourceViewData {
   _CharacterResourceViewDataImpl({
     required String key,
     String? name,
-    required _i2.FeatureResourceKind kind,
+    required _iw0jwyyw.FeatureResourceKind kind,
     required int current,
     required int max,
     bool? isUnlimited,
-    _i3.RestType? resetOn,
-    _i3.RestType? usageResetOn,
-    _i4.FeatureResourceTrigger? activationTrigger,
+    _igwcjrvt.RestType? resetOn,
+    _igwcjrvt.RestType? usageResetOn,
+    _i8tdz0hj.FeatureResourceTrigger? activationTrigger,
   }) : super._(
-          key: key,
-          name: name,
-          kind: kind,
-          current: current,
-          max: max,
-          isUnlimited: isUnlimited,
-          resetOn: resetOn,
-          usageResetOn: usageResetOn,
-          activationTrigger: activationTrigger,
-        );
+         key: key,
+         name: name,
+         kind: kind,
+         current: current,
+         max: max,
+         isUnlimited: isUnlimited,
+         resetOn: resetOn,
+         usageResetOn: usageResetOn,
+         activationTrigger: activationTrigger,
+       );
 
   /// Returns a shallow copy of this [CharacterResourceViewData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterResourceViewData copyWith({
     String? key,
     Object? name = _Undefined,
-    _i2.FeatureResourceKind? kind,
+    _iw0jwyyw.FeatureResourceKind? kind,
     int? current,
     int? max,
     Object? isUnlimited = _Undefined,
@@ -164,10 +192,11 @@ class _CharacterResourceViewDataImpl extends CharacterResourceViewData {
       current: current ?? this.current,
       max: max ?? this.max,
       isUnlimited: isUnlimited is bool? ? isUnlimited : this.isUnlimited,
-      resetOn: resetOn is _i3.RestType? ? resetOn : this.resetOn,
-      usageResetOn:
-          usageResetOn is _i3.RestType? ? usageResetOn : this.usageResetOn,
-      activationTrigger: activationTrigger is _i4.FeatureResourceTrigger?
+      resetOn: resetOn is _igwcjrvt.RestType? ? resetOn : this.resetOn,
+      usageResetOn: usageResetOn is _igwcjrvt.RestType?
+          ? usageResetOn
+          : this.usageResetOn,
+      activationTrigger: activationTrigger is _i8tdz0hj.FeatureResourceTrigger?
           ? activationTrigger
           : this.activationTrigger,
     );

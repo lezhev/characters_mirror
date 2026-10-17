@@ -334,7 +334,7 @@ void main() {
               routes: [
                 GoRoute(
                   path: Step.classStep.routePath,
-                  builder: (_, __) => const Scaffold(
+                  builder: (_, _) => const Scaffold(
                     appBar: CreationAppBar(
                       title: 'Создание персонажа',
                     ),
@@ -461,7 +461,8 @@ void main() {
       final service = FakeAuthService.signedIn(_user(email: 'hero@test.dev'));
       final repository = FakeCharacterRepository(
         onSave: (_) async =>
-            throw const protocol.ServerpodClientException('Failed to fetch', 0),
+            throw const protocol.ServerpodClientNetworkException(
+                'Failed to fetch'),
       );
       final container = ProviderContainer(
         overrides: [

@@ -191,11 +191,11 @@ class _SettingsRouterHarness extends StatelessWidget {
     routes: [
       GoRoute(
         path: '/characters',
-        builder: (_, __) => const CharactersList(),
+        builder: (_, _) => const CharactersList(),
       ),
       GoRoute(
         path: '/settings',
-        builder: (_, __) => const SettingsPage(),
+        builder: (_, _) => const SettingsPage(),
       ),
     ],
   );

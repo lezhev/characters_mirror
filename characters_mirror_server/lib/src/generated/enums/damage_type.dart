@@ -7,11 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
-enum DamageType implements _i1.SerializableModel {
+enum DamageType implements _is.SerializableModel {
   acid,
   bludgeoning,
   cold,
@@ -56,7 +57,8 @@ enum DamageType implements _i1.SerializableModel {
         return DamageType.thunder;
       default:
         throw ArgumentError(
-            'Value "$name" cannot be converted to "DamageType"');
+          'Value "$name" cannot be converted to "DamageType"',
+        );
     }
   }
 

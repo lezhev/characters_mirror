@@ -25,11 +25,11 @@ class InventoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(characterSheetControllerProvider(characterId));
-    final weapons = ref.watch(weaponCatalogProvider).valueOrNull;
-    final armors = ref.watch(armorCatalogProvider).valueOrNull;
-    final tools = ref.watch(toolCatalogProvider).valueOrNull;
-    final items = ref.watch(itemCatalogProvider).valueOrNull;
-    final magicItems = ref.watch(magicItemCatalogProvider).valueOrNull;
+    final weapons = ref.watch(weaponCatalogProvider).value;
+    final armors = ref.watch(armorCatalogProvider).value;
+    final tools = ref.watch(toolCatalogProvider).value;
+    final items = ref.watch(itemCatalogProvider).value;
+    final magicItems = ref.watch(magicItemCatalogProvider).value;
 
     return state.when(
       loading: () => const Center(child: CircularProgressIndicator()),

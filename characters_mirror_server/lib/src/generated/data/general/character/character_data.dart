@@ -7,53 +7,59 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/character_alignment.dart' as _i2;
-import '../../../data/general/race/race_data.dart' as _i3;
-import '../../../data/general/race/subrace_data.dart' as _i4;
-import '../../../data/background_data.dart' as _i5;
-import '../../../enums/character_speed_kind.dart' as _i6;
-import '../../../enums/condition_type.dart' as _i7;
-import '../../../data/general/character/character_inventory_item_data.dart'
-    as _i8;
-import '../../../data/general/character/character_equipment_selection_data.dart'
-    as _i9;
-import '../../../data/general/character/character_skill_proficiency_state.dart'
-    as _i10;
-import '../../../enums/ability.dart' as _i11;
-import '../../../data/general/character/character_saving_throw_proficiency_override_data.dart'
-    as _i12;
-import '../../../data/general/character/character_language_overrides_data.dart'
-    as _i13;
-import '../../../data/general/character/character_tool_proficiency_overrides_data.dart'
-    as _i14;
-import '../../../data/general/character/character_weapon_proficiency_overrides_data.dart'
-    as _i15;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/background_data.dart' as _i1utzyju;
 import '../../../data/general/character/character_armor_training_overrides_data.dart'
-    as _i16;
-import '../../../data/general/character/character_note_data.dart' as _i17;
-import '../../../data/general/character/character_attack_data.dart' as _i18;
-import '../../../data/general/character/character_feature_override_data.dart'
-    as _i19;
-import '../../../data/general/character/character_resource_state_data.dart'
-    as _i20;
-import '../../../data/general/character/spell_slot_recovery_trigger_data.dart'
-    as _i21;
+    as _icsd58ny;
+import '../../../data/general/character/character_attack_data.dart'
+    as _i9jwtlvb;
+import '../../../data/general/character/character_choice_data.dart'
+    as _iyugnuy3;
 import '../../../data/general/character/character_class_entry_data.dart'
-    as _i22;
-import '../../../data/general/character/character_choice_data.dart' as _i23;
+    as _inzx0vvj;
+import '../../../data/general/character/character_derived_data.dart'
+    as _i2xtekq6;
+import '../../../data/general/character/character_equipment_selection_data.dart'
+    as _ihorlaio;
+import '../../../data/general/character/character_feature_override_data.dart'
+    as _iq39grm2;
+import '../../../data/general/character/character_inventory_item_data.dart'
+    as _iekoe72x;
+import '../../../data/general/character/character_language_overrides_data.dart'
+    as _iy48gvsl;
+import '../../../data/general/character/character_note_data.dart' as _ioruio1c;
+import '../../../data/general/character/character_resource_state_data.dart'
+    as _ikl23b4y;
+import '../../../data/general/character/character_saving_throw_proficiency_override_data.dart'
+    as _iax3ptkk;
+import '../../../data/general/character/character_skill_proficiency_state.dart'
+    as _ipq2j7wi;
 import '../../../data/general/character/character_skill_selection_data.dart'
-    as _i24;
+    as _itrgrf6y;
 import '../../../data/general/character/character_spell_selection_data.dart'
-    as _i25;
+    as _iosl4wyz;
 import '../../../data/general/character/character_starting_equipment_selection_data.dart'
-    as _i26;
-import '../../../data/general/character/character_derived_data.dart' as _i27;
+    as _iv0bao6v;
+import '../../../data/general/character/character_tool_proficiency_overrides_data.dart'
+    as _i6hm0w7y;
+import '../../../data/general/character/character_weapon_proficiency_overrides_data.dart'
+    as _i6snm8iz;
+import '../../../data/general/character/spell_slot_recovery_trigger_data.dart'
+    as _i7xdtn5i;
+import '../../../data/general/race/race_data.dart' as _ittxuxz1;
+import '../../../data/general/race/subrace_data.dart' as _i2k66n75;
+import '../../../enums/ability.dart' as _iw3bk51e;
+import '../../../enums/character_alignment.dart' as _iwwn584b;
+import '../../../enums/character_speed_kind.dart' as _il8xya9v;
+import '../../../enums/condition_type.dart' as _i1didlhi;
 
 abstract class CharacterData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterData._({
     this.id,
     this.spellActivationUses,
@@ -159,10 +165,10 @@ abstract class CharacterData
     DateTime? createdAt,
     DateTime? updatedAt,
     int? experience,
-    _i2.CharacterAlignment? alignmentValue,
-    _i3.RaceData? race,
-    _i4.SubraceData? subrace,
-    _i5.BackgroundData? background,
+    _iwwn584b.CharacterAlignment? alignmentValue,
+    _ittxuxz1.RaceData? race,
+    _i2k66n75.SubraceData? subrace,
+    _i1utzyju.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     Map<String, int>? customAbilityBonuses,
     bool? useFlexibleAbilityBonuses,
@@ -183,48 +189,50 @@ abstract class CharacterData
     int? swimmingSpeed,
     int? climbingSpeed,
     int? flyingSpeed,
-    _i6.CharacterSpeedKind? displayedSpeedKind,
+    _il8xya9v.CharacterSpeedKind? displayedSpeedKind,
     int? customSpellSaveDcBonus,
     int? customSpellAttackBonus,
     List<String>? preparedSpellKeys,
-    List<_i7.ConditionType>? activeConditions,
+    List<_i1didlhi.ConditionType>? activeConditions,
     int? exhaustionLevel,
     bool? inspiration,
-    List<_i8.CharacterInventoryItemData>? equipment,
-    _i9.CharacterEquipmentSelectionData? equippedArmor,
-    _i9.CharacterEquipmentSelectionData? equippedShield,
-    List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i11.Ability>? manualSavingThrowProficiencies,
-    List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
-    List<_i12.CharacterSavingThrowProficiencyOverrideData>?
-        manualSavingThrowProficiencyOverrides,
-    _i13.CharacterLanguageOverridesData? manualLanguageOverrides,
-    _i14.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
-    _i15.CharacterWeaponProficiencyOverridesData?
-        manualWeaponProficiencyOverrides,
-    _i16.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
-    List<_i17.CharacterNoteData>? notes,
-    List<_i18.CharacterAttackData>? attacks,
-    List<_i19.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i20.CharacterResourceStateData>? resourceStates,
-    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
-    List<_i22.CharacterClassEntryData>? classEntries,
-    List<_i23.CharacterChoiceData>? choices,
-    List<_i24.CharacterSkillSelectionData>? skillSelections,
-    List<_i25.CharacterSpellSelectionData>? spellSelections,
-    List<_i26.CharacterStartingEquipmentSelectionData>?
-        startingEquipmentSelections,
-    _i27.CharacterDerivedData? derived,
+    List<_iekoe72x.CharacterInventoryItemData>? equipment,
+    _ihorlaio.CharacterEquipmentSelectionData? equippedArmor,
+    _ihorlaio.CharacterEquipmentSelectionData? equippedShield,
+    List<_ipq2j7wi.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_iw3bk51e.Ability>? manualSavingThrowProficiencies,
+    List<_ipq2j7wi.CharacterSkillProficiencyState>?
+    manualSkillProficiencyOverrides,
+    List<_iax3ptkk.CharacterSavingThrowProficiencyOverrideData>?
+    manualSavingThrowProficiencyOverrides,
+    _iy48gvsl.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i6hm0w7y.CharacterToolProficiencyOverridesData?
+    manualToolProficiencyOverrides,
+    _i6snm8iz.CharacterWeaponProficiencyOverridesData?
+    manualWeaponProficiencyOverrides,
+    _icsd58ny.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_ioruio1c.CharacterNoteData>? notes,
+    List<_i9jwtlvb.CharacterAttackData>? attacks,
+    List<_iq39grm2.CharacterFeatureOverrideData>? featureOverrides,
+    List<_ikl23b4y.CharacterResourceStateData>? resourceStates,
+    Map<String, _i7xdtn5i.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
+    List<_inzx0vvj.CharacterClassEntryData>? classEntries,
+    List<_iyugnuy3.CharacterChoiceData>? choices,
+    List<_itrgrf6y.CharacterSkillSelectionData>? skillSelections,
+    List<_iosl4wyz.CharacterSpellSelectionData>? spellSelections,
+    List<_iv0bao6v.CharacterStartingEquipmentSelectionData>?
+    startingEquipmentSelections,
+    _i2xtekq6.CharacterDerivedData? derived,
   }) = _CharacterDataImpl;
 
   factory CharacterData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterData(
       id: jsonSerialization['id'] as int?,
-      spellActivationUses: (jsonSerialization['spellActivationUses'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+      spellActivationUses: jsonSerialization['spellActivationUses'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['spellActivationUses'],
+            ),
       name: jsonSerialization['name'] as String?,
       age: jsonSerialization['age'] as String?,
       height: jsonSerialization['height'] as String?,
@@ -242,73 +250,85 @@ abstract class CharacterData
       flaws: jsonSerialization['flaws'] as String?,
       version: jsonSerialization['version'] as int?,
       portraitVersion: jsonSerialization['portraitVersion'] as int?,
-      syncTargetRevisions: (jsonSerialization['syncTargetRevisions'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      syncBarrierTokens: (jsonSerialization['syncBarrierTokens'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as String,
-              )),
+      syncTargetRevisions: jsonSerialization['syncTargetRevisions'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['syncTargetRevisions'],
+            ),
+      syncBarrierTokens: jsonSerialization['syncBarrierTokens'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, String>>(
+              jsonSerialization['syncBarrierTokens'],
+            ),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       experience: jsonSerialization['experience'] as int?,
       alignmentValue: jsonSerialization['alignmentValue'] == null
           ? null
-          : _i2.CharacterAlignment.fromJson(
-              (jsonSerialization['alignmentValue'] as String)),
+          : _iwwn584b.CharacterAlignment.fromJson(
+              (jsonSerialization['alignmentValue'] as String),
+            ),
       race: jsonSerialization['race'] == null
           ? null
-          : _i3.RaceData.fromJson(
-              (jsonSerialization['race'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_ittxuxz1.RaceData>(
+              jsonSerialization['race'],
+            ),
       subrace: jsonSerialization['subrace'] == null
           ? null
-          : _i4.SubraceData.fromJson(
-              (jsonSerialization['subrace'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i2k66n75.SubraceData>(
+              jsonSerialization['subrace'],
+            ),
       background: jsonSerialization['background'] == null
           ? null
-          : _i5.BackgroundData.fromJson(
-              (jsonSerialization['background'] as Map<String, dynamic>)),
-      baseAbilityScores: (jsonSerialization['baseAbilityScores'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      customAbilityBonuses: (jsonSerialization['customAbilityBonuses'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+          : _ikmnmw29.Protocol().deserialize<_i1utzyju.BackgroundData>(
+              jsonSerialization['background'],
+            ),
+      baseAbilityScores: jsonSerialization['baseAbilityScores'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['baseAbilityScores'],
+            ),
+      customAbilityBonuses: jsonSerialization['customAbilityBonuses'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['customAbilityBonuses'],
+            ),
       useFlexibleAbilityBonuses:
-          jsonSerialization['useFlexibleAbilityBonuses'] as bool?,
+          jsonSerialization['useFlexibleAbilityBonuses'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['useFlexibleAbilityBonuses'],
+            ),
       temporaryHp: jsonSerialization['temporaryHp'] as int?,
       currentHp: jsonSerialization['currentHp'] as int?,
       deathSaveSuccesses: jsonSerialization['deathSaveSuccesses'] as int?,
       deathSaveFailures: jsonSerialization['deathSaveFailures'] as int?,
       hpPerLevelBonus: jsonSerialization['hpPerLevelBonus'] as int?,
       hpFlatBonus: jsonSerialization['hpFlatBonus'] as int?,
-      currentHitDice:
-          (jsonSerialization['currentHitDice'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      hitDiceMaxOverrides: (jsonSerialization['hitDiceMaxOverrides'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      currentSpellSlots: (jsonSerialization['currentSpellSlots'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
-      currentPactSlots: (jsonSerialization['currentPactSlots'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      currentHitDice: jsonSerialization['currentHitDice'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['currentHitDice'],
+            ),
+      hitDiceMaxOverrides: jsonSerialization['hitDiceMaxOverrides'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['hitDiceMaxOverrides'],
+            ),
+      currentSpellSlots: jsonSerialization['currentSpellSlots'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['currentSpellSlots'],
+            ),
+      currentPactSlots: jsonSerialization['currentPactSlots'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['currentPactSlots'],
+            ),
       activeConcentrationSpellName:
           jsonSerialization['activeConcentrationSpellName'] as String?,
       customInitiativeBonus: jsonSerialization['customInitiativeBonus'] as int?,
@@ -319,125 +339,162 @@ abstract class CharacterData
       flyingSpeed: jsonSerialization['flyingSpeed'] as int?,
       displayedSpeedKind: jsonSerialization['displayedSpeedKind'] == null
           ? null
-          : _i6.CharacterSpeedKind.fromJson(
-              (jsonSerialization['displayedSpeedKind'] as int)),
+          : _il8xya9v.CharacterSpeedKind.fromJson(
+              (jsonSerialization['displayedSpeedKind'] as int),
+            ),
       customSpellSaveDcBonus:
           jsonSerialization['customSpellSaveDcBonus'] as int?,
       customSpellAttackBonus:
           jsonSerialization['customSpellAttackBonus'] as int?,
-      preparedSpellKeys: (jsonSerialization['preparedSpellKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      activeConditions: (jsonSerialization['activeConditions'] as List?)
-          ?.map((e) => _i7.ConditionType.fromJson((e as String)))
-          .toList(),
+      preparedSpellKeys: jsonSerialization['preparedSpellKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['preparedSpellKeys'],
+            ),
+      activeConditions: jsonSerialization['activeConditions'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_i1didlhi.ConditionType>>(
+              jsonSerialization['activeConditions'],
+            ),
       exhaustionLevel: jsonSerialization['exhaustionLevel'] as int?,
-      inspiration: jsonSerialization['inspiration'] as bool?,
-      equipment: (jsonSerialization['equipment'] as List?)
-          ?.map((e) => _i8.CharacterInventoryItemData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+      inspiration: jsonSerialization['inspiration'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['inspiration']),
+      equipment: jsonSerialization['equipment'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iekoe72x.CharacterInventoryItemData>>(
+                  jsonSerialization['equipment'],
+                ),
       equippedArmor: jsonSerialization['equippedArmor'] == null
           ? null
-          : _i9.CharacterEquipmentSelectionData.fromJson(
-              (jsonSerialization['equippedArmor'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol()
+                .deserialize<_ihorlaio.CharacterEquipmentSelectionData>(
+                  jsonSerialization['equippedArmor'],
+                ),
       equippedShield: jsonSerialization['equippedShield'] == null
           ? null
-          : _i9.CharacterEquipmentSelectionData.fromJson(
-              (jsonSerialization['equippedShield'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol()
+                .deserialize<_ihorlaio.CharacterEquipmentSelectionData>(
+                  jsonSerialization['equippedShield'],
+                ),
       manualSkillProficiencies:
-          (jsonSerialization['manualSkillProficiencies'] as List?)
-              ?.map((e) => _i10.CharacterSkillProficiencyState.fromJson(
-                  (e as Map<String, dynamic>)))
-              .toList(),
+          jsonSerialization['manualSkillProficiencies'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ipq2j7wi.CharacterSkillProficiencyState>>(
+                  jsonSerialization['manualSkillProficiencies'],
+                ),
       manualSavingThrowProficiencies:
-          (jsonSerialization['manualSavingThrowProficiencies'] as List?)
-              ?.map((e) => _i11.Ability.fromJson((e as String)))
-              .toList(),
+          jsonSerialization['manualSavingThrowProficiencies'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iw3bk51e.Ability>>(
+              jsonSerialization['manualSavingThrowProficiencies'],
+            ),
       manualSkillProficiencyOverrides:
-          (jsonSerialization['manualSkillProficiencyOverrides'] as List?)
-              ?.map((e) => _i10.CharacterSkillProficiencyState.fromJson(
-                  (e as Map<String, dynamic>)))
-              .toList(),
+          jsonSerialization['manualSkillProficiencyOverrides'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ipq2j7wi.CharacterSkillProficiencyState>>(
+                  jsonSerialization['manualSkillProficiencyOverrides'],
+                ),
       manualSavingThrowProficiencyOverrides:
-          (jsonSerialization['manualSavingThrowProficiencyOverrides'] as List?)
-              ?.map((e) =>
-                  _i12.CharacterSavingThrowProficiencyOverrideData.fromJson(
-                      (e as Map<String, dynamic>)))
-              .toList(),
+          jsonSerialization['manualSavingThrowProficiencyOverrides'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<
+              List<_iax3ptkk.CharacterSavingThrowProficiencyOverrideData>
+            >(jsonSerialization['manualSavingThrowProficiencyOverrides']),
       manualLanguageOverrides:
           jsonSerialization['manualLanguageOverrides'] == null
-              ? null
-              : _i13.CharacterLanguageOverridesData.fromJson(
-                  (jsonSerialization['manualLanguageOverrides']
-                      as Map<String, dynamic>)),
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<_iy48gvsl.CharacterLanguageOverridesData>(
+                  jsonSerialization['manualLanguageOverrides'],
+                ),
       manualToolProficiencyOverrides:
           jsonSerialization['manualToolProficiencyOverrides'] == null
-              ? null
-              : _i14.CharacterToolProficiencyOverridesData.fromJson(
-                  (jsonSerialization['manualToolProficiencyOverrides']
-                      as Map<String, dynamic>)),
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<_i6hm0w7y.CharacterToolProficiencyOverridesData>(
+                  jsonSerialization['manualToolProficiencyOverrides'],
+                ),
       manualWeaponProficiencyOverrides:
           jsonSerialization['manualWeaponProficiencyOverrides'] == null
-              ? null
-              : _i15.CharacterWeaponProficiencyOverridesData.fromJson(
-                  (jsonSerialization['manualWeaponProficiencyOverrides']
-                      as Map<String, dynamic>)),
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<_i6snm8iz.CharacterWeaponProficiencyOverridesData>(
+                  jsonSerialization['manualWeaponProficiencyOverrides'],
+                ),
       manualArmorTrainingOverrides:
           jsonSerialization['manualArmorTrainingOverrides'] == null
-              ? null
-              : _i16.CharacterArmorTrainingOverridesData.fromJson(
-                  (jsonSerialization['manualArmorTrainingOverrides']
-                      as Map<String, dynamic>)),
-      notes: (jsonSerialization['notes'] as List?)
-          ?.map((e) =>
-              _i17.CharacterNoteData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      attacks: (jsonSerialization['attacks'] as List?)
-          ?.map((e) =>
-              _i18.CharacterAttackData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      featureOverrides: (jsonSerialization['featureOverrides'] as List?)
-          ?.map((e) => _i19.CharacterFeatureOverrideData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      resourceStates: (jsonSerialization['resourceStates'] as List?)
-          ?.map((e) => _i20.CharacterResourceStateData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      spellRecoveryTriggers:
-          (jsonSerialization['spellRecoveryTriggers'] as Map?)
-              ?.map((k, v) => MapEntry(
-                    k as String,
-                    _i21.SpellSlotRecoveryTriggerData.fromJson(
-                        (v as Map<String, dynamic>)),
-                  )),
-      classEntries: (jsonSerialization['classEntries'] as List?)
-          ?.map((e) => _i22.CharacterClassEntryData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      choices: (jsonSerialization['choices'] as List?)
-          ?.map((e) =>
-              _i23.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      skillSelections: (jsonSerialization['skillSelections'] as List?)
-          ?.map((e) => _i24.CharacterSkillSelectionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      spellSelections: (jsonSerialization['spellSelections'] as List?)
-          ?.map((e) => _i25.CharacterSpellSelectionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<_icsd58ny.CharacterArmorTrainingOverridesData>(
+                  jsonSerialization['manualArmorTrainingOverrides'],
+                ),
+      notes: jsonSerialization['notes'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ioruio1c.CharacterNoteData>>(
+              jsonSerialization['notes'],
+            ),
+      attacks: jsonSerialization['attacks'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_i9jwtlvb.CharacterAttackData>>(
+                  jsonSerialization['attacks'],
+                ),
+      featureOverrides: jsonSerialization['featureOverrides'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iq39grm2.CharacterFeatureOverrideData>>(
+                  jsonSerialization['featureOverrides'],
+                ),
+      resourceStates: jsonSerialization['resourceStates'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ikl23b4y.CharacterResourceStateData>>(
+                  jsonSerialization['resourceStates'],
+                ),
+      spellRecoveryTriggers: jsonSerialization['spellRecoveryTriggers'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<
+              Map<String, _i7xdtn5i.SpellSlotRecoveryTriggerData>
+            >(jsonSerialization['spellRecoveryTriggers']),
+      classEntries: jsonSerialization['classEntries'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_inzx0vvj.CharacterClassEntryData>>(
+                  jsonSerialization['classEntries'],
+                ),
+      choices: jsonSerialization['choices'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iyugnuy3.CharacterChoiceData>>(
+                  jsonSerialization['choices'],
+                ),
+      skillSelections: jsonSerialization['skillSelections'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_itrgrf6y.CharacterSkillSelectionData>>(
+                  jsonSerialization['skillSelections'],
+                ),
+      spellSelections: jsonSerialization['spellSelections'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iosl4wyz.CharacterSpellSelectionData>>(
+                  jsonSerialization['spellSelections'],
+                ),
       startingEquipmentSelections:
-          (jsonSerialization['startingEquipmentSelections'] as List?)
-              ?.map((e) =>
-                  _i26.CharacterStartingEquipmentSelectionData.fromJson(
-                      (e as Map<String, dynamic>)))
-              .toList(),
+          jsonSerialization['startingEquipmentSelections'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<
+              List<_iv0bao6v.CharacterStartingEquipmentSelectionData>
+            >(jsonSerialization['startingEquipmentSelections']),
       derived: jsonSerialization['derived'] == null
           ? null
-          : _i27.CharacterDerivedData.fromJson(
-              (jsonSerialization['derived'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i2xtekq6.CharacterDerivedData>(
+              jsonSerialization['derived'],
+            ),
     );
   }
 
@@ -489,13 +546,13 @@ abstract class CharacterData
 
   int? experience;
 
-  _i2.CharacterAlignment? alignmentValue;
+  _iwwn584b.CharacterAlignment? alignmentValue;
 
-  _i3.RaceData? race;
+  _ittxuxz1.RaceData? race;
 
-  _i4.SubraceData? subrace;
+  _i2k66n75.SubraceData? subrace;
 
-  _i5.BackgroundData? background;
+  _i1utzyju.BackgroundData? background;
 
   Map<String, int>? baseAbilityScores;
 
@@ -537,7 +594,7 @@ abstract class CharacterData
 
   int? flyingSpeed;
 
-  _i6.CharacterSpeedKind? displayedSpeedKind;
+  _il8xya9v.CharacterSpeedKind? displayedSpeedKind;
 
   int? customSpellSaveDcBonus;
 
@@ -545,62 +602,64 @@ abstract class CharacterData
 
   List<String>? preparedSpellKeys;
 
-  List<_i7.ConditionType>? activeConditions;
+  List<_i1didlhi.ConditionType>? activeConditions;
 
   int? exhaustionLevel;
 
   bool? inspiration;
 
-  List<_i8.CharacterInventoryItemData>? equipment;
+  List<_iekoe72x.CharacterInventoryItemData>? equipment;
 
-  _i9.CharacterEquipmentSelectionData? equippedArmor;
+  _ihorlaio.CharacterEquipmentSelectionData? equippedArmor;
 
-  _i9.CharacterEquipmentSelectionData? equippedShield;
+  _ihorlaio.CharacterEquipmentSelectionData? equippedShield;
 
-  List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencies;
+  List<_ipq2j7wi.CharacterSkillProficiencyState>? manualSkillProficiencies;
 
-  List<_i11.Ability>? manualSavingThrowProficiencies;
+  List<_iw3bk51e.Ability>? manualSavingThrowProficiencies;
 
-  List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides;
+  List<_ipq2j7wi.CharacterSkillProficiencyState>?
+  manualSkillProficiencyOverrides;
 
-  List<_i12.CharacterSavingThrowProficiencyOverrideData>?
-      manualSavingThrowProficiencyOverrides;
+  List<_iax3ptkk.CharacterSavingThrowProficiencyOverrideData>?
+  manualSavingThrowProficiencyOverrides;
 
-  _i13.CharacterLanguageOverridesData? manualLanguageOverrides;
+  _iy48gvsl.CharacterLanguageOverridesData? manualLanguageOverrides;
 
-  _i14.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides;
+  _i6hm0w7y.CharacterToolProficiencyOverridesData?
+  manualToolProficiencyOverrides;
 
-  _i15.CharacterWeaponProficiencyOverridesData?
-      manualWeaponProficiencyOverrides;
+  _i6snm8iz.CharacterWeaponProficiencyOverridesData?
+  manualWeaponProficiencyOverrides;
 
-  _i16.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides;
+  _icsd58ny.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides;
 
-  List<_i17.CharacterNoteData>? notes;
+  List<_ioruio1c.CharacterNoteData>? notes;
 
-  List<_i18.CharacterAttackData>? attacks;
+  List<_i9jwtlvb.CharacterAttackData>? attacks;
 
-  List<_i19.CharacterFeatureOverrideData>? featureOverrides;
+  List<_iq39grm2.CharacterFeatureOverrideData>? featureOverrides;
 
-  List<_i20.CharacterResourceStateData>? resourceStates;
+  List<_ikl23b4y.CharacterResourceStateData>? resourceStates;
 
-  Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers;
+  Map<String, _i7xdtn5i.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers;
 
-  List<_i22.CharacterClassEntryData>? classEntries;
+  List<_inzx0vvj.CharacterClassEntryData>? classEntries;
 
-  List<_i23.CharacterChoiceData>? choices;
+  List<_iyugnuy3.CharacterChoiceData>? choices;
 
-  List<_i24.CharacterSkillSelectionData>? skillSelections;
+  List<_itrgrf6y.CharacterSkillSelectionData>? skillSelections;
 
-  List<_i25.CharacterSpellSelectionData>? spellSelections;
+  List<_iosl4wyz.CharacterSpellSelectionData>? spellSelections;
 
-  List<_i26.CharacterStartingEquipmentSelectionData>?
-      startingEquipmentSelections;
+  List<_iv0bao6v.CharacterStartingEquipmentSelectionData>?
+  startingEquipmentSelections;
 
-  _i27.CharacterDerivedData? derived;
+  _i2xtekq6.CharacterDerivedData? derived;
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterData copyWith({
     int? id,
     Map<String, int>? spellActivationUses,
@@ -626,10 +685,10 @@ abstract class CharacterData
     DateTime? createdAt,
     DateTime? updatedAt,
     int? experience,
-    _i2.CharacterAlignment? alignmentValue,
-    _i3.RaceData? race,
-    _i4.SubraceData? subrace,
-    _i5.BackgroundData? background,
+    _iwwn584b.CharacterAlignment? alignmentValue,
+    _ittxuxz1.RaceData? race,
+    _i2k66n75.SubraceData? subrace,
+    _i1utzyju.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     Map<String, int>? customAbilityBonuses,
     bool? useFlexibleAbilityBonuses,
@@ -650,42 +709,45 @@ abstract class CharacterData
     int? swimmingSpeed,
     int? climbingSpeed,
     int? flyingSpeed,
-    _i6.CharacterSpeedKind? displayedSpeedKind,
+    _il8xya9v.CharacterSpeedKind? displayedSpeedKind,
     int? customSpellSaveDcBonus,
     int? customSpellAttackBonus,
     List<String>? preparedSpellKeys,
-    List<_i7.ConditionType>? activeConditions,
+    List<_i1didlhi.ConditionType>? activeConditions,
     int? exhaustionLevel,
     bool? inspiration,
-    List<_i8.CharacterInventoryItemData>? equipment,
-    _i9.CharacterEquipmentSelectionData? equippedArmor,
-    _i9.CharacterEquipmentSelectionData? equippedShield,
-    List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i11.Ability>? manualSavingThrowProficiencies,
-    List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
-    List<_i12.CharacterSavingThrowProficiencyOverrideData>?
-        manualSavingThrowProficiencyOverrides,
-    _i13.CharacterLanguageOverridesData? manualLanguageOverrides,
-    _i14.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
-    _i15.CharacterWeaponProficiencyOverridesData?
-        manualWeaponProficiencyOverrides,
-    _i16.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
-    List<_i17.CharacterNoteData>? notes,
-    List<_i18.CharacterAttackData>? attacks,
-    List<_i19.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i20.CharacterResourceStateData>? resourceStates,
-    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
-    List<_i22.CharacterClassEntryData>? classEntries,
-    List<_i23.CharacterChoiceData>? choices,
-    List<_i24.CharacterSkillSelectionData>? skillSelections,
-    List<_i25.CharacterSpellSelectionData>? spellSelections,
-    List<_i26.CharacterStartingEquipmentSelectionData>?
-        startingEquipmentSelections,
-    _i27.CharacterDerivedData? derived,
+    List<_iekoe72x.CharacterInventoryItemData>? equipment,
+    _ihorlaio.CharacterEquipmentSelectionData? equippedArmor,
+    _ihorlaio.CharacterEquipmentSelectionData? equippedShield,
+    List<_ipq2j7wi.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_iw3bk51e.Ability>? manualSavingThrowProficiencies,
+    List<_ipq2j7wi.CharacterSkillProficiencyState>?
+    manualSkillProficiencyOverrides,
+    List<_iax3ptkk.CharacterSavingThrowProficiencyOverrideData>?
+    manualSavingThrowProficiencyOverrides,
+    _iy48gvsl.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i6hm0w7y.CharacterToolProficiencyOverridesData?
+    manualToolProficiencyOverrides,
+    _i6snm8iz.CharacterWeaponProficiencyOverridesData?
+    manualWeaponProficiencyOverrides,
+    _icsd58ny.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_ioruio1c.CharacterNoteData>? notes,
+    List<_i9jwtlvb.CharacterAttackData>? attacks,
+    List<_iq39grm2.CharacterFeatureOverrideData>? featureOverrides,
+    List<_ikl23b4y.CharacterResourceStateData>? resourceStates,
+    Map<String, _i7xdtn5i.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
+    List<_inzx0vvj.CharacterClassEntryData>? classEntries,
+    List<_iyugnuy3.CharacterChoiceData>? choices,
+    List<_itrgrf6y.CharacterSkillSelectionData>? skillSelections,
+    List<_iosl4wyz.CharacterSpellSelectionData>? spellSelections,
+    List<_iv0bao6v.CharacterStartingEquipmentSelectionData>?
+    startingEquipmentSelections,
+    _i2xtekq6.CharacterDerivedData? derived,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterData',
       if (id != null) 'id': id,
       if (spellActivationUses != null)
         'spellActivationUses': spellActivationUses?.toJson(),
@@ -756,8 +818,9 @@ abstract class CharacterData
       if (preparedSpellKeys != null)
         'preparedSpellKeys': preparedSpellKeys?.toJson(),
       if (activeConditions != null)
-        'activeConditions':
-            activeConditions?.toJson(valueToJson: (v) => v.toJson()),
+        'activeConditions': activeConditions?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (exhaustionLevel != null) 'exhaustionLevel': exhaustionLevel,
       if (inspiration != null) 'inspiration': inspiration,
       if (equipment != null)
@@ -765,8 +828,9 @@ abstract class CharacterData
       if (equippedArmor != null) 'equippedArmor': equippedArmor?.toJson(),
       if (equippedShield != null) 'equippedShield': equippedShield?.toJson(),
       if (manualSkillProficiencies != null)
-        'manualSkillProficiencies':
-            manualSkillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'manualSkillProficiencies': manualSkillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (manualSavingThrowProficiencies != null)
         'manualSavingThrowProficiencies': manualSavingThrowProficiencies
             ?.toJson(valueToJson: (v) => v.toJson()),
@@ -776,42 +840,49 @@ abstract class CharacterData
       if (manualSavingThrowProficiencyOverrides != null)
         'manualSavingThrowProficiencyOverrides':
             manualSavingThrowProficiencyOverrides?.toJson(
-                valueToJson: (v) => v.toJson()),
+              valueToJson: (v) => v.toJson(),
+            ),
       if (manualLanguageOverrides != null)
         'manualLanguageOverrides': manualLanguageOverrides?.toJson(),
       if (manualToolProficiencyOverrides != null)
-        'manualToolProficiencyOverrides':
-            manualToolProficiencyOverrides?.toJson(),
+        'manualToolProficiencyOverrides': manualToolProficiencyOverrides
+            ?.toJson(),
       if (manualWeaponProficiencyOverrides != null)
-        'manualWeaponProficiencyOverrides':
-            manualWeaponProficiencyOverrides?.toJson(),
+        'manualWeaponProficiencyOverrides': manualWeaponProficiencyOverrides
+            ?.toJson(),
       if (manualArmorTrainingOverrides != null)
         'manualArmorTrainingOverrides': manualArmorTrainingOverrides?.toJson(),
       if (notes != null) 'notes': notes?.toJson(valueToJson: (v) => v.toJson()),
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJson()),
       if (featureOverrides != null)
-        'featureOverrides':
-            featureOverrides?.toJson(valueToJson: (v) => v.toJson()),
+        'featureOverrides': featureOverrides?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (resourceStates != null)
-        'resourceStates':
-            resourceStates?.toJson(valueToJson: (v) => v.toJson()),
+        'resourceStates': resourceStates?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (spellRecoveryTriggers != null)
-        'spellRecoveryTriggers':
-            spellRecoveryTriggers?.toJson(valueToJson: (v) => v.toJson()),
+        'spellRecoveryTriggers': spellRecoveryTriggers?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (classEntries != null)
         'classEntries': classEntries?.toJson(valueToJson: (v) => v.toJson()),
       if (choices != null)
         'choices': choices?.toJson(valueToJson: (v) => v.toJson()),
       if (skillSelections != null)
-        'skillSelections':
-            skillSelections?.toJson(valueToJson: (v) => v.toJson()),
+        'skillSelections': skillSelections?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (spellSelections != null)
-        'spellSelections':
-            spellSelections?.toJson(valueToJson: (v) => v.toJson()),
+        'spellSelections': spellSelections?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (startingEquipmentSelections != null)
-        'startingEquipmentSelections':
-            startingEquipmentSelections?.toJson(valueToJson: (v) => v.toJson()),
+        'startingEquipmentSelections': startingEquipmentSelections?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (derived != null) 'derived': derived?.toJson(),
     };
   }
@@ -819,6 +890,7 @@ abstract class CharacterData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterData',
       if (id != null) 'id': id,
       if (spellActivationUses != null)
         'spellActivationUses': spellActivationUses?.toJson(),
@@ -889,20 +961,23 @@ abstract class CharacterData
       if (preparedSpellKeys != null)
         'preparedSpellKeys': preparedSpellKeys?.toJson(),
       if (activeConditions != null)
-        'activeConditions':
-            activeConditions?.toJson(valueToJson: (v) => v.toJson()),
+        'activeConditions': activeConditions?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (exhaustionLevel != null) 'exhaustionLevel': exhaustionLevel,
       if (inspiration != null) 'inspiration': inspiration,
       if (equipment != null)
-        'equipment':
-            equipment?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'equipment': equipment?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (equippedArmor != null)
         'equippedArmor': equippedArmor?.toJsonForProtocol(),
       if (equippedShield != null)
         'equippedShield': equippedShield?.toJsonForProtocol(),
       if (manualSkillProficiencies != null)
         'manualSkillProficiencies': manualSkillProficiencies?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (manualSavingThrowProficiencies != null)
         'manualSavingThrowProficiencies': manualSavingThrowProficiencies
             ?.toJson(valueToJson: (v) => v.toJson()),
@@ -912,52 +987,60 @@ abstract class CharacterData
       if (manualSavingThrowProficiencyOverrides != null)
         'manualSavingThrowProficiencyOverrides':
             manualSavingThrowProficiencyOverrides?.toJson(
-                valueToJson: (v) => v.toJsonForProtocol()),
+              valueToJson: (v) => v.toJsonForProtocol(),
+            ),
       if (manualLanguageOverrides != null)
         'manualLanguageOverrides': manualLanguageOverrides?.toJsonForProtocol(),
       if (manualToolProficiencyOverrides != null)
-        'manualToolProficiencyOverrides':
-            manualToolProficiencyOverrides?.toJsonForProtocol(),
+        'manualToolProficiencyOverrides': manualToolProficiencyOverrides
+            ?.toJsonForProtocol(),
       if (manualWeaponProficiencyOverrides != null)
-        'manualWeaponProficiencyOverrides':
-            manualWeaponProficiencyOverrides?.toJsonForProtocol(),
+        'manualWeaponProficiencyOverrides': manualWeaponProficiencyOverrides
+            ?.toJsonForProtocol(),
       if (manualArmorTrainingOverrides != null)
-        'manualArmorTrainingOverrides':
-            manualArmorTrainingOverrides?.toJsonForProtocol(),
+        'manualArmorTrainingOverrides': manualArmorTrainingOverrides
+            ?.toJsonForProtocol(),
       if (notes != null)
         'notes': notes?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (attacks != null)
         'attacks': attacks?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (featureOverrides != null)
-        'featureOverrides':
-            featureOverrides?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'featureOverrides': featureOverrides?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (resourceStates != null)
-        'resourceStates':
-            resourceStates?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'resourceStates': resourceStates?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (spellRecoveryTriggers != null)
         'spellRecoveryTriggers': spellRecoveryTriggers?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (classEntries != null)
-        'classEntries':
-            classEntries?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'classEntries': classEntries?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (choices != null)
         'choices': choices?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (skillSelections != null)
-        'skillSelections':
-            skillSelections?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'skillSelections': skillSelections?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (spellSelections != null)
-        'spellSelections':
-            spellSelections?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'spellSelections': spellSelections?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (startingEquipmentSelections != null)
         'startingEquipmentSelections': startingEquipmentSelections?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (derived != null) 'derived': derived?.toJsonForProtocol(),
     };
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -989,10 +1072,10 @@ class _CharacterDataImpl extends CharacterData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? experience,
-    _i2.CharacterAlignment? alignmentValue,
-    _i3.RaceData? race,
-    _i4.SubraceData? subrace,
-    _i5.BackgroundData? background,
+    _iwwn584b.CharacterAlignment? alignmentValue,
+    _ittxuxz1.RaceData? race,
+    _i2k66n75.SubraceData? subrace,
+    _i1utzyju.BackgroundData? background,
     Map<String, int>? baseAbilityScores,
     Map<String, int>? customAbilityBonuses,
     bool? useFlexibleAbilityBonuses,
@@ -1013,122 +1096,124 @@ class _CharacterDataImpl extends CharacterData {
     int? swimmingSpeed,
     int? climbingSpeed,
     int? flyingSpeed,
-    _i6.CharacterSpeedKind? displayedSpeedKind,
+    _il8xya9v.CharacterSpeedKind? displayedSpeedKind,
     int? customSpellSaveDcBonus,
     int? customSpellAttackBonus,
     List<String>? preparedSpellKeys,
-    List<_i7.ConditionType>? activeConditions,
+    List<_i1didlhi.ConditionType>? activeConditions,
     int? exhaustionLevel,
     bool? inspiration,
-    List<_i8.CharacterInventoryItemData>? equipment,
-    _i9.CharacterEquipmentSelectionData? equippedArmor,
-    _i9.CharacterEquipmentSelectionData? equippedShield,
-    List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencies,
-    List<_i11.Ability>? manualSavingThrowProficiencies,
-    List<_i10.CharacterSkillProficiencyState>? manualSkillProficiencyOverrides,
-    List<_i12.CharacterSavingThrowProficiencyOverrideData>?
-        manualSavingThrowProficiencyOverrides,
-    _i13.CharacterLanguageOverridesData? manualLanguageOverrides,
-    _i14.CharacterToolProficiencyOverridesData? manualToolProficiencyOverrides,
-    _i15.CharacterWeaponProficiencyOverridesData?
-        manualWeaponProficiencyOverrides,
-    _i16.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
-    List<_i17.CharacterNoteData>? notes,
-    List<_i18.CharacterAttackData>? attacks,
-    List<_i19.CharacterFeatureOverrideData>? featureOverrides,
-    List<_i20.CharacterResourceStateData>? resourceStates,
-    Map<String, _i21.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
-    List<_i22.CharacterClassEntryData>? classEntries,
-    List<_i23.CharacterChoiceData>? choices,
-    List<_i24.CharacterSkillSelectionData>? skillSelections,
-    List<_i25.CharacterSpellSelectionData>? spellSelections,
-    List<_i26.CharacterStartingEquipmentSelectionData>?
-        startingEquipmentSelections,
-    _i27.CharacterDerivedData? derived,
+    List<_iekoe72x.CharacterInventoryItemData>? equipment,
+    _ihorlaio.CharacterEquipmentSelectionData? equippedArmor,
+    _ihorlaio.CharacterEquipmentSelectionData? equippedShield,
+    List<_ipq2j7wi.CharacterSkillProficiencyState>? manualSkillProficiencies,
+    List<_iw3bk51e.Ability>? manualSavingThrowProficiencies,
+    List<_ipq2j7wi.CharacterSkillProficiencyState>?
+    manualSkillProficiencyOverrides,
+    List<_iax3ptkk.CharacterSavingThrowProficiencyOverrideData>?
+    manualSavingThrowProficiencyOverrides,
+    _iy48gvsl.CharacterLanguageOverridesData? manualLanguageOverrides,
+    _i6hm0w7y.CharacterToolProficiencyOverridesData?
+    manualToolProficiencyOverrides,
+    _i6snm8iz.CharacterWeaponProficiencyOverridesData?
+    manualWeaponProficiencyOverrides,
+    _icsd58ny.CharacterArmorTrainingOverridesData? manualArmorTrainingOverrides,
+    List<_ioruio1c.CharacterNoteData>? notes,
+    List<_i9jwtlvb.CharacterAttackData>? attacks,
+    List<_iq39grm2.CharacterFeatureOverrideData>? featureOverrides,
+    List<_ikl23b4y.CharacterResourceStateData>? resourceStates,
+    Map<String, _i7xdtn5i.SpellSlotRecoveryTriggerData>? spellRecoveryTriggers,
+    List<_inzx0vvj.CharacterClassEntryData>? classEntries,
+    List<_iyugnuy3.CharacterChoiceData>? choices,
+    List<_itrgrf6y.CharacterSkillSelectionData>? skillSelections,
+    List<_iosl4wyz.CharacterSpellSelectionData>? spellSelections,
+    List<_iv0bao6v.CharacterStartingEquipmentSelectionData>?
+    startingEquipmentSelections,
+    _i2xtekq6.CharacterDerivedData? derived,
   }) : super._(
-          id: id,
-          spellActivationUses: spellActivationUses,
-          name: name,
-          age: age,
-          height: height,
-          weight: weight,
-          eyes: eyes,
-          skin: skin,
-          hair: hair,
-          appearance: appearance,
-          backstory: backstory,
-          goals: goals,
-          alliesOrganizations: alliesOrganizations,
-          personalityTraits: personalityTraits,
-          ideals: ideals,
-          bonds: bonds,
-          flaws: flaws,
-          version: version,
-          portraitVersion: portraitVersion,
-          syncTargetRevisions: syncTargetRevisions,
-          syncBarrierTokens: syncBarrierTokens,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          experience: experience,
-          alignmentValue: alignmentValue,
-          race: race,
-          subrace: subrace,
-          background: background,
-          baseAbilityScores: baseAbilityScores,
-          customAbilityBonuses: customAbilityBonuses,
-          useFlexibleAbilityBonuses: useFlexibleAbilityBonuses,
-          temporaryHp: temporaryHp,
-          currentHp: currentHp,
-          deathSaveSuccesses: deathSaveSuccesses,
-          deathSaveFailures: deathSaveFailures,
-          hpPerLevelBonus: hpPerLevelBonus,
-          hpFlatBonus: hpFlatBonus,
-          currentHitDice: currentHitDice,
-          hitDiceMaxOverrides: hitDiceMaxOverrides,
-          currentSpellSlots: currentSpellSlots,
-          currentPactSlots: currentPactSlots,
-          activeConcentrationSpellName: activeConcentrationSpellName,
-          customInitiativeBonus: customInitiativeBonus,
-          customArmorClassBonus: customArmorClassBonus,
-          walkingSpeed: walkingSpeed,
-          swimmingSpeed: swimmingSpeed,
-          climbingSpeed: climbingSpeed,
-          flyingSpeed: flyingSpeed,
-          displayedSpeedKind: displayedSpeedKind,
-          customSpellSaveDcBonus: customSpellSaveDcBonus,
-          customSpellAttackBonus: customSpellAttackBonus,
-          preparedSpellKeys: preparedSpellKeys,
-          activeConditions: activeConditions,
-          exhaustionLevel: exhaustionLevel,
-          inspiration: inspiration,
-          equipment: equipment,
-          equippedArmor: equippedArmor,
-          equippedShield: equippedShield,
-          manualSkillProficiencies: manualSkillProficiencies,
-          manualSavingThrowProficiencies: manualSavingThrowProficiencies,
-          manualSkillProficiencyOverrides: manualSkillProficiencyOverrides,
-          manualSavingThrowProficiencyOverrides:
-              manualSavingThrowProficiencyOverrides,
-          manualLanguageOverrides: manualLanguageOverrides,
-          manualToolProficiencyOverrides: manualToolProficiencyOverrides,
-          manualWeaponProficiencyOverrides: manualWeaponProficiencyOverrides,
-          manualArmorTrainingOverrides: manualArmorTrainingOverrides,
-          notes: notes,
-          attacks: attacks,
-          featureOverrides: featureOverrides,
-          resourceStates: resourceStates,
-          spellRecoveryTriggers: spellRecoveryTriggers,
-          classEntries: classEntries,
-          choices: choices,
-          skillSelections: skillSelections,
-          spellSelections: spellSelections,
-          startingEquipmentSelections: startingEquipmentSelections,
-          derived: derived,
-        );
+         id: id,
+         spellActivationUses: spellActivationUses,
+         name: name,
+         age: age,
+         height: height,
+         weight: weight,
+         eyes: eyes,
+         skin: skin,
+         hair: hair,
+         appearance: appearance,
+         backstory: backstory,
+         goals: goals,
+         alliesOrganizations: alliesOrganizations,
+         personalityTraits: personalityTraits,
+         ideals: ideals,
+         bonds: bonds,
+         flaws: flaws,
+         version: version,
+         portraitVersion: portraitVersion,
+         syncTargetRevisions: syncTargetRevisions,
+         syncBarrierTokens: syncBarrierTokens,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         experience: experience,
+         alignmentValue: alignmentValue,
+         race: race,
+         subrace: subrace,
+         background: background,
+         baseAbilityScores: baseAbilityScores,
+         customAbilityBonuses: customAbilityBonuses,
+         useFlexibleAbilityBonuses: useFlexibleAbilityBonuses,
+         temporaryHp: temporaryHp,
+         currentHp: currentHp,
+         deathSaveSuccesses: deathSaveSuccesses,
+         deathSaveFailures: deathSaveFailures,
+         hpPerLevelBonus: hpPerLevelBonus,
+         hpFlatBonus: hpFlatBonus,
+         currentHitDice: currentHitDice,
+         hitDiceMaxOverrides: hitDiceMaxOverrides,
+         currentSpellSlots: currentSpellSlots,
+         currentPactSlots: currentPactSlots,
+         activeConcentrationSpellName: activeConcentrationSpellName,
+         customInitiativeBonus: customInitiativeBonus,
+         customArmorClassBonus: customArmorClassBonus,
+         walkingSpeed: walkingSpeed,
+         swimmingSpeed: swimmingSpeed,
+         climbingSpeed: climbingSpeed,
+         flyingSpeed: flyingSpeed,
+         displayedSpeedKind: displayedSpeedKind,
+         customSpellSaveDcBonus: customSpellSaveDcBonus,
+         customSpellAttackBonus: customSpellAttackBonus,
+         preparedSpellKeys: preparedSpellKeys,
+         activeConditions: activeConditions,
+         exhaustionLevel: exhaustionLevel,
+         inspiration: inspiration,
+         equipment: equipment,
+         equippedArmor: equippedArmor,
+         equippedShield: equippedShield,
+         manualSkillProficiencies: manualSkillProficiencies,
+         manualSavingThrowProficiencies: manualSavingThrowProficiencies,
+         manualSkillProficiencyOverrides: manualSkillProficiencyOverrides,
+         manualSavingThrowProficiencyOverrides:
+             manualSavingThrowProficiencyOverrides,
+         manualLanguageOverrides: manualLanguageOverrides,
+         manualToolProficiencyOverrides: manualToolProficiencyOverrides,
+         manualWeaponProficiencyOverrides: manualWeaponProficiencyOverrides,
+         manualArmorTrainingOverrides: manualArmorTrainingOverrides,
+         notes: notes,
+         attacks: attacks,
+         featureOverrides: featureOverrides,
+         resourceStates: resourceStates,
+         spellRecoveryTriggers: spellRecoveryTriggers,
+         classEntries: classEntries,
+         choices: choices,
+         skillSelections: skillSelections,
+         spellSelections: spellSelections,
+         startingEquipmentSelections: startingEquipmentSelections,
+         derived: derived,
+       );
 
   /// Returns a shallow copy of this [CharacterData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterData copyWith({
     Object? id = _Undefined,
@@ -1213,14 +1298,9 @@ class _CharacterDataImpl extends CharacterData {
       id: id is int? ? id : this.id,
       spellActivationUses: spellActivationUses is Map<String, int>?
           ? spellActivationUses
-          : this.spellActivationUses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.spellActivationUses?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       name: name is String? ? name : this.name,
       age: age is String? ? age : this.age,
       height: height is String? ? height : this.height,
@@ -1241,59 +1321,42 @@ class _CharacterDataImpl extends CharacterData {
       bonds: bonds is String? ? bonds : this.bonds,
       flaws: flaws is String? ? flaws : this.flaws,
       version: version is int? ? version : this.version,
-      portraitVersion:
-          portraitVersion is int? ? portraitVersion : this.portraitVersion,
+      portraitVersion: portraitVersion is int?
+          ? portraitVersion
+          : this.portraitVersion,
       syncTargetRevisions: syncTargetRevisions is Map<String, int>?
           ? syncTargetRevisions
-          : this.syncTargetRevisions?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.syncTargetRevisions?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       syncBarrierTokens: syncBarrierTokens is Map<String, String>?
           ? syncBarrierTokens
-          : this.syncBarrierTokens?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.syncBarrierTokens?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       experience: experience is int? ? experience : this.experience,
-      alignmentValue: alignmentValue is _i2.CharacterAlignment?
+      alignmentValue: alignmentValue is _iwwn584b.CharacterAlignment?
           ? alignmentValue
           : this.alignmentValue,
-      race: race is _i3.RaceData? ? race : this.race?.copyWith(),
-      subrace: subrace is _i4.SubraceData? ? subrace : this.subrace?.copyWith(),
-      background: background is _i5.BackgroundData?
+      race: race is _ittxuxz1.RaceData? ? race : this.race?.copyWith(),
+      subrace: subrace is _i2k66n75.SubraceData?
+          ? subrace
+          : this.subrace?.copyWith(),
+      background: background is _i1utzyju.BackgroundData?
           ? background
           : this.background?.copyWith(),
       baseAbilityScores: baseAbilityScores is Map<String, int>?
           ? baseAbilityScores
-          : this.baseAbilityScores?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.baseAbilityScores?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       customAbilityBonuses: customAbilityBonuses is Map<String, int>?
           ? customAbilityBonuses
-          : this.customAbilityBonuses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.customAbilityBonuses?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       useFlexibleAbilityBonuses: useFlexibleAbilityBonuses is bool?
           ? useFlexibleAbilityBonuses
           : this.useFlexibleAbilityBonuses,
@@ -1305,49 +1368,28 @@ class _CharacterDataImpl extends CharacterData {
       deathSaveFailures: deathSaveFailures is int?
           ? deathSaveFailures
           : this.deathSaveFailures,
-      hpPerLevelBonus:
-          hpPerLevelBonus is int? ? hpPerLevelBonus : this.hpPerLevelBonus,
+      hpPerLevelBonus: hpPerLevelBonus is int?
+          ? hpPerLevelBonus
+          : this.hpPerLevelBonus,
       hpFlatBonus: hpFlatBonus is int? ? hpFlatBonus : this.hpFlatBonus,
       currentHitDice: currentHitDice is Map<String, int>?
           ? currentHitDice
-          : this.currentHitDice?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.currentHitDice?.map((key0, value0) => MapEntry(key0, value0)),
       hitDiceMaxOverrides: hitDiceMaxOverrides is Map<String, int>?
           ? hitDiceMaxOverrides
-          : this.hitDiceMaxOverrides?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.hitDiceMaxOverrides?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       currentSpellSlots: currentSpellSlots is Map<int, int>?
           ? currentSpellSlots
-          : this.currentSpellSlots?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.currentSpellSlots?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       currentPactSlots: currentPactSlots is Map<int, int>?
           ? currentPactSlots
-          : this.currentPactSlots?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.currentPactSlots?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       activeConcentrationSpellName: activeConcentrationSpellName is String?
           ? activeConcentrationSpellName
           : this.activeConcentrationSpellName,
@@ -1361,7 +1403,7 @@ class _CharacterDataImpl extends CharacterData {
       swimmingSpeed: swimmingSpeed is int? ? swimmingSpeed : this.swimmingSpeed,
       climbingSpeed: climbingSpeed is int? ? climbingSpeed : this.climbingSpeed,
       flyingSpeed: flyingSpeed is int? ? flyingSpeed : this.flyingSpeed,
-      displayedSpeedKind: displayedSpeedKind is _i6.CharacterSpeedKind?
+      displayedSpeedKind: displayedSpeedKind is _il8xya9v.CharacterSpeedKind?
           ? displayedSpeedKind
           : this.displayedSpeedKind,
       customSpellSaveDcBonus: customSpellSaveDcBonus is int?
@@ -1373,106 +1415,108 @@ class _CharacterDataImpl extends CharacterData {
       preparedSpellKeys: preparedSpellKeys is List<String>?
           ? preparedSpellKeys
           : this.preparedSpellKeys?.map((e0) => e0).toList(),
-      activeConditions: activeConditions is List<_i7.ConditionType>?
+      activeConditions: activeConditions is List<_i1didlhi.ConditionType>?
           ? activeConditions
           : this.activeConditions?.map((e0) => e0).toList(),
-      exhaustionLevel:
-          exhaustionLevel is int? ? exhaustionLevel : this.exhaustionLevel,
+      exhaustionLevel: exhaustionLevel is int?
+          ? exhaustionLevel
+          : this.exhaustionLevel,
       inspiration: inspiration is bool? ? inspiration : this.inspiration,
-      equipment: equipment is List<_i8.CharacterInventoryItemData>?
+      equipment: equipment is List<_iekoe72x.CharacterInventoryItemData>?
           ? equipment
           : this.equipment?.map((e0) => e0.copyWith()).toList(),
-      equippedArmor: equippedArmor is _i9.CharacterEquipmentSelectionData?
+      equippedArmor: equippedArmor is _ihorlaio.CharacterEquipmentSelectionData?
           ? equippedArmor
           : this.equippedArmor?.copyWith(),
-      equippedShield: equippedShield is _i9.CharacterEquipmentSelectionData?
+      equippedShield:
+          equippedShield is _ihorlaio.CharacterEquipmentSelectionData?
           ? equippedShield
           : this.equippedShield?.copyWith(),
-      manualSkillProficiencies: manualSkillProficiencies
-              is List<_i10.CharacterSkillProficiencyState>?
+      manualSkillProficiencies:
+          manualSkillProficiencies
+              is List<_ipq2j7wi.CharacterSkillProficiencyState>?
           ? manualSkillProficiencies
           : this.manualSkillProficiencies?.map((e0) => e0.copyWith()).toList(),
       manualSavingThrowProficiencies:
-          manualSavingThrowProficiencies is List<_i11.Ability>?
-              ? manualSavingThrowProficiencies
-              : this.manualSavingThrowProficiencies?.map((e0) => e0).toList(),
-      manualSkillProficiencyOverrides: manualSkillProficiencyOverrides
-              is List<_i10.CharacterSkillProficiencyState>?
+          manualSavingThrowProficiencies is List<_iw3bk51e.Ability>?
+          ? manualSavingThrowProficiencies
+          : this.manualSavingThrowProficiencies?.map((e0) => e0).toList(),
+      manualSkillProficiencyOverrides:
+          manualSkillProficiencyOverrides
+              is List<_ipq2j7wi.CharacterSkillProficiencyState>?
           ? manualSkillProficiencyOverrides
-          : this
-              .manualSkillProficiencyOverrides
-              ?.map((e0) => e0.copyWith())
-              .toList(),
+          : this.manualSkillProficiencyOverrides
+                ?.map((e0) => e0.copyWith())
+                .toList(),
       manualSavingThrowProficiencyOverrides:
           manualSavingThrowProficiencyOverrides
-                  is List<_i12.CharacterSavingThrowProficiencyOverrideData>?
-              ? manualSavingThrowProficiencyOverrides
-              : this
-                  .manualSavingThrowProficiencyOverrides
-                  ?.map((e0) => e0.copyWith())
-                  .toList(),
+              is List<_iax3ptkk.CharacterSavingThrowProficiencyOverrideData>?
+          ? manualSavingThrowProficiencyOverrides
+          : this.manualSavingThrowProficiencyOverrides
+                ?.map((e0) => e0.copyWith())
+                .toList(),
       manualLanguageOverrides:
-          manualLanguageOverrides is _i13.CharacterLanguageOverridesData?
-              ? manualLanguageOverrides
-              : this.manualLanguageOverrides?.copyWith(),
-      manualToolProficiencyOverrides: manualToolProficiencyOverrides
-              is _i14.CharacterToolProficiencyOverridesData?
+          manualLanguageOverrides is _iy48gvsl.CharacterLanguageOverridesData?
+          ? manualLanguageOverrides
+          : this.manualLanguageOverrides?.copyWith(),
+      manualToolProficiencyOverrides:
+          manualToolProficiencyOverrides
+              is _i6hm0w7y.CharacterToolProficiencyOverridesData?
           ? manualToolProficiencyOverrides
           : this.manualToolProficiencyOverrides?.copyWith(),
-      manualWeaponProficiencyOverrides: manualWeaponProficiencyOverrides
-              is _i15.CharacterWeaponProficiencyOverridesData?
+      manualWeaponProficiencyOverrides:
+          manualWeaponProficiencyOverrides
+              is _i6snm8iz.CharacterWeaponProficiencyOverridesData?
           ? manualWeaponProficiencyOverrides
           : this.manualWeaponProficiencyOverrides?.copyWith(),
-      manualArmorTrainingOverrides: manualArmorTrainingOverrides
-              is _i16.CharacterArmorTrainingOverridesData?
+      manualArmorTrainingOverrides:
+          manualArmorTrainingOverrides
+              is _icsd58ny.CharacterArmorTrainingOverridesData?
           ? manualArmorTrainingOverrides
           : this.manualArmorTrainingOverrides?.copyWith(),
-      notes: notes is List<_i17.CharacterNoteData>?
+      notes: notes is List<_ioruio1c.CharacterNoteData>?
           ? notes
           : this.notes?.map((e0) => e0.copyWith()).toList(),
-      attacks: attacks is List<_i18.CharacterAttackData>?
+      attacks: attacks is List<_i9jwtlvb.CharacterAttackData>?
           ? attacks
           : this.attacks?.map((e0) => e0.copyWith()).toList(),
       featureOverrides:
-          featureOverrides is List<_i19.CharacterFeatureOverrideData>?
-              ? featureOverrides
-              : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
-      resourceStates: resourceStates is List<_i20.CharacterResourceStateData>?
+          featureOverrides is List<_iq39grm2.CharacterFeatureOverrideData>?
+          ? featureOverrides
+          : this.featureOverrides?.map((e0) => e0.copyWith()).toList(),
+      resourceStates:
+          resourceStates is List<_ikl23b4y.CharacterResourceStateData>?
           ? resourceStates
           : this.resourceStates?.map((e0) => e0.copyWith()).toList(),
-      spellRecoveryTriggers: spellRecoveryTriggers
-              is Map<String, _i21.SpellSlotRecoveryTriggerData>?
+      spellRecoveryTriggers:
+          spellRecoveryTriggers
+              is Map<String, _i7xdtn5i.SpellSlotRecoveryTriggerData>?
           ? spellRecoveryTriggers
-          : this.spellRecoveryTriggers?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0.copyWith(),
-                  )),
-      classEntries: classEntries is List<_i22.CharacterClassEntryData>?
+          : this.spellRecoveryTriggers?.map(
+              (key0, value0) => MapEntry(key0, value0.copyWith()),
+            ),
+      classEntries: classEntries is List<_inzx0vvj.CharacterClassEntryData>?
           ? classEntries
           : this.classEntries?.map((e0) => e0.copyWith()).toList(),
-      choices: choices is List<_i23.CharacterChoiceData>?
+      choices: choices is List<_iyugnuy3.CharacterChoiceData>?
           ? choices
           : this.choices?.map((e0) => e0.copyWith()).toList(),
       skillSelections:
-          skillSelections is List<_i24.CharacterSkillSelectionData>?
-              ? skillSelections
-              : this.skillSelections?.map((e0) => e0.copyWith()).toList(),
+          skillSelections is List<_itrgrf6y.CharacterSkillSelectionData>?
+          ? skillSelections
+          : this.skillSelections?.map((e0) => e0.copyWith()).toList(),
       spellSelections:
-          spellSelections is List<_i25.CharacterSpellSelectionData>?
-              ? spellSelections
-              : this.spellSelections?.map((e0) => e0.copyWith()).toList(),
-      startingEquipmentSelections: startingEquipmentSelections
-              is List<_i26.CharacterStartingEquipmentSelectionData>?
+          spellSelections is List<_iosl4wyz.CharacterSpellSelectionData>?
+          ? spellSelections
+          : this.spellSelections?.map((e0) => e0.copyWith()).toList(),
+      startingEquipmentSelections:
+          startingEquipmentSelections
+              is List<_iv0bao6v.CharacterStartingEquipmentSelectionData>?
           ? startingEquipmentSelections
-          : this
-              .startingEquipmentSelections
-              ?.map((e0) => e0.copyWith())
-              .toList(),
-      derived: derived is _i27.CharacterDerivedData?
+          : this.startingEquipmentSelections
+                ?.map((e0) => e0.copyWith())
+                .toList(),
+      derived: derived is _i2xtekq6.CharacterDerivedData?
           ? derived
           : this.derived?.copyWith(),
     );

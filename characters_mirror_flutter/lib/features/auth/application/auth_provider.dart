@@ -7,6 +7,7 @@ import 'package:characters_mirror_flutter/core/serverpod/remember_me_persistence
 import 'package:characters_mirror_flutter/core/serverpod/serverpod_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
@@ -110,8 +111,12 @@ class ServerpodAuthService extends AuthService {
     required Client client,
     required SessionManager sessionManager,
     required RememberMePersistenceController rememberMePersistenceController,
-  })  : _client = client,
+  })  : // Keep the public constructor parameter names stable.
+        // ignore: prefer_initializing_formals
+        _client = client,
+        // ignore: prefer_initializing_formals
         _sessionManager = sessionManager,
+        // ignore: prefer_initializing_formals
         _rememberMePersistenceController = rememberMePersistenceController {
     _sessionManager.addListener(_relaySessionUpdates);
   }

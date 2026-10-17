@@ -12,7 +12,7 @@ void main() {
     TestSessionBuilder authenticatedSession(int userId) {
       return sessionBuilder.copyWith(
         authentication: AuthenticationOverride.authenticationInfo(
-          userId,
+          (userId).toString(),
           <Scope>{},
         ),
       );
@@ -135,5 +135,7 @@ void main() {
 
       expect(url, isNull);
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

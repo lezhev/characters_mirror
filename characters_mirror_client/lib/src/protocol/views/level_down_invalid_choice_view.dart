@@ -7,11 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class LevelDownInvalidChoiceView implements _i1.SerializableModel {
+abstract class LevelDownInvalidChoiceView
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   LevelDownInvalidChoiceView._({
     required this.groupKey,
     required this.selectionIndex,
@@ -29,16 +33,17 @@ abstract class LevelDownInvalidChoiceView implements _i1.SerializableModel {
   }) = _LevelDownInvalidChoiceViewImpl;
 
   factory LevelDownInvalidChoiceView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return LevelDownInvalidChoiceView(
       groupKey: jsonSerialization['groupKey'] as String,
       selectionIndex: jsonSerialization['selectionIndex'] as int,
       optionKey: jsonSerialization['optionKey'] as String,
       reason: jsonSerialization['reason'] as String,
-      eligibleAlternativeOptionKeys:
-          (jsonSerialization['eligibleAlternativeOptionKeys'] as List)
-              .map((e) => e as String)
-              .toList(),
+      eligibleAlternativeOptionKeys: _isnx6jbi.Protocol()
+          .deserialize<List<String>>(
+            jsonSerialization['eligibleAlternativeOptionKeys'],
+          ),
     );
   }
 
@@ -54,7 +59,7 @@ abstract class LevelDownInvalidChoiceView implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [LevelDownInvalidChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   LevelDownInvalidChoiceView copyWith({
     String? groupKey,
     int? selectionIndex,
@@ -65,6 +70,19 @@ abstract class LevelDownInvalidChoiceView implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'LevelDownInvalidChoiceView',
+      'groupKey': groupKey,
+      'selectionIndex': selectionIndex,
+      'optionKey': optionKey,
+      'reason': reason,
+      'eligibleAlternativeOptionKeys': eligibleAlternativeOptionKeys.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'LevelDownInvalidChoiceView',
       'groupKey': groupKey,
       'selectionIndex': selectionIndex,
       'optionKey': optionKey,
@@ -75,7 +93,7 @@ abstract class LevelDownInvalidChoiceView implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -87,16 +105,16 @@ class _LevelDownInvalidChoiceViewImpl extends LevelDownInvalidChoiceView {
     required String reason,
     required List<String> eligibleAlternativeOptionKeys,
   }) : super._(
-          groupKey: groupKey,
-          selectionIndex: selectionIndex,
-          optionKey: optionKey,
-          reason: reason,
-          eligibleAlternativeOptionKeys: eligibleAlternativeOptionKeys,
-        );
+         groupKey: groupKey,
+         selectionIndex: selectionIndex,
+         optionKey: optionKey,
+         reason: reason,
+         eligibleAlternativeOptionKeys: eligibleAlternativeOptionKeys,
+       );
 
   /// Returns a shallow copy of this [LevelDownInvalidChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   LevelDownInvalidChoiceView copyWith({
     String? groupKey,
@@ -110,7 +128,8 @@ class _LevelDownInvalidChoiceViewImpl extends LevelDownInvalidChoiceView {
       selectionIndex: selectionIndex ?? this.selectionIndex,
       optionKey: optionKey ?? this.optionKey,
       reason: reason ?? this.reason,
-      eligibleAlternativeOptionKeys: eligibleAlternativeOptionKeys ??
+      eligibleAlternativeOptionKeys:
+          eligibleAlternativeOptionKeys ??
           this.eligibleAlternativeOptionKeys.map((e0) => e0).toList(),
     );
   }

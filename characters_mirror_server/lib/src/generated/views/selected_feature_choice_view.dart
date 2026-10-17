@@ -7,12 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class SelectedFeatureChoiceView
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   SelectedFeatureChoiceView._({
     required this.groupKey,
     this.groupTitle,
@@ -30,7 +31,8 @@ abstract class SelectedFeatureChoiceView
   }) = _SelectedFeatureChoiceViewImpl;
 
   factory SelectedFeatureChoiceView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SelectedFeatureChoiceView(
       groupKey: jsonSerialization['groupKey'] as String,
       groupTitle: jsonSerialization['groupTitle'] as String?,
@@ -52,7 +54,7 @@ abstract class SelectedFeatureChoiceView
 
   /// Returns a shallow copy of this [SelectedFeatureChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SelectedFeatureChoiceView copyWith({
     String? groupKey,
     String? groupTitle,
@@ -63,6 +65,7 @@ abstract class SelectedFeatureChoiceView
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SelectedFeatureChoiceView',
       'groupKey': groupKey,
       if (groupTitle != null) 'groupTitle': groupTitle,
       'optionKey': optionKey,
@@ -74,6 +77,7 @@ abstract class SelectedFeatureChoiceView
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SelectedFeatureChoiceView',
       'groupKey': groupKey,
       if (groupTitle != null) 'groupTitle': groupTitle,
       'optionKey': optionKey,
@@ -84,7 +88,7 @@ abstract class SelectedFeatureChoiceView
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -98,16 +102,16 @@ class _SelectedFeatureChoiceViewImpl extends SelectedFeatureChoiceView {
     required String name,
     String? shortDescription,
   }) : super._(
-          groupKey: groupKey,
-          groupTitle: groupTitle,
-          optionKey: optionKey,
-          name: name,
-          shortDescription: shortDescription,
-        );
+         groupKey: groupKey,
+         groupTitle: groupTitle,
+         optionKey: optionKey,
+         name: name,
+         shortDescription: shortDescription,
+       );
 
   /// Returns a shallow copy of this [SelectedFeatureChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SelectedFeatureChoiceView copyWith({
     String? groupKey,

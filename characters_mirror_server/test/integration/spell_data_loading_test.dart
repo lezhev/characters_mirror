@@ -61,5 +61,7 @@ void main() {
         );
       },
     );
-  }, rollbackDatabase: RollbackDatabase.disabled);
+  }, rollbackDatabase: RollbackDatabase.disabled,
+    ephemeralDatabase: false,
+  );
 }

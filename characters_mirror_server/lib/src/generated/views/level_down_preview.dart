@@ -7,18 +7,21 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../data/general/character/character_data.dart' as _i2;
-import '../data/general/class/class_feature_data.dart' as _i3;
-import '../data/general/class/subclass_feature_data.dart' as _i4;
-import '../data/general/choice_group_data.dart' as _i5;
-import '../data/general/character/character_choice_data.dart' as _i6;
-import '../views/level_down_invalid_choice_view.dart' as _i7;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../data/general/character/character_choice_data.dart' as _ic1a1q8y;
+import '../data/general/character/character_data.dart' as _iokyyhkm;
+import '../data/general/choice_group_data.dart' as _igmk6n2e;
+import '../data/general/class/class_feature_data.dart' as _ikfzlvib;
+import '../data/general/class/subclass_feature_data.dart' as _itaxdcfb;
+import '../views/level_down_invalid_choice_view.dart' as _i77exzmx;
 
 abstract class LevelDownPreview
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   LevelDownPreview._({
     required this.before,
     required this.character,
@@ -44,16 +47,16 @@ abstract class LevelDownPreview
   });
 
   factory LevelDownPreview({
-    required _i2.CharacterData before,
-    required _i2.CharacterData character,
+    required _iokyyhkm.CharacterData before,
+    required _iokyyhkm.CharacterData character,
     required String classEntryId,
     required int oldLevel,
     required int targetLevel,
-    required List<_i3.ClassFeatureData> removedClassFeatures,
-    required List<_i4.SubclassFeatureData> removedSubclassFeatures,
-    required List<_i5.ChoiceGroupData> removedChoiceGroups,
-    required List<_i6.CharacterChoiceData> removedChoices,
-    required List<_i7.LevelDownInvalidChoiceView> invalidChoices,
+    required List<_ikfzlvib.ClassFeatureData> removedClassFeatures,
+    required List<_itaxdcfb.SubclassFeatureData> removedSubclassFeatures,
+    required List<_igmk6n2e.ChoiceGroupData> removedChoiceGroups,
+    required List<_ic1a1q8y.CharacterChoiceData> removedChoices,
+    required List<_i77exzmx.LevelDownInvalidChoiceView> invalidChoices,
     int? oldMaxHp,
     int? newMaxHp,
     int? oldProficiencyBonus,
@@ -69,68 +72,66 @@ abstract class LevelDownPreview
 
   factory LevelDownPreview.fromJson(Map<String, dynamic> jsonSerialization) {
     return LevelDownPreview(
-      before: _i2.CharacterData.fromJson(
-          (jsonSerialization['before'] as Map<String, dynamic>)),
-      character: _i2.CharacterData.fromJson(
-          (jsonSerialization['character'] as Map<String, dynamic>)),
+      before: _ikmnmw29.Protocol().deserialize<_iokyyhkm.CharacterData>(
+        jsonSerialization['before'],
+      ),
+      character: _ikmnmw29.Protocol().deserialize<_iokyyhkm.CharacterData>(
+        jsonSerialization['character'],
+      ),
       classEntryId: jsonSerialization['classEntryId'] as String,
       oldLevel: jsonSerialization['oldLevel'] as int,
       targetLevel: jsonSerialization['targetLevel'] as int,
-      removedClassFeatures: (jsonSerialization['removedClassFeatures'] as List)
-          .map(
-              (e) => _i3.ClassFeatureData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      removedSubclassFeatures:
-          (jsonSerialization['removedSubclassFeatures'] as List)
-              .map((e) =>
-                  _i4.SubclassFeatureData.fromJson((e as Map<String, dynamic>)))
-              .toList(),
-      removedChoiceGroups: (jsonSerialization['removedChoiceGroups'] as List)
-          .map((e) => _i5.ChoiceGroupData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      removedChoices: (jsonSerialization['removedChoices'] as List)
-          .map((e) =>
-              _i6.CharacterChoiceData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      invalidChoices: (jsonSerialization['invalidChoices'] as List)
-          .map((e) => _i7.LevelDownInvalidChoiceView.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+      removedClassFeatures: _ikmnmw29.Protocol()
+          .deserialize<List<_ikfzlvib.ClassFeatureData>>(
+            jsonSerialization['removedClassFeatures'],
+          ),
+      removedSubclassFeatures: _ikmnmw29.Protocol()
+          .deserialize<List<_itaxdcfb.SubclassFeatureData>>(
+            jsonSerialization['removedSubclassFeatures'],
+          ),
+      removedChoiceGroups: _ikmnmw29.Protocol()
+          .deserialize<List<_igmk6n2e.ChoiceGroupData>>(
+            jsonSerialization['removedChoiceGroups'],
+          ),
+      removedChoices: _ikmnmw29.Protocol()
+          .deserialize<List<_ic1a1q8y.CharacterChoiceData>>(
+            jsonSerialization['removedChoices'],
+          ),
+      invalidChoices: _ikmnmw29.Protocol()
+          .deserialize<List<_i77exzmx.LevelDownInvalidChoiceView>>(
+            jsonSerialization['invalidChoices'],
+          ),
       oldMaxHp: jsonSerialization['oldMaxHp'] as int?,
       newMaxHp: jsonSerialization['newMaxHp'] as int?,
       oldProficiencyBonus: jsonSerialization['oldProficiencyBonus'] as int?,
       newProficiencyBonus: jsonSerialization['newProficiencyBonus'] as int?,
-      oldResourceMaxima: (jsonSerialization['oldResourceMaxima'] as Map)
-          .map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      newResourceMaxima: (jsonSerialization['newResourceMaxima'] as Map)
-          .map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      oldSpellSlots: (jsonSerialization['oldSpellSlots'] as List)
-          .fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
-      newSpellSlots: (jsonSerialization['newSpellSlots'] as List)
-          .fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
-      oldPactSlots: (jsonSerialization['oldPactSlots'] as List)
-          .fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
-      newPactSlots: (jsonSerialization['newPactSlots'] as List)
-          .fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
-      missingDecisions: (jsonSerialization['missingDecisions'] as List)
-          .map((e) => e as String)
-          .toList(),
+      oldResourceMaxima: _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+        jsonSerialization['oldResourceMaxima'],
+      ),
+      newResourceMaxima: _ikmnmw29.Protocol().deserialize<Map<String, int>>(
+        jsonSerialization['newResourceMaxima'],
+      ),
+      oldSpellSlots: _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+        jsonSerialization['oldSpellSlots'],
+      ),
+      newSpellSlots: _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+        jsonSerialization['newSpellSlots'],
+      ),
+      oldPactSlots: _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+        jsonSerialization['oldPactSlots'],
+      ),
+      newPactSlots: _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+        jsonSerialization['newPactSlots'],
+      ),
+      missingDecisions: _ikmnmw29.Protocol().deserialize<List<String>>(
+        jsonSerialization['missingDecisions'],
+      ),
     );
   }
 
-  _i2.CharacterData before;
+  _iokyyhkm.CharacterData before;
 
-  _i2.CharacterData character;
+  _iokyyhkm.CharacterData character;
 
   String classEntryId;
 
@@ -138,15 +139,15 @@ abstract class LevelDownPreview
 
   int targetLevel;
 
-  List<_i3.ClassFeatureData> removedClassFeatures;
+  List<_ikfzlvib.ClassFeatureData> removedClassFeatures;
 
-  List<_i4.SubclassFeatureData> removedSubclassFeatures;
+  List<_itaxdcfb.SubclassFeatureData> removedSubclassFeatures;
 
-  List<_i5.ChoiceGroupData> removedChoiceGroups;
+  List<_igmk6n2e.ChoiceGroupData> removedChoiceGroups;
 
-  List<_i6.CharacterChoiceData> removedChoices;
+  List<_ic1a1q8y.CharacterChoiceData> removedChoices;
 
-  List<_i7.LevelDownInvalidChoiceView> invalidChoices;
+  List<_i77exzmx.LevelDownInvalidChoiceView> invalidChoices;
 
   int? oldMaxHp;
 
@@ -172,18 +173,18 @@ abstract class LevelDownPreview
 
   /// Returns a shallow copy of this [LevelDownPreview]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   LevelDownPreview copyWith({
-    _i2.CharacterData? before,
-    _i2.CharacterData? character,
+    _iokyyhkm.CharacterData? before,
+    _iokyyhkm.CharacterData? character,
     String? classEntryId,
     int? oldLevel,
     int? targetLevel,
-    List<_i3.ClassFeatureData>? removedClassFeatures,
-    List<_i4.SubclassFeatureData>? removedSubclassFeatures,
-    List<_i5.ChoiceGroupData>? removedChoiceGroups,
-    List<_i6.CharacterChoiceData>? removedChoices,
-    List<_i7.LevelDownInvalidChoiceView>? invalidChoices,
+    List<_ikfzlvib.ClassFeatureData>? removedClassFeatures,
+    List<_itaxdcfb.SubclassFeatureData>? removedSubclassFeatures,
+    List<_igmk6n2e.ChoiceGroupData>? removedChoiceGroups,
+    List<_ic1a1q8y.CharacterChoiceData>? removedChoices,
+    List<_i77exzmx.LevelDownInvalidChoiceView>? invalidChoices,
     int? oldMaxHp,
     int? newMaxHp,
     int? oldProficiencyBonus,
@@ -199,17 +200,21 @@ abstract class LevelDownPreview
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'LevelDownPreview',
       'before': before.toJson(),
       'character': character.toJson(),
       'classEntryId': classEntryId,
       'oldLevel': oldLevel,
       'targetLevel': targetLevel,
-      'removedClassFeatures':
-          removedClassFeatures.toJson(valueToJson: (v) => v.toJson()),
-      'removedSubclassFeatures':
-          removedSubclassFeatures.toJson(valueToJson: (v) => v.toJson()),
-      'removedChoiceGroups':
-          removedChoiceGroups.toJson(valueToJson: (v) => v.toJson()),
+      'removedClassFeatures': removedClassFeatures.toJson(
+        valueToJson: (v) => v.toJson(),
+      ),
+      'removedSubclassFeatures': removedSubclassFeatures.toJson(
+        valueToJson: (v) => v.toJson(),
+      ),
+      'removedChoiceGroups': removedChoiceGroups.toJson(
+        valueToJson: (v) => v.toJson(),
+      ),
       'removedChoices': removedChoices.toJson(valueToJson: (v) => v.toJson()),
       'invalidChoices': invalidChoices.toJson(valueToJson: (v) => v.toJson()),
       if (oldMaxHp != null) 'oldMaxHp': oldMaxHp,
@@ -231,21 +236,27 @@ abstract class LevelDownPreview
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'LevelDownPreview',
       'before': before.toJsonForProtocol(),
       'character': character.toJsonForProtocol(),
       'classEntryId': classEntryId,
       'oldLevel': oldLevel,
       'targetLevel': targetLevel,
       'removedClassFeatures': removedClassFeatures.toJson(
-          valueToJson: (v) => v.toJsonForProtocol()),
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
       'removedSubclassFeatures': removedSubclassFeatures.toJson(
-          valueToJson: (v) => v.toJsonForProtocol()),
-      'removedChoiceGroups':
-          removedChoiceGroups.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      'removedChoices':
-          removedChoices.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      'invalidChoices':
-          invalidChoices.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
+      'removedChoiceGroups': removedChoiceGroups.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
+      'removedChoices': removedChoices.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
+      'invalidChoices': invalidChoices.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
       if (oldMaxHp != null) 'oldMaxHp': oldMaxHp,
       if (newMaxHp != null) 'newMaxHp': newMaxHp,
       if (oldProficiencyBonus != null)
@@ -264,7 +275,7 @@ abstract class LevelDownPreview
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -272,16 +283,16 @@ class _Undefined {}
 
 class _LevelDownPreviewImpl extends LevelDownPreview {
   _LevelDownPreviewImpl({
-    required _i2.CharacterData before,
-    required _i2.CharacterData character,
+    required _iokyyhkm.CharacterData before,
+    required _iokyyhkm.CharacterData character,
     required String classEntryId,
     required int oldLevel,
     required int targetLevel,
-    required List<_i3.ClassFeatureData> removedClassFeatures,
-    required List<_i4.SubclassFeatureData> removedSubclassFeatures,
-    required List<_i5.ChoiceGroupData> removedChoiceGroups,
-    required List<_i6.CharacterChoiceData> removedChoices,
-    required List<_i7.LevelDownInvalidChoiceView> invalidChoices,
+    required List<_ikfzlvib.ClassFeatureData> removedClassFeatures,
+    required List<_itaxdcfb.SubclassFeatureData> removedSubclassFeatures,
+    required List<_igmk6n2e.ChoiceGroupData> removedChoiceGroups,
+    required List<_ic1a1q8y.CharacterChoiceData> removedChoices,
+    required List<_i77exzmx.LevelDownInvalidChoiceView> invalidChoices,
     int? oldMaxHp,
     int? newMaxHp,
     int? oldProficiencyBonus,
@@ -294,44 +305,44 @@ class _LevelDownPreviewImpl extends LevelDownPreview {
     required Map<int, int> newPactSlots,
     required List<String> missingDecisions,
   }) : super._(
-          before: before,
-          character: character,
-          classEntryId: classEntryId,
-          oldLevel: oldLevel,
-          targetLevel: targetLevel,
-          removedClassFeatures: removedClassFeatures,
-          removedSubclassFeatures: removedSubclassFeatures,
-          removedChoiceGroups: removedChoiceGroups,
-          removedChoices: removedChoices,
-          invalidChoices: invalidChoices,
-          oldMaxHp: oldMaxHp,
-          newMaxHp: newMaxHp,
-          oldProficiencyBonus: oldProficiencyBonus,
-          newProficiencyBonus: newProficiencyBonus,
-          oldResourceMaxima: oldResourceMaxima,
-          newResourceMaxima: newResourceMaxima,
-          oldSpellSlots: oldSpellSlots,
-          newSpellSlots: newSpellSlots,
-          oldPactSlots: oldPactSlots,
-          newPactSlots: newPactSlots,
-          missingDecisions: missingDecisions,
-        );
+         before: before,
+         character: character,
+         classEntryId: classEntryId,
+         oldLevel: oldLevel,
+         targetLevel: targetLevel,
+         removedClassFeatures: removedClassFeatures,
+         removedSubclassFeatures: removedSubclassFeatures,
+         removedChoiceGroups: removedChoiceGroups,
+         removedChoices: removedChoices,
+         invalidChoices: invalidChoices,
+         oldMaxHp: oldMaxHp,
+         newMaxHp: newMaxHp,
+         oldProficiencyBonus: oldProficiencyBonus,
+         newProficiencyBonus: newProficiencyBonus,
+         oldResourceMaxima: oldResourceMaxima,
+         newResourceMaxima: newResourceMaxima,
+         oldSpellSlots: oldSpellSlots,
+         newSpellSlots: newSpellSlots,
+         oldPactSlots: oldPactSlots,
+         newPactSlots: newPactSlots,
+         missingDecisions: missingDecisions,
+       );
 
   /// Returns a shallow copy of this [LevelDownPreview]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   LevelDownPreview copyWith({
-    _i2.CharacterData? before,
-    _i2.CharacterData? character,
+    _iokyyhkm.CharacterData? before,
+    _iokyyhkm.CharacterData? character,
     String? classEntryId,
     int? oldLevel,
     int? targetLevel,
-    List<_i3.ClassFeatureData>? removedClassFeatures,
-    List<_i4.SubclassFeatureData>? removedSubclassFeatures,
-    List<_i5.ChoiceGroupData>? removedChoiceGroups,
-    List<_i6.CharacterChoiceData>? removedChoices,
-    List<_i7.LevelDownInvalidChoiceView>? invalidChoices,
+    List<_ikfzlvib.ClassFeatureData>? removedClassFeatures,
+    List<_itaxdcfb.SubclassFeatureData>? removedSubclassFeatures,
+    List<_igmk6n2e.ChoiceGroupData>? removedChoiceGroups,
+    List<_ic1a1q8y.CharacterChoiceData>? removedChoices,
+    List<_i77exzmx.LevelDownInvalidChoiceView>? invalidChoices,
     Object? oldMaxHp = _Undefined,
     Object? newMaxHp = _Undefined,
     Object? oldProficiencyBonus = _Undefined,
@@ -350,15 +361,20 @@ class _LevelDownPreviewImpl extends LevelDownPreview {
       classEntryId: classEntryId ?? this.classEntryId,
       oldLevel: oldLevel ?? this.oldLevel,
       targetLevel: targetLevel ?? this.targetLevel,
-      removedClassFeatures: removedClassFeatures ??
+      removedClassFeatures:
+          removedClassFeatures ??
           this.removedClassFeatures.map((e0) => e0.copyWith()).toList(),
-      removedSubclassFeatures: removedSubclassFeatures ??
+      removedSubclassFeatures:
+          removedSubclassFeatures ??
           this.removedSubclassFeatures.map((e0) => e0.copyWith()).toList(),
-      removedChoiceGroups: removedChoiceGroups ??
+      removedChoiceGroups:
+          removedChoiceGroups ??
           this.removedChoiceGroups.map((e0) => e0.copyWith()).toList(),
-      removedChoices: removedChoices ??
+      removedChoices:
+          removedChoices ??
           this.removedChoices.map((e0) => e0.copyWith()).toList(),
-      invalidChoices: invalidChoices ??
+      invalidChoices:
+          invalidChoices ??
           this.invalidChoices.map((e0) => e0.copyWith()).toList(),
       oldMaxHp: oldMaxHp is int? ? oldMaxHp : this.oldMaxHp,
       newMaxHp: newMaxHp is int? ? newMaxHp : this.newMaxHp,
@@ -368,60 +384,24 @@ class _LevelDownPreviewImpl extends LevelDownPreview {
       newProficiencyBonus: newProficiencyBonus is int?
           ? newProficiencyBonus
           : this.newProficiencyBonus,
-      oldResourceMaxima: oldResourceMaxima ??
-          this.oldResourceMaxima.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      newResourceMaxima: newResourceMaxima ??
-          this.newResourceMaxima.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      oldSpellSlots: oldSpellSlots ??
-          this.oldSpellSlots.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      newSpellSlots: newSpellSlots ??
-          this.newSpellSlots.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      oldPactSlots: oldPactSlots ??
-          this.oldPactSlots.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      newPactSlots: newPactSlots ??
-          this.newPactSlots.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+      oldResourceMaxima:
+          oldResourceMaxima ??
+          this.oldResourceMaxima.map((key0, value0) => MapEntry(key0, value0)),
+      newResourceMaxima:
+          newResourceMaxima ??
+          this.newResourceMaxima.map((key0, value0) => MapEntry(key0, value0)),
+      oldSpellSlots:
+          oldSpellSlots ??
+          this.oldSpellSlots.map((key0, value0) => MapEntry(key0, value0)),
+      newSpellSlots:
+          newSpellSlots ??
+          this.newSpellSlots.map((key0, value0) => MapEntry(key0, value0)),
+      oldPactSlots:
+          oldPactSlots ??
+          this.oldPactSlots.map((key0, value0) => MapEntry(key0, value0)),
+      newPactSlots:
+          newPactSlots ??
+          this.newPactSlots.map((key0, value0) => MapEntry(key0, value0)),
       missingDecisions:
           missingDecisions ?? this.missingDecisions.map((e0) => e0).toList(),
     );

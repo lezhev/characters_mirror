@@ -1,4 +1,5 @@
 enum: FeatureModifierOperation
+serialized: byIndex
 values:
   - add
   - baseArmorClass

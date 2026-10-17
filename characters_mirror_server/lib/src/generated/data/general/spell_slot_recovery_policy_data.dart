@@ -7,14 +7,17 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../enums/spell_slot_recovery_mode.dart' as _i2;
-import '../../enums/spell/spell_school.dart' as _i3;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../enums/spell/spell_school.dart' as _iusxccb8;
+import '../../enums/spell_slot_recovery_mode.dart' as _iyp7lwq1;
 
 abstract class SpellSlotRecoveryPolicyData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   SpellSlotRecoveryPolicyData._({
     required this.mode,
     this.resourceKey,
@@ -26,36 +29,41 @@ abstract class SpellSlotRecoveryPolicyData
   });
 
   factory SpellSlotRecoveryPolicyData({
-    required _i2.SpellSlotRecoveryMode mode,
+    required _iyp7lwq1.SpellSlotRecoveryMode mode,
     String? resourceKey,
     Map<int, int>? levelBudgetBySourceLevel,
     int? maximumSlotLevel,
     int? minimumCastLevel,
-    _i3.SpellSchool? spellSchool,
+    _iusxccb8.SpellSchool? spellSchool,
     int? activationSeconds,
   }) = _SpellSlotRecoveryPolicyDataImpl;
 
   factory SpellSlotRecoveryPolicyData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SpellSlotRecoveryPolicyData(
-      mode: _i2.SpellSlotRecoveryMode.fromJson(
-          (jsonSerialization['mode'] as String)),
+      mode: _iyp7lwq1.SpellSlotRecoveryMode.fromJson(
+        (jsonSerialization['mode'] as String),
+      ),
       resourceKey: jsonSerialization['resourceKey'] as String?,
       levelBudgetBySourceLevel:
-          (jsonSerialization['levelBudgetBySourceLevel'] as List?)
-              ?.fold<Map<int, int>>(
-                  {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+          jsonSerialization['levelBudgetBySourceLevel'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['levelBudgetBySourceLevel'],
+            ),
       maximumSlotLevel: jsonSerialization['maximumSlotLevel'] as int?,
       minimumCastLevel: jsonSerialization['minimumCastLevel'] as int?,
       spellSchool: jsonSerialization['spellSchool'] == null
           ? null
-          : _i3.SpellSchool.fromJson(
-              (jsonSerialization['spellSchool'] as String)),
+          : _iusxccb8.SpellSchool.fromJson(
+              (jsonSerialization['spellSchool'] as String),
+            ),
       activationSeconds: jsonSerialization['activationSeconds'] as int?,
     );
   }
 
-  _i2.SpellSlotRecoveryMode mode;
+  _iyp7lwq1.SpellSlotRecoveryMode mode;
 
   String? resourceKey;
 
@@ -65,25 +73,26 @@ abstract class SpellSlotRecoveryPolicyData
 
   int? minimumCastLevel;
 
-  _i3.SpellSchool? spellSchool;
+  _iusxccb8.SpellSchool? spellSchool;
 
   int? activationSeconds;
 
   /// Returns a shallow copy of this [SpellSlotRecoveryPolicyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SpellSlotRecoveryPolicyData copyWith({
-    _i2.SpellSlotRecoveryMode? mode,
+    _iyp7lwq1.SpellSlotRecoveryMode? mode,
     String? resourceKey,
     Map<int, int>? levelBudgetBySourceLevel,
     int? maximumSlotLevel,
     int? minimumCastLevel,
-    _i3.SpellSchool? spellSchool,
+    _iusxccb8.SpellSchool? spellSchool,
     int? activationSeconds,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellSlotRecoveryPolicyData',
       'mode': mode.toJson(),
       if (resourceKey != null) 'resourceKey': resourceKey,
       if (levelBudgetBySourceLevel != null)
@@ -98,6 +107,7 @@ abstract class SpellSlotRecoveryPolicyData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SpellSlotRecoveryPolicyData',
       'mode': mode.toJson(),
       if (resourceKey != null) 'resourceKey': resourceKey,
       if (levelBudgetBySourceLevel != null)
@@ -111,7 +121,7 @@ abstract class SpellSlotRecoveryPolicyData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -119,29 +129,29 @@ class _Undefined {}
 
 class _SpellSlotRecoveryPolicyDataImpl extends SpellSlotRecoveryPolicyData {
   _SpellSlotRecoveryPolicyDataImpl({
-    required _i2.SpellSlotRecoveryMode mode,
+    required _iyp7lwq1.SpellSlotRecoveryMode mode,
     String? resourceKey,
     Map<int, int>? levelBudgetBySourceLevel,
     int? maximumSlotLevel,
     int? minimumCastLevel,
-    _i3.SpellSchool? spellSchool,
+    _iusxccb8.SpellSchool? spellSchool,
     int? activationSeconds,
   }) : super._(
-          mode: mode,
-          resourceKey: resourceKey,
-          levelBudgetBySourceLevel: levelBudgetBySourceLevel,
-          maximumSlotLevel: maximumSlotLevel,
-          minimumCastLevel: minimumCastLevel,
-          spellSchool: spellSchool,
-          activationSeconds: activationSeconds,
-        );
+         mode: mode,
+         resourceKey: resourceKey,
+         levelBudgetBySourceLevel: levelBudgetBySourceLevel,
+         maximumSlotLevel: maximumSlotLevel,
+         minimumCastLevel: minimumCastLevel,
+         spellSchool: spellSchool,
+         activationSeconds: activationSeconds,
+       );
 
   /// Returns a shallow copy of this [SpellSlotRecoveryPolicyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SpellSlotRecoveryPolicyData copyWith({
-    _i2.SpellSlotRecoveryMode? mode,
+    _iyp7lwq1.SpellSlotRecoveryMode? mode,
     Object? resourceKey = _Undefined,
     Object? levelBudgetBySourceLevel = _Undefined,
     Object? maximumSlotLevel = _Undefined,
@@ -154,20 +164,18 @@ class _SpellSlotRecoveryPolicyDataImpl extends SpellSlotRecoveryPolicyData {
       resourceKey: resourceKey is String? ? resourceKey : this.resourceKey,
       levelBudgetBySourceLevel: levelBudgetBySourceLevel is Map<int, int>?
           ? levelBudgetBySourceLevel
-          : this.levelBudgetBySourceLevel?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      maximumSlotLevel:
-          maximumSlotLevel is int? ? maximumSlotLevel : this.maximumSlotLevel,
-      minimumCastLevel:
-          minimumCastLevel is int? ? minimumCastLevel : this.minimumCastLevel,
-      spellSchool:
-          spellSchool is _i3.SpellSchool? ? spellSchool : this.spellSchool,
+          : this.levelBudgetBySourceLevel?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
+      maximumSlotLevel: maximumSlotLevel is int?
+          ? maximumSlotLevel
+          : this.maximumSlotLevel,
+      minimumCastLevel: minimumCastLevel is int?
+          ? minimumCastLevel
+          : this.minimumCastLevel,
+      spellSchool: spellSchool is _iusxccb8.SpellSchool?
+          ? spellSchool
+          : this.spellSchool,
       activationSeconds: activationSeconds is int?
           ? activationSeconds
           : this.activationSeconds,

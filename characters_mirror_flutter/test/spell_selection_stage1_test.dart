@@ -359,7 +359,7 @@ void main() {
       preparedGroup
     ], selections: [
       selection(shield, CharacterSpellSelectionKind.spellbookSpell)
-    ], onToggleSpell: (_, __) {}, onClearGroup: (_) {}))));
+    ], onToggleSpell: (_, _) {}, onClearGroup: (_) {}))));
     await tester.tap(find.text('Подготовленные заклинания'));
     await tester.pumpAndSettle();
     expect(find.text('Shield'), findsOneWidget);

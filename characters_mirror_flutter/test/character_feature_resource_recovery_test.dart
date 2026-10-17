@@ -40,7 +40,7 @@ void main() {
     await tester.pumpWidget(_featureCard(
       resource: _resource(current),
       canSpend: (_) => true,
-      onSetResource: (_, __) async => ordinaryDecrements++,
+      onSetResource: (_, _) async => ordinaryDecrements++,
       onSpendResource: (resource) async {
         final selected = await showDialog<Map<int, int>>(
           context: tester.element(find.byType(CharacterFeatureCard)),
@@ -80,7 +80,7 @@ void main() {
     await tester.pumpWidget(_featureCard(
       resource: _resource(1),
       canSpend: (_) => false,
-      onSetResource: (_, __) async {},
+      onSetResource: (_, _) async {},
       onSpendResource: (_) async {},
     ));
     await _expand(tester);
@@ -111,7 +111,7 @@ void main() {
     await tester.pumpWidget(_featureCard(
       resource: _resource(1, resetOn: RestType.dawn),
       canSpend: (_) => true,
-      onSetResource: (_, __) async {},
+      onSetResource: (_, _) async {},
       onSpendResource: (_) async {},
     ));
     await _expand(tester);

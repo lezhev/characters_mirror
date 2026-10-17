@@ -7,7 +7,9 @@ class CharacterPortraitRepository {
   CharacterPortraitRepository({
     required Client client,
     http.Client? httpClient,
-  })  : _client = client,
+  })  : // Keep the public constructor parameter name stable.
+        // ignore: prefer_initializing_formals
+        _client = client,
         _httpClient = httpClient ?? http.Client();
 
   final Client _client;

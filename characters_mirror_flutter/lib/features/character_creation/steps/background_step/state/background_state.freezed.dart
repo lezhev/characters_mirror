@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'background_state.dart';
@@ -9,6 +9,7 @@ part of 'background_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -31,37 +32,42 @@ mixin _$BackgroundStateModel {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as BackgroundStateModel;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is BackgroundStateModel &&
             const DeepCollectionEquality()
-                .equals(other.allBackgrounds, allBackgrounds) &&
-            (identical(other.selectedBackground, selectedBackground) ||
-                other.selectedBackground == selectedBackground) &&
-            (identical(other.stepView, stepView) ||
-                other.stepView == stepView) &&
+                .equals(other.allBackgrounds, _this.allBackgrounds) &&
+            (identical(other.selectedBackground, _this.selectedBackground) ||
+                other.selectedBackground == _this.selectedBackground) &&
+            (identical(other.stepView, _this.stepView) ||
+                other.stepView == _this.stepView) &&
             const DeepCollectionEquality()
-                .equals(other.selectedOptions, selectedOptions) &&
+                .equals(other.selectedOptions, _this.selectedOptions) &&
             const DeepCollectionEquality().equals(
-                other.selectedSkillSelections, selectedSkillSelections) &&
+                other.selectedSkillSelections, _this.selectedSkillSelections) &&
             const DeepCollectionEquality().equals(
                 other.startingEquipmentSelections,
-                startingEquipmentSelections));
+                _this.startingEquipmentSelections));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(allBackgrounds),
-      selectedBackground,
-      stepView,
-      const DeepCollectionEquality().hash(selectedOptions),
-      const DeepCollectionEquality().hash(selectedSkillSelections),
-      const DeepCollectionEquality().hash(startingEquipmentSelections));
+  int get hashCode {
+    final _this = this as BackgroundStateModel;
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_this.allBackgrounds),
+        _this.selectedBackground,
+        _this.stepView,
+        const DeepCollectionEquality().hash(_this.selectedOptions),
+        const DeepCollectionEquality().hash(_this.selectedSkillSelections),
+        const DeepCollectionEquality().hash(_this.startingEquipmentSelections));
+  }
 
   @override
   String toString() {
-    return 'BackgroundStateModel(allBackgrounds: $allBackgrounds, selectedBackground: $selectedBackground, stepView: $stepView, selectedOptions: $selectedOptions, selectedSkillSelections: $selectedSkillSelections, startingEquipmentSelections: $startingEquipmentSelections)';
+    final _this = this as BackgroundStateModel;
+    return 'BackgroundStateModel(allBackgrounds: ${_this.allBackgrounds}, selectedBackground: ${_this.selectedBackground}, stepView: ${_this.stepView}, selectedOptions: ${_this.selectedOptions}, selectedSkillSelections: ${_this.selectedSkillSelections}, startingEquipmentSelections: ${_this.startingEquipmentSelections})';
   }
 }
 
@@ -101,7 +107,7 @@ class _$BackgroundStateModelCopyWithImpl<$Res>
     Object? selectedSkillSelections = null,
     Object? startingEquipmentSelections = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(BackgroundStateModel(
       allBackgrounds: null == allBackgrounds
           ? _self.allBackgrounds
           : allBackgrounds // ignore: cast_nullable_to_non_nullable
@@ -333,13 +339,12 @@ extension BackgroundStateModelPatterns on BackgroundStateModel {
 
 class _BackgroundStateModel implements BackgroundStateModel {
   const _BackgroundStateModel(
-      {final List<BackgroundData> allBackgrounds = const [],
+      {List<BackgroundData> allBackgrounds = const [],
       this.selectedBackground,
       this.stepView,
-      final Map<String, List<ChoiceOptionData>> selectedOptions = const {},
-      final List<CharacterSkillSelectionData> selectedSkillSelections =
-          const [],
-      final List<CharacterStartingEquipmentSelectionData>
+      Map<String, List<ChoiceOptionData>> selectedOptions = const {},
+      List<CharacterSkillSelectionData> selectedSkillSelections = const [],
+      List<CharacterStartingEquipmentSelectionData>
           startingEquipmentSelections = const []})
       : _allBackgrounds = allBackgrounds,
         _selectedOptions = selectedOptions,
@@ -405,29 +410,31 @@ class _BackgroundStateModel implements BackgroundStateModel {
         (other.runtimeType == runtimeType &&
             other is _BackgroundStateModel &&
             const DeepCollectionEquality()
-                .equals(other._allBackgrounds, _allBackgrounds) &&
+                .equals(other.allBackgrounds, _allBackgrounds) &&
             (identical(other.selectedBackground, selectedBackground) ||
                 other.selectedBackground == selectedBackground) &&
             (identical(other.stepView, stepView) ||
                 other.stepView == stepView) &&
             const DeepCollectionEquality()
-                .equals(other._selectedOptions, _selectedOptions) &&
+                .equals(other.selectedOptions, _selectedOptions) &&
             const DeepCollectionEquality().equals(
-                other._selectedSkillSelections, _selectedSkillSelections) &&
+                other.selectedSkillSelections, _selectedSkillSelections) &&
             const DeepCollectionEquality().equals(
-                other._startingEquipmentSelections,
+                other.startingEquipmentSelections,
                 _startingEquipmentSelections));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_allBackgrounds),
-      selectedBackground,
-      stepView,
-      const DeepCollectionEquality().hash(_selectedOptions),
-      const DeepCollectionEquality().hash(_selectedSkillSelections),
-      const DeepCollectionEquality().hash(_startingEquipmentSelections));
+  int get hashCode {
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_allBackgrounds),
+        selectedBackground,
+        stepView,
+        const DeepCollectionEquality().hash(_selectedOptions),
+        const DeepCollectionEquality().hash(_selectedSkillSelections),
+        const DeepCollectionEquality().hash(_startingEquipmentSelections));
+  }
 
   @override
   String toString() {

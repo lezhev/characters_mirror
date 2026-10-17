@@ -7,14 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../data/general/spell_selection_filter_data.dart' as _i2;
-import '../enums/character_spell_selection_kind.dart' as _i3;
-import '../data/spell_data.dart' as _i4;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../data/general/spell_selection_filter_data.dart' as _iebyih8m;
+import '../data/spell_data.dart' as _iavpgfjb;
+import '../enums/character_spell_selection_kind.dart' as _i7flvdu3;
 
-abstract class ClassSpellSelectionGroupView implements _i1.SerializableModel {
+abstract class ClassSpellSelectionGroupView
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ClassSpellSelectionGroupView._({
     this.selectionFilter,
     this.unrestrictedSelectionCount,
@@ -27,50 +31,57 @@ abstract class ClassSpellSelectionGroupView implements _i1.SerializableModel {
   });
 
   factory ClassSpellSelectionGroupView({
-    _i2.SpellSelectionFilterData? selectionFilter,
+    _iebyih8m.SpellSelectionFilterData? selectionFilter,
     int? unrestrictedSelectionCount,
-    _i3.CharacterSpellSelectionKind? kind,
-    _i3.CharacterSpellSelectionKind? optionSourceSelectionKind,
+    _i7flvdu3.CharacterSpellSelectionKind? kind,
+    _i7flvdu3.CharacterSpellSelectionKind? optionSourceSelectionKind,
     int? selectionCount,
     int? classDataId,
     int? classLevel,
-    List<_i4.SpellData>? options,
+    List<_iavpgfjb.SpellData>? options,
   }) = _ClassSpellSelectionGroupViewImpl;
 
   factory ClassSpellSelectionGroupView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return ClassSpellSelectionGroupView(
       selectionFilter: jsonSerialization['selectionFilter'] == null
           ? null
-          : _i2.SpellSelectionFilterData.fromJson(
-              (jsonSerialization['selectionFilter'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol()
+                .deserialize<_iebyih8m.SpellSelectionFilterData>(
+                  jsonSerialization['selectionFilter'],
+                ),
       unrestrictedSelectionCount:
           jsonSerialization['unrestrictedSelectionCount'] as int?,
       kind: jsonSerialization['kind'] == null
           ? null
-          : _i3.CharacterSpellSelectionKind.fromJson(
-              (jsonSerialization['kind'] as String)),
+          : _i7flvdu3.CharacterSpellSelectionKind.fromJson(
+              (jsonSerialization['kind'] as String),
+            ),
       optionSourceSelectionKind:
           jsonSerialization['optionSourceSelectionKind'] == null
-              ? null
-              : _i3.CharacterSpellSelectionKind.fromJson(
-                  (jsonSerialization['optionSourceSelectionKind'] as String)),
+          ? null
+          : _i7flvdu3.CharacterSpellSelectionKind.fromJson(
+              (jsonSerialization['optionSourceSelectionKind'] as String),
+            ),
       selectionCount: jsonSerialization['selectionCount'] as int?,
       classDataId: jsonSerialization['classDataId'] as int?,
       classLevel: jsonSerialization['classLevel'] as int?,
-      options: (jsonSerialization['options'] as List?)
-          ?.map((e) => _i4.SpellData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      options: jsonSerialization['options'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iavpgfjb.SpellData>>(
+              jsonSerialization['options'],
+            ),
     );
   }
 
-  _i2.SpellSelectionFilterData? selectionFilter;
+  _iebyih8m.SpellSelectionFilterData? selectionFilter;
 
   int? unrestrictedSelectionCount;
 
-  _i3.CharacterSpellSelectionKind? kind;
+  _i7flvdu3.CharacterSpellSelectionKind? kind;
 
-  _i3.CharacterSpellSelectionKind? optionSourceSelectionKind;
+  _i7flvdu3.CharacterSpellSelectionKind? optionSourceSelectionKind;
 
   int? selectionCount;
 
@@ -78,24 +89,25 @@ abstract class ClassSpellSelectionGroupView implements _i1.SerializableModel {
 
   int? classLevel;
 
-  List<_i4.SpellData>? options;
+  List<_iavpgfjb.SpellData>? options;
 
   /// Returns a shallow copy of this [ClassSpellSelectionGroupView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   ClassSpellSelectionGroupView copyWith({
-    _i2.SpellSelectionFilterData? selectionFilter,
+    _iebyih8m.SpellSelectionFilterData? selectionFilter,
     int? unrestrictedSelectionCount,
-    _i3.CharacterSpellSelectionKind? kind,
-    _i3.CharacterSpellSelectionKind? optionSourceSelectionKind,
+    _i7flvdu3.CharacterSpellSelectionKind? kind,
+    _i7flvdu3.CharacterSpellSelectionKind? optionSourceSelectionKind,
     int? selectionCount,
     int? classDataId,
     int? classLevel,
-    List<_i4.SpellData>? options,
+    List<_iavpgfjb.SpellData>? options,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ClassSpellSelectionGroupView',
       if (selectionFilter != null) 'selectionFilter': selectionFilter?.toJson(),
       if (unrestrictedSelectionCount != null)
         'unrestrictedSelectionCount': unrestrictedSelectionCount,
@@ -111,8 +123,27 @@ abstract class ClassSpellSelectionGroupView implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ClassSpellSelectionGroupView',
+      if (selectionFilter != null)
+        'selectionFilter': selectionFilter?.toJsonForProtocol(),
+      if (unrestrictedSelectionCount != null)
+        'unrestrictedSelectionCount': unrestrictedSelectionCount,
+      if (kind != null) 'kind': kind?.toJson(),
+      if (optionSourceSelectionKind != null)
+        'optionSourceSelectionKind': optionSourceSelectionKind?.toJson(),
+      if (selectionCount != null) 'selectionCount': selectionCount,
+      if (classDataId != null) 'classDataId': classDataId,
+      if (classLevel != null) 'classLevel': classLevel,
+      if (options != null)
+        'options': options?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -120,28 +151,28 @@ class _Undefined {}
 
 class _ClassSpellSelectionGroupViewImpl extends ClassSpellSelectionGroupView {
   _ClassSpellSelectionGroupViewImpl({
-    _i2.SpellSelectionFilterData? selectionFilter,
+    _iebyih8m.SpellSelectionFilterData? selectionFilter,
     int? unrestrictedSelectionCount,
-    _i3.CharacterSpellSelectionKind? kind,
-    _i3.CharacterSpellSelectionKind? optionSourceSelectionKind,
+    _i7flvdu3.CharacterSpellSelectionKind? kind,
+    _i7flvdu3.CharacterSpellSelectionKind? optionSourceSelectionKind,
     int? selectionCount,
     int? classDataId,
     int? classLevel,
-    List<_i4.SpellData>? options,
+    List<_iavpgfjb.SpellData>? options,
   }) : super._(
-          selectionFilter: selectionFilter,
-          unrestrictedSelectionCount: unrestrictedSelectionCount,
-          kind: kind,
-          optionSourceSelectionKind: optionSourceSelectionKind,
-          selectionCount: selectionCount,
-          classDataId: classDataId,
-          classLevel: classLevel,
-          options: options,
-        );
+         selectionFilter: selectionFilter,
+         unrestrictedSelectionCount: unrestrictedSelectionCount,
+         kind: kind,
+         optionSourceSelectionKind: optionSourceSelectionKind,
+         selectionCount: selectionCount,
+         classDataId: classDataId,
+         classLevel: classLevel,
+         options: options,
+       );
 
   /// Returns a shallow copy of this [ClassSpellSelectionGroupView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   ClassSpellSelectionGroupView copyWith({
     Object? selectionFilter = _Undefined,
@@ -154,22 +185,23 @@ class _ClassSpellSelectionGroupViewImpl extends ClassSpellSelectionGroupView {
     Object? options = _Undefined,
   }) {
     return ClassSpellSelectionGroupView(
-      selectionFilter: selectionFilter is _i2.SpellSelectionFilterData?
+      selectionFilter: selectionFilter is _iebyih8m.SpellSelectionFilterData?
           ? selectionFilter
           : this.selectionFilter?.copyWith(),
       unrestrictedSelectionCount: unrestrictedSelectionCount is int?
           ? unrestrictedSelectionCount
           : this.unrestrictedSelectionCount,
-      kind: kind is _i3.CharacterSpellSelectionKind? ? kind : this.kind,
+      kind: kind is _i7flvdu3.CharacterSpellSelectionKind? ? kind : this.kind,
       optionSourceSelectionKind:
-          optionSourceSelectionKind is _i3.CharacterSpellSelectionKind?
-              ? optionSourceSelectionKind
-              : this.optionSourceSelectionKind,
-      selectionCount:
-          selectionCount is int? ? selectionCount : this.selectionCount,
+          optionSourceSelectionKind is _i7flvdu3.CharacterSpellSelectionKind?
+          ? optionSourceSelectionKind
+          : this.optionSourceSelectionKind,
+      selectionCount: selectionCount is int?
+          ? selectionCount
+          : this.selectionCount,
       classDataId: classDataId is int? ? classDataId : this.classDataId,
       classLevel: classLevel is int? ? classLevel : this.classLevel,
-      options: options is List<_i4.SpellData>?
+      options: options is List<_iavpgfjb.SpellData>?
           ? options
           : this.options?.map((e0) => e0.copyWith()).toList(),
     );

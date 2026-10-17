@@ -53,5 +53,7 @@ void main() {
           context: const SpellPresentationContext(castLevel: 5));
       expect(p.highlights.single.value, '3к8 (дробящий) + 4к6 (холод)');
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

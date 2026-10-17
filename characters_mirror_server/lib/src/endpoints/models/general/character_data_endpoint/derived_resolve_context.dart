@@ -3,8 +3,8 @@ part of '../character_data_endpoint.dart';
 class _CharacterResolveContext {
   _CharacterResolveContext(
     this.session, {
-    void Function(String key)? onReferenceLoad,
-  }) : _onReferenceLoad = onReferenceLoad;
+    this._onReferenceLoad,
+  });
 
   final Session session;
   final void Function(String key)? _onReferenceLoad;
@@ -308,7 +308,7 @@ class _CharacterResolveContext {
       for (final featId in featIds) _feats[featId]!,
     ]).then((feats) => [
           for (final feat in feats)
-            if (feat != null) feat
+            ?feat
         ]);
   }
 

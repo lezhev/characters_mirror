@@ -7,14 +7,17 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/character_feature_source_type.dart' as _i2;
-import '../../../enums/rest_type.dart' as _i3;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../enums/character_feature_source_type.dart' as _ik7og9il;
+import '../../../enums/rest_type.dart' as _igwcjrvt;
 
 abstract class CharacterSemanticActionData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterSemanticActionData._({
     this.spellPayment,
     this.amount,
@@ -47,10 +50,10 @@ abstract class CharacterSemanticActionData
     String? spellName,
     bool? startsConcentration,
     String? dieKind,
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     String? resourceKey,
-    _i3.RestType? restType,
+    _igwcjrvt.RestType? restType,
     Map<String, String>? baseBarrierTokens,
     int? recoveryEffectId,
     Map<int, int>? slotsToRestore,
@@ -58,7 +61,8 @@ abstract class CharacterSemanticActionData
   }) = _CharacterSemanticActionDataImpl;
 
   factory CharacterSemanticActionData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterSemanticActionData(
       spellPayment: jsonSerialization['spellPayment'] as String?,
       amount: jsonSerialization['amount'] as int?,
@@ -68,26 +72,35 @@ abstract class CharacterSemanticActionData
       spellSourceKey: jsonSerialization['spellSourceKey'] as String?,
       slotSource: jsonSerialization['slotSource'] as String?,
       spellName: jsonSerialization['spellName'] as String?,
-      startsConcentration: jsonSerialization['startsConcentration'] as bool?,
+      startsConcentration: jsonSerialization['startsConcentration'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['startsConcentration'],
+            ),
       dieKind: jsonSerialization['dieKind'] as String?,
       sourceType: jsonSerialization['sourceType'] == null
           ? null
-          : _i2.CharacterFeatureSourceType.fromJson(
-              (jsonSerialization['sourceType'] as String)),
+          : _ik7og9il.CharacterFeatureSourceType.fromJson(
+              (jsonSerialization['sourceType'] as String),
+            ),
       sourceId: jsonSerialization['sourceId'] as int?,
       resourceKey: jsonSerialization['resourceKey'] as String?,
       restType: jsonSerialization['restType'] == null
           ? null
-          : _i3.RestType.fromJson((jsonSerialization['restType'] as String)),
-      baseBarrierTokens: (jsonSerialization['baseBarrierTokens'] as Map?)
-          ?.map((k, v) => MapEntry(
-                k as String,
-                v as String,
-              )),
+          : _igwcjrvt.RestType.fromJson(
+              (jsonSerialization['restType'] as String),
+            ),
+      baseBarrierTokens: jsonSerialization['baseBarrierTokens'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<String, String>>(
+              jsonSerialization['baseBarrierTokens'],
+            ),
       recoveryEffectId: jsonSerialization['recoveryEffectId'] as int?,
-      slotsToRestore: (jsonSerialization['slotsToRestore'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      slotsToRestore: jsonSerialization['slotsToRestore'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['slotsToRestore'],
+            ),
       recoveryTriggerId: jsonSerialization['recoveryTriggerId'] as String?,
     );
   }
@@ -112,13 +125,13 @@ abstract class CharacterSemanticActionData
 
   String? dieKind;
 
-  _i2.CharacterFeatureSourceType? sourceType;
+  _ik7og9il.CharacterFeatureSourceType? sourceType;
 
   int? sourceId;
 
   String? resourceKey;
 
-  _i3.RestType? restType;
+  _igwcjrvt.RestType? restType;
 
   Map<String, String>? baseBarrierTokens;
 
@@ -130,7 +143,7 @@ abstract class CharacterSemanticActionData
 
   /// Returns a shallow copy of this [CharacterSemanticActionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterSemanticActionData copyWith({
     String? spellPayment,
     int? amount,
@@ -142,10 +155,10 @@ abstract class CharacterSemanticActionData
     String? spellName,
     bool? startsConcentration,
     String? dieKind,
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     String? resourceKey,
-    _i3.RestType? restType,
+    _igwcjrvt.RestType? restType,
     Map<String, String>? baseBarrierTokens,
     int? recoveryEffectId,
     Map<int, int>? slotsToRestore,
@@ -154,6 +167,7 @@ abstract class CharacterSemanticActionData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterSemanticActionData',
       if (spellPayment != null) 'spellPayment': spellPayment,
       if (amount != null) 'amount': amount,
       if (delta != null) 'delta': delta,
@@ -180,6 +194,7 @@ abstract class CharacterSemanticActionData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterSemanticActionData',
       if (spellPayment != null) 'spellPayment': spellPayment,
       if (amount != null) 'amount': amount,
       if (delta != null) 'delta': delta,
@@ -205,7 +220,7 @@ abstract class CharacterSemanticActionData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -223,38 +238,38 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
     String? spellName,
     bool? startsConcentration,
     String? dieKind,
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     String? resourceKey,
-    _i3.RestType? restType,
+    _igwcjrvt.RestType? restType,
     Map<String, String>? baseBarrierTokens,
     int? recoveryEffectId,
     Map<int, int>? slotsToRestore,
     String? recoveryTriggerId,
   }) : super._(
-          spellPayment: spellPayment,
-          amount: amount,
-          delta: delta,
-          level: level,
-          spellKey: spellKey,
-          spellSourceKey: spellSourceKey,
-          slotSource: slotSource,
-          spellName: spellName,
-          startsConcentration: startsConcentration,
-          dieKind: dieKind,
-          sourceType: sourceType,
-          sourceId: sourceId,
-          resourceKey: resourceKey,
-          restType: restType,
-          baseBarrierTokens: baseBarrierTokens,
-          recoveryEffectId: recoveryEffectId,
-          slotsToRestore: slotsToRestore,
-          recoveryTriggerId: recoveryTriggerId,
-        );
+         spellPayment: spellPayment,
+         amount: amount,
+         delta: delta,
+         level: level,
+         spellKey: spellKey,
+         spellSourceKey: spellSourceKey,
+         slotSource: slotSource,
+         spellName: spellName,
+         startsConcentration: startsConcentration,
+         dieKind: dieKind,
+         sourceType: sourceType,
+         sourceId: sourceId,
+         resourceKey: resourceKey,
+         restType: restType,
+         baseBarrierTokens: baseBarrierTokens,
+         recoveryEffectId: recoveryEffectId,
+         slotsToRestore: slotsToRestore,
+         recoveryTriggerId: recoveryTriggerId,
+       );
 
   /// Returns a shallow copy of this [CharacterSemanticActionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterSemanticActionData copyWith({
     Object? spellPayment = _Undefined,
@@ -282,42 +297,32 @@ class _CharacterSemanticActionDataImpl extends CharacterSemanticActionData {
       delta: delta is int? ? delta : this.delta,
       level: level is int? ? level : this.level,
       spellKey: spellKey is String? ? spellKey : this.spellKey,
-      spellSourceKey:
-          spellSourceKey is String? ? spellSourceKey : this.spellSourceKey,
+      spellSourceKey: spellSourceKey is String?
+          ? spellSourceKey
+          : this.spellSourceKey,
       slotSource: slotSource is String? ? slotSource : this.slotSource,
       spellName: spellName is String? ? spellName : this.spellName,
       startsConcentration: startsConcentration is bool?
           ? startsConcentration
           : this.startsConcentration,
       dieKind: dieKind is String? ? dieKind : this.dieKind,
-      sourceType: sourceType is _i2.CharacterFeatureSourceType?
+      sourceType: sourceType is _ik7og9il.CharacterFeatureSourceType?
           ? sourceType
           : this.sourceType,
       sourceId: sourceId is int? ? sourceId : this.sourceId,
       resourceKey: resourceKey is String? ? resourceKey : this.resourceKey,
-      restType: restType is _i3.RestType? ? restType : this.restType,
+      restType: restType is _igwcjrvt.RestType? ? restType : this.restType,
       baseBarrierTokens: baseBarrierTokens is Map<String, String>?
           ? baseBarrierTokens
-          : this.baseBarrierTokens?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      recoveryEffectId:
-          recoveryEffectId is int? ? recoveryEffectId : this.recoveryEffectId,
+          : this.baseBarrierTokens?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
+      recoveryEffectId: recoveryEffectId is int?
+          ? recoveryEffectId
+          : this.recoveryEffectId,
       slotsToRestore: slotsToRestore is Map<int, int>?
           ? slotsToRestore
-          : this.slotsToRestore?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.slotsToRestore?.map((key0, value0) => MapEntry(key0, value0)),
       recoveryTriggerId: recoveryTriggerId is String?
           ? recoveryTriggerId
           : this.recoveryTriggerId,

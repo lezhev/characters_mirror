@@ -17,7 +17,7 @@ void main() {
     TestSessionBuilder authenticatedSession(int userId) {
       return sessionBuilder.copyWith(
         authentication: AuthenticationOverride.authenticationInfo(
-          userId,
+          (userId).toString(),
           <Scope>{},
         ),
       );
@@ -620,7 +620,9 @@ void main() {
       expect(current.choices, hasLength(1));
       expect(current.choices!.single.id, 'choice-a');
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }
 
 Future<(ClassData, ClassFeatureData)> _seedFeatureFixture(

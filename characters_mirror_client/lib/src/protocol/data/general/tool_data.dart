@@ -7,12 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../enums/tool_category.dart' as _i2;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../enums/tool_category.dart' as _i7uzvg6w;
 
-abstract class ToolData implements _i1.SerializableModel {
+abstract class ToolData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ToolData._({
     this.id,
     required this.referenceKey,
@@ -24,7 +26,7 @@ abstract class ToolData implements _i1.SerializableModel {
     int? id,
     required String referenceKey,
     required String name,
-    _i2.ToolCategory? category,
+    _i7uzvg6w.ToolCategory? category,
   }) = _ToolDataImpl;
 
   factory ToolData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -34,7 +36,9 @@ abstract class ToolData implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       category: jsonSerialization['category'] == null
           ? null
-          : _i2.ToolCategory.fromJson((jsonSerialization['category'] as int)),
+          : _i7uzvg6w.ToolCategory.fromJson(
+              (jsonSerialization['category'] as int),
+            ),
     );
   }
 
@@ -47,20 +51,32 @@ abstract class ToolData implements _i1.SerializableModel {
 
   String name;
 
-  _i2.ToolCategory? category;
+  _i7uzvg6w.ToolCategory? category;
 
   /// Returns a shallow copy of this [ToolData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   ToolData copyWith({
     int? id,
     String? referenceKey,
     String? name,
-    _i2.ToolCategory? category,
+    _i7uzvg6w.ToolCategory? category,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ToolData',
+      if (id != null) 'id': id,
+      'referenceKey': referenceKey,
+      'name': name,
+      if (category != null) 'category': category?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ToolData',
       if (id != null) 'id': id,
       'referenceKey': referenceKey,
       'name': name,
@@ -70,7 +86,7 @@ abstract class ToolData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -81,17 +97,17 @@ class _ToolDataImpl extends ToolData {
     int? id,
     required String referenceKey,
     required String name,
-    _i2.ToolCategory? category,
+    _i7uzvg6w.ToolCategory? category,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          name: name,
-          category: category,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         name: name,
+         category: category,
+       );
 
   /// Returns a shallow copy of this [ToolData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   ToolData copyWith({
     Object? id = _Undefined,
@@ -103,7 +119,7 @@ class _ToolDataImpl extends ToolData {
       id: id is int? ? id : this.id,
       referenceKey: referenceKey ?? this.referenceKey,
       name: name ?? this.name,
-      category: category is _i2.ToolCategory? ? category : this.category,
+      category: category is _i7uzvg6w.ToolCategory? ? category : this.category,
     );
   }
 }

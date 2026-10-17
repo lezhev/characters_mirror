@@ -240,7 +240,7 @@ class _CharacterFeatureCardState extends State<CharacterFeatureCard> {
                                 ],
                               ],
                             ],
-                            if (widget.actions case final actions?) actions,
+                            ?widget.actions,
                             if (feature.selectedChoiceDetails
                                 case final choices?
                                 when choices.isNotEmpty) ...[

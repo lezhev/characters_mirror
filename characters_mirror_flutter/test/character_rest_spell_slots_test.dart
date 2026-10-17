@@ -154,7 +154,7 @@ Future<_RestRepository> _rest(CharacterData character,
   ]);
   addTearDown(container.dispose);
   final subscription =
-      container.listen(characterSheetControllerProvider(1), (_, __) {});
+      container.listen(characterSheetControllerProvider(1), (_, _) {});
   addTearDown(subscription.close);
   await container.read(characterSheetControllerProvider(1).future);
   await container

@@ -7,11 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class AuthActionResult implements _i1.SerializableModel {
+abstract class AuthActionResult
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AuthActionResult._({
     required this.success,
     required this.code,
@@ -26,7 +28,7 @@ abstract class AuthActionResult implements _i1.SerializableModel {
 
   factory AuthActionResult.fromJson(Map<String, dynamic> jsonSerialization) {
     return AuthActionResult(
-      success: jsonSerialization['success'] as bool,
+      success: _isc.BoolJsonExtension.fromJson(jsonSerialization['success']),
       code: jsonSerialization['code'] as String,
       message: jsonSerialization['message'] as String,
     );
@@ -40,15 +42,22 @@ abstract class AuthActionResult implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [AuthActionResult]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
-  AuthActionResult copyWith({
-    bool? success,
-    String? code,
-    String? message,
-  });
+  @_isc.useResult
+  AuthActionResult copyWith({bool? success, String? code, String? message});
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'AuthActionResult',
+      'success': success,
+      'code': code,
+      'message': message,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'AuthActionResult',
       'success': success,
       'code': code,
       'message': message,
@@ -57,7 +66,7 @@ abstract class AuthActionResult implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -66,21 +75,13 @@ class _AuthActionResultImpl extends AuthActionResult {
     required bool success,
     required String code,
     required String message,
-  }) : super._(
-          success: success,
-          code: code,
-          message: message,
-        );
+  }) : super._(success: success, code: code, message: message);
 
   /// Returns a shallow copy of this [AuthActionResult]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
-  AuthActionResult copyWith({
-    bool? success,
-    String? code,
-    String? message,
-  }) {
+  AuthActionResult copyWith({bool? success, String? code, String? message}) {
     return AuthActionResult(
       success: success ?? this.success,
       code: code ?? this.code,

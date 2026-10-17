@@ -19,7 +19,7 @@ VALUES (?, ?, ?, ?)
         DateTime.now().toUtc().toIso8601String(),
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -41,7 +41,7 @@ VALUES (?, ?, ?, ?)
         DateTime.now().toUtc().toIso8601String(),
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -80,7 +80,7 @@ LIMIT 1
       if (rows.isEmpty) return null;
       return rows.first['payload_json'] as String;
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 }

@@ -7,20 +7,24 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../data/general/choice_group_data.dart' as _i2;
-import '../../enums/skill.dart' as _i3;
-import '../../enums/language.dart' as _i4;
-import '../../enums/armor_category.dart' as _i5;
-import '../../enums/weapon_category.dart' as _i6;
-import '../../data/general/choice_requirement_data.dart' as _i7;
-import '../../enums/feature_tag.dart' as _i8;
-import '../../enums/damage_type.dart' as _i9;
-import '../../enums/spell/area_of_effect_type.dart' as _i10;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../data/general/choice_group_data.dart' as _iz5y1q0y;
+import '../../data/general/choice_requirement_data.dart' as _igf6e3qg;
+import '../../enums/armor_category.dart' as _ixuui93s;
+import '../../enums/damage_type.dart' as _iei1ksog;
+import '../../enums/feature_tag.dart' as _i47d6u5x;
+import '../../enums/language.dart' as _iuo43pdt;
+import '../../enums/skill.dart' as _i6w9mv0m;
+import '../../enums/spell/area_of_effect_type.dart' as _il0t2tw3;
+import '../../enums/weapon_category.dart' as _iya6mjd5;
 
-abstract class ChoiceOptionData implements _i1.SerializableModel {
+abstract class ChoiceOptionData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ChoiceOptionData._({
     this.id,
     required this.choiceGroupId,
@@ -57,7 +61,7 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
   factory ChoiceOptionData({
     int? id,
     required int choiceGroupId,
-    _i2.ChoiceGroupData? choiceGroup,
+    _iz5y1q0y.ChoiceGroupData? choiceGroup,
     required String optionKey,
     String? name,
     String? description,
@@ -65,20 +69,20 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
     bool? automaticSelection,
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
-    List<_i3.Skill>? grantedSkills,
-    List<_i3.Skill>? grantedExpertiseSkills,
-    List<_i4.Language>? grantedLanguages,
-    List<_i5.ArmorCategory>? grantedArmorTraining,
-    List<_i6.WeaponCategory>? grantedWeaponTraining,
+    List<_i6w9mv0m.Skill>? grantedSkills,
+    List<_i6w9mv0m.Skill>? grantedExpertiseSkills,
+    List<_iuo43pdt.Language>? grantedLanguages,
+    List<_ixuui93s.ArmorCategory>? grantedArmorTraining,
+    List<_iya6mjd5.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
-    _i3.Skill? requiredExistingSkill,
+    _i6w9mv0m.Skill? requiredExistingSkill,
     String? requiredExistingToolKey,
-    List<_i7.ChoiceRequirementData>? requirements,
+    List<_igf6e3qg.ChoiceRequirementData>? requirements,
     List<String>? grantedSpellKeys,
-    List<_i8.FeatureTag>? grantedFeatureTags,
-    _i9.DamageType? damageType,
-    _i10.AreaOfEffectType? areaOfEffectType,
+    List<_i47d6u5x.FeatureTag>? grantedFeatureTags,
+    _iei1ksog.DamageType? damageType,
+    _il0t2tw3.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     Map<String, String>? damageByLevel,
     String? source,
@@ -93,82 +97,108 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
       choiceGroupId: jsonSerialization['choiceGroupId'] as int,
       choiceGroup: jsonSerialization['choiceGroup'] == null
           ? null
-          : _i2.ChoiceGroupData.fromJson(
-              (jsonSerialization['choiceGroup'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_iz5y1q0y.ChoiceGroupData>(
+              jsonSerialization['choiceGroup'],
+            ),
       optionKey: jsonSerialization['optionKey'] as String,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
-      automaticSelection: jsonSerialization['automaticSelection'] as bool?,
+      automaticSelection: jsonSerialization['automaticSelection'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['automaticSelection'],
+            ),
       sortOrder: jsonSerialization['sortOrder'] as int?,
-      grantedAbilityBonuses:
-          (jsonSerialization['grantedAbilityBonuses'] as Map?)
-              ?.map((k, v) => MapEntry(
-                    k as String,
-                    v as int,
-                  )),
-      grantedSkills: (jsonSerialization['grantedSkills'] as List?)
-          ?.map((e) => _i3.Skill.fromJson((e as String)))
-          .toList(),
+      grantedAbilityBonuses: jsonSerialization['grantedAbilityBonuses'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['grantedAbilityBonuses'],
+            ),
+      grantedSkills: jsonSerialization['grantedSkills'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_i6w9mv0m.Skill>>(
+              jsonSerialization['grantedSkills'],
+            ),
       grantedExpertiseSkills:
-          (jsonSerialization['grantedExpertiseSkills'] as List?)
-              ?.map((e) => _i3.Skill.fromJson((e as String)))
-              .toList(),
-      grantedLanguages: (jsonSerialization['grantedLanguages'] as List?)
-          ?.map((e) => _i4.Language.fromJson((e as String)))
-          .toList(),
-      grantedArmorTraining: (jsonSerialization['grantedArmorTraining'] as List?)
-          ?.map((e) => _i5.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      grantedWeaponTraining:
-          (jsonSerialization['grantedWeaponTraining'] as List?)
-              ?.map((e) => _i6.WeaponCategory.fromJson((e as String)))
-              .toList(),
-      grantedToolKeys: (jsonSerialization['grantedToolKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+          jsonSerialization['grantedExpertiseSkills'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_i6w9mv0m.Skill>>(
+              jsonSerialization['grantedExpertiseSkills'],
+            ),
+      grantedLanguages: jsonSerialization['grantedLanguages'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iuo43pdt.Language>>(
+              jsonSerialization['grantedLanguages'],
+            ),
+      grantedArmorTraining: jsonSerialization['grantedArmorTraining'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ixuui93s.ArmorCategory>>(
+              jsonSerialization['grantedArmorTraining'],
+            ),
+      grantedWeaponTraining: jsonSerialization['grantedWeaponTraining'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iya6mjd5.WeaponCategory>>(
+              jsonSerialization['grantedWeaponTraining'],
+            ),
+      grantedToolKeys: jsonSerialization['grantedToolKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedToolKeys'],
+            ),
       grantedExpertiseToolKeys:
-          (jsonSerialization['grantedExpertiseToolKeys'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
+          jsonSerialization['grantedExpertiseToolKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedExpertiseToolKeys'],
+            ),
       requiredExistingSkill: jsonSerialization['requiredExistingSkill'] == null
           ? null
-          : _i3.Skill.fromJson(
-              (jsonSerialization['requiredExistingSkill'] as String)),
+          : _i6w9mv0m.Skill.fromJson(
+              (jsonSerialization['requiredExistingSkill'] as String),
+            ),
       requiredExistingToolKey:
           jsonSerialization['requiredExistingToolKey'] as String?,
-      requirements: (jsonSerialization['requirements'] as List?)
-          ?.map((e) =>
-              _i7.ChoiceRequirementData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      grantedFeatureTags: (jsonSerialization['grantedFeatureTags'] as List?)
-          ?.map((e) => _i8.FeatureTag.fromJson((e as String)))
-          .toList(),
+      requirements: jsonSerialization['requirements'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_igf6e3qg.ChoiceRequirementData>>(
+                  jsonSerialization['requirements'],
+                ),
+      grantedSpellKeys: jsonSerialization['grantedSpellKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedSpellKeys'],
+            ),
+      grantedFeatureTags: jsonSerialization['grantedFeatureTags'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_i47d6u5x.FeatureTag>>(
+              jsonSerialization['grantedFeatureTags'],
+            ),
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i9.DamageType.fromJson(
-              (jsonSerialization['damageType'] as String)),
+          : _iei1ksog.DamageType.fromJson(
+              (jsonSerialization['damageType'] as String),
+            ),
       areaOfEffectType: jsonSerialization['areaOfEffectType'] == null
           ? null
-          : _i10.AreaOfEffectType.fromJson(
-              (jsonSerialization['areaOfEffectType'] as String)),
+          : _il0t2tw3.AreaOfEffectType.fromJson(
+              (jsonSerialization['areaOfEffectType'] as String),
+            ),
       areaText: jsonSerialization['areaText'] as String?,
-      damageByLevel:
-          (jsonSerialization['damageByLevel'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as String,
-              )),
+      damageByLevel: jsonSerialization['damageByLevel'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<String, String>>(
+              jsonSerialization['damageByLevel'],
+            ),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -179,7 +209,7 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
 
   int choiceGroupId;
 
-  _i2.ChoiceGroupData? choiceGroup;
+  _iz5y1q0y.ChoiceGroupData? choiceGroup;
 
   String optionKey;
 
@@ -195,33 +225,33 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
 
   Map<String, int>? grantedAbilityBonuses;
 
-  List<_i3.Skill>? grantedSkills;
+  List<_i6w9mv0m.Skill>? grantedSkills;
 
-  List<_i3.Skill>? grantedExpertiseSkills;
+  List<_i6w9mv0m.Skill>? grantedExpertiseSkills;
 
-  List<_i4.Language>? grantedLanguages;
+  List<_iuo43pdt.Language>? grantedLanguages;
 
-  List<_i5.ArmorCategory>? grantedArmorTraining;
+  List<_ixuui93s.ArmorCategory>? grantedArmorTraining;
 
-  List<_i6.WeaponCategory>? grantedWeaponTraining;
+  List<_iya6mjd5.WeaponCategory>? grantedWeaponTraining;
 
   List<String>? grantedToolKeys;
 
   List<String>? grantedExpertiseToolKeys;
 
-  _i3.Skill? requiredExistingSkill;
+  _i6w9mv0m.Skill? requiredExistingSkill;
 
   String? requiredExistingToolKey;
 
-  List<_i7.ChoiceRequirementData>? requirements;
+  List<_igf6e3qg.ChoiceRequirementData>? requirements;
 
   List<String>? grantedSpellKeys;
 
-  List<_i8.FeatureTag>? grantedFeatureTags;
+  List<_i47d6u5x.FeatureTag>? grantedFeatureTags;
 
-  _i9.DamageType? damageType;
+  _iei1ksog.DamageType? damageType;
 
-  _i10.AreaOfEffectType? areaOfEffectType;
+  _il0t2tw3.AreaOfEffectType? areaOfEffectType;
 
   String? areaText;
 
@@ -237,11 +267,11 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [ChoiceOptionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   ChoiceOptionData copyWith({
     int? id,
     int? choiceGroupId,
-    _i2.ChoiceGroupData? choiceGroup,
+    _iz5y1q0y.ChoiceGroupData? choiceGroup,
     String? optionKey,
     String? name,
     String? description,
@@ -249,20 +279,20 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
     bool? automaticSelection,
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
-    List<_i3.Skill>? grantedSkills,
-    List<_i3.Skill>? grantedExpertiseSkills,
-    List<_i4.Language>? grantedLanguages,
-    List<_i5.ArmorCategory>? grantedArmorTraining,
-    List<_i6.WeaponCategory>? grantedWeaponTraining,
+    List<_i6w9mv0m.Skill>? grantedSkills,
+    List<_i6w9mv0m.Skill>? grantedExpertiseSkills,
+    List<_iuo43pdt.Language>? grantedLanguages,
+    List<_ixuui93s.ArmorCategory>? grantedArmorTraining,
+    List<_iya6mjd5.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
-    _i3.Skill? requiredExistingSkill,
+    _i6w9mv0m.Skill? requiredExistingSkill,
     String? requiredExistingToolKey,
-    List<_i7.ChoiceRequirementData>? requirements,
+    List<_igf6e3qg.ChoiceRequirementData>? requirements,
     List<String>? grantedSpellKeys,
-    List<_i8.FeatureTag>? grantedFeatureTags,
-    _i9.DamageType? damageType,
-    _i10.AreaOfEffectType? areaOfEffectType,
+    List<_i47d6u5x.FeatureTag>? grantedFeatureTags,
+    _iei1ksog.DamageType? damageType,
+    _il0t2tw3.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     Map<String, String>? damageByLevel,
     String? source,
@@ -273,6 +303,7 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ChoiceOptionData',
       if (id != null) 'id': id,
       'choiceGroupId': choiceGroupId,
       if (choiceGroup != null) 'choiceGroup': choiceGroup?.toJson(),
@@ -287,17 +318,21 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
       if (grantedSkills != null)
         'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedExpertiseSkills != null)
-        'grantedExpertiseSkills':
-            grantedExpertiseSkills?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedExpertiseSkills': grantedExpertiseSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedLanguages != null)
-        'grantedLanguages':
-            grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedLanguages': grantedLanguages?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedArmorTraining != null)
-        'grantedArmorTraining':
-            grantedArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedArmorTraining': grantedArmorTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedWeaponTraining != null)
-        'grantedWeaponTraining':
-            grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedWeaponTraining': grantedWeaponTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
       if (grantedExpertiseToolKeys != null)
         'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
@@ -310,8 +345,71 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
       if (grantedSpellKeys != null)
         'grantedSpellKeys': grantedSpellKeys?.toJson(),
       if (grantedFeatureTags != null)
-        'grantedFeatureTags':
-            grantedFeatureTags?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedFeatureTags': grantedFeatureTags?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (damageType != null) 'damageType': damageType?.toJson(),
+      if (areaOfEffectType != null)
+        'areaOfEffectType': areaOfEffectType?.toJson(),
+      if (areaText != null) 'areaText': areaText,
+      if (damageByLevel != null) 'damageByLevel': damageByLevel?.toJson(),
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ChoiceOptionData',
+      if (id != null) 'id': id,
+      'choiceGroupId': choiceGroupId,
+      if (choiceGroup != null) 'choiceGroup': choiceGroup?.toJsonForProtocol(),
+      'optionKey': optionKey,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
+      if (automaticSelection != null) 'automaticSelection': automaticSelection,
+      if (sortOrder != null) 'sortOrder': sortOrder,
+      if (grantedAbilityBonuses != null)
+        'grantedAbilityBonuses': grantedAbilityBonuses?.toJson(),
+      if (grantedSkills != null)
+        'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedExpertiseSkills != null)
+        'grantedExpertiseSkills': grantedExpertiseSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedLanguages != null)
+        'grantedLanguages': grantedLanguages?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedArmorTraining != null)
+        'grantedArmorTraining': grantedArmorTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedWeaponTraining != null)
+        'grantedWeaponTraining': grantedWeaponTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
+      if (grantedExpertiseToolKeys != null)
+        'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
+      if (requiredExistingSkill != null)
+        'requiredExistingSkill': requiredExistingSkill?.toJson(),
+      if (requiredExistingToolKey != null)
+        'requiredExistingToolKey': requiredExistingToolKey,
+      if (requirements != null)
+        'requirements': requirements?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (grantedSpellKeys != null)
+        'grantedSpellKeys': grantedSpellKeys?.toJson(),
+      if (grantedFeatureTags != null)
+        'grantedFeatureTags': grantedFeatureTags?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (damageType != null) 'damageType': damageType?.toJson(),
       if (areaOfEffectType != null)
         'areaOfEffectType': areaOfEffectType?.toJson(),
@@ -326,7 +424,7 @@ abstract class ChoiceOptionData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -336,7 +434,7 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
   _ChoiceOptionDataImpl({
     int? id,
     required int choiceGroupId,
-    _i2.ChoiceGroupData? choiceGroup,
+    _iz5y1q0y.ChoiceGroupData? choiceGroup,
     required String optionKey,
     String? name,
     String? description,
@@ -344,20 +442,20 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     bool? automaticSelection,
     int? sortOrder,
     Map<String, int>? grantedAbilityBonuses,
-    List<_i3.Skill>? grantedSkills,
-    List<_i3.Skill>? grantedExpertiseSkills,
-    List<_i4.Language>? grantedLanguages,
-    List<_i5.ArmorCategory>? grantedArmorTraining,
-    List<_i6.WeaponCategory>? grantedWeaponTraining,
+    List<_i6w9mv0m.Skill>? grantedSkills,
+    List<_i6w9mv0m.Skill>? grantedExpertiseSkills,
+    List<_iuo43pdt.Language>? grantedLanguages,
+    List<_ixuui93s.ArmorCategory>? grantedArmorTraining,
+    List<_iya6mjd5.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
-    _i3.Skill? requiredExistingSkill,
+    _i6w9mv0m.Skill? requiredExistingSkill,
     String? requiredExistingToolKey,
-    List<_i7.ChoiceRequirementData>? requirements,
+    List<_igf6e3qg.ChoiceRequirementData>? requirements,
     List<String>? grantedSpellKeys,
-    List<_i8.FeatureTag>? grantedFeatureTags,
-    _i9.DamageType? damageType,
-    _i10.AreaOfEffectType? areaOfEffectType,
+    List<_i47d6u5x.FeatureTag>? grantedFeatureTags,
+    _iei1ksog.DamageType? damageType,
+    _il0t2tw3.AreaOfEffectType? areaOfEffectType,
     String? areaText,
     Map<String, String>? damageByLevel,
     String? source,
@@ -365,41 +463,41 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          choiceGroupId: choiceGroupId,
-          choiceGroup: choiceGroup,
-          optionKey: optionKey,
-          name: name,
-          description: description,
-          shortDescription: shortDescription,
-          automaticSelection: automaticSelection,
-          sortOrder: sortOrder,
-          grantedAbilityBonuses: grantedAbilityBonuses,
-          grantedSkills: grantedSkills,
-          grantedExpertiseSkills: grantedExpertiseSkills,
-          grantedLanguages: grantedLanguages,
-          grantedArmorTraining: grantedArmorTraining,
-          grantedWeaponTraining: grantedWeaponTraining,
-          grantedToolKeys: grantedToolKeys,
-          grantedExpertiseToolKeys: grantedExpertiseToolKeys,
-          requiredExistingSkill: requiredExistingSkill,
-          requiredExistingToolKey: requiredExistingToolKey,
-          requirements: requirements,
-          grantedSpellKeys: grantedSpellKeys,
-          grantedFeatureTags: grantedFeatureTags,
-          damageType: damageType,
-          areaOfEffectType: areaOfEffectType,
-          areaText: areaText,
-          damageByLevel: damageByLevel,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         choiceGroupId: choiceGroupId,
+         choiceGroup: choiceGroup,
+         optionKey: optionKey,
+         name: name,
+         description: description,
+         shortDescription: shortDescription,
+         automaticSelection: automaticSelection,
+         sortOrder: sortOrder,
+         grantedAbilityBonuses: grantedAbilityBonuses,
+         grantedSkills: grantedSkills,
+         grantedExpertiseSkills: grantedExpertiseSkills,
+         grantedLanguages: grantedLanguages,
+         grantedArmorTraining: grantedArmorTraining,
+         grantedWeaponTraining: grantedWeaponTraining,
+         grantedToolKeys: grantedToolKeys,
+         grantedExpertiseToolKeys: grantedExpertiseToolKeys,
+         requiredExistingSkill: requiredExistingSkill,
+         requiredExistingToolKey: requiredExistingToolKey,
+         requirements: requirements,
+         grantedSpellKeys: grantedSpellKeys,
+         grantedFeatureTags: grantedFeatureTags,
+         damageType: damageType,
+         areaOfEffectType: areaOfEffectType,
+         areaText: areaText,
+         damageByLevel: damageByLevel,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [ChoiceOptionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   ChoiceOptionData copyWith({
     Object? id = _Undefined,
@@ -436,7 +534,7 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
     return ChoiceOptionData(
       id: id is int? ? id : this.id,
       choiceGroupId: choiceGroupId ?? this.choiceGroupId,
-      choiceGroup: choiceGroup is _i2.ChoiceGroupData?
+      choiceGroup: choiceGroup is _iz5y1q0y.ChoiceGroupData?
           ? choiceGroup
           : this.choiceGroup?.copyWith(),
       optionKey: optionKey ?? this.optionKey,
@@ -451,27 +549,24 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
       sortOrder: sortOrder is int? ? sortOrder : this.sortOrder,
       grantedAbilityBonuses: grantedAbilityBonuses is Map<String, int>?
           ? grantedAbilityBonuses
-          : this.grantedAbilityBonuses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
-      grantedSkills: grantedSkills is List<_i3.Skill>?
+          : this.grantedAbilityBonuses?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
+      grantedSkills: grantedSkills is List<_i6w9mv0m.Skill>?
           ? grantedSkills
           : this.grantedSkills?.map((e0) => e0).toList(),
-      grantedExpertiseSkills: grantedExpertiseSkills is List<_i3.Skill>?
+      grantedExpertiseSkills: grantedExpertiseSkills is List<_i6w9mv0m.Skill>?
           ? grantedExpertiseSkills
           : this.grantedExpertiseSkills?.map((e0) => e0).toList(),
-      grantedLanguages: grantedLanguages is List<_i4.Language>?
+      grantedLanguages: grantedLanguages is List<_iuo43pdt.Language>?
           ? grantedLanguages
           : this.grantedLanguages?.map((e0) => e0).toList(),
-      grantedArmorTraining: grantedArmorTraining is List<_i5.ArmorCategory>?
+      grantedArmorTraining:
+          grantedArmorTraining is List<_ixuui93s.ArmorCategory>?
           ? grantedArmorTraining
           : this.grantedArmorTraining?.map((e0) => e0).toList(),
-      grantedWeaponTraining: grantedWeaponTraining is List<_i6.WeaponCategory>?
+      grantedWeaponTraining:
+          grantedWeaponTraining is List<_iya6mjd5.WeaponCategory>?
           ? grantedWeaponTraining
           : this.grantedWeaponTraining?.map((e0) => e0).toList(),
       grantedToolKeys: grantedToolKeys is List<String>?
@@ -480,36 +575,31 @@ class _ChoiceOptionDataImpl extends ChoiceOptionData {
       grantedExpertiseToolKeys: grantedExpertiseToolKeys is List<String>?
           ? grantedExpertiseToolKeys
           : this.grantedExpertiseToolKeys?.map((e0) => e0).toList(),
-      requiredExistingSkill: requiredExistingSkill is _i3.Skill?
+      requiredExistingSkill: requiredExistingSkill is _i6w9mv0m.Skill?
           ? requiredExistingSkill
           : this.requiredExistingSkill,
       requiredExistingToolKey: requiredExistingToolKey is String?
           ? requiredExistingToolKey
           : this.requiredExistingToolKey,
-      requirements: requirements is List<_i7.ChoiceRequirementData>?
+      requirements: requirements is List<_igf6e3qg.ChoiceRequirementData>?
           ? requirements
           : this.requirements?.map((e0) => e0.copyWith()).toList(),
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
-      grantedFeatureTags: grantedFeatureTags is List<_i8.FeatureTag>?
+      grantedFeatureTags: grantedFeatureTags is List<_i47d6u5x.FeatureTag>?
           ? grantedFeatureTags
           : this.grantedFeatureTags?.map((e0) => e0).toList(),
-      damageType: damageType is _i9.DamageType? ? damageType : this.damageType,
-      areaOfEffectType: areaOfEffectType is _i10.AreaOfEffectType?
+      damageType: damageType is _iei1ksog.DamageType?
+          ? damageType
+          : this.damageType,
+      areaOfEffectType: areaOfEffectType is _il0t2tw3.AreaOfEffectType?
           ? areaOfEffectType
           : this.areaOfEffectType,
       areaText: areaText is String? ? areaText : this.areaText,
       damageByLevel: damageByLevel is Map<String, String>?
           ? damageByLevel
-          : this.damageByLevel?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.damageByLevel?.map((key0, value0) => MapEntry(key0, value0)),
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,

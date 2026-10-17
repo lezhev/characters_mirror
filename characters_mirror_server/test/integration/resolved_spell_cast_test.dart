@@ -9,8 +9,8 @@ void main() {
   withServerpod('Resolved spell casts', (sessionBuilder, endpoints) {
     setUp(CharacterSaveRateLimiter.resetForTests);
     final owner = sessionBuilder.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9401, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9401).toString(), <Scope>{}));
 
     Future<(CharacterData, SpellData, ClassData)> fixture(
         {bool twoSources = false}) async {
@@ -257,5 +257,7 @@ void main() {
       expect(racial.castAtSpellLevel, 2);
       expect(racial.freeCastsFormula, '1');
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

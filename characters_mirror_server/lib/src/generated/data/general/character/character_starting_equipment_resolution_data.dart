@@ -7,13 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/equipment_catalog_type.dart' as _i2;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../enums/equipment_catalog_type.dart' as _i5zaboz2;
 
 abstract class CharacterStartingEquipmentResolutionData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterStartingEquipmentResolutionData._({
     this.id,
     this.sourceLineEntryId,
@@ -26,26 +27,28 @@ abstract class CharacterStartingEquipmentResolutionData
   factory CharacterStartingEquipmentResolutionData({
     String? id,
     int? sourceLineEntryId,
-    _i2.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
     DateTime? updatedAt,
   }) = _CharacterStartingEquipmentResolutionDataImpl;
 
   factory CharacterStartingEquipmentResolutionData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterStartingEquipmentResolutionData(
       id: jsonSerialization['id'] as String?,
       sourceLineEntryId: jsonSerialization['sourceLineEntryId'] as int?,
       catalogType: jsonSerialization['catalogType'] == null
           ? null
-          : _i2.EquipmentCatalogType.fromJson(
-              (jsonSerialization['catalogType'] as String)),
+          : _i5zaboz2.EquipmentCatalogType.fromJson(
+              (jsonSerialization['catalogType'] as String),
+            ),
       referenceKey: jsonSerialization['referenceKey'] as String?,
       quantity: jsonSerialization['quantity'] as int?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -53,7 +56,7 @@ abstract class CharacterStartingEquipmentResolutionData
 
   int? sourceLineEntryId;
 
-  _i2.EquipmentCatalogType? catalogType;
+  _i5zaboz2.EquipmentCatalogType? catalogType;
 
   String? referenceKey;
 
@@ -63,11 +66,11 @@ abstract class CharacterStartingEquipmentResolutionData
 
   /// Returns a shallow copy of this [CharacterStartingEquipmentResolutionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterStartingEquipmentResolutionData copyWith({
     String? id,
     int? sourceLineEntryId,
-    _i2.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
     DateTime? updatedAt,
@@ -75,6 +78,7 @@ abstract class CharacterStartingEquipmentResolutionData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterStartingEquipmentResolutionData',
       if (id != null) 'id': id,
       if (sourceLineEntryId != null) 'sourceLineEntryId': sourceLineEntryId,
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
@@ -87,6 +91,7 @@ abstract class CharacterStartingEquipmentResolutionData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterStartingEquipmentResolutionData',
       if (id != null) 'id': id,
       if (sourceLineEntryId != null) 'sourceLineEntryId': sourceLineEntryId,
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
@@ -98,7 +103,7 @@ abstract class CharacterStartingEquipmentResolutionData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -109,22 +114,22 @@ class _CharacterStartingEquipmentResolutionDataImpl
   _CharacterStartingEquipmentResolutionDataImpl({
     String? id,
     int? sourceLineEntryId,
-    _i2.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
     int? quantity,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          sourceLineEntryId: sourceLineEntryId,
-          catalogType: catalogType,
-          referenceKey: referenceKey,
-          quantity: quantity,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         sourceLineEntryId: sourceLineEntryId,
+         catalogType: catalogType,
+         referenceKey: referenceKey,
+         quantity: quantity,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [CharacterStartingEquipmentResolutionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterStartingEquipmentResolutionData copyWith({
     Object? id = _Undefined,
@@ -139,7 +144,7 @@ class _CharacterStartingEquipmentResolutionDataImpl
       sourceLineEntryId: sourceLineEntryId is int?
           ? sourceLineEntryId
           : this.sourceLineEntryId,
-      catalogType: catalogType is _i2.EquipmentCatalogType?
+      catalogType: catalogType is _i5zaboz2.EquipmentCatalogType?
           ? catalogType
           : this.catalogType,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,

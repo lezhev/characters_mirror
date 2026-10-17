@@ -84,7 +84,7 @@ void main() {
 
         final ownerSessionBuilder = sessionBuilder.copyWith(
           authentication: AuthenticationOverride.authenticationInfo(
-            901,
+            (901).toString(),
             const {},
           ),
         );
@@ -154,5 +154,7 @@ void main() {
         );
       });
     },
+
+    ephemeralDatabase: false,
   );
 }

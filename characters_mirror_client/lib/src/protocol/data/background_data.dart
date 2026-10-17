@@ -7,12 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../enums/skill.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../enums/skill.dart' as _ic5go03x;
 
-abstract class BackgroundData implements _i1.SerializableModel {
+abstract class BackgroundData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BackgroundData._({
     this.id,
     this.name,
@@ -43,8 +47,8 @@ abstract class BackgroundData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i2.Skill>? skillProficiencies,
-    List<_i2.Skill>? availableSkills,
+    List<_ic5go03x.Skill>? skillProficiencies,
+    List<_ic5go03x.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencyKeys,
     int? languageCount,
@@ -66,38 +70,54 @@ abstract class BackgroundData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => _i2.Skill.fromJson((e as String)))
-          .toList(),
-      availableSkills: (jsonSerialization['availableSkills'] as List?)
-          ?.map((e) => _i2.Skill.fromJson((e as String)))
-          .toList(),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      skillProficiencies: jsonSerialization['skillProficiencies'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ic5go03x.Skill>>(
+              jsonSerialization['skillProficiencies'],
+            ),
+      availableSkills: jsonSerialization['availableSkills'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ic5go03x.Skill>>(
+              jsonSerialization['availableSkills'],
+            ),
       skillCount: jsonSerialization['skillCount'] as int?,
-      toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      toolProficiencyKeys: jsonSerialization['toolProficiencyKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['toolProficiencyKeys'],
+            ),
       languageCount: jsonSerialization['languageCount'] as int?,
-      items: (jsonSerialization['items'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      items: jsonSerialization['items'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['items'],
+            ),
       coins: (jsonSerialization['coins'] as num?)?.toDouble(),
       feature: jsonSerialization['feature'] as String?,
-      suggestedPersonality: (jsonSerialization['suggestedPersonality'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      suggestedIdeal: (jsonSerialization['suggestedIdeal'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      suggestedBond: (jsonSerialization['suggestedBond'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      suggestedFlaw: (jsonSerialization['suggestedFlaw'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      suggestedPersonality: jsonSerialization['suggestedPersonality'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedPersonality'],
+            ),
+      suggestedIdeal: jsonSerialization['suggestedIdeal'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedIdeal'],
+            ),
+      suggestedBond: jsonSerialization['suggestedBond'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedBond'],
+            ),
+      suggestedFlaw: jsonSerialization['suggestedFlaw'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedFlaw'],
+            ),
     );
   }
 
@@ -118,9 +138,9 @@ abstract class BackgroundData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  List<_i2.Skill>? skillProficiencies;
+  List<_ic5go03x.Skill>? skillProficiencies;
 
-  List<_i2.Skill>? availableSkills;
+  List<_ic5go03x.Skill>? availableSkills;
 
   int? skillCount;
 
@@ -144,7 +164,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [BackgroundData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   BackgroundData copyWith({
     int? id,
     String? name,
@@ -153,8 +173,8 @@ abstract class BackgroundData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i2.Skill>? skillProficiencies,
-    List<_i2.Skill>? availableSkills,
+    List<_ic5go03x.Skill>? skillProficiencies,
+    List<_ic5go03x.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencyKeys,
     int? languageCount,
@@ -169,6 +189,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BackgroundData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -177,11 +198,47 @@ abstract class BackgroundData implements _i1.SerializableModel {
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (skillProficiencies != null)
-        'skillProficiencies':
-            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (availableSkills != null)
-        'availableSkills':
-            availableSkills?.toJson(valueToJson: (v) => v.toJson()),
+        'availableSkills': availableSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (skillCount != null) 'skillCount': skillCount,
+      if (toolProficiencyKeys != null)
+        'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
+      if (languageCount != null) 'languageCount': languageCount,
+      if (items != null) 'items': items?.toJson(),
+      if (coins != null) 'coins': coins,
+      if (feature != null) 'feature': feature,
+      if (suggestedPersonality != null)
+        'suggestedPersonality': suggestedPersonality?.toJson(),
+      if (suggestedIdeal != null) 'suggestedIdeal': suggestedIdeal?.toJson(),
+      if (suggestedBond != null) 'suggestedBond': suggestedBond?.toJson(),
+      if (suggestedFlaw != null) 'suggestedFlaw': suggestedFlaw?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'BackgroundData',
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (skillProficiencies != null)
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (availableSkills != null)
+        'availableSkills': availableSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (skillCount != null) 'skillCount': skillCount,
       if (toolProficiencyKeys != null)
         'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
@@ -199,7 +256,7 @@ abstract class BackgroundData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -214,8 +271,8 @@ class _BackgroundDataImpl extends BackgroundData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i2.Skill>? skillProficiencies,
-    List<_i2.Skill>? availableSkills,
+    List<_ic5go03x.Skill>? skillProficiencies,
+    List<_ic5go03x.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencyKeys,
     int? languageCount,
@@ -227,30 +284,30 @@ class _BackgroundDataImpl extends BackgroundData {
     List<String>? suggestedBond,
     List<String>? suggestedFlaw,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          skillProficiencies: skillProficiencies,
-          availableSkills: availableSkills,
-          skillCount: skillCount,
-          toolProficiencyKeys: toolProficiencyKeys,
-          languageCount: languageCount,
-          items: items,
-          coins: coins,
-          feature: feature,
-          suggestedPersonality: suggestedPersonality,
-          suggestedIdeal: suggestedIdeal,
-          suggestedBond: suggestedBond,
-          suggestedFlaw: suggestedFlaw,
-        );
+         id: id,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         skillProficiencies: skillProficiencies,
+         availableSkills: availableSkills,
+         skillCount: skillCount,
+         toolProficiencyKeys: toolProficiencyKeys,
+         languageCount: languageCount,
+         items: items,
+         coins: coins,
+         feature: feature,
+         suggestedPersonality: suggestedPersonality,
+         suggestedIdeal: suggestedIdeal,
+         suggestedBond: suggestedBond,
+         suggestedFlaw: suggestedFlaw,
+       );
 
   /// Returns a shallow copy of this [BackgroundData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   BackgroundData copyWith({
     Object? id = _Undefined,
@@ -281,10 +338,10 @@ class _BackgroundDataImpl extends BackgroundData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      skillProficiencies: skillProficiencies is List<_i2.Skill>?
+      skillProficiencies: skillProficiencies is List<_ic5go03x.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      availableSkills: availableSkills is List<_i2.Skill>?
+      availableSkills: availableSkills is List<_ic5go03x.Skill>?
           ? availableSkills
           : this.availableSkills?.map((e0) => e0).toList(),
       skillCount: skillCount is int? ? skillCount : this.skillCount,
@@ -292,8 +349,9 @@ class _BackgroundDataImpl extends BackgroundData {
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),
       languageCount: languageCount is int? ? languageCount : this.languageCount,
-      items:
-          items is List<String>? ? items : this.items?.map((e0) => e0).toList(),
+      items: items is List<String>?
+          ? items
+          : this.items?.map((e0) => e0).toList(),
       coins: coins is double? ? coins : this.coins,
       feature: feature is String? ? feature : this.feature,
       suggestedPersonality: suggestedPersonality is List<String>?

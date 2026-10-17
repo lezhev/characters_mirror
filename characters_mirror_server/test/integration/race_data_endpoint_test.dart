@@ -169,5 +169,7 @@ void main() {
         ),
       );
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

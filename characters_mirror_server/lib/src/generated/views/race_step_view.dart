@@ -7,70 +7,74 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../data/general/race/race_data.dart' as _i2;
-import '../data/general/race/subrace_data.dart' as _i3;
-import '../data/general/race/race_feature_data.dart' as _i4;
-import '../views/choice_group_view.dart' as _i5;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../data/general/race/race_data.dart' as _ihlw44xu;
+import '../data/general/race/race_feature_data.dart' as _iqq0a9cu;
+import '../data/general/race/subrace_data.dart' as _is1vx1i0;
+import '../views/choice_group_view.dart' as _i8vdv0v3;
 
 abstract class RaceStepView
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
-  RaceStepView._({
-    this.race,
-    this.subraces,
-    this.features,
-    this.choiceGroups,
-  });
+    implements _is.SerializableModel, _is.ProtocolSerialization {
+  RaceStepView._({this.race, this.subraces, this.features, this.choiceGroups});
 
   factory RaceStepView({
-    _i2.RaceData? race,
-    List<_i3.SubraceData>? subraces,
-    List<_i4.RaceFeatureData>? features,
-    List<_i5.ChoiceGroupView>? choiceGroups,
+    _ihlw44xu.RaceData? race,
+    List<_is1vx1i0.SubraceData>? subraces,
+    List<_iqq0a9cu.RaceFeatureData>? features,
+    List<_i8vdv0v3.ChoiceGroupView>? choiceGroups,
   }) = _RaceStepViewImpl;
 
   factory RaceStepView.fromJson(Map<String, dynamic> jsonSerialization) {
     return RaceStepView(
       race: jsonSerialization['race'] == null
           ? null
-          : _i2.RaceData.fromJson(
-              (jsonSerialization['race'] as Map<String, dynamic>)),
-      subraces: (jsonSerialization['subraces'] as List?)
-          ?.map((e) => _i3.SubraceData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      features: (jsonSerialization['features'] as List?)
-          ?.map(
-              (e) => _i4.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      choiceGroups: (jsonSerialization['choiceGroups'] as List?)
-          ?.map(
-              (e) => _i5.ChoiceGroupView.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+          : _ikmnmw29.Protocol().deserialize<_ihlw44xu.RaceData>(
+              jsonSerialization['race'],
+            ),
+      subraces: jsonSerialization['subraces'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_is1vx1i0.SubraceData>>(
+              jsonSerialization['subraces'],
+            ),
+      features: jsonSerialization['features'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iqq0a9cu.RaceFeatureData>>(
+              jsonSerialization['features'],
+            ),
+      choiceGroups: jsonSerialization['choiceGroups'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_i8vdv0v3.ChoiceGroupView>>(
+              jsonSerialization['choiceGroups'],
+            ),
     );
   }
 
-  _i2.RaceData? race;
+  _ihlw44xu.RaceData? race;
 
-  List<_i3.SubraceData>? subraces;
+  List<_is1vx1i0.SubraceData>? subraces;
 
-  List<_i4.RaceFeatureData>? features;
+  List<_iqq0a9cu.RaceFeatureData>? features;
 
-  List<_i5.ChoiceGroupView>? choiceGroups;
+  List<_i8vdv0v3.ChoiceGroupView>? choiceGroups;
 
   /// Returns a shallow copy of this [RaceStepView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   RaceStepView copyWith({
-    _i2.RaceData? race,
-    List<_i3.SubraceData>? subraces,
-    List<_i4.RaceFeatureData>? features,
-    List<_i5.ChoiceGroupView>? choiceGroups,
+    _ihlw44xu.RaceData? race,
+    List<_is1vx1i0.SubraceData>? subraces,
+    List<_iqq0a9cu.RaceFeatureData>? features,
+    List<_i8vdv0v3.ChoiceGroupView>? choiceGroups,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'RaceStepView',
       if (race != null) 'race': race?.toJson(),
       if (subraces != null)
         'subraces': subraces?.toJson(valueToJson: (v) => v.toJson()),
@@ -84,20 +88,22 @@ abstract class RaceStepView
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'RaceStepView',
       if (race != null) 'race': race?.toJsonForProtocol(),
       if (subraces != null)
         'subraces': subraces?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (features != null)
         'features': features?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (choiceGroups != null)
-        'choiceGroups':
-            choiceGroups?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'choiceGroups': choiceGroups?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
     };
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -105,20 +111,20 @@ class _Undefined {}
 
 class _RaceStepViewImpl extends RaceStepView {
   _RaceStepViewImpl({
-    _i2.RaceData? race,
-    List<_i3.SubraceData>? subraces,
-    List<_i4.RaceFeatureData>? features,
-    List<_i5.ChoiceGroupView>? choiceGroups,
+    _ihlw44xu.RaceData? race,
+    List<_is1vx1i0.SubraceData>? subraces,
+    List<_iqq0a9cu.RaceFeatureData>? features,
+    List<_i8vdv0v3.ChoiceGroupView>? choiceGroups,
   }) : super._(
-          race: race,
-          subraces: subraces,
-          features: features,
-          choiceGroups: choiceGroups,
-        );
+         race: race,
+         subraces: subraces,
+         features: features,
+         choiceGroups: choiceGroups,
+       );
 
   /// Returns a shallow copy of this [RaceStepView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   RaceStepView copyWith({
     Object? race = _Undefined,
@@ -127,14 +133,14 @@ class _RaceStepViewImpl extends RaceStepView {
     Object? choiceGroups = _Undefined,
   }) {
     return RaceStepView(
-      race: race is _i2.RaceData? ? race : this.race?.copyWith(),
-      subraces: subraces is List<_i3.SubraceData>?
+      race: race is _ihlw44xu.RaceData? ? race : this.race?.copyWith(),
+      subraces: subraces is List<_is1vx1i0.SubraceData>?
           ? subraces
           : this.subraces?.map((e0) => e0.copyWith()).toList(),
-      features: features is List<_i4.RaceFeatureData>?
+      features: features is List<_iqq0a9cu.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
-      choiceGroups: choiceGroups is List<_i5.ChoiceGroupView>?
+      choiceGroups: choiceGroups is List<_i8vdv0v3.ChoiceGroupView>?
           ? choiceGroups
           : this.choiceGroups?.map((e0) => e0.copyWith()).toList(),
     );

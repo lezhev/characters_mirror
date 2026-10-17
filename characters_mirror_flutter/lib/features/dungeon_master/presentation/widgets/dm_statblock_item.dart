@@ -100,7 +100,7 @@ class _DmStatblockItemState extends State<DmStatblockItem>
                 offstage: _controller.isDismissed,
                 child: SizeTransition(
                     sizeFactor: _size,
-                    axisAlignment: -1,
+                    alignment: Alignment.topCenter,
                     child: FadeTransition(opacity: _size, child: child))),
             child: Padding(
                 padding:

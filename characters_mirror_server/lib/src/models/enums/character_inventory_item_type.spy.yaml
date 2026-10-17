@@ -1,4 +1,5 @@
 enum: CharacterInventoryItemType
+serialized: byIndex
 values:
   - weapon
   - armor

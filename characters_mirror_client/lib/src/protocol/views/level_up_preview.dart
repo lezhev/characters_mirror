@@ -7,15 +7,19 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../data/general/character/character_data.dart' as _i2;
-import '../views/class_step_view.dart' as _i3;
-import '../views/choice_group_view.dart' as _i4;
-import '../views/class_spell_delta_view.dart' as _i5;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../data/general/character/character_data.dart' as _iokyyhkm;
+import '../views/choice_group_view.dart' as _i8vdv0v3;
+import '../views/class_spell_delta_view.dart' as _idq5r9zx;
+import '../views/class_step_view.dart' as _i84fjfjk;
 
-abstract class LevelUpPreview implements _i1.SerializableModel {
+abstract class LevelUpPreview
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   LevelUpPreview._({
     required this.before,
     required this.character,
@@ -26,59 +30,66 @@ abstract class LevelUpPreview implements _i1.SerializableModel {
   });
 
   factory LevelUpPreview({
-    required _i2.CharacterData before,
-    required _i2.CharacterData character,
-    required _i3.ClassStepView classStep,
-    required List<_i4.ChoiceGroupView> choiceGroups,
-    required _i5.ClassSpellDeltaView spellDelta,
+    required _iokyyhkm.CharacterData before,
+    required _iokyyhkm.CharacterData character,
+    required _i84fjfjk.ClassStepView classStep,
+    required List<_i8vdv0v3.ChoiceGroupView> choiceGroups,
+    required _idq5r9zx.ClassSpellDeltaView spellDelta,
     required List<String> missingDecisions,
   }) = _LevelUpPreviewImpl;
 
   factory LevelUpPreview.fromJson(Map<String, dynamic> jsonSerialization) {
     return LevelUpPreview(
-      before: _i2.CharacterData.fromJson(
-          (jsonSerialization['before'] as Map<String, dynamic>)),
-      character: _i2.CharacterData.fromJson(
-          (jsonSerialization['character'] as Map<String, dynamic>)),
-      classStep: _i3.ClassStepView.fromJson(
-          (jsonSerialization['classStep'] as Map<String, dynamic>)),
-      choiceGroups: (jsonSerialization['choiceGroups'] as List)
-          .map((e) => _i4.ChoiceGroupView.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      spellDelta: _i5.ClassSpellDeltaView.fromJson(
-          (jsonSerialization['spellDelta'] as Map<String, dynamic>)),
-      missingDecisions: (jsonSerialization['missingDecisions'] as List)
-          .map((e) => e as String)
-          .toList(),
+      before: _isnx6jbi.Protocol().deserialize<_iokyyhkm.CharacterData>(
+        jsonSerialization['before'],
+      ),
+      character: _isnx6jbi.Protocol().deserialize<_iokyyhkm.CharacterData>(
+        jsonSerialization['character'],
+      ),
+      classStep: _isnx6jbi.Protocol().deserialize<_i84fjfjk.ClassStepView>(
+        jsonSerialization['classStep'],
+      ),
+      choiceGroups: _isnx6jbi.Protocol()
+          .deserialize<List<_i8vdv0v3.ChoiceGroupView>>(
+            jsonSerialization['choiceGroups'],
+          ),
+      spellDelta: _isnx6jbi.Protocol()
+          .deserialize<_idq5r9zx.ClassSpellDeltaView>(
+            jsonSerialization['spellDelta'],
+          ),
+      missingDecisions: _isnx6jbi.Protocol().deserialize<List<String>>(
+        jsonSerialization['missingDecisions'],
+      ),
     );
   }
 
-  _i2.CharacterData before;
+  _iokyyhkm.CharacterData before;
 
-  _i2.CharacterData character;
+  _iokyyhkm.CharacterData character;
 
-  _i3.ClassStepView classStep;
+  _i84fjfjk.ClassStepView classStep;
 
-  List<_i4.ChoiceGroupView> choiceGroups;
+  List<_i8vdv0v3.ChoiceGroupView> choiceGroups;
 
-  _i5.ClassSpellDeltaView spellDelta;
+  _idq5r9zx.ClassSpellDeltaView spellDelta;
 
   List<String> missingDecisions;
 
   /// Returns a shallow copy of this [LevelUpPreview]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   LevelUpPreview copyWith({
-    _i2.CharacterData? before,
-    _i2.CharacterData? character,
-    _i3.ClassStepView? classStep,
-    List<_i4.ChoiceGroupView>? choiceGroups,
-    _i5.ClassSpellDeltaView? spellDelta,
+    _iokyyhkm.CharacterData? before,
+    _iokyyhkm.CharacterData? character,
+    _i84fjfjk.ClassStepView? classStep,
+    List<_i8vdv0v3.ChoiceGroupView>? choiceGroups,
+    _idq5r9zx.ClassSpellDeltaView? spellDelta,
     List<String>? missingDecisions,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'LevelUpPreview',
       'before': before.toJson(),
       'character': character.toJson(),
       'classStep': classStep.toJson(),
@@ -89,38 +100,53 @@ abstract class LevelUpPreview implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'LevelUpPreview',
+      'before': before.toJsonForProtocol(),
+      'character': character.toJsonForProtocol(),
+      'classStep': classStep.toJsonForProtocol(),
+      'choiceGroups': choiceGroups.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
+      'spellDelta': spellDelta.toJsonForProtocol(),
+      'missingDecisions': missingDecisions.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
 class _LevelUpPreviewImpl extends LevelUpPreview {
   _LevelUpPreviewImpl({
-    required _i2.CharacterData before,
-    required _i2.CharacterData character,
-    required _i3.ClassStepView classStep,
-    required List<_i4.ChoiceGroupView> choiceGroups,
-    required _i5.ClassSpellDeltaView spellDelta,
+    required _iokyyhkm.CharacterData before,
+    required _iokyyhkm.CharacterData character,
+    required _i84fjfjk.ClassStepView classStep,
+    required List<_i8vdv0v3.ChoiceGroupView> choiceGroups,
+    required _idq5r9zx.ClassSpellDeltaView spellDelta,
     required List<String> missingDecisions,
   }) : super._(
-          before: before,
-          character: character,
-          classStep: classStep,
-          choiceGroups: choiceGroups,
-          spellDelta: spellDelta,
-          missingDecisions: missingDecisions,
-        );
+         before: before,
+         character: character,
+         classStep: classStep,
+         choiceGroups: choiceGroups,
+         spellDelta: spellDelta,
+         missingDecisions: missingDecisions,
+       );
 
   /// Returns a shallow copy of this [LevelUpPreview]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   LevelUpPreview copyWith({
-    _i2.CharacterData? before,
-    _i2.CharacterData? character,
-    _i3.ClassStepView? classStep,
-    List<_i4.ChoiceGroupView>? choiceGroups,
-    _i5.ClassSpellDeltaView? spellDelta,
+    _iokyyhkm.CharacterData? before,
+    _iokyyhkm.CharacterData? character,
+    _i84fjfjk.ClassStepView? classStep,
+    List<_i8vdv0v3.ChoiceGroupView>? choiceGroups,
+    _idq5r9zx.ClassSpellDeltaView? spellDelta,
     List<String>? missingDecisions,
   }) {
     return LevelUpPreview(

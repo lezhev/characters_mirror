@@ -7,12 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class ChoiceReplacementHistoryData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   ChoiceReplacementHistoryData._({
     required this.classLevel,
     required this.previousOptionKey,
@@ -26,7 +27,8 @@ abstract class ChoiceReplacementHistoryData
   }) = _ChoiceReplacementHistoryDataImpl;
 
   factory ChoiceReplacementHistoryData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return ChoiceReplacementHistoryData(
       classLevel: jsonSerialization['classLevel'] as int,
       previousOptionKey: jsonSerialization['previousOptionKey'] as String,
@@ -42,7 +44,7 @@ abstract class ChoiceReplacementHistoryData
 
   /// Returns a shallow copy of this [ChoiceReplacementHistoryData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ChoiceReplacementHistoryData copyWith({
     int? classLevel,
     String? previousOptionKey,
@@ -51,6 +53,7 @@ abstract class ChoiceReplacementHistoryData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ChoiceReplacementHistoryData',
       'classLevel': classLevel,
       'previousOptionKey': previousOptionKey,
       if (replacementGroupKey != null)
@@ -61,6 +64,7 @@ abstract class ChoiceReplacementHistoryData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ChoiceReplacementHistoryData',
       'classLevel': classLevel,
       'previousOptionKey': previousOptionKey,
       if (replacementGroupKey != null)
@@ -70,7 +74,7 @@ abstract class ChoiceReplacementHistoryData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -82,14 +86,14 @@ class _ChoiceReplacementHistoryDataImpl extends ChoiceReplacementHistoryData {
     required String previousOptionKey,
     String? replacementGroupKey,
   }) : super._(
-          classLevel: classLevel,
-          previousOptionKey: previousOptionKey,
-          replacementGroupKey: replacementGroupKey,
-        );
+         classLevel: classLevel,
+         previousOptionKey: previousOptionKey,
+         replacementGroupKey: replacementGroupKey,
+       );
 
   /// Returns a shallow copy of this [ChoiceReplacementHistoryData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ChoiceReplacementHistoryData copyWith({
     int? classLevel,

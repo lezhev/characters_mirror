@@ -37,7 +37,7 @@ class AttackDialogController {
           await notifier.addAttack(draft);
           final current = ref
               .read(characterSheetControllerProvider(characterId))
-              .valueOrNull;
+              .value;
           createdIndex = (current?.attacks?.length ?? 1) - 1;
         } else {
           await notifier.updateAttack(createdIndex, draft);

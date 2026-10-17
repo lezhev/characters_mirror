@@ -7,23 +7,25 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/character/character_record.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
 import '../../../data/general/character/character_class_entry_record.dart'
-    as _i3;
-import '../../../data/general/class/class_data.dart' as _i4;
-import '../../../data/spell_data.dart' as _i5;
-import '../../../enums/character_spell_selection_kind.dart' as _i6;
-import '../../../data/general/spell_selection_filter_data.dart' as _i7;
+    as _igs591f3;
+import '../../../data/general/character/character_record.dart' as _i50rgqfs;
 import '../../../data/general/character/spell_selection_replacement_history_data.dart'
-    as _i8;
+    as _iks8679o;
+import '../../../data/general/class/class_data.dart' as _i7s9vfyh;
+import '../../../data/general/spell_selection_filter_data.dart' as _iv73j5oi;
+import '../../../data/spell_data.dart' as _isenpj1r;
+import '../../../enums/character_spell_selection_kind.dart' as _ioezer4n;
 
 abstract class CharacterSpellSelectionRecord
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   CharacterSpellSelectionRecord._({
     this.id,
     this.syncId,
@@ -49,69 +51,83 @@ abstract class CharacterSpellSelectionRecord
     int? id,
     String? syncId,
     required int characterId,
-    _i2.CharacterRecord? character,
+    _i50rgqfs.CharacterRecord? character,
     int? classEntryId,
-    _i3.CharacterClassEntryRecord? classEntry,
+    _igs591f3.CharacterClassEntryRecord? classEntry,
     int? classDataId,
-    _i4.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? spellId,
-    _i5.SpellData? spell,
+    _isenpj1r.SpellData? spell,
     String? spellKey,
-    _i6.CharacterSpellSelectionKind? kind,
+    _ioezer4n.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
-    _i7.SpellSelectionFilterData? selectionFilter,
+    _iv73j5oi.SpellSelectionFilterData? selectionFilter,
     int? selectionRuleLevel,
     bool? selectionUnrestricted,
-    List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
+    List<_iks8679o.SpellSelectionReplacementHistoryData>?
+    spellReplacementHistory,
     DateTime? updatedAt,
   }) = _CharacterSpellSelectionRecordImpl;
 
   factory CharacterSpellSelectionRecord.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterSpellSelectionRecord(
       id: jsonSerialization['id'] as int?,
       syncId: jsonSerialization['syncId'] as String?,
       characterId: jsonSerialization['characterId'] as int,
       character: jsonSerialization['character'] == null
           ? null
-          : _i2.CharacterRecord.fromJson(
-              (jsonSerialization['character'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i50rgqfs.CharacterRecord>(
+              jsonSerialization['character'],
+            ),
       classEntryId: jsonSerialization['classEntryId'] as int?,
       classEntry: jsonSerialization['classEntry'] == null
           ? null
-          : _i3.CharacterClassEntryRecord.fromJson(
-              (jsonSerialization['classEntry'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol()
+                .deserialize<_igs591f3.CharacterClassEntryRecord>(
+                  jsonSerialization['classEntry'],
+                ),
       classDataId: jsonSerialization['classDataId'] as int?,
       classData: jsonSerialization['classData'] == null
           ? null
-          : _i4.ClassData.fromJson(
-              (jsonSerialization['classData'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i7s9vfyh.ClassData>(
+              jsonSerialization['classData'],
+            ),
       spellId: jsonSerialization['spellId'] as int?,
       spell: jsonSerialization['spell'] == null
           ? null
-          : _i5.SpellData.fromJson(
-              (jsonSerialization['spell'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_isenpj1r.SpellData>(
+              jsonSerialization['spell'],
+            ),
       spellKey: jsonSerialization['spellKey'] as String?,
       kind: jsonSerialization['kind'] == null
           ? null
-          : _i6.CharacterSpellSelectionKind.fromJson(
-              (jsonSerialization['kind'] as String)),
+          : _ioezer4n.CharacterSpellSelectionKind.fromJson(
+              (jsonSerialization['kind'] as String),
+            ),
       selectionIndex: jsonSerialization['selectionIndex'] as int?,
       selectionFilter: jsonSerialization['selectionFilter'] == null
           ? null
-          : _i7.SpellSelectionFilterData.fromJson(
-              (jsonSerialization['selectionFilter'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol()
+                .deserialize<_iv73j5oi.SpellSelectionFilterData>(
+                  jsonSerialization['selectionFilter'],
+                ),
       selectionRuleLevel: jsonSerialization['selectionRuleLevel'] as int?,
-      selectionUnrestricted:
-          jsonSerialization['selectionUnrestricted'] as bool?,
+      selectionUnrestricted: jsonSerialization['selectionUnrestricted'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['selectionUnrestricted'],
+            ),
       spellReplacementHistory:
-          (jsonSerialization['spellReplacementHistory'] as List?)
-              ?.map((e) => _i8.SpellSelectionReplacementHistoryData.fromJson(
-                  (e as Map<String, dynamic>)))
-              .toList(),
+          jsonSerialization['spellReplacementHistory'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<
+              List<_iks8679o.SpellSelectionReplacementHistoryData>
+            >(jsonSerialization['spellReplacementHistory']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -126,65 +142,67 @@ abstract class CharacterSpellSelectionRecord
 
   int characterId;
 
-  _i2.CharacterRecord? character;
+  _i50rgqfs.CharacterRecord? character;
 
   int? classEntryId;
 
-  _i3.CharacterClassEntryRecord? classEntry;
+  _igs591f3.CharacterClassEntryRecord? classEntry;
 
   int? classDataId;
 
-  _i4.ClassData? classData;
+  _i7s9vfyh.ClassData? classData;
 
   int? spellId;
 
-  _i5.SpellData? spell;
+  _isenpj1r.SpellData? spell;
 
   String? spellKey;
 
-  _i6.CharacterSpellSelectionKind? kind;
+  _ioezer4n.CharacterSpellSelectionKind? kind;
 
   int? selectionIndex;
 
-  _i7.SpellSelectionFilterData? selectionFilter;
+  _iv73j5oi.SpellSelectionFilterData? selectionFilter;
 
   int? selectionRuleLevel;
 
   bool? selectionUnrestricted;
 
-  List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory;
+  List<_iks8679o.SpellSelectionReplacementHistoryData>? spellReplacementHistory;
 
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [CharacterSpellSelectionRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterSpellSelectionRecord copyWith({
     int? id,
     String? syncId,
     int? characterId,
-    _i2.CharacterRecord? character,
+    _i50rgqfs.CharacterRecord? character,
     int? classEntryId,
-    _i3.CharacterClassEntryRecord? classEntry,
+    _igs591f3.CharacterClassEntryRecord? classEntry,
     int? classDataId,
-    _i4.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? spellId,
-    _i5.SpellData? spell,
+    _isenpj1r.SpellData? spell,
     String? spellKey,
-    _i6.CharacterSpellSelectionKind? kind,
+    _ioezer4n.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
-    _i7.SpellSelectionFilterData? selectionFilter,
+    _iv73j5oi.SpellSelectionFilterData? selectionFilter,
     int? selectionRuleLevel,
     bool? selectionUnrestricted,
-    List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
+    List<_iks8679o.SpellSelectionReplacementHistoryData>?
+    spellReplacementHistory,
     DateTime? updatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterSpellSelectionRecord',
       if (id != null) 'id': id,
       if (syncId != null) 'syncId': syncId,
       'characterId': characterId,
@@ -203,22 +221,23 @@ abstract class CharacterSpellSelectionRecord
       if (selectionUnrestricted != null)
         'selectionUnrestricted': selectionUnrestricted,
       if (spellReplacementHistory != null)
-        'spellReplacementHistory':
-            spellReplacementHistory?.toJson(valueToJson: (v) => v.toJson()),
+        'spellReplacementHistory': spellReplacementHistory?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
     };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
-    return {if (id != null) 'id': id};
+    return {};
   }
 
   static CharacterSpellSelectionRecordInclude include({
-    _i2.CharacterRecordInclude? character,
-    _i3.CharacterClassEntryRecordInclude? classEntry,
-    _i4.ClassDataInclude? classData,
-    _i5.SpellDataInclude? spell,
+    _i50rgqfs.CharacterRecordInclude? character,
+    _igs591f3.CharacterClassEntryRecordInclude? classEntry,
+    _i7s9vfyh.ClassDataInclude? classData,
+    _isenpj1r.SpellDataInclude? spell,
   }) {
     return CharacterSpellSelectionRecordInclude._(
       character: character,
@@ -229,12 +248,11 @@ abstract class CharacterSpellSelectionRecord
   }
 
   static CharacterSpellSelectionRecordIncludeList includeList({
-    _i1.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
+    _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
+    _is.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
     CharacterSpellSelectionRecordInclude? include,
   }) {
     return CharacterSpellSelectionRecordIncludeList._(
@@ -242,7 +260,6 @@ abstract class CharacterSpellSelectionRecord
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(CharacterSpellSelectionRecord.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(CharacterSpellSelectionRecord.t),
       include: include,
     );
@@ -250,7 +267,7 @@ abstract class CharacterSpellSelectionRecord
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -261,45 +278,46 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
     int? id,
     String? syncId,
     required int characterId,
-    _i2.CharacterRecord? character,
+    _i50rgqfs.CharacterRecord? character,
     int? classEntryId,
-    _i3.CharacterClassEntryRecord? classEntry,
+    _igs591f3.CharacterClassEntryRecord? classEntry,
     int? classDataId,
-    _i4.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? spellId,
-    _i5.SpellData? spell,
+    _isenpj1r.SpellData? spell,
     String? spellKey,
-    _i6.CharacterSpellSelectionKind? kind,
+    _ioezer4n.CharacterSpellSelectionKind? kind,
     int? selectionIndex,
-    _i7.SpellSelectionFilterData? selectionFilter,
+    _iv73j5oi.SpellSelectionFilterData? selectionFilter,
     int? selectionRuleLevel,
     bool? selectionUnrestricted,
-    List<_i8.SpellSelectionReplacementHistoryData>? spellReplacementHistory,
+    List<_iks8679o.SpellSelectionReplacementHistoryData>?
+    spellReplacementHistory,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          syncId: syncId,
-          characterId: characterId,
-          character: character,
-          classEntryId: classEntryId,
-          classEntry: classEntry,
-          classDataId: classDataId,
-          classData: classData,
-          spellId: spellId,
-          spell: spell,
-          spellKey: spellKey,
-          kind: kind,
-          selectionIndex: selectionIndex,
-          selectionFilter: selectionFilter,
-          selectionRuleLevel: selectionRuleLevel,
-          selectionUnrestricted: selectionUnrestricted,
-          spellReplacementHistory: spellReplacementHistory,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         syncId: syncId,
+         characterId: characterId,
+         character: character,
+         classEntryId: classEntryId,
+         classEntry: classEntry,
+         classDataId: classDataId,
+         classData: classData,
+         spellId: spellId,
+         spell: spell,
+         spellKey: spellKey,
+         kind: kind,
+         selectionIndex: selectionIndex,
+         selectionFilter: selectionFilter,
+         selectionRuleLevel: selectionRuleLevel,
+         selectionUnrestricted: selectionUnrestricted,
+         spellReplacementHistory: spellReplacementHistory,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [CharacterSpellSelectionRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterSpellSelectionRecord copyWith({
     Object? id = _Undefined,
@@ -325,23 +343,25 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
       id: id is int? ? id : this.id,
       syncId: syncId is String? ? syncId : this.syncId,
       characterId: characterId ?? this.characterId,
-      character: character is _i2.CharacterRecord?
+      character: character is _i50rgqfs.CharacterRecord?
           ? character
           : this.character?.copyWith(),
       classEntryId: classEntryId is int? ? classEntryId : this.classEntryId,
-      classEntry: classEntry is _i3.CharacterClassEntryRecord?
+      classEntry: classEntry is _igs591f3.CharacterClassEntryRecord?
           ? classEntry
           : this.classEntry?.copyWith(),
       classDataId: classDataId is int? ? classDataId : this.classDataId,
-      classData:
-          classData is _i4.ClassData? ? classData : this.classData?.copyWith(),
+      classData: classData is _i7s9vfyh.ClassData?
+          ? classData
+          : this.classData?.copyWith(),
       spellId: spellId is int? ? spellId : this.spellId,
-      spell: spell is _i5.SpellData? ? spell : this.spell?.copyWith(),
+      spell: spell is _isenpj1r.SpellData? ? spell : this.spell?.copyWith(),
       spellKey: spellKey is String? ? spellKey : this.spellKey,
-      kind: kind is _i6.CharacterSpellSelectionKind? ? kind : this.kind,
-      selectionIndex:
-          selectionIndex is int? ? selectionIndex : this.selectionIndex,
-      selectionFilter: selectionFilter is _i7.SpellSelectionFilterData?
+      kind: kind is _ioezer4n.CharacterSpellSelectionKind? ? kind : this.kind,
+      selectionIndex: selectionIndex is int?
+          ? selectionIndex
+          : this.selectionIndex,
+      selectionFilter: selectionFilter is _iv73j5oi.SpellSelectionFilterData?
           ? selectionFilter
           : this.selectionFilter?.copyWith(),
       selectionRuleLevel: selectionRuleLevel is int?
@@ -350,8 +370,9 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
       selectionUnrestricted: selectionUnrestricted is bool?
           ? selectionUnrestricted
           : this.selectionUnrestricted,
-      spellReplacementHistory: spellReplacementHistory
-              is List<_i8.SpellSelectionReplacementHistoryData>?
+      spellReplacementHistory:
+          spellReplacementHistory
+              is List<_iks8679o.SpellSelectionReplacementHistoryData>?
           ? spellReplacementHistory
           : this.spellReplacementHistory?.map((e0) => e0.copyWith()).toList(),
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
@@ -359,170 +380,203 @@ class _CharacterSpellSelectionRecordImpl extends CharacterSpellSelectionRecord {
   }
 }
 
-class CharacterSpellSelectionRecordTable extends _i1.Table<int?> {
+class CharacterSpellSelectionRecordUpdateTable
+    extends _is.UpdateTable<CharacterSpellSelectionRecordTable> {
+  CharacterSpellSelectionRecordUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> syncId(String? value) =>
+      _is.ColumnValue(table.syncId, value);
+
+  _is.ColumnValue<int, int> characterId(int value) =>
+      _is.ColumnValue(table.characterId, value);
+
+  _is.ColumnValue<int, int> classEntryId(int? value) =>
+      _is.ColumnValue(table.classEntryId, value);
+
+  _is.ColumnValue<int, int> classDataId(int? value) =>
+      _is.ColumnValue(table.classDataId, value);
+
+  _is.ColumnValue<int, int> spellId(int? value) =>
+      _is.ColumnValue(table.spellId, value);
+
+  _is.ColumnValue<String, String> spellKey(String? value) =>
+      _is.ColumnValue(table.spellKey, value);
+
+  _is.ColumnValue<
+    _ioezer4n.CharacterSpellSelectionKind,
+    _ioezer4n.CharacterSpellSelectionKind
+  >
+  kind(_ioezer4n.CharacterSpellSelectionKind? value) =>
+      _is.ColumnValue(table.kind, value);
+
+  _is.ColumnValue<int, int> selectionIndex(int? value) =>
+      _is.ColumnValue(table.selectionIndex, value);
+
+  _is.ColumnValue<
+    _iv73j5oi.SpellSelectionFilterData,
+    _iv73j5oi.SpellSelectionFilterData
+  >
+  selectionFilter(_iv73j5oi.SpellSelectionFilterData? value) =>
+      _is.ColumnValue(table.selectionFilter, value);
+
+  _is.ColumnValue<int, int> selectionRuleLevel(int? value) =>
+      _is.ColumnValue(table.selectionRuleLevel, value);
+
+  _is.ColumnValue<bool, bool> selectionUnrestricted(bool? value) =>
+      _is.ColumnValue(table.selectionUnrestricted, value);
+
+  _is.ColumnValue<
+    List<_iks8679o.SpellSelectionReplacementHistoryData>,
+    List<_iks8679o.SpellSelectionReplacementHistoryData>
+  >
+  spellReplacementHistory(
+    List<_iks8679o.SpellSelectionReplacementHistoryData>? value,
+  ) => _is.ColumnValue(table.spellReplacementHistory, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class CharacterSpellSelectionRecordTable extends _is.Table<int?> {
   CharacterSpellSelectionRecordTable({super.tableRelation})
-      : super(tableName: 'character_spell_selection_data') {
-    syncId = _i1.ColumnString(
-      'syncId',
-      this,
-    );
-    characterId = _i1.ColumnInt(
-      'characterId',
-      this,
-    );
-    classEntryId = _i1.ColumnInt(
-      'classEntryId',
-      this,
-    );
-    classDataId = _i1.ColumnInt(
-      'classDataId',
-      this,
-    );
-    spellId = _i1.ColumnInt(
-      'spellId',
-      this,
-    );
-    spellKey = _i1.ColumnString(
-      'spellKey',
-      this,
-    );
-    kind = _i1.ColumnEnum(
-      'kind',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    selectionIndex = _i1.ColumnInt(
-      'selectionIndex',
-      this,
-    );
-    selectionFilter = _i1.ColumnSerializable(
-      'selectionFilter',
-      this,
-    );
-    selectionRuleLevel = _i1.ColumnInt(
-      'selectionRuleLevel',
-      this,
-    );
-    selectionUnrestricted = _i1.ColumnBool(
-      'selectionUnrestricted',
-      this,
-    );
-    spellReplacementHistory = _i1.ColumnSerializable(
-      'spellReplacementHistory',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    : super(tableName: 'character_spell_selection_data') {
+    updateTable = CharacterSpellSelectionRecordUpdateTable(this);
+    syncId = _is.ColumnString('syncId', this);
+    characterId = _is.ColumnInt('characterId', this);
+    classEntryId = _is.ColumnInt('classEntryId', this);
+    classDataId = _is.ColumnInt('classDataId', this);
+    spellId = _is.ColumnInt('spellId', this);
+    spellKey = _is.ColumnString('spellKey', this);
+    kind = _is.ColumnEnum('kind', this, _is.EnumSerialization.byName);
+    selectionIndex = _is.ColumnInt('selectionIndex', this);
+    selectionFilter =
+        _is.ColumnSerializable<_iv73j5oi.SpellSelectionFilterData>(
+          'selectionFilter',
+          this,
+        );
+    selectionRuleLevel = _is.ColumnInt('selectionRuleLevel', this);
+    selectionUnrestricted = _is.ColumnBool('selectionUnrestricted', this);
+    spellReplacementHistory =
+        _is.ColumnSerializable<
+          List<_iks8679o.SpellSelectionReplacementHistoryData>
+        >('spellReplacementHistory', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnString syncId;
+  late final CharacterSpellSelectionRecordUpdateTable updateTable;
 
-  late final _i1.ColumnInt characterId;
+  late final _is.ColumnString syncId;
 
-  _i2.CharacterRecordTable? _character;
+  late final _is.ColumnInt characterId;
 
-  late final _i1.ColumnInt classEntryId;
+  _i50rgqfs.CharacterRecordTable? _character;
 
-  _i3.CharacterClassEntryRecordTable? _classEntry;
+  late final _is.ColumnInt classEntryId;
 
-  late final _i1.ColumnInt classDataId;
+  _igs591f3.CharacterClassEntryRecordTable? _classEntry;
 
-  _i4.ClassDataTable? _classData;
+  late final _is.ColumnInt classDataId;
 
-  late final _i1.ColumnInt spellId;
+  _i7s9vfyh.ClassDataTable? _classData;
 
-  _i5.SpellDataTable? _spell;
+  late final _is.ColumnInt spellId;
 
-  late final _i1.ColumnString spellKey;
+  _isenpj1r.SpellDataTable? _spell;
 
-  late final _i1.ColumnEnum<_i6.CharacterSpellSelectionKind> kind;
+  late final _is.ColumnString spellKey;
 
-  late final _i1.ColumnInt selectionIndex;
+  late final _is.ColumnEnum<_ioezer4n.CharacterSpellSelectionKind> kind;
 
-  late final _i1.ColumnSerializable selectionFilter;
+  late final _is.ColumnInt selectionIndex;
 
-  late final _i1.ColumnInt selectionRuleLevel;
+  late final _is.ColumnSerializable<_iv73j5oi.SpellSelectionFilterData>
+  selectionFilter;
 
-  late final _i1.ColumnBool selectionUnrestricted;
+  late final _is.ColumnInt selectionRuleLevel;
 
-  late final _i1.ColumnSerializable spellReplacementHistory;
+  late final _is.ColumnBool selectionUnrestricted;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnSerializable<
+    List<_iks8679o.SpellSelectionReplacementHistoryData>
+  >
+  spellReplacementHistory;
 
-  _i2.CharacterRecordTable get character {
+  late final _is.ColumnDateTime updatedAt;
+
+  _i50rgqfs.CharacterRecordTable get character {
     if (_character != null) return _character!;
-    _character = _i1.createRelationTable(
+    _character = _is.createRelationTable(
       relationFieldName: 'character',
       field: CharacterSpellSelectionRecord.t.characterId,
-      foreignField: _i2.CharacterRecord.t.id,
+      foreignField: _i50rgqfs.CharacterRecord.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.CharacterRecordTable(tableRelation: foreignTableRelation),
+          _i50rgqfs.CharacterRecordTable(tableRelation: foreignTableRelation),
     );
     return _character!;
   }
 
-  _i3.CharacterClassEntryRecordTable get classEntry {
+  _igs591f3.CharacterClassEntryRecordTable get classEntry {
     if (_classEntry != null) return _classEntry!;
-    _classEntry = _i1.createRelationTable(
+    _classEntry = _is.createRelationTable(
       relationFieldName: 'classEntry',
       field: CharacterSpellSelectionRecord.t.classEntryId,
-      foreignField: _i3.CharacterClassEntryRecord.t.id,
+      foreignField: _igs591f3.CharacterClassEntryRecord.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) => _i3.CharacterClassEntryRecordTable(
-          tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) =>
+          _igs591f3.CharacterClassEntryRecordTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
     return _classEntry!;
   }
 
-  _i4.ClassDataTable get classData {
+  _i7s9vfyh.ClassDataTable get classData {
     if (_classData != null) return _classData!;
-    _classData = _i1.createRelationTable(
+    _classData = _is.createRelationTable(
       relationFieldName: 'classData',
       field: CharacterSpellSelectionRecord.t.classDataId,
-      foreignField: _i4.ClassData.t.id,
+      foreignField: _i7s9vfyh.ClassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.ClassDataTable(tableRelation: foreignTableRelation),
+          _i7s9vfyh.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _classData!;
   }
 
-  _i5.SpellDataTable get spell {
+  _isenpj1r.SpellDataTable get spell {
     if (_spell != null) return _spell!;
-    _spell = _i1.createRelationTable(
+    _spell = _is.createRelationTable(
       relationFieldName: 'spell',
       field: CharacterSpellSelectionRecord.t.spellId,
-      foreignField: _i5.SpellData.t.id,
+      foreignField: _isenpj1r.SpellData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i5.SpellDataTable(tableRelation: foreignTableRelation),
+          _isenpj1r.SpellDataTable(tableRelation: foreignTableRelation),
     );
     return _spell!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        syncId,
-        characterId,
-        classEntryId,
-        classDataId,
-        spellId,
-        spellKey,
-        kind,
-        selectionIndex,
-        selectionFilter,
-        selectionRuleLevel,
-        selectionUnrestricted,
-        spellReplacementHistory,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    syncId,
+    characterId,
+    classEntryId,
+    classDataId,
+    spellId,
+    spellKey,
+    kind,
+    selectionIndex,
+    selectionFilter,
+    selectionRuleLevel,
+    selectionUnrestricted,
+    spellReplacementHistory,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'character') {
       return character;
     }
@@ -539,12 +593,12 @@ class CharacterSpellSelectionRecordTable extends _i1.Table<int?> {
   }
 }
 
-class CharacterSpellSelectionRecordInclude extends _i1.IncludeObject {
+class CharacterSpellSelectionRecordInclude extends _is.IncludeObject {
   CharacterSpellSelectionRecordInclude._({
-    _i2.CharacterRecordInclude? character,
-    _i3.CharacterClassEntryRecordInclude? classEntry,
-    _i4.ClassDataInclude? classData,
-    _i5.SpellDataInclude? spell,
+    _i50rgqfs.CharacterRecordInclude? character,
+    _igs591f3.CharacterClassEntryRecordInclude? classEntry,
+    _i7s9vfyh.ClassDataInclude? classData,
+    _isenpj1r.SpellDataInclude? spell,
   }) {
     _character = character;
     _classEntry = classEntry;
@@ -552,33 +606,32 @@ class CharacterSpellSelectionRecordInclude extends _i1.IncludeObject {
     _spell = spell;
   }
 
-  _i2.CharacterRecordInclude? _character;
+  _i50rgqfs.CharacterRecordInclude? _character;
 
-  _i3.CharacterClassEntryRecordInclude? _classEntry;
+  _igs591f3.CharacterClassEntryRecordInclude? _classEntry;
 
-  _i4.ClassDataInclude? _classData;
+  _i7s9vfyh.ClassDataInclude? _classData;
 
-  _i5.SpellDataInclude? _spell;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'character': _character,
-        'classEntry': _classEntry,
-        'classData': _classData,
-        'spell': _spell,
-      };
+  _isenpj1r.SpellDataInclude? _spell;
 
   @override
-  _i1.Table<int?> get table => CharacterSpellSelectionRecord.t;
+  Map<String, _is.Include?> get includes => {
+    'character': _character,
+    'classEntry': _classEntry,
+    'classData': _classData,
+    'spell': _spell,
+  };
+
+  @override
+  _is.Table<int?> get table => CharacterSpellSelectionRecord.t;
 }
 
-class CharacterSpellSelectionRecordIncludeList extends _i1.IncludeList {
+class CharacterSpellSelectionRecordIncludeList extends _is.IncludeList {
   CharacterSpellSelectionRecordIncludeList._({
-    _i1.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
+    _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -586,10 +639,10 @@ class CharacterSpellSelectionRecordIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => CharacterSpellSelectionRecord.t;
+  _is.Table<int?> get table => CharacterSpellSelectionRecord.t;
 }
 
 class CharacterSpellSelectionRecordRepository {
@@ -622,25 +675,27 @@ class CharacterSpellSelectionRecordRepository {
   /// );
   /// ```
   Future<List<CharacterSpellSelectionRecord>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
+    _is.Transaction? transaction,
     CharacterSpellSelectionRecordInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<CharacterSpellSelectionRecord>(
       where: where?.call(CharacterSpellSelectionRecord.t),
       orderBy: orderBy?.call(CharacterSpellSelectionRecord.t),
       orderByList: orderByList?.call(CharacterSpellSelectionRecord.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -662,37 +717,43 @@ class CharacterSpellSelectionRecordRepository {
   /// );
   /// ```
   Future<CharacterSpellSelectionRecord?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
     int? offset,
-    _i1.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
+    _is.Transaction? transaction,
     CharacterSpellSelectionRecordInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<CharacterSpellSelectionRecord>(
       where: where?.call(CharacterSpellSelectionRecord.t),
       orderBy: orderBy?.call(CharacterSpellSelectionRecord.t),
       orderByList: orderByList?.call(CharacterSpellSelectionRecord.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [CharacterSpellSelectionRecord] by its [id] or null if no such row exists.
   Future<CharacterSpellSelectionRecord?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     CharacterSpellSelectionRecordInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<CharacterSpellSelectionRecord>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -702,14 +763,26 @@ class CharacterSpellSelectionRecordRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterSpellSelectionRecord>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<CharacterSpellSelectionRecord> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<CharacterSpellSelectionRecord>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -717,12 +790,83 @@ class CharacterSpellSelectionRecordRepository {
   ///
   /// The returned [CharacterSpellSelectionRecord] will have its `id` field set.
   Future<CharacterSpellSelectionRecord> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterSpellSelectionRecord row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<CharacterSpellSelectionRecord>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [CharacterSpellSelectionRecord]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [CharacterSpellSelectionRecord]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<CharacterSpellSelectionRecord>> upsert(
+    _is.DatabaseSession session,
+    List<CharacterSpellSelectionRecord> rows, {
+    required _is.ColumnSelections<CharacterSpellSelectionRecordTable>
+    conflictColumns,
+    _is.ColumnSelections<CharacterSpellSelectionRecordTable>? updateColumns,
+    _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<CharacterSpellSelectionRecord>(
+      rows,
+      conflictColumns: conflictColumns(CharacterSpellSelectionRecord.t),
+      updateColumns: updateColumns?.call(CharacterSpellSelectionRecord.t),
+      updateWhere: updateWhere?.call(CharacterSpellSelectionRecord.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [CharacterSpellSelectionRecord] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [CharacterSpellSelectionRecord] will have its `id` field set.
+  Future<CharacterSpellSelectionRecord?> upsertRow(
+    _is.DatabaseSession session,
+    CharacterSpellSelectionRecord row, {
+    required _is.ColumnSelections<CharacterSpellSelectionRecordTable>
+    conflictColumns,
+    _is.ColumnSelections<CharacterSpellSelectionRecordTable>? updateColumns,
+    _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<CharacterSpellSelectionRecord>(
+      row,
+      conflictColumns: conflictColumns(CharacterSpellSelectionRecord.t),
+      updateColumns: updateColumns?.call(CharacterSpellSelectionRecord.t),
+      updateWhere: updateWhere?.call(CharacterSpellSelectionRecord.t),
       transaction: transaction,
     );
   }
@@ -732,16 +876,22 @@ class CharacterSpellSelectionRecordRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterSpellSelectionRecord>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<CharacterSpellSelectionRecord> rows, {
-    _i1.ColumnSelections<CharacterSpellSelectionRecordTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<CharacterSpellSelectionRecordTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<CharacterSpellSelectionRecord>(
       rows,
       columns: columns?.call(CharacterSpellSelectionRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -749,10 +899,10 @@ class CharacterSpellSelectionRecordRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<CharacterSpellSelectionRecord> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterSpellSelectionRecord row, {
-    _i1.ColumnSelections<CharacterSpellSelectionRecordTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<CharacterSpellSelectionRecordTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<CharacterSpellSelectionRecord>(
       row,
@@ -761,25 +911,90 @@ class CharacterSpellSelectionRecordRepository {
     );
   }
 
+  /// Updates a single [CharacterSpellSelectionRecord] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<CharacterSpellSelectionRecord?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<
+      CharacterSpellSelectionRecordUpdateTable
+    >
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<CharacterSpellSelectionRecord>(
+      id,
+      columnValues: columnValues(CharacterSpellSelectionRecord.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [CharacterSpellSelectionRecord]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<CharacterSpellSelectionRecord>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<
+      CharacterSpellSelectionRecordUpdateTable
+    >
+    columnValues,
+    required _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>
+    where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<CharacterSpellSelectionRecord>(
+      columnValues: columnValues(CharacterSpellSelectionRecord.t.updateTable),
+      where: where(CharacterSpellSelectionRecord.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(CharacterSpellSelectionRecord.t),
+      orderByList: orderByList?.call(CharacterSpellSelectionRecord.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [CharacterSpellSelectionRecord]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterSpellSelectionRecord>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<CharacterSpellSelectionRecord> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<CharacterSpellSelectionRecord>(
       rows,
+      orderBy: orderBy?.call(CharacterSpellSelectionRecord.t),
+      orderByList: orderByList?.call(CharacterSpellSelectionRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [CharacterSpellSelectionRecord].
   Future<CharacterSpellSelectionRecord> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterSpellSelectionRecord row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<CharacterSpellSelectionRecord>(
       row,
@@ -788,29 +1003,59 @@ class CharacterSpellSelectionRecordRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterSpellSelectionRecord>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>
-        where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>
+    where,
+    _is.OrderByBuilder<CharacterSpellSelectionRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterSpellSelectionRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<CharacterSpellSelectionRecord>(
       where: where(CharacterSpellSelectionRecord.t),
+      orderBy: orderBy?.call(CharacterSpellSelectionRecord.t),
+      orderByList: orderByList?.call(CharacterSpellSelectionRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<CharacterSpellSelectionRecord>(
       where: where?.call(CharacterSpellSelectionRecord.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [CharacterSpellSelectionRecord] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<CharacterSpellSelectionRecordTable>
+    where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<CharacterSpellSelectionRecord>(
+      where: where(CharacterSpellSelectionRecord.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -822,10 +1067,10 @@ class CharacterSpellSelectionRecordAttachRowRepository {
   /// Creates a relation between the given [CharacterSpellSelectionRecord] and [CharacterRecord]
   /// by setting the [CharacterSpellSelectionRecord]'s foreign key `characterId` to refer to the [CharacterRecord].
   Future<void> character(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterSpellSelectionRecord characterSpellSelectionRecord,
-    _i2.CharacterRecord character, {
-    _i1.Transaction? transaction,
+    _i50rgqfs.CharacterRecord character, {
+    _is.Transaction? transaction,
   }) async {
     if (characterSpellSelectionRecord.id == null) {
       throw ArgumentError.notNull('characterSpellSelectionRecord.id');
@@ -834,8 +1079,9 @@ class CharacterSpellSelectionRecordAttachRowRepository {
       throw ArgumentError.notNull('character.id');
     }
 
-    var $characterSpellSelectionRecord =
-        characterSpellSelectionRecord.copyWith(characterId: character.id);
+    var $characterSpellSelectionRecord = characterSpellSelectionRecord.copyWith(
+      characterId: character.id,
+    );
     await session.db.updateRow<CharacterSpellSelectionRecord>(
       $characterSpellSelectionRecord,
       columns: [CharacterSpellSelectionRecord.t.characterId],
@@ -846,10 +1092,10 @@ class CharacterSpellSelectionRecordAttachRowRepository {
   /// Creates a relation between the given [CharacterSpellSelectionRecord] and [CharacterClassEntryRecord]
   /// by setting the [CharacterSpellSelectionRecord]'s foreign key `classEntryId` to refer to the [CharacterClassEntryRecord].
   Future<void> classEntry(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterSpellSelectionRecord characterSpellSelectionRecord,
-    _i3.CharacterClassEntryRecord classEntry, {
-    _i1.Transaction? transaction,
+    _igs591f3.CharacterClassEntryRecord classEntry, {
+    _is.Transaction? transaction,
   }) async {
     if (characterSpellSelectionRecord.id == null) {
       throw ArgumentError.notNull('characterSpellSelectionRecord.id');
@@ -858,8 +1104,9 @@ class CharacterSpellSelectionRecordAttachRowRepository {
       throw ArgumentError.notNull('classEntry.id');
     }
 
-    var $characterSpellSelectionRecord =
-        characterSpellSelectionRecord.copyWith(classEntryId: classEntry.id);
+    var $characterSpellSelectionRecord = characterSpellSelectionRecord.copyWith(
+      classEntryId: classEntry.id,
+    );
     await session.db.updateRow<CharacterSpellSelectionRecord>(
       $characterSpellSelectionRecord,
       columns: [CharacterSpellSelectionRecord.t.classEntryId],
@@ -870,10 +1117,10 @@ class CharacterSpellSelectionRecordAttachRowRepository {
   /// Creates a relation between the given [CharacterSpellSelectionRecord] and [ClassData]
   /// by setting the [CharacterSpellSelectionRecord]'s foreign key `classDataId` to refer to the [ClassData].
   Future<void> classData(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterSpellSelectionRecord characterSpellSelectionRecord,
-    _i4.ClassData classData, {
-    _i1.Transaction? transaction,
+    _i7s9vfyh.ClassData classData, {
+    _is.Transaction? transaction,
   }) async {
     if (characterSpellSelectionRecord.id == null) {
       throw ArgumentError.notNull('characterSpellSelectionRecord.id');
@@ -882,8 +1129,9 @@ class CharacterSpellSelectionRecordAttachRowRepository {
       throw ArgumentError.notNull('classData.id');
     }
 
-    var $characterSpellSelectionRecord =
-        characterSpellSelectionRecord.copyWith(classDataId: classData.id);
+    var $characterSpellSelectionRecord = characterSpellSelectionRecord.copyWith(
+      classDataId: classData.id,
+    );
     await session.db.updateRow<CharacterSpellSelectionRecord>(
       $characterSpellSelectionRecord,
       columns: [CharacterSpellSelectionRecord.t.classDataId],
@@ -894,10 +1142,10 @@ class CharacterSpellSelectionRecordAttachRowRepository {
   /// Creates a relation between the given [CharacterSpellSelectionRecord] and [SpellData]
   /// by setting the [CharacterSpellSelectionRecord]'s foreign key `spellId` to refer to the [SpellData].
   Future<void> spell(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterSpellSelectionRecord characterSpellSelectionRecord,
-    _i5.SpellData spell, {
-    _i1.Transaction? transaction,
+    _isenpj1r.SpellData spell, {
+    _is.Transaction? transaction,
   }) async {
     if (characterSpellSelectionRecord.id == null) {
       throw ArgumentError.notNull('characterSpellSelectionRecord.id');
@@ -906,8 +1154,9 @@ class CharacterSpellSelectionRecordAttachRowRepository {
       throw ArgumentError.notNull('spell.id');
     }
 
-    var $characterSpellSelectionRecord =
-        characterSpellSelectionRecord.copyWith(spellId: spell.id);
+    var $characterSpellSelectionRecord = characterSpellSelectionRecord.copyWith(
+      spellId: spell.id,
+    );
     await session.db.updateRow<CharacterSpellSelectionRecord>(
       $characterSpellSelectionRecord,
       columns: [CharacterSpellSelectionRecord.t.spellId],
@@ -925,18 +1174,19 @@ class CharacterSpellSelectionRecordDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> classEntry(
-    _i1.Session session,
-    CharacterSpellSelectionRecord characterspellselectionrecord, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    CharacterSpellSelectionRecord characterSpellSelectionRecord, {
+    _is.Transaction? transaction,
   }) async {
-    if (characterspellselectionrecord.id == null) {
-      throw ArgumentError.notNull('characterspellselectionrecord.id');
+    if (characterSpellSelectionRecord.id == null) {
+      throw ArgumentError.notNull('characterSpellSelectionRecord.id');
     }
 
-    var $characterspellselectionrecord =
-        characterspellselectionrecord.copyWith(classEntryId: null);
+    var $characterSpellSelectionRecord = characterSpellSelectionRecord.copyWith(
+      classEntryId: null,
+    );
     await session.db.updateRow<CharacterSpellSelectionRecord>(
-      $characterspellselectionrecord,
+      $characterSpellSelectionRecord,
       columns: [CharacterSpellSelectionRecord.t.classEntryId],
       transaction: transaction,
     );
@@ -948,18 +1198,19 @@ class CharacterSpellSelectionRecordDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> classData(
-    _i1.Session session,
-    CharacterSpellSelectionRecord characterspellselectionrecord, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    CharacterSpellSelectionRecord characterSpellSelectionRecord, {
+    _is.Transaction? transaction,
   }) async {
-    if (characterspellselectionrecord.id == null) {
-      throw ArgumentError.notNull('characterspellselectionrecord.id');
+    if (characterSpellSelectionRecord.id == null) {
+      throw ArgumentError.notNull('characterSpellSelectionRecord.id');
     }
 
-    var $characterspellselectionrecord =
-        characterspellselectionrecord.copyWith(classDataId: null);
+    var $characterSpellSelectionRecord = characterSpellSelectionRecord.copyWith(
+      classDataId: null,
+    );
     await session.db.updateRow<CharacterSpellSelectionRecord>(
-      $characterspellselectionrecord,
+      $characterSpellSelectionRecord,
       columns: [CharacterSpellSelectionRecord.t.classDataId],
       transaction: transaction,
     );
@@ -971,18 +1222,19 @@ class CharacterSpellSelectionRecordDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> spell(
-    _i1.Session session,
-    CharacterSpellSelectionRecord characterspellselectionrecord, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    CharacterSpellSelectionRecord characterSpellSelectionRecord, {
+    _is.Transaction? transaction,
   }) async {
-    if (characterspellselectionrecord.id == null) {
-      throw ArgumentError.notNull('characterspellselectionrecord.id');
+    if (characterSpellSelectionRecord.id == null) {
+      throw ArgumentError.notNull('characterSpellSelectionRecord.id');
     }
 
-    var $characterspellselectionrecord =
-        characterspellselectionrecord.copyWith(spellId: null);
+    var $characterSpellSelectionRecord = characterSpellSelectionRecord.copyWith(
+      spellId: null,
+    );
     await session.db.updateRow<CharacterSpellSelectionRecord>(
-      $characterspellselectionrecord,
+      $characterSpellSelectionRecord,
       columns: [CharacterSpellSelectionRecord.t.spellId],
       transaction: transaction,
     );

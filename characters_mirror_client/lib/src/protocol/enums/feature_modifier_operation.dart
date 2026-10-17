@@ -7,11 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-enum FeatureModifierOperation implements _i1.SerializableModel {
+enum FeatureModifierOperation implements _isc.SerializableModel {
   add,
   baseArmorClass,
   setValue;
@@ -26,7 +27,8 @@ enum FeatureModifierOperation implements _i1.SerializableModel {
         return FeatureModifierOperation.setValue;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "FeatureModifierOperation"');
+          'Value "$index" cannot be converted to "FeatureModifierOperation"',
+        );
     }
   }
 

@@ -7,12 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../views/choice_requirement_failure_view.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../views/choice_requirement_failure_view.dart' as _ium34bdn;
 
-abstract class ChoiceOptionEligibilityView implements _i1.SerializableModel {
+abstract class ChoiceOptionEligibilityView
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ChoiceOptionEligibilityView._({
     required this.optionKey,
     required this.isEligible,
@@ -22,18 +26,23 @@ abstract class ChoiceOptionEligibilityView implements _i1.SerializableModel {
   factory ChoiceOptionEligibilityView({
     required String optionKey,
     required bool isEligible,
-    List<_i2.ChoiceRequirementFailureView>? failedRequirements,
+    List<_ium34bdn.ChoiceRequirementFailureView>? failedRequirements,
   }) = _ChoiceOptionEligibilityViewImpl;
 
   factory ChoiceOptionEligibilityView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return ChoiceOptionEligibilityView(
       optionKey: jsonSerialization['optionKey'] as String,
-      isEligible: jsonSerialization['isEligible'] as bool,
-      failedRequirements: (jsonSerialization['failedRequirements'] as List?)
-          ?.map((e) => _i2.ChoiceRequirementFailureView.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+      isEligible: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['isEligible'],
+      ),
+      failedRequirements: jsonSerialization['failedRequirements'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ium34bdn.ChoiceRequirementFailureView>>(
+                  jsonSerialization['failedRequirements'],
+                ),
     );
   }
 
@@ -41,30 +50,45 @@ abstract class ChoiceOptionEligibilityView implements _i1.SerializableModel {
 
   bool isEligible;
 
-  List<_i2.ChoiceRequirementFailureView>? failedRequirements;
+  List<_ium34bdn.ChoiceRequirementFailureView>? failedRequirements;
 
   /// Returns a shallow copy of this [ChoiceOptionEligibilityView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   ChoiceOptionEligibilityView copyWith({
     String? optionKey,
     bool? isEligible,
-    List<_i2.ChoiceRequirementFailureView>? failedRequirements,
+    List<_ium34bdn.ChoiceRequirementFailureView>? failedRequirements,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ChoiceOptionEligibilityView',
       'optionKey': optionKey,
       'isEligible': isEligible,
       if (failedRequirements != null)
-        'failedRequirements':
-            failedRequirements?.toJson(valueToJson: (v) => v.toJson()),
+        'failedRequirements': failedRequirements?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ChoiceOptionEligibilityView',
+      'optionKey': optionKey,
+      'isEligible': isEligible,
+      if (failedRequirements != null)
+        'failedRequirements': failedRequirements?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
     };
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -74,16 +98,16 @@ class _ChoiceOptionEligibilityViewImpl extends ChoiceOptionEligibilityView {
   _ChoiceOptionEligibilityViewImpl({
     required String optionKey,
     required bool isEligible,
-    List<_i2.ChoiceRequirementFailureView>? failedRequirements,
+    List<_ium34bdn.ChoiceRequirementFailureView>? failedRequirements,
   }) : super._(
-          optionKey: optionKey,
-          isEligible: isEligible,
-          failedRequirements: failedRequirements,
-        );
+         optionKey: optionKey,
+         isEligible: isEligible,
+         failedRequirements: failedRequirements,
+       );
 
   /// Returns a shallow copy of this [ChoiceOptionEligibilityView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   ChoiceOptionEligibilityView copyWith({
     String? optionKey,
@@ -94,9 +118,9 @@ class _ChoiceOptionEligibilityViewImpl extends ChoiceOptionEligibilityView {
       optionKey: optionKey ?? this.optionKey,
       isEligible: isEligible ?? this.isEligible,
       failedRequirements:
-          failedRequirements is List<_i2.ChoiceRequirementFailureView>?
-              ? failedRequirements
-              : this.failedRequirements?.map((e0) => e0.copyWith()).toList(),
+          failedRequirements is List<_ium34bdn.ChoiceRequirementFailureView>?
+          ? failedRequirements
+          : this.failedRequirements?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

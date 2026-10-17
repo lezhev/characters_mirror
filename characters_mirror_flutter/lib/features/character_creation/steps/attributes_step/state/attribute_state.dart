@@ -5,6 +5,7 @@ import 'package:characters_mirror_flutter/features/character_creation/state/char
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/common/attribute_enum.dart';
 import 'package:characters_mirror_flutter/features/character_creation/steps/attributes_step/common/selection_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -41,8 +41,8 @@ class BackgroundFeatures extends ConsumerWidget {
     final character = creationState.character;
     final creationNotifier = ref.read(characterCreationProvider.notifier);
     final choiceGroups = stepView?.choiceGroups ?? const <ChoiceGroupView>[];
-    final classState = ref.watch(classStateProvider).valueOrNull;
-    final backgroundState = ref.watch(backgroundStateProvider).valueOrNull;
+    final classState = ref.watch(classStateProvider).value;
+    final backgroundState = ref.watch(backgroundStateProvider).value;
     final classChoiceGroups =
         classState?.stepView?.choiceGroups ?? const <ChoiceGroupView>[];
     final expertiseChoiceGroups = <ChoiceGroupView>[];
@@ -106,12 +106,12 @@ class BackgroundFeatures extends ConsumerWidget {
         .toList(growable: false);
     final toolsByKey = {
       for (final tool
-          in ref.watch(toolCatalogProvider).valueOrNull ?? const <ToolData>[])
+          in ref.watch(toolCatalogProvider).value ?? const <ToolData>[])
         tool.referenceKey: tool.name,
     };
     final toolProficiencyLabels = [
       for (final key in selectedBackground.toolProficiencyKeys ?? const [])
-        if (toolsByKey[key] case final name?) name,
+        ?toolsByKey[key],
     ];
     final hasProficienciesOrLanguages = _hasAnyValues([
           fixedSkillLabels,
@@ -196,7 +196,7 @@ class BackgroundFeatures extends ConsumerWidget {
               groups: skillSelectionGroups,
               selections: ref
                       .watch(backgroundStateProvider)
-                      .valueOrNull
+                      .value
                       ?.selectedSkillSelections ??
                   const <CharacterSkillSelectionData>[],
               onToggleSkill: ref
@@ -225,7 +225,7 @@ class BackgroundFeatures extends ConsumerWidget {
             blocks: startingEquipmentBlocks,
             selections: ref
                     .watch(backgroundStateProvider)
-                    .valueOrNull
+                    .value
                     ?.startingEquipmentSelections ??
                 const <CharacterStartingEquipmentSelectionData>[],
             onSelectOption: ref

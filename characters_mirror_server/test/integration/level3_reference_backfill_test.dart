@@ -146,5 +146,7 @@ void main() {
         await session.close();
       }
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

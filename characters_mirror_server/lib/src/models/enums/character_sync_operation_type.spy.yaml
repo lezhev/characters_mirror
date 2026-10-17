@@ -1,4 +1,5 @@
 enum: CharacterSyncOperationType
+serialized: byIndex
 values:
   - createCharacter
   - deleteCharacter

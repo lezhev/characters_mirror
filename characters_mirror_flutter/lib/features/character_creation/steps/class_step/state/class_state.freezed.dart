@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'class_state.dart';
@@ -9,6 +9,7 @@ part of 'class_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -34,46 +35,51 @@ mixin _$ClassStateModel {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as ClassStateModel;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ClassStateModel &&
             const DeepCollectionEquality()
-                .equals(other.allClasses, allClasses) &&
-            (identical(other.selectedClass, selectedClass) ||
-                other.selectedClass == selectedClass) &&
-            (identical(other.stepView, stepView) ||
-                other.stepView == stepView) &&
-            (identical(other.selectedSubclass, selectedSubclass) ||
-                other.selectedSubclass == selectedSubclass) &&
+                .equals(other.allClasses, _this.allClasses) &&
+            (identical(other.selectedClass, _this.selectedClass) ||
+                other.selectedClass == _this.selectedClass) &&
+            (identical(other.stepView, _this.stepView) ||
+                other.stepView == _this.stepView) &&
+            (identical(other.selectedSubclass, _this.selectedSubclass) ||
+                other.selectedSubclass == _this.selectedSubclass) &&
             const DeepCollectionEquality()
-                .equals(other.selectedOptions, selectedOptions) &&
+                .equals(other.selectedOptions, _this.selectedOptions) &&
             const DeepCollectionEquality().equals(
-                other.selectedSkillSelections, selectedSkillSelections) &&
+                other.selectedSkillSelections, _this.selectedSkillSelections) &&
             const DeepCollectionEquality().equals(
-                other.selectedSpellSelections, selectedSpellSelections) &&
+                other.selectedSpellSelections, _this.selectedSpellSelections) &&
             const DeepCollectionEquality().equals(
                 other.startingEquipmentSelections,
-                startingEquipmentSelections) &&
-            (identical(other.selectedLevel, selectedLevel) ||
-                other.selectedLevel == selectedLevel));
+                _this.startingEquipmentSelections) &&
+            (identical(other.selectedLevel, _this.selectedLevel) ||
+                other.selectedLevel == _this.selectedLevel));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(allClasses),
-      selectedClass,
-      stepView,
-      selectedSubclass,
-      const DeepCollectionEquality().hash(selectedOptions),
-      const DeepCollectionEquality().hash(selectedSkillSelections),
-      const DeepCollectionEquality().hash(selectedSpellSelections),
-      const DeepCollectionEquality().hash(startingEquipmentSelections),
-      selectedLevel);
+  int get hashCode {
+    final _this = this as ClassStateModel;
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_this.allClasses),
+        _this.selectedClass,
+        _this.stepView,
+        _this.selectedSubclass,
+        const DeepCollectionEquality().hash(_this.selectedOptions),
+        const DeepCollectionEquality().hash(_this.selectedSkillSelections),
+        const DeepCollectionEquality().hash(_this.selectedSpellSelections),
+        const DeepCollectionEquality().hash(_this.startingEquipmentSelections),
+        _this.selectedLevel);
+  }
 
   @override
   String toString() {
-    return 'ClassStateModel(allClasses: $allClasses, selectedClass: $selectedClass, stepView: $stepView, selectedSubclass: $selectedSubclass, selectedOptions: $selectedOptions, selectedSkillSelections: $selectedSkillSelections, selectedSpellSelections: $selectedSpellSelections, startingEquipmentSelections: $startingEquipmentSelections, selectedLevel: $selectedLevel)';
+    final _this = this as ClassStateModel;
+    return 'ClassStateModel(allClasses: ${_this.allClasses}, selectedClass: ${_this.selectedClass}, stepView: ${_this.stepView}, selectedSubclass: ${_this.selectedSubclass}, selectedOptions: ${_this.selectedOptions}, selectedSkillSelections: ${_this.selectedSkillSelections}, selectedSpellSelections: ${_this.selectedSpellSelections}, startingEquipmentSelections: ${_this.startingEquipmentSelections}, selectedLevel: ${_this.selectedLevel})';
   }
 }
 
@@ -118,7 +124,7 @@ class _$ClassStateModelCopyWithImpl<$Res>
     Object? startingEquipmentSelections = null,
     Object? selectedLevel = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(ClassStateModel(
       allClasses: null == allClasses
           ? _self.allClasses
           : allClasses // ignore: cast_nullable_to_non_nullable
@@ -376,16 +382,14 @@ extension ClassStateModelPatterns on ClassStateModel {
 
 class _ClassStateModel implements ClassStateModel {
   const _ClassStateModel(
-      {final List<ClassData> allClasses = const [],
+      {List<ClassData> allClasses = const [],
       this.selectedClass,
       this.stepView,
       this.selectedSubclass,
-      final Map<String, List<ChoiceOptionData>> selectedOptions = const {},
-      final List<CharacterSkillSelectionData> selectedSkillSelections =
-          const [],
-      final List<CharacterSpellSelectionData> selectedSpellSelections =
-          const [],
-      final List<CharacterStartingEquipmentSelectionData>
+      Map<String, List<ChoiceOptionData>> selectedOptions = const {},
+      List<CharacterSkillSelectionData> selectedSkillSelections = const [],
+      List<CharacterSpellSelectionData> selectedSpellSelections = const [],
+      List<CharacterStartingEquipmentSelectionData>
           startingEquipmentSelections = const [],
       this.selectedLevel = 1})
       : _allClasses = allClasses,
@@ -468,7 +472,7 @@ class _ClassStateModel implements ClassStateModel {
         (other.runtimeType == runtimeType &&
             other is _ClassStateModel &&
             const DeepCollectionEquality()
-                .equals(other._allClasses, _allClasses) &&
+                .equals(other.allClasses, _allClasses) &&
             (identical(other.selectedClass, selectedClass) ||
                 other.selectedClass == selectedClass) &&
             (identical(other.stepView, stepView) ||
@@ -476,30 +480,32 @@ class _ClassStateModel implements ClassStateModel {
             (identical(other.selectedSubclass, selectedSubclass) ||
                 other.selectedSubclass == selectedSubclass) &&
             const DeepCollectionEquality()
-                .equals(other._selectedOptions, _selectedOptions) &&
+                .equals(other.selectedOptions, _selectedOptions) &&
             const DeepCollectionEquality().equals(
-                other._selectedSkillSelections, _selectedSkillSelections) &&
+                other.selectedSkillSelections, _selectedSkillSelections) &&
             const DeepCollectionEquality().equals(
-                other._selectedSpellSelections, _selectedSpellSelections) &&
+                other.selectedSpellSelections, _selectedSpellSelections) &&
             const DeepCollectionEquality().equals(
-                other._startingEquipmentSelections,
+                other.startingEquipmentSelections,
                 _startingEquipmentSelections) &&
             (identical(other.selectedLevel, selectedLevel) ||
                 other.selectedLevel == selectedLevel));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_allClasses),
-      selectedClass,
-      stepView,
-      selectedSubclass,
-      const DeepCollectionEquality().hash(_selectedOptions),
-      const DeepCollectionEquality().hash(_selectedSkillSelections),
-      const DeepCollectionEquality().hash(_selectedSpellSelections),
-      const DeepCollectionEquality().hash(_startingEquipmentSelections),
-      selectedLevel);
+  int get hashCode {
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_allClasses),
+        selectedClass,
+        stepView,
+        selectedSubclass,
+        const DeepCollectionEquality().hash(_selectedOptions),
+        const DeepCollectionEquality().hash(_selectedSkillSelections),
+        const DeepCollectionEquality().hash(_selectedSpellSelections),
+        const DeepCollectionEquality().hash(_startingEquipmentSelections),
+        selectedLevel);
+  }
 
   @override
   String toString() {

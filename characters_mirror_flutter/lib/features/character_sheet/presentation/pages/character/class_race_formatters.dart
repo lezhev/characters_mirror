@@ -32,8 +32,8 @@ String raceSummary(RaceData? race, SubraceData? subrace) {
     return 'Раса не выбрана';
   }
   return [
-    if (raceName != null) raceName,
-    if (subraceName != null) subraceName,
+    ?raceName,
+    ?subraceName,
   ].join(' • ');
 }
 

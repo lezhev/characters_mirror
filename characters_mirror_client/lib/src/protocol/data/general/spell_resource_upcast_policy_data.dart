@@ -7,11 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class SpellResourceUpcastPolicyData implements _i1.SerializableModel {
+abstract class SpellResourceUpcastPolicyData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SpellResourceUpcastPolicyData._({
     required this.resourcePerAdditionalSpellLevel,
     required this.maxResourceCostBySourceLevel,
@@ -23,14 +27,15 @@ abstract class SpellResourceUpcastPolicyData implements _i1.SerializableModel {
   }) = _SpellResourceUpcastPolicyDataImpl;
 
   factory SpellResourceUpcastPolicyData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SpellResourceUpcastPolicyData(
       resourcePerAdditionalSpellLevel:
           jsonSerialization['resourcePerAdditionalSpellLevel'] as int,
-      maxResourceCostBySourceLevel:
-          (jsonSerialization['maxResourceCostBySourceLevel'] as List)
-              .fold<Map<int, int>>(
-                  {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      maxResourceCostBySourceLevel: _isnx6jbi.Protocol()
+          .deserialize<Map<int, int>>(
+            jsonSerialization['maxResourceCostBySourceLevel'],
+          ),
     );
   }
 
@@ -40,7 +45,7 @@ abstract class SpellResourceUpcastPolicyData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SpellResourceUpcastPolicyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SpellResourceUpcastPolicyData copyWith({
     int? resourcePerAdditionalSpellLevel,
     Map<int, int>? maxResourceCostBySourceLevel,
@@ -48,6 +53,16 @@ abstract class SpellResourceUpcastPolicyData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellResourceUpcastPolicyData',
+      'resourcePerAdditionalSpellLevel': resourcePerAdditionalSpellLevel,
+      'maxResourceCostBySourceLevel': maxResourceCostBySourceLevel.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SpellResourceUpcastPolicyData',
       'resourcePerAdditionalSpellLevel': resourcePerAdditionalSpellLevel,
       'maxResourceCostBySourceLevel': maxResourceCostBySourceLevel.toJson(),
     };
@@ -55,7 +70,7 @@ abstract class SpellResourceUpcastPolicyData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -64,30 +79,27 @@ class _SpellResourceUpcastPolicyDataImpl extends SpellResourceUpcastPolicyData {
     required int resourcePerAdditionalSpellLevel,
     required Map<int, int> maxResourceCostBySourceLevel,
   }) : super._(
-          resourcePerAdditionalSpellLevel: resourcePerAdditionalSpellLevel,
-          maxResourceCostBySourceLevel: maxResourceCostBySourceLevel,
-        );
+         resourcePerAdditionalSpellLevel: resourcePerAdditionalSpellLevel,
+         maxResourceCostBySourceLevel: maxResourceCostBySourceLevel,
+       );
 
   /// Returns a shallow copy of this [SpellResourceUpcastPolicyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SpellResourceUpcastPolicyData copyWith({
     int? resourcePerAdditionalSpellLevel,
     Map<int, int>? maxResourceCostBySourceLevel,
   }) {
     return SpellResourceUpcastPolicyData(
-      resourcePerAdditionalSpellLevel: resourcePerAdditionalSpellLevel ??
+      resourcePerAdditionalSpellLevel:
+          resourcePerAdditionalSpellLevel ??
           this.resourcePerAdditionalSpellLevel,
-      maxResourceCostBySourceLevel: maxResourceCostBySourceLevel ??
-          this.maxResourceCostBySourceLevel.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+      maxResourceCostBySourceLevel:
+          maxResourceCostBySourceLevel ??
+          this.maxResourceCostBySourceLevel.map(
+            (key0, value0) => MapEntry(key0, value0),
+          ),
     );
   }
 }

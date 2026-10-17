@@ -13,7 +13,8 @@ void main() {
   withServerpod('Feature reference contracts', (sessions, endpoints) {
     setUp(CharacterSaveRateLimiter.resetForTests);
     final owner = sessions.copyWith(
-      authentication: AuthenticationOverride.authenticationInfo(965, <Scope>{}),
+      authentication: AuthenticationOverride.authenticationInfo(
+          (965).toString(), <Scope>{}),
     );
 
     test(
@@ -405,5 +406,7 @@ void main() {
         await session.close();
       }
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

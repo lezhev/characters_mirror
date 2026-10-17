@@ -7,13 +7,17 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../enums/spell/spell_school.dart' as _i2;
-import '../../enums/character_spell_selection_kind.dart' as _i3;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../enums/character_spell_selection_kind.dart' as _icuuceor;
+import '../../enums/spell/spell_school.dart' as _iusxccb8;
 
-abstract class SpellSelectionFilterData implements _i1.SerializableModel {
+abstract class SpellSelectionFilterData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SpellSelectionFilterData._({
     this.spellListClassKey,
     this.minimumSpellLevel,
@@ -27,27 +31,35 @@ abstract class SpellSelectionFilterData implements _i1.SerializableModel {
     String? spellListClassKey,
     int? minimumSpellLevel,
     int? maximumSpellLevel,
-    List<_i2.SpellSchool>? schools,
-    List<_i3.CharacterSpellSelectionKind>? kinds,
+    List<_iusxccb8.SpellSchool>? schools,
+    List<_icuuceor.CharacterSpellSelectionKind>? kinds,
     Map<int, int>? unrestrictedChoicesByLevel,
   }) = _SpellSelectionFilterDataImpl;
 
   factory SpellSelectionFilterData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SpellSelectionFilterData(
       spellListClassKey: jsonSerialization['spellListClassKey'] as String?,
       minimumSpellLevel: jsonSerialization['minimumSpellLevel'] as int?,
       maximumSpellLevel: jsonSerialization['maximumSpellLevel'] as int?,
-      schools: (jsonSerialization['schools'] as List?)
-          ?.map((e) => _i2.SpellSchool.fromJson((e as String)))
-          .toList(),
-      kinds: (jsonSerialization['kinds'] as List?)
-          ?.map((e) => _i3.CharacterSpellSelectionKind.fromJson((e as String)))
-          .toList(),
+      schools: jsonSerialization['schools'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iusxccb8.SpellSchool>>(
+              jsonSerialization['schools'],
+            ),
+      kinds: jsonSerialization['kinds'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_icuuceor.CharacterSpellSelectionKind>>(
+                  jsonSerialization['kinds'],
+                ),
       unrestrictedChoicesByLevel:
-          (jsonSerialization['unrestrictedChoicesByLevel'] as List?)
-              ?.fold<Map<int, int>>(
-                  {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+          jsonSerialization['unrestrictedChoicesByLevel'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['unrestrictedChoicesByLevel'],
+            ),
     );
   }
 
@@ -57,26 +69,42 @@ abstract class SpellSelectionFilterData implements _i1.SerializableModel {
 
   int? maximumSpellLevel;
 
-  List<_i2.SpellSchool>? schools;
+  List<_iusxccb8.SpellSchool>? schools;
 
-  List<_i3.CharacterSpellSelectionKind>? kinds;
+  List<_icuuceor.CharacterSpellSelectionKind>? kinds;
 
   Map<int, int>? unrestrictedChoicesByLevel;
 
   /// Returns a shallow copy of this [SpellSelectionFilterData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SpellSelectionFilterData copyWith({
     String? spellListClassKey,
     int? minimumSpellLevel,
     int? maximumSpellLevel,
-    List<_i2.SpellSchool>? schools,
-    List<_i3.CharacterSpellSelectionKind>? kinds,
+    List<_iusxccb8.SpellSchool>? schools,
+    List<_icuuceor.CharacterSpellSelectionKind>? kinds,
     Map<int, int>? unrestrictedChoicesByLevel,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellSelectionFilterData',
+      if (spellListClassKey != null) 'spellListClassKey': spellListClassKey,
+      if (minimumSpellLevel != null) 'minimumSpellLevel': minimumSpellLevel,
+      if (maximumSpellLevel != null) 'maximumSpellLevel': maximumSpellLevel,
+      if (schools != null)
+        'schools': schools?.toJson(valueToJson: (v) => v.toJson()),
+      if (kinds != null) 'kinds': kinds?.toJson(valueToJson: (v) => v.toJson()),
+      if (unrestrictedChoicesByLevel != null)
+        'unrestrictedChoicesByLevel': unrestrictedChoicesByLevel?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SpellSelectionFilterData',
       if (spellListClassKey != null) 'spellListClassKey': spellListClassKey,
       if (minimumSpellLevel != null) 'minimumSpellLevel': minimumSpellLevel,
       if (maximumSpellLevel != null) 'maximumSpellLevel': maximumSpellLevel,
@@ -90,7 +118,7 @@ abstract class SpellSelectionFilterData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -101,21 +129,21 @@ class _SpellSelectionFilterDataImpl extends SpellSelectionFilterData {
     String? spellListClassKey,
     int? minimumSpellLevel,
     int? maximumSpellLevel,
-    List<_i2.SpellSchool>? schools,
-    List<_i3.CharacterSpellSelectionKind>? kinds,
+    List<_iusxccb8.SpellSchool>? schools,
+    List<_icuuceor.CharacterSpellSelectionKind>? kinds,
     Map<int, int>? unrestrictedChoicesByLevel,
   }) : super._(
-          spellListClassKey: spellListClassKey,
-          minimumSpellLevel: minimumSpellLevel,
-          maximumSpellLevel: maximumSpellLevel,
-          schools: schools,
-          kinds: kinds,
-          unrestrictedChoicesByLevel: unrestrictedChoicesByLevel,
-        );
+         spellListClassKey: spellListClassKey,
+         minimumSpellLevel: minimumSpellLevel,
+         maximumSpellLevel: maximumSpellLevel,
+         schools: schools,
+         kinds: kinds,
+         unrestrictedChoicesByLevel: unrestrictedChoicesByLevel,
+       );
 
   /// Returns a shallow copy of this [SpellSelectionFilterData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SpellSelectionFilterData copyWith({
     Object? spellListClassKey = _Undefined,
@@ -135,22 +163,17 @@ class _SpellSelectionFilterDataImpl extends SpellSelectionFilterData {
       maximumSpellLevel: maximumSpellLevel is int?
           ? maximumSpellLevel
           : this.maximumSpellLevel,
-      schools: schools is List<_i2.SpellSchool>?
+      schools: schools is List<_iusxccb8.SpellSchool>?
           ? schools
           : this.schools?.map((e0) => e0).toList(),
-      kinds: kinds is List<_i3.CharacterSpellSelectionKind>?
+      kinds: kinds is List<_icuuceor.CharacterSpellSelectionKind>?
           ? kinds
           : this.kinds?.map((e0) => e0).toList(),
       unrestrictedChoicesByLevel: unrestrictedChoicesByLevel is Map<int, int>?
           ? unrestrictedChoicesByLevel
-          : this.unrestrictedChoicesByLevel?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.unrestrictedChoicesByLevel?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
     );
   }
 }

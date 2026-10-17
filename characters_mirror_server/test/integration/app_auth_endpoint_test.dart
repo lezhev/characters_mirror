@@ -46,6 +46,40 @@ void main() {
       expect(result.code, 'email_taken');
     });
 
+    test('existing email account keeps its identity across repeated sign-ins',
+        () async {
+      await endpoints.appAuth.register(
+        sessionBuilder,
+        'Returning User',
+        'returning@example.com',
+        'password123',
+      );
+      final session = sessionBuilder.build();
+      try {
+        final existing =
+            await auth.Users.findUserByEmail(session, 'returning@example.com');
+        final first = await auth.Emails.authenticate(
+          session,
+          'returning@example.com',
+          'password123',
+        );
+        final second = await auth.Emails.authenticate(
+          session,
+          'returning@example.com',
+          'password123',
+        );
+
+        expect(first.success, isTrue);
+        expect(second.success, isTrue);
+        expect(first.userInfo?.id, existing!.id);
+        expect(second.userInfo?.id, existing.id);
+        expect(first.keyId, isNotNull);
+        expect(second.keyId, isNot(first.keyId));
+      } finally {
+        await session.close();
+      }
+    });
+
     test('rejects invalid email', () async {
       final result = await endpoints.appAuth.register(
         sessionBuilder,
@@ -69,5 +103,7 @@ void main() {
       expect(result.success, isFalse);
       expect(result.code, 'weak_password');
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

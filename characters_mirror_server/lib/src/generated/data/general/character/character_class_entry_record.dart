@@ -7,18 +7,20 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/character/character_record.dart' as _i2;
-import '../../../data/general/class/class_data.dart' as _i3;
-import '../../../data/general/class/subclass_data.dart' as _i4;
-import '../../../enums/hit_point_mode.dart' as _i5;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/character/character_record.dart' as _i50rgqfs;
+import '../../../data/general/class/class_data.dart' as _i7s9vfyh;
+import '../../../data/general/class/subclass_data.dart' as _i6yrac43;
+import '../../../enums/hit_point_mode.dart' as _ivn6s9bn;
 
 abstract class CharacterClassEntryRecord
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   CharacterClassEntryRecord._({
     this.id,
     this.syncId,
@@ -41,53 +43,65 @@ abstract class CharacterClassEntryRecord
     int? id,
     String? syncId,
     required int characterId,
-    _i2.CharacterRecord? character,
+    _i50rgqfs.CharacterRecord? character,
     required int classDataId,
-    _i3.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? subclassId,
-    _i4.SubclassData? subclass,
+    _i6yrac43.SubclassData? subclass,
     required int level,
     bool? isStartingClass,
     int? classOrder,
-    _i5.HitPointMode? hpMode,
+    _ivn6s9bn.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
     DateTime? updatedAt,
   }) = _CharacterClassEntryRecordImpl;
 
   factory CharacterClassEntryRecord.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterClassEntryRecord(
       id: jsonSerialization['id'] as int?,
       syncId: jsonSerialization['syncId'] as String?,
       characterId: jsonSerialization['characterId'] as int,
       character: jsonSerialization['character'] == null
           ? null
-          : _i2.CharacterRecord.fromJson(
-              (jsonSerialization['character'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i50rgqfs.CharacterRecord>(
+              jsonSerialization['character'],
+            ),
       classDataId: jsonSerialization['classDataId'] as int,
       classData: jsonSerialization['classData'] == null
           ? null
-          : _i3.ClassData.fromJson(
-              (jsonSerialization['classData'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i7s9vfyh.ClassData>(
+              jsonSerialization['classData'],
+            ),
       subclassId: jsonSerialization['subclassId'] as int?,
       subclass: jsonSerialization['subclass'] == null
           ? null
-          : _i4.SubclassData.fromJson(
-              (jsonSerialization['subclass'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i6yrac43.SubclassData>(
+              jsonSerialization['subclass'],
+            ),
       level: jsonSerialization['level'] as int,
-      isStartingClass: jsonSerialization['isStartingClass'] as bool?,
+      isStartingClass: jsonSerialization['isStartingClass'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['isStartingClass'],
+            ),
       classOrder: jsonSerialization['classOrder'] as int?,
       hpMode: jsonSerialization['hpMode'] == null
           ? null
-          : _i5.HitPointMode.fromJson((jsonSerialization['hpMode'] as String)),
-      hpRolledValues: (jsonSerialization['hpRolledValues'] as List?)
-          ?.map((e) => e as int)
-          .toList(),
+          : _ivn6s9bn.HitPointMode.fromJson(
+              (jsonSerialization['hpMode'] as String),
+            ),
+      hpRolledValues: jsonSerialization['hpRolledValues'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<int>>(
+              jsonSerialization['hpRolledValues'],
+            ),
       notes: jsonSerialization['notes'] as String?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -102,15 +116,15 @@ abstract class CharacterClassEntryRecord
 
   int characterId;
 
-  _i2.CharacterRecord? character;
+  _i50rgqfs.CharacterRecord? character;
 
   int classDataId;
 
-  _i3.ClassData? classData;
+  _i7s9vfyh.ClassData? classData;
 
   int? subclassId;
 
-  _i4.SubclassData? subclass;
+  _i6yrac43.SubclassData? subclass;
 
   int level;
 
@@ -118,7 +132,7 @@ abstract class CharacterClassEntryRecord
 
   int? classOrder;
 
-  _i5.HitPointMode? hpMode;
+  _ivn6s9bn.HitPointMode? hpMode;
 
   List<int>? hpRolledValues;
 
@@ -127,24 +141,24 @@ abstract class CharacterClassEntryRecord
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [CharacterClassEntryRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterClassEntryRecord copyWith({
     int? id,
     String? syncId,
     int? characterId,
-    _i2.CharacterRecord? character,
+    _i50rgqfs.CharacterRecord? character,
     int? classDataId,
-    _i3.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? subclassId,
-    _i4.SubclassData? subclass,
+    _i6yrac43.SubclassData? subclass,
     int? level,
     bool? isStartingClass,
     int? classOrder,
-    _i5.HitPointMode? hpMode,
+    _ivn6s9bn.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
     DateTime? updatedAt,
@@ -152,6 +166,7 @@ abstract class CharacterClassEntryRecord
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterClassEntryRecord',
       if (id != null) 'id': id,
       if (syncId != null) 'syncId': syncId,
       'characterId': characterId,
@@ -172,13 +187,13 @@ abstract class CharacterClassEntryRecord
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
-    return {if (id != null) 'id': id};
+    return {};
   }
 
   static CharacterClassEntryRecordInclude include({
-    _i2.CharacterRecordInclude? character,
-    _i3.ClassDataInclude? classData,
-    _i4.SubclassDataInclude? subclass,
+    _i50rgqfs.CharacterRecordInclude? character,
+    _i7s9vfyh.ClassDataInclude? classData,
+    _i6yrac43.SubclassDataInclude? subclass,
   }) {
     return CharacterClassEntryRecordInclude._(
       character: character,
@@ -188,12 +203,11 @@ abstract class CharacterClassEntryRecord
   }
 
   static CharacterClassEntryRecordIncludeList includeList({
-    _i1.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
+    _is.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
+    _is.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
     CharacterClassEntryRecordInclude? include,
   }) {
     return CharacterClassEntryRecordIncludeList._(
@@ -201,7 +215,6 @@ abstract class CharacterClassEntryRecord
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(CharacterClassEntryRecord.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(CharacterClassEntryRecord.t),
       include: include,
     );
@@ -209,7 +222,7 @@ abstract class CharacterClassEntryRecord
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -220,39 +233,39 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
     int? id,
     String? syncId,
     required int characterId,
-    _i2.CharacterRecord? character,
+    _i50rgqfs.CharacterRecord? character,
     required int classDataId,
-    _i3.ClassData? classData,
+    _i7s9vfyh.ClassData? classData,
     int? subclassId,
-    _i4.SubclassData? subclass,
+    _i6yrac43.SubclassData? subclass,
     required int level,
     bool? isStartingClass,
     int? classOrder,
-    _i5.HitPointMode? hpMode,
+    _ivn6s9bn.HitPointMode? hpMode,
     List<int>? hpRolledValues,
     String? notes,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          syncId: syncId,
-          characterId: characterId,
-          character: character,
-          classDataId: classDataId,
-          classData: classData,
-          subclassId: subclassId,
-          subclass: subclass,
-          level: level,
-          isStartingClass: isStartingClass,
-          classOrder: classOrder,
-          hpMode: hpMode,
-          hpRolledValues: hpRolledValues,
-          notes: notes,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         syncId: syncId,
+         characterId: characterId,
+         character: character,
+         classDataId: classDataId,
+         classData: classData,
+         subclassId: subclassId,
+         subclass: subclass,
+         level: level,
+         isStartingClass: isStartingClass,
+         classOrder: classOrder,
+         hpMode: hpMode,
+         hpRolledValues: hpRolledValues,
+         notes: notes,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [CharacterClassEntryRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterClassEntryRecord copyWith({
     Object? id = _Undefined,
@@ -275,20 +288,23 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
       id: id is int? ? id : this.id,
       syncId: syncId is String? ? syncId : this.syncId,
       characterId: characterId ?? this.characterId,
-      character: character is _i2.CharacterRecord?
+      character: character is _i50rgqfs.CharacterRecord?
           ? character
           : this.character?.copyWith(),
       classDataId: classDataId ?? this.classDataId,
-      classData:
-          classData is _i3.ClassData? ? classData : this.classData?.copyWith(),
+      classData: classData is _i7s9vfyh.ClassData?
+          ? classData
+          : this.classData?.copyWith(),
       subclassId: subclassId is int? ? subclassId : this.subclassId,
-      subclass:
-          subclass is _i4.SubclassData? ? subclass : this.subclass?.copyWith(),
+      subclass: subclass is _i6yrac43.SubclassData?
+          ? subclass
+          : this.subclass?.copyWith(),
       level: level ?? this.level,
-      isStartingClass:
-          isStartingClass is bool? ? isStartingClass : this.isStartingClass,
+      isStartingClass: isStartingClass is bool?
+          ? isStartingClass
+          : this.isStartingClass,
       classOrder: classOrder is int? ? classOrder : this.classOrder,
-      hpMode: hpMode is _i5.HitPointMode? ? hpMode : this.hpMode,
+      hpMode: hpMode is _ivn6s9bn.HitPointMode? ? hpMode : this.hpMode,
       hpRolledValues: hpRolledValues is List<int>?
           ? hpRolledValues
           : this.hpRolledValues?.map((e0) => e0).toList(),
@@ -298,141 +314,149 @@ class _CharacterClassEntryRecordImpl extends CharacterClassEntryRecord {
   }
 }
 
-class CharacterClassEntryRecordTable extends _i1.Table<int?> {
+class CharacterClassEntryRecordUpdateTable
+    extends _is.UpdateTable<CharacterClassEntryRecordTable> {
+  CharacterClassEntryRecordUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> syncId(String? value) =>
+      _is.ColumnValue(table.syncId, value);
+
+  _is.ColumnValue<int, int> characterId(int value) =>
+      _is.ColumnValue(table.characterId, value);
+
+  _is.ColumnValue<int, int> classDataId(int value) =>
+      _is.ColumnValue(table.classDataId, value);
+
+  _is.ColumnValue<int, int> subclassId(int? value) =>
+      _is.ColumnValue(table.subclassId, value);
+
+  _is.ColumnValue<int, int> level(int value) =>
+      _is.ColumnValue(table.level, value);
+
+  _is.ColumnValue<bool, bool> isStartingClass(bool? value) =>
+      _is.ColumnValue(table.isStartingClass, value);
+
+  _is.ColumnValue<int, int> classOrder(int? value) =>
+      _is.ColumnValue(table.classOrder, value);
+
+  _is.ColumnValue<_ivn6s9bn.HitPointMode, _ivn6s9bn.HitPointMode> hpMode(
+    _ivn6s9bn.HitPointMode? value,
+  ) => _is.ColumnValue(table.hpMode, value);
+
+  _is.ColumnValue<List<int>, List<int>> hpRolledValues(List<int>? value) =>
+      _is.ColumnValue(table.hpRolledValues, value);
+
+  _is.ColumnValue<String, String> notes(String? value) =>
+      _is.ColumnValue(table.notes, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class CharacterClassEntryRecordTable extends _is.Table<int?> {
   CharacterClassEntryRecordTable({super.tableRelation})
-      : super(tableName: 'character_class_relation') {
-    syncId = _i1.ColumnString(
-      'syncId',
-      this,
-    );
-    characterId = _i1.ColumnInt(
-      'characterId',
-      this,
-    );
-    classDataId = _i1.ColumnInt(
-      'classDataId',
-      this,
-    );
-    subclassId = _i1.ColumnInt(
-      'subclassId',
-      this,
-    );
-    level = _i1.ColumnInt(
-      'level',
-      this,
-    );
-    isStartingClass = _i1.ColumnBool(
-      'isStartingClass',
-      this,
-    );
-    classOrder = _i1.ColumnInt(
-      'classOrder',
-      this,
-    );
-    hpMode = _i1.ColumnEnum(
-      'hpMode',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    hpRolledValues = _i1.ColumnSerializable(
-      'hpRolledValues',
-      this,
-    );
-    notes = _i1.ColumnString(
-      'notes',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    : super(tableName: 'character_class_relation') {
+    updateTable = CharacterClassEntryRecordUpdateTable(this);
+    syncId = _is.ColumnString('syncId', this);
+    characterId = _is.ColumnInt('characterId', this);
+    classDataId = _is.ColumnInt('classDataId', this);
+    subclassId = _is.ColumnInt('subclassId', this);
+    level = _is.ColumnInt('level', this);
+    isStartingClass = _is.ColumnBool('isStartingClass', this);
+    classOrder = _is.ColumnInt('classOrder', this);
+    hpMode = _is.ColumnEnum('hpMode', this, _is.EnumSerialization.byName);
+    hpRolledValues = _is.ColumnSerializable<List<int>>('hpRolledValues', this);
+    notes = _is.ColumnString('notes', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnString syncId;
+  late final CharacterClassEntryRecordUpdateTable updateTable;
 
-  late final _i1.ColumnInt characterId;
+  late final _is.ColumnString syncId;
 
-  _i2.CharacterRecordTable? _character;
+  late final _is.ColumnInt characterId;
 
-  late final _i1.ColumnInt classDataId;
+  _i50rgqfs.CharacterRecordTable? _character;
 
-  _i3.ClassDataTable? _classData;
+  late final _is.ColumnInt classDataId;
 
-  late final _i1.ColumnInt subclassId;
+  _i7s9vfyh.ClassDataTable? _classData;
 
-  _i4.SubclassDataTable? _subclass;
+  late final _is.ColumnInt subclassId;
 
-  late final _i1.ColumnInt level;
+  _i6yrac43.SubclassDataTable? _subclass;
 
-  late final _i1.ColumnBool isStartingClass;
+  late final _is.ColumnInt level;
 
-  late final _i1.ColumnInt classOrder;
+  late final _is.ColumnBool isStartingClass;
 
-  late final _i1.ColumnEnum<_i5.HitPointMode> hpMode;
+  late final _is.ColumnInt classOrder;
 
-  late final _i1.ColumnSerializable hpRolledValues;
+  late final _is.ColumnEnum<_ivn6s9bn.HitPointMode> hpMode;
 
-  late final _i1.ColumnString notes;
+  late final _is.ColumnSerializable<List<int>> hpRolledValues;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnString notes;
 
-  _i2.CharacterRecordTable get character {
+  late final _is.ColumnDateTime updatedAt;
+
+  _i50rgqfs.CharacterRecordTable get character {
     if (_character != null) return _character!;
-    _character = _i1.createRelationTable(
+    _character = _is.createRelationTable(
       relationFieldName: 'character',
       field: CharacterClassEntryRecord.t.characterId,
-      foreignField: _i2.CharacterRecord.t.id,
+      foreignField: _i50rgqfs.CharacterRecord.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.CharacterRecordTable(tableRelation: foreignTableRelation),
+          _i50rgqfs.CharacterRecordTable(tableRelation: foreignTableRelation),
     );
     return _character!;
   }
 
-  _i3.ClassDataTable get classData {
+  _i7s9vfyh.ClassDataTable get classData {
     if (_classData != null) return _classData!;
-    _classData = _i1.createRelationTable(
+    _classData = _is.createRelationTable(
       relationFieldName: 'classData',
       field: CharacterClassEntryRecord.t.classDataId,
-      foreignField: _i3.ClassData.t.id,
+      foreignField: _i7s9vfyh.ClassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.ClassDataTable(tableRelation: foreignTableRelation),
+          _i7s9vfyh.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _classData!;
   }
 
-  _i4.SubclassDataTable get subclass {
+  _i6yrac43.SubclassDataTable get subclass {
     if (_subclass != null) return _subclass!;
-    _subclass = _i1.createRelationTable(
+    _subclass = _is.createRelationTable(
       relationFieldName: 'subclass',
       field: CharacterClassEntryRecord.t.subclassId,
-      foreignField: _i4.SubclassData.t.id,
+      foreignField: _i6yrac43.SubclassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.SubclassDataTable(tableRelation: foreignTableRelation),
+          _i6yrac43.SubclassDataTable(tableRelation: foreignTableRelation),
     );
     return _subclass!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        syncId,
-        characterId,
-        classDataId,
-        subclassId,
-        level,
-        isStartingClass,
-        classOrder,
-        hpMode,
-        hpRolledValues,
-        notes,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    syncId,
+    characterId,
+    classDataId,
+    subclassId,
+    level,
+    isStartingClass,
+    classOrder,
+    hpMode,
+    hpRolledValues,
+    notes,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'character') {
       return character;
     }
@@ -446,41 +470,40 @@ class CharacterClassEntryRecordTable extends _i1.Table<int?> {
   }
 }
 
-class CharacterClassEntryRecordInclude extends _i1.IncludeObject {
+class CharacterClassEntryRecordInclude extends _is.IncludeObject {
   CharacterClassEntryRecordInclude._({
-    _i2.CharacterRecordInclude? character,
-    _i3.ClassDataInclude? classData,
-    _i4.SubclassDataInclude? subclass,
+    _i50rgqfs.CharacterRecordInclude? character,
+    _i7s9vfyh.ClassDataInclude? classData,
+    _i6yrac43.SubclassDataInclude? subclass,
   }) {
     _character = character;
     _classData = classData;
     _subclass = subclass;
   }
 
-  _i2.CharacterRecordInclude? _character;
+  _i50rgqfs.CharacterRecordInclude? _character;
 
-  _i3.ClassDataInclude? _classData;
+  _i7s9vfyh.ClassDataInclude? _classData;
 
-  _i4.SubclassDataInclude? _subclass;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'character': _character,
-        'classData': _classData,
-        'subclass': _subclass,
-      };
+  _i6yrac43.SubclassDataInclude? _subclass;
 
   @override
-  _i1.Table<int?> get table => CharacterClassEntryRecord.t;
+  Map<String, _is.Include?> get includes => {
+    'character': _character,
+    'classData': _classData,
+    'subclass': _subclass,
+  };
+
+  @override
+  _is.Table<int?> get table => CharacterClassEntryRecord.t;
 }
 
-class CharacterClassEntryRecordIncludeList extends _i1.IncludeList {
+class CharacterClassEntryRecordIncludeList extends _is.IncludeList {
   CharacterClassEntryRecordIncludeList._({
-    _i1.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
+    _is.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -488,10 +511,10 @@ class CharacterClassEntryRecordIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => CharacterClassEntryRecord.t;
+  _is.Table<int?> get table => CharacterClassEntryRecord.t;
 }
 
 class CharacterClassEntryRecordRepository {
@@ -524,25 +547,27 @@ class CharacterClassEntryRecordRepository {
   /// );
   /// ```
   Future<List<CharacterClassEntryRecord>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
+    _is.Transaction? transaction,
     CharacterClassEntryRecordInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<CharacterClassEntryRecord>(
       where: where?.call(CharacterClassEntryRecord.t),
       orderBy: orderBy?.call(CharacterClassEntryRecord.t),
       orderByList: orderByList?.call(CharacterClassEntryRecord.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -564,37 +589,43 @@ class CharacterClassEntryRecordRepository {
   /// );
   /// ```
   Future<CharacterClassEntryRecord?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
     int? offset,
-    _i1.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
+    _is.Transaction? transaction,
     CharacterClassEntryRecordInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<CharacterClassEntryRecord>(
       where: where?.call(CharacterClassEntryRecord.t),
       orderBy: orderBy?.call(CharacterClassEntryRecord.t),
       orderByList: orderByList?.call(CharacterClassEntryRecord.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [CharacterClassEntryRecord] by its [id] or null if no such row exists.
   Future<CharacterClassEntryRecord?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     CharacterClassEntryRecordInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<CharacterClassEntryRecord>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -604,14 +635,26 @@ class CharacterClassEntryRecordRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterClassEntryRecord>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<CharacterClassEntryRecord> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<CharacterClassEntryRecord>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -619,12 +662,83 @@ class CharacterClassEntryRecordRepository {
   ///
   /// The returned [CharacterClassEntryRecord] will have its `id` field set.
   Future<CharacterClassEntryRecord> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterClassEntryRecord row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<CharacterClassEntryRecord>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [CharacterClassEntryRecord]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [CharacterClassEntryRecord]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<CharacterClassEntryRecord>> upsert(
+    _is.DatabaseSession session,
+    List<CharacterClassEntryRecord> rows, {
+    required _is.ColumnSelections<CharacterClassEntryRecordTable>
+    conflictColumns,
+    _is.ColumnSelections<CharacterClassEntryRecordTable>? updateColumns,
+    _is.WhereExpressionBuilder<CharacterClassEntryRecordTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<CharacterClassEntryRecord>(
+      rows,
+      conflictColumns: conflictColumns(CharacterClassEntryRecord.t),
+      updateColumns: updateColumns?.call(CharacterClassEntryRecord.t),
+      updateWhere: updateWhere?.call(CharacterClassEntryRecord.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [CharacterClassEntryRecord] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [CharacterClassEntryRecord] will have its `id` field set.
+  Future<CharacterClassEntryRecord?> upsertRow(
+    _is.DatabaseSession session,
+    CharacterClassEntryRecord row, {
+    required _is.ColumnSelections<CharacterClassEntryRecordTable>
+    conflictColumns,
+    _is.ColumnSelections<CharacterClassEntryRecordTable>? updateColumns,
+    _is.WhereExpressionBuilder<CharacterClassEntryRecordTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<CharacterClassEntryRecord>(
+      row,
+      conflictColumns: conflictColumns(CharacterClassEntryRecord.t),
+      updateColumns: updateColumns?.call(CharacterClassEntryRecord.t),
+      updateWhere: updateWhere?.call(CharacterClassEntryRecord.t),
       transaction: transaction,
     );
   }
@@ -634,16 +748,22 @@ class CharacterClassEntryRecordRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterClassEntryRecord>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<CharacterClassEntryRecord> rows, {
-    _i1.ColumnSelections<CharacterClassEntryRecordTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<CharacterClassEntryRecordTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<CharacterClassEntryRecord>(
       rows,
       columns: columns?.call(CharacterClassEntryRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -651,10 +771,10 @@ class CharacterClassEntryRecordRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<CharacterClassEntryRecord> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterClassEntryRecord row, {
-    _i1.ColumnSelections<CharacterClassEntryRecordTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<CharacterClassEntryRecordTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<CharacterClassEntryRecord>(
       row,
@@ -663,25 +783,85 @@ class CharacterClassEntryRecordRepository {
     );
   }
 
+  /// Updates a single [CharacterClassEntryRecord] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<CharacterClassEntryRecord?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<CharacterClassEntryRecordUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<CharacterClassEntryRecord>(
+      id,
+      columnValues: columnValues(CharacterClassEntryRecord.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [CharacterClassEntryRecord]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<CharacterClassEntryRecord>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<CharacterClassEntryRecordUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<CharacterClassEntryRecordTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<CharacterClassEntryRecord>(
+      columnValues: columnValues(CharacterClassEntryRecord.t.updateTable),
+      where: where(CharacterClassEntryRecord.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(CharacterClassEntryRecord.t),
+      orderByList: orderByList?.call(CharacterClassEntryRecord.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [CharacterClassEntryRecord]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterClassEntryRecord>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<CharacterClassEntryRecord> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<CharacterClassEntryRecord>(
       rows,
+      orderBy: orderBy?.call(CharacterClassEntryRecord.t),
+      orderByList: orderByList?.call(CharacterClassEntryRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [CharacterClassEntryRecord].
   Future<CharacterClassEntryRecord> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterClassEntryRecord row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<CharacterClassEntryRecord>(
       row,
@@ -690,28 +870,57 @@ class CharacterClassEntryRecordRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<CharacterClassEntryRecord>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<CharacterClassEntryRecordTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<CharacterClassEntryRecordTable> where,
+    _is.OrderByBuilder<CharacterClassEntryRecordTable>? orderBy,
+    _is.OrderByListBuilder<CharacterClassEntryRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<CharacterClassEntryRecord>(
       where: where(CharacterClassEntryRecord.t),
+      orderBy: orderBy?.call(CharacterClassEntryRecord.t),
+      orderByList: orderByList?.call(CharacterClassEntryRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<CharacterClassEntryRecordTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<CharacterClassEntryRecord>(
       where: where?.call(CharacterClassEntryRecord.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [CharacterClassEntryRecord] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<CharacterClassEntryRecordTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<CharacterClassEntryRecord>(
+      where: where(CharacterClassEntryRecord.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -723,10 +932,10 @@ class CharacterClassEntryRecordAttachRowRepository {
   /// Creates a relation between the given [CharacterClassEntryRecord] and [CharacterRecord]
   /// by setting the [CharacterClassEntryRecord]'s foreign key `characterId` to refer to the [CharacterRecord].
   Future<void> character(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterClassEntryRecord characterClassEntryRecord,
-    _i2.CharacterRecord character, {
-    _i1.Transaction? transaction,
+    _i50rgqfs.CharacterRecord character, {
+    _is.Transaction? transaction,
   }) async {
     if (characterClassEntryRecord.id == null) {
       throw ArgumentError.notNull('characterClassEntryRecord.id');
@@ -735,8 +944,9 @@ class CharacterClassEntryRecordAttachRowRepository {
       throw ArgumentError.notNull('character.id');
     }
 
-    var $characterClassEntryRecord =
-        characterClassEntryRecord.copyWith(characterId: character.id);
+    var $characterClassEntryRecord = characterClassEntryRecord.copyWith(
+      characterId: character.id,
+    );
     await session.db.updateRow<CharacterClassEntryRecord>(
       $characterClassEntryRecord,
       columns: [CharacterClassEntryRecord.t.characterId],
@@ -747,10 +957,10 @@ class CharacterClassEntryRecordAttachRowRepository {
   /// Creates a relation between the given [CharacterClassEntryRecord] and [ClassData]
   /// by setting the [CharacterClassEntryRecord]'s foreign key `classDataId` to refer to the [ClassData].
   Future<void> classData(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterClassEntryRecord characterClassEntryRecord,
-    _i3.ClassData classData, {
-    _i1.Transaction? transaction,
+    _i7s9vfyh.ClassData classData, {
+    _is.Transaction? transaction,
   }) async {
     if (characterClassEntryRecord.id == null) {
       throw ArgumentError.notNull('characterClassEntryRecord.id');
@@ -759,8 +969,9 @@ class CharacterClassEntryRecordAttachRowRepository {
       throw ArgumentError.notNull('classData.id');
     }
 
-    var $characterClassEntryRecord =
-        characterClassEntryRecord.copyWith(classDataId: classData.id);
+    var $characterClassEntryRecord = characterClassEntryRecord.copyWith(
+      classDataId: classData.id,
+    );
     await session.db.updateRow<CharacterClassEntryRecord>(
       $characterClassEntryRecord,
       columns: [CharacterClassEntryRecord.t.classDataId],
@@ -771,10 +982,10 @@ class CharacterClassEntryRecordAttachRowRepository {
   /// Creates a relation between the given [CharacterClassEntryRecord] and [SubclassData]
   /// by setting the [CharacterClassEntryRecord]'s foreign key `subclassId` to refer to the [SubclassData].
   Future<void> subclass(
-    _i1.Session session,
+    _is.DatabaseSession session,
     CharacterClassEntryRecord characterClassEntryRecord,
-    _i4.SubclassData subclass, {
-    _i1.Transaction? transaction,
+    _i6yrac43.SubclassData subclass, {
+    _is.Transaction? transaction,
   }) async {
     if (characterClassEntryRecord.id == null) {
       throw ArgumentError.notNull('characterClassEntryRecord.id');
@@ -783,8 +994,9 @@ class CharacterClassEntryRecordAttachRowRepository {
       throw ArgumentError.notNull('subclass.id');
     }
 
-    var $characterClassEntryRecord =
-        characterClassEntryRecord.copyWith(subclassId: subclass.id);
+    var $characterClassEntryRecord = characterClassEntryRecord.copyWith(
+      subclassId: subclass.id,
+    );
     await session.db.updateRow<CharacterClassEntryRecord>(
       $characterClassEntryRecord,
       columns: [CharacterClassEntryRecord.t.subclassId],
@@ -802,18 +1014,19 @@ class CharacterClassEntryRecordDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> subclass(
-    _i1.Session session,
-    CharacterClassEntryRecord characterclassentryrecord, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    CharacterClassEntryRecord characterClassEntryRecord, {
+    _is.Transaction? transaction,
   }) async {
-    if (characterclassentryrecord.id == null) {
-      throw ArgumentError.notNull('characterclassentryrecord.id');
+    if (characterClassEntryRecord.id == null) {
+      throw ArgumentError.notNull('characterClassEntryRecord.id');
     }
 
-    var $characterclassentryrecord =
-        characterclassentryrecord.copyWith(subclassId: null);
+    var $characterClassEntryRecord = characterClassEntryRecord.copyWith(
+      subclassId: null,
+    );
     await session.db.updateRow<CharacterClassEntryRecord>(
-      $characterclassentryrecord,
+      $characterClassEntryRecord,
       columns: [CharacterClassEntryRecord.t.subclassId],
       transaction: transaction,
     );

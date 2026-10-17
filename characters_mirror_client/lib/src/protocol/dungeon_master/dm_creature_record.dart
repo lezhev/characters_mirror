@@ -7,11 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class DmCreatureRecord implements _i1.SerializableModel {
+abstract class DmCreatureRecord
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   DmCreatureRecord._({
     this.id,
     required this.userId,
@@ -54,10 +56,12 @@ abstract class DmCreatureRecord implements _i1.SerializableModel {
       normalizedJson: jsonSerialization['normalizedJson'] as String,
       importHash: jsonSerialization['importHash'] as String,
       schemaVersion: jsonSerialization['schemaVersion'] as int,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
-      updatedAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      createdAt: _isc.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
+      updatedAt: _isc.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updatedAt'],
+      ),
     );
   }
 
@@ -90,7 +94,7 @@ abstract class DmCreatureRecord implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [DmCreatureRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   DmCreatureRecord copyWith({
     int? id,
     int? userId,
@@ -108,6 +112,26 @@ abstract class DmCreatureRecord implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'DmCreatureRecord',
+      if (id != null) 'id': id,
+      'userId': userId,
+      'name': name,
+      'sourceType': sourceType,
+      if (sourceVersion != null) 'sourceVersion': sourceVersion,
+      if (challengeRating != null) 'challengeRating': challengeRating,
+      'rawJson': rawJson,
+      'normalizedJson': normalizedJson,
+      'importHash': importHash,
+      'schemaVersion': schemaVersion,
+      'createdAt': createdAt.toJson(),
+      'updatedAt': updatedAt.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'DmCreatureRecord',
       if (id != null) 'id': id,
       'userId': userId,
       'name': name,
@@ -125,7 +149,7 @@ abstract class DmCreatureRecord implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -146,23 +170,23 @@ class _DmCreatureRecordImpl extends DmCreatureRecord {
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super._(
-          id: id,
-          userId: userId,
-          name: name,
-          sourceType: sourceType,
-          sourceVersion: sourceVersion,
-          challengeRating: challengeRating,
-          rawJson: rawJson,
-          normalizedJson: normalizedJson,
-          importHash: importHash,
-          schemaVersion: schemaVersion,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         userId: userId,
+         name: name,
+         sourceType: sourceType,
+         sourceVersion: sourceVersion,
+         challengeRating: challengeRating,
+         rawJson: rawJson,
+         normalizedJson: normalizedJson,
+         importHash: importHash,
+         schemaVersion: schemaVersion,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [DmCreatureRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   DmCreatureRecord copyWith({
     Object? id = _Undefined,
@@ -183,10 +207,12 @@ class _DmCreatureRecordImpl extends DmCreatureRecord {
       userId: userId ?? this.userId,
       name: name ?? this.name,
       sourceType: sourceType ?? this.sourceType,
-      sourceVersion:
-          sourceVersion is String? ? sourceVersion : this.sourceVersion,
-      challengeRating:
-          challengeRating is String? ? challengeRating : this.challengeRating,
+      sourceVersion: sourceVersion is String?
+          ? sourceVersion
+          : this.sourceVersion,
+      challengeRating: challengeRating is String?
+          ? challengeRating
+          : this.challengeRating,
       rawJson: rawJson ?? this.rawJson,
       normalizedJson: normalizedJson ?? this.normalizedJson,
       importHash: importHash ?? this.importHash,

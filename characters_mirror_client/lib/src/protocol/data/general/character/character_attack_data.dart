@@ -7,15 +7,19 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../enums/ability.dart' as _i2;
-import '../../../enums/weapon_category.dart' as _i3;
-import '../../../enums/damage_type.dart' as _i4;
-import '../../../data/damage_part_data.dart' as _i5;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../data/damage_part_data.dart' as _iig598dl;
+import '../../../enums/ability.dart' as _iw3bk51e;
+import '../../../enums/damage_type.dart' as _ij9bzpyl;
+import '../../../enums/weapon_category.dart' as _ibtz7e0l;
 
-abstract class CharacterAttackData implements _i1.SerializableModel {
+abstract class CharacterAttackData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterAttackData._({
     this.id,
     this.name,
@@ -33,12 +37,12 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
   factory CharacterAttackData({
     String? id,
     String? name,
-    _i2.Ability? leadingAbility,
-    _i3.WeaponCategory? weaponCategory,
+    _iw3bk51e.Ability? leadingAbility,
+    _ibtz7e0l.WeaponCategory? weaponCategory,
     String? damage,
     int? customAttackBonus,
-    _i4.DamageType? damageType,
-    List<_i5.DamagePartData>? damageParts,
+    _ij9bzpyl.DamageType? damageType,
+    List<_iig598dl.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -50,28 +54,35 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String?,
       leadingAbility: jsonSerialization['leadingAbility'] == null
           ? null
-          : _i2.Ability.fromJson(
-              (jsonSerialization['leadingAbility'] as String)),
+          : _iw3bk51e.Ability.fromJson(
+              (jsonSerialization['leadingAbility'] as String),
+            ),
       weaponCategory: jsonSerialization['weaponCategory'] == null
           ? null
-          : _i3.WeaponCategory.fromJson(
-              (jsonSerialization['weaponCategory'] as String)),
+          : _ibtz7e0l.WeaponCategory.fromJson(
+              (jsonSerialization['weaponCategory'] as String),
+            ),
       damage: jsonSerialization['damage'] as String?,
       customAttackBonus: jsonSerialization['customAttackBonus'] as int?,
       damageType: jsonSerialization['damageType'] == null
           ? null
-          : _i4.DamageType.fromJson(
-              (jsonSerialization['damageType'] as String)),
-      damageParts: (jsonSerialization['damageParts'] as List?)
-          ?.map((e) => _i5.DamagePartData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+          : _ij9bzpyl.DamageType.fromJson(
+              (jsonSerialization['damageType'] as String),
+            ),
+      damageParts: jsonSerialization['damageParts'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iig598dl.DamagePartData>>(
+              jsonSerialization['damageParts'],
+            ),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['tags'],
+            ),
       description: jsonSerialization['description'] as String?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -79,17 +90,17 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
 
   String? name;
 
-  _i2.Ability? leadingAbility;
+  _iw3bk51e.Ability? leadingAbility;
 
-  _i3.WeaponCategory? weaponCategory;
+  _ibtz7e0l.WeaponCategory? weaponCategory;
 
   String? damage;
 
   int? customAttackBonus;
 
-  _i4.DamageType? damageType;
+  _ij9bzpyl.DamageType? damageType;
 
-  List<_i5.DamagePartData>? damageParts;
+  List<_iig598dl.DamagePartData>? damageParts;
 
   List<String>? tags;
 
@@ -99,16 +110,16 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [CharacterAttackData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterAttackData copyWith({
     String? id,
     String? name,
-    _i2.Ability? leadingAbility,
-    _i3.WeaponCategory? weaponCategory,
+    _iw3bk51e.Ability? leadingAbility,
+    _ibtz7e0l.WeaponCategory? weaponCategory,
     String? damage,
     int? customAttackBonus,
-    _i4.DamageType? damageType,
-    List<_i5.DamagePartData>? damageParts,
+    _ij9bzpyl.DamageType? damageType,
+    List<_iig598dl.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
@@ -116,6 +127,7 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterAttackData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (leadingAbility != null) 'leadingAbility': leadingAbility?.toJson(),
@@ -132,8 +144,29 @@ abstract class CharacterAttackData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterAttackData',
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (leadingAbility != null) 'leadingAbility': leadingAbility?.toJson(),
+      if (weaponCategory != null) 'weaponCategory': weaponCategory?.toJson(),
+      if (damage != null) 'damage': damage,
+      if (customAttackBonus != null) 'customAttackBonus': customAttackBonus,
+      if (damageType != null) 'damageType': damageType?.toJson(),
+      if (damageParts != null)
+        'damageParts': damageParts?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (tags != null) 'tags': tags?.toJson(),
+      if (description != null) 'description': description,
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -143,32 +176,32 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
   _CharacterAttackDataImpl({
     String? id,
     String? name,
-    _i2.Ability? leadingAbility,
-    _i3.WeaponCategory? weaponCategory,
+    _iw3bk51e.Ability? leadingAbility,
+    _ibtz7e0l.WeaponCategory? weaponCategory,
     String? damage,
     int? customAttackBonus,
-    _i4.DamageType? damageType,
-    List<_i5.DamagePartData>? damageParts,
+    _ij9bzpyl.DamageType? damageType,
+    List<_iig598dl.DamagePartData>? damageParts,
     List<String>? tags,
     String? description,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          name: name,
-          leadingAbility: leadingAbility,
-          weaponCategory: weaponCategory,
-          damage: damage,
-          customAttackBonus: customAttackBonus,
-          damageType: damageType,
-          damageParts: damageParts,
-          tags: tags,
-          description: description,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         name: name,
+         leadingAbility: leadingAbility,
+         weaponCategory: weaponCategory,
+         damage: damage,
+         customAttackBonus: customAttackBonus,
+         damageType: damageType,
+         damageParts: damageParts,
+         tags: tags,
+         description: description,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [CharacterAttackData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterAttackData copyWith({
     Object? id = _Undefined,
@@ -186,17 +219,20 @@ class _CharacterAttackDataImpl extends CharacterAttackData {
     return CharacterAttackData(
       id: id is String? ? id : this.id,
       name: name is String? ? name : this.name,
-      leadingAbility:
-          leadingAbility is _i2.Ability? ? leadingAbility : this.leadingAbility,
-      weaponCategory: weaponCategory is _i3.WeaponCategory?
+      leadingAbility: leadingAbility is _iw3bk51e.Ability?
+          ? leadingAbility
+          : this.leadingAbility,
+      weaponCategory: weaponCategory is _ibtz7e0l.WeaponCategory?
           ? weaponCategory
           : this.weaponCategory,
       damage: damage is String? ? damage : this.damage,
       customAttackBonus: customAttackBonus is int?
           ? customAttackBonus
           : this.customAttackBonus,
-      damageType: damageType is _i4.DamageType? ? damageType : this.damageType,
-      damageParts: damageParts is List<_i5.DamagePartData>?
+      damageType: damageType is _ij9bzpyl.DamageType?
+          ? damageType
+          : this.damageType,
+      damageParts: damageParts is List<_iig598dl.DamagePartData>?
           ? damageParts
           : this.damageParts?.map((e0) => e0.copyWith()).toList(),
       tags: tags is List<String>? ? tags : this.tags?.map((e0) => e0).toList(),

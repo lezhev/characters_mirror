@@ -7,25 +7,28 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/class/class_data.dart' as _i2;
-import '../../../enums/feature_tag.dart' as _i3;
-import '../../../enums/language.dart' as _i4;
-import '../../../enums/skill.dart' as _i5;
-import '../../../enums/armor_category.dart' as _i6;
-import '../../../enums/weapon_category.dart' as _i7;
-import '../../../enums/unarmored_defense_rule.dart' as _i8;
-import '../../../data/general/feature_resource_definition_data.dart' as _i9;
-import '../../../data/general/feature_resource_effect_data.dart' as _i10;
-import '../../../data/class_spell_grant_data.dart' as _i11;
-import '../../../data/general/feature_modifier_data.dart' as _i12;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/class_spell_grant_data.dart' as _ira2m5oj;
+import '../../../data/general/class/class_data.dart' as _i7s9vfyh;
+import '../../../data/general/feature_modifier_data.dart' as _ilc9jnh2;
+import '../../../data/general/feature_resource_definition_data.dart'
+    as _iib0ncbr;
+import '../../../data/general/feature_resource_effect_data.dart' as _ipujnj10;
+import '../../../enums/armor_category.dart' as _irzuusaf;
+import '../../../enums/feature_tag.dart' as _ixkx8coo;
+import '../../../enums/language.dart' as _iiw0j43j;
+import '../../../enums/skill.dart' as _iqrhamom;
+import '../../../enums/unarmored_defense_rule.dart' as _inypkr0b;
+import '../../../enums/weapon_category.dart' as _ibtz7e0l;
 
 abstract class ClassFeatureData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   ClassFeatureData._({
     this.id,
     required this.parentClassId,
@@ -60,7 +63,7 @@ abstract class ClassFeatureData
   factory ClassFeatureData({
     int? id,
     required int parentClassId,
-    _i2.ClassData? parentClass,
+    _i7s9vfyh.ClassData? parentClass,
     String? name,
     String? referenceKey,
     String? description,
@@ -70,22 +73,22 @@ abstract class ClassFeatureData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     String? choiceGroupKey,
-    List<_i4.Language>? grantedLanguages,
-    List<_i5.Skill>? grantedSkills,
-    List<_i5.Skill>? grantedExpertiseSkills,
-    List<_i6.ArmorCategory>? grantedArmorTraining,
-    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<_iiw0j43j.Language>? grantedLanguages,
+    List<_iqrhamom.Skill>? grantedSkills,
+    List<_iqrhamom.Skill>? grantedExpertiseSkills,
+    List<_irzuusaf.ArmorCategory>? grantedArmorTraining,
+    List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
     List<String>? grantedSpellKeys,
-    _i8.UnarmoredDefenseRule? unarmoredDefenseRule,
+    _inypkr0b.UnarmoredDefenseRule? unarmoredDefenseRule,
     String? relatedTable,
-    List<_i9.FeatureResourceDefinitionData>? resources,
-    List<_i10.FeatureResourceEffectData>? resourceEffects,
-    List<_i11.ClassSpellGrantData>? spellGrants,
-    List<_i12.FeatureModifierData>? featureModifiers,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ira2m5oj.ClassSpellGrantData>? spellGrants,
+    List<_ilc9jnh2.FeatureModifierData>? featureModifiers,
   }) = _ClassFeatureDataImpl;
 
   factory ClassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -94,8 +97,9 @@ abstract class ClassFeatureData
       parentClassId: jsonSerialization['parentClassId'] as int,
       parentClass: jsonSerialization['parentClass'] == null
           ? null
-          : _i2.ClassData.fromJson(
-              (jsonSerialization['parentClass'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i7s9vfyh.ClassData>(
+              jsonSerialization['parentClass'],
+            ),
       name: jsonSerialization['name'] as String?,
       referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -105,62 +109,88 @@ abstract class ClassFeatureData
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
-          .toList(),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ixkx8coo.FeatureTag>>(
+              jsonSerialization['tags'],
+            ),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
-      grantedLanguages: (jsonSerialization['grantedLanguages'] as List?)
-          ?.map((e) => _i4.Language.fromJson((e as String)))
-          .toList(),
-      grantedSkills: (jsonSerialization['grantedSkills'] as List?)
-          ?.map((e) => _i5.Skill.fromJson((e as String)))
-          .toList(),
+      grantedLanguages: jsonSerialization['grantedLanguages'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iiw0j43j.Language>>(
+              jsonSerialization['grantedLanguages'],
+            ),
+      grantedSkills: jsonSerialization['grantedSkills'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iqrhamom.Skill>>(
+              jsonSerialization['grantedSkills'],
+            ),
       grantedExpertiseSkills:
-          (jsonSerialization['grantedExpertiseSkills'] as List?)
-              ?.map((e) => _i5.Skill.fromJson((e as String)))
-              .toList(),
-      grantedArmorTraining: (jsonSerialization['grantedArmorTraining'] as List?)
-          ?.map((e) => _i6.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      grantedWeaponTraining:
-          (jsonSerialization['grantedWeaponTraining'] as List?)
-              ?.map((e) => _i7.WeaponCategory.fromJson((e as String)))
-              .toList(),
-      grantedToolKeys: (jsonSerialization['grantedToolKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+          jsonSerialization['grantedExpertiseSkills'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iqrhamom.Skill>>(
+              jsonSerialization['grantedExpertiseSkills'],
+            ),
+      grantedArmorTraining: jsonSerialization['grantedArmorTraining'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_irzuusaf.ArmorCategory>>(
+              jsonSerialization['grantedArmorTraining'],
+            ),
+      grantedWeaponTraining: jsonSerialization['grantedWeaponTraining'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ibtz7e0l.WeaponCategory>>(
+              jsonSerialization['grantedWeaponTraining'],
+            ),
+      grantedToolKeys: jsonSerialization['grantedToolKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedToolKeys'],
+            ),
       grantedExpertiseToolKeys:
-          (jsonSerialization['grantedExpertiseToolKeys'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+          jsonSerialization['grantedExpertiseToolKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedExpertiseToolKeys'],
+            ),
+      grantedSpellKeys: jsonSerialization['grantedSpellKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedSpellKeys'],
+            ),
       unarmoredDefenseRule: jsonSerialization['unarmoredDefenseRule'] == null
           ? null
-          : _i8.UnarmoredDefenseRule.fromJson(
-              (jsonSerialization['unarmoredDefenseRule'] as String)),
+          : _inypkr0b.UnarmoredDefenseRule.fromJson(
+              (jsonSerialization['unarmoredDefenseRule'] as String),
+            ),
       relatedTable: jsonSerialization['relatedTable'] as String?,
-      resources: (jsonSerialization['resources'] as List?)
-          ?.map((e) => _i9.FeatureResourceDefinitionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      resourceEffects: (jsonSerialization['resourceEffects'] as List?)
-          ?.map((e) => _i10.FeatureResourceEffectData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      spellGrants: (jsonSerialization['spellGrants'] as List?)
-          ?.map((e) =>
-              _i11.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      featureModifiers: (jsonSerialization['featureModifiers'] as List?)
-          ?.map((e) =>
-              _i12.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      resources: jsonSerialization['resources'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iib0ncbr.FeatureResourceDefinitionData>>(
+                  jsonSerialization['resources'],
+                ),
+      resourceEffects: jsonSerialization['resourceEffects'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ipujnj10.FeatureResourceEffectData>>(
+                  jsonSerialization['resourceEffects'],
+                ),
+      spellGrants: jsonSerialization['spellGrants'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ira2m5oj.ClassSpellGrantData>>(
+                  jsonSerialization['spellGrants'],
+                ),
+      featureModifiers: jsonSerialization['featureModifiers'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ilc9jnh2.FeatureModifierData>>(
+                  jsonSerialization['featureModifiers'],
+                ),
     );
   }
 
@@ -173,7 +203,7 @@ abstract class ClassFeatureData
 
   int parentClassId;
 
-  _i2.ClassData? parentClass;
+  _i7s9vfyh.ClassData? parentClass;
 
   String? name;
 
@@ -193,19 +223,19 @@ abstract class ClassFeatureData
 
   DateTime? updatedAt;
 
-  List<_i3.FeatureTag>? tags;
+  List<_ixkx8coo.FeatureTag>? tags;
 
   String? choiceGroupKey;
 
-  List<_i4.Language>? grantedLanguages;
+  List<_iiw0j43j.Language>? grantedLanguages;
 
-  List<_i5.Skill>? grantedSkills;
+  List<_iqrhamom.Skill>? grantedSkills;
 
-  List<_i5.Skill>? grantedExpertiseSkills;
+  List<_iqrhamom.Skill>? grantedExpertiseSkills;
 
-  List<_i6.ArmorCategory>? grantedArmorTraining;
+  List<_irzuusaf.ArmorCategory>? grantedArmorTraining;
 
-  List<_i7.WeaponCategory>? grantedWeaponTraining;
+  List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining;
 
   List<String>? grantedToolKeys;
 
@@ -213,28 +243,28 @@ abstract class ClassFeatureData
 
   List<String>? grantedSpellKeys;
 
-  _i8.UnarmoredDefenseRule? unarmoredDefenseRule;
+  _inypkr0b.UnarmoredDefenseRule? unarmoredDefenseRule;
 
   String? relatedTable;
 
-  List<_i9.FeatureResourceDefinitionData>? resources;
+  List<_iib0ncbr.FeatureResourceDefinitionData>? resources;
 
-  List<_i10.FeatureResourceEffectData>? resourceEffects;
+  List<_ipujnj10.FeatureResourceEffectData>? resourceEffects;
 
-  List<_i11.ClassSpellGrantData>? spellGrants;
+  List<_ira2m5oj.ClassSpellGrantData>? spellGrants;
 
-  List<_i12.FeatureModifierData>? featureModifiers;
+  List<_ilc9jnh2.FeatureModifierData>? featureModifiers;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [ClassFeatureData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ClassFeatureData copyWith({
     int? id,
     int? parentClassId,
-    _i2.ClassData? parentClass,
+    _i7s9vfyh.ClassData? parentClass,
     String? name,
     String? referenceKey,
     String? description,
@@ -244,26 +274,27 @@ abstract class ClassFeatureData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     String? choiceGroupKey,
-    List<_i4.Language>? grantedLanguages,
-    List<_i5.Skill>? grantedSkills,
-    List<_i5.Skill>? grantedExpertiseSkills,
-    List<_i6.ArmorCategory>? grantedArmorTraining,
-    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<_iiw0j43j.Language>? grantedLanguages,
+    List<_iqrhamom.Skill>? grantedSkills,
+    List<_iqrhamom.Skill>? grantedExpertiseSkills,
+    List<_irzuusaf.ArmorCategory>? grantedArmorTraining,
+    List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
     List<String>? grantedSpellKeys,
-    _i8.UnarmoredDefenseRule? unarmoredDefenseRule,
+    _inypkr0b.UnarmoredDefenseRule? unarmoredDefenseRule,
     String? relatedTable,
-    List<_i9.FeatureResourceDefinitionData>? resources,
-    List<_i10.FeatureResourceEffectData>? resourceEffects,
-    List<_i11.ClassSpellGrantData>? spellGrants,
-    List<_i12.FeatureModifierData>? featureModifiers,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ira2m5oj.ClassSpellGrantData>? spellGrants,
+    List<_ilc9jnh2.FeatureModifierData>? featureModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ClassFeatureData',
       if (id != null) 'id': id,
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJson(),
@@ -279,19 +310,23 @@ abstract class ClassFeatureData
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
       if (grantedLanguages != null)
-        'grantedLanguages':
-            grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedLanguages': grantedLanguages?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedSkills != null)
         'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedExpertiseSkills != null)
-        'grantedExpertiseSkills':
-            grantedExpertiseSkills?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedExpertiseSkills': grantedExpertiseSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedArmorTraining != null)
-        'grantedArmorTraining':
-            grantedArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedArmorTraining': grantedArmorTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedWeaponTraining != null)
-        'grantedWeaponTraining':
-            grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedWeaponTraining': grantedWeaponTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
       if (grantedExpertiseToolKeys != null)
         'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
@@ -303,19 +338,22 @@ abstract class ClassFeatureData
       if (resources != null)
         'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
       if (resourceEffects != null)
-        'resourceEffects':
-            resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
+        'resourceEffects': resourceEffects?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
       if (featureModifiers != null)
-        'featureModifiers':
-            featureModifiers?.toJson(valueToJson: (v) => v.toJson()),
+        'featureModifiers': featureModifiers?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
     };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ClassFeatureData',
       if (id != null) 'id': id,
       'parentClassId': parentClassId,
       if (parentClass != null) 'parentClass': parentClass?.toJsonForProtocol(),
@@ -331,19 +369,23 @@ abstract class ClassFeatureData
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
       if (grantedLanguages != null)
-        'grantedLanguages':
-            grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedLanguages': grantedLanguages?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedSkills != null)
         'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedExpertiseSkills != null)
-        'grantedExpertiseSkills':
-            grantedExpertiseSkills?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedExpertiseSkills': grantedExpertiseSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedArmorTraining != null)
-        'grantedArmorTraining':
-            grantedArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedArmorTraining': grantedArmorTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedWeaponTraining != null)
-        'grantedWeaponTraining':
-            grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedWeaponTraining': grantedWeaponTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
       if (grantedExpertiseToolKeys != null)
         'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
@@ -353,26 +395,30 @@ abstract class ClassFeatureData
         'unarmoredDefenseRule': unarmoredDefenseRule?.toJson(),
       if (relatedTable != null) 'relatedTable': relatedTable,
       if (resources != null)
-        'resources':
-            resources?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'resources': resources?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (resourceEffects != null)
-        'resourceEffects':
-            resourceEffects?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'resourceEffects': resourceEffects?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (spellGrants != null)
-        'spellGrants':
-            spellGrants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'spellGrants': spellGrants?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (featureModifiers != null)
-        'featureModifiers':
-            featureModifiers?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'featureModifiers': featureModifiers?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
     };
   }
 
   static ClassFeatureDataInclude include({
-    _i2.ClassDataInclude? parentClass,
-    _i9.FeatureResourceDefinitionDataIncludeList? resources,
-    _i10.FeatureResourceEffectDataIncludeList? resourceEffects,
-    _i11.ClassSpellGrantDataIncludeList? spellGrants,
-    _i12.FeatureModifierDataIncludeList? featureModifiers,
+    _i7s9vfyh.ClassDataInclude? parentClass,
+    _iib0ncbr.FeatureResourceDefinitionDataIncludeList? resources,
+    _ipujnj10.FeatureResourceEffectDataIncludeList? resourceEffects,
+    _ira2m5oj.ClassSpellGrantDataIncludeList? spellGrants,
+    _ilc9jnh2.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     return ClassFeatureDataInclude._(
       parentClass: parentClass,
@@ -384,12 +430,11 @@ abstract class ClassFeatureData
   }
 
   static ClassFeatureDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<ClassFeatureDataTable>? where,
+    _is.WhereExpressionBuilder<ClassFeatureDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ClassFeatureDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
+    _is.OrderByBuilder<ClassFeatureDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
     ClassFeatureDataInclude? include,
   }) {
     return ClassFeatureDataIncludeList._(
@@ -397,7 +442,6 @@ abstract class ClassFeatureData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(ClassFeatureData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(ClassFeatureData.t),
       include: include,
     );
@@ -405,7 +449,7 @@ abstract class ClassFeatureData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -415,7 +459,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
   _ClassFeatureDataImpl({
     int? id,
     required int parentClassId,
-    _i2.ClassData? parentClass,
+    _i7s9vfyh.ClassData? parentClass,
     String? name,
     String? referenceKey,
     String? description,
@@ -425,56 +469,56 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     String? choiceGroupKey,
-    List<_i4.Language>? grantedLanguages,
-    List<_i5.Skill>? grantedSkills,
-    List<_i5.Skill>? grantedExpertiseSkills,
-    List<_i6.ArmorCategory>? grantedArmorTraining,
-    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<_iiw0j43j.Language>? grantedLanguages,
+    List<_iqrhamom.Skill>? grantedSkills,
+    List<_iqrhamom.Skill>? grantedExpertiseSkills,
+    List<_irzuusaf.ArmorCategory>? grantedArmorTraining,
+    List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
     List<String>? grantedSpellKeys,
-    _i8.UnarmoredDefenseRule? unarmoredDefenseRule,
+    _inypkr0b.UnarmoredDefenseRule? unarmoredDefenseRule,
     String? relatedTable,
-    List<_i9.FeatureResourceDefinitionData>? resources,
-    List<_i10.FeatureResourceEffectData>? resourceEffects,
-    List<_i11.ClassSpellGrantData>? spellGrants,
-    List<_i12.FeatureModifierData>? featureModifiers,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ira2m5oj.ClassSpellGrantData>? spellGrants,
+    List<_ilc9jnh2.FeatureModifierData>? featureModifiers,
   }) : super._(
-          id: id,
-          parentClassId: parentClassId,
-          parentClass: parentClass,
-          name: name,
-          referenceKey: referenceKey,
-          description: description,
-          shortDescription: shortDescription,
-          level: level,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          tags: tags,
-          choiceGroupKey: choiceGroupKey,
-          grantedLanguages: grantedLanguages,
-          grantedSkills: grantedSkills,
-          grantedExpertiseSkills: grantedExpertiseSkills,
-          grantedArmorTraining: grantedArmorTraining,
-          grantedWeaponTraining: grantedWeaponTraining,
-          grantedToolKeys: grantedToolKeys,
-          grantedExpertiseToolKeys: grantedExpertiseToolKeys,
-          grantedSpellKeys: grantedSpellKeys,
-          unarmoredDefenseRule: unarmoredDefenseRule,
-          relatedTable: relatedTable,
-          resources: resources,
-          resourceEffects: resourceEffects,
-          spellGrants: spellGrants,
-          featureModifiers: featureModifiers,
-        );
+         id: id,
+         parentClassId: parentClassId,
+         parentClass: parentClass,
+         name: name,
+         referenceKey: referenceKey,
+         description: description,
+         shortDescription: shortDescription,
+         level: level,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         tags: tags,
+         choiceGroupKey: choiceGroupKey,
+         grantedLanguages: grantedLanguages,
+         grantedSkills: grantedSkills,
+         grantedExpertiseSkills: grantedExpertiseSkills,
+         grantedArmorTraining: grantedArmorTraining,
+         grantedWeaponTraining: grantedWeaponTraining,
+         grantedToolKeys: grantedToolKeys,
+         grantedExpertiseToolKeys: grantedExpertiseToolKeys,
+         grantedSpellKeys: grantedSpellKeys,
+         unarmoredDefenseRule: unarmoredDefenseRule,
+         relatedTable: relatedTable,
+         resources: resources,
+         resourceEffects: resourceEffects,
+         spellGrants: spellGrants,
+         featureModifiers: featureModifiers,
+       );
 
   /// Returns a shallow copy of this [ClassFeatureData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ClassFeatureData copyWith({
     Object? id = _Undefined,
@@ -509,7 +553,7 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
     return ClassFeatureData(
       id: id is int? ? id : this.id,
       parentClassId: parentClassId ?? this.parentClassId,
-      parentClass: parentClass is _i2.ClassData?
+      parentClass: parentClass is _i7s9vfyh.ClassData?
           ? parentClass
           : this.parentClass?.copyWith(),
       name: name is String? ? name : this.name,
@@ -523,24 +567,27 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      tags: tags is List<_i3.FeatureTag>?
+      tags: tags is List<_ixkx8coo.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
-      choiceGroupKey:
-          choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
-      grantedLanguages: grantedLanguages is List<_i4.Language>?
+      choiceGroupKey: choiceGroupKey is String?
+          ? choiceGroupKey
+          : this.choiceGroupKey,
+      grantedLanguages: grantedLanguages is List<_iiw0j43j.Language>?
           ? grantedLanguages
           : this.grantedLanguages?.map((e0) => e0).toList(),
-      grantedSkills: grantedSkills is List<_i5.Skill>?
+      grantedSkills: grantedSkills is List<_iqrhamom.Skill>?
           ? grantedSkills
           : this.grantedSkills?.map((e0) => e0).toList(),
-      grantedExpertiseSkills: grantedExpertiseSkills is List<_i5.Skill>?
+      grantedExpertiseSkills: grantedExpertiseSkills is List<_iqrhamom.Skill>?
           ? grantedExpertiseSkills
           : this.grantedExpertiseSkills?.map((e0) => e0).toList(),
-      grantedArmorTraining: grantedArmorTraining is List<_i6.ArmorCategory>?
+      grantedArmorTraining:
+          grantedArmorTraining is List<_irzuusaf.ArmorCategory>?
           ? grantedArmorTraining
           : this.grantedArmorTraining?.map((e0) => e0).toList(),
-      grantedWeaponTraining: grantedWeaponTraining is List<_i7.WeaponCategory>?
+      grantedWeaponTraining:
+          grantedWeaponTraining is List<_ibtz7e0l.WeaponCategory>?
           ? grantedWeaponTraining
           : this.grantedWeaponTraining?.map((e0) => e0).toList(),
       grantedToolKeys: grantedToolKeys is List<String>?
@@ -552,352 +599,425 @@ class _ClassFeatureDataImpl extends ClassFeatureData {
       grantedSpellKeys: grantedSpellKeys is List<String>?
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
-      unarmoredDefenseRule: unarmoredDefenseRule is _i8.UnarmoredDefenseRule?
+      unarmoredDefenseRule:
+          unarmoredDefenseRule is _inypkr0b.UnarmoredDefenseRule?
           ? unarmoredDefenseRule
           : this.unarmoredDefenseRule,
       relatedTable: relatedTable is String? ? relatedTable : this.relatedTable,
-      resources: resources is List<_i9.FeatureResourceDefinitionData>?
+      resources: resources is List<_iib0ncbr.FeatureResourceDefinitionData>?
           ? resources
           : this.resources?.map((e0) => e0.copyWith()).toList(),
-      resourceEffects: resourceEffects is List<_i10.FeatureResourceEffectData>?
+      resourceEffects:
+          resourceEffects is List<_ipujnj10.FeatureResourceEffectData>?
           ? resourceEffects
           : this.resourceEffects?.map((e0) => e0.copyWith()).toList(),
-      spellGrants: spellGrants is List<_i11.ClassSpellGrantData>?
+      spellGrants: spellGrants is List<_ira2m5oj.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
-      featureModifiers: featureModifiers is List<_i12.FeatureModifierData>?
+      featureModifiers: featureModifiers is List<_ilc9jnh2.FeatureModifierData>?
           ? featureModifiers
           : this.featureModifiers?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
 
-class ClassFeatureDataTable extends _i1.Table<int?> {
+class ClassFeatureDataUpdateTable
+    extends _is.UpdateTable<ClassFeatureDataTable> {
+  ClassFeatureDataUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> parentClassId(int value) =>
+      _is.ColumnValue(table.parentClassId, value);
+
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<String, String> referenceKey(String? value) =>
+      _is.ColumnValue(table.referenceKey, value);
+
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
+
+  _is.ColumnValue<String, String> shortDescription(String? value) =>
+      _is.ColumnValue(table.shortDescription, value);
+
+  _is.ColumnValue<int, int> level(int value) =>
+      _is.ColumnValue(table.level, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+
+  _is.ColumnValue<List<_ixkx8coo.FeatureTag>, List<_ixkx8coo.FeatureTag>> tags(
+    List<_ixkx8coo.FeatureTag>? value,
+  ) => _is.ColumnValue(table.tags, value);
+
+  _is.ColumnValue<String, String> choiceGroupKey(String? value) =>
+      _is.ColumnValue(table.choiceGroupKey, value);
+
+  _is.ColumnValue<List<_iiw0j43j.Language>, List<_iiw0j43j.Language>>
+  grantedLanguages(List<_iiw0j43j.Language>? value) =>
+      _is.ColumnValue(table.grantedLanguages, value);
+
+  _is.ColumnValue<List<_iqrhamom.Skill>, List<_iqrhamom.Skill>> grantedSkills(
+    List<_iqrhamom.Skill>? value,
+  ) => _is.ColumnValue(table.grantedSkills, value);
+
+  _is.ColumnValue<List<_iqrhamom.Skill>, List<_iqrhamom.Skill>>
+  grantedExpertiseSkills(List<_iqrhamom.Skill>? value) =>
+      _is.ColumnValue(table.grantedExpertiseSkills, value);
+
+  _is.ColumnValue<List<_irzuusaf.ArmorCategory>, List<_irzuusaf.ArmorCategory>>
+  grantedArmorTraining(List<_irzuusaf.ArmorCategory>? value) =>
+      _is.ColumnValue(table.grantedArmorTraining, value);
+
+  _is.ColumnValue<
+    List<_ibtz7e0l.WeaponCategory>,
+    List<_ibtz7e0l.WeaponCategory>
+  >
+  grantedWeaponTraining(List<_ibtz7e0l.WeaponCategory>? value) =>
+      _is.ColumnValue(table.grantedWeaponTraining, value);
+
+  _is.ColumnValue<List<String>, List<String>> grantedToolKeys(
+    List<String>? value,
+  ) => _is.ColumnValue(table.grantedToolKeys, value);
+
+  _is.ColumnValue<List<String>, List<String>> grantedExpertiseToolKeys(
+    List<String>? value,
+  ) => _is.ColumnValue(table.grantedExpertiseToolKeys, value);
+
+  _is.ColumnValue<List<String>, List<String>> grantedSpellKeys(
+    List<String>? value,
+  ) => _is.ColumnValue(table.grantedSpellKeys, value);
+
+  _is.ColumnValue<
+    _inypkr0b.UnarmoredDefenseRule,
+    _inypkr0b.UnarmoredDefenseRule
+  >
+  unarmoredDefenseRule(_inypkr0b.UnarmoredDefenseRule? value) =>
+      _is.ColumnValue(table.unarmoredDefenseRule, value);
+
+  _is.ColumnValue<String, String> relatedTable(String? value) =>
+      _is.ColumnValue(table.relatedTable, value);
+}
+
+class ClassFeatureDataTable extends _is.Table<int?> {
   ClassFeatureDataTable({super.tableRelation})
-      : super(tableName: 'class_feature_data') {
-    parentClassId = _i1.ColumnInt(
-      'parentClassId',
-      this,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    referenceKey = _i1.ColumnString(
-      'referenceKey',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    shortDescription = _i1.ColumnString(
-      'shortDescription',
-      this,
-    );
-    level = _i1.ColumnInt(
-      'level',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-    tags = _i1.ColumnSerializable(
-      'tags',
-      this,
-    );
-    choiceGroupKey = _i1.ColumnString(
-      'choiceGroupKey',
-      this,
-    );
-    grantedLanguages = _i1.ColumnSerializable(
+    : super(tableName: 'class_feature_data') {
+    updateTable = ClassFeatureDataUpdateTable(this);
+    parentClassId = _is.ColumnInt('parentClassId', this);
+    name = _is.ColumnString('name', this);
+    referenceKey = _is.ColumnString('referenceKey', this);
+    description = _is.ColumnString('description', this);
+    shortDescription = _is.ColumnString('shortDescription', this);
+    level = _is.ColumnInt('level', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
+    tags = _is.ColumnSerializable<List<_ixkx8coo.FeatureTag>>('tags', this);
+    choiceGroupKey = _is.ColumnString('choiceGroupKey', this);
+    grantedLanguages = _is.ColumnSerializable<List<_iiw0j43j.Language>>(
       'grantedLanguages',
       this,
     );
-    grantedSkills = _i1.ColumnSerializable(
+    grantedSkills = _is.ColumnSerializable<List<_iqrhamom.Skill>>(
       'grantedSkills',
       this,
     );
-    grantedExpertiseSkills = _i1.ColumnSerializable(
+    grantedExpertiseSkills = _is.ColumnSerializable<List<_iqrhamom.Skill>>(
       'grantedExpertiseSkills',
       this,
     );
-    grantedArmorTraining = _i1.ColumnSerializable(
-      'grantedArmorTraining',
-      this,
-    );
-    grantedWeaponTraining = _i1.ColumnSerializable(
-      'grantedWeaponTraining',
-      this,
-    );
-    grantedToolKeys = _i1.ColumnSerializable(
+    grantedArmorTraining =
+        _is.ColumnSerializable<List<_irzuusaf.ArmorCategory>>(
+          'grantedArmorTraining',
+          this,
+        );
+    grantedWeaponTraining =
+        _is.ColumnSerializable<List<_ibtz7e0l.WeaponCategory>>(
+          'grantedWeaponTraining',
+          this,
+        );
+    grantedToolKeys = _is.ColumnSerializable<List<String>>(
       'grantedToolKeys',
       this,
     );
-    grantedExpertiseToolKeys = _i1.ColumnSerializable(
+    grantedExpertiseToolKeys = _is.ColumnSerializable<List<String>>(
       'grantedExpertiseToolKeys',
       this,
     );
-    grantedSpellKeys = _i1.ColumnSerializable(
+    grantedSpellKeys = _is.ColumnSerializable<List<String>>(
       'grantedSpellKeys',
       this,
     );
-    unarmoredDefenseRule = _i1.ColumnEnum(
+    unarmoredDefenseRule = _is.ColumnEnum(
       'unarmoredDefenseRule',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    relatedTable = _i1.ColumnString(
-      'relatedTable',
-      this,
-    );
+    relatedTable = _is.ColumnString('relatedTable', this);
   }
 
-  late final _i1.ColumnInt parentClassId;
+  late final ClassFeatureDataUpdateTable updateTable;
 
-  _i2.ClassDataTable? _parentClass;
+  late final _is.ColumnInt parentClassId;
 
-  late final _i1.ColumnString name;
+  _i7s9vfyh.ClassDataTable? _parentClass;
 
-  late final _i1.ColumnString referenceKey;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString referenceKey;
 
-  late final _i1.ColumnString shortDescription;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnInt level;
+  late final _is.ColumnString shortDescription;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnInt level;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  late final _i1.ColumnSerializable tags;
+  late final _is.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnString choiceGroupKey;
+  late final _is.ColumnSerializable<List<_ixkx8coo.FeatureTag>> tags;
 
-  late final _i1.ColumnSerializable grantedLanguages;
+  late final _is.ColumnString choiceGroupKey;
 
-  late final _i1.ColumnSerializable grantedSkills;
+  late final _is.ColumnSerializable<List<_iiw0j43j.Language>> grantedLanguages;
 
-  late final _i1.ColumnSerializable grantedExpertiseSkills;
+  late final _is.ColumnSerializable<List<_iqrhamom.Skill>> grantedSkills;
 
-  late final _i1.ColumnSerializable grantedArmorTraining;
+  late final _is.ColumnSerializable<List<_iqrhamom.Skill>>
+  grantedExpertiseSkills;
 
-  late final _i1.ColumnSerializable grantedWeaponTraining;
+  late final _is.ColumnSerializable<List<_irzuusaf.ArmorCategory>>
+  grantedArmorTraining;
 
-  late final _i1.ColumnSerializable grantedToolKeys;
+  late final _is.ColumnSerializable<List<_ibtz7e0l.WeaponCategory>>
+  grantedWeaponTraining;
 
-  late final _i1.ColumnSerializable grantedExpertiseToolKeys;
+  late final _is.ColumnSerializable<List<String>> grantedToolKeys;
 
-  late final _i1.ColumnSerializable grantedSpellKeys;
+  late final _is.ColumnSerializable<List<String>> grantedExpertiseToolKeys;
 
-  late final _i1.ColumnEnum<_i8.UnarmoredDefenseRule> unarmoredDefenseRule;
+  late final _is.ColumnSerializable<List<String>> grantedSpellKeys;
 
-  late final _i1.ColumnString relatedTable;
+  late final _is.ColumnEnum<_inypkr0b.UnarmoredDefenseRule>
+  unarmoredDefenseRule;
 
-  _i9.FeatureResourceDefinitionDataTable? ___resources;
+  late final _is.ColumnString relatedTable;
 
-  _i1.ManyRelation<_i9.FeatureResourceDefinitionDataTable>? _resources;
+  _iib0ncbr.FeatureResourceDefinitionDataTable? ___resources;
 
-  _i10.FeatureResourceEffectDataTable? ___resourceEffects;
+  _is.ManyRelation<_iib0ncbr.FeatureResourceDefinitionDataTable>? _resources;
 
-  _i1.ManyRelation<_i10.FeatureResourceEffectDataTable>? _resourceEffects;
+  _ipujnj10.FeatureResourceEffectDataTable? ___resourceEffects;
 
-  _i11.ClassSpellGrantDataTable? ___spellGrants;
+  _is.ManyRelation<_ipujnj10.FeatureResourceEffectDataTable>? _resourceEffects;
 
-  _i1.ManyRelation<_i11.ClassSpellGrantDataTable>? _spellGrants;
+  _ira2m5oj.ClassSpellGrantDataTable? ___spellGrants;
 
-  _i12.FeatureModifierDataTable? ___featureModifiers;
+  _is.ManyRelation<_ira2m5oj.ClassSpellGrantDataTable>? _spellGrants;
 
-  _i1.ManyRelation<_i12.FeatureModifierDataTable>? _featureModifiers;
+  _ilc9jnh2.FeatureModifierDataTable? ___featureModifiers;
 
-  _i2.ClassDataTable get parentClass {
+  _is.ManyRelation<_ilc9jnh2.FeatureModifierDataTable>? _featureModifiers;
+
+  _i7s9vfyh.ClassDataTable get parentClass {
     if (_parentClass != null) return _parentClass!;
-    _parentClass = _i1.createRelationTable(
+    _parentClass = _is.createRelationTable(
       relationFieldName: 'parentClass',
       field: ClassFeatureData.t.parentClassId,
-      foreignField: _i2.ClassData.t.id,
+      foreignField: _i7s9vfyh.ClassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ClassDataTable(tableRelation: foreignTableRelation),
+          _i7s9vfyh.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _parentClass!;
   }
 
-  _i9.FeatureResourceDefinitionDataTable get __resources {
+  _iib0ncbr.FeatureResourceDefinitionDataTable get __resources {
     if (___resources != null) return ___resources!;
-    ___resources = _i1.createRelationTable(
+    ___resources = _is.createRelationTable(
       relationFieldName: '__resources',
       field: ClassFeatureData.t.id,
-      foreignField: _i9.FeatureResourceDefinitionData.t.classFeatureId,
+      foreignField: _iib0ncbr.FeatureResourceDefinitionData.t.classFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i9.FeatureResourceDefinitionDataTable(
-              tableRelation: foreignTableRelation),
+          _iib0ncbr.FeatureResourceDefinitionDataTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
     return ___resources!;
   }
 
-  _i10.FeatureResourceEffectDataTable get __resourceEffects {
+  _ipujnj10.FeatureResourceEffectDataTable get __resourceEffects {
     if (___resourceEffects != null) return ___resourceEffects!;
-    ___resourceEffects = _i1.createRelationTable(
+    ___resourceEffects = _is.createRelationTable(
       relationFieldName: '__resourceEffects',
       field: ClassFeatureData.t.id,
-      foreignField: _i10.FeatureResourceEffectData.t.classFeatureId,
+      foreignField: _ipujnj10.FeatureResourceEffectData.t.classFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i10.FeatureResourceEffectDataTable(
-              tableRelation: foreignTableRelation),
+          _ipujnj10.FeatureResourceEffectDataTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
     return ___resourceEffects!;
   }
 
-  _i11.ClassSpellGrantDataTable get __spellGrants {
+  _ira2m5oj.ClassSpellGrantDataTable get __spellGrants {
     if (___spellGrants != null) return ___spellGrants!;
-    ___spellGrants = _i1.createRelationTable(
+    ___spellGrants = _is.createRelationTable(
       relationFieldName: '__spellGrants',
       field: ClassFeatureData.t.id,
-      foreignField: _i11.ClassSpellGrantData.t.sourceFeatureId,
+      foreignField: _ira2m5oj.ClassSpellGrantData.t.sourceFeatureId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i11.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _ira2m5oj.ClassSpellGrantDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
     return ___spellGrants!;
   }
 
-  _i12.FeatureModifierDataTable get __featureModifiers {
+  _ilc9jnh2.FeatureModifierDataTable get __featureModifiers {
     if (___featureModifiers != null) return ___featureModifiers!;
-    ___featureModifiers = _i1.createRelationTable(
+    ___featureModifiers = _is.createRelationTable(
       relationFieldName: '__featureModifiers',
       field: ClassFeatureData.t.id,
-      foreignField: _i12.FeatureModifierData.t.classFeatureId,
+      foreignField: _ilc9jnh2.FeatureModifierData.t.classFeatureId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i12.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _ilc9jnh2.FeatureModifierDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
     return ___featureModifiers!;
   }
 
-  _i1.ManyRelation<_i9.FeatureResourceDefinitionDataTable> get resources {
+  _is.ManyRelation<_iib0ncbr.FeatureResourceDefinitionDataTable> get resources {
     if (_resources != null) return _resources!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'resources',
       field: ClassFeatureData.t.id,
-      foreignField: _i9.FeatureResourceDefinitionData.t.classFeatureId,
+      foreignField: _iib0ncbr.FeatureResourceDefinitionData.t.classFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i9.FeatureResourceDefinitionDataTable(
-              tableRelation: foreignTableRelation),
+          _iib0ncbr.FeatureResourceDefinitionDataTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
-    _resources = _i1.ManyRelation<_i9.FeatureResourceDefinitionDataTable>(
+    _resources = _is.ManyRelation<_iib0ncbr.FeatureResourceDefinitionDataTable>(
       tableWithRelations: relationTable,
-      table: _i9.FeatureResourceDefinitionDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
+      table: _iib0ncbr.FeatureResourceDefinitionDataTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
     );
     return _resources!;
   }
 
-  _i1.ManyRelation<_i10.FeatureResourceEffectDataTable> get resourceEffects {
+  _is.ManyRelation<_ipujnj10.FeatureResourceEffectDataTable>
+  get resourceEffects {
     if (_resourceEffects != null) return _resourceEffects!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'resourceEffects',
       field: ClassFeatureData.t.id,
-      foreignField: _i10.FeatureResourceEffectData.t.classFeatureId,
+      foreignField: _ipujnj10.FeatureResourceEffectData.t.classFeatureId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i10.FeatureResourceEffectDataTable(
-              tableRelation: foreignTableRelation),
+          _ipujnj10.FeatureResourceEffectDataTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
-    _resourceEffects = _i1.ManyRelation<_i10.FeatureResourceEffectDataTable>(
-      tableWithRelations: relationTable,
-      table: _i10.FeatureResourceEffectDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
-    );
+    _resourceEffects =
+        _is.ManyRelation<_ipujnj10.FeatureResourceEffectDataTable>(
+          tableWithRelations: relationTable,
+          table: _ipujnj10.FeatureResourceEffectDataTable(
+            tableRelation: relationTable.tableRelation!.lastRelation,
+          ),
+        );
     return _resourceEffects!;
   }
 
-  _i1.ManyRelation<_i11.ClassSpellGrantDataTable> get spellGrants {
+  _is.ManyRelation<_ira2m5oj.ClassSpellGrantDataTable> get spellGrants {
     if (_spellGrants != null) return _spellGrants!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'spellGrants',
       field: ClassFeatureData.t.id,
-      foreignField: _i11.ClassSpellGrantData.t.sourceFeatureId,
+      foreignField: _ira2m5oj.ClassSpellGrantData.t.sourceFeatureId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i11.ClassSpellGrantDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _ira2m5oj.ClassSpellGrantDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
-    _spellGrants = _i1.ManyRelation<_i11.ClassSpellGrantDataTable>(
+    _spellGrants = _is.ManyRelation<_ira2m5oj.ClassSpellGrantDataTable>(
       tableWithRelations: relationTable,
-      table: _i11.ClassSpellGrantDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
+      table: _ira2m5oj.ClassSpellGrantDataTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
     );
     return _spellGrants!;
   }
 
-  _i1.ManyRelation<_i12.FeatureModifierDataTable> get featureModifiers {
+  _is.ManyRelation<_ilc9jnh2.FeatureModifierDataTable> get featureModifiers {
     if (_featureModifiers != null) return _featureModifiers!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'featureModifiers',
       field: ClassFeatureData.t.id,
-      foreignField: _i12.FeatureModifierData.t.classFeatureId,
+      foreignField: _ilc9jnh2.FeatureModifierData.t.classFeatureId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i12.FeatureModifierDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _ilc9jnh2.FeatureModifierDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
-    _featureModifiers = _i1.ManyRelation<_i12.FeatureModifierDataTable>(
+    _featureModifiers = _is.ManyRelation<_ilc9jnh2.FeatureModifierDataTable>(
       tableWithRelations: relationTable,
-      table: _i12.FeatureModifierDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
+      table: _ilc9jnh2.FeatureModifierDataTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
     );
     return _featureModifiers!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        parentClassId,
-        name,
-        referenceKey,
-        description,
-        shortDescription,
-        level,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        tags,
-        choiceGroupKey,
-        grantedLanguages,
-        grantedSkills,
-        grantedExpertiseSkills,
-        grantedArmorTraining,
-        grantedWeaponTraining,
-        grantedToolKeys,
-        grantedExpertiseToolKeys,
-        grantedSpellKeys,
-        unarmoredDefenseRule,
-        relatedTable,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    parentClassId,
+    name,
+    referenceKey,
+    description,
+    shortDescription,
+    level,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+    tags,
+    choiceGroupKey,
+    grantedLanguages,
+    grantedSkills,
+    grantedExpertiseSkills,
+    grantedArmorTraining,
+    grantedWeaponTraining,
+    grantedToolKeys,
+    grantedExpertiseToolKeys,
+    grantedSpellKeys,
+    unarmoredDefenseRule,
+    relatedTable,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'parentClass') {
       return parentClass;
     }
@@ -917,13 +1037,13 @@ class ClassFeatureDataTable extends _i1.Table<int?> {
   }
 }
 
-class ClassFeatureDataInclude extends _i1.IncludeObject {
+class ClassFeatureDataInclude extends _is.IncludeObject {
   ClassFeatureDataInclude._({
-    _i2.ClassDataInclude? parentClass,
-    _i9.FeatureResourceDefinitionDataIncludeList? resources,
-    _i10.FeatureResourceEffectDataIncludeList? resourceEffects,
-    _i11.ClassSpellGrantDataIncludeList? spellGrants,
-    _i12.FeatureModifierDataIncludeList? featureModifiers,
+    _i7s9vfyh.ClassDataInclude? parentClass,
+    _iib0ncbr.FeatureResourceDefinitionDataIncludeList? resources,
+    _ipujnj10.FeatureResourceEffectDataIncludeList? resourceEffects,
+    _ira2m5oj.ClassSpellGrantDataIncludeList? spellGrants,
+    _ilc9jnh2.FeatureModifierDataIncludeList? featureModifiers,
   }) {
     _parentClass = parentClass;
     _resources = resources;
@@ -932,36 +1052,35 @@ class ClassFeatureDataInclude extends _i1.IncludeObject {
     _featureModifiers = featureModifiers;
   }
 
-  _i2.ClassDataInclude? _parentClass;
+  _i7s9vfyh.ClassDataInclude? _parentClass;
 
-  _i9.FeatureResourceDefinitionDataIncludeList? _resources;
+  _iib0ncbr.FeatureResourceDefinitionDataIncludeList? _resources;
 
-  _i10.FeatureResourceEffectDataIncludeList? _resourceEffects;
+  _ipujnj10.FeatureResourceEffectDataIncludeList? _resourceEffects;
 
-  _i11.ClassSpellGrantDataIncludeList? _spellGrants;
+  _ira2m5oj.ClassSpellGrantDataIncludeList? _spellGrants;
 
-  _i12.FeatureModifierDataIncludeList? _featureModifiers;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'parentClass': _parentClass,
-        'resources': _resources,
-        'resourceEffects': _resourceEffects,
-        'spellGrants': _spellGrants,
-        'featureModifiers': _featureModifiers,
-      };
+  _ilc9jnh2.FeatureModifierDataIncludeList? _featureModifiers;
 
   @override
-  _i1.Table<int?> get table => ClassFeatureData.t;
+  Map<String, _is.Include?> get includes => {
+    'parentClass': _parentClass,
+    'resources': _resources,
+    'resourceEffects': _resourceEffects,
+    'spellGrants': _spellGrants,
+    'featureModifiers': _featureModifiers,
+  };
+
+  @override
+  _is.Table<int?> get table => ClassFeatureData.t;
 }
 
-class ClassFeatureDataIncludeList extends _i1.IncludeList {
+class ClassFeatureDataIncludeList extends _is.IncludeList {
   ClassFeatureDataIncludeList._({
-    _i1.WhereExpressionBuilder<ClassFeatureDataTable>? where,
+    _is.WhereExpressionBuilder<ClassFeatureDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -969,10 +1088,10 @@ class ClassFeatureDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => ClassFeatureData.t;
+  _is.Table<int?> get table => ClassFeatureData.t;
 }
 
 class ClassFeatureDataRepository {
@@ -1009,25 +1128,27 @@ class ClassFeatureDataRepository {
   /// );
   /// ```
   Future<List<ClassFeatureData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassFeatureDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassFeatureDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ClassFeatureDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassFeatureDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
+    _is.Transaction? transaction,
     ClassFeatureDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<ClassFeatureData>(
       where: where?.call(ClassFeatureData.t),
       orderBy: orderBy?.call(ClassFeatureData.t),
       orderByList: orderByList?.call(ClassFeatureData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -1049,37 +1170,43 @@ class ClassFeatureDataRepository {
   /// );
   /// ```
   Future<ClassFeatureData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassFeatureDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassFeatureDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<ClassFeatureDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassFeatureDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
+    _is.Transaction? transaction,
     ClassFeatureDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<ClassFeatureData>(
       where: where?.call(ClassFeatureData.t),
       orderBy: orderBy?.call(ClassFeatureData.t),
       orderByList: orderByList?.call(ClassFeatureData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [ClassFeatureData] by its [id] or null if no such row exists.
   Future<ClassFeatureData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     ClassFeatureDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<ClassFeatureData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -1089,14 +1216,26 @@ class ClassFeatureDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassFeatureData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassFeatureData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<ClassFeatureData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -1104,12 +1243,81 @@ class ClassFeatureDataRepository {
   ///
   /// The returned [ClassFeatureData] will have its `id` field set.
   Future<ClassFeatureData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<ClassFeatureData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [ClassFeatureData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [ClassFeatureData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ClassFeatureData>> upsert(
+    _is.DatabaseSession session,
+    List<ClassFeatureData> rows, {
+    required _is.ColumnSelections<ClassFeatureDataTable> conflictColumns,
+    _is.ColumnSelections<ClassFeatureDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ClassFeatureDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<ClassFeatureData>(
+      rows,
+      conflictColumns: conflictColumns(ClassFeatureData.t),
+      updateColumns: updateColumns?.call(ClassFeatureData.t),
+      updateWhere: updateWhere?.call(ClassFeatureData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [ClassFeatureData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [ClassFeatureData] will have its `id` field set.
+  Future<ClassFeatureData?> upsertRow(
+    _is.DatabaseSession session,
+    ClassFeatureData row, {
+    required _is.ColumnSelections<ClassFeatureDataTable> conflictColumns,
+    _is.ColumnSelections<ClassFeatureDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ClassFeatureDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<ClassFeatureData>(
+      row,
+      conflictColumns: conflictColumns(ClassFeatureData.t),
+      updateColumns: updateColumns?.call(ClassFeatureData.t),
+      updateWhere: updateWhere?.call(ClassFeatureData.t),
       transaction: transaction,
     );
   }
@@ -1119,16 +1327,22 @@ class ClassFeatureDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassFeatureData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassFeatureData> rows, {
-    _i1.ColumnSelections<ClassFeatureDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ClassFeatureDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<ClassFeatureData>(
       rows,
       columns: columns?.call(ClassFeatureData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -1136,10 +1350,10 @@ class ClassFeatureDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<ClassFeatureData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData row, {
-    _i1.ColumnSelections<ClassFeatureDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ClassFeatureDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<ClassFeatureData>(
       row,
@@ -1148,25 +1362,85 @@ class ClassFeatureDataRepository {
     );
   }
 
+  /// Updates a single [ClassFeatureData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<ClassFeatureData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<ClassFeatureDataUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<ClassFeatureData>(
+      id,
+      columnValues: columnValues(ClassFeatureData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [ClassFeatureData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ClassFeatureData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<ClassFeatureDataUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<ClassFeatureDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<ClassFeatureDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<ClassFeatureData>(
+      columnValues: columnValues(ClassFeatureData.t.updateTable),
+      where: where(ClassFeatureData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(ClassFeatureData.t),
+      orderByList: orderByList?.call(ClassFeatureData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [ClassFeatureData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassFeatureData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ClassFeatureData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ClassFeatureDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<ClassFeatureData>(
       rows,
+      orderBy: orderBy?.call(ClassFeatureData.t),
+      orderByList: orderByList?.call(ClassFeatureData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [ClassFeatureData].
   Future<ClassFeatureData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<ClassFeatureData>(
       row,
@@ -1175,28 +1449,57 @@ class ClassFeatureDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ClassFeatureData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<ClassFeatureDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ClassFeatureDataTable> where,
+    _is.OrderByBuilder<ClassFeatureDataTable>? orderBy,
+    _is.OrderByListBuilder<ClassFeatureDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<ClassFeatureData>(
       where: where(ClassFeatureData.t),
+      orderBy: orderBy?.call(ClassFeatureData.t),
+      orderByList: orderByList?.call(ClassFeatureData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ClassFeatureDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ClassFeatureDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<ClassFeatureData>(
       where: where?.call(ClassFeatureData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [ClassFeatureData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ClassFeatureDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<ClassFeatureData>(
+      where: where(ClassFeatureData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -1208,10 +1511,11 @@ class ClassFeatureDataAttachRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [FeatureResourceDefinitionData]s
   /// by setting each [FeatureResourceDefinitionData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
   Future<void> resources(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    List<_i9.FeatureResourceDefinitionData> featureResourceDefinitionData, {
-    _i1.Transaction? transaction,
+    List<_iib0ncbr.FeatureResourceDefinitionData>
+    featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
@@ -1223,9 +1527,9 @@ class ClassFeatureDataAttachRepository {
     var $featureResourceDefinitionData = featureResourceDefinitionData
         .map((e) => e.copyWith(classFeatureId: classFeatureData.id))
         .toList();
-    await session.db.update<_i9.FeatureResourceDefinitionData>(
+    await session.db.update<_iib0ncbr.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i9.FeatureResourceDefinitionData.t.classFeatureId],
+      columns: [_iib0ncbr.FeatureResourceDefinitionData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1233,10 +1537,10 @@ class ClassFeatureDataAttachRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [FeatureResourceEffectData]s
   /// by setting each [FeatureResourceEffectData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
   Future<void> resourceEffects(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    List<_i10.FeatureResourceEffectData> featureResourceEffectData, {
-    _i1.Transaction? transaction,
+    List<_ipujnj10.FeatureResourceEffectData> featureResourceEffectData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureResourceEffectData.id');
@@ -1248,9 +1552,9 @@ class ClassFeatureDataAttachRepository {
     var $featureResourceEffectData = featureResourceEffectData
         .map((e) => e.copyWith(classFeatureId: classFeatureData.id))
         .toList();
-    await session.db.update<_i10.FeatureResourceEffectData>(
+    await session.db.update<_ipujnj10.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i10.FeatureResourceEffectData.t.classFeatureId],
+      columns: [_ipujnj10.FeatureResourceEffectData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1258,10 +1562,10 @@ class ClassFeatureDataAttachRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [ClassSpellGrantData]s
   /// by setting each [ClassSpellGrantData]'s foreign key `sourceFeatureId` to refer to this [ClassFeatureData].
   Future<void> spellGrants(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    List<_i11.ClassSpellGrantData> classSpellGrantData, {
-    _i1.Transaction? transaction,
+    List<_ira2m5oj.ClassSpellGrantData> classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1273,9 +1577,9 @@ class ClassFeatureDataAttachRepository {
     var $classSpellGrantData = classSpellGrantData
         .map((e) => e.copyWith(sourceFeatureId: classFeatureData.id))
         .toList();
-    await session.db.update<_i11.ClassSpellGrantData>(
+    await session.db.update<_ira2m5oj.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i11.ClassSpellGrantData.t.sourceFeatureId],
+      columns: [_ira2m5oj.ClassSpellGrantData.t.sourceFeatureId],
       transaction: transaction,
     );
   }
@@ -1283,10 +1587,10 @@ class ClassFeatureDataAttachRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [FeatureModifierData]s
   /// by setting each [FeatureModifierData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
   Future<void> featureModifiers(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    List<_i12.FeatureModifierData> featureModifierData, {
-    _i1.Transaction? transaction,
+    List<_ilc9jnh2.FeatureModifierData> featureModifierData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureModifierData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureModifierData.id');
@@ -1298,9 +1602,9 @@ class ClassFeatureDataAttachRepository {
     var $featureModifierData = featureModifierData
         .map((e) => e.copyWith(classFeatureId: classFeatureData.id))
         .toList();
-    await session.db.update<_i12.FeatureModifierData>(
+    await session.db.update<_ilc9jnh2.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i12.FeatureModifierData.t.classFeatureId],
+      columns: [_ilc9jnh2.FeatureModifierData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1312,10 +1616,10 @@ class ClassFeatureDataAttachRowRepository {
   /// Creates a relation between the given [ClassFeatureData] and [ClassData]
   /// by setting the [ClassFeatureData]'s foreign key `parentClassId` to refer to the [ClassData].
   Future<void> parentClass(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    _i2.ClassData parentClass, {
-    _i1.Transaction? transaction,
+    _i7s9vfyh.ClassData parentClass, {
+    _is.Transaction? transaction,
   }) async {
     if (classFeatureData.id == null) {
       throw ArgumentError.notNull('classFeatureData.id');
@@ -1324,8 +1628,9 @@ class ClassFeatureDataAttachRowRepository {
       throw ArgumentError.notNull('parentClass.id');
     }
 
-    var $classFeatureData =
-        classFeatureData.copyWith(parentClassId: parentClass.id);
+    var $classFeatureData = classFeatureData.copyWith(
+      parentClassId: parentClass.id,
+    );
     await session.db.updateRow<ClassFeatureData>(
       $classFeatureData,
       columns: [ClassFeatureData.t.parentClassId],
@@ -1336,10 +1641,10 @@ class ClassFeatureDataAttachRowRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [FeatureResourceDefinitionData]
   /// by setting the [FeatureResourceDefinitionData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
   Future<void> resources(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    _i9.FeatureResourceDefinitionData featureResourceDefinitionData, {
-    _i1.Transaction? transaction,
+    _iib0ncbr.FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
@@ -1349,10 +1654,11 @@ class ClassFeatureDataAttachRowRepository {
     }
 
     var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
-        classFeatureId: classFeatureData.id);
-    await session.db.updateRow<_i9.FeatureResourceDefinitionData>(
+      classFeatureId: classFeatureData.id,
+    );
+    await session.db.updateRow<_iib0ncbr.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i9.FeatureResourceDefinitionData.t.classFeatureId],
+      columns: [_iib0ncbr.FeatureResourceDefinitionData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1360,10 +1666,10 @@ class ClassFeatureDataAttachRowRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [FeatureResourceEffectData]
   /// by setting the [FeatureResourceEffectData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
   Future<void> resourceEffects(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    _i10.FeatureResourceEffectData featureResourceEffectData, {
-    _i1.Transaction? transaction,
+    _ipujnj10.FeatureResourceEffectData featureResourceEffectData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.id == null) {
       throw ArgumentError.notNull('featureResourceEffectData.id');
@@ -1372,11 +1678,12 @@ class ClassFeatureDataAttachRowRepository {
       throw ArgumentError.notNull('classFeatureData.id');
     }
 
-    var $featureResourceEffectData =
-        featureResourceEffectData.copyWith(classFeatureId: classFeatureData.id);
-    await session.db.updateRow<_i10.FeatureResourceEffectData>(
+    var $featureResourceEffectData = featureResourceEffectData.copyWith(
+      classFeatureId: classFeatureData.id,
+    );
+    await session.db.updateRow<_ipujnj10.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i10.FeatureResourceEffectData.t.classFeatureId],
+      columns: [_ipujnj10.FeatureResourceEffectData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1384,10 +1691,10 @@ class ClassFeatureDataAttachRowRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [ClassSpellGrantData]
   /// by setting the [ClassSpellGrantData]'s foreign key `sourceFeatureId` to refer to this [ClassFeatureData].
   Future<void> spellGrants(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    _i11.ClassSpellGrantData classSpellGrantData, {
-    _i1.Transaction? transaction,
+    _ira2m5oj.ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1396,11 +1703,12 @@ class ClassFeatureDataAttachRowRepository {
       throw ArgumentError.notNull('classFeatureData.id');
     }
 
-    var $classSpellGrantData =
-        classSpellGrantData.copyWith(sourceFeatureId: classFeatureData.id);
-    await session.db.updateRow<_i11.ClassSpellGrantData>(
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceFeatureId: classFeatureData.id,
+    );
+    await session.db.updateRow<_ira2m5oj.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i11.ClassSpellGrantData.t.sourceFeatureId],
+      columns: [_ira2m5oj.ClassSpellGrantData.t.sourceFeatureId],
       transaction: transaction,
     );
   }
@@ -1408,10 +1716,10 @@ class ClassFeatureDataAttachRowRepository {
   /// Creates a relation between this [ClassFeatureData] and the given [FeatureModifierData]
   /// by setting the [FeatureModifierData]'s foreign key `classFeatureId` to refer to this [ClassFeatureData].
   Future<void> featureModifiers(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ClassFeatureData classFeatureData,
-    _i12.FeatureModifierData featureModifierData, {
-    _i1.Transaction? transaction,
+    _ilc9jnh2.FeatureModifierData featureModifierData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureModifierData.id == null) {
       throw ArgumentError.notNull('featureModifierData.id');
@@ -1420,11 +1728,12 @@ class ClassFeatureDataAttachRowRepository {
       throw ArgumentError.notNull('classFeatureData.id');
     }
 
-    var $featureModifierData =
-        featureModifierData.copyWith(classFeatureId: classFeatureData.id);
-    await session.db.updateRow<_i12.FeatureModifierData>(
+    var $featureModifierData = featureModifierData.copyWith(
+      classFeatureId: classFeatureData.id,
+    );
+    await session.db.updateRow<_ilc9jnh2.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i12.FeatureModifierData.t.classFeatureId],
+      columns: [_ilc9jnh2.FeatureModifierData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1439,9 +1748,10 @@ class ClassFeatureDataDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> resources(
-    _i1.Session session,
-    List<_i9.FeatureResourceDefinitionData> featureResourceDefinitionData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    List<_iib0ncbr.FeatureResourceDefinitionData>
+    featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
@@ -1450,9 +1760,9 @@ class ClassFeatureDataDetachRepository {
     var $featureResourceDefinitionData = featureResourceDefinitionData
         .map((e) => e.copyWith(classFeatureId: null))
         .toList();
-    await session.db.update<_i9.FeatureResourceDefinitionData>(
+    await session.db.update<_iib0ncbr.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i9.FeatureResourceDefinitionData.t.classFeatureId],
+      columns: [_iib0ncbr.FeatureResourceDefinitionData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1463,9 +1773,9 @@ class ClassFeatureDataDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> resourceEffects(
-    _i1.Session session,
-    List<_i10.FeatureResourceEffectData> featureResourceEffectData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    List<_ipujnj10.FeatureResourceEffectData> featureResourceEffectData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureResourceEffectData.id');
@@ -1474,9 +1784,9 @@ class ClassFeatureDataDetachRepository {
     var $featureResourceEffectData = featureResourceEffectData
         .map((e) => e.copyWith(classFeatureId: null))
         .toList();
-    await session.db.update<_i10.FeatureResourceEffectData>(
+    await session.db.update<_ipujnj10.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i10.FeatureResourceEffectData.t.classFeatureId],
+      columns: [_ipujnj10.FeatureResourceEffectData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1487,9 +1797,9 @@ class ClassFeatureDataDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> spellGrants(
-    _i1.Session session,
-    List<_i11.ClassSpellGrantData> classSpellGrantData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    List<_ira2m5oj.ClassSpellGrantData> classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('classSpellGrantData.id');
@@ -1498,9 +1808,9 @@ class ClassFeatureDataDetachRepository {
     var $classSpellGrantData = classSpellGrantData
         .map((e) => e.copyWith(sourceFeatureId: null))
         .toList();
-    await session.db.update<_i11.ClassSpellGrantData>(
+    await session.db.update<_ira2m5oj.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i11.ClassSpellGrantData.t.sourceFeatureId],
+      columns: [_ira2m5oj.ClassSpellGrantData.t.sourceFeatureId],
       transaction: transaction,
     );
   }
@@ -1511,9 +1821,9 @@ class ClassFeatureDataDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> featureModifiers(
-    _i1.Session session,
-    List<_i12.FeatureModifierData> featureModifierData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    List<_ilc9jnh2.FeatureModifierData> featureModifierData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureModifierData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('featureModifierData.id');
@@ -1522,9 +1832,9 @@ class ClassFeatureDataDetachRepository {
     var $featureModifierData = featureModifierData
         .map((e) => e.copyWith(classFeatureId: null))
         .toList();
-    await session.db.update<_i12.FeatureModifierData>(
+    await session.db.update<_ilc9jnh2.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i12.FeatureModifierData.t.classFeatureId],
+      columns: [_ilc9jnh2.FeatureModifierData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1539,19 +1849,20 @@ class ClassFeatureDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> resources(
-    _i1.Session session,
-    _i9.FeatureResourceDefinitionData featureResourceDefinitionData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _iib0ncbr.FeatureResourceDefinitionData featureResourceDefinitionData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceDefinitionData.id == null) {
       throw ArgumentError.notNull('featureResourceDefinitionData.id');
     }
 
-    var $featureResourceDefinitionData =
-        featureResourceDefinitionData.copyWith(classFeatureId: null);
-    await session.db.updateRow<_i9.FeatureResourceDefinitionData>(
+    var $featureResourceDefinitionData = featureResourceDefinitionData.copyWith(
+      classFeatureId: null,
+    );
+    await session.db.updateRow<_iib0ncbr.FeatureResourceDefinitionData>(
       $featureResourceDefinitionData,
-      columns: [_i9.FeatureResourceDefinitionData.t.classFeatureId],
+      columns: [_iib0ncbr.FeatureResourceDefinitionData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1562,19 +1873,20 @@ class ClassFeatureDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> resourceEffects(
-    _i1.Session session,
-    _i10.FeatureResourceEffectData featureResourceEffectData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _ipujnj10.FeatureResourceEffectData featureResourceEffectData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceEffectData.id == null) {
       throw ArgumentError.notNull('featureResourceEffectData.id');
     }
 
-    var $featureResourceEffectData =
-        featureResourceEffectData.copyWith(classFeatureId: null);
-    await session.db.updateRow<_i10.FeatureResourceEffectData>(
+    var $featureResourceEffectData = featureResourceEffectData.copyWith(
+      classFeatureId: null,
+    );
+    await session.db.updateRow<_ipujnj10.FeatureResourceEffectData>(
       $featureResourceEffectData,
-      columns: [_i10.FeatureResourceEffectData.t.classFeatureId],
+      columns: [_ipujnj10.FeatureResourceEffectData.t.classFeatureId],
       transaction: transaction,
     );
   }
@@ -1585,19 +1897,20 @@ class ClassFeatureDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> spellGrants(
-    _i1.Session session,
-    _i11.ClassSpellGrantData classSpellGrantData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _ira2m5oj.ClassSpellGrantData classSpellGrantData, {
+    _is.Transaction? transaction,
   }) async {
     if (classSpellGrantData.id == null) {
       throw ArgumentError.notNull('classSpellGrantData.id');
     }
 
-    var $classSpellGrantData =
-        classSpellGrantData.copyWith(sourceFeatureId: null);
-    await session.db.updateRow<_i11.ClassSpellGrantData>(
+    var $classSpellGrantData = classSpellGrantData.copyWith(
+      sourceFeatureId: null,
+    );
+    await session.db.updateRow<_ira2m5oj.ClassSpellGrantData>(
       $classSpellGrantData,
-      columns: [_i11.ClassSpellGrantData.t.sourceFeatureId],
+      columns: [_ira2m5oj.ClassSpellGrantData.t.sourceFeatureId],
       transaction: transaction,
     );
   }
@@ -1608,19 +1921,20 @@ class ClassFeatureDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> featureModifiers(
-    _i1.Session session,
-    _i12.FeatureModifierData featureModifierData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _ilc9jnh2.FeatureModifierData featureModifierData, {
+    _is.Transaction? transaction,
   }) async {
     if (featureModifierData.id == null) {
       throw ArgumentError.notNull('featureModifierData.id');
     }
 
-    var $featureModifierData =
-        featureModifierData.copyWith(classFeatureId: null);
-    await session.db.updateRow<_i12.FeatureModifierData>(
+    var $featureModifierData = featureModifierData.copyWith(
+      classFeatureId: null,
+    );
+    await session.db.updateRow<_ilc9jnh2.FeatureModifierData>(
       $featureModifierData,
-      columns: [_i12.FeatureModifierData.t.classFeatureId],
+      columns: [_ilc9jnh2.FeatureModifierData.t.classFeatureId],
       transaction: transaction,
     );
   }

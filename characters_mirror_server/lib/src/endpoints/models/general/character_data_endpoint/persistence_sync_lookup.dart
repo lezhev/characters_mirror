@@ -60,8 +60,7 @@ Future<List<CharacterData>> _loadCharactersUpdatedAfter(
       }
       return expression;
     },
-    orderBy: (t) => t.updatedAt,
-    orderDescending: false,
+    orderBy: (t) => t.updatedAt.asc(),
     include: _characterRecordInclude(),
   );
 
@@ -93,7 +92,7 @@ String _randomHex(Random random, int length) {
 }
 
 Future<int> _requireCurrentUserId(Session session) async {
-  final userId = (await session.authenticated)?.userId;
+  final userId = session.authenticated?.userId;
   if (userId == null) {
     throw Exception('Authentication required.');
   }

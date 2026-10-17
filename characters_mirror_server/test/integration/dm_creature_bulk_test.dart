@@ -61,7 +61,7 @@ void main() {
             reason: 'A fresh fixture owner must have no pre-existing library.');
         final gm = sessions.copyWith(
             authentication: AuthenticationOverride.authenticationInfo(
-                userId, {Scope('gm')}));
+                (userId).toString(), {Scope('gm')}));
         final ids = <int>[];
         final importer = FoundryCreatureImporter();
         final store = DmCreatureStore();
@@ -169,5 +169,7 @@ void main() {
         await session.close();
       }
     }, timeout: const Timeout(Duration(minutes: 10)));
-  }, runMode: 'test', rollbackDatabase: RollbackDatabase.afterEach);
+  }, runMode: 'test', rollbackDatabase: RollbackDatabase.afterEach,
+    ephemeralDatabase: false,
+  );
 }

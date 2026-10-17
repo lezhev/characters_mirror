@@ -1,4 +1,5 @@
 enum: FeatureModifierValueKind
+serialized: byIndex
 values:
   - staticValue
   - classLevelProgression

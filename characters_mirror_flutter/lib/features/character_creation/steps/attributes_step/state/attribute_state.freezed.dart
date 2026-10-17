@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'attribute_state.dart';
@@ -9,6 +9,7 @@ part of 'attribute_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -29,29 +30,35 @@ mixin _$AttributeModeDraft {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as AttributeModeDraft;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is AttributeModeDraft &&
             const DeepCollectionEquality()
-                .equals(other.assignedAttributes, assignedAttributes) &&
+                .equals(other.assignedAttributes, _this.assignedAttributes) &&
             const DeepCollectionEquality()
-                .equals(other.remainingValues, remainingValues) &&
-            const DeepCollectionEquality().equals(other.boxStates, boxStates) &&
-            (identical(other.purchacePoints, purchacePoints) ||
-                other.purchacePoints == purchacePoints));
+                .equals(other.remainingValues, _this.remainingValues) &&
+            const DeepCollectionEquality()
+                .equals(other.boxStates, _this.boxStates) &&
+            (identical(other.purchacePoints, _this.purchacePoints) ||
+                other.purchacePoints == _this.purchacePoints));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(assignedAttributes),
-      const DeepCollectionEquality().hash(remainingValues),
-      const DeepCollectionEquality().hash(boxStates),
-      purchacePoints);
+  int get hashCode {
+    final _this = this as AttributeModeDraft;
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_this.assignedAttributes),
+        const DeepCollectionEquality().hash(_this.remainingValues),
+        const DeepCollectionEquality().hash(_this.boxStates),
+        _this.purchacePoints);
+  }
 
   @override
   String toString() {
-    return 'AttributeModeDraft(assignedAttributes: $assignedAttributes, remainingValues: $remainingValues, boxStates: $boxStates, purchacePoints: $purchacePoints)';
+    final _this = this as AttributeModeDraft;
+    return 'AttributeModeDraft(assignedAttributes: ${_this.assignedAttributes}, remainingValues: ${_this.remainingValues}, boxStates: ${_this.boxStates}, purchacePoints: ${_this.purchacePoints})';
   }
 }
 
@@ -86,7 +93,7 @@ class _$AttributeModeDraftCopyWithImpl<$Res>
     Object? boxStates = null,
     Object? purchacePoints = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(AttributeModeDraft(
       assignedAttributes: null == assignedAttributes
           ? _self.assignedAttributes
           : assignedAttributes // ignore: cast_nullable_to_non_nullable
@@ -282,9 +289,9 @@ extension AttributeModeDraftPatterns on AttributeModeDraft {
 
 class _AttributeModeDraft implements AttributeModeDraft {
   const _AttributeModeDraft(
-      {final Map<Attribute, int> assignedAttributes = const {},
-      final List<int?> remainingValues = const [],
-      final List<RollBoxState> boxStates = const [],
+      {Map<Attribute, int> assignedAttributes = const {},
+      List<int?> remainingValues = const [],
+      List<RollBoxState> boxStates = const [],
       this.purchacePoints = 27})
       : _assignedAttributes = assignedAttributes,
         _remainingValues = remainingValues,
@@ -336,22 +343,24 @@ class _AttributeModeDraft implements AttributeModeDraft {
         (other.runtimeType == runtimeType &&
             other is _AttributeModeDraft &&
             const DeepCollectionEquality()
-                .equals(other._assignedAttributes, _assignedAttributes) &&
+                .equals(other.assignedAttributes, _assignedAttributes) &&
             const DeepCollectionEquality()
-                .equals(other._remainingValues, _remainingValues) &&
+                .equals(other.remainingValues, _remainingValues) &&
             const DeepCollectionEquality()
-                .equals(other._boxStates, _boxStates) &&
+                .equals(other.boxStates, _boxStates) &&
             (identical(other.purchacePoints, purchacePoints) ||
                 other.purchacePoints == purchacePoints));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_assignedAttributes),
-      const DeepCollectionEquality().hash(_remainingValues),
-      const DeepCollectionEquality().hash(_boxStates),
-      purchacePoints);
+  int get hashCode {
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_assignedAttributes),
+        const DeepCollectionEquality().hash(_remainingValues),
+        const DeepCollectionEquality().hash(_boxStates),
+        purchacePoints);
+  }
 
   @override
   String toString() {
@@ -437,51 +446,56 @@ mixin _$AttributeBonusRule {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as AttributeBonusRule;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is AttributeBonusRule &&
-            (identical(other.groupKey, groupKey) ||
-                other.groupKey == groupKey) &&
-            (identical(other.choiceSetId, choiceSetId) ||
-                other.choiceSetId == choiceSetId) &&
-            (identical(other.sourceType, sourceType) ||
-                other.sourceType == sourceType) &&
-            (identical(other.sourceId, sourceId) ||
-                other.sourceId == sourceId) &&
-            (identical(other.bonusValue, bonusValue) ||
-                other.bonusValue == bonusValue) &&
-            (identical(other.pickCount, pickCount) ||
-                other.pickCount == pickCount) &&
-            (identical(other.mustBeDistinct, mustBeDistinct) ||
-                other.mustBeDistinct == mustBeDistinct) &&
+            (identical(other.groupKey, _this.groupKey) ||
+                other.groupKey == _this.groupKey) &&
+            (identical(other.choiceSetId, _this.choiceSetId) ||
+                other.choiceSetId == _this.choiceSetId) &&
+            (identical(other.sourceType, _this.sourceType) ||
+                other.sourceType == _this.sourceType) &&
+            (identical(other.sourceId, _this.sourceId) ||
+                other.sourceId == _this.sourceId) &&
+            (identical(other.bonusValue, _this.bonusValue) ||
+                other.bonusValue == _this.bonusValue) &&
+            (identical(other.pickCount, _this.pickCount) ||
+                other.pickCount == _this.pickCount) &&
+            (identical(other.mustBeDistinct, _this.mustBeDistinct) ||
+                other.mustBeDistinct == _this.mustBeDistinct) &&
             const DeepCollectionEquality()
-                .equals(other.allowedAttributes, allowedAttributes) &&
+                .equals(other.allowedAttributes, _this.allowedAttributes) &&
+            const DeepCollectionEquality().equals(
+                other.optionKeyByAttribute, _this.optionKeyByAttribute) &&
+            const DeepCollectionEquality().equals(
+                other.attributeKeyByOption, _this.attributeKeyByOption) &&
             const DeepCollectionEquality()
-                .equals(other.optionKeyByAttribute, optionKeyByAttribute) &&
-            const DeepCollectionEquality()
-                .equals(other.attributeKeyByOption, attributeKeyByOption) &&
-            const DeepCollectionEquality()
-                .equals(other.defaultAttributes, defaultAttributes));
+                .equals(other.defaultAttributes, _this.defaultAttributes));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      groupKey,
-      choiceSetId,
-      sourceType,
-      sourceId,
-      bonusValue,
-      pickCount,
-      mustBeDistinct,
-      const DeepCollectionEquality().hash(allowedAttributes),
-      const DeepCollectionEquality().hash(optionKeyByAttribute),
-      const DeepCollectionEquality().hash(attributeKeyByOption),
-      const DeepCollectionEquality().hash(defaultAttributes));
+  int get hashCode {
+    final _this = this as AttributeBonusRule;
+    return Object.hash(
+        runtimeType,
+        _this.groupKey,
+        _this.choiceSetId,
+        _this.sourceType,
+        _this.sourceId,
+        _this.bonusValue,
+        _this.pickCount,
+        _this.mustBeDistinct,
+        const DeepCollectionEquality().hash(_this.allowedAttributes),
+        const DeepCollectionEquality().hash(_this.optionKeyByAttribute),
+        const DeepCollectionEquality().hash(_this.attributeKeyByOption),
+        const DeepCollectionEquality().hash(_this.defaultAttributes));
+  }
 
   @override
   String toString() {
-    return 'AttributeBonusRule(groupKey: $groupKey, choiceSetId: $choiceSetId, sourceType: $sourceType, sourceId: $sourceId, bonusValue: $bonusValue, pickCount: $pickCount, mustBeDistinct: $mustBeDistinct, allowedAttributes: $allowedAttributes, optionKeyByAttribute: $optionKeyByAttribute, attributeKeyByOption: $attributeKeyByOption, defaultAttributes: $defaultAttributes)';
+    final _this = this as AttributeBonusRule;
+    return 'AttributeBonusRule(groupKey: ${_this.groupKey}, choiceSetId: ${_this.choiceSetId}, sourceType: ${_this.sourceType}, sourceId: ${_this.sourceId}, bonusValue: ${_this.bonusValue}, pickCount: ${_this.pickCount}, mustBeDistinct: ${_this.mustBeDistinct}, allowedAttributes: ${_this.allowedAttributes}, optionKeyByAttribute: ${_this.optionKeyByAttribute}, attributeKeyByOption: ${_this.attributeKeyByOption}, defaultAttributes: ${_this.defaultAttributes})';
   }
 }
 
@@ -530,7 +544,7 @@ class _$AttributeBonusRuleCopyWithImpl<$Res>
     Object? attributeKeyByOption = null,
     Object? defaultAttributes = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(AttributeBonusRule(
       groupKey: null == groupKey
           ? _self.groupKey
           : groupKey // ignore: cast_nullable_to_non_nullable
@@ -812,10 +826,10 @@ class _AttributeBonusRule implements AttributeBonusRule {
       required this.bonusValue,
       required this.pickCount,
       required this.mustBeDistinct,
-      required final Set<Attribute> allowedAttributes,
-      final Map<String, String> optionKeyByAttribute = const {},
-      final Map<String, String> attributeKeyByOption = const {},
-      final Set<Attribute> defaultAttributes = const {}})
+      required Set<Attribute> allowedAttributes,
+      Map<String, String> optionKeyByAttribute = const {},
+      Map<String, String> attributeKeyByOption = const {},
+      Set<Attribute> defaultAttributes = const {}})
       : _allowedAttributes = allowedAttributes,
         _optionKeyByAttribute = optionKeyByAttribute,
         _attributeKeyByOption = attributeKeyByOption,
@@ -902,29 +916,31 @@ class _AttributeBonusRule implements AttributeBonusRule {
             (identical(other.mustBeDistinct, mustBeDistinct) ||
                 other.mustBeDistinct == mustBeDistinct) &&
             const DeepCollectionEquality()
-                .equals(other._allowedAttributes, _allowedAttributes) &&
+                .equals(other.allowedAttributes, _allowedAttributes) &&
             const DeepCollectionEquality()
-                .equals(other._optionKeyByAttribute, _optionKeyByAttribute) &&
+                .equals(other.optionKeyByAttribute, _optionKeyByAttribute) &&
             const DeepCollectionEquality()
-                .equals(other._attributeKeyByOption, _attributeKeyByOption) &&
+                .equals(other.attributeKeyByOption, _attributeKeyByOption) &&
             const DeepCollectionEquality()
-                .equals(other._defaultAttributes, _defaultAttributes));
+                .equals(other.defaultAttributes, _defaultAttributes));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      groupKey,
-      choiceSetId,
-      sourceType,
-      sourceId,
-      bonusValue,
-      pickCount,
-      mustBeDistinct,
-      const DeepCollectionEquality().hash(_allowedAttributes),
-      const DeepCollectionEquality().hash(_optionKeyByAttribute),
-      const DeepCollectionEquality().hash(_attributeKeyByOption),
-      const DeepCollectionEquality().hash(_defaultAttributes));
+  int get hashCode {
+    return Object.hash(
+        runtimeType,
+        groupKey,
+        choiceSetId,
+        sourceType,
+        sourceId,
+        bonusValue,
+        pickCount,
+        mustBeDistinct,
+        const DeepCollectionEquality().hash(_allowedAttributes),
+        const DeepCollectionEquality().hash(_optionKeyByAttribute),
+        const DeepCollectionEquality().hash(_attributeKeyByOption),
+        const DeepCollectionEquality().hash(_defaultAttributes));
+  }
 
   @override
   String toString() {
@@ -1049,42 +1065,48 @@ mixin _$AttributeStateModel {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as AttributeStateModel;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is AttributeStateModel &&
-            (identical(other.selectionType, selectionType) ||
-                other.selectionType == selectionType) &&
-            const DeepCollectionEquality().equals(other.drafts, drafts) &&
-            (identical(other.bonusMode, bonusMode) ||
-                other.bonusMode == bonusMode) &&
+            (identical(other.selectionType, _this.selectionType) ||
+                other.selectionType == _this.selectionType) &&
+            const DeepCollectionEquality().equals(other.drafts, _this.drafts) &&
+            (identical(other.bonusMode, _this.bonusMode) ||
+                other.bonusMode == _this.bonusMode) &&
             const DeepCollectionEquality()
-                .equals(other.bonusesPlusOne, bonusesPlusOne) &&
+                .equals(other.bonusesPlusOne, _this.bonusesPlusOne) &&
             const DeepCollectionEquality()
-                .equals(other.bonusesPlusTwo, bonusesPlusTwo) &&
+                .equals(other.bonusesPlusTwo, _this.bonusesPlusTwo) &&
             const DeepCollectionEquality()
-                .equals(other.fixedRaceBonuses, fixedRaceBonuses) &&
+                .equals(other.fixedRaceBonuses, _this.fixedRaceBonuses) &&
             const DeepCollectionEquality()
-                .equals(other.resolvedBonusRules, resolvedBonusRules) &&
+                .equals(other.resolvedBonusRules, _this.resolvedBonusRules) &&
             const DeepCollectionEquality().equals(
                 other.selectedBonusAttributesByRule,
-                selectedBonusAttributesByRule));
+                _this.selectedBonusAttributesByRule));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      selectionType,
-      const DeepCollectionEquality().hash(drafts),
-      bonusMode,
-      const DeepCollectionEquality().hash(bonusesPlusOne),
-      const DeepCollectionEquality().hash(bonusesPlusTwo),
-      const DeepCollectionEquality().hash(fixedRaceBonuses),
-      const DeepCollectionEquality().hash(resolvedBonusRules),
-      const DeepCollectionEquality().hash(selectedBonusAttributesByRule));
+  int get hashCode {
+    final _this = this as AttributeStateModel;
+    return Object.hash(
+        runtimeType,
+        _this.selectionType,
+        const DeepCollectionEquality().hash(_this.drafts),
+        _this.bonusMode,
+        const DeepCollectionEquality().hash(_this.bonusesPlusOne),
+        const DeepCollectionEquality().hash(_this.bonusesPlusTwo),
+        const DeepCollectionEquality().hash(_this.fixedRaceBonuses),
+        const DeepCollectionEquality().hash(_this.resolvedBonusRules),
+        const DeepCollectionEquality()
+            .hash(_this.selectedBonusAttributesByRule));
+  }
 
   @override
   String toString() {
-    return 'AttributeStateModel(selectionType: $selectionType, drafts: $drafts, bonusMode: $bonusMode, bonusesPlusOne: $bonusesPlusOne, bonusesPlusTwo: $bonusesPlusTwo, fixedRaceBonuses: $fixedRaceBonuses, resolvedBonusRules: $resolvedBonusRules, selectedBonusAttributesByRule: $selectedBonusAttributesByRule)';
+    final _this = this as AttributeStateModel;
+    return 'AttributeStateModel(selectionType: ${_this.selectionType}, drafts: ${_this.drafts}, bonusMode: ${_this.bonusMode}, bonusesPlusOne: ${_this.bonusesPlusOne}, bonusesPlusTwo: ${_this.bonusesPlusTwo}, fixedRaceBonuses: ${_this.fixedRaceBonuses}, resolvedBonusRules: ${_this.resolvedBonusRules}, selectedBonusAttributesByRule: ${_this.selectedBonusAttributesByRule})';
   }
 }
 
@@ -1127,7 +1149,7 @@ class _$AttributeStateModelCopyWithImpl<$Res>
     Object? resolvedBonusRules = null,
     Object? selectedBonusAttributesByRule = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(AttributeStateModel(
       selectionType: null == selectionType
           ? _self.selectionType
           : selectionType // ignore: cast_nullable_to_non_nullable
@@ -1373,14 +1395,13 @@ extension AttributeStateModelPatterns on AttributeStateModel {
 class _AttributeStateModel implements AttributeStateModel {
   const _AttributeStateModel(
       {this.selectionType = SelectType.defaultType,
-      final Map<SelectType, AttributeModeDraft> drafts = const {},
+      Map<SelectType, AttributeModeDraft> drafts = const {},
       this.bonusMode = AttributeBonusMode.racial,
-      final Map<Attribute, bool> bonusesPlusOne = const {},
-      final Map<Attribute, bool> bonusesPlusTwo = const {},
-      final Map<Attribute, int> fixedRaceBonuses = const {},
-      final List<AttributeBonusRule> resolvedBonusRules = const [],
-      final Map<String, Set<Attribute>> selectedBonusAttributesByRule =
-          const {}})
+      Map<Attribute, bool> bonusesPlusOne = const {},
+      Map<Attribute, bool> bonusesPlusTwo = const {},
+      Map<Attribute, int> fixedRaceBonuses = const {},
+      List<AttributeBonusRule> resolvedBonusRules = const [],
+      Map<String, Set<Attribute>> selectedBonusAttributesByRule = const {}})
       : _drafts = drafts,
         _bonusesPlusOne = bonusesPlusOne,
         _bonusesPlusTwo = bonusesPlusTwo,
@@ -1466,33 +1487,35 @@ class _AttributeStateModel implements AttributeStateModel {
             other is _AttributeStateModel &&
             (identical(other.selectionType, selectionType) ||
                 other.selectionType == selectionType) &&
-            const DeepCollectionEquality().equals(other._drafts, _drafts) &&
+            const DeepCollectionEquality().equals(other.drafts, _drafts) &&
             (identical(other.bonusMode, bonusMode) ||
                 other.bonusMode == bonusMode) &&
             const DeepCollectionEquality()
-                .equals(other._bonusesPlusOne, _bonusesPlusOne) &&
+                .equals(other.bonusesPlusOne, _bonusesPlusOne) &&
             const DeepCollectionEquality()
-                .equals(other._bonusesPlusTwo, _bonusesPlusTwo) &&
+                .equals(other.bonusesPlusTwo, _bonusesPlusTwo) &&
             const DeepCollectionEquality()
-                .equals(other._fixedRaceBonuses, _fixedRaceBonuses) &&
+                .equals(other.fixedRaceBonuses, _fixedRaceBonuses) &&
             const DeepCollectionEquality()
-                .equals(other._resolvedBonusRules, _resolvedBonusRules) &&
+                .equals(other.resolvedBonusRules, _resolvedBonusRules) &&
             const DeepCollectionEquality().equals(
-                other._selectedBonusAttributesByRule,
+                other.selectedBonusAttributesByRule,
                 _selectedBonusAttributesByRule));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      selectionType,
-      const DeepCollectionEquality().hash(_drafts),
-      bonusMode,
-      const DeepCollectionEquality().hash(_bonusesPlusOne),
-      const DeepCollectionEquality().hash(_bonusesPlusTwo),
-      const DeepCollectionEquality().hash(_fixedRaceBonuses),
-      const DeepCollectionEquality().hash(_resolvedBonusRules),
-      const DeepCollectionEquality().hash(_selectedBonusAttributesByRule));
+  int get hashCode {
+    return Object.hash(
+        runtimeType,
+        selectionType,
+        const DeepCollectionEquality().hash(_drafts),
+        bonusMode,
+        const DeepCollectionEquality().hash(_bonusesPlusOne),
+        const DeepCollectionEquality().hash(_bonusesPlusTwo),
+        const DeepCollectionEquality().hash(_fixedRaceBonuses),
+        const DeepCollectionEquality().hash(_resolvedBonusRules),
+        const DeepCollectionEquality().hash(_selectedBonusAttributesByRule));
+  }
 
   @override
   String toString() {

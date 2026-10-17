@@ -108,7 +108,7 @@ class _ExpandableSectionState extends State<ExpandableSection>
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor: sizeAnimation,
-      axisAlignment: -1,
+      alignment: Alignment.topCenter,
       child: FadeTransition(
         opacity: fadeAnimation,
         child: KeyedSubtree(

@@ -74,15 +74,15 @@ Future<void> _pumpCreationSwipeHarness(WidgetTester tester) async {
     routes: [
       GoRoute(
         path: '/create/background',
-        builder: (_, __) => const Scaffold(body: Text('background route')),
+        builder: (_, _) => const Scaffold(body: Text('background route')),
       ),
       GoRoute(
         path: '/create/attributes',
-        builder: (_, __) => const _CreationSwipeHarness(),
+        builder: (_, _) => const _CreationSwipeHarness(),
       ),
       GoRoute(
         path: '/create/personal',
-        builder: (_, __) => const Scaffold(body: Text('personal route')),
+        builder: (_, _) => const Scaffold(body: Text('personal route')),
       ),
     ],
   );
@@ -107,7 +107,7 @@ Future<void> _pumpCreationFirstStepHarness(WidgetTester tester) async {
     routes: [
       GoRoute(
         path: '/characters',
-        builder: (context, __) => Scaffold(
+        builder: (context, _) => Scaffold(
           body: Column(
             children: [
               const Text('characters route'),
@@ -121,7 +121,7 @@ Future<void> _pumpCreationFirstStepHarness(WidgetTester tester) async {
       ),
       GoRoute(
         path: '/create',
-        builder: (_, __) => const _CreationFirstStepHarness(),
+        builder: (_, _) => const _CreationFirstStepHarness(),
       ),
     ],
   );

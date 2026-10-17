@@ -155,10 +155,10 @@ Future<void> _pumpPage(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-        characterSheetControllerProvider
-            .overrideWith(() => _FakeCharacterSheetController(character)),
+        characterSheetControllerProvider.overrideWith2(
+            (id) => _FakeCharacterSheetController(character, id)),
         characterPortraitControllerProvider
-            .overrideWith(() => _FakePortraitController()),
+            .overrideWith2(_FakePortraitController.new),
         toolCatalogProvider.overrideWith((ref) async => []),
         weaponCatalogProvider.overrideWith((ref) async => []),
         if (characterRepository != null)
@@ -201,20 +201,23 @@ CharacterData _character() => CharacterData(
     );
 
 class _FakeCharacterSheetController extends CharacterSheetController {
-  _FakeCharacterSheetController(this.character);
+  _FakeCharacterSheetController(this.character, int characterId)
+      : super(characterId);
 
   final CharacterData character;
 
   @override
-  Future<CharacterData> build(int characterId) async => character;
+  Future<CharacterData> build() async => character;
 
   @override
   Future<CharacterData> prepareLevelDown() async => character;
 }
 
 class _FakePortraitController extends CharacterPortraitController {
+  _FakePortraitController(super.characterId);
+
   @override
-  Future<Uri?> build(int characterId) async => null;
+  Future<Uri?> build() async => null;
 }
 
 class _FakeCharacterRepository extends CharacterRepository {

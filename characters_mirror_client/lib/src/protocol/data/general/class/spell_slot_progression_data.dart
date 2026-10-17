@@ -7,11 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class SpellSlotProgressionData implements _i1.SerializableModel {
+abstract class SpellSlotProgressionData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SpellSlotProgressionData._({
     this.id,
     this.tableKey,
@@ -35,22 +39,25 @@ abstract class SpellSlotProgressionData implements _i1.SerializableModel {
   }) = _SpellSlotProgressionDataImpl;
 
   factory SpellSlotProgressionData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SpellSlotProgressionData(
       id: jsonSerialization['id'] as int?,
       tableKey: jsonSerialization['tableKey'] as String?,
       level: jsonSerialization['level'] as int,
-      spellSlots: (jsonSerialization['spellSlots'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      spellSlots: jsonSerialization['spellSlots'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['spellSlots'],
+            ),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -75,7 +82,7 @@ abstract class SpellSlotProgressionData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SpellSlotProgressionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SpellSlotProgressionData copyWith({
     int? id,
     String? tableKey,
@@ -89,6 +96,22 @@ abstract class SpellSlotProgressionData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellSlotProgressionData',
+      if (id != null) 'id': id,
+      if (tableKey != null) 'tableKey': tableKey,
+      'level': level,
+      if (spellSlots != null) 'spellSlots': spellSlots?.toJson(),
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SpellSlotProgressionData',
       if (id != null) 'id': id,
       if (tableKey != null) 'tableKey': tableKey,
       'level': level,
@@ -102,7 +125,7 @@ abstract class SpellSlotProgressionData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -119,19 +142,19 @@ class _SpellSlotProgressionDataImpl extends SpellSlotProgressionData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          tableKey: tableKey,
-          level: level,
-          spellSlots: spellSlots,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         tableKey: tableKey,
+         level: level,
+         spellSlots: spellSlots,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [SpellSlotProgressionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SpellSlotProgressionData copyWith({
     Object? id = _Undefined,
@@ -149,14 +172,7 @@ class _SpellSlotProgressionDataImpl extends SpellSlotProgressionData {
       level: level ?? this.level,
       spellSlots: spellSlots is Map<int, int>?
           ? spellSlots
-          : this.spellSlots?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.spellSlots?.map((key0, value0) => MapEntry(key0, value0)),
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,

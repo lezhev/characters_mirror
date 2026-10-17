@@ -7,17 +7,21 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../data/general/class/class_feature_data.dart' as _i2;
-import '../../data/general/class/subclass_feature_data.dart' as _i3;
-import '../../enums/feature_modifier_target.dart' as _i4;
-import '../../enums/feature_modifier_operation.dart' as _i5;
-import '../../data/general/feature_modifier_value_data.dart' as _i6;
-import '../../data/general/feature_modifier_condition_data.dart' as _i7;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../data/general/class/class_feature_data.dart' as _inxbtq9c;
+import '../../data/general/class/subclass_feature_data.dart' as _i6bcyp7i;
+import '../../data/general/feature_modifier_condition_data.dart' as _ig9xtn4u;
+import '../../data/general/feature_modifier_value_data.dart' as _iby00w8q;
+import '../../enums/feature_modifier_operation.dart' as _iiz9cg73;
+import '../../enums/feature_modifier_target.dart' as _i4cfd6vr;
 
-abstract class FeatureModifierData implements _i1.SerializableModel {
+abstract class FeatureModifierData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   FeatureModifierData._({
     this.id,
     required this.referenceKey,
@@ -41,13 +45,13 @@ abstract class FeatureModifierData implements _i1.SerializableModel {
     int? id,
     required String referenceKey,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
-    required _i4.FeatureModifierTarget target,
-    required _i5.FeatureModifierOperation operation,
-    required _i6.FeatureModifierValueData value,
-    List<_i7.FeatureModifierConditionData>? conditions,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
+    required _i4cfd6vr.FeatureModifierTarget target,
+    required _iiz9cg73.FeatureModifierOperation operation,
+    required _iby00w8q.FeatureModifierValueData value,
+    List<_ig9xtn4u.FeatureModifierConditionData>? conditions,
     String? spellKey,
     int? minimumCastLevel,
     String? source,
@@ -63,33 +67,41 @@ abstract class FeatureModifierData implements _i1.SerializableModel {
       classFeatureId: jsonSerialization['classFeatureId'] as int?,
       classFeature: jsonSerialization['classFeature'] == null
           ? null
-          : _i2.ClassFeatureData.fromJson(
-              (jsonSerialization['classFeature'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_inxbtq9c.ClassFeatureData>(
+              jsonSerialization['classFeature'],
+            ),
       subclassFeatureId: jsonSerialization['subclassFeatureId'] as int?,
       subclassFeature: jsonSerialization['subclassFeature'] == null
           ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['subclassFeature'] as Map<String, dynamic>)),
-      target: _i4.FeatureModifierTarget.fromJson(
-          (jsonSerialization['target'] as int)),
-      operation: _i5.FeatureModifierOperation.fromJson(
-          (jsonSerialization['operation'] as int)),
-      value: _i6.FeatureModifierValueData.fromJson(
-          (jsonSerialization['value'] as Map<String, dynamic>)),
-      conditions: (jsonSerialization['conditions'] as List?)
-          ?.map((e) => _i7.FeatureModifierConditionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+          : _isnx6jbi.Protocol().deserialize<_i6bcyp7i.SubclassFeatureData>(
+              jsonSerialization['subclassFeature'],
+            ),
+      target: _i4cfd6vr.FeatureModifierTarget.fromJson(
+        (jsonSerialization['target'] as int),
+      ),
+      operation: _iiz9cg73.FeatureModifierOperation.fromJson(
+        (jsonSerialization['operation'] as int),
+      ),
+      value: _isnx6jbi.Protocol()
+          .deserialize<_iby00w8q.FeatureModifierValueData>(
+            jsonSerialization['value'],
+          ),
+      conditions: jsonSerialization['conditions'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ig9xtn4u.FeatureModifierConditionData>>(
+                  jsonSerialization['conditions'],
+                ),
       spellKey: jsonSerialization['spellKey'] as String?,
       minimumCastLevel: jsonSerialization['minimumCastLevel'] as int?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -102,19 +114,19 @@ abstract class FeatureModifierData implements _i1.SerializableModel {
 
   int? classFeatureId;
 
-  _i2.ClassFeatureData? classFeature;
+  _inxbtq9c.ClassFeatureData? classFeature;
 
   int? subclassFeatureId;
 
-  _i3.SubclassFeatureData? subclassFeature;
+  _i6bcyp7i.SubclassFeatureData? subclassFeature;
 
-  _i4.FeatureModifierTarget target;
+  _i4cfd6vr.FeatureModifierTarget target;
 
-  _i5.FeatureModifierOperation operation;
+  _iiz9cg73.FeatureModifierOperation operation;
 
-  _i6.FeatureModifierValueData value;
+  _iby00w8q.FeatureModifierValueData value;
 
-  List<_i7.FeatureModifierConditionData>? conditions;
+  List<_ig9xtn4u.FeatureModifierConditionData>? conditions;
 
   String? spellKey;
 
@@ -130,18 +142,18 @@ abstract class FeatureModifierData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [FeatureModifierData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   FeatureModifierData copyWith({
     int? id,
     String? referenceKey,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
-    _i4.FeatureModifierTarget? target,
-    _i5.FeatureModifierOperation? operation,
-    _i6.FeatureModifierValueData? value,
-    List<_i7.FeatureModifierConditionData>? conditions,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
+    _i4cfd6vr.FeatureModifierTarget? target,
+    _iiz9cg73.FeatureModifierOperation? operation,
+    _iby00w8q.FeatureModifierValueData? value,
+    List<_ig9xtn4u.FeatureModifierConditionData>? conditions,
     String? spellKey,
     int? minimumCastLevel,
     String? source,
@@ -152,6 +164,7 @@ abstract class FeatureModifierData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureModifierData',
       if (id != null) 'id': id,
       'referenceKey': referenceKey,
       if (classFeatureId != null) 'classFeatureId': classFeatureId,
@@ -173,8 +186,36 @@ abstract class FeatureModifierData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'FeatureModifierData',
+      if (id != null) 'id': id,
+      'referenceKey': referenceKey,
+      if (classFeatureId != null) 'classFeatureId': classFeatureId,
+      if (classFeature != null)
+        'classFeature': classFeature?.toJsonForProtocol(),
+      if (subclassFeatureId != null) 'subclassFeatureId': subclassFeatureId,
+      if (subclassFeature != null)
+        'subclassFeature': subclassFeature?.toJsonForProtocol(),
+      'target': target.toJson(),
+      'operation': operation.toJson(),
+      'value': value.toJsonForProtocol(),
+      if (conditions != null)
+        'conditions': conditions?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (spellKey != null) 'spellKey': spellKey,
+      if (minimumCastLevel != null) 'minimumCastLevel': minimumCastLevel,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -185,13 +226,13 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     int? id,
     required String referenceKey,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
-    required _i4.FeatureModifierTarget target,
-    required _i5.FeatureModifierOperation operation,
-    required _i6.FeatureModifierValueData value,
-    List<_i7.FeatureModifierConditionData>? conditions,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
+    required _i4cfd6vr.FeatureModifierTarget target,
+    required _iiz9cg73.FeatureModifierOperation operation,
+    required _iby00w8q.FeatureModifierValueData value,
+    List<_ig9xtn4u.FeatureModifierConditionData>? conditions,
     String? spellKey,
     int? minimumCastLevel,
     String? source,
@@ -199,27 +240,27 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          classFeatureId: classFeatureId,
-          classFeature: classFeature,
-          subclassFeatureId: subclassFeatureId,
-          subclassFeature: subclassFeature,
-          target: target,
-          operation: operation,
-          value: value,
-          conditions: conditions,
-          spellKey: spellKey,
-          minimumCastLevel: minimumCastLevel,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         classFeatureId: classFeatureId,
+         classFeature: classFeature,
+         subclassFeatureId: subclassFeatureId,
+         subclassFeature: subclassFeature,
+         target: target,
+         operation: operation,
+         value: value,
+         conditions: conditions,
+         spellKey: spellKey,
+         minimumCastLevel: minimumCastLevel,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [FeatureModifierData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   FeatureModifierData copyWith({
     Object? id = _Undefined,
@@ -228,9 +269,9 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     Object? classFeature = _Undefined,
     Object? subclassFeatureId = _Undefined,
     Object? subclassFeature = _Undefined,
-    _i4.FeatureModifierTarget? target,
-    _i5.FeatureModifierOperation? operation,
-    _i6.FeatureModifierValueData? value,
+    _i4cfd6vr.FeatureModifierTarget? target,
+    _iiz9cg73.FeatureModifierOperation? operation,
+    _iby00w8q.FeatureModifierValueData? value,
     Object? conditions = _Undefined,
     Object? spellKey = _Undefined,
     Object? minimumCastLevel = _Undefined,
@@ -242,26 +283,28 @@ class _FeatureModifierDataImpl extends FeatureModifierData {
     return FeatureModifierData(
       id: id is int? ? id : this.id,
       referenceKey: referenceKey ?? this.referenceKey,
-      classFeatureId:
-          classFeatureId is int? ? classFeatureId : this.classFeatureId,
-      classFeature: classFeature is _i2.ClassFeatureData?
+      classFeatureId: classFeatureId is int?
+          ? classFeatureId
+          : this.classFeatureId,
+      classFeature: classFeature is _inxbtq9c.ClassFeatureData?
           ? classFeature
           : this.classFeature?.copyWith(),
       subclassFeatureId: subclassFeatureId is int?
           ? subclassFeatureId
           : this.subclassFeatureId,
-      subclassFeature: subclassFeature is _i3.SubclassFeatureData?
+      subclassFeature: subclassFeature is _i6bcyp7i.SubclassFeatureData?
           ? subclassFeature
           : this.subclassFeature?.copyWith(),
       target: target ?? this.target,
       operation: operation ?? this.operation,
       value: value ?? this.value.copyWith(),
-      conditions: conditions is List<_i7.FeatureModifierConditionData>?
+      conditions: conditions is List<_ig9xtn4u.FeatureModifierConditionData>?
           ? conditions
           : this.conditions?.map((e0) => e0.copyWith()).toList(),
       spellKey: spellKey is String? ? spellKey : this.spellKey,
-      minimumCastLevel:
-          minimumCastLevel is int? ? minimumCastLevel : this.minimumCastLevel,
+      minimumCastLevel: minimumCastLevel is int?
+          ? minimumCastLevel
+          : this.minimumCastLevel,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,

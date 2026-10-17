@@ -10,8 +10,8 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Spell and HP feature modifiers', (sessions, endpoints) {
     final owner = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(986, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (986).toString(), <Scope>{}));
     setUp(CharacterSaveRateLimiter.resetForTests);
 
     Future<(ClassData, SubclassData, SubclassFeatureData)> source(
@@ -273,5 +273,7 @@ void main() {
       expect(active.resources!.single.max, 4);
       await export(character, 'Wrath');
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

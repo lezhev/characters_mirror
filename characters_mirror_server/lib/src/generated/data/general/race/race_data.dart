@@ -7,21 +7,23 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/creature_size.dart' as _i2;
-import '../../../enums/language.dart' as _i3;
-import '../../../enums/sense_type.dart' as _i4;
-import '../../../enums/damage_type.dart' as _i5;
-import '../../../enums/skill.dart' as _i6;
-import '../../../enums/armor_category.dart' as _i7;
-import '../../../data/general/race/race_feature_data.dart' as _i8;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/race/race_feature_data.dart' as _ib72xv5p;
+import '../../../enums/armor_category.dart' as _irzuusaf;
+import '../../../enums/creature_size.dart' as _i0folz3s;
+import '../../../enums/damage_type.dart' as _ij9bzpyl;
+import '../../../enums/language.dart' as _iiw0j43j;
+import '../../../enums/sense_type.dart' as _irak22vn;
+import '../../../enums/skill.dart' as _iqrhamom;
 
 abstract class RaceData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   RaceData._({
     this.id,
     this.name,
@@ -60,7 +62,7 @@ abstract class RaceData
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    _i2.CreatureSize? size,
+    _i0folz3s.CreatureSize? size,
     int? strengthBonus,
     int? dexterityBonus,
     int? constitutionBonus,
@@ -68,15 +70,15 @@ abstract class RaceData
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<_i3.Language>? languages,
-    _i4.SenseType? visionType,
+    List<_iiw0j43j.Language>? languages,
+    _irak22vn.SenseType? visionType,
     int? visionRange,
-    List<_i5.DamageType>? resistances,
-    List<_i6.Skill>? skillProficiencies,
-    List<_i7.ArmorCategory>? armorProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i8.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
     String? imageURL,
   }) = _RaceDataImpl;
 
@@ -89,50 +91,66 @@ abstract class RaceData
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       speed: jsonSerialization['speed'] as int?,
       size: jsonSerialization['size'] == null
           ? null
-          : _i2.CreatureSize.fromJson((jsonSerialization['size'] as int)),
+          : _i0folz3s.CreatureSize.fromJson((jsonSerialization['size'] as int)),
       strengthBonus: jsonSerialization['strengthBonus'] as int?,
       dexterityBonus: jsonSerialization['dexterityBonus'] as int?,
       constitutionBonus: jsonSerialization['constitutionBonus'] as int?,
       intelligenceBonus: jsonSerialization['intelligenceBonus'] as int?,
       wisdomBonus: jsonSerialization['wisdomBonus'] as int?,
       charismaBonus: jsonSerialization['charismaBonus'] as int?,
-      traits: (jsonSerialization['traits'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      languages: (jsonSerialization['languages'] as List?)
-          ?.map((e) => _i3.Language.fromJson((e as String)))
-          .toList(),
+      traits: jsonSerialization['traits'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['traits'],
+            ),
+      languages: jsonSerialization['languages'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iiw0j43j.Language>>(
+              jsonSerialization['languages'],
+            ),
       visionType: jsonSerialization['visionType'] == null
           ? null
-          : _i4.SenseType.fromJson((jsonSerialization['visionType'] as String)),
+          : _irak22vn.SenseType.fromJson(
+              (jsonSerialization['visionType'] as String),
+            ),
       visionRange: jsonSerialization['visionRange'] as int?,
-      resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i5.DamageType.fromJson((e as String)))
-          .toList(),
-      skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => _i6.Skill.fromJson((e as String)))
-          .toList(),
-      armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
-          ?.map((e) => _i7.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      weaponProficiencyKeys:
-          (jsonSerialization['weaponProficiencyKeys'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      features: (jsonSerialization['features'] as List?)
-          ?.map(
-              (e) => _i8.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      resistances: jsonSerialization['resistances'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ij9bzpyl.DamageType>>(
+              jsonSerialization['resistances'],
+            ),
+      skillProficiencies: jsonSerialization['skillProficiencies'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_iqrhamom.Skill>>(
+              jsonSerialization['skillProficiencies'],
+            ),
+      armorProficiencies: jsonSerialization['armorProficiencies'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_irzuusaf.ArmorCategory>>(
+              jsonSerialization['armorProficiencies'],
+            ),
+      weaponProficiencyKeys: jsonSerialization['weaponProficiencyKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['weaponProficiencyKeys'],
+            ),
+      toolProficiencyKeys: jsonSerialization['toolProficiencyKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['toolProficiencyKeys'],
+            ),
+      features: jsonSerialization['features'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ib72xv5p.RaceFeatureData>>(
+              jsonSerialization['features'],
+            ),
       imageURL: jsonSerialization['imageURL'] as String?,
     );
   }
@@ -158,7 +176,7 @@ abstract class RaceData
 
   int? speed;
 
-  _i2.CreatureSize? size;
+  _i0folz3s.CreatureSize? size;
 
   int? strengthBonus;
 
@@ -174,32 +192,32 @@ abstract class RaceData
 
   List<String>? traits;
 
-  List<_i3.Language>? languages;
+  List<_iiw0j43j.Language>? languages;
 
-  _i4.SenseType? visionType;
+  _irak22vn.SenseType? visionType;
 
   int? visionRange;
 
-  List<_i5.DamageType>? resistances;
+  List<_ij9bzpyl.DamageType>? resistances;
 
-  List<_i6.Skill>? skillProficiencies;
+  List<_iqrhamom.Skill>? skillProficiencies;
 
-  List<_i7.ArmorCategory>? armorProficiencies;
+  List<_irzuusaf.ArmorCategory>? armorProficiencies;
 
   List<String>? weaponProficiencyKeys;
 
   List<String>? toolProficiencyKeys;
 
-  List<_i8.RaceFeatureData>? features;
+  List<_ib72xv5p.RaceFeatureData>? features;
 
   String? imageURL;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [RaceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   RaceData copyWith({
     int? id,
     String? name,
@@ -209,7 +227,7 @@ abstract class RaceData
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    _i2.CreatureSize? size,
+    _i0folz3s.CreatureSize? size,
     int? strengthBonus,
     int? dexterityBonus,
     int? constitutionBonus,
@@ -217,20 +235,21 @@ abstract class RaceData
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<_i3.Language>? languages,
-    _i4.SenseType? visionType,
+    List<_iiw0j43j.Language>? languages,
+    _irak22vn.SenseType? visionType,
     int? visionRange,
-    List<_i5.DamageType>? resistances,
-    List<_i6.Skill>? skillProficiencies,
-    List<_i7.ArmorCategory>? armorProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i8.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
     String? imageURL,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'RaceData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -254,11 +273,13 @@ abstract class RaceData
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (skillProficiencies != null)
-        'skillProficiencies':
-            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (armorProficiencies != null)
-        'armorProficiencies':
-            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'armorProficiencies': armorProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (weaponProficiencyKeys != null)
         'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
       if (toolProficiencyKeys != null)
@@ -272,6 +293,7 @@ abstract class RaceData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'RaceData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -295,11 +317,13 @@ abstract class RaceData
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (skillProficiencies != null)
-        'skillProficiencies':
-            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (armorProficiencies != null)
-        'armorProficiencies':
-            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'armorProficiencies': armorProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (weaponProficiencyKeys != null)
         'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
       if (toolProficiencyKeys != null)
@@ -310,17 +334,18 @@ abstract class RaceData
     };
   }
 
-  static RaceDataInclude include({_i8.RaceFeatureDataIncludeList? features}) {
+  static RaceDataInclude include({
+    _ib72xv5p.RaceFeatureDataIncludeList? features,
+  }) {
     return RaceDataInclude._(features: features);
   }
 
   static RaceDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<RaceDataTable>? where,
+    _is.WhereExpressionBuilder<RaceDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<RaceDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<RaceDataTable>? orderByList,
+    _is.OrderByBuilder<RaceDataTable>? orderBy,
+    _is.OrderByListBuilder<RaceDataTable>? orderByList,
     RaceDataInclude? include,
   }) {
     return RaceDataIncludeList._(
@@ -328,7 +353,6 @@ abstract class RaceData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(RaceData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(RaceData.t),
       include: include,
     );
@@ -336,7 +360,7 @@ abstract class RaceData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -352,7 +376,7 @@ class _RaceDataImpl extends RaceData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? speed,
-    _i2.CreatureSize? size,
+    _i0folz3s.CreatureSize? size,
     int? strengthBonus,
     int? dexterityBonus,
     int? constitutionBonus,
@@ -360,48 +384,48 @@ class _RaceDataImpl extends RaceData {
     int? wisdomBonus,
     int? charismaBonus,
     List<String>? traits,
-    List<_i3.Language>? languages,
-    _i4.SenseType? visionType,
+    List<_iiw0j43j.Language>? languages,
+    _irak22vn.SenseType? visionType,
     int? visionRange,
-    List<_i5.DamageType>? resistances,
-    List<_i6.Skill>? skillProficiencies,
-    List<_i7.ArmorCategory>? armorProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i8.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
     String? imageURL,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          speed: speed,
-          size: size,
-          strengthBonus: strengthBonus,
-          dexterityBonus: dexterityBonus,
-          constitutionBonus: constitutionBonus,
-          intelligenceBonus: intelligenceBonus,
-          wisdomBonus: wisdomBonus,
-          charismaBonus: charismaBonus,
-          traits: traits,
-          languages: languages,
-          visionType: visionType,
-          visionRange: visionRange,
-          resistances: resistances,
-          skillProficiencies: skillProficiencies,
-          armorProficiencies: armorProficiencies,
-          weaponProficiencyKeys: weaponProficiencyKeys,
-          toolProficiencyKeys: toolProficiencyKeys,
-          features: features,
-          imageURL: imageURL,
-        );
+         id: id,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         speed: speed,
+         size: size,
+         strengthBonus: strengthBonus,
+         dexterityBonus: dexterityBonus,
+         constitutionBonus: constitutionBonus,
+         intelligenceBonus: intelligenceBonus,
+         wisdomBonus: wisdomBonus,
+         charismaBonus: charismaBonus,
+         traits: traits,
+         languages: languages,
+         visionType: visionType,
+         visionRange: visionRange,
+         resistances: resistances,
+         skillProficiencies: skillProficiencies,
+         armorProficiencies: armorProficiencies,
+         weaponProficiencyKeys: weaponProficiencyKeys,
+         toolProficiencyKeys: toolProficiencyKeys,
+         features: features,
+         imageURL: imageURL,
+       );
 
   /// Returns a shallow copy of this [RaceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   RaceData copyWith({
     Object? id = _Undefined,
@@ -440,10 +464,11 @@ class _RaceDataImpl extends RaceData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       speed: speed is int? ? speed : this.speed,
-      size: size is _i2.CreatureSize? ? size : this.size,
+      size: size is _i0folz3s.CreatureSize? ? size : this.size,
       strengthBonus: strengthBonus is int? ? strengthBonus : this.strengthBonus,
-      dexterityBonus:
-          dexterityBonus is int? ? dexterityBonus : this.dexterityBonus,
+      dexterityBonus: dexterityBonus is int?
+          ? dexterityBonus
+          : this.dexterityBonus,
       constitutionBonus: constitutionBonus is int?
           ? constitutionBonus
           : this.constitutionBonus,
@@ -455,18 +480,20 @@ class _RaceDataImpl extends RaceData {
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
-      languages: languages is List<_i3.Language>?
+      languages: languages is List<_iiw0j43j.Language>?
           ? languages
           : this.languages?.map((e0) => e0).toList(),
-      visionType: visionType is _i4.SenseType? ? visionType : this.visionType,
+      visionType: visionType is _irak22vn.SenseType?
+          ? visionType
+          : this.visionType,
       visionRange: visionRange is int? ? visionRange : this.visionRange,
-      resistances: resistances is List<_i5.DamageType>?
+      resistances: resistances is List<_ij9bzpyl.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      skillProficiencies: skillProficiencies is List<_i6.Skill>?
+      skillProficiencies: skillProficiencies is List<_iqrhamom.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      armorProficiencies: armorProficiencies is List<_i7.ArmorCategory>?
+      armorProficiencies: armorProficiencies is List<_irzuusaf.ArmorCategory>?
           ? armorProficiencies
           : this.armorProficiencies?.map((e0) => e0).toList(),
       weaponProficiencyKeys: weaponProficiencyKeys is List<String>?
@@ -475,7 +502,7 @@ class _RaceDataImpl extends RaceData {
       toolProficiencyKeys: toolProficiencyKeys is List<String>?
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),
-      features: features is List<_i8.RaceFeatureData>?
+      features: features is List<_ib72xv5p.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
       imageURL: imageURL is String? ? imageURL : this.imageURL,
@@ -483,222 +510,259 @@ class _RaceDataImpl extends RaceData {
   }
 }
 
-class RaceDataTable extends _i1.Table<int?> {
+class RaceDataUpdateTable extends _is.UpdateTable<RaceDataTable> {
+  RaceDataUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+
+  _is.ColumnValue<int, int> speed(int? value) =>
+      _is.ColumnValue(table.speed, value);
+
+  _is.ColumnValue<_i0folz3s.CreatureSize, _i0folz3s.CreatureSize> size(
+    _i0folz3s.CreatureSize? value,
+  ) => _is.ColumnValue(table.size, value);
+
+  _is.ColumnValue<int, int> strengthBonus(int? value) =>
+      _is.ColumnValue(table.strengthBonus, value);
+
+  _is.ColumnValue<int, int> dexterityBonus(int? value) =>
+      _is.ColumnValue(table.dexterityBonus, value);
+
+  _is.ColumnValue<int, int> constitutionBonus(int? value) =>
+      _is.ColumnValue(table.constitutionBonus, value);
+
+  _is.ColumnValue<int, int> intelligenceBonus(int? value) =>
+      _is.ColumnValue(table.intelligenceBonus, value);
+
+  _is.ColumnValue<int, int> wisdomBonus(int? value) =>
+      _is.ColumnValue(table.wisdomBonus, value);
+
+  _is.ColumnValue<int, int> charismaBonus(int? value) =>
+      _is.ColumnValue(table.charismaBonus, value);
+
+  _is.ColumnValue<List<String>, List<String>> traits(List<String>? value) =>
+      _is.ColumnValue(table.traits, value);
+
+  _is.ColumnValue<List<_iiw0j43j.Language>, List<_iiw0j43j.Language>> languages(
+    List<_iiw0j43j.Language>? value,
+  ) => _is.ColumnValue(table.languages, value);
+
+  _is.ColumnValue<_irak22vn.SenseType, _irak22vn.SenseType> visionType(
+    _irak22vn.SenseType? value,
+  ) => _is.ColumnValue(table.visionType, value);
+
+  _is.ColumnValue<int, int> visionRange(int? value) =>
+      _is.ColumnValue(table.visionRange, value);
+
+  _is.ColumnValue<List<_ij9bzpyl.DamageType>, List<_ij9bzpyl.DamageType>>
+  resistances(List<_ij9bzpyl.DamageType>? value) =>
+      _is.ColumnValue(table.resistances, value);
+
+  _is.ColumnValue<List<_iqrhamom.Skill>, List<_iqrhamom.Skill>>
+  skillProficiencies(List<_iqrhamom.Skill>? value) =>
+      _is.ColumnValue(table.skillProficiencies, value);
+
+  _is.ColumnValue<List<_irzuusaf.ArmorCategory>, List<_irzuusaf.ArmorCategory>>
+  armorProficiencies(List<_irzuusaf.ArmorCategory>? value) =>
+      _is.ColumnValue(table.armorProficiencies, value);
+
+  _is.ColumnValue<List<String>, List<String>> weaponProficiencyKeys(
+    List<String>? value,
+  ) => _is.ColumnValue(table.weaponProficiencyKeys, value);
+
+  _is.ColumnValue<List<String>, List<String>> toolProficiencyKeys(
+    List<String>? value,
+  ) => _is.ColumnValue(table.toolProficiencyKeys, value);
+
+  _is.ColumnValue<String, String> imageURL(String? value) =>
+      _is.ColumnValue(table.imageURL, value);
+}
+
+class RaceDataTable extends _is.Table<int?> {
   RaceDataTable({super.tableRelation}) : super(tableName: 'race_data') {
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-    speed = _i1.ColumnInt(
-      'speed',
-      this,
-    );
-    size = _i1.ColumnEnum(
-      'size',
-      this,
-      _i1.EnumSerialization.byIndex,
-    );
-    strengthBonus = _i1.ColumnInt(
-      'strengthBonus',
-      this,
-    );
-    dexterityBonus = _i1.ColumnInt(
-      'dexterityBonus',
-      this,
-    );
-    constitutionBonus = _i1.ColumnInt(
-      'constitutionBonus',
-      this,
-    );
-    intelligenceBonus = _i1.ColumnInt(
-      'intelligenceBonus',
-      this,
-    );
-    wisdomBonus = _i1.ColumnInt(
-      'wisdomBonus',
-      this,
-    );
-    charismaBonus = _i1.ColumnInt(
-      'charismaBonus',
-      this,
-    );
-    traits = _i1.ColumnSerializable(
-      'traits',
-      this,
-    );
-    languages = _i1.ColumnSerializable(
+    updateTable = RaceDataUpdateTable(this);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
+    speed = _is.ColumnInt('speed', this);
+    size = _is.ColumnEnum('size', this, _is.EnumSerialization.byIndex);
+    strengthBonus = _is.ColumnInt('strengthBonus', this);
+    dexterityBonus = _is.ColumnInt('dexterityBonus', this);
+    constitutionBonus = _is.ColumnInt('constitutionBonus', this);
+    intelligenceBonus = _is.ColumnInt('intelligenceBonus', this);
+    wisdomBonus = _is.ColumnInt('wisdomBonus', this);
+    charismaBonus = _is.ColumnInt('charismaBonus', this);
+    traits = _is.ColumnSerializable<List<String>>('traits', this);
+    languages = _is.ColumnSerializable<List<_iiw0j43j.Language>>(
       'languages',
       this,
     );
-    visionType = _i1.ColumnEnum(
+    visionType = _is.ColumnEnum(
       'visionType',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    visionRange = _i1.ColumnInt(
-      'visionRange',
-      this,
-    );
-    resistances = _i1.ColumnSerializable(
+    visionRange = _is.ColumnInt('visionRange', this);
+    resistances = _is.ColumnSerializable<List<_ij9bzpyl.DamageType>>(
       'resistances',
       this,
     );
-    skillProficiencies = _i1.ColumnSerializable(
+    skillProficiencies = _is.ColumnSerializable<List<_iqrhamom.Skill>>(
       'skillProficiencies',
       this,
     );
-    armorProficiencies = _i1.ColumnSerializable(
+    armorProficiencies = _is.ColumnSerializable<List<_irzuusaf.ArmorCategory>>(
       'armorProficiencies',
       this,
     );
-    weaponProficiencyKeys = _i1.ColumnSerializable(
+    weaponProficiencyKeys = _is.ColumnSerializable<List<String>>(
       'weaponProficiencyKeys',
       this,
     );
-    toolProficiencyKeys = _i1.ColumnSerializable(
+    toolProficiencyKeys = _is.ColumnSerializable<List<String>>(
       'toolProficiencyKeys',
       this,
     );
-    imageURL = _i1.ColumnString(
-      'imageURL',
-      this,
-    );
+    imageURL = _is.ColumnString('imageURL', this);
   }
 
-  late final _i1.ColumnString name;
+  late final RaceDataUpdateTable updateTable;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  late final _i1.ColumnInt speed;
+  late final _is.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnEnum<_i2.CreatureSize> size;
+  late final _is.ColumnInt speed;
 
-  late final _i1.ColumnInt strengthBonus;
+  late final _is.ColumnEnum<_i0folz3s.CreatureSize> size;
 
-  late final _i1.ColumnInt dexterityBonus;
+  late final _is.ColumnInt strengthBonus;
 
-  late final _i1.ColumnInt constitutionBonus;
+  late final _is.ColumnInt dexterityBonus;
 
-  late final _i1.ColumnInt intelligenceBonus;
+  late final _is.ColumnInt constitutionBonus;
 
-  late final _i1.ColumnInt wisdomBonus;
+  late final _is.ColumnInt intelligenceBonus;
 
-  late final _i1.ColumnInt charismaBonus;
+  late final _is.ColumnInt wisdomBonus;
 
-  late final _i1.ColumnSerializable traits;
+  late final _is.ColumnInt charismaBonus;
 
-  late final _i1.ColumnSerializable languages;
+  late final _is.ColumnSerializable<List<String>> traits;
 
-  late final _i1.ColumnEnum<_i4.SenseType> visionType;
+  late final _is.ColumnSerializable<List<_iiw0j43j.Language>> languages;
 
-  late final _i1.ColumnInt visionRange;
+  late final _is.ColumnEnum<_irak22vn.SenseType> visionType;
 
-  late final _i1.ColumnSerializable resistances;
+  late final _is.ColumnInt visionRange;
 
-  late final _i1.ColumnSerializable skillProficiencies;
+  late final _is.ColumnSerializable<List<_ij9bzpyl.DamageType>> resistances;
 
-  late final _i1.ColumnSerializable armorProficiencies;
+  late final _is.ColumnSerializable<List<_iqrhamom.Skill>> skillProficiencies;
 
-  late final _i1.ColumnSerializable weaponProficiencyKeys;
+  late final _is.ColumnSerializable<List<_irzuusaf.ArmorCategory>>
+  armorProficiencies;
 
-  late final _i1.ColumnSerializable toolProficiencyKeys;
+  late final _is.ColumnSerializable<List<String>> weaponProficiencyKeys;
 
-  _i8.RaceFeatureDataTable? ___features;
+  late final _is.ColumnSerializable<List<String>> toolProficiencyKeys;
 
-  _i1.ManyRelation<_i8.RaceFeatureDataTable>? _features;
+  _ib72xv5p.RaceFeatureDataTable? ___features;
 
-  late final _i1.ColumnString imageURL;
+  _is.ManyRelation<_ib72xv5p.RaceFeatureDataTable>? _features;
 
-  _i8.RaceFeatureDataTable get __features {
+  late final _is.ColumnString imageURL;
+
+  _ib72xv5p.RaceFeatureDataTable get __features {
     if (___features != null) return ___features!;
-    ___features = _i1.createRelationTable(
+    ___features = _is.createRelationTable(
       relationFieldName: '__features',
       field: RaceData.t.id,
-      foreignField: _i8.RaceFeatureData.t.raceId,
+      foreignField: _ib72xv5p.RaceFeatureData.t.raceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i8.RaceFeatureDataTable(tableRelation: foreignTableRelation),
+          _ib72xv5p.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return ___features!;
   }
 
-  _i1.ManyRelation<_i8.RaceFeatureDataTable> get features {
+  _is.ManyRelation<_ib72xv5p.RaceFeatureDataTable> get features {
     if (_features != null) return _features!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'features',
       field: RaceData.t.id,
-      foreignField: _i8.RaceFeatureData.t.raceId,
+      foreignField: _ib72xv5p.RaceFeatureData.t.raceId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i8.RaceFeatureDataTable(tableRelation: foreignTableRelation),
+          _ib72xv5p.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
-    _features = _i1.ManyRelation<_i8.RaceFeatureDataTable>(
+    _features = _is.ManyRelation<_ib72xv5p.RaceFeatureDataTable>(
       tableWithRelations: relationTable,
-      table: _i8.RaceFeatureDataTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
+      table: _ib72xv5p.RaceFeatureDataTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
     );
     return _features!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        speed,
-        size,
-        strengthBonus,
-        dexterityBonus,
-        constitutionBonus,
-        intelligenceBonus,
-        wisdomBonus,
-        charismaBonus,
-        traits,
-        languages,
-        visionType,
-        visionRange,
-        resistances,
-        skillProficiencies,
-        armorProficiencies,
-        weaponProficiencyKeys,
-        toolProficiencyKeys,
-        imageURL,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    name,
+    description,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+    speed,
+    size,
+    strengthBonus,
+    dexterityBonus,
+    constitutionBonus,
+    intelligenceBonus,
+    wisdomBonus,
+    charismaBonus,
+    traits,
+    languages,
+    visionType,
+    visionRange,
+    resistances,
+    skillProficiencies,
+    armorProficiencies,
+    weaponProficiencyKeys,
+    toolProficiencyKeys,
+    imageURL,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'features') {
       return __features;
     }
@@ -706,27 +770,26 @@ class RaceDataTable extends _i1.Table<int?> {
   }
 }
 
-class RaceDataInclude extends _i1.IncludeObject {
-  RaceDataInclude._({_i8.RaceFeatureDataIncludeList? features}) {
+class RaceDataInclude extends _is.IncludeObject {
+  RaceDataInclude._({_ib72xv5p.RaceFeatureDataIncludeList? features}) {
     _features = features;
   }
 
-  _i8.RaceFeatureDataIncludeList? _features;
+  _ib72xv5p.RaceFeatureDataIncludeList? _features;
 
   @override
-  Map<String, _i1.Include?> get includes => {'features': _features};
+  Map<String, _is.Include?> get includes => {'features': _features};
 
   @override
-  _i1.Table<int?> get table => RaceData.t;
+  _is.Table<int?> get table => RaceData.t;
 }
 
-class RaceDataIncludeList extends _i1.IncludeList {
+class RaceDataIncludeList extends _is.IncludeList {
   RaceDataIncludeList._({
-    _i1.WhereExpressionBuilder<RaceDataTable>? where,
+    _is.WhereExpressionBuilder<RaceDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -734,10 +797,10 @@ class RaceDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => RaceData.t;
+  _is.Table<int?> get table => RaceData.t;
 }
 
 class RaceDataRepository {
@@ -774,25 +837,27 @@ class RaceDataRepository {
   /// );
   /// ```
   Future<List<RaceData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<RaceDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<RaceDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<RaceDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<RaceDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<RaceDataTable>? orderBy,
+    _is.OrderByListBuilder<RaceDataTable>? orderByList,
+    _is.Transaction? transaction,
     RaceDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<RaceData>(
       where: where?.call(RaceData.t),
       orderBy: orderBy?.call(RaceData.t),
       orderByList: orderByList?.call(RaceData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -814,37 +879,43 @@ class RaceDataRepository {
   /// );
   /// ```
   Future<RaceData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<RaceDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<RaceDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<RaceDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<RaceDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<RaceDataTable>? orderBy,
+    _is.OrderByListBuilder<RaceDataTable>? orderByList,
+    _is.Transaction? transaction,
     RaceDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<RaceData>(
       where: where?.call(RaceData.t),
       orderBy: orderBy?.call(RaceData.t),
       orderByList: orderByList?.call(RaceData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [RaceData] by its [id] or null if no such row exists.
   Future<RaceData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     RaceDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<RaceData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -854,14 +925,26 @@ class RaceDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<RaceData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<RaceData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<RaceData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -869,12 +952,78 @@ class RaceDataRepository {
   ///
   /// The returned [RaceData] will have its `id` field set.
   Future<RaceData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     RaceData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<RaceData>(
+    return session.db.insertRow<RaceData>(row, transaction: transaction);
+  }
+
+  /// Upserts all [RaceData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [RaceData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<RaceData>> upsert(
+    _is.DatabaseSession session,
+    List<RaceData> rows, {
+    required _is.ColumnSelections<RaceDataTable> conflictColumns,
+    _is.ColumnSelections<RaceDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<RaceDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<RaceData>(
+      rows,
+      conflictColumns: conflictColumns(RaceData.t),
+      updateColumns: updateColumns?.call(RaceData.t),
+      updateWhere: updateWhere?.call(RaceData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [RaceData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [RaceData] will have its `id` field set.
+  Future<RaceData?> upsertRow(
+    _is.DatabaseSession session,
+    RaceData row, {
+    required _is.ColumnSelections<RaceDataTable> conflictColumns,
+    _is.ColumnSelections<RaceDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<RaceDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<RaceData>(
       row,
+      conflictColumns: conflictColumns(RaceData.t),
+      updateColumns: updateColumns?.call(RaceData.t),
+      updateWhere: updateWhere?.call(RaceData.t),
       transaction: transaction,
     );
   }
@@ -884,16 +1033,22 @@ class RaceDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<RaceData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<RaceData> rows, {
-    _i1.ColumnSelections<RaceDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<RaceDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<RaceData>(
       rows,
       columns: columns?.call(RaceData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -901,10 +1056,10 @@ class RaceDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<RaceData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     RaceData row, {
-    _i1.ColumnSelections<RaceDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<RaceDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<RaceData>(
       row,
@@ -913,55 +1068,139 @@ class RaceDataRepository {
     );
   }
 
+  /// Updates a single [RaceData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<RaceData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<RaceDataUpdateTable> columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<RaceData>(
+      id,
+      columnValues: columnValues(RaceData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [RaceData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<RaceData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<RaceDataUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<RaceDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<RaceDataTable>? orderBy,
+    _is.OrderByListBuilder<RaceDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<RaceData>(
+      columnValues: columnValues(RaceData.t.updateTable),
+      where: where(RaceData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(RaceData.t),
+      orderByList: orderByList?.call(RaceData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [RaceData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<RaceData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<RaceData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<RaceDataTable>? orderBy,
+    _is.OrderByListBuilder<RaceDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<RaceData>(
       rows,
+      orderBy: orderBy?.call(RaceData.t),
+      orderByList: orderByList?.call(RaceData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [RaceData].
   Future<RaceData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     RaceData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<RaceData>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<RaceData>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<RaceData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<RaceDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<RaceDataTable> where,
+    _is.OrderByBuilder<RaceDataTable>? orderBy,
+    _is.OrderByListBuilder<RaceDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<RaceData>(
       where: where(RaceData.t),
+      orderBy: orderBy?.call(RaceData.t),
+      orderByList: orderByList?.call(RaceData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<RaceDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<RaceDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<RaceData>(
       where: where?.call(RaceData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [RaceData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<RaceDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<RaceData>(
+      where: where(RaceData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -973,10 +1212,10 @@ class RaceDataAttachRepository {
   /// Creates a relation between this [RaceData] and the given [RaceFeatureData]s
   /// by setting each [RaceFeatureData]'s foreign key `raceId` to refer to this [RaceData].
   Future<void> features(
-    _i1.Session session,
+    _is.DatabaseSession session,
     RaceData raceData,
-    List<_i8.RaceFeatureData> raceFeatureData, {
-    _i1.Transaction? transaction,
+    List<_ib72xv5p.RaceFeatureData> raceFeatureData, {
+    _is.Transaction? transaction,
   }) async {
     if (raceFeatureData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('raceFeatureData.id');
@@ -985,11 +1224,12 @@ class RaceDataAttachRepository {
       throw ArgumentError.notNull('raceData.id');
     }
 
-    var $raceFeatureData =
-        raceFeatureData.map((e) => e.copyWith(raceId: raceData.id)).toList();
-    await session.db.update<_i8.RaceFeatureData>(
+    var $raceFeatureData = raceFeatureData
+        .map((e) => e.copyWith(raceId: raceData.id))
+        .toList();
+    await session.db.update<_ib72xv5p.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i8.RaceFeatureData.t.raceId],
+      columns: [_ib72xv5p.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }
@@ -1001,10 +1241,10 @@ class RaceDataAttachRowRepository {
   /// Creates a relation between this [RaceData] and the given [RaceFeatureData]
   /// by setting the [RaceFeatureData]'s foreign key `raceId` to refer to this [RaceData].
   Future<void> features(
-    _i1.Session session,
+    _is.DatabaseSession session,
     RaceData raceData,
-    _i8.RaceFeatureData raceFeatureData, {
-    _i1.Transaction? transaction,
+    _ib72xv5p.RaceFeatureData raceFeatureData, {
+    _is.Transaction? transaction,
   }) async {
     if (raceFeatureData.id == null) {
       throw ArgumentError.notNull('raceFeatureData.id');
@@ -1014,9 +1254,9 @@ class RaceDataAttachRowRepository {
     }
 
     var $raceFeatureData = raceFeatureData.copyWith(raceId: raceData.id);
-    await session.db.updateRow<_i8.RaceFeatureData>(
+    await session.db.updateRow<_ib72xv5p.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i8.RaceFeatureData.t.raceId],
+      columns: [_ib72xv5p.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }
@@ -1031,19 +1271,20 @@ class RaceDataDetachRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> features(
-    _i1.Session session,
-    List<_i8.RaceFeatureData> raceFeatureData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    List<_ib72xv5p.RaceFeatureData> raceFeatureData, {
+    _is.Transaction? transaction,
   }) async {
     if (raceFeatureData.any((e) => e.id == null)) {
       throw ArgumentError.notNull('raceFeatureData.id');
     }
 
-    var $raceFeatureData =
-        raceFeatureData.map((e) => e.copyWith(raceId: null)).toList();
-    await session.db.update<_i8.RaceFeatureData>(
+    var $raceFeatureData = raceFeatureData
+        .map((e) => e.copyWith(raceId: null))
+        .toList();
+    await session.db.update<_ib72xv5p.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i8.RaceFeatureData.t.raceId],
+      columns: [_ib72xv5p.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }
@@ -1058,18 +1299,18 @@ class RaceDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> features(
-    _i1.Session session,
-    _i8.RaceFeatureData raceFeatureData, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    _ib72xv5p.RaceFeatureData raceFeatureData, {
+    _is.Transaction? transaction,
   }) async {
     if (raceFeatureData.id == null) {
       throw ArgumentError.notNull('raceFeatureData.id');
     }
 
     var $raceFeatureData = raceFeatureData.copyWith(raceId: null);
-    await session.db.updateRow<_i8.RaceFeatureData>(
+    await session.db.updateRow<_ib72xv5p.RaceFeatureData>(
       $raceFeatureData,
-      columns: [_i8.RaceFeatureData.t.raceId],
+      columns: [_ib72xv5p.RaceFeatureData.t.raceId],
       transaction: transaction,
     );
   }

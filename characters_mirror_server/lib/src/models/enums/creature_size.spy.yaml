@@ -1,4 +1,5 @@
 enum: CreatureSize
+serialized: byIndex
 values:
   - tiny
   - small

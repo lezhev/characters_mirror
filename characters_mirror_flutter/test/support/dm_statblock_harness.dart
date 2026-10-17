@@ -29,7 +29,7 @@ Widget app(DmStatblock view,
                             padding: const EdgeInsets.all(16),
                             child: Column(children: [
                               content ?? DmStatblockView(statblock: view),
-                              if (technical != null) technical,
+                              ?technical,
                             ])))))));
 
 bool _auditFontLoaded = false;

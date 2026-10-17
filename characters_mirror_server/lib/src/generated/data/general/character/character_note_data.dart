@@ -7,23 +7,17 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class CharacterNoteData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
-  CharacterNoteData._({
-    this.id,
-    this.text,
-    this.updatedAt,
-  });
+    implements _is.SerializableModel, _is.ProtocolSerialization {
+  CharacterNoteData._({this.id, this.text, this.updatedAt});
 
-  factory CharacterNoteData({
-    String? id,
-    String? text,
-    DateTime? updatedAt,
-  }) = _CharacterNoteDataImpl;
+  factory CharacterNoteData({String? id, String? text, DateTime? updatedAt}) =
+      _CharacterNoteDataImpl;
 
   factory CharacterNoteData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterNoteData(
@@ -31,7 +25,7 @@ abstract class CharacterNoteData
       text: jsonSerialization['text'] as String?,
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -43,15 +37,12 @@ abstract class CharacterNoteData
 
   /// Returns a shallow copy of this [CharacterNoteData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
-  CharacterNoteData copyWith({
-    String? id,
-    String? text,
-    DateTime? updatedAt,
-  });
+  @_is.useResult
+  CharacterNoteData copyWith({String? id, String? text, DateTime? updatedAt});
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterNoteData',
       if (id != null) 'id': id,
       if (text != null) 'text': text,
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
@@ -61,6 +52,7 @@ abstract class CharacterNoteData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterNoteData',
       if (id != null) 'id': id,
       if (text != null) 'text': text,
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
@@ -69,26 +61,19 @@ abstract class CharacterNoteData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
 class _Undefined {}
 
 class _CharacterNoteDataImpl extends CharacterNoteData {
-  _CharacterNoteDataImpl({
-    String? id,
-    String? text,
-    DateTime? updatedAt,
-  }) : super._(
-          id: id,
-          text: text,
-          updatedAt: updatedAt,
-        );
+  _CharacterNoteDataImpl({String? id, String? text, DateTime? updatedAt})
+    : super._(id: id, text: text, updatedAt: updatedAt);
 
   /// Returns a shallow copy of this [CharacterNoteData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterNoteData copyWith({
     Object? id = _Undefined,

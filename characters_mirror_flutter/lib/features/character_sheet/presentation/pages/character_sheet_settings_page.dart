@@ -21,12 +21,12 @@ class CharacterSheetSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final character = ref.watch(characterSheetControllerProvider(characterId));
-    final effectiveCharacterId = character.valueOrNull?.id ?? characterId;
+    final effectiveCharacterId = character.value?.id ?? characterId;
     final offlineRecord =
         ref.watch(offlineCharacterRecordProvider(effectiveCharacterId));
     final localSavePending =
         ref.watch(characterSheetLocalSavePendingProvider(characterId));
-    final characterName = character.valueOrNull?.name?.trim();
+    final characterName = character.value?.name?.trim();
 
     return PopScope(
       canPop: false,
@@ -138,7 +138,7 @@ class CharacterSheetSettingsSection extends StatelessWidget {
               title: Text('Проверяем синхронизацию'),
               subtitle: Text('Загружаем локальное состояние листа.'),
             ),
-            error: (_, __) => const ListTile(
+            error: (_, _) => const ListTile(
               leading: Icon(Icons.sync_problem_outlined),
               title: Text('Статус синхронизации недоступен'),
               subtitle: Text('Не удалось прочитать локальное состояние.'),

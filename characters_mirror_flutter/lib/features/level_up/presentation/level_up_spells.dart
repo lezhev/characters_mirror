@@ -61,7 +61,7 @@ class LevelUpSpells extends StatelessWidget {
                       in request.spells ?? const <LevelUpSpellChoice>[])
                     if (selection.replacesSelectionId != null)
                       selection.replacesSelectionId,
-                  if (replacesSelectionId != null) replacesSelectionId,
+                  ?replacesSelectionId,
                 };
                 if (replacesSelectionId != null) {
                   final prior = request.spells

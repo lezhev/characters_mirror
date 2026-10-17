@@ -67,7 +67,7 @@ class QuickActionsSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentCharacter =
-        ref.watch(characterSheetControllerProvider(characterId)).valueOrNull ??
+        ref.watch(characterSheetControllerProvider(characterId)).value ??
             character;
     final concentrationName = _normalizedText(
       currentCharacter.activeConcentrationSpellName,

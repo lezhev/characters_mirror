@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../enums/armor_category.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../enums/armor_category.dart' as _irzuusaf;
 
 abstract class CharacterArmorTrainingOverridesData
-    implements _i1.SerializableModel {
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterArmorTrainingOverridesData._({
     this.addedCategories,
     this.removedCategories,
@@ -21,56 +24,82 @@ abstract class CharacterArmorTrainingOverridesData
   });
 
   factory CharacterArmorTrainingOverridesData({
-    List<_i2.ArmorCategory>? addedCategories,
-    List<_i2.ArmorCategory>? removedCategories,
+    List<_irzuusaf.ArmorCategory>? addedCategories,
+    List<_irzuusaf.ArmorCategory>? removedCategories,
     List<String>? custom,
   }) = _CharacterArmorTrainingOverridesDataImpl;
 
   factory CharacterArmorTrainingOverridesData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterArmorTrainingOverridesData(
-      addedCategories: (jsonSerialization['addedCategories'] as List?)
-          ?.map((e) => _i2.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      removedCategories: (jsonSerialization['removedCategories'] as List?)
-          ?.map((e) => _i2.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      custom: (jsonSerialization['custom'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      addedCategories: jsonSerialization['addedCategories'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_irzuusaf.ArmorCategory>>(
+              jsonSerialization['addedCategories'],
+            ),
+      removedCategories: jsonSerialization['removedCategories'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_irzuusaf.ArmorCategory>>(
+              jsonSerialization['removedCategories'],
+            ),
+      custom: jsonSerialization['custom'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['custom'],
+            ),
     );
   }
 
-  List<_i2.ArmorCategory>? addedCategories;
+  List<_irzuusaf.ArmorCategory>? addedCategories;
 
-  List<_i2.ArmorCategory>? removedCategories;
+  List<_irzuusaf.ArmorCategory>? removedCategories;
 
   List<String>? custom;
 
   /// Returns a shallow copy of this [CharacterArmorTrainingOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterArmorTrainingOverridesData copyWith({
-    List<_i2.ArmorCategory>? addedCategories,
-    List<_i2.ArmorCategory>? removedCategories,
+    List<_irzuusaf.ArmorCategory>? addedCategories,
+    List<_irzuusaf.ArmorCategory>? removedCategories,
     List<String>? custom,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterArmorTrainingOverridesData',
       if (addedCategories != null)
-        'addedCategories':
-            addedCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'addedCategories': addedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (removedCategories != null)
-        'removedCategories':
-            removedCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'removedCategories': removedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (custom != null) 'custom': custom?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterArmorTrainingOverridesData',
+      if (addedCategories != null)
+        'addedCategories': addedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (removedCategories != null)
+        'removedCategories': removedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (custom != null) 'custom': custom?.toJson(),
     };
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -79,18 +108,18 @@ class _Undefined {}
 class _CharacterArmorTrainingOverridesDataImpl
     extends CharacterArmorTrainingOverridesData {
   _CharacterArmorTrainingOverridesDataImpl({
-    List<_i2.ArmorCategory>? addedCategories,
-    List<_i2.ArmorCategory>? removedCategories,
+    List<_irzuusaf.ArmorCategory>? addedCategories,
+    List<_irzuusaf.ArmorCategory>? removedCategories,
     List<String>? custom,
   }) : super._(
-          addedCategories: addedCategories,
-          removedCategories: removedCategories,
-          custom: custom,
-        );
+         addedCategories: addedCategories,
+         removedCategories: removedCategories,
+         custom: custom,
+       );
 
   /// Returns a shallow copy of this [CharacterArmorTrainingOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterArmorTrainingOverridesData copyWith({
     Object? addedCategories = _Undefined,
@@ -98,10 +127,10 @@ class _CharacterArmorTrainingOverridesDataImpl
     Object? custom = _Undefined,
   }) {
     return CharacterArmorTrainingOverridesData(
-      addedCategories: addedCategories is List<_i2.ArmorCategory>?
+      addedCategories: addedCategories is List<_irzuusaf.ArmorCategory>?
           ? addedCategories
           : this.addedCategories?.map((e0) => e0).toList(),
-      removedCategories: removedCategories is List<_i2.ArmorCategory>?
+      removedCategories: removedCategories is List<_irzuusaf.ArmorCategory>?
           ? removedCategories
           : this.removedCategories?.map((e0) => e0).toList(),
       custom: custom is List<String>?

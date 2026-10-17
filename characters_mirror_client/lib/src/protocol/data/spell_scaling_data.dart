@@ -7,12 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../enums/spell/spell_scaling_mode.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../enums/spell/spell_scaling_mode.dart' as _izmib1zd;
 
-abstract class SpellScalingData implements _i1.SerializableModel {
+abstract class SpellScalingData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SpellScalingData._({
     this.mode,
     this.scalingBySlotLevel,
@@ -21,7 +25,7 @@ abstract class SpellScalingData implements _i1.SerializableModel {
   });
 
   factory SpellScalingData({
-    _i2.SpellScalingMode? mode,
+    _izmib1zd.SpellScalingMode? mode,
     Map<int, String>? scalingBySlotLevel,
     Map<int, String>? scalingByCasterLevel,
     String? notes,
@@ -31,19 +35,24 @@ abstract class SpellScalingData implements _i1.SerializableModel {
     return SpellScalingData(
       mode: jsonSerialization['mode'] == null
           ? null
-          : _i2.SpellScalingMode.fromJson(
-              (jsonSerialization['mode'] as String)),
-      scalingBySlotLevel: (jsonSerialization['scalingBySlotLevel'] as List?)
-          ?.fold<Map<int, String>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as String}),
-      scalingByCasterLevel: (jsonSerialization['scalingByCasterLevel'] as List?)
-          ?.fold<Map<int, String>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as String}),
+          : _izmib1zd.SpellScalingMode.fromJson(
+              (jsonSerialization['mode'] as String),
+            ),
+      scalingBySlotLevel: jsonSerialization['scalingBySlotLevel'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<int, String>>(
+              jsonSerialization['scalingBySlotLevel'],
+            ),
+      scalingByCasterLevel: jsonSerialization['scalingByCasterLevel'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<int, String>>(
+              jsonSerialization['scalingByCasterLevel'],
+            ),
       notes: jsonSerialization['notes'] as String?,
     );
   }
 
-  _i2.SpellScalingMode? mode;
+  _izmib1zd.SpellScalingMode? mode;
 
   Map<int, String>? scalingBySlotLevel;
 
@@ -53,9 +62,9 @@ abstract class SpellScalingData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SpellScalingData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SpellScalingData copyWith({
-    _i2.SpellScalingMode? mode,
+    _izmib1zd.SpellScalingMode? mode,
     Map<int, String>? scalingBySlotLevel,
     Map<int, String>? scalingByCasterLevel,
     String? notes,
@@ -63,6 +72,20 @@ abstract class SpellScalingData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellScalingData',
+      if (mode != null) 'mode': mode?.toJson(),
+      if (scalingBySlotLevel != null)
+        'scalingBySlotLevel': scalingBySlotLevel?.toJson(),
+      if (scalingByCasterLevel != null)
+        'scalingByCasterLevel': scalingByCasterLevel?.toJson(),
+      if (notes != null) 'notes': notes,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SpellScalingData',
       if (mode != null) 'mode': mode?.toJson(),
       if (scalingBySlotLevel != null)
         'scalingBySlotLevel': scalingBySlotLevel?.toJson(),
@@ -74,7 +97,7 @@ abstract class SpellScalingData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -82,20 +105,20 @@ class _Undefined {}
 
 class _SpellScalingDataImpl extends SpellScalingData {
   _SpellScalingDataImpl({
-    _i2.SpellScalingMode? mode,
+    _izmib1zd.SpellScalingMode? mode,
     Map<int, String>? scalingBySlotLevel,
     Map<int, String>? scalingByCasterLevel,
     String? notes,
   }) : super._(
-          mode: mode,
-          scalingBySlotLevel: scalingBySlotLevel,
-          scalingByCasterLevel: scalingByCasterLevel,
-          notes: notes,
-        );
+         mode: mode,
+         scalingBySlotLevel: scalingBySlotLevel,
+         scalingByCasterLevel: scalingByCasterLevel,
+         notes: notes,
+       );
 
   /// Returns a shallow copy of this [SpellScalingData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SpellScalingData copyWith({
     Object? mode = _Undefined,
@@ -104,27 +127,17 @@ class _SpellScalingDataImpl extends SpellScalingData {
     Object? notes = _Undefined,
   }) {
     return SpellScalingData(
-      mode: mode is _i2.SpellScalingMode? ? mode : this.mode,
+      mode: mode is _izmib1zd.SpellScalingMode? ? mode : this.mode,
       scalingBySlotLevel: scalingBySlotLevel is Map<int, String>?
           ? scalingBySlotLevel
-          : this.scalingBySlotLevel?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.scalingBySlotLevel?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       scalingByCasterLevel: scalingByCasterLevel is Map<int, String>?
           ? scalingByCasterLevel
-          : this.scalingByCasterLevel?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.scalingByCasterLevel?.map(
+              (key0, value0) => MapEntry(key0, value0),
+            ),
       notes: notes is String? ? notes : this.notes,
     );
   }

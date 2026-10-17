@@ -39,7 +39,7 @@ enum _CreationChoiceSelectorMode {
 class CreationChoiceSelector extends StatefulWidget {
   const CreationChoiceSelector._({
     required this.items,
-    required _CreationChoiceSelectorMode mode,
+    required this._mode,
     required this.switchKey,
     super.key,
     this.title,
@@ -49,7 +49,7 @@ class CreationChoiceSelector extends StatefulWidget {
     this.autoScrollOnExpand = true,
     this.surface = true,
     this.adaptivePairLayout = false,
-  }) : _mode = mode;
+  });
 
   factory CreationChoiceSelector.single({
     String? title,
@@ -381,7 +381,7 @@ class CreationChoiceSelectorSurface extends StatelessWidget {
                         onPressed: onClear,
                         child: const Text('Сбросить'),
                       ),
-                    if (trailing != null) trailing!,
+                    ?trailing,
                   ],
                 ),
               ),

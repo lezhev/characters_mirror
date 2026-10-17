@@ -3,6 +3,7 @@ import 'package:characters_mirror_server/src/storage/object_storage.dart';
 import 'package:characters_mirror_server/src/storage/object_storage_config.dart';
 import 'package:characters_mirror_server/src/storage/s3_object_storage.dart';
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 
 class CharacterPortraitEndpoint extends Endpoint {
   @override
@@ -113,7 +114,7 @@ class CharacterPortraitEndpoint extends Endpoint {
     Session session,
     int characterId,
   ) async {
-    final userId = (await session.authenticated)?.userId;
+    final userId = session.authenticated?.userId;
 
     if (userId == null) {
       throw Exception('Authentication required.');

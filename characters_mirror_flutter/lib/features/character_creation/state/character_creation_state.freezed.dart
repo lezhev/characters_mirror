@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'character_creation_state.dart';
@@ -9,6 +9,7 @@ part of 'character_creation_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -33,41 +34,48 @@ mixin _$CharacterCreationState {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as CharacterCreationState;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is CharacterCreationState &&
-            (identical(other.character, character) ||
-                other.character == character) &&
-            (identical(other.step, step) || other.step == step) &&
-            (identical(other.hasSpellCreationStep, hasSpellCreationStep) ||
-                other.hasSpellCreationStep == hasSpellCreationStep) &&
-            (identical(other.draftRevision, draftRevision) ||
-                other.draftRevision == draftRevision) &&
+            (identical(other.character, _this.character) ||
+                other.character == _this.character) &&
+            (identical(other.step, _this.step) || other.step == _this.step) &&
+            (identical(
+                    other.hasSpellCreationStep, _this.hasSpellCreationStep) ||
+                other.hasSpellCreationStep == _this.hasSpellCreationStep) &&
+            (identical(other.draftRevision, _this.draftRevision) ||
+                other.draftRevision == _this.draftRevision) &&
             const DeepCollectionEquality()
-                .equals(other.raceChoiceGroups, raceChoiceGroups) &&
+                .equals(other.raceChoiceGroups, _this.raceChoiceGroups) &&
             const DeepCollectionEquality()
-                .equals(other.classChoiceGroups, classChoiceGroups) &&
-            const DeepCollectionEquality()
-                .equals(other.backgroundChoiceGroups, backgroundChoiceGroups) &&
+                .equals(other.classChoiceGroups, _this.classChoiceGroups) &&
             const DeepCollectionEquality().equals(
-                other.backgroundChoiceGroupKeys, backgroundChoiceGroupKeys));
+                other.backgroundChoiceGroups, _this.backgroundChoiceGroups) &&
+            const DeepCollectionEquality().equals(
+                other.backgroundChoiceGroupKeys,
+                _this.backgroundChoiceGroupKeys));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      character,
-      step,
-      hasSpellCreationStep,
-      draftRevision,
-      const DeepCollectionEquality().hash(raceChoiceGroups),
-      const DeepCollectionEquality().hash(classChoiceGroups),
-      const DeepCollectionEquality().hash(backgroundChoiceGroups),
-      const DeepCollectionEquality().hash(backgroundChoiceGroupKeys));
+  int get hashCode {
+    final _this = this as CharacterCreationState;
+    return Object.hash(
+        runtimeType,
+        _this.character,
+        _this.step,
+        _this.hasSpellCreationStep,
+        _this.draftRevision,
+        const DeepCollectionEquality().hash(_this.raceChoiceGroups),
+        const DeepCollectionEquality().hash(_this.classChoiceGroups),
+        const DeepCollectionEquality().hash(_this.backgroundChoiceGroups),
+        const DeepCollectionEquality().hash(_this.backgroundChoiceGroupKeys));
+  }
 
   @override
   String toString() {
-    return 'CharacterCreationState(character: $character, step: $step, hasSpellCreationStep: $hasSpellCreationStep, draftRevision: $draftRevision, raceChoiceGroups: $raceChoiceGroups, classChoiceGroups: $classChoiceGroups, backgroundChoiceGroups: $backgroundChoiceGroups, backgroundChoiceGroupKeys: $backgroundChoiceGroupKeys)';
+    final _this = this as CharacterCreationState;
+    return 'CharacterCreationState(character: ${_this.character}, step: ${_this.step}, hasSpellCreationStep: ${_this.hasSpellCreationStep}, draftRevision: ${_this.draftRevision}, raceChoiceGroups: ${_this.raceChoiceGroups}, classChoiceGroups: ${_this.classChoiceGroups}, backgroundChoiceGroups: ${_this.backgroundChoiceGroups}, backgroundChoiceGroupKeys: ${_this.backgroundChoiceGroupKeys})';
   }
 }
 
@@ -110,7 +118,7 @@ class _$CharacterCreationStateCopyWithImpl<$Res>
     Object? backgroundChoiceGroups = null,
     Object? backgroundChoiceGroupKeys = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(CharacterCreationState(
       character: null == character
           ? _self.character
           : character // ignore: cast_nullable_to_non_nullable
@@ -359,10 +367,10 @@ class _CharacterCreationState implements CharacterCreationState {
       required this.step,
       this.hasSpellCreationStep = false,
       this.draftRevision = 0,
-      final List<ChoiceGroupView> raceChoiceGroups = const [],
-      final List<ChoiceGroupView> classChoiceGroups = const [],
-      final List<ChoiceGroupView> backgroundChoiceGroups = const [],
-      final List<String> backgroundChoiceGroupKeys = const []})
+      List<ChoiceGroupView> raceChoiceGroups = const [],
+      List<ChoiceGroupView> classChoiceGroups = const [],
+      List<ChoiceGroupView> backgroundChoiceGroups = const [],
+      List<String> backgroundChoiceGroupKeys = const []})
       : _raceChoiceGroups = raceChoiceGroups,
         _classChoiceGroups = classChoiceGroups,
         _backgroundChoiceGroups = backgroundChoiceGroups,
@@ -440,26 +448,28 @@ class _CharacterCreationState implements CharacterCreationState {
             (identical(other.draftRevision, draftRevision) ||
                 other.draftRevision == draftRevision) &&
             const DeepCollectionEquality()
-                .equals(other._raceChoiceGroups, _raceChoiceGroups) &&
+                .equals(other.raceChoiceGroups, _raceChoiceGroups) &&
             const DeepCollectionEquality()
-                .equals(other._classChoiceGroups, _classChoiceGroups) &&
+                .equals(other.classChoiceGroups, _classChoiceGroups) &&
             const DeepCollectionEquality().equals(
-                other._backgroundChoiceGroups, _backgroundChoiceGroups) &&
+                other.backgroundChoiceGroups, _backgroundChoiceGroups) &&
             const DeepCollectionEquality().equals(
-                other._backgroundChoiceGroupKeys, _backgroundChoiceGroupKeys));
+                other.backgroundChoiceGroupKeys, _backgroundChoiceGroupKeys));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      character,
-      step,
-      hasSpellCreationStep,
-      draftRevision,
-      const DeepCollectionEquality().hash(_raceChoiceGroups),
-      const DeepCollectionEquality().hash(_classChoiceGroups),
-      const DeepCollectionEquality().hash(_backgroundChoiceGroups),
-      const DeepCollectionEquality().hash(_backgroundChoiceGroupKeys));
+  int get hashCode {
+    return Object.hash(
+        runtimeType,
+        character,
+        step,
+        hasSpellCreationStep,
+        draftRevision,
+        const DeepCollectionEquality().hash(_raceChoiceGroups),
+        const DeepCollectionEquality().hash(_classChoiceGroups),
+        const DeepCollectionEquality().hash(_backgroundChoiceGroups),
+        const DeepCollectionEquality().hash(_backgroundChoiceGroupKeys));
+  }
 
   @override
   String toString() {

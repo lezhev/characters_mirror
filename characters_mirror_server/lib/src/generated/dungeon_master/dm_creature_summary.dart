@@ -7,12 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class DmCreatureSummary
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   DmCreatureSummary._({
     required this.id,
     required this.name,
@@ -35,8 +36,9 @@ abstract class DmCreatureSummary
       name: jsonSerialization['name'] as String,
       challengeRating: jsonSerialization['challengeRating'] as String?,
       hpMax: jsonSerialization['hpMax'] as int?,
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      createdAt: _is.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
     );
   }
 
@@ -52,7 +54,7 @@ abstract class DmCreatureSummary
 
   /// Returns a shallow copy of this [DmCreatureSummary]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   DmCreatureSummary copyWith({
     int? id,
     String? name,
@@ -63,6 +65,7 @@ abstract class DmCreatureSummary
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'DmCreatureSummary',
       'id': id,
       'name': name,
       if (challengeRating != null) 'challengeRating': challengeRating,
@@ -74,6 +77,7 @@ abstract class DmCreatureSummary
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'DmCreatureSummary',
       'id': id,
       'name': name,
       if (challengeRating != null) 'challengeRating': challengeRating,
@@ -84,7 +88,7 @@ abstract class DmCreatureSummary
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -98,16 +102,16 @@ class _DmCreatureSummaryImpl extends DmCreatureSummary {
     int? hpMax,
     required DateTime createdAt,
   }) : super._(
-          id: id,
-          name: name,
-          challengeRating: challengeRating,
-          hpMax: hpMax,
-          createdAt: createdAt,
-        );
+         id: id,
+         name: name,
+         challengeRating: challengeRating,
+         hpMax: hpMax,
+         createdAt: createdAt,
+       );
 
   /// Returns a shallow copy of this [DmCreatureSummary]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   DmCreatureSummary copyWith({
     int? id,
@@ -119,8 +123,9 @@ class _DmCreatureSummaryImpl extends DmCreatureSummary {
     return DmCreatureSummary(
       id: id ?? this.id,
       name: name ?? this.name,
-      challengeRating:
-          challengeRating is String? ? challengeRating : this.challengeRating,
+      challengeRating: challengeRating is String?
+          ? challengeRating
+          : this.challengeRating,
       hpMax: hpMax is int? ? hpMax : this.hpMax,
       createdAt: createdAt ?? this.createdAt,
     );

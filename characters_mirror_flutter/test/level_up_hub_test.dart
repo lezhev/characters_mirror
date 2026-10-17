@@ -92,10 +92,10 @@ Future<void> pumpHub(WidgetTester tester, LevelUpFlowState state,
         home: LevelUpHub(
             state: state,
             onRoll: onRoll ?? (_) {},
-            onAbilityTap: onAbility ?? (_, __) {},
-            onChoice: onChoice ?? (_, __) {},
+            onAbilityTap: onAbility ?? (_, _) {},
+            onChoice: onChoice ?? (_, _) {},
             onSubclass: (_) {},
-            onSpells: (_, __, ___) {},
+            onSpells: (_, _, _) {},
             onApply: () {})));
 
 void main() {

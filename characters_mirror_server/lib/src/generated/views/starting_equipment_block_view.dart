@@ -7,62 +7,69 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../data/general/class/starting_equipment_block_data.dart' as _i2;
-import '../data/general/class/starting_equipment_line_data.dart' as _i3;
-import '../views/starting_equipment_option_view.dart' as _i4;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../data/general/class/starting_equipment_block_data.dart' as _i79v36x7;
+import '../data/general/class/starting_equipment_line_data.dart' as _iyf3iocy;
+import '../views/starting_equipment_option_view.dart' as _iakzuosz;
 
 abstract class StartingEquipmentBlockView
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
-  StartingEquipmentBlockView._({
-    this.block,
-    this.fixedLines,
-    this.options,
-  });
+    implements _is.SerializableModel, _is.ProtocolSerialization {
+  StartingEquipmentBlockView._({this.block, this.fixedLines, this.options});
 
   factory StartingEquipmentBlockView({
-    _i2.StartingEquipmentBlockData? block,
-    List<_i3.StartingEquipmentLineData>? fixedLines,
-    List<_i4.StartingEquipmentOptionView>? options,
+    _i79v36x7.StartingEquipmentBlockData? block,
+    List<_iyf3iocy.StartingEquipmentLineData>? fixedLines,
+    List<_iakzuosz.StartingEquipmentOptionView>? options,
   }) = _StartingEquipmentBlockViewImpl;
 
   factory StartingEquipmentBlockView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return StartingEquipmentBlockView(
       block: jsonSerialization['block'] == null
           ? null
-          : _i2.StartingEquipmentBlockData.fromJson(
-              (jsonSerialization['block'] as Map<String, dynamic>)),
-      fixedLines: (jsonSerialization['fixedLines'] as List?)
-          ?.map((e) => _i3.StartingEquipmentLineData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      options: (jsonSerialization['options'] as List?)
-          ?.map((e) => _i4.StartingEquipmentOptionView.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+          : _ikmnmw29.Protocol()
+                .deserialize<_i79v36x7.StartingEquipmentBlockData>(
+                  jsonSerialization['block'],
+                ),
+      fixedLines: jsonSerialization['fixedLines'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iyf3iocy.StartingEquipmentLineData>>(
+                  jsonSerialization['fixedLines'],
+                ),
+      options: jsonSerialization['options'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iakzuosz.StartingEquipmentOptionView>>(
+                  jsonSerialization['options'],
+                ),
     );
   }
 
-  _i2.StartingEquipmentBlockData? block;
+  _i79v36x7.StartingEquipmentBlockData? block;
 
-  List<_i3.StartingEquipmentLineData>? fixedLines;
+  List<_iyf3iocy.StartingEquipmentLineData>? fixedLines;
 
-  List<_i4.StartingEquipmentOptionView>? options;
+  List<_iakzuosz.StartingEquipmentOptionView>? options;
 
   /// Returns a shallow copy of this [StartingEquipmentBlockView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   StartingEquipmentBlockView copyWith({
-    _i2.StartingEquipmentBlockData? block,
-    List<_i3.StartingEquipmentLineData>? fixedLines,
-    List<_i4.StartingEquipmentOptionView>? options,
+    _i79v36x7.StartingEquipmentBlockData? block,
+    List<_iyf3iocy.StartingEquipmentLineData>? fixedLines,
+    List<_iakzuosz.StartingEquipmentOptionView>? options,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StartingEquipmentBlockView',
       if (block != null) 'block': block?.toJson(),
       if (fixedLines != null)
         'fixedLines': fixedLines?.toJson(valueToJson: (v) => v.toJson()),
@@ -74,10 +81,12 @@ abstract class StartingEquipmentBlockView
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StartingEquipmentBlockView',
       if (block != null) 'block': block?.toJsonForProtocol(),
       if (fixedLines != null)
-        'fixedLines':
-            fixedLines?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'fixedLines': fixedLines?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (options != null)
         'options': options?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
@@ -85,7 +94,7 @@ abstract class StartingEquipmentBlockView
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -93,18 +102,14 @@ class _Undefined {}
 
 class _StartingEquipmentBlockViewImpl extends StartingEquipmentBlockView {
   _StartingEquipmentBlockViewImpl({
-    _i2.StartingEquipmentBlockData? block,
-    List<_i3.StartingEquipmentLineData>? fixedLines,
-    List<_i4.StartingEquipmentOptionView>? options,
-  }) : super._(
-          block: block,
-          fixedLines: fixedLines,
-          options: options,
-        );
+    _i79v36x7.StartingEquipmentBlockData? block,
+    List<_iyf3iocy.StartingEquipmentLineData>? fixedLines,
+    List<_iakzuosz.StartingEquipmentOptionView>? options,
+  }) : super._(block: block, fixedLines: fixedLines, options: options);
 
   /// Returns a shallow copy of this [StartingEquipmentBlockView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   StartingEquipmentBlockView copyWith({
     Object? block = _Undefined,
@@ -112,13 +117,13 @@ class _StartingEquipmentBlockViewImpl extends StartingEquipmentBlockView {
     Object? options = _Undefined,
   }) {
     return StartingEquipmentBlockView(
-      block: block is _i2.StartingEquipmentBlockData?
+      block: block is _i79v36x7.StartingEquipmentBlockData?
           ? block
           : this.block?.copyWith(),
-      fixedLines: fixedLines is List<_i3.StartingEquipmentLineData>?
+      fixedLines: fixedLines is List<_iyf3iocy.StartingEquipmentLineData>?
           ? fixedLines
           : this.fixedLines?.map((e0) => e0.copyWith()).toList(),
-      options: options is List<_i4.StartingEquipmentOptionView>?
+      options: options is List<_iakzuosz.StartingEquipmentOptionView>?
           ? options
           : this.options?.map((e0) => e0.copyWith()).toList(),
     );

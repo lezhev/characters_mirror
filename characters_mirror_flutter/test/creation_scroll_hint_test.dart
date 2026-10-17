@@ -124,7 +124,7 @@ Future<void> _pumpHintStep(
     routes: [
       GoRoute(
         path: '/create/race',
-        builder: (_, __) => ValueListenableBuilder<int?>(
+        builder: (_, _) => ValueListenableBuilder<int?>(
           valueListenable: selection,
           builder: (context, selected, _) => CreationSelectionStepScaffold(
             route: 'background',

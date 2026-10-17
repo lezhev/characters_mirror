@@ -7,11 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
-enum WeaponProperty implements _i1.SerializableModel {
+enum WeaponProperty implements _is.SerializableModel {
   ammunition,
   finesse,
   heavy,
@@ -50,7 +51,8 @@ enum WeaponProperty implements _i1.SerializableModel {
         return WeaponProperty.versatile;
       default:
         throw ArgumentError(
-            'Value "$name" cannot be converted to "WeaponProperty"');
+          'Value "$name" cannot be converted to "WeaponProperty"',
+        );
     }
   }
 

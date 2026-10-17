@@ -44,7 +44,7 @@ WHERE user_id = ? AND entity_id = ? AND operation_type IS NULL
       try {
         deleteLegacy.execute([userId, entityId]);
       } finally {
-        deleteLegacy.dispose();
+        deleteLegacy.close();
       }
     }
 
@@ -142,7 +142,7 @@ LIMIT 1
     try {
       return stmt.select([userId, entityId]).isNotEmpty;
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -161,7 +161,7 @@ LIMIT 1
         OfflineCharacterChangeStatus.failed.name,
       ]).isNotEmpty;
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -184,7 +184,7 @@ WHERE user_id = ? AND id = ?
         stmt.execute([userId, id]);
       }
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -212,7 +212,7 @@ WHERE user_id = ? AND id = ? AND status IN (?, ?)
         }
       });
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -231,7 +231,7 @@ WHERE user_id = ? AND id = ?
         changeId,
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -256,7 +256,7 @@ WHERE user_id = ? AND id = ?
         changeId,
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -279,7 +279,7 @@ WHERE user_id = ? AND id = ?
         changeId,
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -306,8 +306,8 @@ WHERE user_id = ?
           existing.localId,
         ]);
       } finally {
-        deleteCharacter.dispose();
-        deleteChanges.dispose();
+        deleteCharacter.close();
+        deleteChanges.close();
       }
     });
   }
@@ -320,7 +320,7 @@ WHERE user_id = ? AND entity_id = ?
     try {
       stmt.execute([userId, entityId]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -333,7 +333,7 @@ LIMIT 1
     try {
       return stmt.select([userId, entityId]).isNotEmpty;
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -363,7 +363,7 @@ WHERE user_id = ? AND key = ?
     try {
       stmt.execute([userId, 'sync_event_cursor']);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -379,9 +379,9 @@ WHERE user_id = ? AND key = ?
       deleteMeta.execute([userId]);
       deleteChanges.execute([userId]);
     } finally {
-      deleteCharacters.dispose();
-      deleteMeta.dispose();
-      deleteChanges.dispose();
+      deleteCharacters.close();
+      deleteMeta.close();
+      deleteChanges.close();
     }
   }
 
@@ -399,7 +399,7 @@ LIMIT 1
         OfflineCharacterSyncStatus.conflict.name,
       ]).isNotEmpty;
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 }

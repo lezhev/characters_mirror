@@ -46,7 +46,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
   }
 
   Future<void> setThemeMode(ThemeMode themeMode) async {
-    final previous = state.valueOrNull ?? const UserSettings();
+    final previous = state.value ?? const UserSettings();
     final updated = previous.copyWith(themeMode: themeMode);
 
     state = AsyncValue.data(updated);
@@ -60,7 +60,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
   }
 
   Future<void> setKeepScreenAwake(bool value) async {
-    final previous = state.valueOrNull ?? const UserSettings();
+    final previous = state.value ?? const UserSettings();
     final updated = previous.copyWith(keepScreenAwake: value);
 
     state = AsyncValue.data(updated);

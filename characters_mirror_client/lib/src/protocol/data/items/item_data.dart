@@ -7,11 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class ItemData implements _i1.SerializableModel {
+abstract class ItemData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ItemData._({
     this.id,
     this.referenceKey,
@@ -52,16 +56,18 @@ abstract class ItemData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       category: jsonSerialization['category'] as String?,
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: jsonSerialization['cost'] as int?,
-      effects: (jsonSerialization['effects'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      effects: jsonSerialization['effects'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['effects'],
+            ),
     );
   }
 
@@ -94,7 +100,7 @@ abstract class ItemData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [ItemData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   ItemData copyWith({
     int? id,
     String? referenceKey,
@@ -112,6 +118,26 @@ abstract class ItemData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ItemData',
+      if (id != null) 'id': id,
+      if (referenceKey != null) 'referenceKey': referenceKey,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (category != null) 'category': category,
+      if (weight != null) 'weight': weight,
+      if (cost != null) 'cost': cost,
+      if (effects != null) 'effects': effects?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ItemData',
       if (id != null) 'id': id,
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
@@ -129,7 +155,7 @@ abstract class ItemData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -150,23 +176,23 @@ class _ItemDataImpl extends ItemData {
     int? cost,
     List<String>? effects,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          category: category,
-          weight: weight,
-          cost: cost,
-          effects: effects,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         category: category,
+         weight: weight,
+         cost: cost,
+         effects: effects,
+       );
 
   /// Returns a shallow copy of this [ItemData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   ItemData copyWith({
     Object? id = _Undefined,

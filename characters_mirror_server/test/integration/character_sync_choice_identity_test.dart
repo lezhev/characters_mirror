@@ -10,7 +10,7 @@ void main() {
         () async {
       final owner = sessionBuilder.copyWith(
         authentication: AuthenticationOverride.authenticationInfo(
-          307,
+          (307).toString(),
           <Scope>{},
         ),
       );
@@ -121,5 +121,7 @@ void main() {
       expect(loaded.derived?.languages, contains(Language.elvish));
       expect(loaded.derived?.languages, isNot(contains(Language.common)));
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

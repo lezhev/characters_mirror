@@ -1,3 +1,4 @@
 enum: FeatureModifierRounding
+serialized: byIndex
 values:
   - floor

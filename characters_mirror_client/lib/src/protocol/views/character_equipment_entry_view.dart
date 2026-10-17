@@ -7,12 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../enums/equipment_catalog_type.dart' as _i2;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../enums/equipment_catalog_type.dart' as _ia0b4ti5;
 
-abstract class CharacterEquipmentEntryView implements _i1.SerializableModel {
+abstract class CharacterEquipmentEntryView
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterEquipmentEntryView._({
     this.catalogType,
     this.referenceKey,
@@ -21,26 +23,28 @@ abstract class CharacterEquipmentEntryView implements _i1.SerializableModel {
   });
 
   factory CharacterEquipmentEntryView({
-    _i2.EquipmentCatalogType? catalogType,
+    _ia0b4ti5.EquipmentCatalogType? catalogType,
     String? referenceKey,
     String? displayText,
     int? quantity,
   }) = _CharacterEquipmentEntryViewImpl;
 
   factory CharacterEquipmentEntryView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterEquipmentEntryView(
       catalogType: jsonSerialization['catalogType'] == null
           ? null
-          : _i2.EquipmentCatalogType.fromJson(
-              (jsonSerialization['catalogType'] as String)),
+          : _ia0b4ti5.EquipmentCatalogType.fromJson(
+              (jsonSerialization['catalogType'] as String),
+            ),
       referenceKey: jsonSerialization['referenceKey'] as String?,
       displayText: jsonSerialization['displayText'] as String?,
       quantity: jsonSerialization['quantity'] as int?,
     );
   }
 
-  _i2.EquipmentCatalogType? catalogType;
+  _ia0b4ti5.EquipmentCatalogType? catalogType;
 
   String? referenceKey;
 
@@ -50,9 +54,9 @@ abstract class CharacterEquipmentEntryView implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [CharacterEquipmentEntryView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterEquipmentEntryView copyWith({
-    _i2.EquipmentCatalogType? catalogType,
+    _ia0b4ti5.EquipmentCatalogType? catalogType,
     String? referenceKey,
     String? displayText,
     int? quantity,
@@ -60,6 +64,18 @@ abstract class CharacterEquipmentEntryView implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterEquipmentEntryView',
+      if (catalogType != null) 'catalogType': catalogType?.toJson(),
+      if (referenceKey != null) 'referenceKey': referenceKey,
+      if (displayText != null) 'displayText': displayText,
+      if (quantity != null) 'quantity': quantity,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterEquipmentEntryView',
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (displayText != null) 'displayText': displayText,
@@ -69,7 +85,7 @@ abstract class CharacterEquipmentEntryView implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -77,20 +93,20 @@ class _Undefined {}
 
 class _CharacterEquipmentEntryViewImpl extends CharacterEquipmentEntryView {
   _CharacterEquipmentEntryViewImpl({
-    _i2.EquipmentCatalogType? catalogType,
+    _ia0b4ti5.EquipmentCatalogType? catalogType,
     String? referenceKey,
     String? displayText,
     int? quantity,
   }) : super._(
-          catalogType: catalogType,
-          referenceKey: referenceKey,
-          displayText: displayText,
-          quantity: quantity,
-        );
+         catalogType: catalogType,
+         referenceKey: referenceKey,
+         displayText: displayText,
+         quantity: quantity,
+       );
 
   /// Returns a shallow copy of this [CharacterEquipmentEntryView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterEquipmentEntryView copyWith({
     Object? catalogType = _Undefined,
@@ -99,7 +115,7 @@ class _CharacterEquipmentEntryViewImpl extends CharacterEquipmentEntryView {
     Object? quantity = _Undefined,
   }) {
     return CharacterEquipmentEntryView(
-      catalogType: catalogType is _i2.EquipmentCatalogType?
+      catalogType: catalogType is _ia0b4ti5.EquipmentCatalogType?
           ? catalogType
           : this.catalogType,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,

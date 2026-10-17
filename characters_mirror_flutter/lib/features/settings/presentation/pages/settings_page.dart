@@ -211,7 +211,7 @@ class _AppModeSection extends ConsumerWidget {
         title: 'Проверяем соединение',
         description: 'Проверяем доступность сервера.',
       ),
-      error: (_, __) => _resolveAppModeText(ServerConnectionStatus.offline),
+      error: (_, _) => _resolveAppModeText(ServerConnectionStatus.offline),
     );
 
     return ListTile(

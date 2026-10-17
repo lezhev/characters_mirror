@@ -7,14 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../data/general/class/class_feature_data.dart' as _i2;
-import '../../data/general/class/subclass_feature_data.dart' as _i3;
-import '../../enums/feature_display_property_value_kind.dart' as _i4;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../data/general/class/class_feature_data.dart' as _inxbtq9c;
+import '../../data/general/class/subclass_feature_data.dart' as _i6bcyp7i;
+import '../../enums/feature_display_property_value_kind.dart' as _imi7l93k;
 
-abstract class FeatureDisplayPropertyData implements _i1.SerializableModel {
+abstract class FeatureDisplayPropertyData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   FeatureDisplayPropertyData._({
     this.id,
     this.sourceClassFeatureId,
@@ -37,12 +41,12 @@ abstract class FeatureDisplayPropertyData implements _i1.SerializableModel {
   factory FeatureDisplayPropertyData({
     int? id,
     int? sourceClassFeatureId,
-    _i2.ClassFeatureData? sourceClassFeature,
+    _inxbtq9c.ClassFeatureData? sourceClassFeature,
     int? sourceSubclassFeatureId,
-    _i3.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     required String key,
     required String label,
-    required _i4.FeatureDisplayPropertyValueKind valueKind,
+    required _imi7l93k.FeatureDisplayPropertyValueKind valueKind,
     String? staticValue,
     Map<int, String>? progression,
     String? formula,
@@ -54,40 +58,44 @@ abstract class FeatureDisplayPropertyData implements _i1.SerializableModel {
   }) = _FeatureDisplayPropertyDataImpl;
 
   factory FeatureDisplayPropertyData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureDisplayPropertyData(
       id: jsonSerialization['id'] as int?,
       sourceClassFeatureId: jsonSerialization['sourceClassFeatureId'] as int?,
       sourceClassFeature: jsonSerialization['sourceClassFeature'] == null
           ? null
-          : _i2.ClassFeatureData.fromJson(
-              (jsonSerialization['sourceClassFeature']
-                  as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_inxbtq9c.ClassFeatureData>(
+              jsonSerialization['sourceClassFeature'],
+            ),
       sourceSubclassFeatureId:
           jsonSerialization['sourceSubclassFeatureId'] as int?,
       sourceSubclassFeature: jsonSerialization['sourceSubclassFeature'] == null
           ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['sourceSubclassFeature']
-                  as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_i6bcyp7i.SubclassFeatureData>(
+              jsonSerialization['sourceSubclassFeature'],
+            ),
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
-      valueKind: _i4.FeatureDisplayPropertyValueKind.fromJson(
-          (jsonSerialization['valueKind'] as String)),
+      valueKind: _imi7l93k.FeatureDisplayPropertyValueKind.fromJson(
+        (jsonSerialization['valueKind'] as String),
+      ),
       staticValue: jsonSerialization['staticValue'] as String?,
-      progression: (jsonSerialization['progression'] as List?)
-          ?.fold<Map<int, String>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as String}),
+      progression: jsonSerialization['progression'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<int, String>>(
+              jsonSerialization['progression'],
+            ),
       formula: jsonSerialization['formula'] as String?,
       sortOrder: jsonSerialization['sortOrder'] as int?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -98,17 +106,17 @@ abstract class FeatureDisplayPropertyData implements _i1.SerializableModel {
 
   int? sourceClassFeatureId;
 
-  _i2.ClassFeatureData? sourceClassFeature;
+  _inxbtq9c.ClassFeatureData? sourceClassFeature;
 
   int? sourceSubclassFeatureId;
 
-  _i3.SubclassFeatureData? sourceSubclassFeature;
+  _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature;
 
   String key;
 
   String label;
 
-  _i4.FeatureDisplayPropertyValueKind valueKind;
+  _imi7l93k.FeatureDisplayPropertyValueKind valueKind;
 
   String? staticValue;
 
@@ -128,16 +136,16 @@ abstract class FeatureDisplayPropertyData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [FeatureDisplayPropertyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   FeatureDisplayPropertyData copyWith({
     int? id,
     int? sourceClassFeatureId,
-    _i2.ClassFeatureData? sourceClassFeature,
+    _inxbtq9c.ClassFeatureData? sourceClassFeature,
     int? sourceSubclassFeatureId,
-    _i3.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     String? key,
     String? label,
-    _i4.FeatureDisplayPropertyValueKind? valueKind,
+    _imi7l93k.FeatureDisplayPropertyValueKind? valueKind,
     String? staticValue,
     Map<int, String>? progression,
     String? formula,
@@ -150,6 +158,7 @@ abstract class FeatureDisplayPropertyData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureDisplayPropertyData',
       if (id != null) 'id': id,
       if (sourceClassFeatureId != null)
         'sourceClassFeatureId': sourceClassFeatureId,
@@ -174,8 +183,35 @@ abstract class FeatureDisplayPropertyData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'FeatureDisplayPropertyData',
+      if (id != null) 'id': id,
+      if (sourceClassFeatureId != null)
+        'sourceClassFeatureId': sourceClassFeatureId,
+      if (sourceClassFeature != null)
+        'sourceClassFeature': sourceClassFeature?.toJsonForProtocol(),
+      if (sourceSubclassFeatureId != null)
+        'sourceSubclassFeatureId': sourceSubclassFeatureId,
+      if (sourceSubclassFeature != null)
+        'sourceSubclassFeature': sourceSubclassFeature?.toJsonForProtocol(),
+      'key': key,
+      'label': label,
+      'valueKind': valueKind.toJson(),
+      if (staticValue != null) 'staticValue': staticValue,
+      if (progression != null) 'progression': progression?.toJson(),
+      if (formula != null) 'formula': formula,
+      if (sortOrder != null) 'sortOrder': sortOrder,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -185,12 +221,12 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
   _FeatureDisplayPropertyDataImpl({
     int? id,
     int? sourceClassFeatureId,
-    _i2.ClassFeatureData? sourceClassFeature,
+    _inxbtq9c.ClassFeatureData? sourceClassFeature,
     int? sourceSubclassFeatureId,
-    _i3.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     required String key,
     required String label,
-    required _i4.FeatureDisplayPropertyValueKind valueKind,
+    required _imi7l93k.FeatureDisplayPropertyValueKind valueKind,
     String? staticValue,
     Map<int, String>? progression,
     String? formula,
@@ -200,27 +236,27 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          sourceClassFeatureId: sourceClassFeatureId,
-          sourceClassFeature: sourceClassFeature,
-          sourceSubclassFeatureId: sourceSubclassFeatureId,
-          sourceSubclassFeature: sourceSubclassFeature,
-          key: key,
-          label: label,
-          valueKind: valueKind,
-          staticValue: staticValue,
-          progression: progression,
-          formula: formula,
-          sortOrder: sortOrder,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         sourceClassFeatureId: sourceClassFeatureId,
+         sourceClassFeature: sourceClassFeature,
+         sourceSubclassFeatureId: sourceSubclassFeatureId,
+         sourceSubclassFeature: sourceSubclassFeature,
+         key: key,
+         label: label,
+         valueKind: valueKind,
+         staticValue: staticValue,
+         progression: progression,
+         formula: formula,
+         sortOrder: sortOrder,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [FeatureDisplayPropertyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   FeatureDisplayPropertyData copyWith({
     Object? id = _Undefined,
@@ -230,7 +266,7 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
     Object? sourceSubclassFeature = _Undefined,
     String? key,
     String? label,
-    _i4.FeatureDisplayPropertyValueKind? valueKind,
+    _imi7l93k.FeatureDisplayPropertyValueKind? valueKind,
     Object? staticValue = _Undefined,
     Object? progression = _Undefined,
     Object? formula = _Undefined,
@@ -245,13 +281,14 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
       sourceClassFeatureId: sourceClassFeatureId is int?
           ? sourceClassFeatureId
           : this.sourceClassFeatureId,
-      sourceClassFeature: sourceClassFeature is _i2.ClassFeatureData?
+      sourceClassFeature: sourceClassFeature is _inxbtq9c.ClassFeatureData?
           ? sourceClassFeature
           : this.sourceClassFeature?.copyWith(),
       sourceSubclassFeatureId: sourceSubclassFeatureId is int?
           ? sourceSubclassFeatureId
           : this.sourceSubclassFeatureId,
-      sourceSubclassFeature: sourceSubclassFeature is _i3.SubclassFeatureData?
+      sourceSubclassFeature:
+          sourceSubclassFeature is _i6bcyp7i.SubclassFeatureData?
           ? sourceSubclassFeature
           : this.sourceSubclassFeature?.copyWith(),
       key: key ?? this.key,
@@ -260,14 +297,7 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
       staticValue: staticValue is String? ? staticValue : this.staticValue,
       progression: progression is Map<int, String>?
           ? progression
-          : this.progression?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.progression?.map((key0, value0) => MapEntry(key0, value0)),
       formula: formula is String? ? formula : this.formula,
       sortOrder: sortOrder is int? ? sortOrder : this.sortOrder,
       source: source is String? ? source : this.source,

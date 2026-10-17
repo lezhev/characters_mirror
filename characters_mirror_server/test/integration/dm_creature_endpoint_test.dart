@@ -13,17 +13,17 @@ String _fixture(String name) =>
 void main() {
   withServerpod('DM library and roles', (sessions, endpoints) {
     final gm = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9901, {Scope('gm')}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9901).toString(), {Scope('gm')}));
     final other = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9902, {Scope('gm')}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9902).toString(), {Scope('gm')}));
     final admin = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9903, {Scope('admin')}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9903).toString(), {Scope('admin')}));
     final ordinary = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9904, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9904).toString(), <Scope>{}));
 
     test('anonymous and ordinary users cannot use any DM method', () async {
       for (final caller in [sessions, ordinary]) {
@@ -182,5 +182,7 @@ void main() {
         await session.close();
       }
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

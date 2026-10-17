@@ -19,7 +19,7 @@ class SummaryStep extends HookConsumerWidget {
     final isSaving = useState(false);
     final state = ref.watch(characterCreationProvider);
     final characterRaceId = state.character.race?.id;
-    final raceState = ref.watch(raceStateProvider).valueOrNull;
+    final raceState = ref.watch(raceStateProvider).value;
     final hasSubraceOptions = characterRaceId != null &&
         raceState?.selectedRace?.id == characterRaceId &&
         raceState!.subraces.any(

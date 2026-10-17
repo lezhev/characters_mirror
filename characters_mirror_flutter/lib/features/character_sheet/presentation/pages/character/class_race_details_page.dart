@@ -21,11 +21,11 @@ class ClassRaceDetailsPage extends ConsumerWidget {
     final classEntries = sortedClassEntries(character.classEntries);
     final toolNames = {
       for (final tool
-          in ref.watch(toolCatalogProvider).valueOrNull ?? const <ToolData>[])
+          in ref.watch(toolCatalogProvider).value ?? const <ToolData>[])
         tool.referenceKey: tool.name,
     };
     final weaponNames = {
-      for (final weapon in ref.watch(weaponCatalogProvider).valueOrNull ??
+      for (final weapon in ref.watch(weaponCatalogProvider).value ??
           const <WeaponData>[])
         if (weapon.referenceKey != null && weapon.name != null)
           weapon.referenceKey!: weapon.name!,
@@ -142,7 +142,7 @@ class _ClassEntryDetails extends StatelessWidget {
     final classData = entry.classData;
     final toolTrainingLabels = [
       for (final key in classData?.toolTrainingKeys ?? const <String>[])
-        if (toolNames[key] case final name?) name,
+        ?toolNames[key],
     ];
     final rows = <_DetailRow>[
       _DetailRow(

@@ -30,10 +30,9 @@ Future<void> initializeServerpodClient() async {
     storage: rememberMeStorage,
   );
 
-  client = Client(
-    serverpodServerUrl,
-    authenticationKeyManager: rememberMeKeyManager,
-  )..connectivityMonitor = FlutterConnectivityMonitor();
+  client = Client(serverpodServerUrl)
+    ..authKeyProvider = rememberMeKeyManager
+    ..connectivityMonitor = FlutterConnectivityMonitor();
 
   // The session manager keeps track of the signed-in state of the user. You
   // can query it to see if the user is currently signed in and get information

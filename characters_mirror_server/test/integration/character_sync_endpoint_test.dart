@@ -12,7 +12,7 @@ void main() {
     TestSessionBuilder authenticatedSession(int userId) {
       return sessionBuilder.copyWith(
         authentication: AuthenticationOverride.authenticationInfo(
-          userId,
+          (userId).toString(),
           <Scope>{},
         ),
       );
@@ -1247,7 +1247,9 @@ void main() {
         'fresh-rope',
       );
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 
   withServerpod(
     'Character sync concurrency',
@@ -1257,7 +1259,7 @@ void main() {
       TestSessionBuilder authenticatedSession(int userId) {
         return sessionBuilder.copyWith(
           authentication: AuthenticationOverride.authenticationInfo(
-            userId,
+            (userId).toString(),
             <Scope>{},
           ),
         );
@@ -1416,6 +1418,8 @@ void main() {
       });
     },
     rollbackDatabase: RollbackDatabase.disabled,
+
+    ephemeralDatabase: false,
   );
 }
 

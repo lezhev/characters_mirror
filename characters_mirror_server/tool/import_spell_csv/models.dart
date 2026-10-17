@@ -410,16 +410,12 @@ class _ClassLevelSeedPlan {
     required this.classData,
     required this.seed,
     required this.existing,
-    this.missingClassName,
-  });
+  }) : missingClassName = null;
 
-  const _ClassLevelSeedPlan.missingClass(String className, _ClassLevelSeed seed)
-      : this(
-          classData: null,
-          seed: seed,
-          existing: null,
-          missingClassName: className,
-        );
+  const _ClassLevelSeedPlan.missingClass(String className, this.seed)
+      : classData = null,
+        existing = null,
+        missingClassName = className;
 
   final _ClassData? classData;
   final _ClassLevelSeed seed;

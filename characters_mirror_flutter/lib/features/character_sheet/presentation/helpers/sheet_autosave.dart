@@ -27,7 +27,9 @@ class DebouncedAutosave<T> {
     this.onError,
     this.onSavingChanged,
     T? lastSaved,
-  }) : _lastSaved = lastSaved;
+  }) : // Keep the public constructor parameter name stable.
+       // ignore: prefer_initializing_formals
+       _lastSaved = lastSaved;
 
   final Duration delay;
   final Future<void> Function(T value) save;

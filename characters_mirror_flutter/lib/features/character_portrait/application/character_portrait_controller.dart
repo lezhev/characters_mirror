@@ -6,46 +6,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final characterPortraitRepositoryProvider =
     Provider<CharacterPortraitRepository>((ref) {
-  final repository = CharacterPortraitRepository(
-    client: client,
-  );
+      final repository = CharacterPortraitRepository(client: client);
 
-  ref.onDispose(repository.dispose);
-  return repository;
-});
+      ref.onDispose(repository.dispose);
+      return repository;
+    });
 
 final characterPortraitControllerProvider = AsyncNotifierProvider.autoDispose
     .family<CharacterPortraitController, Uri?, int>(
-  CharacterPortraitController.new,
-);
+      CharacterPortraitController.new,
+    );
 
-class CharacterPortraitController
-    extends AutoDisposeFamilyAsyncNotifier<Uri?, int> {
+class CharacterPortraitController extends AsyncNotifier<Uri?> {
+  CharacterPortraitController(this._characterId);
+
   late final CharacterPortraitRepository _repository;
-  late final int _characterId;
+  final int _characterId;
 
   @override
-  Future<Uri?> build(int characterId) async {
-    _characterId = characterId;
+  Future<Uri?> build() async {
     _repository = ref.watch(characterPortraitRepositoryProvider);
 
-    return _repository.getUrl(characterId);
+    return _repository.getUrl(_characterId);
   }
 
   Future<void> upload(Uint8List bytes) async {
     state = const AsyncLoading();
 
     try {
-      await _repository.uploadPortrait(
-        characterId: _characterId,
-        bytes: bytes,
-      );
-
-      state = AsyncData(
-        await _repository.getUrl(_characterId),
-      );
+      await _repository.uploadPortrait(characterId: _characterId, bytes: bytes);
+      if (!ref.mounted) return;
+      final url = await _repository.getUrl(_characterId);
+      if (ref.mounted) state = AsyncData(url);
     } catch (error, stackTrace) {
-      state = AsyncError(error, stackTrace);
+      if (ref.mounted) state = AsyncError(error, stackTrace);
       Error.throwWithStackTrace(error, stackTrace);
     }
   }
@@ -53,17 +47,19 @@ class CharacterPortraitController
   Future<void> delete() async {
     state = const AsyncLoading();
 
-    state = await AsyncValue.guard(() async {
+    final result = await AsyncValue.guard<Uri?>(() async {
       await _repository.deletePortrait(_characterId);
       return null;
     });
+    if (ref.mounted) state = result;
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
 
-    state = await AsyncValue.guard(
+    final result = await AsyncValue.guard(
       () => _repository.getUrl(_characterId),
     );
+    if (ref.mounted) state = result;
   }
 }

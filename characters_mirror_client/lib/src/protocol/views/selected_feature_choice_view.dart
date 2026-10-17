@@ -7,11 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class SelectedFeatureChoiceView implements _i1.SerializableModel {
+abstract class SelectedFeatureChoiceView
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SelectedFeatureChoiceView._({
     required this.groupKey,
     this.groupTitle,
@@ -29,7 +31,8 @@ abstract class SelectedFeatureChoiceView implements _i1.SerializableModel {
   }) = _SelectedFeatureChoiceViewImpl;
 
   factory SelectedFeatureChoiceView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SelectedFeatureChoiceView(
       groupKey: jsonSerialization['groupKey'] as String,
       groupTitle: jsonSerialization['groupTitle'] as String?,
@@ -51,7 +54,7 @@ abstract class SelectedFeatureChoiceView implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SelectedFeatureChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SelectedFeatureChoiceView copyWith({
     String? groupKey,
     String? groupTitle,
@@ -62,6 +65,19 @@ abstract class SelectedFeatureChoiceView implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SelectedFeatureChoiceView',
+      'groupKey': groupKey,
+      if (groupTitle != null) 'groupTitle': groupTitle,
+      'optionKey': optionKey,
+      'name': name,
+      if (shortDescription != null) 'shortDescription': shortDescription,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SelectedFeatureChoiceView',
       'groupKey': groupKey,
       if (groupTitle != null) 'groupTitle': groupTitle,
       'optionKey': optionKey,
@@ -72,7 +88,7 @@ abstract class SelectedFeatureChoiceView implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -86,16 +102,16 @@ class _SelectedFeatureChoiceViewImpl extends SelectedFeatureChoiceView {
     required String name,
     String? shortDescription,
   }) : super._(
-          groupKey: groupKey,
-          groupTitle: groupTitle,
-          optionKey: optionKey,
-          name: name,
-          shortDescription: shortDescription,
-        );
+         groupKey: groupKey,
+         groupTitle: groupTitle,
+         optionKey: optionKey,
+         name: name,
+         shortDescription: shortDescription,
+       );
 
   /// Returns a shallow copy of this [SelectedFeatureChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SelectedFeatureChoiceView copyWith({
     String? groupKey,

@@ -10,8 +10,8 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Atomic feature spell recovery', (sessions, endpoints) {
     final owner = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9514, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9514).toString(), <Scope>{}));
     setUp(CharacterSaveRateLimiter.resetForTests);
 
     Future<(CharacterData, SpellData)> fixture(
@@ -369,5 +369,7 @@ void main() {
       expect(after.currentSpellSlots?[2], 1);
       expect(source(after, 'levelBudget').resources.single['current'], 0);
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

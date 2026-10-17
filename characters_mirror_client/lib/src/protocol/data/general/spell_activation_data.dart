@@ -7,13 +7,17 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../data/general/spell_resource_upcast_policy_data.dart' as _i2;
-import '../../enums/rest_type.dart' as _i3;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../data/general/spell_resource_upcast_policy_data.dart' as _iwk64atr;
+import '../../enums/rest_type.dart' as _i67lztjp;
 
-abstract class SpellActivationData implements _i1.SerializableModel {
+abstract class SpellActivationData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SpellActivationData._({
     required this.canUseStandardSlots,
     required this.canUsePactSlots,
@@ -36,36 +40,44 @@ abstract class SpellActivationData implements _i1.SerializableModel {
     required bool atWill,
     String? resourceKey,
     int? resourceCost,
-    _i2.SpellResourceUpcastPolicyData? resourceUpcastPolicy,
+    _iwk64atr.SpellResourceUpcastPolicyData? resourceUpcastPolicy,
     int? freeCasts,
-    _i3.RestType? resetOn,
+    _i67lztjp.RestType? resetOn,
     int? maxCasts,
-    _i3.RestType? castsResetOn,
+    _i67lztjp.RestType? castsResetOn,
     int? castAtSpellLevel,
   }) = _SpellActivationDataImpl;
 
   factory SpellActivationData.fromJson(Map<String, dynamic> jsonSerialization) {
     return SpellActivationData(
-      canUseStandardSlots: jsonSerialization['canUseStandardSlots'] as bool,
-      canUsePactSlots: jsonSerialization['canUsePactSlots'] as bool,
-      slotless: jsonSerialization['slotless'] as bool,
-      atWill: jsonSerialization['atWill'] as bool,
+      canUseStandardSlots: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['canUseStandardSlots'],
+      ),
+      canUsePactSlots: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['canUsePactSlots'],
+      ),
+      slotless: _isc.BoolJsonExtension.fromJson(jsonSerialization['slotless']),
+      atWill: _isc.BoolJsonExtension.fromJson(jsonSerialization['atWill']),
       resourceKey: jsonSerialization['resourceKey'] as String?,
       resourceCost: jsonSerialization['resourceCost'] as int?,
       resourceUpcastPolicy: jsonSerialization['resourceUpcastPolicy'] == null
           ? null
-          : _i2.SpellResourceUpcastPolicyData.fromJson(
-              (jsonSerialization['resourceUpcastPolicy']
-                  as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol()
+                .deserialize<_iwk64atr.SpellResourceUpcastPolicyData>(
+                  jsonSerialization['resourceUpcastPolicy'],
+                ),
       freeCasts: jsonSerialization['freeCasts'] as int?,
       resetOn: jsonSerialization['resetOn'] == null
           ? null
-          : _i3.RestType.fromJson((jsonSerialization['resetOn'] as String)),
+          : _i67lztjp.RestType.fromJson(
+              (jsonSerialization['resetOn'] as String),
+            ),
       maxCasts: jsonSerialization['maxCasts'] as int?,
       castsResetOn: jsonSerialization['castsResetOn'] == null
           ? null
-          : _i3.RestType.fromJson(
-              (jsonSerialization['castsResetOn'] as String)),
+          : _i67lztjp.RestType.fromJson(
+              (jsonSerialization['castsResetOn'] as String),
+            ),
       castAtSpellLevel: jsonSerialization['castAtSpellLevel'] as int?,
     );
   }
@@ -82,21 +94,21 @@ abstract class SpellActivationData implements _i1.SerializableModel {
 
   int? resourceCost;
 
-  _i2.SpellResourceUpcastPolicyData? resourceUpcastPolicy;
+  _iwk64atr.SpellResourceUpcastPolicyData? resourceUpcastPolicy;
 
   int? freeCasts;
 
-  _i3.RestType? resetOn;
+  _i67lztjp.RestType? resetOn;
 
   int? maxCasts;
 
-  _i3.RestType? castsResetOn;
+  _i67lztjp.RestType? castsResetOn;
 
   int? castAtSpellLevel;
 
   /// Returns a shallow copy of this [SpellActivationData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SpellActivationData copyWith({
     bool? canUseStandardSlots,
     bool? canUsePactSlots,
@@ -104,16 +116,17 @@ abstract class SpellActivationData implements _i1.SerializableModel {
     bool? atWill,
     String? resourceKey,
     int? resourceCost,
-    _i2.SpellResourceUpcastPolicyData? resourceUpcastPolicy,
+    _iwk64atr.SpellResourceUpcastPolicyData? resourceUpcastPolicy,
     int? freeCasts,
-    _i3.RestType? resetOn,
+    _i67lztjp.RestType? resetOn,
     int? maxCasts,
-    _i3.RestType? castsResetOn,
+    _i67lztjp.RestType? castsResetOn,
     int? castAtSpellLevel,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellActivationData',
       'canUseStandardSlots': canUseStandardSlots,
       'canUsePactSlots': canUsePactSlots,
       'slotless': slotless,
@@ -131,8 +144,28 @@ abstract class SpellActivationData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SpellActivationData',
+      'canUseStandardSlots': canUseStandardSlots,
+      'canUsePactSlots': canUsePactSlots,
+      'slotless': slotless,
+      'atWill': atWill,
+      if (resourceKey != null) 'resourceKey': resourceKey,
+      if (resourceCost != null) 'resourceCost': resourceCost,
+      if (resourceUpcastPolicy != null)
+        'resourceUpcastPolicy': resourceUpcastPolicy?.toJsonForProtocol(),
+      if (freeCasts != null) 'freeCasts': freeCasts,
+      if (resetOn != null) 'resetOn': resetOn?.toJson(),
+      if (maxCasts != null) 'maxCasts': maxCasts,
+      if (castsResetOn != null) 'castsResetOn': castsResetOn?.toJson(),
+      if (castAtSpellLevel != null) 'castAtSpellLevel': castAtSpellLevel,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -146,30 +179,30 @@ class _SpellActivationDataImpl extends SpellActivationData {
     required bool atWill,
     String? resourceKey,
     int? resourceCost,
-    _i2.SpellResourceUpcastPolicyData? resourceUpcastPolicy,
+    _iwk64atr.SpellResourceUpcastPolicyData? resourceUpcastPolicy,
     int? freeCasts,
-    _i3.RestType? resetOn,
+    _i67lztjp.RestType? resetOn,
     int? maxCasts,
-    _i3.RestType? castsResetOn,
+    _i67lztjp.RestType? castsResetOn,
     int? castAtSpellLevel,
   }) : super._(
-          canUseStandardSlots: canUseStandardSlots,
-          canUsePactSlots: canUsePactSlots,
-          slotless: slotless,
-          atWill: atWill,
-          resourceKey: resourceKey,
-          resourceCost: resourceCost,
-          resourceUpcastPolicy: resourceUpcastPolicy,
-          freeCasts: freeCasts,
-          resetOn: resetOn,
-          maxCasts: maxCasts,
-          castsResetOn: castsResetOn,
-          castAtSpellLevel: castAtSpellLevel,
-        );
+         canUseStandardSlots: canUseStandardSlots,
+         canUsePactSlots: canUsePactSlots,
+         slotless: slotless,
+         atWill: atWill,
+         resourceKey: resourceKey,
+         resourceCost: resourceCost,
+         resourceUpcastPolicy: resourceUpcastPolicy,
+         freeCasts: freeCasts,
+         resetOn: resetOn,
+         maxCasts: maxCasts,
+         castsResetOn: castsResetOn,
+         castAtSpellLevel: castAtSpellLevel,
+       );
 
   /// Returns a shallow copy of this [SpellActivationData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SpellActivationData copyWith({
     bool? canUseStandardSlots,
@@ -193,16 +226,18 @@ class _SpellActivationDataImpl extends SpellActivationData {
       resourceKey: resourceKey is String? ? resourceKey : this.resourceKey,
       resourceCost: resourceCost is int? ? resourceCost : this.resourceCost,
       resourceUpcastPolicy:
-          resourceUpcastPolicy is _i2.SpellResourceUpcastPolicyData?
-              ? resourceUpcastPolicy
-              : this.resourceUpcastPolicy?.copyWith(),
+          resourceUpcastPolicy is _iwk64atr.SpellResourceUpcastPolicyData?
+          ? resourceUpcastPolicy
+          : this.resourceUpcastPolicy?.copyWith(),
       freeCasts: freeCasts is int? ? freeCasts : this.freeCasts,
-      resetOn: resetOn is _i3.RestType? ? resetOn : this.resetOn,
+      resetOn: resetOn is _i67lztjp.RestType? ? resetOn : this.resetOn,
       maxCasts: maxCasts is int? ? maxCasts : this.maxCasts,
-      castsResetOn:
-          castsResetOn is _i3.RestType? ? castsResetOn : this.castsResetOn,
-      castAtSpellLevel:
-          castAtSpellLevel is int? ? castAtSpellLevel : this.castAtSpellLevel,
+      castsResetOn: castsResetOn is _i67lztjp.RestType?
+          ? castsResetOn
+          : this.castsResetOn,
+      castAtSpellLevel: castAtSpellLevel is int?
+          ? castAtSpellLevel
+          : this.castAtSpellLevel,
     );
   }
 }

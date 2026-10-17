@@ -397,7 +397,7 @@ INSERT INTO characters_cache(
         ],
       );
     } finally {
-      db.dispose();
+      db.close();
     }
 
     final reopened = await OfflineCacheDatabase.openAt(path);
@@ -452,7 +452,7 @@ INSERT INTO characters_cache(
         ],
       );
     } finally {
-      db.dispose();
+      db.close();
     }
 
     final firstOpen = await OfflineCacheDatabase.openAt(path);
@@ -503,7 +503,7 @@ INSERT INTO characters_cache(
         ],
       );
     } finally {
-      db.dispose();
+      db.close();
     }
 
     final reopened = await OfflineCacheDatabase.openAt(path);
@@ -554,7 +554,7 @@ VALUES (?, ?, ?, ?)
         ],
       );
     } finally {
-      db.dispose();
+      db.close();
     }
 
     final reopened = await OfflineCacheDatabase.openAt(path);
@@ -602,7 +602,7 @@ INSERT INTO character_changes(
         ],
       );
     } finally {
-      db.dispose();
+      db.close();
     }
 
     final reopened = await OfflineCacheDatabase.openAt(path);
@@ -653,7 +653,7 @@ INSERT INTO character_changes(
         ],
       );
     } finally {
-      db.dispose();
+      db.close();
     }
 
     final reopened = await OfflineCacheDatabase.openAt(path);
@@ -732,7 +732,7 @@ INSERT INTO character_changes(
         ],
       );
     } finally {
-      db.dispose();
+      db.close();
     }
 
     final reopened = await OfflineCacheDatabase.openAt(path);

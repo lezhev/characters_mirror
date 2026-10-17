@@ -73,11 +73,11 @@ Future<LevelDownPreview> _previewLevelDown(
   );
   final oldGroups = {
     for (final view in oldStep.choiceGroups ?? const <ChoiceGroupView>[])
-      if (view.group?.referenceKey case final key?) key: view.group!,
+      ?view.group?.referenceKey: view.group!,
   };
   final targetGroupViews = {
     for (final view in targetStep.choiceGroups ?? const <ChoiceGroupView>[])
-      if (view.group?.referenceKey case final key?) key: view,
+      ?view.group?.referenceKey: view,
   };
   final removedGroupKeys = oldGroups.keys.toSet()
     ..removeAll(targetGroupViews.keys);

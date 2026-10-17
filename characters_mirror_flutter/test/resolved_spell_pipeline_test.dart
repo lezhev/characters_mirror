@@ -229,7 +229,7 @@ void main() {
         overrides: [characterRepositoryProvider.overrideWithValue(repository)]);
     addTearDown(container.dispose);
     final provider = characterSheetControllerProvider(1);
-    final subscription = container.listen(provider, (_, __) {});
+    final subscription = container.listen(provider, (_, _) {});
     addTearDown(subscription.close);
     await container.read(provider.future);
     await container

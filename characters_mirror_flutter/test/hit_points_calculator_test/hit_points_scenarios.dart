@@ -425,7 +425,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -460,7 +460,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -495,7 +495,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -533,7 +533,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -581,7 +581,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -654,7 +654,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -696,7 +696,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -739,7 +739,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -800,7 +800,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -838,7 +838,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -885,7 +885,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 
@@ -927,7 +927,7 @@ void _registerHitPointsCalculatorTests() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(1),
-      (_, __) {},
+      (_, _) {},
     );
     addTearDown(subscription.close);
 

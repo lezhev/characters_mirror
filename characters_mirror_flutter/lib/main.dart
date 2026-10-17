@@ -16,7 +16,10 @@ void main() async {
   _installSafeFlutterErrorReporter();
   await initializeServerpodClient();
   await initializeOfflineServices();
-  runApp(const ProviderScope(child: CharactersMirrorApp()));
+  runApp(ProviderScope(
+    retry: (retryCount, error) => null,
+    child: const CharactersMirrorApp(),
+  ));
 }
 
 void _installSafeFlutterErrorReporter() {

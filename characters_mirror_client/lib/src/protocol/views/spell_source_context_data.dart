@@ -7,15 +7,19 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../enums/ability.dart' as _i2;
-import '../data/general/spell_activation_data.dart' as _i3;
-import '../enums/character_feature_source_type.dart' as _i4;
-import '../enums/rest_type.dart' as _i5;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../data/general/spell_activation_data.dart' as _iyix4imv;
+import '../enums/ability.dart' as _i26h74c2;
+import '../enums/character_feature_source_type.dart' as _i6znb053;
+import '../enums/rest_type.dart' as _iopzzln0;
 
-abstract class SpellSourceContextData implements _i1.SerializableModel {
+abstract class SpellSourceContextData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SpellSourceContextData._({
     required this.sourceKey,
     required this.label,
@@ -38,50 +42,59 @@ abstract class SpellSourceContextData implements _i1.SerializableModel {
     required String sourceKey,
     required String label,
     int? classDataId,
-    _i2.Ability? castingAbility,
+    _i26h74c2.Ability? castingAbility,
     required bool known,
     required bool prepared,
     required bool alwaysPrepared,
     required bool granted,
     required bool canUseSlots,
-    _i3.SpellActivationData? activation,
-    _i4.CharacterFeatureSourceType? resourceSourceType,
+    _iyix4imv.SpellActivationData? activation,
+    _i6znb053.CharacterFeatureSourceType? resourceSourceType,
     int? resourceSourceId,
     int? castAtSpellLevel,
     String? freeCastsFormula,
-    _i5.RestType? freeCastsPerRest,
+    _iopzzln0.RestType? freeCastsPerRest,
   }) = _SpellSourceContextDataImpl;
 
   factory SpellSourceContextData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SpellSourceContextData(
       sourceKey: jsonSerialization['sourceKey'] as String,
       label: jsonSerialization['label'] as String,
       classDataId: jsonSerialization['classDataId'] as int?,
       castingAbility: jsonSerialization['castingAbility'] == null
           ? null
-          : _i2.Ability.fromJson(
-              (jsonSerialization['castingAbility'] as String)),
-      known: jsonSerialization['known'] as bool,
-      prepared: jsonSerialization['prepared'] as bool,
-      alwaysPrepared: jsonSerialization['alwaysPrepared'] as bool,
-      granted: jsonSerialization['granted'] as bool,
-      canUseSlots: jsonSerialization['canUseSlots'] as bool,
+          : _i26h74c2.Ability.fromJson(
+              (jsonSerialization['castingAbility'] as String),
+            ),
+      known: _isc.BoolJsonExtension.fromJson(jsonSerialization['known']),
+      prepared: _isc.BoolJsonExtension.fromJson(jsonSerialization['prepared']),
+      alwaysPrepared: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['alwaysPrepared'],
+      ),
+      granted: _isc.BoolJsonExtension.fromJson(jsonSerialization['granted']),
+      canUseSlots: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['canUseSlots'],
+      ),
       activation: jsonSerialization['activation'] == null
           ? null
-          : _i3.SpellActivationData.fromJson(
-              (jsonSerialization['activation'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_iyix4imv.SpellActivationData>(
+              jsonSerialization['activation'],
+            ),
       resourceSourceType: jsonSerialization['resourceSourceType'] == null
           ? null
-          : _i4.CharacterFeatureSourceType.fromJson(
-              (jsonSerialization['resourceSourceType'] as String)),
+          : _i6znb053.CharacterFeatureSourceType.fromJson(
+              (jsonSerialization['resourceSourceType'] as String),
+            ),
       resourceSourceId: jsonSerialization['resourceSourceId'] as int?,
       castAtSpellLevel: jsonSerialization['castAtSpellLevel'] as int?,
       freeCastsFormula: jsonSerialization['freeCastsFormula'] as String?,
       freeCastsPerRest: jsonSerialization['freeCastsPerRest'] == null
           ? null
-          : _i5.RestType.fromJson(
-              (jsonSerialization['freeCastsPerRest'] as String)),
+          : _iopzzln0.RestType.fromJson(
+              (jsonSerialization['freeCastsPerRest'] as String),
+            ),
     );
   }
 
@@ -91,7 +104,7 @@ abstract class SpellSourceContextData implements _i1.SerializableModel {
 
   int? classDataId;
 
-  _i2.Ability? castingAbility;
+  _i26h74c2.Ability? castingAbility;
 
   bool known;
 
@@ -103,9 +116,9 @@ abstract class SpellSourceContextData implements _i1.SerializableModel {
 
   bool canUseSlots;
 
-  _i3.SpellActivationData? activation;
+  _iyix4imv.SpellActivationData? activation;
 
-  _i4.CharacterFeatureSourceType? resourceSourceType;
+  _i6znb053.CharacterFeatureSourceType? resourceSourceType;
 
   int? resourceSourceId;
 
@@ -113,31 +126,32 @@ abstract class SpellSourceContextData implements _i1.SerializableModel {
 
   String? freeCastsFormula;
 
-  _i5.RestType? freeCastsPerRest;
+  _iopzzln0.RestType? freeCastsPerRest;
 
   /// Returns a shallow copy of this [SpellSourceContextData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SpellSourceContextData copyWith({
     String? sourceKey,
     String? label,
     int? classDataId,
-    _i2.Ability? castingAbility,
+    _i26h74c2.Ability? castingAbility,
     bool? known,
     bool? prepared,
     bool? alwaysPrepared,
     bool? granted,
     bool? canUseSlots,
-    _i3.SpellActivationData? activation,
-    _i4.CharacterFeatureSourceType? resourceSourceType,
+    _iyix4imv.SpellActivationData? activation,
+    _i6znb053.CharacterFeatureSourceType? resourceSourceType,
     int? resourceSourceId,
     int? castAtSpellLevel,
     String? freeCastsFormula,
-    _i5.RestType? freeCastsPerRest,
+    _iopzzln0.RestType? freeCastsPerRest,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellSourceContextData',
       'sourceKey': sourceKey,
       'label': label,
       if (classDataId != null) 'classDataId': classDataId,
@@ -159,8 +173,32 @@ abstract class SpellSourceContextData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SpellSourceContextData',
+      'sourceKey': sourceKey,
+      'label': label,
+      if (classDataId != null) 'classDataId': classDataId,
+      if (castingAbility != null) 'castingAbility': castingAbility?.toJson(),
+      'known': known,
+      'prepared': prepared,
+      'alwaysPrepared': alwaysPrepared,
+      'granted': granted,
+      'canUseSlots': canUseSlots,
+      if (activation != null) 'activation': activation?.toJsonForProtocol(),
+      if (resourceSourceType != null)
+        'resourceSourceType': resourceSourceType?.toJson(),
+      if (resourceSourceId != null) 'resourceSourceId': resourceSourceId,
+      if (castAtSpellLevel != null) 'castAtSpellLevel': castAtSpellLevel,
+      if (freeCastsFormula != null) 'freeCastsFormula': freeCastsFormula,
+      if (freeCastsPerRest != null)
+        'freeCastsPerRest': freeCastsPerRest?.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -171,39 +209,39 @@ class _SpellSourceContextDataImpl extends SpellSourceContextData {
     required String sourceKey,
     required String label,
     int? classDataId,
-    _i2.Ability? castingAbility,
+    _i26h74c2.Ability? castingAbility,
     required bool known,
     required bool prepared,
     required bool alwaysPrepared,
     required bool granted,
     required bool canUseSlots,
-    _i3.SpellActivationData? activation,
-    _i4.CharacterFeatureSourceType? resourceSourceType,
+    _iyix4imv.SpellActivationData? activation,
+    _i6znb053.CharacterFeatureSourceType? resourceSourceType,
     int? resourceSourceId,
     int? castAtSpellLevel,
     String? freeCastsFormula,
-    _i5.RestType? freeCastsPerRest,
+    _iopzzln0.RestType? freeCastsPerRest,
   }) : super._(
-          sourceKey: sourceKey,
-          label: label,
-          classDataId: classDataId,
-          castingAbility: castingAbility,
-          known: known,
-          prepared: prepared,
-          alwaysPrepared: alwaysPrepared,
-          granted: granted,
-          canUseSlots: canUseSlots,
-          activation: activation,
-          resourceSourceType: resourceSourceType,
-          resourceSourceId: resourceSourceId,
-          castAtSpellLevel: castAtSpellLevel,
-          freeCastsFormula: freeCastsFormula,
-          freeCastsPerRest: freeCastsPerRest,
-        );
+         sourceKey: sourceKey,
+         label: label,
+         classDataId: classDataId,
+         castingAbility: castingAbility,
+         known: known,
+         prepared: prepared,
+         alwaysPrepared: alwaysPrepared,
+         granted: granted,
+         canUseSlots: canUseSlots,
+         activation: activation,
+         resourceSourceType: resourceSourceType,
+         resourceSourceId: resourceSourceId,
+         castAtSpellLevel: castAtSpellLevel,
+         freeCastsFormula: freeCastsFormula,
+         freeCastsPerRest: freeCastsPerRest,
+       );
 
   /// Returns a shallow copy of this [SpellSourceContextData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SpellSourceContextData copyWith({
     String? sourceKey,
@@ -226,27 +264,31 @@ class _SpellSourceContextDataImpl extends SpellSourceContextData {
       sourceKey: sourceKey ?? this.sourceKey,
       label: label ?? this.label,
       classDataId: classDataId is int? ? classDataId : this.classDataId,
-      castingAbility:
-          castingAbility is _i2.Ability? ? castingAbility : this.castingAbility,
+      castingAbility: castingAbility is _i26h74c2.Ability?
+          ? castingAbility
+          : this.castingAbility,
       known: known ?? this.known,
       prepared: prepared ?? this.prepared,
       alwaysPrepared: alwaysPrepared ?? this.alwaysPrepared,
       granted: granted ?? this.granted,
       canUseSlots: canUseSlots ?? this.canUseSlots,
-      activation: activation is _i3.SpellActivationData?
+      activation: activation is _iyix4imv.SpellActivationData?
           ? activation
           : this.activation?.copyWith(),
-      resourceSourceType: resourceSourceType is _i4.CharacterFeatureSourceType?
+      resourceSourceType:
+          resourceSourceType is _i6znb053.CharacterFeatureSourceType?
           ? resourceSourceType
           : this.resourceSourceType,
-      resourceSourceId:
-          resourceSourceId is int? ? resourceSourceId : this.resourceSourceId,
-      castAtSpellLevel:
-          castAtSpellLevel is int? ? castAtSpellLevel : this.castAtSpellLevel,
+      resourceSourceId: resourceSourceId is int?
+          ? resourceSourceId
+          : this.resourceSourceId,
+      castAtSpellLevel: castAtSpellLevel is int?
+          ? castAtSpellLevel
+          : this.castAtSpellLevel,
       freeCastsFormula: freeCastsFormula is String?
           ? freeCastsFormula
           : this.freeCastsFormula,
-      freeCastsPerRest: freeCastsPerRest is _i5.RestType?
+      freeCastsPerRest: freeCastsPerRest is _iopzzln0.RestType?
           ? freeCastsPerRest
           : this.freeCastsPerRest,
     );

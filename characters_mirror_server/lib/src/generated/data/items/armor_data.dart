@@ -7,13 +7,14 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../enums/armor_category.dart' as _i2;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../enums/armor_category.dart' as _ixuui93s;
 
 abstract class ArmorData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   ArmorData._({
     this.id,
     this.referenceKey,
@@ -43,7 +44,7 @@ abstract class ArmorData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.ArmorCategory? categoryValue,
+    _ixuui93s.ArmorCategory? categoryValue,
     int? baseAC,
     int? bonusAC,
     bool? dexBonus,
@@ -64,20 +65,27 @@ abstract class ArmorData
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       categoryValue: jsonSerialization['categoryValue'] == null
           ? null
-          : _i2.ArmorCategory.fromJson(
-              (jsonSerialization['categoryValue'] as String)),
+          : _ixuui93s.ArmorCategory.fromJson(
+              (jsonSerialization['categoryValue'] as String),
+            ),
       baseAC: jsonSerialization['baseAC'] as int?,
       bonusAC: jsonSerialization['bonusAC'] as int?,
-      dexBonus: jsonSerialization['dexBonus'] as bool?,
+      dexBonus: jsonSerialization['dexBonus'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['dexBonus']),
       dexBonusMax: jsonSerialization['dexBonusMax'] as int?,
       strengthRequirement: jsonSerialization['strengthRequirement'] as int?,
-      stealthDisadvantage: jsonSerialization['stealthDisadvantage'] as bool?,
+      stealthDisadvantage: jsonSerialization['stealthDisadvantage'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['stealthDisadvantage'],
+            ),
       weight: (jsonSerialization['weight'] as num?)?.toDouble(),
       cost: jsonSerialization['cost'] as String?,
     );
@@ -104,7 +112,7 @@ abstract class ArmorData
 
   DateTime? updatedAt;
 
-  _i2.ArmorCategory? categoryValue;
+  _ixuui93s.ArmorCategory? categoryValue;
 
   int? baseAC;
 
@@ -123,11 +131,11 @@ abstract class ArmorData
   String? cost;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [ArmorData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ArmorData copyWith({
     int? id,
     String? referenceKey,
@@ -137,7 +145,7 @@ abstract class ArmorData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.ArmorCategory? categoryValue,
+    _ixuui93s.ArmorCategory? categoryValue,
     int? baseAC,
     int? bonusAC,
     bool? dexBonus,
@@ -150,6 +158,7 @@ abstract class ArmorData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ArmorData',
       if (id != null) 'id': id,
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
@@ -175,6 +184,7 @@ abstract class ArmorData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ArmorData',
       if (id != null) 'id': id,
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (name != null) 'name': name,
@@ -202,12 +212,11 @@ abstract class ArmorData
   }
 
   static ArmorDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<ArmorDataTable>? where,
+    _is.WhereExpressionBuilder<ArmorDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ArmorDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ArmorDataTable>? orderByList,
+    _is.OrderByBuilder<ArmorDataTable>? orderBy,
+    _is.OrderByListBuilder<ArmorDataTable>? orderByList,
     ArmorDataInclude? include,
   }) {
     return ArmorDataIncludeList._(
@@ -215,7 +224,6 @@ abstract class ArmorData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(ArmorData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(ArmorData.t),
       include: include,
     );
@@ -223,7 +231,7 @@ abstract class ArmorData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -239,7 +247,7 @@ class _ArmorDataImpl extends ArmorData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    _i2.ArmorCategory? categoryValue,
+    _ixuui93s.ArmorCategory? categoryValue,
     int? baseAC,
     int? bonusAC,
     bool? dexBonus,
@@ -249,28 +257,28 @@ class _ArmorDataImpl extends ArmorData {
     double? weight,
     String? cost,
   }) : super._(
-          id: id,
-          referenceKey: referenceKey,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          categoryValue: categoryValue,
-          baseAC: baseAC,
-          bonusAC: bonusAC,
-          dexBonus: dexBonus,
-          dexBonusMax: dexBonusMax,
-          strengthRequirement: strengthRequirement,
-          stealthDisadvantage: stealthDisadvantage,
-          weight: weight,
-          cost: cost,
-        );
+         id: id,
+         referenceKey: referenceKey,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         categoryValue: categoryValue,
+         baseAC: baseAC,
+         bonusAC: bonusAC,
+         dexBonus: dexBonus,
+         dexBonusMax: dexBonusMax,
+         strengthRequirement: strengthRequirement,
+         stealthDisadvantage: stealthDisadvantage,
+         weight: weight,
+         cost: cost,
+       );
 
   /// Returns a shallow copy of this [ArmorData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ArmorData copyWith({
     Object? id = _Undefined,
@@ -300,7 +308,7 @@ class _ArmorDataImpl extends ArmorData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      categoryValue: categoryValue is _i2.ArmorCategory?
+      categoryValue: categoryValue is _ixuui93s.ArmorCategory?
           ? categoryValue
           : this.categoryValue,
       baseAC: baseAC is int? ? baseAC : this.baseAC,
@@ -319,146 +327,156 @@ class _ArmorDataImpl extends ArmorData {
   }
 }
 
-class ArmorDataTable extends _i1.Table<int?> {
-  ArmorDataTable({super.tableRelation}) : super(tableName: 'armor_data') {
-    referenceKey = _i1.ColumnString(
-      'referenceKey',
-      this,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-    categoryValue = _i1.ColumnEnum(
-      'categoryValue',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    baseAC = _i1.ColumnInt(
-      'baseAC',
-      this,
-    );
-    bonusAC = _i1.ColumnInt(
-      'bonusAC',
-      this,
-    );
-    dexBonus = _i1.ColumnBool(
-      'dexBonus',
-      this,
-    );
-    dexBonusMax = _i1.ColumnInt(
-      'dexBonusMax',
-      this,
-    );
-    strengthRequirement = _i1.ColumnInt(
-      'strengthRequirement',
-      this,
-    );
-    stealthDisadvantage = _i1.ColumnBool(
-      'stealthDisadvantage',
-      this,
-    );
-    weight = _i1.ColumnDouble(
-      'weight',
-      this,
-    );
-    cost = _i1.ColumnString(
-      'cost',
-      this,
-    );
-  }
+class ArmorDataUpdateTable extends _is.UpdateTable<ArmorDataTable> {
+  ArmorDataUpdateTable(super.table);
 
-  late final _i1.ColumnString referenceKey;
+  _is.ColumnValue<String, String> referenceKey(String? value) =>
+      _is.ColumnValue(table.referenceKey, value);
 
-  late final _i1.ColumnString name;
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
 
-  late final _i1.ColumnString description;
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  late final _i1.ColumnString source;
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
 
-  late final _i1.ColumnInt version;
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
 
-  late final _i1.ColumnDateTime createdAt;
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
 
-  late final _i1.ColumnDateTime updatedAt;
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
 
-  late final _i1.ColumnEnum<_i2.ArmorCategory> categoryValue;
+  _is.ColumnValue<_ixuui93s.ArmorCategory, _ixuui93s.ArmorCategory>
+  categoryValue(_ixuui93s.ArmorCategory? value) =>
+      _is.ColumnValue(table.categoryValue, value);
 
-  late final _i1.ColumnInt baseAC;
+  _is.ColumnValue<int, int> baseAC(int? value) =>
+      _is.ColumnValue(table.baseAC, value);
 
-  late final _i1.ColumnInt bonusAC;
+  _is.ColumnValue<int, int> bonusAC(int? value) =>
+      _is.ColumnValue(table.bonusAC, value);
 
-  late final _i1.ColumnBool dexBonus;
+  _is.ColumnValue<bool, bool> dexBonus(bool? value) =>
+      _is.ColumnValue(table.dexBonus, value);
 
-  late final _i1.ColumnInt dexBonusMax;
+  _is.ColumnValue<int, int> dexBonusMax(int? value) =>
+      _is.ColumnValue(table.dexBonusMax, value);
 
-  late final _i1.ColumnInt strengthRequirement;
+  _is.ColumnValue<int, int> strengthRequirement(int? value) =>
+      _is.ColumnValue(table.strengthRequirement, value);
 
-  late final _i1.ColumnBool stealthDisadvantage;
+  _is.ColumnValue<bool, bool> stealthDisadvantage(bool? value) =>
+      _is.ColumnValue(table.stealthDisadvantage, value);
 
-  late final _i1.ColumnDouble weight;
+  _is.ColumnValue<double, double> weight(double? value) =>
+      _is.ColumnValue(table.weight, value);
 
-  late final _i1.ColumnString cost;
-
-  @override
-  List<_i1.Column> get columns => [
-        id,
-        referenceKey,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        categoryValue,
-        baseAC,
-        bonusAC,
-        dexBonus,
-        dexBonusMax,
-        strengthRequirement,
-        stealthDisadvantage,
-        weight,
-        cost,
-      ];
+  _is.ColumnValue<String, String> cost(String? value) =>
+      _is.ColumnValue(table.cost, value);
 }
 
-class ArmorDataInclude extends _i1.IncludeObject {
+class ArmorDataTable extends _is.Table<int?> {
+  ArmorDataTable({super.tableRelation}) : super(tableName: 'armor_data') {
+    updateTable = ArmorDataUpdateTable(this);
+    referenceKey = _is.ColumnString('referenceKey', this);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
+    categoryValue = _is.ColumnEnum(
+      'categoryValue',
+      this,
+      _is.EnumSerialization.byName,
+    );
+    baseAC = _is.ColumnInt('baseAC', this);
+    bonusAC = _is.ColumnInt('bonusAC', this);
+    dexBonus = _is.ColumnBool('dexBonus', this);
+    dexBonusMax = _is.ColumnInt('dexBonusMax', this);
+    strengthRequirement = _is.ColumnInt('strengthRequirement', this);
+    stealthDisadvantage = _is.ColumnBool('stealthDisadvantage', this);
+    weight = _is.ColumnDouble('weight', this);
+    cost = _is.ColumnString('cost', this);
+  }
+
+  late final ArmorDataUpdateTable updateTable;
+
+  late final _is.ColumnString referenceKey;
+
+  late final _is.ColumnString name;
+
+  late final _is.ColumnString description;
+
+  late final _is.ColumnString source;
+
+  late final _is.ColumnInt version;
+
+  late final _is.ColumnDateTime createdAt;
+
+  late final _is.ColumnDateTime updatedAt;
+
+  late final _is.ColumnEnum<_ixuui93s.ArmorCategory> categoryValue;
+
+  late final _is.ColumnInt baseAC;
+
+  late final _is.ColumnInt bonusAC;
+
+  late final _is.ColumnBool dexBonus;
+
+  late final _is.ColumnInt dexBonusMax;
+
+  late final _is.ColumnInt strengthRequirement;
+
+  late final _is.ColumnBool stealthDisadvantage;
+
+  late final _is.ColumnDouble weight;
+
+  late final _is.ColumnString cost;
+
+  @override
+  List<_is.Column> get columns => [
+    id,
+    referenceKey,
+    name,
+    description,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+    categoryValue,
+    baseAC,
+    bonusAC,
+    dexBonus,
+    dexBonusMax,
+    strengthRequirement,
+    stealthDisadvantage,
+    weight,
+    cost,
+  ];
+}
+
+class ArmorDataInclude extends _is.IncludeObject {
   ArmorDataInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => ArmorData.t;
+  _is.Table<int?> get table => ArmorData.t;
 }
 
-class ArmorDataIncludeList extends _i1.IncludeList {
+class ArmorDataIncludeList extends _is.IncludeList {
   ArmorDataIncludeList._({
-    _i1.WhereExpressionBuilder<ArmorDataTable>? where,
+    _is.WhereExpressionBuilder<ArmorDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -466,10 +484,10 @@ class ArmorDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => ArmorData.t;
+  _is.Table<int?> get table => ArmorData.t;
 }
 
 class ArmorDataRepository {
@@ -498,23 +516,25 @@ class ArmorDataRepository {
   /// );
   /// ```
   Future<List<ArmorData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ArmorDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ArmorDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ArmorDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ArmorDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ArmorDataTable>? orderBy,
+    _is.OrderByListBuilder<ArmorDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<ArmorData>(
       where: where?.call(ArmorData.t),
       orderBy: orderBy?.call(ArmorData.t),
       orderByList: orderByList?.call(ArmorData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -536,33 +556,39 @@ class ArmorDataRepository {
   /// );
   /// ```
   Future<ArmorData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ArmorDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ArmorDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<ArmorDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ArmorDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ArmorDataTable>? orderBy,
+    _is.OrderByListBuilder<ArmorDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<ArmorData>(
       where: where?.call(ArmorData.t),
       orderBy: orderBy?.call(ArmorData.t),
       orderByList: orderByList?.call(ArmorData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [ArmorData] by its [id] or null if no such row exists.
   Future<ArmorData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<ArmorData>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -572,14 +598,26 @@ class ArmorDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ArmorData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ArmorData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<ArmorData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -587,12 +625,78 @@ class ArmorDataRepository {
   ///
   /// The returned [ArmorData] will have its `id` field set.
   Future<ArmorData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ArmorData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<ArmorData>(
+    return session.db.insertRow<ArmorData>(row, transaction: transaction);
+  }
+
+  /// Upserts all [ArmorData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [ArmorData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ArmorData>> upsert(
+    _is.DatabaseSession session,
+    List<ArmorData> rows, {
+    required _is.ColumnSelections<ArmorDataTable> conflictColumns,
+    _is.ColumnSelections<ArmorDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ArmorDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<ArmorData>(
+      rows,
+      conflictColumns: conflictColumns(ArmorData.t),
+      updateColumns: updateColumns?.call(ArmorData.t),
+      updateWhere: updateWhere?.call(ArmorData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [ArmorData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [ArmorData] will have its `id` field set.
+  Future<ArmorData?> upsertRow(
+    _is.DatabaseSession session,
+    ArmorData row, {
+    required _is.ColumnSelections<ArmorDataTable> conflictColumns,
+    _is.ColumnSelections<ArmorDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ArmorDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<ArmorData>(
       row,
+      conflictColumns: conflictColumns(ArmorData.t),
+      updateColumns: updateColumns?.call(ArmorData.t),
+      updateWhere: updateWhere?.call(ArmorData.t),
       transaction: transaction,
     );
   }
@@ -602,16 +706,22 @@ class ArmorDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ArmorData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ArmorData> rows, {
-    _i1.ColumnSelections<ArmorDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ArmorDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<ArmorData>(
       rows,
       columns: columns?.call(ArmorData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -619,10 +729,10 @@ class ArmorDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<ArmorData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ArmorData row, {
-    _i1.ColumnSelections<ArmorDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ArmorDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<ArmorData>(
       row,
@@ -631,55 +741,139 @@ class ArmorDataRepository {
     );
   }
 
+  /// Updates a single [ArmorData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<ArmorData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<ArmorDataUpdateTable> columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<ArmorData>(
+      id,
+      columnValues: columnValues(ArmorData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [ArmorData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ArmorData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<ArmorDataUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<ArmorDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<ArmorDataTable>? orderBy,
+    _is.OrderByListBuilder<ArmorDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<ArmorData>(
+      columnValues: columnValues(ArmorData.t.updateTable),
+      where: where(ArmorData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(ArmorData.t),
+      orderByList: orderByList?.call(ArmorData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [ArmorData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ArmorData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ArmorData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ArmorDataTable>? orderBy,
+    _is.OrderByListBuilder<ArmorDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<ArmorData>(
       rows,
+      orderBy: orderBy?.call(ArmorData.t),
+      orderByList: orderByList?.call(ArmorData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [ArmorData].
   Future<ArmorData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ArmorData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<ArmorData>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<ArmorData>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ArmorData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<ArmorDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ArmorDataTable> where,
+    _is.OrderByBuilder<ArmorDataTable>? orderBy,
+    _is.OrderByListBuilder<ArmorDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<ArmorData>(
       where: where(ArmorData.t),
+      orderBy: orderBy?.call(ArmorData.t),
+      orderByList: orderByList?.call(ArmorData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ArmorDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ArmorDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<ArmorData>(
       where: where?.call(ArmorData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [ArmorData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ArmorDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<ArmorData>(
+      where: where(ArmorData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

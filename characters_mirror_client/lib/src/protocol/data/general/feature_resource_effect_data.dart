@@ -7,23 +7,27 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../data/general/class/class_feature_data.dart' as _i2;
-import '../../data/general/class/subclass_feature_data.dart' as _i3;
-import '../../data/general/race/race_feature_data.dart' as _i4;
-import '../../enums/feature_resource_effect_type.dart' as _i5;
-import '../../data/general/choice_option_data.dart' as _i6;
-import '../../enums/feature_resource_target_type.dart' as _i7;
-import '../../enums/character_feature_source_type.dart' as _i8;
-import '../../enums/feature_resource_max_rule.dart' as _i9;
-import '../../enums/ability.dart' as _i10;
-import '../../enums/feature_resource_trigger.dart' as _i11;
-import '../../enums/rest_type.dart' as _i12;
-import '../../data/general/spell_slot_recovery_policy_data.dart' as _i13;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../data/general/choice_option_data.dart' as _iu6wj5qy;
+import '../../data/general/class/class_feature_data.dart' as _inxbtq9c;
+import '../../data/general/class/subclass_feature_data.dart' as _i6bcyp7i;
+import '../../data/general/race/race_feature_data.dart' as _iga2jap7;
+import '../../data/general/spell_slot_recovery_policy_data.dart' as _i4rt3cx6;
+import '../../enums/ability.dart' as _if5gaqs5;
+import '../../enums/character_feature_source_type.dart' as _ilvqooqk;
+import '../../enums/feature_resource_effect_type.dart' as _i6pn3c9w;
+import '../../enums/feature_resource_max_rule.dart' as _i8eknyg7;
+import '../../enums/feature_resource_target_type.dart' as _i8eube95;
+import '../../enums/feature_resource_trigger.dart' as _id68h68o;
+import '../../enums/rest_type.dart' as _i67lztjp;
 
-abstract class FeatureResourceEffectData implements _i1.SerializableModel {
+abstract class FeatureResourceEffectData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   FeatureResourceEffectData._({
     this.id,
     this.classFeatureId,
@@ -57,104 +61,124 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
   factory FeatureResourceEffectData({
     int? id,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
     int? raceFeatureId,
-    _i4.RaceFeatureData? raceFeature,
-    required _i5.FeatureResourceEffectType type,
+    _iga2jap7.RaceFeatureData? raceFeature,
+    required _i6pn3c9w.FeatureResourceEffectType type,
     int? choiceOptionId,
-    _i6.ChoiceOptionData? choiceOption,
-    _i7.FeatureResourceTargetType? targetType,
+    _iu6wj5qy.ChoiceOptionData? choiceOption,
+    _i8eube95.FeatureResourceTargetType? targetType,
     String? targetResourceKey,
-    _i8.CharacterFeatureSourceType? targetSourceType,
+    _ilvqooqk.CharacterFeatureSourceType? targetSourceType,
     int? targetSourceId,
-    _i9.FeatureResourceMaxRule? amountRule,
+    _i8eknyg7.FeatureResourceMaxRule? amountRule,
     int? amountValue,
-    _i10.Ability? amountAbility,
-    _i11.FeatureResourceTrigger? activationTrigger,
-    _i12.RestType? usageResetOn,
-    _i13.SpellSlotRecoveryPolicyData? recoveryPolicy,
-    _i12.RestType? setResetOn,
-    _i9.FeatureResourceMaxRule? setMaxRule,
+    _if5gaqs5.Ability? amountAbility,
+    _id68h68o.FeatureResourceTrigger? activationTrigger,
+    _i67lztjp.RestType? usageResetOn,
+    _i4rt3cx6.SpellSlotRecoveryPolicyData? recoveryPolicy,
+    _i67lztjp.RestType? setResetOn,
+    _i8eknyg7.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
-    _i10.Ability? setMaxAbility,
+    _if5gaqs5.Ability? setMaxAbility,
     int? addMaxValue,
     bool? setUnlimited,
     int? becomesUnlimitedAtLevel,
   }) = _FeatureResourceEffectDataImpl;
 
   factory FeatureResourceEffectData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureResourceEffectData(
       id: jsonSerialization['id'] as int?,
       classFeatureId: jsonSerialization['classFeatureId'] as int?,
       classFeature: jsonSerialization['classFeature'] == null
           ? null
-          : _i2.ClassFeatureData.fromJson(
-              (jsonSerialization['classFeature'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_inxbtq9c.ClassFeatureData>(
+              jsonSerialization['classFeature'],
+            ),
       subclassFeatureId: jsonSerialization['subclassFeatureId'] as int?,
       subclassFeature: jsonSerialization['subclassFeature'] == null
           ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['subclassFeature'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_i6bcyp7i.SubclassFeatureData>(
+              jsonSerialization['subclassFeature'],
+            ),
       raceFeatureId: jsonSerialization['raceFeatureId'] as int?,
       raceFeature: jsonSerialization['raceFeature'] == null
           ? null
-          : _i4.RaceFeatureData.fromJson(
-              (jsonSerialization['raceFeature'] as Map<String, dynamic>)),
-      type: _i5.FeatureResourceEffectType.fromJson(
-          (jsonSerialization['type'] as String)),
+          : _isnx6jbi.Protocol().deserialize<_iga2jap7.RaceFeatureData>(
+              jsonSerialization['raceFeature'],
+            ),
+      type: _i6pn3c9w.FeatureResourceEffectType.fromJson(
+        (jsonSerialization['type'] as String),
+      ),
       choiceOptionId: jsonSerialization['choiceOptionId'] as int?,
       choiceOption: jsonSerialization['choiceOption'] == null
           ? null
-          : _i6.ChoiceOptionData.fromJson(
-              (jsonSerialization['choiceOption'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_iu6wj5qy.ChoiceOptionData>(
+              jsonSerialization['choiceOption'],
+            ),
       targetType: jsonSerialization['targetType'] == null
           ? null
-          : _i7.FeatureResourceTargetType.fromJson(
-              (jsonSerialization['targetType'] as String)),
+          : _i8eube95.FeatureResourceTargetType.fromJson(
+              (jsonSerialization['targetType'] as String),
+            ),
       targetResourceKey: jsonSerialization['targetResourceKey'] as String?,
       targetSourceType: jsonSerialization['targetSourceType'] == null
           ? null
-          : _i8.CharacterFeatureSourceType.fromJson(
-              (jsonSerialization['targetSourceType'] as String)),
+          : _ilvqooqk.CharacterFeatureSourceType.fromJson(
+              (jsonSerialization['targetSourceType'] as String),
+            ),
       targetSourceId: jsonSerialization['targetSourceId'] as int?,
       amountRule: jsonSerialization['amountRule'] == null
           ? null
-          : _i9.FeatureResourceMaxRule.fromJson(
-              (jsonSerialization['amountRule'] as String)),
+          : _i8eknyg7.FeatureResourceMaxRule.fromJson(
+              (jsonSerialization['amountRule'] as String),
+            ),
       amountValue: jsonSerialization['amountValue'] as int?,
       amountAbility: jsonSerialization['amountAbility'] == null
           ? null
-          : _i10.Ability.fromJson(
-              (jsonSerialization['amountAbility'] as String)),
+          : _if5gaqs5.Ability.fromJson(
+              (jsonSerialization['amountAbility'] as String),
+            ),
       activationTrigger: jsonSerialization['activationTrigger'] == null
           ? null
-          : _i11.FeatureResourceTrigger.fromJson(
-              (jsonSerialization['activationTrigger'] as String)),
+          : _id68h68o.FeatureResourceTrigger.fromJson(
+              (jsonSerialization['activationTrigger'] as String),
+            ),
       usageResetOn: jsonSerialization['usageResetOn'] == null
           ? null
-          : _i12.RestType.fromJson(
-              (jsonSerialization['usageResetOn'] as String)),
+          : _i67lztjp.RestType.fromJson(
+              (jsonSerialization['usageResetOn'] as String),
+            ),
       recoveryPolicy: jsonSerialization['recoveryPolicy'] == null
           ? null
-          : _i13.SpellSlotRecoveryPolicyData.fromJson(
-              (jsonSerialization['recoveryPolicy'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol()
+                .deserialize<_i4rt3cx6.SpellSlotRecoveryPolicyData>(
+                  jsonSerialization['recoveryPolicy'],
+                ),
       setResetOn: jsonSerialization['setResetOn'] == null
           ? null
-          : _i12.RestType.fromJson((jsonSerialization['setResetOn'] as String)),
+          : _i67lztjp.RestType.fromJson(
+              (jsonSerialization['setResetOn'] as String),
+            ),
       setMaxRule: jsonSerialization['setMaxRule'] == null
           ? null
-          : _i9.FeatureResourceMaxRule.fromJson(
-              (jsonSerialization['setMaxRule'] as String)),
+          : _i8eknyg7.FeatureResourceMaxRule.fromJson(
+              (jsonSerialization['setMaxRule'] as String),
+            ),
       setMaxValue: jsonSerialization['setMaxValue'] as int?,
       setMaxAbility: jsonSerialization['setMaxAbility'] == null
           ? null
-          : _i10.Ability.fromJson(
-              (jsonSerialization['setMaxAbility'] as String)),
+          : _if5gaqs5.Ability.fromJson(
+              (jsonSerialization['setMaxAbility'] as String),
+            ),
       addMaxValue: jsonSerialization['addMaxValue'] as int?,
-      setUnlimited: jsonSerialization['setUnlimited'] as bool?,
+      setUnlimited: jsonSerialization['setUnlimited'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['setUnlimited']),
       becomesUnlimitedAtLevel:
           jsonSerialization['becomesUnlimitedAtLevel'] as int?,
     );
@@ -167,49 +191,49 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
 
   int? classFeatureId;
 
-  _i2.ClassFeatureData? classFeature;
+  _inxbtq9c.ClassFeatureData? classFeature;
 
   int? subclassFeatureId;
 
-  _i3.SubclassFeatureData? subclassFeature;
+  _i6bcyp7i.SubclassFeatureData? subclassFeature;
 
   int? raceFeatureId;
 
-  _i4.RaceFeatureData? raceFeature;
+  _iga2jap7.RaceFeatureData? raceFeature;
 
-  _i5.FeatureResourceEffectType type;
+  _i6pn3c9w.FeatureResourceEffectType type;
 
   int? choiceOptionId;
 
-  _i6.ChoiceOptionData? choiceOption;
+  _iu6wj5qy.ChoiceOptionData? choiceOption;
 
-  _i7.FeatureResourceTargetType? targetType;
+  _i8eube95.FeatureResourceTargetType? targetType;
 
   String? targetResourceKey;
 
-  _i8.CharacterFeatureSourceType? targetSourceType;
+  _ilvqooqk.CharacterFeatureSourceType? targetSourceType;
 
   int? targetSourceId;
 
-  _i9.FeatureResourceMaxRule? amountRule;
+  _i8eknyg7.FeatureResourceMaxRule? amountRule;
 
   int? amountValue;
 
-  _i10.Ability? amountAbility;
+  _if5gaqs5.Ability? amountAbility;
 
-  _i11.FeatureResourceTrigger? activationTrigger;
+  _id68h68o.FeatureResourceTrigger? activationTrigger;
 
-  _i12.RestType? usageResetOn;
+  _i67lztjp.RestType? usageResetOn;
 
-  _i13.SpellSlotRecoveryPolicyData? recoveryPolicy;
+  _i4rt3cx6.SpellSlotRecoveryPolicyData? recoveryPolicy;
 
-  _i12.RestType? setResetOn;
+  _i67lztjp.RestType? setResetOn;
 
-  _i9.FeatureResourceMaxRule? setMaxRule;
+  _i8eknyg7.FeatureResourceMaxRule? setMaxRule;
 
   int? setMaxValue;
 
-  _i10.Ability? setMaxAbility;
+  _if5gaqs5.Ability? setMaxAbility;
 
   int? addMaxValue;
 
@@ -219,32 +243,32 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [FeatureResourceEffectData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   FeatureResourceEffectData copyWith({
     int? id,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
     int? raceFeatureId,
-    _i4.RaceFeatureData? raceFeature,
-    _i5.FeatureResourceEffectType? type,
+    _iga2jap7.RaceFeatureData? raceFeature,
+    _i6pn3c9w.FeatureResourceEffectType? type,
     int? choiceOptionId,
-    _i6.ChoiceOptionData? choiceOption,
-    _i7.FeatureResourceTargetType? targetType,
+    _iu6wj5qy.ChoiceOptionData? choiceOption,
+    _i8eube95.FeatureResourceTargetType? targetType,
     String? targetResourceKey,
-    _i8.CharacterFeatureSourceType? targetSourceType,
+    _ilvqooqk.CharacterFeatureSourceType? targetSourceType,
     int? targetSourceId,
-    _i9.FeatureResourceMaxRule? amountRule,
+    _i8eknyg7.FeatureResourceMaxRule? amountRule,
     int? amountValue,
-    _i10.Ability? amountAbility,
-    _i11.FeatureResourceTrigger? activationTrigger,
-    _i12.RestType? usageResetOn,
-    _i13.SpellSlotRecoveryPolicyData? recoveryPolicy,
-    _i12.RestType? setResetOn,
-    _i9.FeatureResourceMaxRule? setMaxRule,
+    _if5gaqs5.Ability? amountAbility,
+    _id68h68o.FeatureResourceTrigger? activationTrigger,
+    _i67lztjp.RestType? usageResetOn,
+    _i4rt3cx6.SpellSlotRecoveryPolicyData? recoveryPolicy,
+    _i67lztjp.RestType? setResetOn,
+    _i8eknyg7.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
-    _i10.Ability? setMaxAbility,
+    _if5gaqs5.Ability? setMaxAbility,
     int? addMaxValue,
     bool? setUnlimited,
     int? becomesUnlimitedAtLevel,
@@ -252,6 +276,7 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureResourceEffectData',
       if (id != null) 'id': id,
       if (classFeatureId != null) 'classFeatureId': classFeatureId,
       if (classFeature != null) 'classFeature': classFeature?.toJson(),
@@ -286,8 +311,49 @@ abstract class FeatureResourceEffectData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'FeatureResourceEffectData',
+      if (id != null) 'id': id,
+      if (classFeatureId != null) 'classFeatureId': classFeatureId,
+      if (classFeature != null)
+        'classFeature': classFeature?.toJsonForProtocol(),
+      if (subclassFeatureId != null) 'subclassFeatureId': subclassFeatureId,
+      if (subclassFeature != null)
+        'subclassFeature': subclassFeature?.toJsonForProtocol(),
+      if (raceFeatureId != null) 'raceFeatureId': raceFeatureId,
+      if (raceFeature != null) 'raceFeature': raceFeature?.toJsonForProtocol(),
+      'type': type.toJson(),
+      if (choiceOptionId != null) 'choiceOptionId': choiceOptionId,
+      if (choiceOption != null)
+        'choiceOption': choiceOption?.toJsonForProtocol(),
+      if (targetType != null) 'targetType': targetType?.toJson(),
+      if (targetResourceKey != null) 'targetResourceKey': targetResourceKey,
+      if (targetSourceType != null)
+        'targetSourceType': targetSourceType?.toJson(),
+      if (targetSourceId != null) 'targetSourceId': targetSourceId,
+      if (amountRule != null) 'amountRule': amountRule?.toJson(),
+      if (amountValue != null) 'amountValue': amountValue,
+      if (amountAbility != null) 'amountAbility': amountAbility?.toJson(),
+      if (activationTrigger != null)
+        'activationTrigger': activationTrigger?.toJson(),
+      if (usageResetOn != null) 'usageResetOn': usageResetOn?.toJson(),
+      if (recoveryPolicy != null)
+        'recoveryPolicy': recoveryPolicy?.toJsonForProtocol(),
+      if (setResetOn != null) 'setResetOn': setResetOn?.toJson(),
+      if (setMaxRule != null) 'setMaxRule': setMaxRule?.toJson(),
+      if (setMaxValue != null) 'setMaxValue': setMaxValue,
+      if (setMaxAbility != null) 'setMaxAbility': setMaxAbility?.toJson(),
+      if (addMaxValue != null) 'addMaxValue': addMaxValue,
+      if (setUnlimited != null) 'setUnlimited': setUnlimited,
+      if (becomesUnlimitedAtLevel != null)
+        'becomesUnlimitedAtLevel': becomesUnlimitedAtLevel,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -297,64 +363,64 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
   _FeatureResourceEffectDataImpl({
     int? id,
     int? classFeatureId,
-    _i2.ClassFeatureData? classFeature,
+    _inxbtq9c.ClassFeatureData? classFeature,
     int? subclassFeatureId,
-    _i3.SubclassFeatureData? subclassFeature,
+    _i6bcyp7i.SubclassFeatureData? subclassFeature,
     int? raceFeatureId,
-    _i4.RaceFeatureData? raceFeature,
-    required _i5.FeatureResourceEffectType type,
+    _iga2jap7.RaceFeatureData? raceFeature,
+    required _i6pn3c9w.FeatureResourceEffectType type,
     int? choiceOptionId,
-    _i6.ChoiceOptionData? choiceOption,
-    _i7.FeatureResourceTargetType? targetType,
+    _iu6wj5qy.ChoiceOptionData? choiceOption,
+    _i8eube95.FeatureResourceTargetType? targetType,
     String? targetResourceKey,
-    _i8.CharacterFeatureSourceType? targetSourceType,
+    _ilvqooqk.CharacterFeatureSourceType? targetSourceType,
     int? targetSourceId,
-    _i9.FeatureResourceMaxRule? amountRule,
+    _i8eknyg7.FeatureResourceMaxRule? amountRule,
     int? amountValue,
-    _i10.Ability? amountAbility,
-    _i11.FeatureResourceTrigger? activationTrigger,
-    _i12.RestType? usageResetOn,
-    _i13.SpellSlotRecoveryPolicyData? recoveryPolicy,
-    _i12.RestType? setResetOn,
-    _i9.FeatureResourceMaxRule? setMaxRule,
+    _if5gaqs5.Ability? amountAbility,
+    _id68h68o.FeatureResourceTrigger? activationTrigger,
+    _i67lztjp.RestType? usageResetOn,
+    _i4rt3cx6.SpellSlotRecoveryPolicyData? recoveryPolicy,
+    _i67lztjp.RestType? setResetOn,
+    _i8eknyg7.FeatureResourceMaxRule? setMaxRule,
     int? setMaxValue,
-    _i10.Ability? setMaxAbility,
+    _if5gaqs5.Ability? setMaxAbility,
     int? addMaxValue,
     bool? setUnlimited,
     int? becomesUnlimitedAtLevel,
   }) : super._(
-          id: id,
-          classFeatureId: classFeatureId,
-          classFeature: classFeature,
-          subclassFeatureId: subclassFeatureId,
-          subclassFeature: subclassFeature,
-          raceFeatureId: raceFeatureId,
-          raceFeature: raceFeature,
-          type: type,
-          choiceOptionId: choiceOptionId,
-          choiceOption: choiceOption,
-          targetType: targetType,
-          targetResourceKey: targetResourceKey,
-          targetSourceType: targetSourceType,
-          targetSourceId: targetSourceId,
-          amountRule: amountRule,
-          amountValue: amountValue,
-          amountAbility: amountAbility,
-          activationTrigger: activationTrigger,
-          usageResetOn: usageResetOn,
-          recoveryPolicy: recoveryPolicy,
-          setResetOn: setResetOn,
-          setMaxRule: setMaxRule,
-          setMaxValue: setMaxValue,
-          setMaxAbility: setMaxAbility,
-          addMaxValue: addMaxValue,
-          setUnlimited: setUnlimited,
-          becomesUnlimitedAtLevel: becomesUnlimitedAtLevel,
-        );
+         id: id,
+         classFeatureId: classFeatureId,
+         classFeature: classFeature,
+         subclassFeatureId: subclassFeatureId,
+         subclassFeature: subclassFeature,
+         raceFeatureId: raceFeatureId,
+         raceFeature: raceFeature,
+         type: type,
+         choiceOptionId: choiceOptionId,
+         choiceOption: choiceOption,
+         targetType: targetType,
+         targetResourceKey: targetResourceKey,
+         targetSourceType: targetSourceType,
+         targetSourceId: targetSourceId,
+         amountRule: amountRule,
+         amountValue: amountValue,
+         amountAbility: amountAbility,
+         activationTrigger: activationTrigger,
+         usageResetOn: usageResetOn,
+         recoveryPolicy: recoveryPolicy,
+         setResetOn: setResetOn,
+         setMaxRule: setMaxRule,
+         setMaxValue: setMaxValue,
+         setMaxAbility: setMaxAbility,
+         addMaxValue: addMaxValue,
+         setUnlimited: setUnlimited,
+         becomesUnlimitedAtLevel: becomesUnlimitedAtLevel,
+       );
 
   /// Returns a shallow copy of this [FeatureResourceEffectData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   FeatureResourceEffectData copyWith({
     Object? id = _Undefined,
@@ -364,7 +430,7 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
     Object? subclassFeature = _Undefined,
     Object? raceFeatureId = _Undefined,
     Object? raceFeature = _Undefined,
-    _i5.FeatureResourceEffectType? type,
+    _i6pn3c9w.FeatureResourceEffectType? type,
     Object? choiceOptionId = _Undefined,
     Object? choiceOption = _Undefined,
     Object? targetType = _Undefined,
@@ -387,59 +453,68 @@ class _FeatureResourceEffectDataImpl extends FeatureResourceEffectData {
   }) {
     return FeatureResourceEffectData(
       id: id is int? ? id : this.id,
-      classFeatureId:
-          classFeatureId is int? ? classFeatureId : this.classFeatureId,
-      classFeature: classFeature is _i2.ClassFeatureData?
+      classFeatureId: classFeatureId is int?
+          ? classFeatureId
+          : this.classFeatureId,
+      classFeature: classFeature is _inxbtq9c.ClassFeatureData?
           ? classFeature
           : this.classFeature?.copyWith(),
       subclassFeatureId: subclassFeatureId is int?
           ? subclassFeatureId
           : this.subclassFeatureId,
-      subclassFeature: subclassFeature is _i3.SubclassFeatureData?
+      subclassFeature: subclassFeature is _i6bcyp7i.SubclassFeatureData?
           ? subclassFeature
           : this.subclassFeature?.copyWith(),
       raceFeatureId: raceFeatureId is int? ? raceFeatureId : this.raceFeatureId,
-      raceFeature: raceFeature is _i4.RaceFeatureData?
+      raceFeature: raceFeature is _iga2jap7.RaceFeatureData?
           ? raceFeature
           : this.raceFeature?.copyWith(),
       type: type ?? this.type,
-      choiceOptionId:
-          choiceOptionId is int? ? choiceOptionId : this.choiceOptionId,
-      choiceOption: choiceOption is _i6.ChoiceOptionData?
+      choiceOptionId: choiceOptionId is int?
+          ? choiceOptionId
+          : this.choiceOptionId,
+      choiceOption: choiceOption is _iu6wj5qy.ChoiceOptionData?
           ? choiceOption
           : this.choiceOption?.copyWith(),
-      targetType: targetType is _i7.FeatureResourceTargetType?
+      targetType: targetType is _i8eube95.FeatureResourceTargetType?
           ? targetType
           : this.targetType,
       targetResourceKey: targetResourceKey is String?
           ? targetResourceKey
           : this.targetResourceKey,
-      targetSourceType: targetSourceType is _i8.CharacterFeatureSourceType?
+      targetSourceType:
+          targetSourceType is _ilvqooqk.CharacterFeatureSourceType?
           ? targetSourceType
           : this.targetSourceType,
-      targetSourceId:
-          targetSourceId is int? ? targetSourceId : this.targetSourceId,
-      amountRule: amountRule is _i9.FeatureResourceMaxRule?
+      targetSourceId: targetSourceId is int?
+          ? targetSourceId
+          : this.targetSourceId,
+      amountRule: amountRule is _i8eknyg7.FeatureResourceMaxRule?
           ? amountRule
           : this.amountRule,
       amountValue: amountValue is int? ? amountValue : this.amountValue,
-      amountAbility:
-          amountAbility is _i10.Ability? ? amountAbility : this.amountAbility,
-      activationTrigger: activationTrigger is _i11.FeatureResourceTrigger?
+      amountAbility: amountAbility is _if5gaqs5.Ability?
+          ? amountAbility
+          : this.amountAbility,
+      activationTrigger: activationTrigger is _id68h68o.FeatureResourceTrigger?
           ? activationTrigger
           : this.activationTrigger,
-      usageResetOn:
-          usageResetOn is _i12.RestType? ? usageResetOn : this.usageResetOn,
-      recoveryPolicy: recoveryPolicy is _i13.SpellSlotRecoveryPolicyData?
+      usageResetOn: usageResetOn is _i67lztjp.RestType?
+          ? usageResetOn
+          : this.usageResetOn,
+      recoveryPolicy: recoveryPolicy is _i4rt3cx6.SpellSlotRecoveryPolicyData?
           ? recoveryPolicy
           : this.recoveryPolicy?.copyWith(),
-      setResetOn: setResetOn is _i12.RestType? ? setResetOn : this.setResetOn,
-      setMaxRule: setMaxRule is _i9.FeatureResourceMaxRule?
+      setResetOn: setResetOn is _i67lztjp.RestType?
+          ? setResetOn
+          : this.setResetOn,
+      setMaxRule: setMaxRule is _i8eknyg7.FeatureResourceMaxRule?
           ? setMaxRule
           : this.setMaxRule,
       setMaxValue: setMaxValue is int? ? setMaxValue : this.setMaxValue,
-      setMaxAbility:
-          setMaxAbility is _i10.Ability? ? setMaxAbility : this.setMaxAbility,
+      setMaxAbility: setMaxAbility is _if5gaqs5.Ability?
+          ? setMaxAbility
+          : this.setMaxAbility,
       addMaxValue: addMaxValue is int? ? addMaxValue : this.addMaxValue,
       setUnlimited: setUnlimited is bool? ? setUnlimited : this.setUnlimited,
       becomesUnlimitedAtLevel: becomesUnlimitedAtLevel is int?

@@ -7,24 +7,26 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../data/general/class/class_data.dart' as _i2;
-import '../../data/general/class/subclass_data.dart' as _i3;
-import '../../data/general/class/class_feature_data.dart' as _i4;
-import '../../data/general/class/subclass_feature_data.dart' as _i5;
-import '../../data/general/race/race_data.dart' as _i6;
-import '../../data/general/race/subrace_data.dart' as _i7;
-import '../../data/general/race/race_feature_data.dart' as _i8;
-import '../../data/background_data.dart' as _i9;
-import '../../enums/choice_type.dart' as _i10;
-import '../../data/general/choice_requirement_data.dart' as _i11;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../data/background_data.dart' as _i1wu8zwo;
+import '../../data/general/choice_requirement_data.dart' as _igf6e3qg;
+import '../../data/general/class/class_data.dart' as _ia3fljii;
+import '../../data/general/class/class_feature_data.dart' as _inxbtq9c;
+import '../../data/general/class/subclass_data.dart' as _icujtw1s;
+import '../../data/general/class/subclass_feature_data.dart' as _i6bcyp7i;
+import '../../data/general/race/race_data.dart' as _iaoquhhq;
+import '../../data/general/race/race_feature_data.dart' as _iga2jap7;
+import '../../data/general/race/subrace_data.dart' as _ixj8g60z;
+import '../../enums/choice_type.dart' as _iypqkewo;
 
 abstract class ChoiceGroupData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   ChoiceGroupData._({
     this.id,
     this.progressionKey,
@@ -74,26 +76,26 @@ abstract class ChoiceGroupData
     String? name,
     String? description,
     int? sourceClassId,
-    _i2.ClassData? sourceClass,
+    _ia3fljii.ClassData? sourceClass,
     int? sourceSubclassId,
-    _i3.SubclassData? sourceSubclass,
+    _icujtw1s.SubclassData? sourceSubclass,
     int? sourceFeatureId,
-    _i4.ClassFeatureData? sourceFeature,
+    _inxbtq9c.ClassFeatureData? sourceFeature,
     int? sourceSubclassFeatureId,
-    _i5.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     int? sourceRaceId,
-    _i6.RaceData? sourceRace,
+    _iaoquhhq.RaceData? sourceRace,
     int? sourceSubraceId,
-    _i7.SubraceData? sourceSubrace,
+    _ixj8g60z.SubraceData? sourceSubrace,
     int? sourceRaceFeatureId,
-    _i8.RaceFeatureData? sourceRaceFeature,
+    _iga2jap7.RaceFeatureData? sourceRaceFeature,
     int? sourceBackgroundId,
-    _i9.BackgroundData? sourceBackground,
+    _i1wu8zwo.BackgroundData? sourceBackground,
     int? level,
-    _i10.ChoiceType? type,
+    _iypqkewo.ChoiceType? type,
     int? selectionCount,
     int? minimumSelectionCount,
-    List<_i11.ChoiceRequirementData>? requirements,
+    List<_igf6e3qg.ChoiceRequirementData>? requirements,
     bool? autoSelectSingleEligible,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
@@ -111,79 +113,104 @@ abstract class ChoiceGroupData
       progressionKey: jsonSerialization['progressionKey'] as String?,
       replacementsAllowed: jsonSerialization['replacementsAllowed'] as int?,
       replacementProgressionKeys:
-          (jsonSerialization['replacementProgressionKeys'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
+          jsonSerialization['replacementProgressionKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['replacementProgressionKeys'],
+            ),
       referenceKey: jsonSerialization['referenceKey'] as String,
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       sourceClassId: jsonSerialization['sourceClassId'] as int?,
       sourceClass: jsonSerialization['sourceClass'] == null
           ? null
-          : _i2.ClassData.fromJson(
-              (jsonSerialization['sourceClass'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_ia3fljii.ClassData>(
+              jsonSerialization['sourceClass'],
+            ),
       sourceSubclassId: jsonSerialization['sourceSubclassId'] as int?,
       sourceSubclass: jsonSerialization['sourceSubclass'] == null
           ? null
-          : _i3.SubclassData.fromJson(
-              (jsonSerialization['sourceSubclass'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_icujtw1s.SubclassData>(
+              jsonSerialization['sourceSubclass'],
+            ),
       sourceFeatureId: jsonSerialization['sourceFeatureId'] as int?,
       sourceFeature: jsonSerialization['sourceFeature'] == null
           ? null
-          : _i4.ClassFeatureData.fromJson(
-              (jsonSerialization['sourceFeature'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_inxbtq9c.ClassFeatureData>(
+              jsonSerialization['sourceFeature'],
+            ),
       sourceSubclassFeatureId:
           jsonSerialization['sourceSubclassFeatureId'] as int?,
       sourceSubclassFeature: jsonSerialization['sourceSubclassFeature'] == null
           ? null
-          : _i5.SubclassFeatureData.fromJson(
-              (jsonSerialization['sourceSubclassFeature']
-                  as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i6bcyp7i.SubclassFeatureData>(
+              jsonSerialization['sourceSubclassFeature'],
+            ),
       sourceRaceId: jsonSerialization['sourceRaceId'] as int?,
       sourceRace: jsonSerialization['sourceRace'] == null
           ? null
-          : _i6.RaceData.fromJson(
-              (jsonSerialization['sourceRace'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_iaoquhhq.RaceData>(
+              jsonSerialization['sourceRace'],
+            ),
       sourceSubraceId: jsonSerialization['sourceSubraceId'] as int?,
       sourceSubrace: jsonSerialization['sourceSubrace'] == null
           ? null
-          : _i7.SubraceData.fromJson(
-              (jsonSerialization['sourceSubrace'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_ixj8g60z.SubraceData>(
+              jsonSerialization['sourceSubrace'],
+            ),
       sourceRaceFeatureId: jsonSerialization['sourceRaceFeatureId'] as int?,
       sourceRaceFeature: jsonSerialization['sourceRaceFeature'] == null
           ? null
-          : _i8.RaceFeatureData.fromJson(
-              (jsonSerialization['sourceRaceFeature'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_iga2jap7.RaceFeatureData>(
+              jsonSerialization['sourceRaceFeature'],
+            ),
       sourceBackgroundId: jsonSerialization['sourceBackgroundId'] as int?,
       sourceBackground: jsonSerialization['sourceBackground'] == null
           ? null
-          : _i9.BackgroundData.fromJson(
-              (jsonSerialization['sourceBackground'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i1wu8zwo.BackgroundData>(
+              jsonSerialization['sourceBackground'],
+            ),
       level: jsonSerialization['level'] as int?,
       type: jsonSerialization['type'] == null
           ? null
-          : _i10.ChoiceType.fromJson((jsonSerialization['type'] as String)),
+          : _iypqkewo.ChoiceType.fromJson(
+              (jsonSerialization['type'] as String),
+            ),
       selectionCount: jsonSerialization['selectionCount'] as int?,
       minimumSelectionCount: jsonSerialization['minimumSelectionCount'] as int?,
-      requirements: (jsonSerialization['requirements'] as List?)
-          ?.map((e) =>
-              _i11.ChoiceRequirementData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      requirements: jsonSerialization['requirements'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_igf6e3qg.ChoiceRequirementData>>(
+                  jsonSerialization['requirements'],
+                ),
       autoSelectSingleEligible:
-          jsonSerialization['autoSelectSingleEligible'] as bool?,
+          jsonSerialization['autoSelectSingleEligible'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['autoSelectSingleEligible'],
+            ),
       appliesAtCharacterLevel:
-          jsonSerialization['appliesAtCharacterLevel'] as bool?,
+          jsonSerialization['appliesAtCharacterLevel'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['appliesAtCharacterLevel'],
+            ),
       exclusiveKey: jsonSerialization['exclusiveKey'] as String?,
-      allowDuplicates: jsonSerialization['allowDuplicates'] as bool?,
+      allowDuplicates: jsonSerialization['allowDuplicates'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['allowDuplicates'],
+            ),
       sortOrder: jsonSerialization['sortOrder'] as int?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -208,45 +235,45 @@ abstract class ChoiceGroupData
 
   int? sourceClassId;
 
-  _i2.ClassData? sourceClass;
+  _ia3fljii.ClassData? sourceClass;
 
   int? sourceSubclassId;
 
-  _i3.SubclassData? sourceSubclass;
+  _icujtw1s.SubclassData? sourceSubclass;
 
   int? sourceFeatureId;
 
-  _i4.ClassFeatureData? sourceFeature;
+  _inxbtq9c.ClassFeatureData? sourceFeature;
 
   int? sourceSubclassFeatureId;
 
-  _i5.SubclassFeatureData? sourceSubclassFeature;
+  _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature;
 
   int? sourceRaceId;
 
-  _i6.RaceData? sourceRace;
+  _iaoquhhq.RaceData? sourceRace;
 
   int? sourceSubraceId;
 
-  _i7.SubraceData? sourceSubrace;
+  _ixj8g60z.SubraceData? sourceSubrace;
 
   int? sourceRaceFeatureId;
 
-  _i8.RaceFeatureData? sourceRaceFeature;
+  _iga2jap7.RaceFeatureData? sourceRaceFeature;
 
   int? sourceBackgroundId;
 
-  _i9.BackgroundData? sourceBackground;
+  _i1wu8zwo.BackgroundData? sourceBackground;
 
   int? level;
 
-  _i10.ChoiceType? type;
+  _iypqkewo.ChoiceType? type;
 
   int? selectionCount;
 
   int? minimumSelectionCount;
 
-  List<_i11.ChoiceRequirementData>? requirements;
+  List<_igf6e3qg.ChoiceRequirementData>? requirements;
 
   bool? autoSelectSingleEligible;
 
@@ -267,11 +294,11 @@ abstract class ChoiceGroupData
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [ChoiceGroupData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ChoiceGroupData copyWith({
     int? id,
     String? progressionKey,
@@ -281,26 +308,26 @@ abstract class ChoiceGroupData
     String? name,
     String? description,
     int? sourceClassId,
-    _i2.ClassData? sourceClass,
+    _ia3fljii.ClassData? sourceClass,
     int? sourceSubclassId,
-    _i3.SubclassData? sourceSubclass,
+    _icujtw1s.SubclassData? sourceSubclass,
     int? sourceFeatureId,
-    _i4.ClassFeatureData? sourceFeature,
+    _inxbtq9c.ClassFeatureData? sourceFeature,
     int? sourceSubclassFeatureId,
-    _i5.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     int? sourceRaceId,
-    _i6.RaceData? sourceRace,
+    _iaoquhhq.RaceData? sourceRace,
     int? sourceSubraceId,
-    _i7.SubraceData? sourceSubrace,
+    _ixj8g60z.SubraceData? sourceSubrace,
     int? sourceRaceFeatureId,
-    _i8.RaceFeatureData? sourceRaceFeature,
+    _iga2jap7.RaceFeatureData? sourceRaceFeature,
     int? sourceBackgroundId,
-    _i9.BackgroundData? sourceBackground,
+    _i1wu8zwo.BackgroundData? sourceBackground,
     int? level,
-    _i10.ChoiceType? type,
+    _iypqkewo.ChoiceType? type,
     int? selectionCount,
     int? minimumSelectionCount,
-    List<_i11.ChoiceRequirementData>? requirements,
+    List<_igf6e3qg.ChoiceRequirementData>? requirements,
     bool? autoSelectSingleEligible,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
@@ -314,6 +341,7 @@ abstract class ChoiceGroupData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ChoiceGroupData',
       if (id != null) 'id': id,
       if (progressionKey != null) 'progressionKey': progressionKey,
       if (replacementsAllowed != null)
@@ -368,6 +396,7 @@ abstract class ChoiceGroupData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ChoiceGroupData',
       if (id != null) 'id': id,
       if (progressionKey != null) 'progressionKey': progressionKey,
       if (replacementsAllowed != null)
@@ -407,8 +436,9 @@ abstract class ChoiceGroupData
       if (minimumSelectionCount != null)
         'minimumSelectionCount': minimumSelectionCount,
       if (requirements != null)
-        'requirements':
-            requirements?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'requirements': requirements?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (autoSelectSingleEligible != null)
         'autoSelectSingleEligible': autoSelectSingleEligible,
       if (appliesAtCharacterLevel != null)
@@ -424,14 +454,14 @@ abstract class ChoiceGroupData
   }
 
   static ChoiceGroupDataInclude include({
-    _i2.ClassDataInclude? sourceClass,
-    _i3.SubclassDataInclude? sourceSubclass,
-    _i4.ClassFeatureDataInclude? sourceFeature,
-    _i5.SubclassFeatureDataInclude? sourceSubclassFeature,
-    _i6.RaceDataInclude? sourceRace,
-    _i7.SubraceDataInclude? sourceSubrace,
-    _i8.RaceFeatureDataInclude? sourceRaceFeature,
-    _i9.BackgroundDataInclude? sourceBackground,
+    _ia3fljii.ClassDataInclude? sourceClass,
+    _icujtw1s.SubclassDataInclude? sourceSubclass,
+    _inxbtq9c.ClassFeatureDataInclude? sourceFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _iaoquhhq.RaceDataInclude? sourceRace,
+    _ixj8g60z.SubraceDataInclude? sourceSubrace,
+    _iga2jap7.RaceFeatureDataInclude? sourceRaceFeature,
+    _i1wu8zwo.BackgroundDataInclude? sourceBackground,
   }) {
     return ChoiceGroupDataInclude._(
       sourceClass: sourceClass,
@@ -446,12 +476,11 @@ abstract class ChoiceGroupData
   }
 
   static ChoiceGroupDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
+    _is.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
+    _is.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
+    _is.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
     ChoiceGroupDataInclude? include,
   }) {
     return ChoiceGroupDataIncludeList._(
@@ -459,7 +488,6 @@ abstract class ChoiceGroupData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(ChoiceGroupData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(ChoiceGroupData.t),
       include: include,
     );
@@ -467,7 +495,7 @@ abstract class ChoiceGroupData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -483,26 +511,26 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
     String? name,
     String? description,
     int? sourceClassId,
-    _i2.ClassData? sourceClass,
+    _ia3fljii.ClassData? sourceClass,
     int? sourceSubclassId,
-    _i3.SubclassData? sourceSubclass,
+    _icujtw1s.SubclassData? sourceSubclass,
     int? sourceFeatureId,
-    _i4.ClassFeatureData? sourceFeature,
+    _inxbtq9c.ClassFeatureData? sourceFeature,
     int? sourceSubclassFeatureId,
-    _i5.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     int? sourceRaceId,
-    _i6.RaceData? sourceRace,
+    _iaoquhhq.RaceData? sourceRace,
     int? sourceSubraceId,
-    _i7.SubraceData? sourceSubrace,
+    _ixj8g60z.SubraceData? sourceSubrace,
     int? sourceRaceFeatureId,
-    _i8.RaceFeatureData? sourceRaceFeature,
+    _iga2jap7.RaceFeatureData? sourceRaceFeature,
     int? sourceBackgroundId,
-    _i9.BackgroundData? sourceBackground,
+    _i1wu8zwo.BackgroundData? sourceBackground,
     int? level,
-    _i10.ChoiceType? type,
+    _iypqkewo.ChoiceType? type,
     int? selectionCount,
     int? minimumSelectionCount,
-    List<_i11.ChoiceRequirementData>? requirements,
+    List<_igf6e3qg.ChoiceRequirementData>? requirements,
     bool? autoSelectSingleEligible,
     bool? appliesAtCharacterLevel,
     String? exclusiveKey,
@@ -513,48 +541,48 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          progressionKey: progressionKey,
-          replacementsAllowed: replacementsAllowed,
-          replacementProgressionKeys: replacementProgressionKeys,
-          referenceKey: referenceKey,
-          name: name,
-          description: description,
-          sourceClassId: sourceClassId,
-          sourceClass: sourceClass,
-          sourceSubclassId: sourceSubclassId,
-          sourceSubclass: sourceSubclass,
-          sourceFeatureId: sourceFeatureId,
-          sourceFeature: sourceFeature,
-          sourceSubclassFeatureId: sourceSubclassFeatureId,
-          sourceSubclassFeature: sourceSubclassFeature,
-          sourceRaceId: sourceRaceId,
-          sourceRace: sourceRace,
-          sourceSubraceId: sourceSubraceId,
-          sourceSubrace: sourceSubrace,
-          sourceRaceFeatureId: sourceRaceFeatureId,
-          sourceRaceFeature: sourceRaceFeature,
-          sourceBackgroundId: sourceBackgroundId,
-          sourceBackground: sourceBackground,
-          level: level,
-          type: type,
-          selectionCount: selectionCount,
-          minimumSelectionCount: minimumSelectionCount,
-          requirements: requirements,
-          autoSelectSingleEligible: autoSelectSingleEligible,
-          appliesAtCharacterLevel: appliesAtCharacterLevel,
-          exclusiveKey: exclusiveKey,
-          allowDuplicates: allowDuplicates,
-          sortOrder: sortOrder,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         progressionKey: progressionKey,
+         replacementsAllowed: replacementsAllowed,
+         replacementProgressionKeys: replacementProgressionKeys,
+         referenceKey: referenceKey,
+         name: name,
+         description: description,
+         sourceClassId: sourceClassId,
+         sourceClass: sourceClass,
+         sourceSubclassId: sourceSubclassId,
+         sourceSubclass: sourceSubclass,
+         sourceFeatureId: sourceFeatureId,
+         sourceFeature: sourceFeature,
+         sourceSubclassFeatureId: sourceSubclassFeatureId,
+         sourceSubclassFeature: sourceSubclassFeature,
+         sourceRaceId: sourceRaceId,
+         sourceRace: sourceRace,
+         sourceSubraceId: sourceSubraceId,
+         sourceSubrace: sourceSubrace,
+         sourceRaceFeatureId: sourceRaceFeatureId,
+         sourceRaceFeature: sourceRaceFeature,
+         sourceBackgroundId: sourceBackgroundId,
+         sourceBackground: sourceBackground,
+         level: level,
+         type: type,
+         selectionCount: selectionCount,
+         minimumSelectionCount: minimumSelectionCount,
+         requirements: requirements,
+         autoSelectSingleEligible: autoSelectSingleEligible,
+         appliesAtCharacterLevel: appliesAtCharacterLevel,
+         exclusiveKey: exclusiveKey,
+         allowDuplicates: allowDuplicates,
+         sortOrder: sortOrder,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [ChoiceGroupData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ChoiceGroupData copyWith({
     Object? id = _Undefined,
@@ -597,8 +625,9 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
   }) {
     return ChoiceGroupData(
       id: id is int? ? id : this.id,
-      progressionKey:
-          progressionKey is String? ? progressionKey : this.progressionKey,
+      progressionKey: progressionKey is String?
+          ? progressionKey
+          : this.progressionKey,
       replacementsAllowed: replacementsAllowed is int?
           ? replacementsAllowed
           : this.replacementsAllowed,
@@ -609,54 +638,59 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
       name: name is String? ? name : this.name,
       description: description is String? ? description : this.description,
       sourceClassId: sourceClassId is int? ? sourceClassId : this.sourceClassId,
-      sourceClass: sourceClass is _i2.ClassData?
+      sourceClass: sourceClass is _ia3fljii.ClassData?
           ? sourceClass
           : this.sourceClass?.copyWith(),
-      sourceSubclassId:
-          sourceSubclassId is int? ? sourceSubclassId : this.sourceSubclassId,
-      sourceSubclass: sourceSubclass is _i3.SubclassData?
+      sourceSubclassId: sourceSubclassId is int?
+          ? sourceSubclassId
+          : this.sourceSubclassId,
+      sourceSubclass: sourceSubclass is _icujtw1s.SubclassData?
           ? sourceSubclass
           : this.sourceSubclass?.copyWith(),
-      sourceFeatureId:
-          sourceFeatureId is int? ? sourceFeatureId : this.sourceFeatureId,
-      sourceFeature: sourceFeature is _i4.ClassFeatureData?
+      sourceFeatureId: sourceFeatureId is int?
+          ? sourceFeatureId
+          : this.sourceFeatureId,
+      sourceFeature: sourceFeature is _inxbtq9c.ClassFeatureData?
           ? sourceFeature
           : this.sourceFeature?.copyWith(),
       sourceSubclassFeatureId: sourceSubclassFeatureId is int?
           ? sourceSubclassFeatureId
           : this.sourceSubclassFeatureId,
-      sourceSubclassFeature: sourceSubclassFeature is _i5.SubclassFeatureData?
+      sourceSubclassFeature:
+          sourceSubclassFeature is _i6bcyp7i.SubclassFeatureData?
           ? sourceSubclassFeature
           : this.sourceSubclassFeature?.copyWith(),
       sourceRaceId: sourceRaceId is int? ? sourceRaceId : this.sourceRaceId,
-      sourceRace: sourceRace is _i6.RaceData?
+      sourceRace: sourceRace is _iaoquhhq.RaceData?
           ? sourceRace
           : this.sourceRace?.copyWith(),
-      sourceSubraceId:
-          sourceSubraceId is int? ? sourceSubraceId : this.sourceSubraceId,
-      sourceSubrace: sourceSubrace is _i7.SubraceData?
+      sourceSubraceId: sourceSubraceId is int?
+          ? sourceSubraceId
+          : this.sourceSubraceId,
+      sourceSubrace: sourceSubrace is _ixj8g60z.SubraceData?
           ? sourceSubrace
           : this.sourceSubrace?.copyWith(),
       sourceRaceFeatureId: sourceRaceFeatureId is int?
           ? sourceRaceFeatureId
           : this.sourceRaceFeatureId,
-      sourceRaceFeature: sourceRaceFeature is _i8.RaceFeatureData?
+      sourceRaceFeature: sourceRaceFeature is _iga2jap7.RaceFeatureData?
           ? sourceRaceFeature
           : this.sourceRaceFeature?.copyWith(),
       sourceBackgroundId: sourceBackgroundId is int?
           ? sourceBackgroundId
           : this.sourceBackgroundId,
-      sourceBackground: sourceBackground is _i9.BackgroundData?
+      sourceBackground: sourceBackground is _i1wu8zwo.BackgroundData?
           ? sourceBackground
           : this.sourceBackground?.copyWith(),
       level: level is int? ? level : this.level,
-      type: type is _i10.ChoiceType? ? type : this.type,
-      selectionCount:
-          selectionCount is int? ? selectionCount : this.selectionCount,
+      type: type is _iypqkewo.ChoiceType? ? type : this.type,
+      selectionCount: selectionCount is int?
+          ? selectionCount
+          : this.selectionCount,
       minimumSelectionCount: minimumSelectionCount is int?
           ? minimumSelectionCount
           : this.minimumSelectionCount,
-      requirements: requirements is List<_i11.ChoiceRequirementData>?
+      requirements: requirements is List<_igf6e3qg.ChoiceRequirementData>?
           ? requirements
           : this.requirements?.map((e0) => e0.copyWith()).toList(),
       autoSelectSingleEligible: autoSelectSingleEligible is bool?
@@ -666,8 +700,9 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
           ? appliesAtCharacterLevel
           : this.appliesAtCharacterLevel,
       exclusiveKey: exclusiveKey is String? ? exclusiveKey : this.exclusiveKey,
-      allowDuplicates:
-          allowDuplicates is bool? ? allowDuplicates : this.allowDuplicates,
+      allowDuplicates: allowDuplicates is bool?
+          ? allowDuplicates
+          : this.allowDuplicates,
       sortOrder: sortOrder is int? ? sortOrder : this.sortOrder,
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
@@ -677,335 +712,356 @@ class _ChoiceGroupDataImpl extends ChoiceGroupData {
   }
 }
 
-class ChoiceGroupDataTable extends _i1.Table<int?> {
+class ChoiceGroupDataUpdateTable extends _is.UpdateTable<ChoiceGroupDataTable> {
+  ChoiceGroupDataUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> progressionKey(String? value) =>
+      _is.ColumnValue(table.progressionKey, value);
+
+  _is.ColumnValue<int, int> replacementsAllowed(int? value) =>
+      _is.ColumnValue(table.replacementsAllowed, value);
+
+  _is.ColumnValue<List<String>, List<String>> replacementProgressionKeys(
+    List<String>? value,
+  ) => _is.ColumnValue(table.replacementProgressionKeys, value);
+
+  _is.ColumnValue<String, String> referenceKey(String value) =>
+      _is.ColumnValue(table.referenceKey, value);
+
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
+
+  _is.ColumnValue<int, int> sourceClassId(int? value) =>
+      _is.ColumnValue(table.sourceClassId, value);
+
+  _is.ColumnValue<int, int> sourceSubclassId(int? value) =>
+      _is.ColumnValue(table.sourceSubclassId, value);
+
+  _is.ColumnValue<int, int> sourceFeatureId(int? value) =>
+      _is.ColumnValue(table.sourceFeatureId, value);
+
+  _is.ColumnValue<int, int> sourceSubclassFeatureId(int? value) =>
+      _is.ColumnValue(table.sourceSubclassFeatureId, value);
+
+  _is.ColumnValue<int, int> sourceRaceId(int? value) =>
+      _is.ColumnValue(table.sourceRaceId, value);
+
+  _is.ColumnValue<int, int> sourceSubraceId(int? value) =>
+      _is.ColumnValue(table.sourceSubraceId, value);
+
+  _is.ColumnValue<int, int> sourceRaceFeatureId(int? value) =>
+      _is.ColumnValue(table.sourceRaceFeatureId, value);
+
+  _is.ColumnValue<int, int> sourceBackgroundId(int? value) =>
+      _is.ColumnValue(table.sourceBackgroundId, value);
+
+  _is.ColumnValue<int, int> level(int? value) =>
+      _is.ColumnValue(table.level, value);
+
+  _is.ColumnValue<_iypqkewo.ChoiceType, _iypqkewo.ChoiceType> type(
+    _iypqkewo.ChoiceType? value,
+  ) => _is.ColumnValue(table.type, value);
+
+  _is.ColumnValue<int, int> selectionCount(int? value) =>
+      _is.ColumnValue(table.selectionCount, value);
+
+  _is.ColumnValue<int, int> minimumSelectionCount(int? value) =>
+      _is.ColumnValue(table.minimumSelectionCount, value);
+
+  _is.ColumnValue<
+    List<_igf6e3qg.ChoiceRequirementData>,
+    List<_igf6e3qg.ChoiceRequirementData>
+  >
+  requirements(List<_igf6e3qg.ChoiceRequirementData>? value) =>
+      _is.ColumnValue(table.requirements, value);
+
+  _is.ColumnValue<bool, bool> autoSelectSingleEligible(bool? value) =>
+      _is.ColumnValue(table.autoSelectSingleEligible, value);
+
+  _is.ColumnValue<bool, bool> appliesAtCharacterLevel(bool? value) =>
+      _is.ColumnValue(table.appliesAtCharacterLevel, value);
+
+  _is.ColumnValue<String, String> exclusiveKey(String? value) =>
+      _is.ColumnValue(table.exclusiveKey, value);
+
+  _is.ColumnValue<bool, bool> allowDuplicates(bool? value) =>
+      _is.ColumnValue(table.allowDuplicates, value);
+
+  _is.ColumnValue<int, int> sortOrder(int? value) =>
+      _is.ColumnValue(table.sortOrder, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class ChoiceGroupDataTable extends _is.Table<int?> {
   ChoiceGroupDataTable({super.tableRelation})
-      : super(tableName: 'choice_group_data') {
-    progressionKey = _i1.ColumnString(
-      'progressionKey',
-      this,
-    );
-    replacementsAllowed = _i1.ColumnInt(
-      'replacementsAllowed',
-      this,
-    );
-    replacementProgressionKeys = _i1.ColumnSerializable(
+    : super(tableName: 'choice_group_data') {
+    updateTable = ChoiceGroupDataUpdateTable(this);
+    progressionKey = _is.ColumnString('progressionKey', this);
+    replacementsAllowed = _is.ColumnInt('replacementsAllowed', this);
+    replacementProgressionKeys = _is.ColumnSerializable<List<String>>(
       'replacementProgressionKeys',
       this,
     );
-    referenceKey = _i1.ColumnString(
-      'referenceKey',
-      this,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    sourceClassId = _i1.ColumnInt(
-      'sourceClassId',
-      this,
-    );
-    sourceSubclassId = _i1.ColumnInt(
-      'sourceSubclassId',
-      this,
-    );
-    sourceFeatureId = _i1.ColumnInt(
-      'sourceFeatureId',
-      this,
-    );
-    sourceSubclassFeatureId = _i1.ColumnInt(
-      'sourceSubclassFeatureId',
-      this,
-    );
-    sourceRaceId = _i1.ColumnInt(
-      'sourceRaceId',
-      this,
-    );
-    sourceSubraceId = _i1.ColumnInt(
-      'sourceSubraceId',
-      this,
-    );
-    sourceRaceFeatureId = _i1.ColumnInt(
-      'sourceRaceFeatureId',
-      this,
-    );
-    sourceBackgroundId = _i1.ColumnInt(
-      'sourceBackgroundId',
-      this,
-    );
-    level = _i1.ColumnInt(
-      'level',
-      this,
-    );
-    type = _i1.ColumnEnum(
-      'type',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    selectionCount = _i1.ColumnInt(
-      'selectionCount',
-      this,
-    );
-    minimumSelectionCount = _i1.ColumnInt(
-      'minimumSelectionCount',
-      this,
-    );
-    requirements = _i1.ColumnSerializable(
-      'requirements',
-      this,
-    );
-    autoSelectSingleEligible = _i1.ColumnBool(
-      'autoSelectSingleEligible',
-      this,
-    );
-    appliesAtCharacterLevel = _i1.ColumnBool(
-      'appliesAtCharacterLevel',
-      this,
-    );
-    exclusiveKey = _i1.ColumnString(
-      'exclusiveKey',
-      this,
-    );
-    allowDuplicates = _i1.ColumnBool(
-      'allowDuplicates',
-      this,
-    );
-    sortOrder = _i1.ColumnInt(
-      'sortOrder',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    referenceKey = _is.ColumnString('referenceKey', this);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    sourceClassId = _is.ColumnInt('sourceClassId', this);
+    sourceSubclassId = _is.ColumnInt('sourceSubclassId', this);
+    sourceFeatureId = _is.ColumnInt('sourceFeatureId', this);
+    sourceSubclassFeatureId = _is.ColumnInt('sourceSubclassFeatureId', this);
+    sourceRaceId = _is.ColumnInt('sourceRaceId', this);
+    sourceSubraceId = _is.ColumnInt('sourceSubraceId', this);
+    sourceRaceFeatureId = _is.ColumnInt('sourceRaceFeatureId', this);
+    sourceBackgroundId = _is.ColumnInt('sourceBackgroundId', this);
+    level = _is.ColumnInt('level', this);
+    type = _is.ColumnEnum('type', this, _is.EnumSerialization.byName);
+    selectionCount = _is.ColumnInt('selectionCount', this);
+    minimumSelectionCount = _is.ColumnInt('minimumSelectionCount', this);
+    requirements =
+        _is.ColumnSerializable<List<_igf6e3qg.ChoiceRequirementData>>(
+          'requirements',
+          this,
+        );
+    autoSelectSingleEligible = _is.ColumnBool('autoSelectSingleEligible', this);
+    appliesAtCharacterLevel = _is.ColumnBool('appliesAtCharacterLevel', this);
+    exclusiveKey = _is.ColumnString('exclusiveKey', this);
+    allowDuplicates = _is.ColumnBool('allowDuplicates', this);
+    sortOrder = _is.ColumnInt('sortOrder', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnString progressionKey;
+  late final ChoiceGroupDataUpdateTable updateTable;
 
-  late final _i1.ColumnInt replacementsAllowed;
+  late final _is.ColumnString progressionKey;
 
-  late final _i1.ColumnSerializable replacementProgressionKeys;
+  late final _is.ColumnInt replacementsAllowed;
 
-  late final _i1.ColumnString referenceKey;
+  late final _is.ColumnSerializable<List<String>> replacementProgressionKeys;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString referenceKey;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnInt sourceClassId;
+  late final _is.ColumnString description;
 
-  _i2.ClassDataTable? _sourceClass;
+  late final _is.ColumnInt sourceClassId;
 
-  late final _i1.ColumnInt sourceSubclassId;
+  _ia3fljii.ClassDataTable? _sourceClass;
 
-  _i3.SubclassDataTable? _sourceSubclass;
+  late final _is.ColumnInt sourceSubclassId;
 
-  late final _i1.ColumnInt sourceFeatureId;
+  _icujtw1s.SubclassDataTable? _sourceSubclass;
 
-  _i4.ClassFeatureDataTable? _sourceFeature;
+  late final _is.ColumnInt sourceFeatureId;
 
-  late final _i1.ColumnInt sourceSubclassFeatureId;
+  _inxbtq9c.ClassFeatureDataTable? _sourceFeature;
 
-  _i5.SubclassFeatureDataTable? _sourceSubclassFeature;
+  late final _is.ColumnInt sourceSubclassFeatureId;
 
-  late final _i1.ColumnInt sourceRaceId;
+  _i6bcyp7i.SubclassFeatureDataTable? _sourceSubclassFeature;
 
-  _i6.RaceDataTable? _sourceRace;
+  late final _is.ColumnInt sourceRaceId;
 
-  late final _i1.ColumnInt sourceSubraceId;
+  _iaoquhhq.RaceDataTable? _sourceRace;
 
-  _i7.SubraceDataTable? _sourceSubrace;
+  late final _is.ColumnInt sourceSubraceId;
 
-  late final _i1.ColumnInt sourceRaceFeatureId;
+  _ixj8g60z.SubraceDataTable? _sourceSubrace;
 
-  _i8.RaceFeatureDataTable? _sourceRaceFeature;
+  late final _is.ColumnInt sourceRaceFeatureId;
 
-  late final _i1.ColumnInt sourceBackgroundId;
+  _iga2jap7.RaceFeatureDataTable? _sourceRaceFeature;
 
-  _i9.BackgroundDataTable? _sourceBackground;
+  late final _is.ColumnInt sourceBackgroundId;
 
-  late final _i1.ColumnInt level;
+  _i1wu8zwo.BackgroundDataTable? _sourceBackground;
 
-  late final _i1.ColumnEnum<_i10.ChoiceType> type;
+  late final _is.ColumnInt level;
 
-  late final _i1.ColumnInt selectionCount;
+  late final _is.ColumnEnum<_iypqkewo.ChoiceType> type;
 
-  late final _i1.ColumnInt minimumSelectionCount;
+  late final _is.ColumnInt selectionCount;
 
-  late final _i1.ColumnSerializable requirements;
+  late final _is.ColumnInt minimumSelectionCount;
 
-  late final _i1.ColumnBool autoSelectSingleEligible;
+  late final _is.ColumnSerializable<List<_igf6e3qg.ChoiceRequirementData>>
+  requirements;
 
-  late final _i1.ColumnBool appliesAtCharacterLevel;
+  late final _is.ColumnBool autoSelectSingleEligible;
 
-  late final _i1.ColumnString exclusiveKey;
+  late final _is.ColumnBool appliesAtCharacterLevel;
 
-  late final _i1.ColumnBool allowDuplicates;
+  late final _is.ColumnString exclusiveKey;
 
-  late final _i1.ColumnInt sortOrder;
+  late final _is.ColumnBool allowDuplicates;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnInt sortOrder;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  _i2.ClassDataTable get sourceClass {
+  late final _is.ColumnDateTime updatedAt;
+
+  _ia3fljii.ClassDataTable get sourceClass {
     if (_sourceClass != null) return _sourceClass!;
-    _sourceClass = _i1.createRelationTable(
+    _sourceClass = _is.createRelationTable(
       relationFieldName: 'sourceClass',
       field: ChoiceGroupData.t.sourceClassId,
-      foreignField: _i2.ClassData.t.id,
+      foreignField: _ia3fljii.ClassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ClassDataTable(tableRelation: foreignTableRelation),
+          _ia3fljii.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceClass!;
   }
 
-  _i3.SubclassDataTable get sourceSubclass {
+  _icujtw1s.SubclassDataTable get sourceSubclass {
     if (_sourceSubclass != null) return _sourceSubclass!;
-    _sourceSubclass = _i1.createRelationTable(
+    _sourceSubclass = _is.createRelationTable(
       relationFieldName: 'sourceSubclass',
       field: ChoiceGroupData.t.sourceSubclassId,
-      foreignField: _i3.SubclassData.t.id,
+      foreignField: _icujtw1s.SubclassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.SubclassDataTable(tableRelation: foreignTableRelation),
+          _icujtw1s.SubclassDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceSubclass!;
   }
 
-  _i4.ClassFeatureDataTable get sourceFeature {
+  _inxbtq9c.ClassFeatureDataTable get sourceFeature {
     if (_sourceFeature != null) return _sourceFeature!;
-    _sourceFeature = _i1.createRelationTable(
+    _sourceFeature = _is.createRelationTable(
       relationFieldName: 'sourceFeature',
       field: ChoiceGroupData.t.sourceFeatureId,
-      foreignField: _i4.ClassFeatureData.t.id,
+      foreignField: _inxbtq9c.ClassFeatureData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i4.ClassFeatureDataTable(tableRelation: foreignTableRelation),
+          _inxbtq9c.ClassFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceFeature!;
   }
 
-  _i5.SubclassFeatureDataTable get sourceSubclassFeature {
+  _i6bcyp7i.SubclassFeatureDataTable get sourceSubclassFeature {
     if (_sourceSubclassFeature != null) return _sourceSubclassFeature!;
-    _sourceSubclassFeature = _i1.createRelationTable(
+    _sourceSubclassFeature = _is.createRelationTable(
       relationFieldName: 'sourceSubclassFeature',
       field: ChoiceGroupData.t.sourceSubclassFeatureId,
-      foreignField: _i5.SubclassFeatureData.t.id,
+      foreignField: _i6bcyp7i.SubclassFeatureData.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i5.SubclassFeatureDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _i6bcyp7i.SubclassFeatureDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
     return _sourceSubclassFeature!;
   }
 
-  _i6.RaceDataTable get sourceRace {
+  _iaoquhhq.RaceDataTable get sourceRace {
     if (_sourceRace != null) return _sourceRace!;
-    _sourceRace = _i1.createRelationTable(
+    _sourceRace = _is.createRelationTable(
       relationFieldName: 'sourceRace',
       field: ChoiceGroupData.t.sourceRaceId,
-      foreignField: _i6.RaceData.t.id,
+      foreignField: _iaoquhhq.RaceData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i6.RaceDataTable(tableRelation: foreignTableRelation),
+          _iaoquhhq.RaceDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceRace!;
   }
 
-  _i7.SubraceDataTable get sourceSubrace {
+  _ixj8g60z.SubraceDataTable get sourceSubrace {
     if (_sourceSubrace != null) return _sourceSubrace!;
-    _sourceSubrace = _i1.createRelationTable(
+    _sourceSubrace = _is.createRelationTable(
       relationFieldName: 'sourceSubrace',
       field: ChoiceGroupData.t.sourceSubraceId,
-      foreignField: _i7.SubraceData.t.id,
+      foreignField: _ixj8g60z.SubraceData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i7.SubraceDataTable(tableRelation: foreignTableRelation),
+          _ixj8g60z.SubraceDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceSubrace!;
   }
 
-  _i8.RaceFeatureDataTable get sourceRaceFeature {
+  _iga2jap7.RaceFeatureDataTable get sourceRaceFeature {
     if (_sourceRaceFeature != null) return _sourceRaceFeature!;
-    _sourceRaceFeature = _i1.createRelationTable(
+    _sourceRaceFeature = _is.createRelationTable(
       relationFieldName: 'sourceRaceFeature',
       field: ChoiceGroupData.t.sourceRaceFeatureId,
-      foreignField: _i8.RaceFeatureData.t.id,
+      foreignField: _iga2jap7.RaceFeatureData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i8.RaceFeatureDataTable(tableRelation: foreignTableRelation),
+          _iga2jap7.RaceFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceRaceFeature!;
   }
 
-  _i9.BackgroundDataTable get sourceBackground {
+  _i1wu8zwo.BackgroundDataTable get sourceBackground {
     if (_sourceBackground != null) return _sourceBackground!;
-    _sourceBackground = _i1.createRelationTable(
+    _sourceBackground = _is.createRelationTable(
       relationFieldName: 'sourceBackground',
       field: ChoiceGroupData.t.sourceBackgroundId,
-      foreignField: _i9.BackgroundData.t.id,
+      foreignField: _i1wu8zwo.BackgroundData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i9.BackgroundDataTable(tableRelation: foreignTableRelation),
+          _i1wu8zwo.BackgroundDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceBackground!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        progressionKey,
-        replacementsAllowed,
-        replacementProgressionKeys,
-        referenceKey,
-        name,
-        description,
-        sourceClassId,
-        sourceSubclassId,
-        sourceFeatureId,
-        sourceSubclassFeatureId,
-        sourceRaceId,
-        sourceSubraceId,
-        sourceRaceFeatureId,
-        sourceBackgroundId,
-        level,
-        type,
-        selectionCount,
-        minimumSelectionCount,
-        requirements,
-        autoSelectSingleEligible,
-        appliesAtCharacterLevel,
-        exclusiveKey,
-        allowDuplicates,
-        sortOrder,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    progressionKey,
+    replacementsAllowed,
+    replacementProgressionKeys,
+    referenceKey,
+    name,
+    description,
+    sourceClassId,
+    sourceSubclassId,
+    sourceFeatureId,
+    sourceSubclassFeatureId,
+    sourceRaceId,
+    sourceSubraceId,
+    sourceRaceFeatureId,
+    sourceBackgroundId,
+    level,
+    type,
+    selectionCount,
+    minimumSelectionCount,
+    requirements,
+    autoSelectSingleEligible,
+    appliesAtCharacterLevel,
+    exclusiveKey,
+    allowDuplicates,
+    sortOrder,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'sourceClass') {
       return sourceClass;
     }
@@ -1034,16 +1090,16 @@ class ChoiceGroupDataTable extends _i1.Table<int?> {
   }
 }
 
-class ChoiceGroupDataInclude extends _i1.IncludeObject {
+class ChoiceGroupDataInclude extends _is.IncludeObject {
   ChoiceGroupDataInclude._({
-    _i2.ClassDataInclude? sourceClass,
-    _i3.SubclassDataInclude? sourceSubclass,
-    _i4.ClassFeatureDataInclude? sourceFeature,
-    _i5.SubclassFeatureDataInclude? sourceSubclassFeature,
-    _i6.RaceDataInclude? sourceRace,
-    _i7.SubraceDataInclude? sourceSubrace,
-    _i8.RaceFeatureDataInclude? sourceRaceFeature,
-    _i9.BackgroundDataInclude? sourceBackground,
+    _ia3fljii.ClassDataInclude? sourceClass,
+    _icujtw1s.SubclassDataInclude? sourceSubclass,
+    _inxbtq9c.ClassFeatureDataInclude? sourceFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _iaoquhhq.RaceDataInclude? sourceRace,
+    _ixj8g60z.SubraceDataInclude? sourceSubrace,
+    _iga2jap7.RaceFeatureDataInclude? sourceRaceFeature,
+    _i1wu8zwo.BackgroundDataInclude? sourceBackground,
   }) {
     _sourceClass = sourceClass;
     _sourceSubclass = sourceSubclass;
@@ -1055,45 +1111,44 @@ class ChoiceGroupDataInclude extends _i1.IncludeObject {
     _sourceBackground = sourceBackground;
   }
 
-  _i2.ClassDataInclude? _sourceClass;
+  _ia3fljii.ClassDataInclude? _sourceClass;
 
-  _i3.SubclassDataInclude? _sourceSubclass;
+  _icujtw1s.SubclassDataInclude? _sourceSubclass;
 
-  _i4.ClassFeatureDataInclude? _sourceFeature;
+  _inxbtq9c.ClassFeatureDataInclude? _sourceFeature;
 
-  _i5.SubclassFeatureDataInclude? _sourceSubclassFeature;
+  _i6bcyp7i.SubclassFeatureDataInclude? _sourceSubclassFeature;
 
-  _i6.RaceDataInclude? _sourceRace;
+  _iaoquhhq.RaceDataInclude? _sourceRace;
 
-  _i7.SubraceDataInclude? _sourceSubrace;
+  _ixj8g60z.SubraceDataInclude? _sourceSubrace;
 
-  _i8.RaceFeatureDataInclude? _sourceRaceFeature;
+  _iga2jap7.RaceFeatureDataInclude? _sourceRaceFeature;
 
-  _i9.BackgroundDataInclude? _sourceBackground;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'sourceClass': _sourceClass,
-        'sourceSubclass': _sourceSubclass,
-        'sourceFeature': _sourceFeature,
-        'sourceSubclassFeature': _sourceSubclassFeature,
-        'sourceRace': _sourceRace,
-        'sourceSubrace': _sourceSubrace,
-        'sourceRaceFeature': _sourceRaceFeature,
-        'sourceBackground': _sourceBackground,
-      };
+  _i1wu8zwo.BackgroundDataInclude? _sourceBackground;
 
   @override
-  _i1.Table<int?> get table => ChoiceGroupData.t;
+  Map<String, _is.Include?> get includes => {
+    'sourceClass': _sourceClass,
+    'sourceSubclass': _sourceSubclass,
+    'sourceFeature': _sourceFeature,
+    'sourceSubclassFeature': _sourceSubclassFeature,
+    'sourceRace': _sourceRace,
+    'sourceSubrace': _sourceSubrace,
+    'sourceRaceFeature': _sourceRaceFeature,
+    'sourceBackground': _sourceBackground,
+  };
+
+  @override
+  _is.Table<int?> get table => ChoiceGroupData.t;
 }
 
-class ChoiceGroupDataIncludeList extends _i1.IncludeList {
+class ChoiceGroupDataIncludeList extends _is.IncludeList {
   ChoiceGroupDataIncludeList._({
-    _i1.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
+    _is.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -1101,10 +1156,10 @@ class ChoiceGroupDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => ChoiceGroupData.t;
+  _is.Table<int?> get table => ChoiceGroupData.t;
 }
 
 class ChoiceGroupDataRepository {
@@ -1137,25 +1192,27 @@ class ChoiceGroupDataRepository {
   /// );
   /// ```
   Future<List<ChoiceGroupData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
+    _is.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
+    _is.Transaction? transaction,
     ChoiceGroupDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<ChoiceGroupData>(
       where: where?.call(ChoiceGroupData.t),
       orderBy: orderBy?.call(ChoiceGroupData.t),
       orderByList: orderByList?.call(ChoiceGroupData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -1177,37 +1234,43 @@ class ChoiceGroupDataRepository {
   /// );
   /// ```
   Future<ChoiceGroupData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
+    _is.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
+    _is.Transaction? transaction,
     ChoiceGroupDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<ChoiceGroupData>(
       where: where?.call(ChoiceGroupData.t),
       orderBy: orderBy?.call(ChoiceGroupData.t),
       orderByList: orderByList?.call(ChoiceGroupData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [ChoiceGroupData] by its [id] or null if no such row exists.
   Future<ChoiceGroupData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     ChoiceGroupDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<ChoiceGroupData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -1217,14 +1280,26 @@ class ChoiceGroupDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ChoiceGroupData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ChoiceGroupData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<ChoiceGroupData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -1232,12 +1307,78 @@ class ChoiceGroupDataRepository {
   ///
   /// The returned [ChoiceGroupData] will have its `id` field set.
   Future<ChoiceGroupData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<ChoiceGroupData>(
+    return session.db.insertRow<ChoiceGroupData>(row, transaction: transaction);
+  }
+
+  /// Upserts all [ChoiceGroupData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [ChoiceGroupData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ChoiceGroupData>> upsert(
+    _is.DatabaseSession session,
+    List<ChoiceGroupData> rows, {
+    required _is.ColumnSelections<ChoiceGroupDataTable> conflictColumns,
+    _is.ColumnSelections<ChoiceGroupDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ChoiceGroupDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<ChoiceGroupData>(
+      rows,
+      conflictColumns: conflictColumns(ChoiceGroupData.t),
+      updateColumns: updateColumns?.call(ChoiceGroupData.t),
+      updateWhere: updateWhere?.call(ChoiceGroupData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [ChoiceGroupData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [ChoiceGroupData] will have its `id` field set.
+  Future<ChoiceGroupData?> upsertRow(
+    _is.DatabaseSession session,
+    ChoiceGroupData row, {
+    required _is.ColumnSelections<ChoiceGroupDataTable> conflictColumns,
+    _is.ColumnSelections<ChoiceGroupDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<ChoiceGroupDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<ChoiceGroupData>(
       row,
+      conflictColumns: conflictColumns(ChoiceGroupData.t),
+      updateColumns: updateColumns?.call(ChoiceGroupData.t),
+      updateWhere: updateWhere?.call(ChoiceGroupData.t),
       transaction: transaction,
     );
   }
@@ -1247,16 +1388,22 @@ class ChoiceGroupDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ChoiceGroupData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ChoiceGroupData> rows, {
-    _i1.ColumnSelections<ChoiceGroupDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ChoiceGroupDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<ChoiceGroupData>(
       rows,
       columns: columns?.call(ChoiceGroupData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -1264,10 +1411,10 @@ class ChoiceGroupDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<ChoiceGroupData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData row, {
-    _i1.ColumnSelections<ChoiceGroupDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<ChoiceGroupDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<ChoiceGroupData>(
       row,
@@ -1276,55 +1423,141 @@ class ChoiceGroupDataRepository {
     );
   }
 
+  /// Updates a single [ChoiceGroupData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<ChoiceGroupData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<ChoiceGroupDataUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<ChoiceGroupData>(
+      id,
+      columnValues: columnValues(ChoiceGroupData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [ChoiceGroupData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<ChoiceGroupData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<ChoiceGroupDataUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<ChoiceGroupDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
+    _is.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<ChoiceGroupData>(
+      columnValues: columnValues(ChoiceGroupData.t.updateTable),
+      where: where(ChoiceGroupData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(ChoiceGroupData.t),
+      orderByList: orderByList?.call(ChoiceGroupData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [ChoiceGroupData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ChoiceGroupData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<ChoiceGroupData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
+    _is.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<ChoiceGroupData>(
       rows,
+      orderBy: orderBy?.call(ChoiceGroupData.t),
+      orderByList: orderByList?.call(ChoiceGroupData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [ChoiceGroupData].
   Future<ChoiceGroupData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<ChoiceGroupData>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<ChoiceGroupData>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<ChoiceGroupData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<ChoiceGroupDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ChoiceGroupDataTable> where,
+    _is.OrderByBuilder<ChoiceGroupDataTable>? orderBy,
+    _is.OrderByListBuilder<ChoiceGroupDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<ChoiceGroupData>(
       where: where(ChoiceGroupData.t),
+      orderBy: orderBy?.call(ChoiceGroupData.t),
+      orderByList: orderByList?.call(ChoiceGroupData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<ChoiceGroupDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<ChoiceGroupData>(
       where: where?.call(ChoiceGroupData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [ChoiceGroupData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<ChoiceGroupDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<ChoiceGroupData>(
+      where: where(ChoiceGroupData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -1336,10 +1569,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [ClassData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceClassId` to refer to the [ClassData].
   Future<void> sourceClass(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i2.ClassData sourceClass, {
-    _i1.Transaction? transaction,
+    _ia3fljii.ClassData sourceClass, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1348,8 +1581,9 @@ class ChoiceGroupDataAttachRowRepository {
       throw ArgumentError.notNull('sourceClass.id');
     }
 
-    var $choiceGroupData =
-        choiceGroupData.copyWith(sourceClassId: sourceClass.id);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceClassId: sourceClass.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceClassId],
@@ -1360,10 +1594,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [SubclassData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceSubclassId` to refer to the [SubclassData].
   Future<void> sourceSubclass(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i3.SubclassData sourceSubclass, {
-    _i1.Transaction? transaction,
+    _icujtw1s.SubclassData sourceSubclass, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1372,8 +1606,9 @@ class ChoiceGroupDataAttachRowRepository {
       throw ArgumentError.notNull('sourceSubclass.id');
     }
 
-    var $choiceGroupData =
-        choiceGroupData.copyWith(sourceSubclassId: sourceSubclass.id);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceSubclassId: sourceSubclass.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceSubclassId],
@@ -1384,10 +1619,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [ClassFeatureData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceFeatureId` to refer to the [ClassFeatureData].
   Future<void> sourceFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i4.ClassFeatureData sourceFeature, {
-    _i1.Transaction? transaction,
+    _inxbtq9c.ClassFeatureData sourceFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1396,8 +1631,9 @@ class ChoiceGroupDataAttachRowRepository {
       throw ArgumentError.notNull('sourceFeature.id');
     }
 
-    var $choiceGroupData =
-        choiceGroupData.copyWith(sourceFeatureId: sourceFeature.id);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceFeatureId: sourceFeature.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceFeatureId],
@@ -1408,10 +1644,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [SubclassFeatureData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceSubclassFeatureId` to refer to the [SubclassFeatureData].
   Future<void> sourceSubclassFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i5.SubclassFeatureData sourceSubclassFeature, {
-    _i1.Transaction? transaction,
+    _i6bcyp7i.SubclassFeatureData sourceSubclassFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1421,7 +1657,8 @@ class ChoiceGroupDataAttachRowRepository {
     }
 
     var $choiceGroupData = choiceGroupData.copyWith(
-        sourceSubclassFeatureId: sourceSubclassFeature.id);
+      sourceSubclassFeatureId: sourceSubclassFeature.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceSubclassFeatureId],
@@ -1432,10 +1669,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [RaceData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceRaceId` to refer to the [RaceData].
   Future<void> sourceRace(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i6.RaceData sourceRace, {
-    _i1.Transaction? transaction,
+    _iaoquhhq.RaceData sourceRace, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1444,8 +1681,9 @@ class ChoiceGroupDataAttachRowRepository {
       throw ArgumentError.notNull('sourceRace.id');
     }
 
-    var $choiceGroupData =
-        choiceGroupData.copyWith(sourceRaceId: sourceRace.id);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceRaceId: sourceRace.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceRaceId],
@@ -1456,10 +1694,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [SubraceData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceSubraceId` to refer to the [SubraceData].
   Future<void> sourceSubrace(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i7.SubraceData sourceSubrace, {
-    _i1.Transaction? transaction,
+    _ixj8g60z.SubraceData sourceSubrace, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1468,8 +1706,9 @@ class ChoiceGroupDataAttachRowRepository {
       throw ArgumentError.notNull('sourceSubrace.id');
     }
 
-    var $choiceGroupData =
-        choiceGroupData.copyWith(sourceSubraceId: sourceSubrace.id);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceSubraceId: sourceSubrace.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceSubraceId],
@@ -1480,10 +1719,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [RaceFeatureData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceRaceFeatureId` to refer to the [RaceFeatureData].
   Future<void> sourceRaceFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i8.RaceFeatureData sourceRaceFeature, {
-    _i1.Transaction? transaction,
+    _iga2jap7.RaceFeatureData sourceRaceFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1492,8 +1731,9 @@ class ChoiceGroupDataAttachRowRepository {
       throw ArgumentError.notNull('sourceRaceFeature.id');
     }
 
-    var $choiceGroupData =
-        choiceGroupData.copyWith(sourceRaceFeatureId: sourceRaceFeature.id);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceRaceFeatureId: sourceRaceFeature.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceRaceFeatureId],
@@ -1504,10 +1744,10 @@ class ChoiceGroupDataAttachRowRepository {
   /// Creates a relation between the given [ChoiceGroupData] and [BackgroundData]
   /// by setting the [ChoiceGroupData]'s foreign key `sourceBackgroundId` to refer to the [BackgroundData].
   Future<void> sourceBackground(
-    _i1.Session session,
+    _is.DatabaseSession session,
     ChoiceGroupData choiceGroupData,
-    _i9.BackgroundData sourceBackground, {
-    _i1.Transaction? transaction,
+    _i1wu8zwo.BackgroundData sourceBackground, {
+    _is.Transaction? transaction,
   }) async {
     if (choiceGroupData.id == null) {
       throw ArgumentError.notNull('choiceGroupData.id');
@@ -1516,8 +1756,9 @@ class ChoiceGroupDataAttachRowRepository {
       throw ArgumentError.notNull('sourceBackground.id');
     }
 
-    var $choiceGroupData =
-        choiceGroupData.copyWith(sourceBackgroundId: sourceBackground.id);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceBackgroundId: sourceBackground.id,
+    );
     await session.db.updateRow<ChoiceGroupData>(
       $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceBackgroundId],
@@ -1535,17 +1776,17 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceClass(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata = choicegroupdata.copyWith(sourceClassId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(sourceClassId: null);
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceClassId],
       transaction: transaction,
     );
@@ -1557,17 +1798,17 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceSubclass(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata = choicegroupdata.copyWith(sourceSubclassId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(sourceSubclassId: null);
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceSubclassId],
       transaction: transaction,
     );
@@ -1579,17 +1820,17 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceFeature(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata = choicegroupdata.copyWith(sourceFeatureId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(sourceFeatureId: null);
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceFeatureId],
       transaction: transaction,
     );
@@ -1601,18 +1842,19 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceSubclassFeature(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata =
-        choicegroupdata.copyWith(sourceSubclassFeatureId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(
+      sourceSubclassFeatureId: null,
+    );
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );
@@ -1624,17 +1866,17 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceRace(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata = choicegroupdata.copyWith(sourceRaceId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(sourceRaceId: null);
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceRaceId],
       transaction: transaction,
     );
@@ -1646,17 +1888,17 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceSubrace(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata = choicegroupdata.copyWith(sourceSubraceId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(sourceSubraceId: null);
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceSubraceId],
       transaction: transaction,
     );
@@ -1668,17 +1910,17 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceRaceFeature(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata = choicegroupdata.copyWith(sourceRaceFeatureId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(sourceRaceFeatureId: null);
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceRaceFeatureId],
       transaction: transaction,
     );
@@ -1690,17 +1932,17 @@ class ChoiceGroupDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceBackground(
-    _i1.Session session,
-    ChoiceGroupData choicegroupdata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    ChoiceGroupData choiceGroupData, {
+    _is.Transaction? transaction,
   }) async {
-    if (choicegroupdata.id == null) {
-      throw ArgumentError.notNull('choicegroupdata.id');
+    if (choiceGroupData.id == null) {
+      throw ArgumentError.notNull('choiceGroupData.id');
     }
 
-    var $choicegroupdata = choicegroupdata.copyWith(sourceBackgroundId: null);
+    var $choiceGroupData = choiceGroupData.copyWith(sourceBackgroundId: null);
     await session.db.updateRow<ChoiceGroupData>(
-      $choicegroupdata,
+      $choiceGroupData,
       columns: [ChoiceGroupData.t.sourceBackgroundId],
       transaction: transaction,
     );

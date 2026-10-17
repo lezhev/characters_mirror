@@ -7,16 +7,20 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../enums/skill.dart' as _i3;
-import '../../../enums/damage_type.dart' as _i4;
-import '../../../enums/armor_category.dart' as _i5;
-import '../../../data/general/race/race_feature_data.dart' as _i6;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../data/general/race/race_data.dart' as _ittxuxz1;
+import '../../../data/general/race/race_feature_data.dart' as _ib72xv5p;
+import '../../../enums/armor_category.dart' as _irzuusaf;
+import '../../../enums/damage_type.dart' as _ij9bzpyl;
+import '../../../enums/skill.dart' as _iqrhamom;
 
-abstract class SubraceData implements _i1.SerializableModel {
+abstract class SubraceData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SubraceData._({
     this.id,
     this.name,
@@ -48,7 +52,7 @@ abstract class SubraceData implements _i1.SerializableModel {
     int? id,
     String? name,
     required int parentRaceId,
-    _i2.RaceData? parentRace,
+    _ittxuxz1.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -63,12 +67,12 @@ abstract class SubraceData implements _i1.SerializableModel {
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<_i3.Skill>? skillProficiencies,
-    List<_i4.DamageType>? resistances,
-    List<_i5.ArmorCategory>? armorProficiencies,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i6.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
   }) = _SubraceDataImpl;
 
   factory SubraceData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -78,48 +82,61 @@ abstract class SubraceData implements _i1.SerializableModel {
       parentRaceId: jsonSerialization['parentRaceId'] as int,
       parentRace: jsonSerialization['parentRace'] == null
           ? null
-          : _i2.RaceData.fromJson(
-              (jsonSerialization['parentRace'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_ittxuxz1.RaceData>(
+              jsonSerialization['parentRace'],
+            ),
       description: jsonSerialization['description'] as String?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       strengthBonus: jsonSerialization['strengthBonus'] as int?,
       dexterityBonus: jsonSerialization['dexterityBonus'] as int?,
       constitutionBonus: jsonSerialization['constitutionBonus'] as int?,
       intelligenceBonus: jsonSerialization['intelligenceBonus'] as int?,
       wisdomBonus: jsonSerialization['wisdomBonus'] as int?,
       charismaBonus: jsonSerialization['charismaBonus'] as int?,
-      traits: (jsonSerialization['traits'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      traits: jsonSerialization['traits'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['traits'],
+            ),
       speedOverride: jsonSerialization['speedOverride'] as int?,
       visionRangeOverride: jsonSerialization['visionRangeOverride'] as int?,
-      skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => _i3.Skill.fromJson((e as String)))
-          .toList(),
-      resistances: (jsonSerialization['resistances'] as List?)
-          ?.map((e) => _i4.DamageType.fromJson((e as String)))
-          .toList(),
-      armorProficiencies: (jsonSerialization['armorProficiencies'] as List?)
-          ?.map((e) => _i5.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      weaponProficiencyKeys:
-          (jsonSerialization['weaponProficiencyKeys'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      features: (jsonSerialization['features'] as List?)
-          ?.map(
-              (e) => _i6.RaceFeatureData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      skillProficiencies: jsonSerialization['skillProficiencies'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iqrhamom.Skill>>(
+              jsonSerialization['skillProficiencies'],
+            ),
+      resistances: jsonSerialization['resistances'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ij9bzpyl.DamageType>>(
+              jsonSerialization['resistances'],
+            ),
+      armorProficiencies: jsonSerialization['armorProficiencies'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_irzuusaf.ArmorCategory>>(
+              jsonSerialization['armorProficiencies'],
+            ),
+      weaponProficiencyKeys: jsonSerialization['weaponProficiencyKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['weaponProficiencyKeys'],
+            ),
+      toolProficiencyKeys: jsonSerialization['toolProficiencyKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['toolProficiencyKeys'],
+            ),
+      features: jsonSerialization['features'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ib72xv5p.RaceFeatureData>>(
+              jsonSerialization['features'],
+            ),
     );
   }
 
@@ -132,7 +149,7 @@ abstract class SubraceData implements _i1.SerializableModel {
 
   int parentRaceId;
 
-  _i2.RaceData? parentRace;
+  _ittxuxz1.RaceData? parentRace;
 
   String? description;
 
@@ -162,26 +179,26 @@ abstract class SubraceData implements _i1.SerializableModel {
 
   int? visionRangeOverride;
 
-  List<_i3.Skill>? skillProficiencies;
+  List<_iqrhamom.Skill>? skillProficiencies;
 
-  List<_i4.DamageType>? resistances;
+  List<_ij9bzpyl.DamageType>? resistances;
 
-  List<_i5.ArmorCategory>? armorProficiencies;
+  List<_irzuusaf.ArmorCategory>? armorProficiencies;
 
   List<String>? weaponProficiencyKeys;
 
   List<String>? toolProficiencyKeys;
 
-  List<_i6.RaceFeatureData>? features;
+  List<_ib72xv5p.RaceFeatureData>? features;
 
   /// Returns a shallow copy of this [SubraceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SubraceData copyWith({
     int? id,
     String? name,
     int? parentRaceId,
-    _i2.RaceData? parentRace,
+    _ittxuxz1.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -196,16 +213,17 @@ abstract class SubraceData implements _i1.SerializableModel {
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<_i3.Skill>? skillProficiencies,
-    List<_i4.DamageType>? resistances,
-    List<_i5.ArmorCategory>? armorProficiencies,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i6.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SubraceData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       'parentRaceId': parentRaceId,
@@ -226,13 +244,15 @@ abstract class SubraceData implements _i1.SerializableModel {
       if (visionRangeOverride != null)
         'visionRangeOverride': visionRangeOverride,
       if (skillProficiencies != null)
-        'skillProficiencies':
-            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (resistances != null)
         'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
       if (armorProficiencies != null)
-        'armorProficiencies':
-            armorProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'armorProficiencies': armorProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (weaponProficiencyKeys != null)
         'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
       if (toolProficiencyKeys != null)
@@ -243,8 +263,50 @@ abstract class SubraceData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SubraceData',
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      'parentRaceId': parentRaceId,
+      if (parentRace != null) 'parentRace': parentRace?.toJsonForProtocol(),
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (strengthBonus != null) 'strengthBonus': strengthBonus,
+      if (dexterityBonus != null) 'dexterityBonus': dexterityBonus,
+      if (constitutionBonus != null) 'constitutionBonus': constitutionBonus,
+      if (intelligenceBonus != null) 'intelligenceBonus': intelligenceBonus,
+      if (wisdomBonus != null) 'wisdomBonus': wisdomBonus,
+      if (charismaBonus != null) 'charismaBonus': charismaBonus,
+      if (traits != null) 'traits': traits?.toJson(),
+      if (speedOverride != null) 'speedOverride': speedOverride,
+      if (visionRangeOverride != null)
+        'visionRangeOverride': visionRangeOverride,
+      if (skillProficiencies != null)
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (resistances != null)
+        'resistances': resistances?.toJson(valueToJson: (v) => v.toJson()),
+      if (armorProficiencies != null)
+        'armorProficiencies': armorProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (weaponProficiencyKeys != null)
+        'weaponProficiencyKeys': weaponProficiencyKeys?.toJson(),
+      if (toolProficiencyKeys != null)
+        'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
+      if (features != null)
+        'features': features?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -255,7 +317,7 @@ class _SubraceDataImpl extends SubraceData {
     int? id,
     String? name,
     required int parentRaceId,
-    _i2.RaceData? parentRace,
+    _ittxuxz1.RaceData? parentRace,
     String? description,
     String? source,
     int? version,
@@ -270,42 +332,42 @@ class _SubraceDataImpl extends SubraceData {
     List<String>? traits,
     int? speedOverride,
     int? visionRangeOverride,
-    List<_i3.Skill>? skillProficiencies,
-    List<_i4.DamageType>? resistances,
-    List<_i5.ArmorCategory>? armorProficiencies,
+    List<_iqrhamom.Skill>? skillProficiencies,
+    List<_ij9bzpyl.DamageType>? resistances,
+    List<_irzuusaf.ArmorCategory>? armorProficiencies,
     List<String>? weaponProficiencyKeys,
     List<String>? toolProficiencyKeys,
-    List<_i6.RaceFeatureData>? features,
+    List<_ib72xv5p.RaceFeatureData>? features,
   }) : super._(
-          id: id,
-          name: name,
-          parentRaceId: parentRaceId,
-          parentRace: parentRace,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          strengthBonus: strengthBonus,
-          dexterityBonus: dexterityBonus,
-          constitutionBonus: constitutionBonus,
-          intelligenceBonus: intelligenceBonus,
-          wisdomBonus: wisdomBonus,
-          charismaBonus: charismaBonus,
-          traits: traits,
-          speedOverride: speedOverride,
-          visionRangeOverride: visionRangeOverride,
-          skillProficiencies: skillProficiencies,
-          resistances: resistances,
-          armorProficiencies: armorProficiencies,
-          weaponProficiencyKeys: weaponProficiencyKeys,
-          toolProficiencyKeys: toolProficiencyKeys,
-          features: features,
-        );
+         id: id,
+         name: name,
+         parentRaceId: parentRaceId,
+         parentRace: parentRace,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         strengthBonus: strengthBonus,
+         dexterityBonus: dexterityBonus,
+         constitutionBonus: constitutionBonus,
+         intelligenceBonus: intelligenceBonus,
+         wisdomBonus: wisdomBonus,
+         charismaBonus: charismaBonus,
+         traits: traits,
+         speedOverride: speedOverride,
+         visionRangeOverride: visionRangeOverride,
+         skillProficiencies: skillProficiencies,
+         resistances: resistances,
+         armorProficiencies: armorProficiencies,
+         weaponProficiencyKeys: weaponProficiencyKeys,
+         toolProficiencyKeys: toolProficiencyKeys,
+         features: features,
+       );
 
   /// Returns a shallow copy of this [SubraceData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SubraceData copyWith({
     Object? id = _Undefined,
@@ -337,7 +399,7 @@ class _SubraceDataImpl extends SubraceData {
       id: id is int? ? id : this.id,
       name: name is String? ? name : this.name,
       parentRaceId: parentRaceId ?? this.parentRaceId,
-      parentRace: parentRace is _i2.RaceData?
+      parentRace: parentRace is _ittxuxz1.RaceData?
           ? parentRace
           : this.parentRace?.copyWith(),
       description: description is String? ? description : this.description,
@@ -346,8 +408,9 @@ class _SubraceDataImpl extends SubraceData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       strengthBonus: strengthBonus is int? ? strengthBonus : this.strengthBonus,
-      dexterityBonus:
-          dexterityBonus is int? ? dexterityBonus : this.dexterityBonus,
+      dexterityBonus: dexterityBonus is int?
+          ? dexterityBonus
+          : this.dexterityBonus,
       constitutionBonus: constitutionBonus is int?
           ? constitutionBonus
           : this.constitutionBonus,
@@ -363,13 +426,13 @@ class _SubraceDataImpl extends SubraceData {
       visionRangeOverride: visionRangeOverride is int?
           ? visionRangeOverride
           : this.visionRangeOverride,
-      skillProficiencies: skillProficiencies is List<_i3.Skill>?
+      skillProficiencies: skillProficiencies is List<_iqrhamom.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      resistances: resistances is List<_i4.DamageType>?
+      resistances: resistances is List<_ij9bzpyl.DamageType>?
           ? resistances
           : this.resistances?.map((e0) => e0).toList(),
-      armorProficiencies: armorProficiencies is List<_i5.ArmorCategory>?
+      armorProficiencies: armorProficiencies is List<_irzuusaf.ArmorCategory>?
           ? armorProficiencies
           : this.armorProficiencies?.map((e0) => e0).toList(),
       weaponProficiencyKeys: weaponProficiencyKeys is List<String>?
@@ -378,7 +441,7 @@ class _SubraceDataImpl extends SubraceData {
       toolProficiencyKeys: toolProficiencyKeys is List<String>?
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),
-      features: features is List<_i6.RaceFeatureData>?
+      features: features is List<_ib72xv5p.RaceFeatureData>?
           ? features
           : this.features?.map((e0) => e0.copyWith()).toList(),
     );

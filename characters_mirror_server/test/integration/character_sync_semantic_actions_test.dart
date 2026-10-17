@@ -17,7 +17,7 @@ void main() {
     TestSessionBuilder authenticatedSession(int userId) {
       return sessionBuilder.copyWith(
         authentication: AuthenticationOverride.authenticationInfo(
-          userId,
+          (userId).toString(),
           <Scope>{},
         ),
       );
@@ -554,7 +554,9 @@ ON character_sync_events
         await dbSession.close();
       }
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }
 
 class _SemanticFixture {

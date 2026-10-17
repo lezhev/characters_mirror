@@ -125,7 +125,7 @@ class OfflineCacheDatabase {
   }
 
   void close() {
-    _db.dispose();
+    _db.close();
   }
 
   T _runTransaction<T>(T Function() action) {
@@ -325,7 +325,7 @@ INSERT OR REPLACE INTO character_changes(
         operation?.baseTargetRevision,
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -339,7 +339,7 @@ LIMIT 1
       final rows = stmt.select([userId, key]);
       return rows.isEmpty ? null : rows.first['value'] as String;
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -351,7 +351,7 @@ VALUES (?, ?, ?)
     try {
       stmt.execute([userId, key, value]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 

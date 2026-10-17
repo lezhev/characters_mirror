@@ -14,7 +14,7 @@ ORDER BY local_updated_at DESC
           _rowToCharacterRecord(row),
       ];
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -29,7 +29,7 @@ LIMIT 1
       if (rows.isEmpty) return null;
       return _rowToCharacterRecord(rows.first);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -56,7 +56,7 @@ ORDER BY local_updated_at ASC
           _rowToCharacterRecord(row),
       ];
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -76,7 +76,7 @@ ORDER BY created_at ASC
           _rowToCharacterChange(row),
       ];
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 }

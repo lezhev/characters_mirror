@@ -119,5 +119,7 @@ void main() {
         });
       }
     }
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

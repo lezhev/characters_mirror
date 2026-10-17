@@ -7,14 +7,19 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/character/character_change_data.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../data/general/character/character_change_data.dart'
+    as _ifctoigw;
 import '../../../data/general/character/character_sync_operation_data.dart'
-    as _i3;
+    as _ib0rxl2f;
 
-abstract class CharacterSyncRequest implements _i1.SerializableModel {
+abstract class CharacterSyncRequest
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterSyncRequest._({
     this.changes,
     this.operations,
@@ -25,8 +30,8 @@ abstract class CharacterSyncRequest implements _i1.SerializableModel {
   });
 
   factory CharacterSyncRequest({
-    List<_i2.CharacterChangeData>? changes,
-    List<_i3.CharacterSyncOperationData>? operations,
+    List<_ifctoigw.CharacterChangeData>? changes,
+    List<_ib0rxl2f.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
     int? pullAfterEventId,
     bool? fullResync,
@@ -34,28 +39,35 @@ abstract class CharacterSyncRequest implements _i1.SerializableModel {
   }) = _CharacterSyncRequestImpl;
 
   factory CharacterSyncRequest.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterSyncRequest(
-      changes: (jsonSerialization['changes'] as List?)
-          ?.map((e) =>
-              _i2.CharacterChangeData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      operations: (jsonSerialization['operations'] as List?)
-          ?.map((e) => _i3.CharacterSyncOperationData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+      changes: jsonSerialization['changes'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ifctoigw.CharacterChangeData>>(
+                  jsonSerialization['changes'],
+                ),
+      operations: jsonSerialization['operations'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ib0rxl2f.CharacterSyncOperationData>>(
+                  jsonSerialization['operations'],
+                ),
       pullSince: jsonSerialization['pullSince'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['pullSince']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['pullSince']),
       pullAfterEventId: jsonSerialization['pullAfterEventId'] as int?,
-      fullResync: jsonSerialization['fullResync'] as bool?,
+      fullResync: jsonSerialization['fullResync'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['fullResync']),
       syncProtocolVersion: jsonSerialization['syncProtocolVersion'] as int?,
     );
   }
 
-  List<_i2.CharacterChangeData>? changes;
+  List<_ifctoigw.CharacterChangeData>? changes;
 
-  List<_i3.CharacterSyncOperationData>? operations;
+  List<_ib0rxl2f.CharacterSyncOperationData>? operations;
 
   DateTime? pullSince;
 
@@ -67,10 +79,10 @@ abstract class CharacterSyncRequest implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [CharacterSyncRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterSyncRequest copyWith({
-    List<_i2.CharacterChangeData>? changes,
-    List<_i3.CharacterSyncOperationData>? operations,
+    List<_ifctoigw.CharacterChangeData>? changes,
+    List<_ib0rxl2f.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
     int? pullAfterEventId,
     bool? fullResync,
@@ -79,6 +91,7 @@ abstract class CharacterSyncRequest implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterSyncRequest',
       if (changes != null)
         'changes': changes?.toJson(valueToJson: (v) => v.toJson()),
       if (operations != null)
@@ -92,8 +105,26 @@ abstract class CharacterSyncRequest implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterSyncRequest',
+      if (changes != null)
+        'changes': changes?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (operations != null)
+        'operations': operations?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (pullSince != null) 'pullSince': pullSince?.toJson(),
+      if (pullAfterEventId != null) 'pullAfterEventId': pullAfterEventId,
+      if (fullResync != null) 'fullResync': fullResync,
+      if (syncProtocolVersion != null)
+        'syncProtocolVersion': syncProtocolVersion,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -101,24 +132,24 @@ class _Undefined {}
 
 class _CharacterSyncRequestImpl extends CharacterSyncRequest {
   _CharacterSyncRequestImpl({
-    List<_i2.CharacterChangeData>? changes,
-    List<_i3.CharacterSyncOperationData>? operations,
+    List<_ifctoigw.CharacterChangeData>? changes,
+    List<_ib0rxl2f.CharacterSyncOperationData>? operations,
     DateTime? pullSince,
     int? pullAfterEventId,
     bool? fullResync,
     int? syncProtocolVersion,
   }) : super._(
-          changes: changes,
-          operations: operations,
-          pullSince: pullSince,
-          pullAfterEventId: pullAfterEventId,
-          fullResync: fullResync,
-          syncProtocolVersion: syncProtocolVersion,
-        );
+         changes: changes,
+         operations: operations,
+         pullSince: pullSince,
+         pullAfterEventId: pullAfterEventId,
+         fullResync: fullResync,
+         syncProtocolVersion: syncProtocolVersion,
+       );
 
   /// Returns a shallow copy of this [CharacterSyncRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterSyncRequest copyWith({
     Object? changes = _Undefined,
@@ -129,15 +160,16 @@ class _CharacterSyncRequestImpl extends CharacterSyncRequest {
     Object? syncProtocolVersion = _Undefined,
   }) {
     return CharacterSyncRequest(
-      changes: changes is List<_i2.CharacterChangeData>?
+      changes: changes is List<_ifctoigw.CharacterChangeData>?
           ? changes
           : this.changes?.map((e0) => e0.copyWith()).toList(),
-      operations: operations is List<_i3.CharacterSyncOperationData>?
+      operations: operations is List<_ib0rxl2f.CharacterSyncOperationData>?
           ? operations
           : this.operations?.map((e0) => e0.copyWith()).toList(),
       pullSince: pullSince is DateTime? ? pullSince : this.pullSince,
-      pullAfterEventId:
-          pullAfterEventId is int? ? pullAfterEventId : this.pullAfterEventId,
+      pullAfterEventId: pullAfterEventId is int?
+          ? pullAfterEventId
+          : this.pullAfterEventId,
       fullResync: fullResync is bool? ? fullResync : this.fullResync,
       syncProtocolVersion: syncProtocolVersion is int?
           ? syncProtocolVersion

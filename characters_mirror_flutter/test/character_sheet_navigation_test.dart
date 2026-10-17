@@ -1328,7 +1328,7 @@ Future<void> _pumpCharacterListToSheetRouter(
     routes: [
       GoRoute(
         path: '/characters',
-        builder: (context, __) => Scaffold(
+        builder: (context, _) => Scaffold(
           body: Column(
             children: [
               const Text('Characters route'),

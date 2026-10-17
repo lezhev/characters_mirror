@@ -7,12 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class FeatureDisplayPropertyView
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   FeatureDisplayPropertyView._({
     required this.key,
     required this.label,
@@ -30,7 +31,8 @@ abstract class FeatureDisplayPropertyView
   }) = _FeatureDisplayPropertyViewImpl;
 
   factory FeatureDisplayPropertyView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureDisplayPropertyView(
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
@@ -52,7 +54,7 @@ abstract class FeatureDisplayPropertyView
 
   /// Returns a shallow copy of this [FeatureDisplayPropertyView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FeatureDisplayPropertyView copyWith({
     String? key,
     String? label,
@@ -63,6 +65,7 @@ abstract class FeatureDisplayPropertyView
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureDisplayPropertyView',
       'key': key,
       'label': label,
       'value': value,
@@ -74,6 +77,7 @@ abstract class FeatureDisplayPropertyView
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeatureDisplayPropertyView',
       'key': key,
       'label': label,
       'value': value,
@@ -84,7 +88,7 @@ abstract class FeatureDisplayPropertyView
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -98,16 +102,16 @@ class _FeatureDisplayPropertyViewImpl extends FeatureDisplayPropertyView {
     String? formula,
     int? sortOrder,
   }) : super._(
-          key: key,
-          label: label,
-          value: value,
-          formula: formula,
-          sortOrder: sortOrder,
-        );
+         key: key,
+         label: label,
+         value: value,
+         formula: formula,
+         sortOrder: sortOrder,
+       );
 
   /// Returns a shallow copy of this [FeatureDisplayPropertyView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FeatureDisplayPropertyView copyWith({
     String? key,

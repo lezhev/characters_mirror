@@ -7,17 +7,19 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../data/general/class/class_feature_data.dart' as _i2;
-import '../../data/general/class/subclass_feature_data.dart' as _i3;
-import '../../enums/feature_display_property_value_kind.dart' as _i4;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../data/general/class/class_feature_data.dart' as _inxbtq9c;
+import '../../data/general/class/subclass_feature_data.dart' as _i6bcyp7i;
+import '../../enums/feature_display_property_value_kind.dart' as _imi7l93k;
 
 abstract class FeatureDisplayPropertyData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   FeatureDisplayPropertyData._({
     this.id,
     this.sourceClassFeatureId,
@@ -40,12 +42,12 @@ abstract class FeatureDisplayPropertyData
   factory FeatureDisplayPropertyData({
     int? id,
     int? sourceClassFeatureId,
-    _i2.ClassFeatureData? sourceClassFeature,
+    _inxbtq9c.ClassFeatureData? sourceClassFeature,
     int? sourceSubclassFeatureId,
-    _i3.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     required String key,
     required String label,
-    required _i4.FeatureDisplayPropertyValueKind valueKind,
+    required _imi7l93k.FeatureDisplayPropertyValueKind valueKind,
     String? staticValue,
     Map<int, String>? progression,
     String? formula,
@@ -57,40 +59,44 @@ abstract class FeatureDisplayPropertyData
   }) = _FeatureDisplayPropertyDataImpl;
 
   factory FeatureDisplayPropertyData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureDisplayPropertyData(
       id: jsonSerialization['id'] as int?,
       sourceClassFeatureId: jsonSerialization['sourceClassFeatureId'] as int?,
       sourceClassFeature: jsonSerialization['sourceClassFeature'] == null
           ? null
-          : _i2.ClassFeatureData.fromJson(
-              (jsonSerialization['sourceClassFeature']
-                  as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_inxbtq9c.ClassFeatureData>(
+              jsonSerialization['sourceClassFeature'],
+            ),
       sourceSubclassFeatureId:
           jsonSerialization['sourceSubclassFeatureId'] as int?,
       sourceSubclassFeature: jsonSerialization['sourceSubclassFeature'] == null
           ? null
-          : _i3.SubclassFeatureData.fromJson(
-              (jsonSerialization['sourceSubclassFeature']
-                  as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i6bcyp7i.SubclassFeatureData>(
+              jsonSerialization['sourceSubclassFeature'],
+            ),
       key: jsonSerialization['key'] as String,
       label: jsonSerialization['label'] as String,
-      valueKind: _i4.FeatureDisplayPropertyValueKind.fromJson(
-          (jsonSerialization['valueKind'] as String)),
+      valueKind: _imi7l93k.FeatureDisplayPropertyValueKind.fromJson(
+        (jsonSerialization['valueKind'] as String),
+      ),
       staticValue: jsonSerialization['staticValue'] as String?,
-      progression: (jsonSerialization['progression'] as List?)
-          ?.fold<Map<int, String>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as String}),
+      progression: jsonSerialization['progression'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<int, String>>(
+              jsonSerialization['progression'],
+            ),
       formula: jsonSerialization['formula'] as String?,
       sortOrder: jsonSerialization['sortOrder'] as int?,
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -103,17 +109,17 @@ abstract class FeatureDisplayPropertyData
 
   int? sourceClassFeatureId;
 
-  _i2.ClassFeatureData? sourceClassFeature;
+  _inxbtq9c.ClassFeatureData? sourceClassFeature;
 
   int? sourceSubclassFeatureId;
 
-  _i3.SubclassFeatureData? sourceSubclassFeature;
+  _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature;
 
   String key;
 
   String label;
 
-  _i4.FeatureDisplayPropertyValueKind valueKind;
+  _imi7l93k.FeatureDisplayPropertyValueKind valueKind;
 
   String? staticValue;
 
@@ -132,20 +138,20 @@ abstract class FeatureDisplayPropertyData
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [FeatureDisplayPropertyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FeatureDisplayPropertyData copyWith({
     int? id,
     int? sourceClassFeatureId,
-    _i2.ClassFeatureData? sourceClassFeature,
+    _inxbtq9c.ClassFeatureData? sourceClassFeature,
     int? sourceSubclassFeatureId,
-    _i3.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     String? key,
     String? label,
-    _i4.FeatureDisplayPropertyValueKind? valueKind,
+    _imi7l93k.FeatureDisplayPropertyValueKind? valueKind,
     String? staticValue,
     Map<int, String>? progression,
     String? formula,
@@ -158,6 +164,7 @@ abstract class FeatureDisplayPropertyData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureDisplayPropertyData',
       if (id != null) 'id': id,
       if (sourceClassFeatureId != null)
         'sourceClassFeatureId': sourceClassFeatureId,
@@ -184,6 +191,7 @@ abstract class FeatureDisplayPropertyData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeatureDisplayPropertyData',
       if (id != null) 'id': id,
       if (sourceClassFeatureId != null)
         'sourceClassFeatureId': sourceClassFeatureId,
@@ -208,8 +216,8 @@ abstract class FeatureDisplayPropertyData
   }
 
   static FeatureDisplayPropertyDataInclude include({
-    _i2.ClassFeatureDataInclude? sourceClassFeature,
-    _i3.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _inxbtq9c.ClassFeatureDataInclude? sourceClassFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? sourceSubclassFeature,
   }) {
     return FeatureDisplayPropertyDataInclude._(
       sourceClassFeature: sourceClassFeature,
@@ -218,12 +226,11 @@ abstract class FeatureDisplayPropertyData
   }
 
   static FeatureDisplayPropertyDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
+    _is.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
     FeatureDisplayPropertyDataInclude? include,
   }) {
     return FeatureDisplayPropertyDataIncludeList._(
@@ -231,7 +238,6 @@ abstract class FeatureDisplayPropertyData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(FeatureDisplayPropertyData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(FeatureDisplayPropertyData.t),
       include: include,
     );
@@ -239,7 +245,7 @@ abstract class FeatureDisplayPropertyData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -249,12 +255,12 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
   _FeatureDisplayPropertyDataImpl({
     int? id,
     int? sourceClassFeatureId,
-    _i2.ClassFeatureData? sourceClassFeature,
+    _inxbtq9c.ClassFeatureData? sourceClassFeature,
     int? sourceSubclassFeatureId,
-    _i3.SubclassFeatureData? sourceSubclassFeature,
+    _i6bcyp7i.SubclassFeatureData? sourceSubclassFeature,
     required String key,
     required String label,
-    required _i4.FeatureDisplayPropertyValueKind valueKind,
+    required _imi7l93k.FeatureDisplayPropertyValueKind valueKind,
     String? staticValue,
     Map<int, String>? progression,
     String? formula,
@@ -264,27 +270,27 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          sourceClassFeatureId: sourceClassFeatureId,
-          sourceClassFeature: sourceClassFeature,
-          sourceSubclassFeatureId: sourceSubclassFeatureId,
-          sourceSubclassFeature: sourceSubclassFeature,
-          key: key,
-          label: label,
-          valueKind: valueKind,
-          staticValue: staticValue,
-          progression: progression,
-          formula: formula,
-          sortOrder: sortOrder,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         sourceClassFeatureId: sourceClassFeatureId,
+         sourceClassFeature: sourceClassFeature,
+         sourceSubclassFeatureId: sourceSubclassFeatureId,
+         sourceSubclassFeature: sourceSubclassFeature,
+         key: key,
+         label: label,
+         valueKind: valueKind,
+         staticValue: staticValue,
+         progression: progression,
+         formula: formula,
+         sortOrder: sortOrder,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [FeatureDisplayPropertyData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FeatureDisplayPropertyData copyWith({
     Object? id = _Undefined,
@@ -294,7 +300,7 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
     Object? sourceSubclassFeature = _Undefined,
     String? key,
     String? label,
-    _i4.FeatureDisplayPropertyValueKind? valueKind,
+    _imi7l93k.FeatureDisplayPropertyValueKind? valueKind,
     Object? staticValue = _Undefined,
     Object? progression = _Undefined,
     Object? formula = _Undefined,
@@ -309,13 +315,14 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
       sourceClassFeatureId: sourceClassFeatureId is int?
           ? sourceClassFeatureId
           : this.sourceClassFeatureId,
-      sourceClassFeature: sourceClassFeature is _i2.ClassFeatureData?
+      sourceClassFeature: sourceClassFeature is _inxbtq9c.ClassFeatureData?
           ? sourceClassFeature
           : this.sourceClassFeature?.copyWith(),
       sourceSubclassFeatureId: sourceSubclassFeatureId is int?
           ? sourceSubclassFeatureId
           : this.sourceSubclassFeatureId,
-      sourceSubclassFeature: sourceSubclassFeature is _i3.SubclassFeatureData?
+      sourceSubclassFeature:
+          sourceSubclassFeature is _i6bcyp7i.SubclassFeatureData?
           ? sourceSubclassFeature
           : this.sourceSubclassFeature?.copyWith(),
       key: key ?? this.key,
@@ -324,14 +331,7 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
       staticValue: staticValue is String? ? staticValue : this.staticValue,
       progression: progression is Map<int, String>?
           ? progression
-          : this.progression?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.progression?.map((key0, value0) => MapEntry(key0, value0)),
       formula: formula is String? ? formula : this.formula,
       sortOrder: sortOrder is int? ? sortOrder : this.sortOrder,
       source: source is String? ? source : this.source,
@@ -342,140 +342,154 @@ class _FeatureDisplayPropertyDataImpl extends FeatureDisplayPropertyData {
   }
 }
 
-class FeatureDisplayPropertyDataTable extends _i1.Table<int?> {
+class FeatureDisplayPropertyDataUpdateTable
+    extends _is.UpdateTable<FeatureDisplayPropertyDataTable> {
+  FeatureDisplayPropertyDataUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> sourceClassFeatureId(int? value) =>
+      _is.ColumnValue(table.sourceClassFeatureId, value);
+
+  _is.ColumnValue<int, int> sourceSubclassFeatureId(int? value) =>
+      _is.ColumnValue(table.sourceSubclassFeatureId, value);
+
+  _is.ColumnValue<String, String> key(String value) =>
+      _is.ColumnValue(table.key, value);
+
+  _is.ColumnValue<String, String> label(String value) =>
+      _is.ColumnValue(table.label, value);
+
+  _is.ColumnValue<
+    _imi7l93k.FeatureDisplayPropertyValueKind,
+    _imi7l93k.FeatureDisplayPropertyValueKind
+  >
+  valueKind(_imi7l93k.FeatureDisplayPropertyValueKind value) =>
+      _is.ColumnValue(table.valueKind, value);
+
+  _is.ColumnValue<String, String> staticValue(String? value) =>
+      _is.ColumnValue(table.staticValue, value);
+
+  _is.ColumnValue<Map<int, String>, Map<int, String>> progression(
+    Map<int, String>? value,
+  ) => _is.ColumnValue(table.progression, value);
+
+  _is.ColumnValue<String, String> formula(String? value) =>
+      _is.ColumnValue(table.formula, value);
+
+  _is.ColumnValue<int, int> sortOrder(int? value) =>
+      _is.ColumnValue(table.sortOrder, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class FeatureDisplayPropertyDataTable extends _is.Table<int?> {
   FeatureDisplayPropertyDataTable({super.tableRelation})
-      : super(tableName: 'feature_display_property_data') {
-    sourceClassFeatureId = _i1.ColumnInt(
-      'sourceClassFeatureId',
-      this,
-    );
-    sourceSubclassFeatureId = _i1.ColumnInt(
-      'sourceSubclassFeatureId',
-      this,
-    );
-    key = _i1.ColumnString(
-      'key',
-      this,
-    );
-    label = _i1.ColumnString(
-      'label',
-      this,
-    );
-    valueKind = _i1.ColumnEnum(
-      'valueKind',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    staticValue = _i1.ColumnString(
-      'staticValue',
-      this,
-    );
-    progression = _i1.ColumnSerializable(
-      'progression',
-      this,
-    );
-    formula = _i1.ColumnString(
-      'formula',
-      this,
-    );
-    sortOrder = _i1.ColumnInt(
-      'sortOrder',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    : super(tableName: 'feature_display_property_data') {
+    updateTable = FeatureDisplayPropertyDataUpdateTable(this);
+    sourceClassFeatureId = _is.ColumnInt('sourceClassFeatureId', this);
+    sourceSubclassFeatureId = _is.ColumnInt('sourceSubclassFeatureId', this);
+    key = _is.ColumnString('key', this);
+    label = _is.ColumnString('label', this);
+    valueKind = _is.ColumnEnum('valueKind', this, _is.EnumSerialization.byName);
+    staticValue = _is.ColumnString('staticValue', this);
+    progression = _is.ColumnSerializable<Map<int, String>>('progression', this);
+    formula = _is.ColumnString('formula', this);
+    sortOrder = _is.ColumnInt('sortOrder', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnInt sourceClassFeatureId;
+  late final FeatureDisplayPropertyDataUpdateTable updateTable;
 
-  _i2.ClassFeatureDataTable? _sourceClassFeature;
+  late final _is.ColumnInt sourceClassFeatureId;
 
-  late final _i1.ColumnInt sourceSubclassFeatureId;
+  _inxbtq9c.ClassFeatureDataTable? _sourceClassFeature;
 
-  _i3.SubclassFeatureDataTable? _sourceSubclassFeature;
+  late final _is.ColumnInt sourceSubclassFeatureId;
 
-  late final _i1.ColumnString key;
+  _i6bcyp7i.SubclassFeatureDataTable? _sourceSubclassFeature;
 
-  late final _i1.ColumnString label;
+  late final _is.ColumnString key;
 
-  late final _i1.ColumnEnum<_i4.FeatureDisplayPropertyValueKind> valueKind;
+  late final _is.ColumnString label;
 
-  late final _i1.ColumnString staticValue;
+  late final _is.ColumnEnum<_imi7l93k.FeatureDisplayPropertyValueKind>
+  valueKind;
 
-  late final _i1.ColumnSerializable progression;
+  late final _is.ColumnString staticValue;
 
-  late final _i1.ColumnString formula;
+  late final _is.ColumnSerializable<Map<int, String>> progression;
 
-  late final _i1.ColumnInt sortOrder;
+  late final _is.ColumnString formula;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnInt sortOrder;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  _i2.ClassFeatureDataTable get sourceClassFeature {
+  late final _is.ColumnDateTime updatedAt;
+
+  _inxbtq9c.ClassFeatureDataTable get sourceClassFeature {
     if (_sourceClassFeature != null) return _sourceClassFeature!;
-    _sourceClassFeature = _i1.createRelationTable(
+    _sourceClassFeature = _is.createRelationTable(
       relationFieldName: 'sourceClassFeature',
       field: FeatureDisplayPropertyData.t.sourceClassFeatureId,
-      foreignField: _i2.ClassFeatureData.t.id,
+      foreignField: _inxbtq9c.ClassFeatureData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ClassFeatureDataTable(tableRelation: foreignTableRelation),
+          _inxbtq9c.ClassFeatureDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceClassFeature!;
   }
 
-  _i3.SubclassFeatureDataTable get sourceSubclassFeature {
+  _i6bcyp7i.SubclassFeatureDataTable get sourceSubclassFeature {
     if (_sourceSubclassFeature != null) return _sourceSubclassFeature!;
-    _sourceSubclassFeature = _i1.createRelationTable(
+    _sourceSubclassFeature = _is.createRelationTable(
       relationFieldName: 'sourceSubclassFeature',
       field: FeatureDisplayPropertyData.t.sourceSubclassFeatureId,
-      foreignField: _i3.SubclassFeatureData.t.id,
+      foreignField: _i6bcyp7i.SubclassFeatureData.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _i3.SubclassFeatureDataTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _i6bcyp7i.SubclassFeatureDataTable(
+        tableRelation: foreignTableRelation,
+      ),
     );
     return _sourceSubclassFeature!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        sourceClassFeatureId,
-        sourceSubclassFeatureId,
-        key,
-        label,
-        valueKind,
-        staticValue,
-        progression,
-        formula,
-        sortOrder,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    sourceClassFeatureId,
+    sourceSubclassFeatureId,
+    key,
+    label,
+    valueKind,
+    staticValue,
+    progression,
+    formula,
+    sortOrder,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'sourceClassFeature') {
       return sourceClassFeature;
     }
@@ -486,36 +500,35 @@ class FeatureDisplayPropertyDataTable extends _i1.Table<int?> {
   }
 }
 
-class FeatureDisplayPropertyDataInclude extends _i1.IncludeObject {
+class FeatureDisplayPropertyDataInclude extends _is.IncludeObject {
   FeatureDisplayPropertyDataInclude._({
-    _i2.ClassFeatureDataInclude? sourceClassFeature,
-    _i3.SubclassFeatureDataInclude? sourceSubclassFeature,
+    _inxbtq9c.ClassFeatureDataInclude? sourceClassFeature,
+    _i6bcyp7i.SubclassFeatureDataInclude? sourceSubclassFeature,
   }) {
     _sourceClassFeature = sourceClassFeature;
     _sourceSubclassFeature = sourceSubclassFeature;
   }
 
-  _i2.ClassFeatureDataInclude? _sourceClassFeature;
+  _inxbtq9c.ClassFeatureDataInclude? _sourceClassFeature;
 
-  _i3.SubclassFeatureDataInclude? _sourceSubclassFeature;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'sourceClassFeature': _sourceClassFeature,
-        'sourceSubclassFeature': _sourceSubclassFeature,
-      };
+  _i6bcyp7i.SubclassFeatureDataInclude? _sourceSubclassFeature;
 
   @override
-  _i1.Table<int?> get table => FeatureDisplayPropertyData.t;
+  Map<String, _is.Include?> get includes => {
+    'sourceClassFeature': _sourceClassFeature,
+    'sourceSubclassFeature': _sourceSubclassFeature,
+  };
+
+  @override
+  _is.Table<int?> get table => FeatureDisplayPropertyData.t;
 }
 
-class FeatureDisplayPropertyDataIncludeList extends _i1.IncludeList {
+class FeatureDisplayPropertyDataIncludeList extends _is.IncludeList {
   FeatureDisplayPropertyDataIncludeList._({
-    _i1.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -523,10 +536,10 @@ class FeatureDisplayPropertyDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => FeatureDisplayPropertyData.t;
+  _is.Table<int?> get table => FeatureDisplayPropertyData.t;
 }
 
 class FeatureDisplayPropertyDataRepository {
@@ -559,25 +572,27 @@ class FeatureDisplayPropertyDataRepository {
   /// );
   /// ```
   Future<List<FeatureDisplayPropertyData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
+    _is.Transaction? transaction,
     FeatureDisplayPropertyDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<FeatureDisplayPropertyData>(
       where: where?.call(FeatureDisplayPropertyData.t),
       orderBy: orderBy?.call(FeatureDisplayPropertyData.t),
       orderByList: orderByList?.call(FeatureDisplayPropertyData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -599,37 +614,43 @@ class FeatureDisplayPropertyDataRepository {
   /// );
   /// ```
   Future<FeatureDisplayPropertyData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
+    _is.Transaction? transaction,
     FeatureDisplayPropertyDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<FeatureDisplayPropertyData>(
       where: where?.call(FeatureDisplayPropertyData.t),
       orderBy: orderBy?.call(FeatureDisplayPropertyData.t),
       orderByList: orderByList?.call(FeatureDisplayPropertyData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [FeatureDisplayPropertyData] by its [id] or null if no such row exists.
   Future<FeatureDisplayPropertyData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     FeatureDisplayPropertyDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<FeatureDisplayPropertyData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -639,14 +660,26 @@ class FeatureDisplayPropertyDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureDisplayPropertyData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureDisplayPropertyData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<FeatureDisplayPropertyData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -654,12 +687,83 @@ class FeatureDisplayPropertyDataRepository {
   ///
   /// The returned [FeatureDisplayPropertyData] will have its `id` field set.
   Future<FeatureDisplayPropertyData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureDisplayPropertyData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<FeatureDisplayPropertyData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [FeatureDisplayPropertyData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [FeatureDisplayPropertyData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureDisplayPropertyData>> upsert(
+    _is.DatabaseSession session,
+    List<FeatureDisplayPropertyData> rows, {
+    required _is.ColumnSelections<FeatureDisplayPropertyDataTable>
+    conflictColumns,
+    _is.ColumnSelections<FeatureDisplayPropertyDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<FeatureDisplayPropertyData>(
+      rows,
+      conflictColumns: conflictColumns(FeatureDisplayPropertyData.t),
+      updateColumns: updateColumns?.call(FeatureDisplayPropertyData.t),
+      updateWhere: updateWhere?.call(FeatureDisplayPropertyData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [FeatureDisplayPropertyData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [FeatureDisplayPropertyData] will have its `id` field set.
+  Future<FeatureDisplayPropertyData?> upsertRow(
+    _is.DatabaseSession session,
+    FeatureDisplayPropertyData row, {
+    required _is.ColumnSelections<FeatureDisplayPropertyDataTable>
+    conflictColumns,
+    _is.ColumnSelections<FeatureDisplayPropertyDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<FeatureDisplayPropertyData>(
+      row,
+      conflictColumns: conflictColumns(FeatureDisplayPropertyData.t),
+      updateColumns: updateColumns?.call(FeatureDisplayPropertyData.t),
+      updateWhere: updateWhere?.call(FeatureDisplayPropertyData.t),
       transaction: transaction,
     );
   }
@@ -669,16 +773,22 @@ class FeatureDisplayPropertyDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureDisplayPropertyData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureDisplayPropertyData> rows, {
-    _i1.ColumnSelections<FeatureDisplayPropertyDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureDisplayPropertyDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<FeatureDisplayPropertyData>(
       rows,
       columns: columns?.call(FeatureDisplayPropertyData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -686,10 +796,10 @@ class FeatureDisplayPropertyDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<FeatureDisplayPropertyData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureDisplayPropertyData row, {
-    _i1.ColumnSelections<FeatureDisplayPropertyDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureDisplayPropertyDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<FeatureDisplayPropertyData>(
       row,
@@ -698,25 +808,85 @@ class FeatureDisplayPropertyDataRepository {
     );
   }
 
+  /// Updates a single [FeatureDisplayPropertyData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<FeatureDisplayPropertyData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<FeatureDisplayPropertyDataUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<FeatureDisplayPropertyData>(
+      id,
+      columnValues: columnValues(FeatureDisplayPropertyData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [FeatureDisplayPropertyData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureDisplayPropertyData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<FeatureDisplayPropertyDataUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<FeatureDisplayPropertyData>(
+      columnValues: columnValues(FeatureDisplayPropertyData.t.updateTable),
+      where: where(FeatureDisplayPropertyData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(FeatureDisplayPropertyData.t),
+      orderByList: orderByList?.call(FeatureDisplayPropertyData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [FeatureDisplayPropertyData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureDisplayPropertyData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureDisplayPropertyData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<FeatureDisplayPropertyData>(
       rows,
+      orderBy: orderBy?.call(FeatureDisplayPropertyData.t),
+      orderByList: orderByList?.call(FeatureDisplayPropertyData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [FeatureDisplayPropertyData].
   Future<FeatureDisplayPropertyData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureDisplayPropertyData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<FeatureDisplayPropertyData>(
       row,
@@ -725,28 +895,57 @@ class FeatureDisplayPropertyDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureDisplayPropertyData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<FeatureDisplayPropertyDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable> where,
+    _is.OrderByBuilder<FeatureDisplayPropertyDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureDisplayPropertyDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<FeatureDisplayPropertyData>(
       where: where(FeatureDisplayPropertyData.t),
+      orderBy: orderBy?.call(FeatureDisplayPropertyData.t),
+      orderByList: orderByList?.call(FeatureDisplayPropertyData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<FeatureDisplayPropertyData>(
       where: where?.call(FeatureDisplayPropertyData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [FeatureDisplayPropertyData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<FeatureDisplayPropertyDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<FeatureDisplayPropertyData>(
+      where: where(FeatureDisplayPropertyData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -758,10 +957,10 @@ class FeatureDisplayPropertyDataAttachRowRepository {
   /// Creates a relation between the given [FeatureDisplayPropertyData] and [ClassFeatureData]
   /// by setting the [FeatureDisplayPropertyData]'s foreign key `sourceClassFeatureId` to refer to the [ClassFeatureData].
   Future<void> sourceClassFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureDisplayPropertyData featureDisplayPropertyData,
-    _i2.ClassFeatureData sourceClassFeature, {
-    _i1.Transaction? transaction,
+    _inxbtq9c.ClassFeatureData sourceClassFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (featureDisplayPropertyData.id == null) {
       throw ArgumentError.notNull('featureDisplayPropertyData.id');
@@ -771,7 +970,8 @@ class FeatureDisplayPropertyDataAttachRowRepository {
     }
 
     var $featureDisplayPropertyData = featureDisplayPropertyData.copyWith(
-        sourceClassFeatureId: sourceClassFeature.id);
+      sourceClassFeatureId: sourceClassFeature.id,
+    );
     await session.db.updateRow<FeatureDisplayPropertyData>(
       $featureDisplayPropertyData,
       columns: [FeatureDisplayPropertyData.t.sourceClassFeatureId],
@@ -782,10 +982,10 @@ class FeatureDisplayPropertyDataAttachRowRepository {
   /// Creates a relation between the given [FeatureDisplayPropertyData] and [SubclassFeatureData]
   /// by setting the [FeatureDisplayPropertyData]'s foreign key `sourceSubclassFeatureId` to refer to the [SubclassFeatureData].
   Future<void> sourceSubclassFeature(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureDisplayPropertyData featureDisplayPropertyData,
-    _i3.SubclassFeatureData sourceSubclassFeature, {
-    _i1.Transaction? transaction,
+    _i6bcyp7i.SubclassFeatureData sourceSubclassFeature, {
+    _is.Transaction? transaction,
   }) async {
     if (featureDisplayPropertyData.id == null) {
       throw ArgumentError.notNull('featureDisplayPropertyData.id');
@@ -795,7 +995,8 @@ class FeatureDisplayPropertyDataAttachRowRepository {
     }
 
     var $featureDisplayPropertyData = featureDisplayPropertyData.copyWith(
-        sourceSubclassFeatureId: sourceSubclassFeature.id);
+      sourceSubclassFeatureId: sourceSubclassFeature.id,
+    );
     await session.db.updateRow<FeatureDisplayPropertyData>(
       $featureDisplayPropertyData,
       columns: [FeatureDisplayPropertyData.t.sourceSubclassFeatureId],
@@ -813,18 +1014,19 @@ class FeatureDisplayPropertyDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceClassFeature(
-    _i1.Session session,
-    FeatureDisplayPropertyData featuredisplaypropertydata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureDisplayPropertyData featureDisplayPropertyData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featuredisplaypropertydata.id == null) {
-      throw ArgumentError.notNull('featuredisplaypropertydata.id');
+    if (featureDisplayPropertyData.id == null) {
+      throw ArgumentError.notNull('featureDisplayPropertyData.id');
     }
 
-    var $featuredisplaypropertydata =
-        featuredisplaypropertydata.copyWith(sourceClassFeatureId: null);
+    var $featureDisplayPropertyData = featureDisplayPropertyData.copyWith(
+      sourceClassFeatureId: null,
+    );
     await session.db.updateRow<FeatureDisplayPropertyData>(
-      $featuredisplaypropertydata,
+      $featureDisplayPropertyData,
       columns: [FeatureDisplayPropertyData.t.sourceClassFeatureId],
       transaction: transaction,
     );
@@ -836,18 +1038,19 @@ class FeatureDisplayPropertyDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceSubclassFeature(
-    _i1.Session session,
-    FeatureDisplayPropertyData featuredisplaypropertydata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureDisplayPropertyData featureDisplayPropertyData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featuredisplaypropertydata.id == null) {
-      throw ArgumentError.notNull('featuredisplaypropertydata.id');
+    if (featureDisplayPropertyData.id == null) {
+      throw ArgumentError.notNull('featureDisplayPropertyData.id');
     }
 
-    var $featuredisplaypropertydata =
-        featuredisplaypropertydata.copyWith(sourceSubclassFeatureId: null);
+    var $featureDisplayPropertyData = featureDisplayPropertyData.copyWith(
+      sourceSubclassFeatureId: null,
+    );
     await session.db.updateRow<FeatureDisplayPropertyData>(
-      $featuredisplaypropertydata,
+      $featureDisplayPropertyData,
       columns: [FeatureDisplayPropertyData.t.sourceSubclassFeatureId],
       transaction: transaction,
     );

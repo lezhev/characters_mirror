@@ -23,7 +23,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/create/personal',
-                builder: (_, __) => const PersonalStep(),
+                builder: (_, _) => const PersonalStep(),
               ),
             ],
           ),
@@ -67,7 +67,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/create/personal',
-                builder: (_, __) => const PersonalStep(),
+                builder: (_, _) => const PersonalStep(),
               ),
             ],
           ),
@@ -110,7 +110,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/create/personal',
-                builder: (_, __) => const PersonalStep(),
+                builder: (_, _) => const PersonalStep(),
               ),
             ],
           ),
@@ -169,7 +169,7 @@ void main() {
             routes: [
               GoRoute(
                 path: '/create/personal',
-                builder: (_, __) => const PersonalStep(),
+                builder: (_, _) => const PersonalStep(),
               ),
             ],
           ),
@@ -228,11 +228,11 @@ void main() {
             routes: [
               GoRoute(
                 path: '/create',
-                builder: (_, __) => const _SwipeStepHarness(),
+                builder: (_, _) => const _SwipeStepHarness(),
               ),
               GoRoute(
                 path: '/create/race',
-                builder: (_, __) => const Scaffold(
+                builder: (_, _) => const Scaffold(
                   body: Center(child: Text('Race route')),
                 ),
               ),

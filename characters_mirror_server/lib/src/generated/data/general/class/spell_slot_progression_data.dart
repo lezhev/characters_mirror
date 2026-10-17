@@ -7,12 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class SpellSlotProgressionData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SpellSlotProgressionData._({
     this.id,
     this.tableKey,
@@ -36,22 +39,25 @@ abstract class SpellSlotProgressionData
   }) = _SpellSlotProgressionDataImpl;
 
   factory SpellSlotProgressionData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return SpellSlotProgressionData(
       id: jsonSerialization['id'] as int?,
       tableKey: jsonSerialization['tableKey'] as String?,
       level: jsonSerialization['level'] as int,
-      spellSlots: (jsonSerialization['spellSlots'] as List?)
-          ?.fold<Map<int, int>>(
-              {}, (t, e) => {...t, e['k'] as int: e['v'] as int}),
+      spellSlots: jsonSerialization['spellSlots'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<Map<int, int>>(
+              jsonSerialization['spellSlots'],
+            ),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -77,11 +83,11 @@ abstract class SpellSlotProgressionData
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SpellSlotProgressionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SpellSlotProgressionData copyWith({
     int? id,
     String? tableKey,
@@ -95,6 +101,7 @@ abstract class SpellSlotProgressionData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SpellSlotProgressionData',
       if (id != null) 'id': id,
       if (tableKey != null) 'tableKey': tableKey,
       'level': level,
@@ -109,6 +116,7 @@ abstract class SpellSlotProgressionData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SpellSlotProgressionData',
       if (id != null) 'id': id,
       if (tableKey != null) 'tableKey': tableKey,
       'level': level,
@@ -125,12 +133,11 @@ abstract class SpellSlotProgressionData
   }
 
   static SpellSlotProgressionDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
+    _is.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
+    _is.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
+    _is.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
     SpellSlotProgressionDataInclude? include,
   }) {
     return SpellSlotProgressionDataIncludeList._(
@@ -138,7 +145,6 @@ abstract class SpellSlotProgressionData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SpellSlotProgressionData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SpellSlotProgressionData.t),
       include: include,
     );
@@ -146,7 +152,7 @@ abstract class SpellSlotProgressionData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -163,19 +169,19 @@ class _SpellSlotProgressionDataImpl extends SpellSlotProgressionData {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          tableKey: tableKey,
-          level: level,
-          spellSlots: spellSlots,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         tableKey: tableKey,
+         level: level,
+         spellSlots: spellSlots,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [SpellSlotProgressionData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SpellSlotProgressionData copyWith({
     Object? id = _Undefined,
@@ -193,14 +199,7 @@ class _SpellSlotProgressionDataImpl extends SpellSlotProgressionData {
       level: level ?? this.level,
       spellSlots: spellSlots is Map<int, int>?
           ? spellSlots
-          : this.spellSlots?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.spellSlots?.map((key0, value0) => MapEntry(key0, value0)),
       source: source is String? ? source : this.source,
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
@@ -209,83 +208,91 @@ class _SpellSlotProgressionDataImpl extends SpellSlotProgressionData {
   }
 }
 
-class SpellSlotProgressionDataTable extends _i1.Table<int?> {
-  SpellSlotProgressionDataTable({super.tableRelation})
-      : super(tableName: 'spell_slot_progression_data') {
-    tableKey = _i1.ColumnString(
-      'tableKey',
-      this,
-    );
-    level = _i1.ColumnInt(
-      'level',
-      this,
-    );
-    spellSlots = _i1.ColumnSerializable(
-      'spellSlots',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-  }
+class SpellSlotProgressionDataUpdateTable
+    extends _is.UpdateTable<SpellSlotProgressionDataTable> {
+  SpellSlotProgressionDataUpdateTable(super.table);
 
-  late final _i1.ColumnString tableKey;
+  _is.ColumnValue<String, String> tableKey(String? value) =>
+      _is.ColumnValue(table.tableKey, value);
 
-  late final _i1.ColumnInt level;
+  _is.ColumnValue<int, int> level(int value) =>
+      _is.ColumnValue(table.level, value);
 
-  late final _i1.ColumnSerializable spellSlots;
+  _is.ColumnValue<Map<int, int>, Map<int, int>> spellSlots(
+    Map<int, int>? value,
+  ) => _is.ColumnValue(table.spellSlots, value);
 
-  late final _i1.ColumnString source;
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
 
-  late final _i1.ColumnInt version;
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
 
-  late final _i1.ColumnDateTime createdAt;
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
 
-  late final _i1.ColumnDateTime updatedAt;
-
-  @override
-  List<_i1.Column> get columns => [
-        id,
-        tableKey,
-        level,
-        spellSlots,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-      ];
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
 }
 
-class SpellSlotProgressionDataInclude extends _i1.IncludeObject {
+class SpellSlotProgressionDataTable extends _is.Table<int?> {
+  SpellSlotProgressionDataTable({super.tableRelation})
+    : super(tableName: 'spell_slot_progression_data') {
+    updateTable = SpellSlotProgressionDataUpdateTable(this);
+    tableKey = _is.ColumnString('tableKey', this);
+    level = _is.ColumnInt('level', this);
+    spellSlots = _is.ColumnSerializable<Map<int, int>>('spellSlots', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
+  }
+
+  late final SpellSlotProgressionDataUpdateTable updateTable;
+
+  late final _is.ColumnString tableKey;
+
+  late final _is.ColumnInt level;
+
+  late final _is.ColumnSerializable<Map<int, int>> spellSlots;
+
+  late final _is.ColumnString source;
+
+  late final _is.ColumnInt version;
+
+  late final _is.ColumnDateTime createdAt;
+
+  late final _is.ColumnDateTime updatedAt;
+
+  @override
+  List<_is.Column> get columns => [
+    id,
+    tableKey,
+    level,
+    spellSlots,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+  ];
+}
+
+class SpellSlotProgressionDataInclude extends _is.IncludeObject {
   SpellSlotProgressionDataInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SpellSlotProgressionData.t;
+  _is.Table<int?> get table => SpellSlotProgressionData.t;
 }
 
-class SpellSlotProgressionDataIncludeList extends _i1.IncludeList {
+class SpellSlotProgressionDataIncludeList extends _is.IncludeList {
   SpellSlotProgressionDataIncludeList._({
-    _i1.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
+    _is.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -293,10 +300,10 @@ class SpellSlotProgressionDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SpellSlotProgressionData.t;
+  _is.Table<int?> get table => SpellSlotProgressionData.t;
 }
 
 class SpellSlotProgressionDataRepository {
@@ -325,23 +332,25 @@ class SpellSlotProgressionDataRepository {
   /// );
   /// ```
   Future<List<SpellSlotProgressionData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
+    _is.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SpellSlotProgressionData>(
       where: where?.call(SpellSlotProgressionData.t),
       orderBy: orderBy?.call(SpellSlotProgressionData.t),
       orderByList: orderByList?.call(SpellSlotProgressionData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -363,33 +372,39 @@ class SpellSlotProgressionDataRepository {
   /// );
   /// ```
   Future<SpellSlotProgressionData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
+    _is.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SpellSlotProgressionData>(
       where: where?.call(SpellSlotProgressionData.t),
       orderBy: orderBy?.call(SpellSlotProgressionData.t),
       orderByList: orderByList?.call(SpellSlotProgressionData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SpellSlotProgressionData] by its [id] or null if no such row exists.
   Future<SpellSlotProgressionData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SpellSlotProgressionData>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -399,14 +414,26 @@ class SpellSlotProgressionDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SpellSlotProgressionData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<SpellSlotProgressionData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SpellSlotProgressionData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -414,12 +441,83 @@ class SpellSlotProgressionDataRepository {
   ///
   /// The returned [SpellSlotProgressionData] will have its `id` field set.
   Future<SpellSlotProgressionData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     SpellSlotProgressionData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<SpellSlotProgressionData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [SpellSlotProgressionData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SpellSlotProgressionData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SpellSlotProgressionData>> upsert(
+    _is.DatabaseSession session,
+    List<SpellSlotProgressionData> rows, {
+    required _is.ColumnSelections<SpellSlotProgressionDataTable>
+    conflictColumns,
+    _is.ColumnSelections<SpellSlotProgressionDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<SpellSlotProgressionDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SpellSlotProgressionData>(
+      rows,
+      conflictColumns: conflictColumns(SpellSlotProgressionData.t),
+      updateColumns: updateColumns?.call(SpellSlotProgressionData.t),
+      updateWhere: updateWhere?.call(SpellSlotProgressionData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SpellSlotProgressionData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SpellSlotProgressionData] will have its `id` field set.
+  Future<SpellSlotProgressionData?> upsertRow(
+    _is.DatabaseSession session,
+    SpellSlotProgressionData row, {
+    required _is.ColumnSelections<SpellSlotProgressionDataTable>
+    conflictColumns,
+    _is.ColumnSelections<SpellSlotProgressionDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<SpellSlotProgressionDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SpellSlotProgressionData>(
+      row,
+      conflictColumns: conflictColumns(SpellSlotProgressionData.t),
+      updateColumns: updateColumns?.call(SpellSlotProgressionData.t),
+      updateWhere: updateWhere?.call(SpellSlotProgressionData.t),
       transaction: transaction,
     );
   }
@@ -429,16 +527,22 @@ class SpellSlotProgressionDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SpellSlotProgressionData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<SpellSlotProgressionData> rows, {
-    _i1.ColumnSelections<SpellSlotProgressionDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SpellSlotProgressionDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SpellSlotProgressionData>(
       rows,
       columns: columns?.call(SpellSlotProgressionData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -446,10 +550,10 @@ class SpellSlotProgressionDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SpellSlotProgressionData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     SpellSlotProgressionData row, {
-    _i1.ColumnSelections<SpellSlotProgressionDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SpellSlotProgressionDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SpellSlotProgressionData>(
       row,
@@ -458,25 +562,85 @@ class SpellSlotProgressionDataRepository {
     );
   }
 
+  /// Updates a single [SpellSlotProgressionData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SpellSlotProgressionData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<SpellSlotProgressionDataUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SpellSlotProgressionData>(
+      id,
+      columnValues: columnValues(SpellSlotProgressionData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SpellSlotProgressionData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SpellSlotProgressionData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SpellSlotProgressionDataUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<SpellSlotProgressionDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
+    _is.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<SpellSlotProgressionData>(
+      columnValues: columnValues(SpellSlotProgressionData.t.updateTable),
+      where: where(SpellSlotProgressionData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SpellSlotProgressionData.t),
+      orderByList: orderByList?.call(SpellSlotProgressionData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [SpellSlotProgressionData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SpellSlotProgressionData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<SpellSlotProgressionData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
+    _is.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SpellSlotProgressionData>(
       rows,
+      orderBy: orderBy?.call(SpellSlotProgressionData.t),
+      orderByList: orderByList?.call(SpellSlotProgressionData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SpellSlotProgressionData].
   Future<SpellSlotProgressionData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     SpellSlotProgressionData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<SpellSlotProgressionData>(
       row,
@@ -485,28 +649,57 @@ class SpellSlotProgressionDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SpellSlotProgressionData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<SpellSlotProgressionDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SpellSlotProgressionDataTable> where,
+    _is.OrderByBuilder<SpellSlotProgressionDataTable>? orderBy,
+    _is.OrderByListBuilder<SpellSlotProgressionDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SpellSlotProgressionData>(
       where: where(SpellSlotProgressionData.t),
+      orderBy: orderBy?.call(SpellSlotProgressionData.t),
+      orderByList: orderByList?.call(SpellSlotProgressionData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SpellSlotProgressionDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SpellSlotProgressionData>(
       where: where?.call(SpellSlotProgressionData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SpellSlotProgressionData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SpellSlotProgressionDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SpellSlotProgressionData>(
+      where: where(SpellSlotProgressionData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

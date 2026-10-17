@@ -7,18 +7,24 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/race/race_data.dart' as _i2;
-import '../../../data/general/race/subrace_data.dart' as _i3;
-import '../../../enums/rest_type.dart' as _i4;
-import '../../../data/general/feature_resource_definition_data.dart' as _i5;
-import '../../../data/general/feature_resource_effect_data.dart' as _i6;
-import '../../../enums/feature_tag.dart' as _i7;
-import '../../../data/general/race/race_feature_spell_grant_data.dart' as _i8;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../data/general/feature_resource_definition_data.dart'
+    as _iib0ncbr;
+import '../../../data/general/feature_resource_effect_data.dart' as _ipujnj10;
+import '../../../data/general/race/race_data.dart' as _ittxuxz1;
+import '../../../data/general/race/race_feature_spell_grant_data.dart'
+    as _iu7c1iaq;
+import '../../../data/general/race/subrace_data.dart' as _i2k66n75;
+import '../../../enums/feature_tag.dart' as _ixkx8coo;
+import '../../../enums/rest_type.dart' as _igwcjrvt;
 
-abstract class RaceFeatureData implements _i1.SerializableModel {
+abstract class RaceFeatureData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   RaceFeatureData._({
     this.id,
     this.raceId,
@@ -45,9 +51,9 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
   factory RaceFeatureData({
     int? id,
     int? raceId,
-    _i2.RaceData? race,
+    _ittxuxz1.RaceData? race,
     int? subraceId,
-    _i3.SubraceData? subrace,
+    _i2k66n75.SubraceData? subrace,
     String? name,
     String? referenceKey,
     String? description,
@@ -57,12 +63,12 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    _i4.RestType? usesPerRest,
+    _igwcjrvt.RestType? usesPerRest,
     String? usesFormula,
-    List<_i5.FeatureResourceDefinitionData>? resources,
-    List<_i6.FeatureResourceEffectData>? resourceEffects,
-    List<_i7.FeatureTag>? tags,
-    List<_i8.RaceFeatureSpellGrantData>? spellGrants,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ixkx8coo.FeatureTag>? tags,
+    List<_iu7c1iaq.RaceFeatureSpellGrantData>? spellGrants,
   }) = _RaceFeatureDataImpl;
 
   factory RaceFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -71,13 +77,15 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       raceId: jsonSerialization['raceId'] as int?,
       race: jsonSerialization['race'] == null
           ? null
-          : _i2.RaceData.fromJson(
-              (jsonSerialization['race'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_ittxuxz1.RaceData>(
+              jsonSerialization['race'],
+            ),
       subraceId: jsonSerialization['subraceId'] as int?,
       subrace: jsonSerialization['subrace'] == null
           ? null
-          : _i3.SubraceData.fromJson(
-              (jsonSerialization['subrace'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_i2k66n75.SubraceData>(
+              jsonSerialization['subrace'],
+            ),
       name: jsonSerialization['name'] as String?,
       referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -86,30 +94,40 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
       level: jsonSerialization['level'] as int?,
       usesPerRest: jsonSerialization['usesPerRest'] == null
           ? null
-          : _i4.RestType.fromJson((jsonSerialization['usesPerRest'] as String)),
+          : _igwcjrvt.RestType.fromJson(
+              (jsonSerialization['usesPerRest'] as String),
+            ),
       usesFormula: jsonSerialization['usesFormula'] as String?,
-      resources: (jsonSerialization['resources'] as List?)
-          ?.map((e) => _i5.FeatureResourceDefinitionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      resourceEffects: (jsonSerialization['resourceEffects'] as List?)
-          ?.map((e) => _i6.FeatureResourceEffectData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i7.FeatureTag.fromJson((e as String)))
-          .toList(),
-      spellGrants: (jsonSerialization['spellGrants'] as List?)
-          ?.map((e) => _i8.RaceFeatureSpellGrantData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
+      resources: jsonSerialization['resources'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_iib0ncbr.FeatureResourceDefinitionData>>(
+                  jsonSerialization['resources'],
+                ),
+      resourceEffects: jsonSerialization['resourceEffects'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ipujnj10.FeatureResourceEffectData>>(
+                  jsonSerialization['resourceEffects'],
+                ),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ixkx8coo.FeatureTag>>(
+              jsonSerialization['tags'],
+            ),
+      spellGrants: jsonSerialization['spellGrants'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_iu7c1iaq.RaceFeatureSpellGrantData>>(
+                  jsonSerialization['spellGrants'],
+                ),
     );
   }
 
@@ -120,11 +138,11 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
 
   int? raceId;
 
-  _i2.RaceData? race;
+  _ittxuxz1.RaceData? race;
 
   int? subraceId;
 
-  _i3.SubraceData? subrace;
+  _i2k66n75.SubraceData? subrace;
 
   String? name;
 
@@ -144,27 +162,27 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
 
   int? level;
 
-  _i4.RestType? usesPerRest;
+  _igwcjrvt.RestType? usesPerRest;
 
   String? usesFormula;
 
-  List<_i5.FeatureResourceDefinitionData>? resources;
+  List<_iib0ncbr.FeatureResourceDefinitionData>? resources;
 
-  List<_i6.FeatureResourceEffectData>? resourceEffects;
+  List<_ipujnj10.FeatureResourceEffectData>? resourceEffects;
 
-  List<_i7.FeatureTag>? tags;
+  List<_ixkx8coo.FeatureTag>? tags;
 
-  List<_i8.RaceFeatureSpellGrantData>? spellGrants;
+  List<_iu7c1iaq.RaceFeatureSpellGrantData>? spellGrants;
 
   /// Returns a shallow copy of this [RaceFeatureData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   RaceFeatureData copyWith({
     int? id,
     int? raceId,
-    _i2.RaceData? race,
+    _ittxuxz1.RaceData? race,
     int? subraceId,
-    _i3.SubraceData? subrace,
+    _i2k66n75.SubraceData? subrace,
     String? name,
     String? referenceKey,
     String? description,
@@ -174,16 +192,17 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    _i4.RestType? usesPerRest,
+    _igwcjrvt.RestType? usesPerRest,
     String? usesFormula,
-    List<_i5.FeatureResourceDefinitionData>? resources,
-    List<_i6.FeatureResourceEffectData>? resourceEffects,
-    List<_i7.FeatureTag>? tags,
-    List<_i8.RaceFeatureSpellGrantData>? spellGrants,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ixkx8coo.FeatureTag>? tags,
+    List<_iu7c1iaq.RaceFeatureSpellGrantData>? spellGrants,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'RaceFeatureData',
       if (id != null) 'id': id,
       if (raceId != null) 'raceId': raceId,
       if (race != null) 'race': race?.toJson(),
@@ -203,8 +222,9 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
       if (resources != null)
         'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
       if (resourceEffects != null)
-        'resourceEffects':
-            resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
+        'resourceEffects': resourceEffects?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
@@ -212,8 +232,44 @@ abstract class RaceFeatureData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'RaceFeatureData',
+      if (id != null) 'id': id,
+      if (raceId != null) 'raceId': raceId,
+      if (race != null) 'race': race?.toJsonForProtocol(),
+      if (subraceId != null) 'subraceId': subraceId,
+      if (subrace != null) 'subrace': subrace?.toJsonForProtocol(),
+      if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
+      if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (level != null) 'level': level,
+      if (usesPerRest != null) 'usesPerRest': usesPerRest?.toJson(),
+      if (usesFormula != null) 'usesFormula': usesFormula,
+      if (resources != null)
+        'resources': resources?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (resourceEffects != null)
+        'resourceEffects': resourceEffects?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
+      if (spellGrants != null)
+        'spellGrants': spellGrants?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -223,9 +279,9 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
   _RaceFeatureDataImpl({
     int? id,
     int? raceId,
-    _i2.RaceData? race,
+    _ittxuxz1.RaceData? race,
     int? subraceId,
-    _i3.SubraceData? subrace,
+    _i2k66n75.SubraceData? subrace,
     String? name,
     String? referenceKey,
     String? description,
@@ -235,38 +291,38 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? level,
-    _i4.RestType? usesPerRest,
+    _igwcjrvt.RestType? usesPerRest,
     String? usesFormula,
-    List<_i5.FeatureResourceDefinitionData>? resources,
-    List<_i6.FeatureResourceEffectData>? resourceEffects,
-    List<_i7.FeatureTag>? tags,
-    List<_i8.RaceFeatureSpellGrantData>? spellGrants,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ixkx8coo.FeatureTag>? tags,
+    List<_iu7c1iaq.RaceFeatureSpellGrantData>? spellGrants,
   }) : super._(
-          id: id,
-          raceId: raceId,
-          race: race,
-          subraceId: subraceId,
-          subrace: subrace,
-          name: name,
-          referenceKey: referenceKey,
-          description: description,
-          shortDescription: shortDescription,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          level: level,
-          usesPerRest: usesPerRest,
-          usesFormula: usesFormula,
-          resources: resources,
-          resourceEffects: resourceEffects,
-          tags: tags,
-          spellGrants: spellGrants,
-        );
+         id: id,
+         raceId: raceId,
+         race: race,
+         subraceId: subraceId,
+         subrace: subrace,
+         name: name,
+         referenceKey: referenceKey,
+         description: description,
+         shortDescription: shortDescription,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         level: level,
+         usesPerRest: usesPerRest,
+         usesFormula: usesFormula,
+         resources: resources,
+         resourceEffects: resourceEffects,
+         tags: tags,
+         spellGrants: spellGrants,
+       );
 
   /// Returns a shallow copy of this [RaceFeatureData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   RaceFeatureData copyWith({
     Object? id = _Undefined,
@@ -293,9 +349,11 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
     return RaceFeatureData(
       id: id is int? ? id : this.id,
       raceId: raceId is int? ? raceId : this.raceId,
-      race: race is _i2.RaceData? ? race : this.race?.copyWith(),
+      race: race is _ittxuxz1.RaceData? ? race : this.race?.copyWith(),
       subraceId: subraceId is int? ? subraceId : this.subraceId,
-      subrace: subrace is _i3.SubraceData? ? subrace : this.subrace?.copyWith(),
+      subrace: subrace is _i2k66n75.SubraceData?
+          ? subrace
+          : this.subrace?.copyWith(),
       name: name is String? ? name : this.name,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       description: description is String? ? description : this.description,
@@ -307,19 +365,21 @@ class _RaceFeatureDataImpl extends RaceFeatureData {
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       level: level is int? ? level : this.level,
-      usesPerRest:
-          usesPerRest is _i4.RestType? ? usesPerRest : this.usesPerRest,
+      usesPerRest: usesPerRest is _igwcjrvt.RestType?
+          ? usesPerRest
+          : this.usesPerRest,
       usesFormula: usesFormula is String? ? usesFormula : this.usesFormula,
-      resources: resources is List<_i5.FeatureResourceDefinitionData>?
+      resources: resources is List<_iib0ncbr.FeatureResourceDefinitionData>?
           ? resources
           : this.resources?.map((e0) => e0.copyWith()).toList(),
-      resourceEffects: resourceEffects is List<_i6.FeatureResourceEffectData>?
+      resourceEffects:
+          resourceEffects is List<_ipujnj10.FeatureResourceEffectData>?
           ? resourceEffects
           : this.resourceEffects?.map((e0) => e0.copyWith()).toList(),
-      tags: tags is List<_i7.FeatureTag>?
+      tags: tags is List<_ixkx8coo.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
-      spellGrants: spellGrants is List<_i8.RaceFeatureSpellGrantData>?
+      spellGrants: spellGrants is List<_iu7c1iaq.RaceFeatureSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
     );

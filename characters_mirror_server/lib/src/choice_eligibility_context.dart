@@ -63,9 +63,9 @@ ChoiceEligibilityContext buildChoiceEligibilityContext({
   ]);
   final featureKeys = <String>{
     for (final feature in currentClassFeatures)
-      if (_normalizedText(feature.referenceKey) case final key?) key,
+      ?_normalizedText(feature.referenceKey),
     for (final feature in currentSubclassFeatures)
-      if (_normalizedText(feature.referenceKey) case final key?) key,
+      ?_normalizedText(feature.referenceKey),
   };
 
   final currentGroupId = groups

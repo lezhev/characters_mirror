@@ -32,8 +32,7 @@ class DmCreatureEndpoint extends Endpoint {
     return _guard(session, 'list', () async {
       final rows = await DmCreatureRecord.db.find(session,
           where: (t) => t.userId.equals(userId),
-          orderBy: (t) => t.createdAt,
-          orderDescending: true);
+          orderBy: (t) => t.createdAt.desc());
       return rows.map(DmCreatureStore().summary).toList();
     });
   }

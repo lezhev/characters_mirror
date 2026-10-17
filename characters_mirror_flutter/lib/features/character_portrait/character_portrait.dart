@@ -37,7 +37,7 @@ class CharacterPortrait extends ConsumerWidget {
               fit: fit,
               width: size,
               height: size,
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return const _PortraitError();
               },
             );
@@ -45,7 +45,7 @@ class CharacterPortrait extends ConsumerWidget {
           loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
-          error: (_, __) => const _PortraitError(),
+          error: (_, _) => const _PortraitError(),
         ),
       ),
     );

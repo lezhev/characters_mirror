@@ -47,11 +47,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      GoRoute(path: '/', builder: (_, __) => const DefaultRoutePage()),
-      GoRoute(path: '/sign-in', builder: (_, __) => const SignInPage()),
-      GoRoute(path: '/sign-up', builder: (_, __) => const SignUpPage()),
-      GoRoute(path: '/characters', builder: (_, __) => const CharactersList()),
-      GoRoute(path: '/dm', builder: (_, __) => const DmLibraryPage()),
+      GoRoute(path: '/', builder: (_, _) => const DefaultRoutePage()),
+      GoRoute(path: '/sign-in', builder: (_, _) => const SignInPage()),
+      GoRoute(path: '/sign-up', builder: (_, _) => const SignUpPage()),
+      GoRoute(path: '/characters', builder: (_, _) => const CharactersList()),
+      GoRoute(path: '/dm', builder: (_, _) => const DmLibraryPage()),
       GoRoute(
           path: '/dm/creatures/:id',
           builder: (_, state) {
@@ -82,7 +82,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return CharacterSheetSettingsPage(characterId: characterId);
         },
       ),
-      GoRoute(path: '/settings', builder: (_, __) => const SettingsPage()),
+      GoRoute(path: '/settings', builder: (_, _) => const SettingsPage()),
       GoRoute(
         path: '/create',
         pageBuilder: (_, state) => _creationStepPage(
@@ -120,7 +120,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/create/spells',
-        redirect: (_, __) => '/create',
+        redirect: (_, _) => '/create',
       ),
       GoRoute(
         path: '/create/personal',

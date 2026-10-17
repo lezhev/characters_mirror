@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/character/character_data.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/character/character_data.dart' as _isbrf1qr;
 
 abstract class CharacterRejectedChangeData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterRejectedChangeData._({
     required this.changeId,
     this.reason,
@@ -25,19 +28,21 @@ abstract class CharacterRejectedChangeData
     required String changeId,
     String? reason,
     String? message,
-    _i2.CharacterData? character,
+    _isbrf1qr.CharacterData? character,
   }) = _CharacterRejectedChangeDataImpl;
 
   factory CharacterRejectedChangeData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterRejectedChangeData(
       changeId: jsonSerialization['changeId'] as String,
       reason: jsonSerialization['reason'] as String?,
       message: jsonSerialization['message'] as String?,
       character: jsonSerialization['character'] == null
           ? null
-          : _i2.CharacterData.fromJson(
-              (jsonSerialization['character'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_isbrf1qr.CharacterData>(
+              jsonSerialization['character'],
+            ),
     );
   }
 
@@ -47,20 +52,21 @@ abstract class CharacterRejectedChangeData
 
   String? message;
 
-  _i2.CharacterData? character;
+  _isbrf1qr.CharacterData? character;
 
   /// Returns a shallow copy of this [CharacterRejectedChangeData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterRejectedChangeData copyWith({
     String? changeId,
     String? reason,
     String? message,
-    _i2.CharacterData? character,
+    _isbrf1qr.CharacterData? character,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterRejectedChangeData',
       'changeId': changeId,
       if (reason != null) 'reason': reason,
       if (message != null) 'message': message,
@@ -71,6 +77,7 @@ abstract class CharacterRejectedChangeData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterRejectedChangeData',
       'changeId': changeId,
       if (reason != null) 'reason': reason,
       if (message != null) 'message': message,
@@ -80,7 +87,7 @@ abstract class CharacterRejectedChangeData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -91,17 +98,17 @@ class _CharacterRejectedChangeDataImpl extends CharacterRejectedChangeData {
     required String changeId,
     String? reason,
     String? message,
-    _i2.CharacterData? character,
+    _isbrf1qr.CharacterData? character,
   }) : super._(
-          changeId: changeId,
-          reason: reason,
-          message: message,
-          character: character,
-        );
+         changeId: changeId,
+         reason: reason,
+         message: message,
+         character: character,
+       );
 
   /// Returns a shallow copy of this [CharacterRejectedChangeData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterRejectedChangeData copyWith({
     String? changeId,
@@ -113,7 +120,7 @@ class _CharacterRejectedChangeDataImpl extends CharacterRejectedChangeData {
       changeId: changeId ?? this.changeId,
       reason: reason is String? ? reason : this.reason,
       message: message is String? ? message : this.message,
-      character: character is _i2.CharacterData?
+      character: character is _isbrf1qr.CharacterData?
           ? character
           : this.character?.copyWith(),
     );

@@ -7,12 +7,13 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class ClassSpellDeltaView
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   ClassSpellDeltaView._({
     required this.cantripsToAdd,
     required this.knownSpellsToAdd,
@@ -59,7 +60,7 @@ abstract class ClassSpellDeltaView
 
   /// Returns a shallow copy of this [ClassSpellDeltaView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ClassSpellDeltaView copyWith({
     int? cantripsToAdd,
     int? knownSpellsToAdd,
@@ -71,6 +72,7 @@ abstract class ClassSpellDeltaView
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ClassSpellDeltaView',
       'cantripsToAdd': cantripsToAdd,
       'knownSpellsToAdd': knownSpellsToAdd,
       'knownSpellReplacements': knownSpellReplacements,
@@ -85,6 +87,7 @@ abstract class ClassSpellDeltaView
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ClassSpellDeltaView',
       'cantripsToAdd': cantripsToAdd,
       'knownSpellsToAdd': knownSpellsToAdd,
       'knownSpellReplacements': knownSpellReplacements,
@@ -98,7 +101,7 @@ abstract class ClassSpellDeltaView
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -113,17 +116,17 @@ class _ClassSpellDeltaViewImpl extends ClassSpellDeltaView {
     int? preparedSpellLimitBefore,
     int? preparedSpellLimitAfter,
   }) : super._(
-          cantripsToAdd: cantripsToAdd,
-          knownSpellsToAdd: knownSpellsToAdd,
-          knownSpellReplacements: knownSpellReplacements,
-          spellbookSpellsToAdd: spellbookSpellsToAdd,
-          preparedSpellLimitBefore: preparedSpellLimitBefore,
-          preparedSpellLimitAfter: preparedSpellLimitAfter,
-        );
+         cantripsToAdd: cantripsToAdd,
+         knownSpellsToAdd: knownSpellsToAdd,
+         knownSpellReplacements: knownSpellReplacements,
+         spellbookSpellsToAdd: spellbookSpellsToAdd,
+         preparedSpellLimitBefore: preparedSpellLimitBefore,
+         preparedSpellLimitAfter: preparedSpellLimitAfter,
+       );
 
   /// Returns a shallow copy of this [ClassSpellDeltaView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ClassSpellDeltaView copyWith({
     int? cantripsToAdd,

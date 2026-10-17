@@ -7,71 +7,83 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../dungeon_master/dm_creature_summary.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../dungeon_master/dm_creature_summary.dart' as _it59w3qe;
 
-abstract class DmCreatureImportResult implements _i1.SerializableModel {
-  DmCreatureImportResult._({
-    required this.creature,
-    required this.duplicate,
-  });
+abstract class DmCreatureImportResult
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+  DmCreatureImportResult._({required this.creature, required this.duplicate});
 
   factory DmCreatureImportResult({
-    required _i2.DmCreatureSummary creature,
+    required _it59w3qe.DmCreatureSummary creature,
     required bool duplicate,
   }) = _DmCreatureImportResultImpl;
 
   factory DmCreatureImportResult.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return DmCreatureImportResult(
-      creature: _i2.DmCreatureSummary.fromJson(
-          (jsonSerialization['creature'] as Map<String, dynamic>)),
-      duplicate: jsonSerialization['duplicate'] as bool,
+      creature: _isnx6jbi.Protocol().deserialize<_it59w3qe.DmCreatureSummary>(
+        jsonSerialization['creature'],
+      ),
+      duplicate: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['duplicate'],
+      ),
     );
   }
 
-  _i2.DmCreatureSummary creature;
+  _it59w3qe.DmCreatureSummary creature;
 
   bool duplicate;
 
   /// Returns a shallow copy of this [DmCreatureImportResult]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   DmCreatureImportResult copyWith({
-    _i2.DmCreatureSummary? creature,
+    _it59w3qe.DmCreatureSummary? creature,
     bool? duplicate,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'DmCreatureImportResult',
       'creature': creature.toJson(),
       'duplicate': duplicate,
     };
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'DmCreatureImportResult',
+      'creature': creature.toJsonForProtocol(),
+      'duplicate': duplicate,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
 class _DmCreatureImportResultImpl extends DmCreatureImportResult {
   _DmCreatureImportResultImpl({
-    required _i2.DmCreatureSummary creature,
+    required _it59w3qe.DmCreatureSummary creature,
     required bool duplicate,
-  }) : super._(
-          creature: creature,
-          duplicate: duplicate,
-        );
+  }) : super._(creature: creature, duplicate: duplicate);
 
   /// Returns a shallow copy of this [DmCreatureImportResult]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   DmCreatureImportResult copyWith({
-    _i2.DmCreatureSummary? creature,
+    _it59w3qe.DmCreatureSummary? creature,
     bool? duplicate,
   }) {
     return DmCreatureImportResult(

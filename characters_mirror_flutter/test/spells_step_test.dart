@@ -299,7 +299,7 @@ void main() {
           body: ClassSpellSelectionSection(
             groups: [group],
             selections: const [],
-            onToggleSpell: (_, __) {},
+            onToggleSpell: (_, _) {},
             onClearGroup: (_) {},
           ),
         ),
@@ -320,14 +320,21 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Bless'), findsWidgets);
-    expect(find.descendant(of: find.byType(AlertDialog),
-        matching: find.text('1 уровень · Очарование')), findsOneWidget);
     expect(
         find.descendant(
-            of: find.byType(AlertDialog), matching: find.textContaining('1 действие')),
+            of: find.byType(AlertDialog),
+            matching: find.text('1 уровень · Очарование')),
         findsOneWidget);
-    expect(find.descendant(of: find.byType(AlertDialog),
-        matching: find.textContaining('Концентрация')), findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byType(AlertDialog),
+            matching: find.textContaining('1 действие')),
+        findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byType(AlertDialog),
+            matching: find.textContaining('Концентрация')),
+        findsOneWidget);
     expect(
       find.text('Вы благословляете до трёх существ на дистанции.'),
       findsOneWidget,

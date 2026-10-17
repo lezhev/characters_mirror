@@ -84,7 +84,7 @@ WHERE user_id = ? AND entity_id = ? AND status IN (?, ?)
               OfflineCharacterChangeStatus.failed.name,
             ]);
           } finally {
-            deleteStmt.dispose();
+            deleteStmt.close();
           }
         }
         for (final operation in operations) {
@@ -105,7 +105,7 @@ WHERE user_id = ? AND entity_id = ? AND status IN (?, ?)
         }
       });
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
 
     for (final operation in operations) {
@@ -197,7 +197,7 @@ INSERT OR REPLACE INTO characters_cache(
         );
       });
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
     return (await getCharacter(userId, existing.localId))!;
   }
@@ -265,8 +265,8 @@ WHERE user_id = ?
         );
       });
     } finally {
-      stmt.dispose();
-      deleteChanges.dispose();
+      stmt.close();
+      deleteChanges.close();
     }
   }
 
@@ -311,7 +311,7 @@ INSERT OR REPLACE INTO characters_cache(
         null,
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
     for (final note in character.notes ?? const <CharacterNoteData>[]) {
       logCharacterSyncLifecycle(
@@ -346,7 +346,7 @@ WHERE user_id = ? AND server_id = ? AND local_id != ?
         try {
           deleteCanonical.execute([userId, serverId, oldLocalId]);
         } finally {
-          deleteCanonical.dispose();
+          deleteCanonical.close();
         }
 
         final updateLocal = _db.prepare('''
@@ -372,7 +372,7 @@ WHERE user_id = ? AND local_id = ?
             oldLocalId,
           ]);
         } finally {
-          updateLocal.dispose();
+          updateLocal.close();
         }
       });
       return;
@@ -385,7 +385,7 @@ WHERE user_id = ? AND local_id = ? AND local_id != ?
     try {
       deleteStmt.execute([userId, oldLocalId, serverId]);
     } finally {
-      deleteStmt.dispose();
+      deleteStmt.close();
     }
     await upsertCleanFromServer(
       userId,
@@ -402,7 +402,7 @@ WHERE user_id = ? AND local_id = ?
     try {
       stmt.execute([userId, localId]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -426,7 +426,7 @@ WHERE user_id = ? AND local_id = ?
         localId,
       ]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -439,7 +439,7 @@ WHERE user_id = ? AND local_id = ?
     try {
       stmt.execute([error.toString(), userId, localId]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 
@@ -452,7 +452,7 @@ WHERE user_id = ? AND local_id = ?
     try {
       stmt.execute([userId, localId]);
     } finally {
-      stmt.dispose();
+      stmt.close();
     }
   }
 }

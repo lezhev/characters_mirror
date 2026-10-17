@@ -7,12 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../enums/feature_tag.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../enums/feature_tag.dart' as _ij7cgcpq;
 
-abstract class FeatData implements _i1.SerializableModel {
+abstract class FeatData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   FeatData._({
     this.id,
     this.name,
@@ -39,7 +43,7 @@ abstract class FeatData implements _i1.SerializableModel {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<_i2.FeatureTag>? tags,
+    List<_ij7cgcpq.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
@@ -54,32 +58,40 @@ abstract class FeatData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      abilityBonuses:
-          (jsonSerialization['abilityBonuses'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
-      traits: (jsonSerialization['traits'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i2.FeatureTag.fromJson((e as String)))
-          .toList(),
-      specialAbilities: (jsonSerialization['specialAbilities'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      proficiencies: (jsonSerialization['proficiencies'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      prerequisites:
-          (jsonSerialization['prerequisites'] as Map?)?.map((k, v) => MapEntry(
-                k as String,
-                v as int,
-              )),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      abilityBonuses: jsonSerialization['abilityBonuses'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['abilityBonuses'],
+            ),
+      traits: jsonSerialization['traits'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['traits'],
+            ),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ij7cgcpq.FeatureTag>>(
+              jsonSerialization['tags'],
+            ),
+      specialAbilities: jsonSerialization['specialAbilities'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['specialAbilities'],
+            ),
+      proficiencies: jsonSerialization['proficiencies'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['proficiencies'],
+            ),
+      prerequisites: jsonSerialization['prerequisites'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<Map<String, int>>(
+              jsonSerialization['prerequisites'],
+            ),
     );
   }
 
@@ -104,7 +116,7 @@ abstract class FeatData implements _i1.SerializableModel {
 
   List<String>? traits;
 
-  List<_i2.FeatureTag>? tags;
+  List<_ij7cgcpq.FeatureTag>? tags;
 
   List<String>? specialAbilities;
 
@@ -114,7 +126,7 @@ abstract class FeatData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [FeatData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   FeatData copyWith({
     int? id,
     String? name,
@@ -125,7 +137,7 @@ abstract class FeatData implements _i1.SerializableModel {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<_i2.FeatureTag>? tags,
+    List<_ij7cgcpq.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
@@ -133,6 +145,28 @@ abstract class FeatData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatData',
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (abilityBonuses != null) 'abilityBonuses': abilityBonuses?.toJson(),
+      if (traits != null) 'traits': traits?.toJson(),
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
+      if (specialAbilities != null)
+        'specialAbilities': specialAbilities?.toJson(),
+      if (proficiencies != null) 'proficiencies': proficiencies?.toJson(),
+      if (prerequisites != null) 'prerequisites': prerequisites?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'FeatData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -152,7 +186,7 @@ abstract class FeatData implements _i1.SerializableModel {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -169,29 +203,29 @@ class _FeatDataImpl extends FeatData {
     DateTime? updatedAt,
     Map<String, int>? abilityBonuses,
     List<String>? traits,
-    List<_i2.FeatureTag>? tags,
+    List<_ij7cgcpq.FeatureTag>? tags,
     List<String>? specialAbilities,
     List<String>? proficiencies,
     Map<String, int>? prerequisites,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          abilityBonuses: abilityBonuses,
-          traits: traits,
-          tags: tags,
-          specialAbilities: specialAbilities,
-          proficiencies: proficiencies,
-          prerequisites: prerequisites,
-        );
+         id: id,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         abilityBonuses: abilityBonuses,
+         traits: traits,
+         tags: tags,
+         specialAbilities: specialAbilities,
+         proficiencies: proficiencies,
+         prerequisites: prerequisites,
+       );
 
   /// Returns a shallow copy of this [FeatData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   FeatData copyWith({
     Object? id = _Undefined,
@@ -218,18 +252,11 @@ class _FeatDataImpl extends FeatData {
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
       abilityBonuses: abilityBonuses is Map<String, int>?
           ? abilityBonuses
-          : this.abilityBonuses?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.abilityBonuses?.map((key0, value0) => MapEntry(key0, value0)),
       traits: traits is List<String>?
           ? traits
           : this.traits?.map((e0) => e0).toList(),
-      tags: tags is List<_i2.FeatureTag>?
+      tags: tags is List<_ij7cgcpq.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
       specialAbilities: specialAbilities is List<String>?
@@ -240,14 +267,7 @@ class _FeatDataImpl extends FeatData {
           : this.proficiencies?.map((e0) => e0).toList(),
       prerequisites: prerequisites is Map<String, int>?
           ? prerequisites
-          : this.prerequisites?.map((
-                key0,
-                value0,
-              ) =>
-                  MapEntry(
-                    key0,
-                    value0,
-                  )),
+          : this.prerequisites?.map((key0, value0) => MapEntry(key0, value0)),
     );
   }
 }

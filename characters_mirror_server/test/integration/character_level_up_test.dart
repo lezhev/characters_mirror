@@ -11,7 +11,8 @@ void main() {
   withServerpod('Atomic level-up', (sessions, endpoints) {
     setUp(CharacterSaveRateLimiter.resetForTests);
     final owner = sessions.copyWith(
-      authentication: AuthenticationOverride.authenticationInfo(941, <Scope>{}),
+      authentication: AuthenticationOverride.authenticationInfo(
+          (941).toString(), <Scope>{}),
     );
 
     Future<CharacterData> fixture({int level = 4, bool asi = false}) async {
@@ -64,7 +65,7 @@ void main() {
                   optionKey: 'con2',
                   grantedAbilityBonuses: {'constitution': 2}));
         }
-        return endpoints.characterData.saveCharacter(
+        return await endpoints.characterData.saveCharacter(
             owner,
             CharacterData(
                 name: 'Level-up test',
@@ -290,8 +291,8 @@ void main() {
           baseAbilityScores: {'charisma': 14},
           classEntries: [
             entry,
-            if (otherEntry != null) otherEntry,
-            if (bookEntry != null) bookEntry
+            ?otherEntry,
+            ?bookEntry
           ],
           spellSelections: selections,
         ),
@@ -391,8 +392,8 @@ void main() {
               })),
           throwsA(isA<InputValidationException>()));
       final other = sessions.copyWith(
-          authentication:
-              AuthenticationOverride.authenticationInfo(942, <Scope>{}));
+          authentication: AuthenticationOverride.authenticationInfo(
+              (942).toString(), <Scope>{}));
       await expectLater(
           endpoints.characterData.applyLevelUp(other, request(before)),
           throwsA(isA<Exception>()));
@@ -701,5 +702,7 @@ void main() {
       );
       CharacterValidator.validate(after);
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

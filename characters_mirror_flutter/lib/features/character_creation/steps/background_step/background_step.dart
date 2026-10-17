@@ -21,8 +21,8 @@ class BackgroundStep extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final detailsKey = useMemoized(GlobalKey.new);
-    ref.listen(backgroundStateProvider, (_, __) => _reconcileExpertise(ref));
-    ref.listen(classStateProvider, (_, __) => _reconcileExpertise(ref));
+    ref.listen(backgroundStateProvider, (_, _) => _reconcileExpertise(ref));
+    ref.listen(classStateProvider, (_, _) => _reconcileExpertise(ref));
 
     return ref.watch(backgroundStateProvider).when(
       data: (data) {
@@ -107,11 +107,11 @@ void _syncAndGo({
 }
 
 void _reconcileExpertise(WidgetRef ref) {
-  final classState = ref.read(classStateProvider).valueOrNull;
+  final classState = ref.read(classStateProvider).value;
   if (classState == null) return;
   final backgroundAsync = ref.read(backgroundStateProvider);
   if (!backgroundAsync.hasValue) return;
-  final backgroundState = backgroundAsync.valueOrNull;
+  final backgroundState = backgroundAsync.value;
   final creation = ref.read(characterCreationProvider);
   final otherSelectedOptions = resolveSelectedChoiceOptions(
     choiceGroups: [

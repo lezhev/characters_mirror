@@ -7,15 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/starting_equipment_line_kind.dart' as _i2;
-import '../../../enums/equipment_catalog_type.dart' as _i3;
-import '../../../enums/weapon_category.dart' as _i4;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../enums/equipment_catalog_type.dart' as _i5zaboz2;
+import '../../../enums/starting_equipment_line_kind.dart' as _iupdx0br;
+import '../../../enums/weapon_category.dart' as _ibtz7e0l;
 
 abstract class StartingEquipmentLineData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   StartingEquipmentLineData._({
     this.entryId,
     this.parentEntryId,
@@ -32,38 +35,44 @@ abstract class StartingEquipmentLineData
     int? entryId,
     int? parentEntryId,
     int? orderIndex,
-    _i2.StartingEquipmentLineKind? kind,
+    _iupdx0br.StartingEquipmentLineKind? kind,
     int? quantity,
-    _i3.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
-    List<_i4.WeaponCategory>? allowedWeaponCategories,
+    List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories,
     List<String>? allowedItemCategories,
   }) = _StartingEquipmentLineDataImpl;
 
   factory StartingEquipmentLineData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return StartingEquipmentLineData(
       entryId: jsonSerialization['entryId'] as int?,
       parentEntryId: jsonSerialization['parentEntryId'] as int?,
       orderIndex: jsonSerialization['orderIndex'] as int?,
       kind: jsonSerialization['kind'] == null
           ? null
-          : _i2.StartingEquipmentLineKind.fromJson(
-              (jsonSerialization['kind'] as String)),
+          : _iupdx0br.StartingEquipmentLineKind.fromJson(
+              (jsonSerialization['kind'] as String),
+            ),
       quantity: jsonSerialization['quantity'] as int?,
       catalogType: jsonSerialization['catalogType'] == null
           ? null
-          : _i3.EquipmentCatalogType.fromJson(
-              (jsonSerialization['catalogType'] as String)),
+          : _i5zaboz2.EquipmentCatalogType.fromJson(
+              (jsonSerialization['catalogType'] as String),
+            ),
       referenceKey: jsonSerialization['referenceKey'] as String?,
       allowedWeaponCategories:
-          (jsonSerialization['allowedWeaponCategories'] as List?)
-              ?.map((e) => _i4.WeaponCategory.fromJson((e as String)))
-              .toList(),
-      allowedItemCategories:
-          (jsonSerialization['allowedItemCategories'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
+          jsonSerialization['allowedWeaponCategories'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ibtz7e0l.WeaponCategory>>(
+              jsonSerialization['allowedWeaponCategories'],
+            ),
+      allowedItemCategories: jsonSerialization['allowedItemCategories'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['allowedItemCategories'],
+            ),
     );
   }
 
@@ -73,35 +82,36 @@ abstract class StartingEquipmentLineData
 
   int? orderIndex;
 
-  _i2.StartingEquipmentLineKind? kind;
+  _iupdx0br.StartingEquipmentLineKind? kind;
 
   int? quantity;
 
-  _i3.EquipmentCatalogType? catalogType;
+  _i5zaboz2.EquipmentCatalogType? catalogType;
 
   String? referenceKey;
 
-  List<_i4.WeaponCategory>? allowedWeaponCategories;
+  List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories;
 
   List<String>? allowedItemCategories;
 
   /// Returns a shallow copy of this [StartingEquipmentLineData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   StartingEquipmentLineData copyWith({
     int? entryId,
     int? parentEntryId,
     int? orderIndex,
-    _i2.StartingEquipmentLineKind? kind,
+    _iupdx0br.StartingEquipmentLineKind? kind,
     int? quantity,
-    _i3.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
-    List<_i4.WeaponCategory>? allowedWeaponCategories,
+    List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories,
     List<String>? allowedItemCategories,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StartingEquipmentLineData',
       if (entryId != null) 'entryId': entryId,
       if (parentEntryId != null) 'parentEntryId': parentEntryId,
       if (orderIndex != null) 'orderIndex': orderIndex,
@@ -110,8 +120,9 @@ abstract class StartingEquipmentLineData
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (allowedWeaponCategories != null)
-        'allowedWeaponCategories':
-            allowedWeaponCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'allowedWeaponCategories': allowedWeaponCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (allowedItemCategories != null)
         'allowedItemCategories': allowedItemCategories?.toJson(),
     };
@@ -120,6 +131,7 @@ abstract class StartingEquipmentLineData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StartingEquipmentLineData',
       if (entryId != null) 'entryId': entryId,
       if (parentEntryId != null) 'parentEntryId': parentEntryId,
       if (orderIndex != null) 'orderIndex': orderIndex,
@@ -128,8 +140,9 @@ abstract class StartingEquipmentLineData
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (allowedWeaponCategories != null)
-        'allowedWeaponCategories':
-            allowedWeaponCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'allowedWeaponCategories': allowedWeaponCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (allowedItemCategories != null)
         'allowedItemCategories': allowedItemCategories?.toJson(),
     };
@@ -137,7 +150,7 @@ abstract class StartingEquipmentLineData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -148,27 +161,27 @@ class _StartingEquipmentLineDataImpl extends StartingEquipmentLineData {
     int? entryId,
     int? parentEntryId,
     int? orderIndex,
-    _i2.StartingEquipmentLineKind? kind,
+    _iupdx0br.StartingEquipmentLineKind? kind,
     int? quantity,
-    _i3.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
-    List<_i4.WeaponCategory>? allowedWeaponCategories,
+    List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories,
     List<String>? allowedItemCategories,
   }) : super._(
-          entryId: entryId,
-          parentEntryId: parentEntryId,
-          orderIndex: orderIndex,
-          kind: kind,
-          quantity: quantity,
-          catalogType: catalogType,
-          referenceKey: referenceKey,
-          allowedWeaponCategories: allowedWeaponCategories,
-          allowedItemCategories: allowedItemCategories,
-        );
+         entryId: entryId,
+         parentEntryId: parentEntryId,
+         orderIndex: orderIndex,
+         kind: kind,
+         quantity: quantity,
+         catalogType: catalogType,
+         referenceKey: referenceKey,
+         allowedWeaponCategories: allowedWeaponCategories,
+         allowedItemCategories: allowedItemCategories,
+       );
 
   /// Returns a shallow copy of this [StartingEquipmentLineData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   StartingEquipmentLineData copyWith({
     Object? entryId = _Undefined,
@@ -185,16 +198,16 @@ class _StartingEquipmentLineDataImpl extends StartingEquipmentLineData {
       entryId: entryId is int? ? entryId : this.entryId,
       parentEntryId: parentEntryId is int? ? parentEntryId : this.parentEntryId,
       orderIndex: orderIndex is int? ? orderIndex : this.orderIndex,
-      kind: kind is _i2.StartingEquipmentLineKind? ? kind : this.kind,
+      kind: kind is _iupdx0br.StartingEquipmentLineKind? ? kind : this.kind,
       quantity: quantity is int? ? quantity : this.quantity,
-      catalogType: catalogType is _i3.EquipmentCatalogType?
+      catalogType: catalogType is _i5zaboz2.EquipmentCatalogType?
           ? catalogType
           : this.catalogType,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       allowedWeaponCategories:
-          allowedWeaponCategories is List<_i4.WeaponCategory>?
-              ? allowedWeaponCategories
-              : this.allowedWeaponCategories?.map((e0) => e0).toList(),
+          allowedWeaponCategories is List<_ibtz7e0l.WeaponCategory>?
+          ? allowedWeaponCategories
+          : this.allowedWeaponCategories?.map((e0) => e0).toList(),
       allowedItemCategories: allowedItemCategories is List<String>?
           ? allowedItemCategories
           : this.allowedItemCategories?.map((e0) => e0).toList(),

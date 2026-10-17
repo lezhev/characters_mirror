@@ -1,4 +1,5 @@
 enum: FeatureModifierTarget
+serialized: byIndex
 values:
   - speed
   - abilityCheck

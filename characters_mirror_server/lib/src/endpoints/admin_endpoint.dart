@@ -90,7 +90,7 @@ class AdminEndpoint extends Endpoint {
           ...optionJson,
           'choiceGroupId': group!.id,
           'choiceGroup': null,
-          if (requirements != null) 'requirements': requirements,
+          'requirements': ?requirements,
         });
         if (option.optionKey.trim().isEmpty) {
           throw ArgumentError('option.optionKey must not be empty.');

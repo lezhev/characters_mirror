@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/weapon_category.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../enums/weapon_category.dart' as _ibtz7e0l;
 
 abstract class CharacterWeaponProficiencyOverridesData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterWeaponProficiencyOverridesData._({
     this.addedCategories,
     this.removedCategories,
@@ -23,37 +26,48 @@ abstract class CharacterWeaponProficiencyOverridesData
   });
 
   factory CharacterWeaponProficiencyOverridesData({
-    List<_i2.WeaponCategory>? addedCategories,
-    List<_i2.WeaponCategory>? removedCategories,
+    List<_ibtz7e0l.WeaponCategory>? addedCategories,
+    List<_ibtz7e0l.WeaponCategory>? removedCategories,
     List<String>? addedKeys,
     List<String>? removedKeys,
     List<String>? custom,
   }) = _CharacterWeaponProficiencyOverridesDataImpl;
 
   factory CharacterWeaponProficiencyOverridesData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterWeaponProficiencyOverridesData(
-      addedCategories: (jsonSerialization['addedCategories'] as List?)
-          ?.map((e) => _i2.WeaponCategory.fromJson((e as String)))
-          .toList(),
-      removedCategories: (jsonSerialization['removedCategories'] as List?)
-          ?.map((e) => _i2.WeaponCategory.fromJson((e as String)))
-          .toList(),
-      addedKeys: (jsonSerialization['addedKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      removedKeys: (jsonSerialization['removedKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      custom: (jsonSerialization['custom'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      addedCategories: jsonSerialization['addedCategories'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ibtz7e0l.WeaponCategory>>(
+              jsonSerialization['addedCategories'],
+            ),
+      removedCategories: jsonSerialization['removedCategories'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ibtz7e0l.WeaponCategory>>(
+              jsonSerialization['removedCategories'],
+            ),
+      addedKeys: jsonSerialization['addedKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['addedKeys'],
+            ),
+      removedKeys: jsonSerialization['removedKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['removedKeys'],
+            ),
+      custom: jsonSerialization['custom'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['custom'],
+            ),
     );
   }
 
-  List<_i2.WeaponCategory>? addedCategories;
+  List<_ibtz7e0l.WeaponCategory>? addedCategories;
 
-  List<_i2.WeaponCategory>? removedCategories;
+  List<_ibtz7e0l.WeaponCategory>? removedCategories;
 
   List<String>? addedKeys;
 
@@ -63,10 +77,10 @@ abstract class CharacterWeaponProficiencyOverridesData
 
   /// Returns a shallow copy of this [CharacterWeaponProficiencyOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterWeaponProficiencyOverridesData copyWith({
-    List<_i2.WeaponCategory>? addedCategories,
-    List<_i2.WeaponCategory>? removedCategories,
+    List<_ibtz7e0l.WeaponCategory>? addedCategories,
+    List<_ibtz7e0l.WeaponCategory>? removedCategories,
     List<String>? addedKeys,
     List<String>? removedKeys,
     List<String>? custom,
@@ -74,12 +88,15 @@ abstract class CharacterWeaponProficiencyOverridesData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterWeaponProficiencyOverridesData',
       if (addedCategories != null)
-        'addedCategories':
-            addedCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'addedCategories': addedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (removedCategories != null)
-        'removedCategories':
-            removedCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'removedCategories': removedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (addedKeys != null) 'addedKeys': addedKeys?.toJson(),
       if (removedKeys != null) 'removedKeys': removedKeys?.toJson(),
       if (custom != null) 'custom': custom?.toJson(),
@@ -89,12 +106,15 @@ abstract class CharacterWeaponProficiencyOverridesData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterWeaponProficiencyOverridesData',
       if (addedCategories != null)
-        'addedCategories':
-            addedCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'addedCategories': addedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (removedCategories != null)
-        'removedCategories':
-            removedCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'removedCategories': removedCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (addedKeys != null) 'addedKeys': addedKeys?.toJson(),
       if (removedKeys != null) 'removedKeys': removedKeys?.toJson(),
       if (custom != null) 'custom': custom?.toJson(),
@@ -103,7 +123,7 @@ abstract class CharacterWeaponProficiencyOverridesData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -112,22 +132,22 @@ class _Undefined {}
 class _CharacterWeaponProficiencyOverridesDataImpl
     extends CharacterWeaponProficiencyOverridesData {
   _CharacterWeaponProficiencyOverridesDataImpl({
-    List<_i2.WeaponCategory>? addedCategories,
-    List<_i2.WeaponCategory>? removedCategories,
+    List<_ibtz7e0l.WeaponCategory>? addedCategories,
+    List<_ibtz7e0l.WeaponCategory>? removedCategories,
     List<String>? addedKeys,
     List<String>? removedKeys,
     List<String>? custom,
   }) : super._(
-          addedCategories: addedCategories,
-          removedCategories: removedCategories,
-          addedKeys: addedKeys,
-          removedKeys: removedKeys,
-          custom: custom,
-        );
+         addedCategories: addedCategories,
+         removedCategories: removedCategories,
+         addedKeys: addedKeys,
+         removedKeys: removedKeys,
+         custom: custom,
+       );
 
   /// Returns a shallow copy of this [CharacterWeaponProficiencyOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterWeaponProficiencyOverridesData copyWith({
     Object? addedCategories = _Undefined,
@@ -137,10 +157,10 @@ class _CharacterWeaponProficiencyOverridesDataImpl
     Object? custom = _Undefined,
   }) {
     return CharacterWeaponProficiencyOverridesData(
-      addedCategories: addedCategories is List<_i2.WeaponCategory>?
+      addedCategories: addedCategories is List<_ibtz7e0l.WeaponCategory>?
           ? addedCategories
           : this.addedCategories?.map((e0) => e0).toList(),
-      removedCategories: removedCategories is List<_i2.WeaponCategory>?
+      removedCategories: removedCategories is List<_ibtz7e0l.WeaponCategory>?
           ? removedCategories
           : this.removedCategories?.map((e0) => e0).toList(),
       addedKeys: addedKeys is List<String>?

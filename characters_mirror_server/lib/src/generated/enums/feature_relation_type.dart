@@ -7,11 +7,12 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
-enum FeatureRelationType implements _i1.SerializableModel {
+enum FeatureRelationType implements _is.SerializableModel {
   enhances,
   replaces;
 
@@ -23,7 +24,8 @@ enum FeatureRelationType implements _i1.SerializableModel {
         return FeatureRelationType.replaces;
       default:
         throw ArgumentError(
-            'Value "$name" cannot be converted to "FeatureRelationType"');
+          'Value "$name" cannot be converted to "FeatureRelationType"',
+        );
     }
   }
 

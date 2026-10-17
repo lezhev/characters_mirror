@@ -7,12 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class LevelDownInvalidChoiceView
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   LevelDownInvalidChoiceView._({
     required this.groupKey,
     required this.selectionIndex,
@@ -30,16 +33,17 @@ abstract class LevelDownInvalidChoiceView
   }) = _LevelDownInvalidChoiceViewImpl;
 
   factory LevelDownInvalidChoiceView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return LevelDownInvalidChoiceView(
       groupKey: jsonSerialization['groupKey'] as String,
       selectionIndex: jsonSerialization['selectionIndex'] as int,
       optionKey: jsonSerialization['optionKey'] as String,
       reason: jsonSerialization['reason'] as String,
-      eligibleAlternativeOptionKeys:
-          (jsonSerialization['eligibleAlternativeOptionKeys'] as List)
-              .map((e) => e as String)
-              .toList(),
+      eligibleAlternativeOptionKeys: _ikmnmw29.Protocol()
+          .deserialize<List<String>>(
+            jsonSerialization['eligibleAlternativeOptionKeys'],
+          ),
     );
   }
 
@@ -55,7 +59,7 @@ abstract class LevelDownInvalidChoiceView
 
   /// Returns a shallow copy of this [LevelDownInvalidChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   LevelDownInvalidChoiceView copyWith({
     String? groupKey,
     int? selectionIndex,
@@ -66,6 +70,7 @@ abstract class LevelDownInvalidChoiceView
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'LevelDownInvalidChoiceView',
       'groupKey': groupKey,
       'selectionIndex': selectionIndex,
       'optionKey': optionKey,
@@ -77,6 +82,7 @@ abstract class LevelDownInvalidChoiceView
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'LevelDownInvalidChoiceView',
       'groupKey': groupKey,
       'selectionIndex': selectionIndex,
       'optionKey': optionKey,
@@ -87,7 +93,7 @@ abstract class LevelDownInvalidChoiceView
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -99,16 +105,16 @@ class _LevelDownInvalidChoiceViewImpl extends LevelDownInvalidChoiceView {
     required String reason,
     required List<String> eligibleAlternativeOptionKeys,
   }) : super._(
-          groupKey: groupKey,
-          selectionIndex: selectionIndex,
-          optionKey: optionKey,
-          reason: reason,
-          eligibleAlternativeOptionKeys: eligibleAlternativeOptionKeys,
-        );
+         groupKey: groupKey,
+         selectionIndex: selectionIndex,
+         optionKey: optionKey,
+         reason: reason,
+         eligibleAlternativeOptionKeys: eligibleAlternativeOptionKeys,
+       );
 
   /// Returns a shallow copy of this [LevelDownInvalidChoiceView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   LevelDownInvalidChoiceView copyWith({
     String? groupKey,
@@ -122,7 +128,8 @@ class _LevelDownInvalidChoiceViewImpl extends LevelDownInvalidChoiceView {
       selectionIndex: selectionIndex ?? this.selectionIndex,
       optionKey: optionKey ?? this.optionKey,
       reason: reason ?? this.reason,
-      eligibleAlternativeOptionKeys: eligibleAlternativeOptionKeys ??
+      eligibleAlternativeOptionKeys:
+          eligibleAlternativeOptionKeys ??
           this.eligibleAlternativeOptionKeys.map((e0) => e0).toList(),
     );
   }

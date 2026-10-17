@@ -23,7 +23,7 @@ class SubclassChoiceSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(classStateProvider).valueOrNull;
+    final data = ref.watch(classStateProvider).value;
     final subclasses =
         data?.stepView?.subclassChoice?.subclasses ?? const <SubclassData>[];
     if (subclasses.isEmpty) return const SizedBox.shrink();
@@ -147,7 +147,7 @@ class ClassChoiceGroupCard extends ConsumerWidget {
             }
             if (group.type == ChoiceType.expertise) {
               final creation = ref.watch(characterCreationProvider);
-              final background = ref.watch(backgroundStateProvider).valueOrNull;
+              final background = ref.watch(backgroundStateProvider).value;
               final otherOptions = resolveSelectedChoiceOptions(
                   choiceGroups: [
                     ...creation.raceChoiceGroups,

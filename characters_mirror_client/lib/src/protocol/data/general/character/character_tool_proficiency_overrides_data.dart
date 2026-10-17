@@ -7,12 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 abstract class CharacterToolProficiencyOverridesData
-    implements _i1.SerializableModel {
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CharacterToolProficiencyOverridesData._({
     this.addedKeys,
     this.removedKeys,
@@ -26,17 +29,24 @@ abstract class CharacterToolProficiencyOverridesData
   }) = _CharacterToolProficiencyOverridesDataImpl;
 
   factory CharacterToolProficiencyOverridesData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterToolProficiencyOverridesData(
-      addedKeys: (jsonSerialization['addedKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      removedKeys: (jsonSerialization['removedKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      custom: (jsonSerialization['custom'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      addedKeys: jsonSerialization['addedKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['addedKeys'],
+            ),
+      removedKeys: jsonSerialization['removedKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['removedKeys'],
+            ),
+      custom: jsonSerialization['custom'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['custom'],
+            ),
     );
   }
 
@@ -48,7 +58,7 @@ abstract class CharacterToolProficiencyOverridesData
 
   /// Returns a shallow copy of this [CharacterToolProficiencyOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   CharacterToolProficiencyOverridesData copyWith({
     List<String>? addedKeys,
     List<String>? removedKeys,
@@ -57,6 +67,17 @@ abstract class CharacterToolProficiencyOverridesData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterToolProficiencyOverridesData',
+      if (addedKeys != null) 'addedKeys': addedKeys?.toJson(),
+      if (removedKeys != null) 'removedKeys': removedKeys?.toJson(),
+      if (custom != null) 'custom': custom?.toJson(),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'CharacterToolProficiencyOverridesData',
       if (addedKeys != null) 'addedKeys': addedKeys?.toJson(),
       if (removedKeys != null) 'removedKeys': removedKeys?.toJson(),
       if (custom != null) 'custom': custom?.toJson(),
@@ -65,7 +86,7 @@ abstract class CharacterToolProficiencyOverridesData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -77,15 +98,11 @@ class _CharacterToolProficiencyOverridesDataImpl
     List<String>? addedKeys,
     List<String>? removedKeys,
     List<String>? custom,
-  }) : super._(
-          addedKeys: addedKeys,
-          removedKeys: removedKeys,
-          custom: custom,
-        );
+  }) : super._(addedKeys: addedKeys, removedKeys: removedKeys, custom: custom);
 
   /// Returns a shallow copy of this [CharacterToolProficiencyOverridesData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   CharacterToolProficiencyOverridesData copyWith({
     Object? addedKeys = _Undefined,

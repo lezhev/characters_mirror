@@ -7,12 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../data/general/choice_requirement_data.dart' as _i2;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../data/general/choice_requirement_data.dart' as _isy1jdx4;
 
-abstract class ChoiceRequirementFailureView implements _i1.SerializableModel {
+abstract class ChoiceRequirementFailureView
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ChoiceRequirementFailureView._({
     this.requirement,
     required this.reason,
@@ -20,24 +24,26 @@ abstract class ChoiceRequirementFailureView implements _i1.SerializableModel {
   });
 
   factory ChoiceRequirementFailureView({
-    _i2.ChoiceRequirementData? requirement,
+    _isy1jdx4.ChoiceRequirementData? requirement,
     required String reason,
     int? actualValue,
   }) = _ChoiceRequirementFailureViewImpl;
 
   factory ChoiceRequirementFailureView.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return ChoiceRequirementFailureView(
       requirement: jsonSerialization['requirement'] == null
           ? null
-          : _i2.ChoiceRequirementData.fromJson(
-              (jsonSerialization['requirement'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_isy1jdx4.ChoiceRequirementData>(
+              jsonSerialization['requirement'],
+            ),
       reason: jsonSerialization['reason'] as String,
       actualValue: jsonSerialization['actualValue'] as int?,
     );
   }
 
-  _i2.ChoiceRequirementData? requirement;
+  _isy1jdx4.ChoiceRequirementData? requirement;
 
   String reason;
 
@@ -45,15 +51,16 @@ abstract class ChoiceRequirementFailureView implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [ChoiceRequirementFailureView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   ChoiceRequirementFailureView copyWith({
-    _i2.ChoiceRequirementData? requirement,
+    _isy1jdx4.ChoiceRequirementData? requirement,
     String? reason,
     int? actualValue,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ChoiceRequirementFailureView',
       if (requirement != null) 'requirement': requirement?.toJson(),
       'reason': reason,
       if (actualValue != null) 'actualValue': actualValue,
@@ -61,8 +68,18 @@ abstract class ChoiceRequirementFailureView implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ChoiceRequirementFailureView',
+      if (requirement != null) 'requirement': requirement?.toJsonForProtocol(),
+      'reason': reason,
+      if (actualValue != null) 'actualValue': actualValue,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -70,18 +87,18 @@ class _Undefined {}
 
 class _ChoiceRequirementFailureViewImpl extends ChoiceRequirementFailureView {
   _ChoiceRequirementFailureViewImpl({
-    _i2.ChoiceRequirementData? requirement,
+    _isy1jdx4.ChoiceRequirementData? requirement,
     required String reason,
     int? actualValue,
   }) : super._(
-          requirement: requirement,
-          reason: reason,
-          actualValue: actualValue,
-        );
+         requirement: requirement,
+         reason: reason,
+         actualValue: actualValue,
+       );
 
   /// Returns a shallow copy of this [ChoiceRequirementFailureView]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   ChoiceRequirementFailureView copyWith({
     Object? requirement = _Undefined,
@@ -89,7 +106,7 @@ class _ChoiceRequirementFailureViewImpl extends ChoiceRequirementFailureView {
     Object? actualValue = _Undefined,
   }) {
     return ChoiceRequirementFailureView(
-      requirement: requirement is _i2.ChoiceRequirementData?
+      requirement: requirement is _isy1jdx4.ChoiceRequirementData?
           ? requirement
           : this.requirement?.copyWith(),
       reason: reason ?? this.reason,

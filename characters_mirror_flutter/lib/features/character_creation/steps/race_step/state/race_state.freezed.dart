@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'race_state.dart';
@@ -9,6 +9,7 @@ part of 'race_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -33,40 +34,49 @@ mixin _$RaceStateModel {
 
   @override
   bool operator ==(Object other) {
+    final _this = this as RaceStateModel;
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is RaceStateModel &&
-            const DeepCollectionEquality().equals(other.allRaces, allRaces) &&
-            (identical(other.selectedRace, selectedRace) ||
-                other.selectedRace == selectedRace) &&
-            const DeepCollectionEquality().equals(other.subraces, subraces) &&
-            (identical(other.selectedSubrace, selectedSubrace) ||
-                other.selectedSubrace == selectedSubrace) &&
-            const DeepCollectionEquality().equals(other.features, features) &&
             const DeepCollectionEquality()
-                .equals(other.futureFeatures, futureFeatures) &&
+                .equals(other.allRaces, _this.allRaces) &&
+            (identical(other.selectedRace, _this.selectedRace) ||
+                other.selectedRace == _this.selectedRace) &&
             const DeepCollectionEquality()
-                .equals(other.choiceGroups, choiceGroups) &&
+                .equals(other.subraces, _this.subraces) &&
+            (identical(other.selectedSubrace, _this.selectedSubrace) ||
+                other.selectedSubrace == _this.selectedSubrace) &&
+            const DeepCollectionEquality()
+                .equals(other.features, _this.features) &&
+            const DeepCollectionEquality()
+                .equals(other.futureFeatures, _this.futureFeatures) &&
+            const DeepCollectionEquality()
+                .equals(other.choiceGroups, _this.choiceGroups) &&
             const DeepCollectionEquality().equals(
                 other.selectedChoiceOptionsByGroup,
-                selectedChoiceOptionsByGroup));
+                _this.selectedChoiceOptionsByGroup));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(allRaces),
-      selectedRace,
-      const DeepCollectionEquality().hash(subraces),
-      selectedSubrace,
-      const DeepCollectionEquality().hash(features),
-      const DeepCollectionEquality().hash(futureFeatures),
-      const DeepCollectionEquality().hash(choiceGroups),
-      const DeepCollectionEquality().hash(selectedChoiceOptionsByGroup));
+  int get hashCode {
+    final _this = this as RaceStateModel;
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_this.allRaces),
+        _this.selectedRace,
+        const DeepCollectionEquality().hash(_this.subraces),
+        _this.selectedSubrace,
+        const DeepCollectionEquality().hash(_this.features),
+        const DeepCollectionEquality().hash(_this.futureFeatures),
+        const DeepCollectionEquality().hash(_this.choiceGroups),
+        const DeepCollectionEquality()
+            .hash(_this.selectedChoiceOptionsByGroup));
+  }
 
   @override
   String toString() {
-    return 'RaceStateModel(allRaces: $allRaces, selectedRace: $selectedRace, subraces: $subraces, selectedSubrace: $selectedSubrace, features: $features, futureFeatures: $futureFeatures, choiceGroups: $choiceGroups, selectedChoiceOptionsByGroup: $selectedChoiceOptionsByGroup)';
+    final _this = this as RaceStateModel;
+    return 'RaceStateModel(allRaces: ${_this.allRaces}, selectedRace: ${_this.selectedRace}, subraces: ${_this.subraces}, selectedSubrace: ${_this.selectedSubrace}, features: ${_this.features}, futureFeatures: ${_this.futureFeatures}, choiceGroups: ${_this.choiceGroups}, selectedChoiceOptionsByGroup: ${_this.selectedChoiceOptionsByGroup})';
   }
 }
 
@@ -109,7 +119,7 @@ class _$RaceStateModelCopyWithImpl<$Res>
     Object? choiceGroups = null,
     Object? selectedChoiceOptionsByGroup = null,
   }) {
-    return _then(_self.copyWith(
+    return _then(RaceStateModel(
       allRaces: null == allRaces
           ? _self.allRaces
           : allRaces // ignore: cast_nullable_to_non_nullable
@@ -358,14 +368,14 @@ extension RaceStateModelPatterns on RaceStateModel {
 
 class _RaceStateModel implements RaceStateModel {
   const _RaceStateModel(
-      {final List<RaceData> allRaces = const [],
+      {List<RaceData> allRaces = const [],
       this.selectedRace,
-      final List<SubraceData> subraces = const [],
+      List<SubraceData> subraces = const [],
       this.selectedSubrace,
-      final List<RaceFeatureData> features = const [],
-      final List<RaceFeatureData> futureFeatures = const [],
-      final List<ChoiceGroupView> choiceGroups = const [],
-      final Map<String, List<ChoiceOptionData>> selectedChoiceOptionsByGroup =
+      List<RaceFeatureData> features = const [],
+      List<RaceFeatureData> futureFeatures = const [],
+      List<ChoiceGroupView> choiceGroups = const [],
+      Map<String, List<ChoiceOptionData>> selectedChoiceOptionsByGroup =
           const {}})
       : _allRaces = allRaces,
         _subraces = subraces,
@@ -446,33 +456,35 @@ class _RaceStateModel implements RaceStateModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _RaceStateModel &&
-            const DeepCollectionEquality().equals(other._allRaces, _allRaces) &&
+            const DeepCollectionEquality().equals(other.allRaces, _allRaces) &&
             (identical(other.selectedRace, selectedRace) ||
                 other.selectedRace == selectedRace) &&
-            const DeepCollectionEquality().equals(other._subraces, _subraces) &&
+            const DeepCollectionEquality().equals(other.subraces, _subraces) &&
             (identical(other.selectedSubrace, selectedSubrace) ||
                 other.selectedSubrace == selectedSubrace) &&
-            const DeepCollectionEquality().equals(other._features, _features) &&
+            const DeepCollectionEquality().equals(other.features, _features) &&
             const DeepCollectionEquality()
-                .equals(other._futureFeatures, _futureFeatures) &&
+                .equals(other.futureFeatures, _futureFeatures) &&
             const DeepCollectionEquality()
-                .equals(other._choiceGroups, _choiceGroups) &&
+                .equals(other.choiceGroups, _choiceGroups) &&
             const DeepCollectionEquality().equals(
-                other._selectedChoiceOptionsByGroup,
+                other.selectedChoiceOptionsByGroup,
                 _selectedChoiceOptionsByGroup));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_allRaces),
-      selectedRace,
-      const DeepCollectionEquality().hash(_subraces),
-      selectedSubrace,
-      const DeepCollectionEquality().hash(_features),
-      const DeepCollectionEquality().hash(_futureFeatures),
-      const DeepCollectionEquality().hash(_choiceGroups),
-      const DeepCollectionEquality().hash(_selectedChoiceOptionsByGroup));
+  int get hashCode {
+    return Object.hash(
+        runtimeType,
+        const DeepCollectionEquality().hash(_allRaces),
+        selectedRace,
+        const DeepCollectionEquality().hash(_subraces),
+        selectedSubrace,
+        const DeepCollectionEquality().hash(_features),
+        const DeepCollectionEquality().hash(_futureFeatures),
+        const DeepCollectionEquality().hash(_choiceGroups),
+        const DeepCollectionEquality().hash(_selectedChoiceOptionsByGroup));
+  }
 
   @override
   String toString() {

@@ -82,7 +82,7 @@ Future<void> _syncAndGo({
   if (!context.mounted) {
     return;
   }
-  final classState = ref.read(classStateProvider).valueOrNull;
+  final classState = ref.read(classStateProvider).value;
   final hasSpellGroups = classState?.stepView?.spellSelectionGroups?.any(
         (group) => group.kind != null && (group.options?.isNotEmpty ?? false),
       ) ??

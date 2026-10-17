@@ -11,8 +11,8 @@ void main() {
   withServerpod('Generic spell and progression contracts',
       (sessions, endpoints) {
     final owner = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(9642, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (9642).toString(), <Scope>{}));
     setUp(CharacterSaveRateLimiter.resetForTests);
 
     Future<CharacterData> caster(SpellActivationData activation,
@@ -542,5 +542,7 @@ void main() {
       expect(down.choices!.single.optionKey, 'old');
       expect(down.choices!.single.replacementHistory, isNull);
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

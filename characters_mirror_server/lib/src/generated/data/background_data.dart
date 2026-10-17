@@ -7,13 +7,16 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../enums/skill.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../enums/skill.dart' as _ic5go03x;
 
 abstract class BackgroundData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   BackgroundData._({
     this.id,
     this.name,
@@ -44,8 +47,8 @@ abstract class BackgroundData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i2.Skill>? skillProficiencies,
-    List<_i2.Skill>? availableSkills,
+    List<_ic5go03x.Skill>? skillProficiencies,
+    List<_ic5go03x.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencyKeys,
     int? languageCount,
@@ -67,38 +70,54 @@ abstract class BackgroundData
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      skillProficiencies: (jsonSerialization['skillProficiencies'] as List?)
-          ?.map((e) => _i2.Skill.fromJson((e as String)))
-          .toList(),
-      availableSkills: (jsonSerialization['availableSkills'] as List?)
-          ?.map((e) => _i2.Skill.fromJson((e as String)))
-          .toList(),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      skillProficiencies: jsonSerialization['skillProficiencies'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ic5go03x.Skill>>(
+              jsonSerialization['skillProficiencies'],
+            ),
+      availableSkills: jsonSerialization['availableSkills'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ic5go03x.Skill>>(
+              jsonSerialization['availableSkills'],
+            ),
       skillCount: jsonSerialization['skillCount'] as int?,
-      toolProficiencyKeys: (jsonSerialization['toolProficiencyKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      toolProficiencyKeys: jsonSerialization['toolProficiencyKeys'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['toolProficiencyKeys'],
+            ),
       languageCount: jsonSerialization['languageCount'] as int?,
-      items: (jsonSerialization['items'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      items: jsonSerialization['items'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['items'],
+            ),
       coins: (jsonSerialization['coins'] as num?)?.toDouble(),
       feature: jsonSerialization['feature'] as String?,
-      suggestedPersonality: (jsonSerialization['suggestedPersonality'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      suggestedIdeal: (jsonSerialization['suggestedIdeal'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      suggestedBond: (jsonSerialization['suggestedBond'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      suggestedFlaw: (jsonSerialization['suggestedFlaw'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+      suggestedPersonality: jsonSerialization['suggestedPersonality'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedPersonality'],
+            ),
+      suggestedIdeal: jsonSerialization['suggestedIdeal'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedIdeal'],
+            ),
+      suggestedBond: jsonSerialization['suggestedBond'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedBond'],
+            ),
+      suggestedFlaw: jsonSerialization['suggestedFlaw'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['suggestedFlaw'],
+            ),
     );
   }
 
@@ -121,9 +140,9 @@ abstract class BackgroundData
 
   DateTime? updatedAt;
 
-  List<_i2.Skill>? skillProficiencies;
+  List<_ic5go03x.Skill>? skillProficiencies;
 
-  List<_i2.Skill>? availableSkills;
+  List<_ic5go03x.Skill>? availableSkills;
 
   int? skillCount;
 
@@ -146,11 +165,11 @@ abstract class BackgroundData
   List<String>? suggestedFlaw;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [BackgroundData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   BackgroundData copyWith({
     int? id,
     String? name,
@@ -159,8 +178,8 @@ abstract class BackgroundData
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i2.Skill>? skillProficiencies,
-    List<_i2.Skill>? availableSkills,
+    List<_ic5go03x.Skill>? skillProficiencies,
+    List<_ic5go03x.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencyKeys,
     int? languageCount,
@@ -175,6 +194,7 @@ abstract class BackgroundData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BackgroundData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -183,11 +203,13 @@ abstract class BackgroundData
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (skillProficiencies != null)
-        'skillProficiencies':
-            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (availableSkills != null)
-        'availableSkills':
-            availableSkills?.toJson(valueToJson: (v) => v.toJson()),
+        'availableSkills': availableSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (skillCount != null) 'skillCount': skillCount,
       if (toolProficiencyKeys != null)
         'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
@@ -206,6 +228,7 @@ abstract class BackgroundData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'BackgroundData',
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (description != null) 'description': description,
@@ -214,11 +237,13 @@ abstract class BackgroundData
       if (createdAt != null) 'createdAt': createdAt?.toJson(),
       if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
       if (skillProficiencies != null)
-        'skillProficiencies':
-            skillProficiencies?.toJson(valueToJson: (v) => v.toJson()),
+        'skillProficiencies': skillProficiencies?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (availableSkills != null)
-        'availableSkills':
-            availableSkills?.toJson(valueToJson: (v) => v.toJson()),
+        'availableSkills': availableSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (skillCount != null) 'skillCount': skillCount,
       if (toolProficiencyKeys != null)
         'toolProficiencyKeys': toolProficiencyKeys?.toJson(),
@@ -239,12 +264,11 @@ abstract class BackgroundData
   }
 
   static BackgroundDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<BackgroundDataTable>? where,
+    _is.WhereExpressionBuilder<BackgroundDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<BackgroundDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<BackgroundDataTable>? orderByList,
+    _is.OrderByBuilder<BackgroundDataTable>? orderBy,
+    _is.OrderByListBuilder<BackgroundDataTable>? orderByList,
     BackgroundDataInclude? include,
   }) {
     return BackgroundDataIncludeList._(
@@ -252,7 +276,6 @@ abstract class BackgroundData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(BackgroundData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(BackgroundData.t),
       include: include,
     );
@@ -260,7 +283,7 @@ abstract class BackgroundData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -275,8 +298,8 @@ class _BackgroundDataImpl extends BackgroundData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i2.Skill>? skillProficiencies,
-    List<_i2.Skill>? availableSkills,
+    List<_ic5go03x.Skill>? skillProficiencies,
+    List<_ic5go03x.Skill>? availableSkills,
     int? skillCount,
     List<String>? toolProficiencyKeys,
     int? languageCount,
@@ -288,30 +311,30 @@ class _BackgroundDataImpl extends BackgroundData {
     List<String>? suggestedBond,
     List<String>? suggestedFlaw,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          skillProficiencies: skillProficiencies,
-          availableSkills: availableSkills,
-          skillCount: skillCount,
-          toolProficiencyKeys: toolProficiencyKeys,
-          languageCount: languageCount,
-          items: items,
-          coins: coins,
-          feature: feature,
-          suggestedPersonality: suggestedPersonality,
-          suggestedIdeal: suggestedIdeal,
-          suggestedBond: suggestedBond,
-          suggestedFlaw: suggestedFlaw,
-        );
+         id: id,
+         name: name,
+         description: description,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         skillProficiencies: skillProficiencies,
+         availableSkills: availableSkills,
+         skillCount: skillCount,
+         toolProficiencyKeys: toolProficiencyKeys,
+         languageCount: languageCount,
+         items: items,
+         coins: coins,
+         feature: feature,
+         suggestedPersonality: suggestedPersonality,
+         suggestedIdeal: suggestedIdeal,
+         suggestedBond: suggestedBond,
+         suggestedFlaw: suggestedFlaw,
+       );
 
   /// Returns a shallow copy of this [BackgroundData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   BackgroundData copyWith({
     Object? id = _Undefined,
@@ -342,10 +365,10 @@ class _BackgroundDataImpl extends BackgroundData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      skillProficiencies: skillProficiencies is List<_i2.Skill>?
+      skillProficiencies: skillProficiencies is List<_ic5go03x.Skill>?
           ? skillProficiencies
           : this.skillProficiencies?.map((e0) => e0).toList(),
-      availableSkills: availableSkills is List<_i2.Skill>?
+      availableSkills: availableSkills is List<_ic5go03x.Skill>?
           ? availableSkills
           : this.availableSkills?.map((e0) => e0).toList(),
       skillCount: skillCount is int? ? skillCount : this.skillCount,
@@ -353,8 +376,9 @@ class _BackgroundDataImpl extends BackgroundData {
           ? toolProficiencyKeys
           : this.toolProficiencyKeys?.map((e0) => e0).toList(),
       languageCount: languageCount is int? ? languageCount : this.languageCount,
-      items:
-          items is List<String>? ? items : this.items?.map((e0) => e0).toList(),
+      items: items is List<String>?
+          ? items
+          : this.items?.map((e0) => e0).toList(),
       coins: coins is double? ? coins : this.coins,
       feature: feature is String? ? feature : this.feature,
       suggestedPersonality: suggestedPersonality is List<String>?
@@ -373,160 +397,188 @@ class _BackgroundDataImpl extends BackgroundData {
   }
 }
 
-class BackgroundDataTable extends _i1.Table<int?> {
+class BackgroundDataUpdateTable extends _is.UpdateTable<BackgroundDataTable> {
+  BackgroundDataUpdateTable(super.table);
+
+  _is.ColumnValue<String, String> name(String? value) =>
+      _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+
+  _is.ColumnValue<List<_ic5go03x.Skill>, List<_ic5go03x.Skill>>
+  skillProficiencies(List<_ic5go03x.Skill>? value) =>
+      _is.ColumnValue(table.skillProficiencies, value);
+
+  _is.ColumnValue<List<_ic5go03x.Skill>, List<_ic5go03x.Skill>> availableSkills(
+    List<_ic5go03x.Skill>? value,
+  ) => _is.ColumnValue(table.availableSkills, value);
+
+  _is.ColumnValue<int, int> skillCount(int? value) =>
+      _is.ColumnValue(table.skillCount, value);
+
+  _is.ColumnValue<List<String>, List<String>> toolProficiencyKeys(
+    List<String>? value,
+  ) => _is.ColumnValue(table.toolProficiencyKeys, value);
+
+  _is.ColumnValue<int, int> languageCount(int? value) =>
+      _is.ColumnValue(table.languageCount, value);
+
+  _is.ColumnValue<List<String>, List<String>> items(List<String>? value) =>
+      _is.ColumnValue(table.items, value);
+
+  _is.ColumnValue<double, double> coins(double? value) =>
+      _is.ColumnValue(table.coins, value);
+
+  _is.ColumnValue<String, String> feature(String? value) =>
+      _is.ColumnValue(table.feature, value);
+
+  _is.ColumnValue<List<String>, List<String>> suggestedPersonality(
+    List<String>? value,
+  ) => _is.ColumnValue(table.suggestedPersonality, value);
+
+  _is.ColumnValue<List<String>, List<String>> suggestedIdeal(
+    List<String>? value,
+  ) => _is.ColumnValue(table.suggestedIdeal, value);
+
+  _is.ColumnValue<List<String>, List<String>> suggestedBond(
+    List<String>? value,
+  ) => _is.ColumnValue(table.suggestedBond, value);
+
+  _is.ColumnValue<List<String>, List<String>> suggestedFlaw(
+    List<String>? value,
+  ) => _is.ColumnValue(table.suggestedFlaw, value);
+}
+
+class BackgroundDataTable extends _is.Table<int?> {
   BackgroundDataTable({super.tableRelation})
-      : super(tableName: 'background_data') {
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
-    skillProficiencies = _i1.ColumnSerializable(
+    : super(tableName: 'background_data') {
+    updateTable = BackgroundDataUpdateTable(this);
+    name = _is.ColumnString('name', this);
+    description = _is.ColumnString('description', this);
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
+    skillProficiencies = _is.ColumnSerializable<List<_ic5go03x.Skill>>(
       'skillProficiencies',
       this,
     );
-    availableSkills = _i1.ColumnSerializable(
+    availableSkills = _is.ColumnSerializable<List<_ic5go03x.Skill>>(
       'availableSkills',
       this,
     );
-    skillCount = _i1.ColumnInt(
-      'skillCount',
-      this,
-    );
-    toolProficiencyKeys = _i1.ColumnSerializable(
+    skillCount = _is.ColumnInt('skillCount', this);
+    toolProficiencyKeys = _is.ColumnSerializable<List<String>>(
       'toolProficiencyKeys',
       this,
     );
-    languageCount = _i1.ColumnInt(
-      'languageCount',
-      this,
-    );
-    items = _i1.ColumnSerializable(
-      'items',
-      this,
-    );
-    coins = _i1.ColumnDouble(
-      'coins',
-      this,
-    );
-    feature = _i1.ColumnString(
-      'feature',
-      this,
-    );
-    suggestedPersonality = _i1.ColumnSerializable(
+    languageCount = _is.ColumnInt('languageCount', this);
+    items = _is.ColumnSerializable<List<String>>('items', this);
+    coins = _is.ColumnDouble('coins', this);
+    feature = _is.ColumnString('feature', this);
+    suggestedPersonality = _is.ColumnSerializable<List<String>>(
       'suggestedPersonality',
       this,
     );
-    suggestedIdeal = _i1.ColumnSerializable(
+    suggestedIdeal = _is.ColumnSerializable<List<String>>(
       'suggestedIdeal',
       this,
     );
-    suggestedBond = _i1.ColumnSerializable(
-      'suggestedBond',
-      this,
-    );
-    suggestedFlaw = _i1.ColumnSerializable(
-      'suggestedFlaw',
-      this,
-    );
+    suggestedBond = _is.ColumnSerializable<List<String>>('suggestedBond', this);
+    suggestedFlaw = _is.ColumnSerializable<List<String>>('suggestedFlaw', this);
   }
 
-  late final _i1.ColumnString name;
+  late final BackgroundDataUpdateTable updateTable;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  late final _i1.ColumnSerializable skillProficiencies;
+  late final _is.ColumnDateTime updatedAt;
 
-  late final _i1.ColumnSerializable availableSkills;
+  late final _is.ColumnSerializable<List<_ic5go03x.Skill>> skillProficiencies;
 
-  late final _i1.ColumnInt skillCount;
+  late final _is.ColumnSerializable<List<_ic5go03x.Skill>> availableSkills;
 
-  late final _i1.ColumnSerializable toolProficiencyKeys;
+  late final _is.ColumnInt skillCount;
 
-  late final _i1.ColumnInt languageCount;
+  late final _is.ColumnSerializable<List<String>> toolProficiencyKeys;
 
-  late final _i1.ColumnSerializable items;
+  late final _is.ColumnInt languageCount;
 
-  late final _i1.ColumnDouble coins;
+  late final _is.ColumnSerializable<List<String>> items;
 
-  late final _i1.ColumnString feature;
+  late final _is.ColumnDouble coins;
 
-  late final _i1.ColumnSerializable suggestedPersonality;
+  late final _is.ColumnString feature;
 
-  late final _i1.ColumnSerializable suggestedIdeal;
+  late final _is.ColumnSerializable<List<String>> suggestedPersonality;
 
-  late final _i1.ColumnSerializable suggestedBond;
+  late final _is.ColumnSerializable<List<String>> suggestedIdeal;
 
-  late final _i1.ColumnSerializable suggestedFlaw;
+  late final _is.ColumnSerializable<List<String>> suggestedBond;
+
+  late final _is.ColumnSerializable<List<String>> suggestedFlaw;
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        name,
-        description,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-        skillProficiencies,
-        availableSkills,
-        skillCount,
-        toolProficiencyKeys,
-        languageCount,
-        items,
-        coins,
-        feature,
-        suggestedPersonality,
-        suggestedIdeal,
-        suggestedBond,
-        suggestedFlaw,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    name,
+    description,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+    skillProficiencies,
+    availableSkills,
+    skillCount,
+    toolProficiencyKeys,
+    languageCount,
+    items,
+    coins,
+    feature,
+    suggestedPersonality,
+    suggestedIdeal,
+    suggestedBond,
+    suggestedFlaw,
+  ];
 }
 
-class BackgroundDataInclude extends _i1.IncludeObject {
+class BackgroundDataInclude extends _is.IncludeObject {
   BackgroundDataInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => BackgroundData.t;
+  _is.Table<int?> get table => BackgroundData.t;
 }
 
-class BackgroundDataIncludeList extends _i1.IncludeList {
+class BackgroundDataIncludeList extends _is.IncludeList {
   BackgroundDataIncludeList._({
-    _i1.WhereExpressionBuilder<BackgroundDataTable>? where,
+    _is.WhereExpressionBuilder<BackgroundDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -534,10 +586,10 @@ class BackgroundDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => BackgroundData.t;
+  _is.Table<int?> get table => BackgroundData.t;
 }
 
 class BackgroundDataRepository {
@@ -566,23 +618,25 @@ class BackgroundDataRepository {
   /// );
   /// ```
   Future<List<BackgroundData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<BackgroundDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<BackgroundDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<BackgroundDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<BackgroundDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<BackgroundDataTable>? orderBy,
+    _is.OrderByListBuilder<BackgroundDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<BackgroundData>(
       where: where?.call(BackgroundData.t),
       orderBy: orderBy?.call(BackgroundData.t),
       orderByList: orderByList?.call(BackgroundData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -604,33 +658,39 @@ class BackgroundDataRepository {
   /// );
   /// ```
   Future<BackgroundData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<BackgroundDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<BackgroundDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<BackgroundDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<BackgroundDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<BackgroundDataTable>? orderBy,
+    _is.OrderByListBuilder<BackgroundDataTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<BackgroundData>(
       where: where?.call(BackgroundData.t),
       orderBy: orderBy?.call(BackgroundData.t),
       orderByList: orderByList?.call(BackgroundData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [BackgroundData] by its [id] or null if no such row exists.
   Future<BackgroundData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<BackgroundData>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -640,14 +700,26 @@ class BackgroundDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BackgroundData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<BackgroundData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<BackgroundData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -655,12 +727,78 @@ class BackgroundDataRepository {
   ///
   /// The returned [BackgroundData] will have its `id` field set.
   Future<BackgroundData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     BackgroundData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<BackgroundData>(
+    return session.db.insertRow<BackgroundData>(row, transaction: transaction);
+  }
+
+  /// Upserts all [BackgroundData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [BackgroundData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<BackgroundData>> upsert(
+    _is.DatabaseSession session,
+    List<BackgroundData> rows, {
+    required _is.ColumnSelections<BackgroundDataTable> conflictColumns,
+    _is.ColumnSelections<BackgroundDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<BackgroundDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<BackgroundData>(
+      rows,
+      conflictColumns: conflictColumns(BackgroundData.t),
+      updateColumns: updateColumns?.call(BackgroundData.t),
+      updateWhere: updateWhere?.call(BackgroundData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [BackgroundData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [BackgroundData] will have its `id` field set.
+  Future<BackgroundData?> upsertRow(
+    _is.DatabaseSession session,
+    BackgroundData row, {
+    required _is.ColumnSelections<BackgroundDataTable> conflictColumns,
+    _is.ColumnSelections<BackgroundDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<BackgroundDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<BackgroundData>(
       row,
+      conflictColumns: conflictColumns(BackgroundData.t),
+      updateColumns: updateColumns?.call(BackgroundData.t),
+      updateWhere: updateWhere?.call(BackgroundData.t),
       transaction: transaction,
     );
   }
@@ -670,16 +808,22 @@ class BackgroundDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BackgroundData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<BackgroundData> rows, {
-    _i1.ColumnSelections<BackgroundDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<BackgroundDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<BackgroundData>(
       rows,
       columns: columns?.call(BackgroundData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -687,10 +831,10 @@ class BackgroundDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<BackgroundData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     BackgroundData row, {
-    _i1.ColumnSelections<BackgroundDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<BackgroundDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<BackgroundData>(
       row,
@@ -699,55 +843,139 @@ class BackgroundDataRepository {
     );
   }
 
+  /// Updates a single [BackgroundData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<BackgroundData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<BackgroundDataUpdateTable> columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<BackgroundData>(
+      id,
+      columnValues: columnValues(BackgroundData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [BackgroundData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<BackgroundData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<BackgroundDataUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<BackgroundDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<BackgroundDataTable>? orderBy,
+    _is.OrderByListBuilder<BackgroundDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<BackgroundData>(
+      columnValues: columnValues(BackgroundData.t.updateTable),
+      where: where(BackgroundData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(BackgroundData.t),
+      orderByList: orderByList?.call(BackgroundData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [BackgroundData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BackgroundData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<BackgroundData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<BackgroundDataTable>? orderBy,
+    _is.OrderByListBuilder<BackgroundDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<BackgroundData>(
       rows,
+      orderBy: orderBy?.call(BackgroundData.t),
+      orderByList: orderByList?.call(BackgroundData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [BackgroundData].
   Future<BackgroundData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     BackgroundData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<BackgroundData>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<BackgroundData>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BackgroundData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<BackgroundDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<BackgroundDataTable> where,
+    _is.OrderByBuilder<BackgroundDataTable>? orderBy,
+    _is.OrderByListBuilder<BackgroundDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<BackgroundData>(
       where: where(BackgroundData.t),
+      orderBy: orderBy?.call(BackgroundData.t),
+      orderByList: orderByList?.call(BackgroundData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<BackgroundDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<BackgroundDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<BackgroundData>(
       where: where?.call(BackgroundData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [BackgroundData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<BackgroundDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<BackgroundData>(
+      where: where(BackgroundData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

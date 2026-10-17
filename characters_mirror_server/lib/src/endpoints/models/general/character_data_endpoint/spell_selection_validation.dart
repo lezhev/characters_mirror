@@ -163,7 +163,8 @@ Future<void> _validateSpellSelectionFilters(
         if (selection.selectionFilter != null &&
             persisted == null &&
             _spellProvenanceJson(selection.selectionFilter!.toJson()) !=
-                _spellProvenanceJson(effectiveFilter ?? <String, dynamic>{})) {
+                _spellProvenanceJson(
+                    effectiveFilter ?? SpellSelectionFilterData().toJson())) {
           throw InputValidationException(
               'spellSelections', 'Spell selection rule is not canonical.');
         }
@@ -175,7 +176,7 @@ Future<void> _validateSpellSelectionFilters(
         }
         spells.add({
           ...spell.toJson(),
-          if (origin != null) 'selectionUnrestricted': origin,
+          'selectionUnrestricted': ?origin,
         });
       }
       if (!spellSelectionsMatchFilter(spells, effectiveFilter,

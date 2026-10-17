@@ -17,7 +17,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/create/race',
-          builder: (_, __) => ValueListenableBuilder<bool>(
+          builder: (_, _) => ValueListenableBuilder<bool>(
             valueListenable: isLoaded,
             builder: (context, loaded, _) => loaded
                 ? CreationSelectionStepScaffold(

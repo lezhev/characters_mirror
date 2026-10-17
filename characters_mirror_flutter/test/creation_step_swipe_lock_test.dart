@@ -18,15 +18,15 @@ void main() {
       routes: [
         GoRoute(
           path: '/create/background',
-          builder: (_, __) => const Scaffold(body: Text('background route')),
+          builder: (_, _) => const Scaffold(body: Text('background route')),
         ),
         GoRoute(
           path: '/create/attributes',
-          builder: (_, __) => const AttributesStep(),
+          builder: (_, _) => const AttributesStep(),
         ),
         GoRoute(
           path: '/create/personal',
-          builder: (_, __) => const Scaffold(body: Text('personal route')),
+          builder: (_, _) => const Scaffold(body: Text('personal route')),
         ),
       ],
     );

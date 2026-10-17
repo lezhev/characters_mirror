@@ -43,16 +43,16 @@ class StartingEquipmentSection extends ConsumerWidget {
     }
     final catalogLabels = <EquipmentCatalogType, Map<String, String>>{
       EquipmentCatalogType.weapon: buildStartingEquipmentWeaponLabels(
-        ref.watch(weaponCatalogProvider).valueOrNull ?? const <WeaponData>[],
+        ref.watch(weaponCatalogProvider).value ?? const <WeaponData>[],
       ),
       EquipmentCatalogType.armor: buildStartingEquipmentArmorLabels(
-        ref.watch(armorCatalogProvider).valueOrNull ?? const <ArmorData>[],
+        ref.watch(armorCatalogProvider).value ?? const <ArmorData>[],
       ),
       EquipmentCatalogType.item: buildStartingEquipmentItemLabels(
-        ref.watch(itemCatalogProvider).valueOrNull ?? const <ItemData>[],
+        ref.watch(itemCatalogProvider).value ?? const <ItemData>[],
       ),
       EquipmentCatalogType.tool: buildStartingEquipmentToolLabels(
-        ref.watch(toolCatalogProvider).valueOrNull ?? const <ToolData>[],
+        ref.watch(toolCatalogProvider).value ?? const <ToolData>[],
       ),
     };
     final orderedBlocks = _orderedStartingEquipmentBlocks(blocks);

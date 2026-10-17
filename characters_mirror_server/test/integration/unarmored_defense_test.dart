@@ -12,11 +12,11 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Data-driven armor class', (sessions, endpoints) {
     final owner = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(978, <Scope>{}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (978).toString(), <Scope>{}));
     final admin = sessions.copyWith(
-        authentication:
-            AuthenticationOverride.authenticationInfo(979, {Scope('admin')}));
+        authentication: AuthenticationOverride.authenticationInfo(
+            (979).toString(), {Scope('admin')}));
 
     test(
         'reference import retains ability terms and validates formula metadata',
@@ -296,5 +296,7 @@ void main() {
         await session.close();
       }
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

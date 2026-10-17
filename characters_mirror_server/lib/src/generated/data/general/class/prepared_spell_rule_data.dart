@@ -7,14 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/ability.dart' as _i2;
-import '../../../enums/prepared_spell_rounding.dart' as _i3;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../enums/ability.dart' as _iw3bk51e;
+import '../../../enums/prepared_spell_rounding.dart' as _ivj7epzb;
 
 abstract class PreparedSpellRuleData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   PreparedSpellRuleData._({
     required this.ability,
     int? classLevelNumerator,
@@ -22,40 +23,44 @@ abstract class PreparedSpellRuleData
     required this.rounding,
     int? flatBonus,
     int? minimum,
-  })  : classLevelNumerator = classLevelNumerator ?? 1,
-        classLevelDenominator = classLevelDenominator ?? 1,
-        flatBonus = flatBonus ?? 0,
-        minimum = minimum ?? 1;
+  }) : classLevelNumerator = classLevelNumerator ?? 1,
+       classLevelDenominator = classLevelDenominator ?? 1,
+       flatBonus = flatBonus ?? 0,
+       minimum = minimum ?? 1;
 
   factory PreparedSpellRuleData({
-    required _i2.Ability ability,
+    required _iw3bk51e.Ability ability,
     int? classLevelNumerator,
     int? classLevelDenominator,
-    required _i3.PreparedSpellRounding rounding,
+    required _ivj7epzb.PreparedSpellRounding rounding,
     int? flatBonus,
     int? minimum,
   }) = _PreparedSpellRuleDataImpl;
 
   factory PreparedSpellRuleData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return PreparedSpellRuleData(
-      ability: _i2.Ability.fromJson((jsonSerialization['ability'] as String)),
-      classLevelNumerator: jsonSerialization['classLevelNumerator'] as int,
-      classLevelDenominator: jsonSerialization['classLevelDenominator'] as int,
-      rounding: _i3.PreparedSpellRounding.fromJson(
-          (jsonSerialization['rounding'] as String)),
-      flatBonus: jsonSerialization['flatBonus'] as int,
-      minimum: jsonSerialization['minimum'] as int,
+      ability: _iw3bk51e.Ability.fromJson(
+        (jsonSerialization['ability'] as String),
+      ),
+      classLevelNumerator: jsonSerialization['classLevelNumerator'] as int?,
+      classLevelDenominator: jsonSerialization['classLevelDenominator'] as int?,
+      rounding: _ivj7epzb.PreparedSpellRounding.fromJson(
+        (jsonSerialization['rounding'] as String),
+      ),
+      flatBonus: jsonSerialization['flatBonus'] as int?,
+      minimum: jsonSerialization['minimum'] as int?,
     );
   }
 
-  _i2.Ability ability;
+  _iw3bk51e.Ability ability;
 
   int classLevelNumerator;
 
   int classLevelDenominator;
 
-  _i3.PreparedSpellRounding rounding;
+  _ivj7epzb.PreparedSpellRounding rounding;
 
   int flatBonus;
 
@@ -63,18 +68,19 @@ abstract class PreparedSpellRuleData
 
   /// Returns a shallow copy of this [PreparedSpellRuleData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   PreparedSpellRuleData copyWith({
-    _i2.Ability? ability,
+    _iw3bk51e.Ability? ability,
     int? classLevelNumerator,
     int? classLevelDenominator,
-    _i3.PreparedSpellRounding? rounding,
+    _ivj7epzb.PreparedSpellRounding? rounding,
     int? flatBonus,
     int? minimum,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'PreparedSpellRuleData',
       'ability': ability.toJson(),
       'classLevelNumerator': classLevelNumerator,
       'classLevelDenominator': classLevelDenominator,
@@ -87,6 +93,7 @@ abstract class PreparedSpellRuleData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'PreparedSpellRuleData',
       'ability': ability.toJson(),
       'classLevelNumerator': classLevelNumerator,
       'classLevelDenominator': classLevelDenominator,
@@ -98,36 +105,36 @@ abstract class PreparedSpellRuleData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
 class _PreparedSpellRuleDataImpl extends PreparedSpellRuleData {
   _PreparedSpellRuleDataImpl({
-    required _i2.Ability ability,
+    required _iw3bk51e.Ability ability,
     int? classLevelNumerator,
     int? classLevelDenominator,
-    required _i3.PreparedSpellRounding rounding,
+    required _ivj7epzb.PreparedSpellRounding rounding,
     int? flatBonus,
     int? minimum,
   }) : super._(
-          ability: ability,
-          classLevelNumerator: classLevelNumerator,
-          classLevelDenominator: classLevelDenominator,
-          rounding: rounding,
-          flatBonus: flatBonus,
-          minimum: minimum,
-        );
+         ability: ability,
+         classLevelNumerator: classLevelNumerator,
+         classLevelDenominator: classLevelDenominator,
+         rounding: rounding,
+         flatBonus: flatBonus,
+         minimum: minimum,
+       );
 
   /// Returns a shallow copy of this [PreparedSpellRuleData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   PreparedSpellRuleData copyWith({
-    _i2.Ability? ability,
+    _iw3bk51e.Ability? ability,
     int? classLevelNumerator,
     int? classLevelDenominator,
-    _i3.PreparedSpellRounding? rounding,
+    _ivj7epzb.PreparedSpellRounding? rounding,
     int? flatBonus,
     int? minimum,
   }) {

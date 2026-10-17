@@ -7,20 +7,22 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../data/general/class/class_data.dart' as _i2;
-import '../../../data/background_data.dart' as _i3;
-import '../../../enums/starting_equipment_entry_kind.dart' as _i4;
-import '../../../enums/starting_equipment_line_kind.dart' as _i5;
-import '../../../enums/equipment_catalog_type.dart' as _i6;
-import '../../../enums/weapon_category.dart' as _i7;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/background_data.dart' as _i1utzyju;
+import '../../../data/general/class/class_data.dart' as _i7s9vfyh;
+import '../../../enums/equipment_catalog_type.dart' as _i5zaboz2;
+import '../../../enums/starting_equipment_entry_kind.dart' as _ibdnjdmg;
+import '../../../enums/starting_equipment_line_kind.dart' as _iupdx0br;
+import '../../../enums/weapon_category.dart' as _ibtz7e0l;
 
 abstract class StartingEquipmentEntryData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   StartingEquipmentEntryData._({
     this.id,
     this.sourceClassId,
@@ -46,18 +48,18 @@ abstract class StartingEquipmentEntryData
   factory StartingEquipmentEntryData({
     int? id,
     int? sourceClassId,
-    _i2.ClassData? sourceClass,
+    _i7s9vfyh.ClassData? sourceClass,
     int? sourceBackgroundId,
-    _i3.BackgroundData? sourceBackground,
+    _i1utzyju.BackgroundData? sourceBackground,
     int? parentEntryId,
-    _i4.StartingEquipmentEntryKind? kind,
+    _ibdnjdmg.StartingEquipmentEntryKind? kind,
     int? orderIndex,
     int? selectionCount,
-    _i5.StartingEquipmentLineKind? lineKind,
+    _iupdx0br.StartingEquipmentLineKind? lineKind,
     int? quantity,
-    _i6.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
-    List<_i7.WeaponCategory>? allowedWeaponCategories,
+    List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories,
     List<String>? allowedItemCategories,
     String? source,
     int? version,
@@ -66,52 +68,61 @@ abstract class StartingEquipmentEntryData
   }) = _StartingEquipmentEntryDataImpl;
 
   factory StartingEquipmentEntryData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return StartingEquipmentEntryData(
       id: jsonSerialization['id'] as int?,
       sourceClassId: jsonSerialization['sourceClassId'] as int?,
       sourceClass: jsonSerialization['sourceClass'] == null
           ? null
-          : _i2.ClassData.fromJson(
-              (jsonSerialization['sourceClass'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i7s9vfyh.ClassData>(
+              jsonSerialization['sourceClass'],
+            ),
       sourceBackgroundId: jsonSerialization['sourceBackgroundId'] as int?,
       sourceBackground: jsonSerialization['sourceBackground'] == null
           ? null
-          : _i3.BackgroundData.fromJson(
-              (jsonSerialization['sourceBackground'] as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol().deserialize<_i1utzyju.BackgroundData>(
+              jsonSerialization['sourceBackground'],
+            ),
       parentEntryId: jsonSerialization['parentEntryId'] as int?,
       kind: jsonSerialization['kind'] == null
           ? null
-          : _i4.StartingEquipmentEntryKind.fromJson(
-              (jsonSerialization['kind'] as String)),
+          : _ibdnjdmg.StartingEquipmentEntryKind.fromJson(
+              (jsonSerialization['kind'] as String),
+            ),
       orderIndex: jsonSerialization['orderIndex'] as int?,
       selectionCount: jsonSerialization['selectionCount'] as int?,
       lineKind: jsonSerialization['lineKind'] == null
           ? null
-          : _i5.StartingEquipmentLineKind.fromJson(
-              (jsonSerialization['lineKind'] as String)),
+          : _iupdx0br.StartingEquipmentLineKind.fromJson(
+              (jsonSerialization['lineKind'] as String),
+            ),
       quantity: jsonSerialization['quantity'] as int?,
       catalogType: jsonSerialization['catalogType'] == null
           ? null
-          : _i6.EquipmentCatalogType.fromJson(
-              (jsonSerialization['catalogType'] as String)),
+          : _i5zaboz2.EquipmentCatalogType.fromJson(
+              (jsonSerialization['catalogType'] as String),
+            ),
       referenceKey: jsonSerialization['referenceKey'] as String?,
       allowedWeaponCategories:
-          (jsonSerialization['allowedWeaponCategories'] as List?)
-              ?.map((e) => _i7.WeaponCategory.fromJson((e as String)))
-              .toList(),
-      allowedItemCategories:
-          (jsonSerialization['allowedItemCategories'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
+          jsonSerialization['allowedWeaponCategories'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ibtz7e0l.WeaponCategory>>(
+              jsonSerialization['allowedWeaponCategories'],
+            ),
+      allowedItemCategories: jsonSerialization['allowedItemCategories'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['allowedItemCategories'],
+            ),
       source: jsonSerialization['source'] as String?,
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
     );
   }
 
@@ -124,29 +135,29 @@ abstract class StartingEquipmentEntryData
 
   int? sourceClassId;
 
-  _i2.ClassData? sourceClass;
+  _i7s9vfyh.ClassData? sourceClass;
 
   int? sourceBackgroundId;
 
-  _i3.BackgroundData? sourceBackground;
+  _i1utzyju.BackgroundData? sourceBackground;
 
   int? parentEntryId;
 
-  _i4.StartingEquipmentEntryKind? kind;
+  _ibdnjdmg.StartingEquipmentEntryKind? kind;
 
   int? orderIndex;
 
   int? selectionCount;
 
-  _i5.StartingEquipmentLineKind? lineKind;
+  _iupdx0br.StartingEquipmentLineKind? lineKind;
 
   int? quantity;
 
-  _i6.EquipmentCatalogType? catalogType;
+  _i5zaboz2.EquipmentCatalogType? catalogType;
 
   String? referenceKey;
 
-  List<_i7.WeaponCategory>? allowedWeaponCategories;
+  List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories;
 
   List<String>? allowedItemCategories;
 
@@ -159,26 +170,26 @@ abstract class StartingEquipmentEntryData
   DateTime? updatedAt;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [StartingEquipmentEntryData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   StartingEquipmentEntryData copyWith({
     int? id,
     int? sourceClassId,
-    _i2.ClassData? sourceClass,
+    _i7s9vfyh.ClassData? sourceClass,
     int? sourceBackgroundId,
-    _i3.BackgroundData? sourceBackground,
+    _i1utzyju.BackgroundData? sourceBackground,
     int? parentEntryId,
-    _i4.StartingEquipmentEntryKind? kind,
+    _ibdnjdmg.StartingEquipmentEntryKind? kind,
     int? orderIndex,
     int? selectionCount,
-    _i5.StartingEquipmentLineKind? lineKind,
+    _iupdx0br.StartingEquipmentLineKind? lineKind,
     int? quantity,
-    _i6.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
-    List<_i7.WeaponCategory>? allowedWeaponCategories,
+    List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories,
     List<String>? allowedItemCategories,
     String? source,
     int? version,
@@ -188,6 +199,7 @@ abstract class StartingEquipmentEntryData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StartingEquipmentEntryData',
       if (id != null) 'id': id,
       if (sourceClassId != null) 'sourceClassId': sourceClassId,
       if (sourceClass != null) 'sourceClass': sourceClass?.toJson(),
@@ -203,8 +215,9 @@ abstract class StartingEquipmentEntryData
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (allowedWeaponCategories != null)
-        'allowedWeaponCategories':
-            allowedWeaponCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'allowedWeaponCategories': allowedWeaponCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (allowedItemCategories != null)
         'allowedItemCategories': allowedItemCategories?.toJson(),
       if (source != null) 'source': source,
@@ -217,6 +230,7 @@ abstract class StartingEquipmentEntryData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StartingEquipmentEntryData',
       if (id != null) 'id': id,
       if (sourceClassId != null) 'sourceClassId': sourceClassId,
       if (sourceClass != null) 'sourceClass': sourceClass?.toJsonForProtocol(),
@@ -232,8 +246,9 @@ abstract class StartingEquipmentEntryData
       if (catalogType != null) 'catalogType': catalogType?.toJson(),
       if (referenceKey != null) 'referenceKey': referenceKey,
       if (allowedWeaponCategories != null)
-        'allowedWeaponCategories':
-            allowedWeaponCategories?.toJson(valueToJson: (v) => v.toJson()),
+        'allowedWeaponCategories': allowedWeaponCategories?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (allowedItemCategories != null)
         'allowedItemCategories': allowedItemCategories?.toJson(),
       if (source != null) 'source': source,
@@ -244,8 +259,8 @@ abstract class StartingEquipmentEntryData
   }
 
   static StartingEquipmentEntryDataInclude include({
-    _i2.ClassDataInclude? sourceClass,
-    _i3.BackgroundDataInclude? sourceBackground,
+    _i7s9vfyh.ClassDataInclude? sourceClass,
+    _i1utzyju.BackgroundDataInclude? sourceBackground,
   }) {
     return StartingEquipmentEntryDataInclude._(
       sourceClass: sourceClass,
@@ -254,12 +269,11 @@ abstract class StartingEquipmentEntryData
   }
 
   static StartingEquipmentEntryDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
+    _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
+    _is.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
+    _is.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
     StartingEquipmentEntryDataInclude? include,
   }) {
     return StartingEquipmentEntryDataIncludeList._(
@@ -267,7 +281,6 @@ abstract class StartingEquipmentEntryData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(StartingEquipmentEntryData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(StartingEquipmentEntryData.t),
       include: include,
     );
@@ -275,7 +288,7 @@ abstract class StartingEquipmentEntryData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -285,48 +298,48 @@ class _StartingEquipmentEntryDataImpl extends StartingEquipmentEntryData {
   _StartingEquipmentEntryDataImpl({
     int? id,
     int? sourceClassId,
-    _i2.ClassData? sourceClass,
+    _i7s9vfyh.ClassData? sourceClass,
     int? sourceBackgroundId,
-    _i3.BackgroundData? sourceBackground,
+    _i1utzyju.BackgroundData? sourceBackground,
     int? parentEntryId,
-    _i4.StartingEquipmentEntryKind? kind,
+    _ibdnjdmg.StartingEquipmentEntryKind? kind,
     int? orderIndex,
     int? selectionCount,
-    _i5.StartingEquipmentLineKind? lineKind,
+    _iupdx0br.StartingEquipmentLineKind? lineKind,
     int? quantity,
-    _i6.EquipmentCatalogType? catalogType,
+    _i5zaboz2.EquipmentCatalogType? catalogType,
     String? referenceKey,
-    List<_i7.WeaponCategory>? allowedWeaponCategories,
+    List<_ibtz7e0l.WeaponCategory>? allowedWeaponCategories,
     List<String>? allowedItemCategories,
     String? source,
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) : super._(
-          id: id,
-          sourceClassId: sourceClassId,
-          sourceClass: sourceClass,
-          sourceBackgroundId: sourceBackgroundId,
-          sourceBackground: sourceBackground,
-          parentEntryId: parentEntryId,
-          kind: kind,
-          orderIndex: orderIndex,
-          selectionCount: selectionCount,
-          lineKind: lineKind,
-          quantity: quantity,
-          catalogType: catalogType,
-          referenceKey: referenceKey,
-          allowedWeaponCategories: allowedWeaponCategories,
-          allowedItemCategories: allowedItemCategories,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+         id: id,
+         sourceClassId: sourceClassId,
+         sourceClass: sourceClass,
+         sourceBackgroundId: sourceBackgroundId,
+         sourceBackground: sourceBackground,
+         parentEntryId: parentEntryId,
+         kind: kind,
+         orderIndex: orderIndex,
+         selectionCount: selectionCount,
+         lineKind: lineKind,
+         quantity: quantity,
+         catalogType: catalogType,
+         referenceKey: referenceKey,
+         allowedWeaponCategories: allowedWeaponCategories,
+         allowedItemCategories: allowedItemCategories,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+       );
 
   /// Returns a shallow copy of this [StartingEquipmentEntryData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   StartingEquipmentEntryData copyWith({
     Object? id = _Undefined,
@@ -352,31 +365,33 @@ class _StartingEquipmentEntryDataImpl extends StartingEquipmentEntryData {
     return StartingEquipmentEntryData(
       id: id is int? ? id : this.id,
       sourceClassId: sourceClassId is int? ? sourceClassId : this.sourceClassId,
-      sourceClass: sourceClass is _i2.ClassData?
+      sourceClass: sourceClass is _i7s9vfyh.ClassData?
           ? sourceClass
           : this.sourceClass?.copyWith(),
       sourceBackgroundId: sourceBackgroundId is int?
           ? sourceBackgroundId
           : this.sourceBackgroundId,
-      sourceBackground: sourceBackground is _i3.BackgroundData?
+      sourceBackground: sourceBackground is _i1utzyju.BackgroundData?
           ? sourceBackground
           : this.sourceBackground?.copyWith(),
       parentEntryId: parentEntryId is int? ? parentEntryId : this.parentEntryId,
-      kind: kind is _i4.StartingEquipmentEntryKind? ? kind : this.kind,
+      kind: kind is _ibdnjdmg.StartingEquipmentEntryKind? ? kind : this.kind,
       orderIndex: orderIndex is int? ? orderIndex : this.orderIndex,
-      selectionCount:
-          selectionCount is int? ? selectionCount : this.selectionCount,
-      lineKind:
-          lineKind is _i5.StartingEquipmentLineKind? ? lineKind : this.lineKind,
+      selectionCount: selectionCount is int?
+          ? selectionCount
+          : this.selectionCount,
+      lineKind: lineKind is _iupdx0br.StartingEquipmentLineKind?
+          ? lineKind
+          : this.lineKind,
       quantity: quantity is int? ? quantity : this.quantity,
-      catalogType: catalogType is _i6.EquipmentCatalogType?
+      catalogType: catalogType is _i5zaboz2.EquipmentCatalogType?
           ? catalogType
           : this.catalogType,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
       allowedWeaponCategories:
-          allowedWeaponCategories is List<_i7.WeaponCategory>?
-              ? allowedWeaponCategories
-              : this.allowedWeaponCategories?.map((e0) => e0).toList(),
+          allowedWeaponCategories is List<_ibtz7e0l.WeaponCategory>?
+          ? allowedWeaponCategories
+          : this.allowedWeaponCategories?.map((e0) => e0).toList(),
       allowedItemCategories: allowedItemCategories is List<String>?
           ? allowedItemCategories
           : this.allowedItemCategories?.map((e0) => e0).toList(),
@@ -388,163 +403,197 @@ class _StartingEquipmentEntryDataImpl extends StartingEquipmentEntryData {
   }
 }
 
-class StartingEquipmentEntryDataTable extends _i1.Table<int?> {
+class StartingEquipmentEntryDataUpdateTable
+    extends _is.UpdateTable<StartingEquipmentEntryDataTable> {
+  StartingEquipmentEntryDataUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> sourceClassId(int? value) =>
+      _is.ColumnValue(table.sourceClassId, value);
+
+  _is.ColumnValue<int, int> sourceBackgroundId(int? value) =>
+      _is.ColumnValue(table.sourceBackgroundId, value);
+
+  _is.ColumnValue<int, int> parentEntryId(int? value) =>
+      _is.ColumnValue(table.parentEntryId, value);
+
+  _is.ColumnValue<
+    _ibdnjdmg.StartingEquipmentEntryKind,
+    _ibdnjdmg.StartingEquipmentEntryKind
+  >
+  kind(_ibdnjdmg.StartingEquipmentEntryKind? value) =>
+      _is.ColumnValue(table.kind, value);
+
+  _is.ColumnValue<int, int> orderIndex(int? value) =>
+      _is.ColumnValue(table.orderIndex, value);
+
+  _is.ColumnValue<int, int> selectionCount(int? value) =>
+      _is.ColumnValue(table.selectionCount, value);
+
+  _is.ColumnValue<
+    _iupdx0br.StartingEquipmentLineKind,
+    _iupdx0br.StartingEquipmentLineKind
+  >
+  lineKind(_iupdx0br.StartingEquipmentLineKind? value) =>
+      _is.ColumnValue(table.lineKind, value);
+
+  _is.ColumnValue<int, int> quantity(int? value) =>
+      _is.ColumnValue(table.quantity, value);
+
+  _is.ColumnValue<
+    _i5zaboz2.EquipmentCatalogType,
+    _i5zaboz2.EquipmentCatalogType
+  >
+  catalogType(_i5zaboz2.EquipmentCatalogType? value) =>
+      _is.ColumnValue(table.catalogType, value);
+
+  _is.ColumnValue<String, String> referenceKey(String? value) =>
+      _is.ColumnValue(table.referenceKey, value);
+
+  _is.ColumnValue<
+    List<_ibtz7e0l.WeaponCategory>,
+    List<_ibtz7e0l.WeaponCategory>
+  >
+  allowedWeaponCategories(List<_ibtz7e0l.WeaponCategory>? value) =>
+      _is.ColumnValue(table.allowedWeaponCategories, value);
+
+  _is.ColumnValue<List<String>, List<String>> allowedItemCategories(
+    List<String>? value,
+  ) => _is.ColumnValue(table.allowedItemCategories, value);
+
+  _is.ColumnValue<String, String> source(String? value) =>
+      _is.ColumnValue(table.source, value);
+
+  _is.ColumnValue<int, int> version(int? value) =>
+      _is.ColumnValue(table.version, value);
+
+  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime? value) =>
+      _is.ColumnValue(table.createdAt, value);
+
+  _is.ColumnValue<DateTime, DateTime> updatedAt(DateTime? value) =>
+      _is.ColumnValue(table.updatedAt, value);
+}
+
+class StartingEquipmentEntryDataTable extends _is.Table<int?> {
   StartingEquipmentEntryDataTable({super.tableRelation})
-      : super(tableName: 'starting_equipment_entry_data') {
-    sourceClassId = _i1.ColumnInt(
-      'sourceClassId',
-      this,
-    );
-    sourceBackgroundId = _i1.ColumnInt(
-      'sourceBackgroundId',
-      this,
-    );
-    parentEntryId = _i1.ColumnInt(
-      'parentEntryId',
-      this,
-    );
-    kind = _i1.ColumnEnum(
-      'kind',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    orderIndex = _i1.ColumnInt(
-      'orderIndex',
-      this,
-    );
-    selectionCount = _i1.ColumnInt(
-      'selectionCount',
-      this,
-    );
-    lineKind = _i1.ColumnEnum(
-      'lineKind',
-      this,
-      _i1.EnumSerialization.byName,
-    );
-    quantity = _i1.ColumnInt(
-      'quantity',
-      this,
-    );
-    catalogType = _i1.ColumnEnum(
+    : super(tableName: 'starting_equipment_entry_data') {
+    updateTable = StartingEquipmentEntryDataUpdateTable(this);
+    sourceClassId = _is.ColumnInt('sourceClassId', this);
+    sourceBackgroundId = _is.ColumnInt('sourceBackgroundId', this);
+    parentEntryId = _is.ColumnInt('parentEntryId', this);
+    kind = _is.ColumnEnum('kind', this, _is.EnumSerialization.byName);
+    orderIndex = _is.ColumnInt('orderIndex', this);
+    selectionCount = _is.ColumnInt('selectionCount', this);
+    lineKind = _is.ColumnEnum('lineKind', this, _is.EnumSerialization.byName);
+    quantity = _is.ColumnInt('quantity', this);
+    catalogType = _is.ColumnEnum(
       'catalogType',
       this,
-      _i1.EnumSerialization.byName,
+      _is.EnumSerialization.byName,
     );
-    referenceKey = _i1.ColumnString(
-      'referenceKey',
-      this,
-    );
-    allowedWeaponCategories = _i1.ColumnSerializable(
-      'allowedWeaponCategories',
-      this,
-    );
-    allowedItemCategories = _i1.ColumnSerializable(
+    referenceKey = _is.ColumnString('referenceKey', this);
+    allowedWeaponCategories =
+        _is.ColumnSerializable<List<_ibtz7e0l.WeaponCategory>>(
+          'allowedWeaponCategories',
+          this,
+        );
+    allowedItemCategories = _is.ColumnSerializable<List<String>>(
       'allowedItemCategories',
       this,
     );
-    source = _i1.ColumnString(
-      'source',
-      this,
-    );
-    version = _i1.ColumnInt(
-      'version',
-      this,
-    );
-    createdAt = _i1.ColumnDateTime(
-      'createdAt',
-      this,
-    );
-    updatedAt = _i1.ColumnDateTime(
-      'updatedAt',
-      this,
-    );
+    source = _is.ColumnString('source', this);
+    version = _is.ColumnInt('version', this);
+    createdAt = _is.ColumnDateTime('createdAt', this);
+    updatedAt = _is.ColumnDateTime('updatedAt', this);
   }
 
-  late final _i1.ColumnInt sourceClassId;
+  late final StartingEquipmentEntryDataUpdateTable updateTable;
 
-  _i2.ClassDataTable? _sourceClass;
+  late final _is.ColumnInt sourceClassId;
 
-  late final _i1.ColumnInt sourceBackgroundId;
+  _i7s9vfyh.ClassDataTable? _sourceClass;
 
-  _i3.BackgroundDataTable? _sourceBackground;
+  late final _is.ColumnInt sourceBackgroundId;
 
-  late final _i1.ColumnInt parentEntryId;
+  _i1utzyju.BackgroundDataTable? _sourceBackground;
 
-  late final _i1.ColumnEnum<_i4.StartingEquipmentEntryKind> kind;
+  late final _is.ColumnInt parentEntryId;
 
-  late final _i1.ColumnInt orderIndex;
+  late final _is.ColumnEnum<_ibdnjdmg.StartingEquipmentEntryKind> kind;
 
-  late final _i1.ColumnInt selectionCount;
+  late final _is.ColumnInt orderIndex;
 
-  late final _i1.ColumnEnum<_i5.StartingEquipmentLineKind> lineKind;
+  late final _is.ColumnInt selectionCount;
 
-  late final _i1.ColumnInt quantity;
+  late final _is.ColumnEnum<_iupdx0br.StartingEquipmentLineKind> lineKind;
 
-  late final _i1.ColumnEnum<_i6.EquipmentCatalogType> catalogType;
+  late final _is.ColumnInt quantity;
 
-  late final _i1.ColumnString referenceKey;
+  late final _is.ColumnEnum<_i5zaboz2.EquipmentCatalogType> catalogType;
 
-  late final _i1.ColumnSerializable allowedWeaponCategories;
+  late final _is.ColumnString referenceKey;
 
-  late final _i1.ColumnSerializable allowedItemCategories;
+  late final _is.ColumnSerializable<List<_ibtz7e0l.WeaponCategory>>
+  allowedWeaponCategories;
 
-  late final _i1.ColumnString source;
+  late final _is.ColumnSerializable<List<String>> allowedItemCategories;
 
-  late final _i1.ColumnInt version;
+  late final _is.ColumnString source;
 
-  late final _i1.ColumnDateTime createdAt;
+  late final _is.ColumnInt version;
 
-  late final _i1.ColumnDateTime updatedAt;
+  late final _is.ColumnDateTime createdAt;
 
-  _i2.ClassDataTable get sourceClass {
+  late final _is.ColumnDateTime updatedAt;
+
+  _i7s9vfyh.ClassDataTable get sourceClass {
     if (_sourceClass != null) return _sourceClass!;
-    _sourceClass = _i1.createRelationTable(
+    _sourceClass = _is.createRelationTable(
       relationFieldName: 'sourceClass',
       field: StartingEquipmentEntryData.t.sourceClassId,
-      foreignField: _i2.ClassData.t.id,
+      foreignField: _i7s9vfyh.ClassData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.ClassDataTable(tableRelation: foreignTableRelation),
+          _i7s9vfyh.ClassDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceClass!;
   }
 
-  _i3.BackgroundDataTable get sourceBackground {
+  _i1utzyju.BackgroundDataTable get sourceBackground {
     if (_sourceBackground != null) return _sourceBackground!;
-    _sourceBackground = _i1.createRelationTable(
+    _sourceBackground = _is.createRelationTable(
       relationFieldName: 'sourceBackground',
       field: StartingEquipmentEntryData.t.sourceBackgroundId,
-      foreignField: _i3.BackgroundData.t.id,
+      foreignField: _i1utzyju.BackgroundData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.BackgroundDataTable(tableRelation: foreignTableRelation),
+          _i1utzyju.BackgroundDataTable(tableRelation: foreignTableRelation),
     );
     return _sourceBackground!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        sourceClassId,
-        sourceBackgroundId,
-        parentEntryId,
-        kind,
-        orderIndex,
-        selectionCount,
-        lineKind,
-        quantity,
-        catalogType,
-        referenceKey,
-        allowedWeaponCategories,
-        allowedItemCategories,
-        source,
-        version,
-        createdAt,
-        updatedAt,
-      ];
+  List<_is.Column> get columns => [
+    id,
+    sourceClassId,
+    sourceBackgroundId,
+    parentEntryId,
+    kind,
+    orderIndex,
+    selectionCount,
+    lineKind,
+    quantity,
+    catalogType,
+    referenceKey,
+    allowedWeaponCategories,
+    allowedItemCategories,
+    source,
+    version,
+    createdAt,
+    updatedAt,
+  ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'sourceClass') {
       return sourceClass;
     }
@@ -555,36 +604,35 @@ class StartingEquipmentEntryDataTable extends _i1.Table<int?> {
   }
 }
 
-class StartingEquipmentEntryDataInclude extends _i1.IncludeObject {
+class StartingEquipmentEntryDataInclude extends _is.IncludeObject {
   StartingEquipmentEntryDataInclude._({
-    _i2.ClassDataInclude? sourceClass,
-    _i3.BackgroundDataInclude? sourceBackground,
+    _i7s9vfyh.ClassDataInclude? sourceClass,
+    _i1utzyju.BackgroundDataInclude? sourceBackground,
   }) {
     _sourceClass = sourceClass;
     _sourceBackground = sourceBackground;
   }
 
-  _i2.ClassDataInclude? _sourceClass;
+  _i7s9vfyh.ClassDataInclude? _sourceClass;
 
-  _i3.BackgroundDataInclude? _sourceBackground;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-        'sourceClass': _sourceClass,
-        'sourceBackground': _sourceBackground,
-      };
+  _i1utzyju.BackgroundDataInclude? _sourceBackground;
 
   @override
-  _i1.Table<int?> get table => StartingEquipmentEntryData.t;
+  Map<String, _is.Include?> get includes => {
+    'sourceClass': _sourceClass,
+    'sourceBackground': _sourceBackground,
+  };
+
+  @override
+  _is.Table<int?> get table => StartingEquipmentEntryData.t;
 }
 
-class StartingEquipmentEntryDataIncludeList extends _i1.IncludeList {
+class StartingEquipmentEntryDataIncludeList extends _is.IncludeList {
   StartingEquipmentEntryDataIncludeList._({
-    _i1.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
+    _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -592,10 +640,10 @@ class StartingEquipmentEntryDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => StartingEquipmentEntryData.t;
+  _is.Table<int?> get table => StartingEquipmentEntryData.t;
 }
 
 class StartingEquipmentEntryDataRepository {
@@ -628,25 +676,27 @@ class StartingEquipmentEntryDataRepository {
   /// );
   /// ```
   Future<List<StartingEquipmentEntryData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
+    _is.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
+    _is.Transaction? transaction,
     StartingEquipmentEntryDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<StartingEquipmentEntryData>(
       where: where?.call(StartingEquipmentEntryData.t),
       orderBy: orderBy?.call(StartingEquipmentEntryData.t),
       orderByList: orderByList?.call(StartingEquipmentEntryData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -668,37 +718,43 @@ class StartingEquipmentEntryDataRepository {
   /// );
   /// ```
   Future<StartingEquipmentEntryData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
+    _is.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
+    _is.Transaction? transaction,
     StartingEquipmentEntryDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<StartingEquipmentEntryData>(
       where: where?.call(StartingEquipmentEntryData.t),
       orderBy: orderBy?.call(StartingEquipmentEntryData.t),
       orderByList: orderByList?.call(StartingEquipmentEntryData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [StartingEquipmentEntryData] by its [id] or null if no such row exists.
   Future<StartingEquipmentEntryData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     StartingEquipmentEntryDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<StartingEquipmentEntryData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -708,14 +764,26 @@ class StartingEquipmentEntryDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StartingEquipmentEntryData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<StartingEquipmentEntryData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<StartingEquipmentEntryData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -723,12 +791,83 @@ class StartingEquipmentEntryDataRepository {
   ///
   /// The returned [StartingEquipmentEntryData] will have its `id` field set.
   Future<StartingEquipmentEntryData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     StartingEquipmentEntryData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<StartingEquipmentEntryData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [StartingEquipmentEntryData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [StartingEquipmentEntryData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<StartingEquipmentEntryData>> upsert(
+    _is.DatabaseSession session,
+    List<StartingEquipmentEntryData> rows, {
+    required _is.ColumnSelections<StartingEquipmentEntryDataTable>
+    conflictColumns,
+    _is.ColumnSelections<StartingEquipmentEntryDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<StartingEquipmentEntryData>(
+      rows,
+      conflictColumns: conflictColumns(StartingEquipmentEntryData.t),
+      updateColumns: updateColumns?.call(StartingEquipmentEntryData.t),
+      updateWhere: updateWhere?.call(StartingEquipmentEntryData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [StartingEquipmentEntryData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [StartingEquipmentEntryData] will have its `id` field set.
+  Future<StartingEquipmentEntryData?> upsertRow(
+    _is.DatabaseSession session,
+    StartingEquipmentEntryData row, {
+    required _is.ColumnSelections<StartingEquipmentEntryDataTable>
+    conflictColumns,
+    _is.ColumnSelections<StartingEquipmentEntryDataTable>? updateColumns,
+    _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<StartingEquipmentEntryData>(
+      row,
+      conflictColumns: conflictColumns(StartingEquipmentEntryData.t),
+      updateColumns: updateColumns?.call(StartingEquipmentEntryData.t),
+      updateWhere: updateWhere?.call(StartingEquipmentEntryData.t),
       transaction: transaction,
     );
   }
@@ -738,16 +877,22 @@ class StartingEquipmentEntryDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StartingEquipmentEntryData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<StartingEquipmentEntryData> rows, {
-    _i1.ColumnSelections<StartingEquipmentEntryDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<StartingEquipmentEntryDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<StartingEquipmentEntryData>(
       rows,
       columns: columns?.call(StartingEquipmentEntryData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -755,10 +900,10 @@ class StartingEquipmentEntryDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<StartingEquipmentEntryData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     StartingEquipmentEntryData row, {
-    _i1.ColumnSelections<StartingEquipmentEntryDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<StartingEquipmentEntryDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<StartingEquipmentEntryData>(
       row,
@@ -767,25 +912,85 @@ class StartingEquipmentEntryDataRepository {
     );
   }
 
+  /// Updates a single [StartingEquipmentEntryData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<StartingEquipmentEntryData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<StartingEquipmentEntryDataUpdateTable>
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<StartingEquipmentEntryData>(
+      id,
+      columnValues: columnValues(StartingEquipmentEntryData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [StartingEquipmentEntryData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<StartingEquipmentEntryData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<StartingEquipmentEntryDataUpdateTable>
+    columnValues,
+    required _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable> where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
+    _is.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<StartingEquipmentEntryData>(
+      columnValues: columnValues(StartingEquipmentEntryData.t.updateTable),
+      where: where(StartingEquipmentEntryData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(StartingEquipmentEntryData.t),
+      orderByList: orderByList?.call(StartingEquipmentEntryData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [StartingEquipmentEntryData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StartingEquipmentEntryData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<StartingEquipmentEntryData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
+    _is.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<StartingEquipmentEntryData>(
       rows,
+      orderBy: orderBy?.call(StartingEquipmentEntryData.t),
+      orderByList: orderByList?.call(StartingEquipmentEntryData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [StartingEquipmentEntryData].
   Future<StartingEquipmentEntryData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     StartingEquipmentEntryData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<StartingEquipmentEntryData>(
       row,
@@ -794,28 +999,57 @@ class StartingEquipmentEntryDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StartingEquipmentEntryData>> deleteWhere(
-    _i1.Session session, {
-    required _i1.WhereExpressionBuilder<StartingEquipmentEntryDataTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable> where,
+    _is.OrderByBuilder<StartingEquipmentEntryDataTable>? orderBy,
+    _is.OrderByListBuilder<StartingEquipmentEntryDataTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<StartingEquipmentEntryData>(
       where: where(StartingEquipmentEntryData.t),
+      orderBy: orderBy?.call(StartingEquipmentEntryData.t),
+      orderByList: orderByList?.call(StartingEquipmentEntryData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<StartingEquipmentEntryData>(
       where: where?.call(StartingEquipmentEntryData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [StartingEquipmentEntryData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<StartingEquipmentEntryDataTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<StartingEquipmentEntryData>(
+      where: where(StartingEquipmentEntryData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -827,10 +1061,10 @@ class StartingEquipmentEntryDataAttachRowRepository {
   /// Creates a relation between the given [StartingEquipmentEntryData] and [ClassData]
   /// by setting the [StartingEquipmentEntryData]'s foreign key `sourceClassId` to refer to the [ClassData].
   Future<void> sourceClass(
-    _i1.Session session,
+    _is.DatabaseSession session,
     StartingEquipmentEntryData startingEquipmentEntryData,
-    _i2.ClassData sourceClass, {
-    _i1.Transaction? transaction,
+    _i7s9vfyh.ClassData sourceClass, {
+    _is.Transaction? transaction,
   }) async {
     if (startingEquipmentEntryData.id == null) {
       throw ArgumentError.notNull('startingEquipmentEntryData.id');
@@ -839,8 +1073,9 @@ class StartingEquipmentEntryDataAttachRowRepository {
       throw ArgumentError.notNull('sourceClass.id');
     }
 
-    var $startingEquipmentEntryData =
-        startingEquipmentEntryData.copyWith(sourceClassId: sourceClass.id);
+    var $startingEquipmentEntryData = startingEquipmentEntryData.copyWith(
+      sourceClassId: sourceClass.id,
+    );
     await session.db.updateRow<StartingEquipmentEntryData>(
       $startingEquipmentEntryData,
       columns: [StartingEquipmentEntryData.t.sourceClassId],
@@ -851,10 +1086,10 @@ class StartingEquipmentEntryDataAttachRowRepository {
   /// Creates a relation between the given [StartingEquipmentEntryData] and [BackgroundData]
   /// by setting the [StartingEquipmentEntryData]'s foreign key `sourceBackgroundId` to refer to the [BackgroundData].
   Future<void> sourceBackground(
-    _i1.Session session,
+    _is.DatabaseSession session,
     StartingEquipmentEntryData startingEquipmentEntryData,
-    _i3.BackgroundData sourceBackground, {
-    _i1.Transaction? transaction,
+    _i1utzyju.BackgroundData sourceBackground, {
+    _is.Transaction? transaction,
   }) async {
     if (startingEquipmentEntryData.id == null) {
       throw ArgumentError.notNull('startingEquipmentEntryData.id');
@@ -864,7 +1099,8 @@ class StartingEquipmentEntryDataAttachRowRepository {
     }
 
     var $startingEquipmentEntryData = startingEquipmentEntryData.copyWith(
-        sourceBackgroundId: sourceBackground.id);
+      sourceBackgroundId: sourceBackground.id,
+    );
     await session.db.updateRow<StartingEquipmentEntryData>(
       $startingEquipmentEntryData,
       columns: [StartingEquipmentEntryData.t.sourceBackgroundId],
@@ -882,18 +1118,19 @@ class StartingEquipmentEntryDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceClass(
-    _i1.Session session,
-    StartingEquipmentEntryData startingequipmententrydata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    StartingEquipmentEntryData startingEquipmentEntryData, {
+    _is.Transaction? transaction,
   }) async {
-    if (startingequipmententrydata.id == null) {
-      throw ArgumentError.notNull('startingequipmententrydata.id');
+    if (startingEquipmentEntryData.id == null) {
+      throw ArgumentError.notNull('startingEquipmentEntryData.id');
     }
 
-    var $startingequipmententrydata =
-        startingequipmententrydata.copyWith(sourceClassId: null);
+    var $startingEquipmentEntryData = startingEquipmentEntryData.copyWith(
+      sourceClassId: null,
+    );
     await session.db.updateRow<StartingEquipmentEntryData>(
-      $startingequipmententrydata,
+      $startingEquipmentEntryData,
       columns: [StartingEquipmentEntryData.t.sourceClassId],
       transaction: transaction,
     );
@@ -905,18 +1142,19 @@ class StartingEquipmentEntryDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> sourceBackground(
-    _i1.Session session,
-    StartingEquipmentEntryData startingequipmententrydata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    StartingEquipmentEntryData startingEquipmentEntryData, {
+    _is.Transaction? transaction,
   }) async {
-    if (startingequipmententrydata.id == null) {
-      throw ArgumentError.notNull('startingequipmententrydata.id');
+    if (startingEquipmentEntryData.id == null) {
+      throw ArgumentError.notNull('startingEquipmentEntryData.id');
     }
 
-    var $startingequipmententrydata =
-        startingequipmententrydata.copyWith(sourceBackgroundId: null);
+    var $startingEquipmentEntryData = startingEquipmentEntryData.copyWith(
+      sourceBackgroundId: null,
+    );
     await session.db.updateRow<StartingEquipmentEntryData>(
-      $startingequipmententrydata,
+      $startingEquipmentEntryData,
       columns: [StartingEquipmentEntryData.t.sourceBackgroundId],
       transaction: transaction,
     );

@@ -1,3 +1,4 @@
 enum: CharacterEntityType
+serialized: byIndex
 values:
   - character

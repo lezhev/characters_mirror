@@ -7,34 +7,36 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
-enum CharacterSyncStatus implements _i1.SerializableModel {
+enum CharacterSyncStatus implements _is.SerializableModel {
   saved,
   deleted,
   conflict,
   notFound;
 
-  static CharacterSyncStatus fromJson(int index) {
-    switch (index) {
-      case 0:
+  static CharacterSyncStatus fromJson(String name) {
+    switch (name) {
+      case 'saved':
         return CharacterSyncStatus.saved;
-      case 1:
+      case 'deleted':
         return CharacterSyncStatus.deleted;
-      case 2:
+      case 'conflict':
         return CharacterSyncStatus.conflict;
-      case 3:
+      case 'notFound':
         return CharacterSyncStatus.notFound;
       default:
         throw ArgumentError(
-            'Value "$index" cannot be converted to "CharacterSyncStatus"');
+          'Value "$name" cannot be converted to "CharacterSyncStatus"',
+        );
     }
   }
 
   @override
-  int toJson() => index;
+  String toJson() => name;
 
   @override
   String toString() => name;

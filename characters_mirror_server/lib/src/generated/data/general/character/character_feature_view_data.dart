@@ -7,20 +7,24 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/character_feature_source_type.dart' as _i2;
-import '../../../enums/feature_tag.dart' as _i3;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
 import '../../../data/general/character/character_resource_view_data.dart'
-    as _i4;
-import '../../../views/feature_display_property_view.dart' as _i5;
-import '../../../data/general/character/related_feature_view_data.dart' as _i6;
-import '../../../views/selected_feature_choice_view.dart' as _i7;
-import '../../../data/general/feature_resource_effect_data.dart' as _i8;
+    as _iql0t5wa;
+import '../../../data/general/character/related_feature_view_data.dart'
+    as _ipb1wupa;
+import '../../../data/general/feature_resource_effect_data.dart' as _ipujnj10;
+import '../../../enums/character_feature_source_type.dart' as _ik7og9il;
+import '../../../enums/feature_tag.dart' as _ixkx8coo;
+import '../../../views/feature_display_property_view.dart' as _i4dynmv7;
+import '../../../views/selected_feature_choice_view.dart' as _irdrn251;
 
 abstract class CharacterFeatureViewData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterFeatureViewData._({
     required this.sourceType,
     required this.sourceId,
@@ -46,86 +50,106 @@ abstract class CharacterFeatureViewData
   });
 
   factory CharacterFeatureViewData({
-    required _i2.CharacterFeatureSourceType sourceType,
+    required _ik7og9il.CharacterFeatureSourceType sourceType,
     required int sourceId,
     String? sourceName,
     int? level,
     String? defaultName,
     String? defaultDescription,
-    List<_i3.FeatureTag>? defaultTags,
+    List<_ixkx8coo.FeatureTag>? defaultTags,
     String? name,
     String? description,
     String? shortDescription,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     bool? isCustomized,
-    List<_i4.CharacterResourceViewData>? resources,
-    List<_i5.FeatureDisplayPropertyView>? displayProperties,
-    List<_i6.RelatedFeatureViewData>? relatedFeatures,
-    _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
+    List<_iql0t5wa.CharacterResourceViewData>? resources,
+    List<_i4dynmv7.FeatureDisplayPropertyView>? displayProperties,
+    List<_ipb1wupa.RelatedFeatureViewData>? relatedFeatures,
+    _ik7og9il.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
     int? mergedIntoFeatureSourceId,
     List<String>? selectedChoices,
-    List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    List<_irdrn251.SelectedFeatureChoiceView>? selectedChoiceDetails,
     int? sourceClassLevel,
-    List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects,
+    List<_ipujnj10.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   }) = _CharacterFeatureViewDataImpl;
 
   factory CharacterFeatureViewData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return CharacterFeatureViewData(
-      sourceType: _i2.CharacterFeatureSourceType.fromJson(
-          (jsonSerialization['sourceType'] as String)),
+      sourceType: _ik7og9il.CharacterFeatureSourceType.fromJson(
+        (jsonSerialization['sourceType'] as String),
+      ),
       sourceId: jsonSerialization['sourceId'] as int,
       sourceName: jsonSerialization['sourceName'] as String?,
       level: jsonSerialization['level'] as int?,
       defaultName: jsonSerialization['defaultName'] as String?,
       defaultDescription: jsonSerialization['defaultDescription'] as String?,
-      defaultTags: (jsonSerialization['defaultTags'] as List?)
-          ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
-          .toList(),
+      defaultTags: jsonSerialization['defaultTags'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ixkx8coo.FeatureTag>>(
+              jsonSerialization['defaultTags'],
+            ),
       name: jsonSerialization['name'] as String?,
       description: jsonSerialization['description'] as String?,
       shortDescription: jsonSerialization['shortDescription'] as String?,
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
-          .toList(),
-      isCustomized: jsonSerialization['isCustomized'] as bool?,
-      resources: (jsonSerialization['resources'] as List?)
-          ?.map((e) => _i4.CharacterResourceViewData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      displayProperties: (jsonSerialization['displayProperties'] as List?)
-          ?.map((e) => _i5.FeatureDisplayPropertyView.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      relatedFeatures: (jsonSerialization['relatedFeatures'] as List?)
-          ?.map((e) =>
-              _i6.RelatedFeatureViewData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<_ixkx8coo.FeatureTag>>(
+              jsonSerialization['tags'],
+            ),
+      isCustomized: jsonSerialization['isCustomized'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['isCustomized']),
+      resources: jsonSerialization['resources'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_iql0t5wa.CharacterResourceViewData>>(
+                  jsonSerialization['resources'],
+                ),
+      displayProperties: jsonSerialization['displayProperties'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_i4dynmv7.FeatureDisplayPropertyView>>(
+                  jsonSerialization['displayProperties'],
+                ),
+      relatedFeatures: jsonSerialization['relatedFeatures'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ipb1wupa.RelatedFeatureViewData>>(
+                  jsonSerialization['relatedFeatures'],
+                ),
       mergedIntoFeatureSourceType:
           jsonSerialization['mergedIntoFeatureSourceType'] == null
-              ? null
-              : _i2.CharacterFeatureSourceType.fromJson(
-                  (jsonSerialization['mergedIntoFeatureSourceType'] as String)),
+          ? null
+          : _ik7og9il.CharacterFeatureSourceType.fromJson(
+              (jsonSerialization['mergedIntoFeatureSourceType'] as String),
+            ),
       mergedIntoFeatureSourceId:
           jsonSerialization['mergedIntoFeatureSourceId'] as int?,
-      selectedChoices: (jsonSerialization['selectedChoices'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
-      selectedChoiceDetails:
-          (jsonSerialization['selectedChoiceDetails'] as List?)
-              ?.map((e) => _i7.SelectedFeatureChoiceView.fromJson(
-                  (e as Map<String, dynamic>)))
-              .toList(),
+      selectedChoices: jsonSerialization['selectedChoices'] == null
+          ? null
+          : _ikmnmw29.Protocol().deserialize<List<String>>(
+              jsonSerialization['selectedChoices'],
+            ),
+      selectedChoiceDetails: jsonSerialization['selectedChoiceDetails'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_irdrn251.SelectedFeatureChoiceView>>(
+                  jsonSerialization['selectedChoiceDetails'],
+                ),
       sourceClassLevel: jsonSerialization['sourceClassLevel'] as int?,
       spellSlotRecoveryEffects:
-          (jsonSerialization['spellSlotRecoveryEffects'] as List?)
-              ?.map((e) => _i8.FeatureResourceEffectData.fromJson(
-                  (e as Map<String, dynamic>)))
-              .toList(),
+          jsonSerialization['spellSlotRecoveryEffects'] == null
+          ? null
+          : _ikmnmw29.Protocol()
+                .deserialize<List<_ipujnj10.FeatureResourceEffectData>>(
+                  jsonSerialization['spellSlotRecoveryEffects'],
+                ),
     );
   }
 
-  _i2.CharacterFeatureSourceType sourceType;
+  _ik7og9il.CharacterFeatureSourceType sourceType;
 
   int sourceId;
 
@@ -137,7 +161,7 @@ abstract class CharacterFeatureViewData
 
   String? defaultDescription;
 
-  List<_i3.FeatureTag>? defaultTags;
+  List<_ixkx8coo.FeatureTag>? defaultTags;
 
   String? name;
 
@@ -145,57 +169,58 @@ abstract class CharacterFeatureViewData
 
   String? shortDescription;
 
-  List<_i3.FeatureTag>? tags;
+  List<_ixkx8coo.FeatureTag>? tags;
 
   bool? isCustomized;
 
-  List<_i4.CharacterResourceViewData>? resources;
+  List<_iql0t5wa.CharacterResourceViewData>? resources;
 
-  List<_i5.FeatureDisplayPropertyView>? displayProperties;
+  List<_i4dynmv7.FeatureDisplayPropertyView>? displayProperties;
 
-  List<_i6.RelatedFeatureViewData>? relatedFeatures;
+  List<_ipb1wupa.RelatedFeatureViewData>? relatedFeatures;
 
-  _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType;
+  _ik7og9il.CharacterFeatureSourceType? mergedIntoFeatureSourceType;
 
   int? mergedIntoFeatureSourceId;
 
   List<String>? selectedChoices;
 
-  List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails;
+  List<_irdrn251.SelectedFeatureChoiceView>? selectedChoiceDetails;
 
   int? sourceClassLevel;
 
-  List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects;
+  List<_ipujnj10.FeatureResourceEffectData>? spellSlotRecoveryEffects;
 
   /// Returns a shallow copy of this [CharacterFeatureViewData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterFeatureViewData copyWith({
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     String? sourceName,
     int? level,
     String? defaultName,
     String? defaultDescription,
-    List<_i3.FeatureTag>? defaultTags,
+    List<_ixkx8coo.FeatureTag>? defaultTags,
     String? name,
     String? description,
     String? shortDescription,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     bool? isCustomized,
-    List<_i4.CharacterResourceViewData>? resources,
-    List<_i5.FeatureDisplayPropertyView>? displayProperties,
-    List<_i6.RelatedFeatureViewData>? relatedFeatures,
-    _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
+    List<_iql0t5wa.CharacterResourceViewData>? resources,
+    List<_i4dynmv7.FeatureDisplayPropertyView>? displayProperties,
+    List<_ipb1wupa.RelatedFeatureViewData>? relatedFeatures,
+    _ik7og9il.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
     int? mergedIntoFeatureSourceId,
     List<String>? selectedChoices,
-    List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    List<_irdrn251.SelectedFeatureChoiceView>? selectedChoiceDetails,
     int? sourceClassLevel,
-    List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects,
+    List<_ipujnj10.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterFeatureViewData',
       'sourceType': sourceType.toJson(),
       'sourceId': sourceId,
       if (sourceName != null) 'sourceName': sourceName,
@@ -212,29 +237,34 @@ abstract class CharacterFeatureViewData
       if (resources != null)
         'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
       if (displayProperties != null)
-        'displayProperties':
-            displayProperties?.toJson(valueToJson: (v) => v.toJson()),
+        'displayProperties': displayProperties?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (relatedFeatures != null)
-        'relatedFeatures':
-            relatedFeatures?.toJson(valueToJson: (v) => v.toJson()),
+        'relatedFeatures': relatedFeatures?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (mergedIntoFeatureSourceType != null)
         'mergedIntoFeatureSourceType': mergedIntoFeatureSourceType?.toJson(),
       if (mergedIntoFeatureSourceId != null)
         'mergedIntoFeatureSourceId': mergedIntoFeatureSourceId,
       if (selectedChoices != null) 'selectedChoices': selectedChoices?.toJson(),
       if (selectedChoiceDetails != null)
-        'selectedChoiceDetails':
-            selectedChoiceDetails?.toJson(valueToJson: (v) => v.toJson()),
+        'selectedChoiceDetails': selectedChoiceDetails?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (sourceClassLevel != null) 'sourceClassLevel': sourceClassLevel,
       if (spellSlotRecoveryEffects != null)
-        'spellSlotRecoveryEffects':
-            spellSlotRecoveryEffects?.toJson(valueToJson: (v) => v.toJson()),
+        'spellSlotRecoveryEffects': spellSlotRecoveryEffects?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
     };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterFeatureViewData',
       'sourceType': sourceType.toJson(),
       'sourceId': sourceId,
       if (sourceName != null) 'sourceName': sourceName,
@@ -249,14 +279,17 @@ abstract class CharacterFeatureViewData
       if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
       if (isCustomized != null) 'isCustomized': isCustomized,
       if (resources != null)
-        'resources':
-            resources?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'resources': resources?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (displayProperties != null)
         'displayProperties': displayProperties?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (relatedFeatures != null)
-        'relatedFeatures':
-            relatedFeatures?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+        'relatedFeatures': relatedFeatures?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (mergedIntoFeatureSourceType != null)
         'mergedIntoFeatureSourceType': mergedIntoFeatureSourceType?.toJson(),
       if (mergedIntoFeatureSourceId != null)
@@ -264,17 +297,19 @@ abstract class CharacterFeatureViewData
       if (selectedChoices != null) 'selectedChoices': selectedChoices?.toJson(),
       if (selectedChoiceDetails != null)
         'selectedChoiceDetails': selectedChoiceDetails?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
       if (sourceClassLevel != null) 'sourceClassLevel': sourceClassLevel,
       if (spellSlotRecoveryEffects != null)
         'spellSlotRecoveryEffects': spellSlotRecoveryEffects?.toJson(
-            valueToJson: (v) => v.toJsonForProtocol()),
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
     };
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -282,57 +317,57 @@ class _Undefined {}
 
 class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
   _CharacterFeatureViewDataImpl({
-    required _i2.CharacterFeatureSourceType sourceType,
+    required _ik7og9il.CharacterFeatureSourceType sourceType,
     required int sourceId,
     String? sourceName,
     int? level,
     String? defaultName,
     String? defaultDescription,
-    List<_i3.FeatureTag>? defaultTags,
+    List<_ixkx8coo.FeatureTag>? defaultTags,
     String? name,
     String? description,
     String? shortDescription,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     bool? isCustomized,
-    List<_i4.CharacterResourceViewData>? resources,
-    List<_i5.FeatureDisplayPropertyView>? displayProperties,
-    List<_i6.RelatedFeatureViewData>? relatedFeatures,
-    _i2.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
+    List<_iql0t5wa.CharacterResourceViewData>? resources,
+    List<_i4dynmv7.FeatureDisplayPropertyView>? displayProperties,
+    List<_ipb1wupa.RelatedFeatureViewData>? relatedFeatures,
+    _ik7og9il.CharacterFeatureSourceType? mergedIntoFeatureSourceType,
     int? mergedIntoFeatureSourceId,
     List<String>? selectedChoices,
-    List<_i7.SelectedFeatureChoiceView>? selectedChoiceDetails,
+    List<_irdrn251.SelectedFeatureChoiceView>? selectedChoiceDetails,
     int? sourceClassLevel,
-    List<_i8.FeatureResourceEffectData>? spellSlotRecoveryEffects,
+    List<_ipujnj10.FeatureResourceEffectData>? spellSlotRecoveryEffects,
   }) : super._(
-          sourceType: sourceType,
-          sourceId: sourceId,
-          sourceName: sourceName,
-          level: level,
-          defaultName: defaultName,
-          defaultDescription: defaultDescription,
-          defaultTags: defaultTags,
-          name: name,
-          description: description,
-          shortDescription: shortDescription,
-          tags: tags,
-          isCustomized: isCustomized,
-          resources: resources,
-          displayProperties: displayProperties,
-          relatedFeatures: relatedFeatures,
-          mergedIntoFeatureSourceType: mergedIntoFeatureSourceType,
-          mergedIntoFeatureSourceId: mergedIntoFeatureSourceId,
-          selectedChoices: selectedChoices,
-          selectedChoiceDetails: selectedChoiceDetails,
-          sourceClassLevel: sourceClassLevel,
-          spellSlotRecoveryEffects: spellSlotRecoveryEffects,
-        );
+         sourceType: sourceType,
+         sourceId: sourceId,
+         sourceName: sourceName,
+         level: level,
+         defaultName: defaultName,
+         defaultDescription: defaultDescription,
+         defaultTags: defaultTags,
+         name: name,
+         description: description,
+         shortDescription: shortDescription,
+         tags: tags,
+         isCustomized: isCustomized,
+         resources: resources,
+         displayProperties: displayProperties,
+         relatedFeatures: relatedFeatures,
+         mergedIntoFeatureSourceType: mergedIntoFeatureSourceType,
+         mergedIntoFeatureSourceId: mergedIntoFeatureSourceId,
+         selectedChoices: selectedChoices,
+         selectedChoiceDetails: selectedChoiceDetails,
+         sourceClassLevel: sourceClassLevel,
+         spellSlotRecoveryEffects: spellSlotRecoveryEffects,
+       );
 
   /// Returns a shallow copy of this [CharacterFeatureViewData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterFeatureViewData copyWith({
-    _i2.CharacterFeatureSourceType? sourceType,
+    _ik7og9il.CharacterFeatureSourceType? sourceType,
     int? sourceId,
     Object? sourceName = _Undefined,
     Object? level = _Undefined,
@@ -363,7 +398,7 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
       defaultDescription: defaultDescription is String?
           ? defaultDescription
           : this.defaultDescription,
-      defaultTags: defaultTags is List<_i3.FeatureTag>?
+      defaultTags: defaultTags is List<_ixkx8coo.FeatureTag>?
           ? defaultTags
           : this.defaultTags?.map((e0) => e0).toList(),
       name: name is String? ? name : this.name,
@@ -371,24 +406,25 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
       shortDescription: shortDescription is String?
           ? shortDescription
           : this.shortDescription,
-      tags: tags is List<_i3.FeatureTag>?
+      tags: tags is List<_ixkx8coo.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
       isCustomized: isCustomized is bool? ? isCustomized : this.isCustomized,
-      resources: resources is List<_i4.CharacterResourceViewData>?
+      resources: resources is List<_iql0t5wa.CharacterResourceViewData>?
           ? resources
           : this.resources?.map((e0) => e0.copyWith()).toList(),
       displayProperties:
-          displayProperties is List<_i5.FeatureDisplayPropertyView>?
-              ? displayProperties
-              : this.displayProperties?.map((e0) => e0.copyWith()).toList(),
-      relatedFeatures: relatedFeatures is List<_i6.RelatedFeatureViewData>?
+          displayProperties is List<_i4dynmv7.FeatureDisplayPropertyView>?
+          ? displayProperties
+          : this.displayProperties?.map((e0) => e0.copyWith()).toList(),
+      relatedFeatures:
+          relatedFeatures is List<_ipb1wupa.RelatedFeatureViewData>?
           ? relatedFeatures
           : this.relatedFeatures?.map((e0) => e0.copyWith()).toList(),
       mergedIntoFeatureSourceType:
-          mergedIntoFeatureSourceType is _i2.CharacterFeatureSourceType?
-              ? mergedIntoFeatureSourceType
-              : this.mergedIntoFeatureSourceType,
+          mergedIntoFeatureSourceType is _ik7og9il.CharacterFeatureSourceType?
+          ? mergedIntoFeatureSourceType
+          : this.mergedIntoFeatureSourceType,
       mergedIntoFeatureSourceId: mergedIntoFeatureSourceId is int?
           ? mergedIntoFeatureSourceId
           : this.mergedIntoFeatureSourceId,
@@ -396,13 +432,14 @@ class _CharacterFeatureViewDataImpl extends CharacterFeatureViewData {
           ? selectedChoices
           : this.selectedChoices?.map((e0) => e0).toList(),
       selectedChoiceDetails:
-          selectedChoiceDetails is List<_i7.SelectedFeatureChoiceView>?
-              ? selectedChoiceDetails
-              : this.selectedChoiceDetails?.map((e0) => e0.copyWith()).toList(),
-      sourceClassLevel:
-          sourceClassLevel is int? ? sourceClassLevel : this.sourceClassLevel,
-      spellSlotRecoveryEffects: spellSlotRecoveryEffects
-              is List<_i8.FeatureResourceEffectData>?
+          selectedChoiceDetails is List<_irdrn251.SelectedFeatureChoiceView>?
+          ? selectedChoiceDetails
+          : this.selectedChoiceDetails?.map((e0) => e0.copyWith()).toList(),
+      sourceClassLevel: sourceClassLevel is int?
+          ? sourceClassLevel
+          : this.sourceClassLevel,
+      spellSlotRecoveryEffects:
+          spellSlotRecoveryEffects is List<_ipujnj10.FeatureResourceEffectData>?
           ? spellSlotRecoveryEffects
           : this.spellSlotRecoveryEffects?.map((e0) => e0.copyWith()).toList(),
     );

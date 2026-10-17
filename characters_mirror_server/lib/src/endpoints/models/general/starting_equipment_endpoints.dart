@@ -38,7 +38,7 @@ List<StartingEquipmentBlockView> startingEquipmentBlockViewsFromEntries(
   return [
     for (final root
         in entriesByParent[null] ?? const <StartingEquipmentEntryData>[])
-      if (_blockViewForRoot(root, entriesByParent) case final view?) view,
+      ?_blockViewForRoot(root, entriesByParent),
   ];
 }
 

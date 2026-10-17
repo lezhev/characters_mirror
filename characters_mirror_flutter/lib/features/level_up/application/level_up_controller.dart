@@ -1,5 +1,5 @@
 import 'package:characters_mirror_client/characters_mirror_client.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../data/level_up_gateway.dart';
 import 'level_up_choices.dart';
 import 'level_up_optimistic_preview.dart';

@@ -7,21 +7,26 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../../../data/general/class/subclass_data.dart' as _i2;
-import '../../../enums/feature_tag.dart' as _i3;
-import '../../../enums/skill.dart' as _i4;
-import '../../../enums/language.dart' as _i5;
-import '../../../enums/armor_category.dart' as _i6;
-import '../../../enums/weapon_category.dart' as _i7;
-import '../../../data/general/feature_resource_definition_data.dart' as _i8;
-import '../../../data/general/feature_resource_effect_data.dart' as _i9;
-import '../../../data/class_spell_grant_data.dart' as _i10;
-import '../../../data/general/feature_modifier_data.dart' as _i11;
+import 'package:characters_mirror_client/src/protocol/protocol.dart'
+    as _isnx6jbi;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../../data/class_spell_grant_data.dart' as _ira2m5oj;
+import '../../../data/general/class/subclass_data.dart' as _i6yrac43;
+import '../../../data/general/feature_modifier_data.dart' as _ilc9jnh2;
+import '../../../data/general/feature_resource_definition_data.dart'
+    as _iib0ncbr;
+import '../../../data/general/feature_resource_effect_data.dart' as _ipujnj10;
+import '../../../enums/armor_category.dart' as _irzuusaf;
+import '../../../enums/feature_tag.dart' as _ixkx8coo;
+import '../../../enums/language.dart' as _iiw0j43j;
+import '../../../enums/skill.dart' as _iqrhamom;
+import '../../../enums/weapon_category.dart' as _ibtz7e0l;
 
-abstract class SubclassFeatureData implements _i1.SerializableModel {
+abstract class SubclassFeatureData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SubclassFeatureData._({
     this.id,
     required this.parentSubclassId,
@@ -55,7 +60,7 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
   factory SubclassFeatureData({
     int? id,
     required int parentSubclassId,
-    _i2.SubclassData? parentSubclass,
+    _i6yrac43.SubclassData? parentSubclass,
     String? name,
     String? referenceKey,
     String? description,
@@ -65,21 +70,21 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     String? choiceGroupKey,
-    List<_i4.Skill>? grantedSkills,
-    List<_i4.Skill>? grantedExpertiseSkills,
-    List<_i5.Language>? grantedLanguages,
-    List<_i6.ArmorCategory>? grantedArmorTraining,
-    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<_iqrhamom.Skill>? grantedSkills,
+    List<_iqrhamom.Skill>? grantedExpertiseSkills,
+    List<_iiw0j43j.Language>? grantedLanguages,
+    List<_irzuusaf.ArmorCategory>? grantedArmorTraining,
+    List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
     List<String>? grantedSpellKeys,
     String? relatedTable,
-    List<_i8.FeatureResourceDefinitionData>? resources,
-    List<_i9.FeatureResourceEffectData>? resourceEffects,
-    List<_i10.ClassSpellGrantData>? spellGrants,
-    List<_i11.FeatureModifierData>? featureModifiers,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ira2m5oj.ClassSpellGrantData>? spellGrants,
+    List<_ilc9jnh2.FeatureModifierData>? featureModifiers,
   }) = _SubclassFeatureDataImpl;
 
   factory SubclassFeatureData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -88,8 +93,9 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
       parentSubclassId: jsonSerialization['parentSubclassId'] as int,
       parentSubclass: jsonSerialization['parentSubclass'] == null
           ? null
-          : _i2.SubclassData.fromJson(
-              (jsonSerialization['parentSubclass'] as Map<String, dynamic>)),
+          : _isnx6jbi.Protocol().deserialize<_i6yrac43.SubclassData>(
+              jsonSerialization['parentSubclass'],
+            ),
       name: jsonSerialization['name'] as String?,
       referenceKey: jsonSerialization['referenceKey'] as String?,
       description: jsonSerialization['description'] as String?,
@@ -99,58 +105,83 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
       version: jsonSerialization['version'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       updatedAt: jsonSerialization['updatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
-      tags: (jsonSerialization['tags'] as List?)
-          ?.map((e) => _i3.FeatureTag.fromJson((e as String)))
-          .toList(),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updatedAt']),
+      tags: jsonSerialization['tags'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ixkx8coo.FeatureTag>>(
+              jsonSerialization['tags'],
+            ),
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
-      grantedSkills: (jsonSerialization['grantedSkills'] as List?)
-          ?.map((e) => _i4.Skill.fromJson((e as String)))
-          .toList(),
+      grantedSkills: jsonSerialization['grantedSkills'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iqrhamom.Skill>>(
+              jsonSerialization['grantedSkills'],
+            ),
       grantedExpertiseSkills:
-          (jsonSerialization['grantedExpertiseSkills'] as List?)
-              ?.map((e) => _i4.Skill.fromJson((e as String)))
-              .toList(),
-      grantedLanguages: (jsonSerialization['grantedLanguages'] as List?)
-          ?.map((e) => _i5.Language.fromJson((e as String)))
-          .toList(),
-      grantedArmorTraining: (jsonSerialization['grantedArmorTraining'] as List?)
-          ?.map((e) => _i6.ArmorCategory.fromJson((e as String)))
-          .toList(),
-      grantedWeaponTraining:
-          (jsonSerialization['grantedWeaponTraining'] as List?)
-              ?.map((e) => _i7.WeaponCategory.fromJson((e as String)))
-              .toList(),
-      grantedToolKeys: (jsonSerialization['grantedToolKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+          jsonSerialization['grantedExpertiseSkills'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iqrhamom.Skill>>(
+              jsonSerialization['grantedExpertiseSkills'],
+            ),
+      grantedLanguages: jsonSerialization['grantedLanguages'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_iiw0j43j.Language>>(
+              jsonSerialization['grantedLanguages'],
+            ),
+      grantedArmorTraining: jsonSerialization['grantedArmorTraining'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_irzuusaf.ArmorCategory>>(
+              jsonSerialization['grantedArmorTraining'],
+            ),
+      grantedWeaponTraining: jsonSerialization['grantedWeaponTraining'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<_ibtz7e0l.WeaponCategory>>(
+              jsonSerialization['grantedWeaponTraining'],
+            ),
+      grantedToolKeys: jsonSerialization['grantedToolKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedToolKeys'],
+            ),
       grantedExpertiseToolKeys:
-          (jsonSerialization['grantedExpertiseToolKeys'] as List?)
-              ?.map((e) => e as String)
-              .toList(),
-      grantedSpellKeys: (jsonSerialization['grantedSpellKeys'] as List?)
-          ?.map((e) => e as String)
-          .toList(),
+          jsonSerialization['grantedExpertiseToolKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedExpertiseToolKeys'],
+            ),
+      grantedSpellKeys: jsonSerialization['grantedSpellKeys'] == null
+          ? null
+          : _isnx6jbi.Protocol().deserialize<List<String>>(
+              jsonSerialization['grantedSpellKeys'],
+            ),
       relatedTable: jsonSerialization['relatedTable'] as String?,
-      resources: (jsonSerialization['resources'] as List?)
-          ?.map((e) => _i8.FeatureResourceDefinitionData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      resourceEffects: (jsonSerialization['resourceEffects'] as List?)
-          ?.map((e) => _i9.FeatureResourceEffectData.fromJson(
-              (e as Map<String, dynamic>)))
-          .toList(),
-      spellGrants: (jsonSerialization['spellGrants'] as List?)
-          ?.map((e) =>
-              _i10.ClassSpellGrantData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
-      featureModifiers: (jsonSerialization['featureModifiers'] as List?)
-          ?.map((e) =>
-              _i11.FeatureModifierData.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      resources: jsonSerialization['resources'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_iib0ncbr.FeatureResourceDefinitionData>>(
+                  jsonSerialization['resources'],
+                ),
+      resourceEffects: jsonSerialization['resourceEffects'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ipujnj10.FeatureResourceEffectData>>(
+                  jsonSerialization['resourceEffects'],
+                ),
+      spellGrants: jsonSerialization['spellGrants'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ira2m5oj.ClassSpellGrantData>>(
+                  jsonSerialization['spellGrants'],
+                ),
+      featureModifiers: jsonSerialization['featureModifiers'] == null
+          ? null
+          : _isnx6jbi.Protocol()
+                .deserialize<List<_ilc9jnh2.FeatureModifierData>>(
+                  jsonSerialization['featureModifiers'],
+                ),
     );
   }
 
@@ -161,7 +192,7 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
 
   int parentSubclassId;
 
-  _i2.SubclassData? parentSubclass;
+  _i6yrac43.SubclassData? parentSubclass;
 
   String? name;
 
@@ -181,19 +212,19 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
 
   DateTime? updatedAt;
 
-  List<_i3.FeatureTag>? tags;
+  List<_ixkx8coo.FeatureTag>? tags;
 
   String? choiceGroupKey;
 
-  List<_i4.Skill>? grantedSkills;
+  List<_iqrhamom.Skill>? grantedSkills;
 
-  List<_i4.Skill>? grantedExpertiseSkills;
+  List<_iqrhamom.Skill>? grantedExpertiseSkills;
 
-  List<_i5.Language>? grantedLanguages;
+  List<_iiw0j43j.Language>? grantedLanguages;
 
-  List<_i6.ArmorCategory>? grantedArmorTraining;
+  List<_irzuusaf.ArmorCategory>? grantedArmorTraining;
 
-  List<_i7.WeaponCategory>? grantedWeaponTraining;
+  List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining;
 
   List<String>? grantedToolKeys;
 
@@ -203,21 +234,21 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
 
   String? relatedTable;
 
-  List<_i8.FeatureResourceDefinitionData>? resources;
+  List<_iib0ncbr.FeatureResourceDefinitionData>? resources;
 
-  List<_i9.FeatureResourceEffectData>? resourceEffects;
+  List<_ipujnj10.FeatureResourceEffectData>? resourceEffects;
 
-  List<_i10.ClassSpellGrantData>? spellGrants;
+  List<_ira2m5oj.ClassSpellGrantData>? spellGrants;
 
-  List<_i11.FeatureModifierData>? featureModifiers;
+  List<_ilc9jnh2.FeatureModifierData>? featureModifiers;
 
   /// Returns a shallow copy of this [SubclassFeatureData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SubclassFeatureData copyWith({
     int? id,
     int? parentSubclassId,
-    _i2.SubclassData? parentSubclass,
+    _i6yrac43.SubclassData? parentSubclass,
     String? name,
     String? referenceKey,
     String? description,
@@ -227,25 +258,26 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     String? choiceGroupKey,
-    List<_i4.Skill>? grantedSkills,
-    List<_i4.Skill>? grantedExpertiseSkills,
-    List<_i5.Language>? grantedLanguages,
-    List<_i6.ArmorCategory>? grantedArmorTraining,
-    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<_iqrhamom.Skill>? grantedSkills,
+    List<_iqrhamom.Skill>? grantedExpertiseSkills,
+    List<_iiw0j43j.Language>? grantedLanguages,
+    List<_irzuusaf.ArmorCategory>? grantedArmorTraining,
+    List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
     List<String>? grantedSpellKeys,
     String? relatedTable,
-    List<_i8.FeatureResourceDefinitionData>? resources,
-    List<_i9.FeatureResourceEffectData>? resourceEffects,
-    List<_i10.ClassSpellGrantData>? spellGrants,
-    List<_i11.FeatureModifierData>? featureModifiers,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ira2m5oj.ClassSpellGrantData>? spellGrants,
+    List<_ilc9jnh2.FeatureModifierData>? featureModifiers,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SubclassFeatureData',
       if (id != null) 'id': id,
       'parentSubclassId': parentSubclassId,
       if (parentSubclass != null) 'parentSubclass': parentSubclass?.toJson(),
@@ -263,17 +295,21 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
       if (grantedSkills != null)
         'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
       if (grantedExpertiseSkills != null)
-        'grantedExpertiseSkills':
-            grantedExpertiseSkills?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedExpertiseSkills': grantedExpertiseSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedLanguages != null)
-        'grantedLanguages':
-            grantedLanguages?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedLanguages': grantedLanguages?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedArmorTraining != null)
-        'grantedArmorTraining':
-            grantedArmorTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedArmorTraining': grantedArmorTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedWeaponTraining != null)
-        'grantedWeaponTraining':
-            grantedWeaponTraining?.toJson(valueToJson: (v) => v.toJson()),
+        'grantedWeaponTraining': grantedWeaponTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
       if (grantedExpertiseToolKeys != null)
         'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
@@ -283,19 +319,83 @@ abstract class SubclassFeatureData implements _i1.SerializableModel {
       if (resources != null)
         'resources': resources?.toJson(valueToJson: (v) => v.toJson()),
       if (resourceEffects != null)
-        'resourceEffects':
-            resourceEffects?.toJson(valueToJson: (v) => v.toJson()),
+        'resourceEffects': resourceEffects?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (spellGrants != null)
         'spellGrants': spellGrants?.toJson(valueToJson: (v) => v.toJson()),
       if (featureModifiers != null)
-        'featureModifiers':
-            featureModifiers?.toJson(valueToJson: (v) => v.toJson()),
+        'featureModifiers': featureModifiers?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SubclassFeatureData',
+      if (id != null) 'id': id,
+      'parentSubclassId': parentSubclassId,
+      if (parentSubclass != null)
+        'parentSubclass': parentSubclass?.toJsonForProtocol(),
+      if (name != null) 'name': name,
+      if (referenceKey != null) 'referenceKey': referenceKey,
+      if (description != null) 'description': description,
+      if (shortDescription != null) 'shortDescription': shortDescription,
+      'level': level,
+      if (source != null) 'source': source,
+      if (version != null) 'version': version,
+      if (createdAt != null) 'createdAt': createdAt?.toJson(),
+      if (updatedAt != null) 'updatedAt': updatedAt?.toJson(),
+      if (tags != null) 'tags': tags?.toJson(valueToJson: (v) => v.toJson()),
+      if (choiceGroupKey != null) 'choiceGroupKey': choiceGroupKey,
+      if (grantedSkills != null)
+        'grantedSkills': grantedSkills?.toJson(valueToJson: (v) => v.toJson()),
+      if (grantedExpertiseSkills != null)
+        'grantedExpertiseSkills': grantedExpertiseSkills?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedLanguages != null)
+        'grantedLanguages': grantedLanguages?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedArmorTraining != null)
+        'grantedArmorTraining': grantedArmorTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedWeaponTraining != null)
+        'grantedWeaponTraining': grantedWeaponTraining?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
+      if (grantedToolKeys != null) 'grantedToolKeys': grantedToolKeys?.toJson(),
+      if (grantedExpertiseToolKeys != null)
+        'grantedExpertiseToolKeys': grantedExpertiseToolKeys?.toJson(),
+      if (grantedSpellKeys != null)
+        'grantedSpellKeys': grantedSpellKeys?.toJson(),
+      if (relatedTable != null) 'relatedTable': relatedTable,
+      if (resources != null)
+        'resources': resources?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (resourceEffects != null)
+        'resourceEffects': resourceEffects?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (spellGrants != null)
+        'spellGrants': spellGrants?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
+      if (featureModifiers != null)
+        'featureModifiers': featureModifiers?.toJson(
+          valueToJson: (v) => v.toJsonForProtocol(),
+        ),
     };
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -305,7 +405,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
   _SubclassFeatureDataImpl({
     int? id,
     required int parentSubclassId,
-    _i2.SubclassData? parentSubclass,
+    _i6yrac43.SubclassData? parentSubclass,
     String? name,
     String? referenceKey,
     String? description,
@@ -315,54 +415,54 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     int? version,
     DateTime? createdAt,
     DateTime? updatedAt,
-    List<_i3.FeatureTag>? tags,
+    List<_ixkx8coo.FeatureTag>? tags,
     String? choiceGroupKey,
-    List<_i4.Skill>? grantedSkills,
-    List<_i4.Skill>? grantedExpertiseSkills,
-    List<_i5.Language>? grantedLanguages,
-    List<_i6.ArmorCategory>? grantedArmorTraining,
-    List<_i7.WeaponCategory>? grantedWeaponTraining,
+    List<_iqrhamom.Skill>? grantedSkills,
+    List<_iqrhamom.Skill>? grantedExpertiseSkills,
+    List<_iiw0j43j.Language>? grantedLanguages,
+    List<_irzuusaf.ArmorCategory>? grantedArmorTraining,
+    List<_ibtz7e0l.WeaponCategory>? grantedWeaponTraining,
     List<String>? grantedToolKeys,
     List<String>? grantedExpertiseToolKeys,
     List<String>? grantedSpellKeys,
     String? relatedTable,
-    List<_i8.FeatureResourceDefinitionData>? resources,
-    List<_i9.FeatureResourceEffectData>? resourceEffects,
-    List<_i10.ClassSpellGrantData>? spellGrants,
-    List<_i11.FeatureModifierData>? featureModifiers,
+    List<_iib0ncbr.FeatureResourceDefinitionData>? resources,
+    List<_ipujnj10.FeatureResourceEffectData>? resourceEffects,
+    List<_ira2m5oj.ClassSpellGrantData>? spellGrants,
+    List<_ilc9jnh2.FeatureModifierData>? featureModifiers,
   }) : super._(
-          id: id,
-          parentSubclassId: parentSubclassId,
-          parentSubclass: parentSubclass,
-          name: name,
-          referenceKey: referenceKey,
-          description: description,
-          shortDescription: shortDescription,
-          level: level,
-          source: source,
-          version: version,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          tags: tags,
-          choiceGroupKey: choiceGroupKey,
-          grantedSkills: grantedSkills,
-          grantedExpertiseSkills: grantedExpertiseSkills,
-          grantedLanguages: grantedLanguages,
-          grantedArmorTraining: grantedArmorTraining,
-          grantedWeaponTraining: grantedWeaponTraining,
-          grantedToolKeys: grantedToolKeys,
-          grantedExpertiseToolKeys: grantedExpertiseToolKeys,
-          grantedSpellKeys: grantedSpellKeys,
-          relatedTable: relatedTable,
-          resources: resources,
-          resourceEffects: resourceEffects,
-          spellGrants: spellGrants,
-          featureModifiers: featureModifiers,
-        );
+         id: id,
+         parentSubclassId: parentSubclassId,
+         parentSubclass: parentSubclass,
+         name: name,
+         referenceKey: referenceKey,
+         description: description,
+         shortDescription: shortDescription,
+         level: level,
+         source: source,
+         version: version,
+         createdAt: createdAt,
+         updatedAt: updatedAt,
+         tags: tags,
+         choiceGroupKey: choiceGroupKey,
+         grantedSkills: grantedSkills,
+         grantedExpertiseSkills: grantedExpertiseSkills,
+         grantedLanguages: grantedLanguages,
+         grantedArmorTraining: grantedArmorTraining,
+         grantedWeaponTraining: grantedWeaponTraining,
+         grantedToolKeys: grantedToolKeys,
+         grantedExpertiseToolKeys: grantedExpertiseToolKeys,
+         grantedSpellKeys: grantedSpellKeys,
+         relatedTable: relatedTable,
+         resources: resources,
+         resourceEffects: resourceEffects,
+         spellGrants: spellGrants,
+         featureModifiers: featureModifiers,
+       );
 
   /// Returns a shallow copy of this [SubclassFeatureData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SubclassFeatureData copyWith({
     Object? id = _Undefined,
@@ -396,7 +496,7 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
     return SubclassFeatureData(
       id: id is int? ? id : this.id,
       parentSubclassId: parentSubclassId ?? this.parentSubclassId,
-      parentSubclass: parentSubclass is _i2.SubclassData?
+      parentSubclass: parentSubclass is _i6yrac43.SubclassData?
           ? parentSubclass
           : this.parentSubclass?.copyWith(),
       name: name is String? ? name : this.name,
@@ -410,24 +510,27 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
       version: version is int? ? version : this.version,
       createdAt: createdAt is DateTime? ? createdAt : this.createdAt,
       updatedAt: updatedAt is DateTime? ? updatedAt : this.updatedAt,
-      tags: tags is List<_i3.FeatureTag>?
+      tags: tags is List<_ixkx8coo.FeatureTag>?
           ? tags
           : this.tags?.map((e0) => e0).toList(),
-      choiceGroupKey:
-          choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
-      grantedSkills: grantedSkills is List<_i4.Skill>?
+      choiceGroupKey: choiceGroupKey is String?
+          ? choiceGroupKey
+          : this.choiceGroupKey,
+      grantedSkills: grantedSkills is List<_iqrhamom.Skill>?
           ? grantedSkills
           : this.grantedSkills?.map((e0) => e0).toList(),
-      grantedExpertiseSkills: grantedExpertiseSkills is List<_i4.Skill>?
+      grantedExpertiseSkills: grantedExpertiseSkills is List<_iqrhamom.Skill>?
           ? grantedExpertiseSkills
           : this.grantedExpertiseSkills?.map((e0) => e0).toList(),
-      grantedLanguages: grantedLanguages is List<_i5.Language>?
+      grantedLanguages: grantedLanguages is List<_iiw0j43j.Language>?
           ? grantedLanguages
           : this.grantedLanguages?.map((e0) => e0).toList(),
-      grantedArmorTraining: grantedArmorTraining is List<_i6.ArmorCategory>?
+      grantedArmorTraining:
+          grantedArmorTraining is List<_irzuusaf.ArmorCategory>?
           ? grantedArmorTraining
           : this.grantedArmorTraining?.map((e0) => e0).toList(),
-      grantedWeaponTraining: grantedWeaponTraining is List<_i7.WeaponCategory>?
+      grantedWeaponTraining:
+          grantedWeaponTraining is List<_ibtz7e0l.WeaponCategory>?
           ? grantedWeaponTraining
           : this.grantedWeaponTraining?.map((e0) => e0).toList(),
       grantedToolKeys: grantedToolKeys is List<String>?
@@ -440,16 +543,17 @@ class _SubclassFeatureDataImpl extends SubclassFeatureData {
           ? grantedSpellKeys
           : this.grantedSpellKeys?.map((e0) => e0).toList(),
       relatedTable: relatedTable is String? ? relatedTable : this.relatedTable,
-      resources: resources is List<_i8.FeatureResourceDefinitionData>?
+      resources: resources is List<_iib0ncbr.FeatureResourceDefinitionData>?
           ? resources
           : this.resources?.map((e0) => e0.copyWith()).toList(),
-      resourceEffects: resourceEffects is List<_i9.FeatureResourceEffectData>?
+      resourceEffects:
+          resourceEffects is List<_ipujnj10.FeatureResourceEffectData>?
           ? resourceEffects
           : this.resourceEffects?.map((e0) => e0.copyWith()).toList(),
-      spellGrants: spellGrants is List<_i10.ClassSpellGrantData>?
+      spellGrants: spellGrants is List<_ira2m5oj.ClassSpellGrantData>?
           ? spellGrants
           : this.spellGrants?.map((e0) => e0.copyWith()).toList(),
-      featureModifiers: featureModifiers is List<_i11.FeatureModifierData>?
+      featureModifiers: featureModifiers is List<_ilc9jnh2.FeatureModifierData>?
           ? featureModifiers
           : this.featureModifiers?.map((e0) => e0.copyWith()).toList(),
     );

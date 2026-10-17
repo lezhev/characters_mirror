@@ -7,14 +7,15 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../enums/choice_requirement_type.dart' as _i2;
-import '../../enums/ability.dart' as _i3;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../enums/ability.dart' as _if5gaqs5;
+import '../../enums/choice_requirement_type.dart' as _i5krx825;
 
 abstract class ChoiceRequirementData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   ChoiceRequirementData._({
     required this.type,
     this.classKey,
@@ -27,9 +28,9 @@ abstract class ChoiceRequirementData
   });
 
   factory ChoiceRequirementData({
-    required _i2.ChoiceRequirementType type,
+    required _i5krx825.ChoiceRequirementType type,
     String? classKey,
-    _i3.Ability? ability,
+    _if5gaqs5.Ability? ability,
     int? value,
     String? referenceKey,
     String? choiceGroupKey,
@@ -38,27 +39,33 @@ abstract class ChoiceRequirementData
   }) = _ChoiceRequirementDataImpl;
 
   factory ChoiceRequirementData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return ChoiceRequirementData(
-      type: _i2.ChoiceRequirementType.fromJson(
-          (jsonSerialization['type'] as String)),
+      type: _i5krx825.ChoiceRequirementType.fromJson(
+        (jsonSerialization['type'] as String),
+      ),
       classKey: jsonSerialization['classKey'] as String?,
       ability: jsonSerialization['ability'] == null
           ? null
-          : _i3.Ability.fromJson((jsonSerialization['ability'] as String)),
+          : _if5gaqs5.Ability.fromJson(
+              (jsonSerialization['ability'] as String),
+            ),
       value: jsonSerialization['value'] as int?,
       referenceKey: jsonSerialization['referenceKey'] as String?,
       choiceGroupKey: jsonSerialization['choiceGroupKey'] as String?,
       optionKey: jsonSerialization['optionKey'] as String?,
-      negate: jsonSerialization['negate'] as bool?,
+      negate: jsonSerialization['negate'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['negate']),
     );
   }
 
-  _i2.ChoiceRequirementType type;
+  _i5krx825.ChoiceRequirementType type;
 
   String? classKey;
 
-  _i3.Ability? ability;
+  _if5gaqs5.Ability? ability;
 
   int? value;
 
@@ -72,11 +79,11 @@ abstract class ChoiceRequirementData
 
   /// Returns a shallow copy of this [ChoiceRequirementData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   ChoiceRequirementData copyWith({
-    _i2.ChoiceRequirementType? type,
+    _i5krx825.ChoiceRequirementType? type,
     String? classKey,
-    _i3.Ability? ability,
+    _if5gaqs5.Ability? ability,
     int? value,
     String? referenceKey,
     String? choiceGroupKey,
@@ -86,6 +93,7 @@ abstract class ChoiceRequirementData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'ChoiceRequirementData',
       'type': type.toJson(),
       if (classKey != null) 'classKey': classKey,
       if (ability != null) 'ability': ability?.toJson(),
@@ -100,6 +108,7 @@ abstract class ChoiceRequirementData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'ChoiceRequirementData',
       'type': type.toJson(),
       if (classKey != null) 'classKey': classKey,
       if (ability != null) 'ability': ability?.toJson(),
@@ -113,7 +122,7 @@ abstract class ChoiceRequirementData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -121,31 +130,31 @@ class _Undefined {}
 
 class _ChoiceRequirementDataImpl extends ChoiceRequirementData {
   _ChoiceRequirementDataImpl({
-    required _i2.ChoiceRequirementType type,
+    required _i5krx825.ChoiceRequirementType type,
     String? classKey,
-    _i3.Ability? ability,
+    _if5gaqs5.Ability? ability,
     int? value,
     String? referenceKey,
     String? choiceGroupKey,
     String? optionKey,
     bool? negate,
   }) : super._(
-          type: type,
-          classKey: classKey,
-          ability: ability,
-          value: value,
-          referenceKey: referenceKey,
-          choiceGroupKey: choiceGroupKey,
-          optionKey: optionKey,
-          negate: negate,
-        );
+         type: type,
+         classKey: classKey,
+         ability: ability,
+         value: value,
+         referenceKey: referenceKey,
+         choiceGroupKey: choiceGroupKey,
+         optionKey: optionKey,
+         negate: negate,
+       );
 
   /// Returns a shallow copy of this [ChoiceRequirementData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   ChoiceRequirementData copyWith({
-    _i2.ChoiceRequirementType? type,
+    _i5krx825.ChoiceRequirementType? type,
     Object? classKey = _Undefined,
     Object? ability = _Undefined,
     Object? value = _Undefined,
@@ -157,11 +166,12 @@ class _ChoiceRequirementDataImpl extends ChoiceRequirementData {
     return ChoiceRequirementData(
       type: type ?? this.type,
       classKey: classKey is String? ? classKey : this.classKey,
-      ability: ability is _i3.Ability? ? ability : this.ability,
+      ability: ability is _if5gaqs5.Ability? ? ability : this.ability,
       value: value is int? ? value : this.value,
       referenceKey: referenceKey is String? ? referenceKey : this.referenceKey,
-      choiceGroupKey:
-          choiceGroupKey is String? ? choiceGroupKey : this.choiceGroupKey,
+      choiceGroupKey: choiceGroupKey is String?
+          ? choiceGroupKey
+          : this.choiceGroupKey,
       optionKey: optionKey is String? ? optionKey : this.optionKey,
       negate: negate is bool? ? negate : this.negate,
     );

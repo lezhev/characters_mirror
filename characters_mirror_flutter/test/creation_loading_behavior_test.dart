@@ -85,11 +85,11 @@ void main() {
         routes: [
           GoRoute(
             path: '/create/race',
-            builder: (_, __) => const RaceStep(),
+            builder: (_, _) => const RaceStep(),
           ),
           GoRoute(
             path: '/create/classStep',
-            builder: (_, __) => const ClassStep(),
+            builder: (_, _) => const ClassStep(),
           ),
         ],
       );

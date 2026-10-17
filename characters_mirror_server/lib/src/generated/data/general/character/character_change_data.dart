@@ -7,15 +7,18 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../../enums/character_change_type.dart' as _i2;
-import '../../../enums/character_entity_type.dart' as _i3;
-import '../../../data/general/character/character_data.dart' as _i4;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../../data/general/character/character_data.dart' as _isbrf1qr;
+import '../../../enums/character_change_type.dart' as _ifby6flz;
+import '../../../enums/character_entity_type.dart' as _i5z86n8e;
 
 abstract class CharacterChangeData
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   CharacterChangeData._({
     required this.id,
     required this.changeType,
@@ -28,10 +31,10 @@ abstract class CharacterChangeData
 
   factory CharacterChangeData({
     required String id,
-    required _i2.CharacterChangeType changeType,
-    required _i3.CharacterEntityType entityType,
+    required _ifby6flz.CharacterChangeType changeType,
+    required _i5z86n8e.CharacterEntityType entityType,
     required String entityId,
-    _i4.CharacterData? payload,
+    _isbrf1qr.CharacterData? payload,
     required DateTime createdAt,
     DateTime? baseUpdatedAt,
   }) = _CharacterChangeDataImpl;
@@ -39,33 +42,38 @@ abstract class CharacterChangeData
   factory CharacterChangeData.fromJson(Map<String, dynamic> jsonSerialization) {
     return CharacterChangeData(
       id: jsonSerialization['id'] as String,
-      changeType: _i2.CharacterChangeType.fromJson(
-          (jsonSerialization['changeType'] as int)),
-      entityType: _i3.CharacterEntityType.fromJson(
-          (jsonSerialization['entityType'] as int)),
+      changeType: _ifby6flz.CharacterChangeType.fromJson(
+        (jsonSerialization['changeType'] as int),
+      ),
+      entityType: _i5z86n8e.CharacterEntityType.fromJson(
+        (jsonSerialization['entityType'] as int),
+      ),
       entityId: jsonSerialization['entityId'] as String,
       payload: jsonSerialization['payload'] == null
           ? null
-          : _i4.CharacterData.fromJson(
-              (jsonSerialization['payload'] as Map<String, dynamic>)),
-      createdAt:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+          : _ikmnmw29.Protocol().deserialize<_isbrf1qr.CharacterData>(
+              jsonSerialization['payload'],
+            ),
+      createdAt: _is.DateTimeJsonExtension.fromJson(
+        jsonSerialization['createdAt'],
+      ),
       baseUpdatedAt: jsonSerialization['baseUpdatedAt'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['baseUpdatedAt']),
+          : _is.DateTimeJsonExtension.fromJson(
+              jsonSerialization['baseUpdatedAt'],
+            ),
     );
   }
 
   String id;
 
-  _i2.CharacterChangeType changeType;
+  _ifby6flz.CharacterChangeType changeType;
 
-  _i3.CharacterEntityType entityType;
+  _i5z86n8e.CharacterEntityType entityType;
 
   String entityId;
 
-  _i4.CharacterData? payload;
+  _isbrf1qr.CharacterData? payload;
 
   DateTime createdAt;
 
@@ -73,19 +81,20 @@ abstract class CharacterChangeData
 
   /// Returns a shallow copy of this [CharacterChangeData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   CharacterChangeData copyWith({
     String? id,
-    _i2.CharacterChangeType? changeType,
-    _i3.CharacterEntityType? entityType,
+    _ifby6flz.CharacterChangeType? changeType,
+    _i5z86n8e.CharacterEntityType? entityType,
     String? entityId,
-    _i4.CharacterData? payload,
+    _isbrf1qr.CharacterData? payload,
     DateTime? createdAt,
     DateTime? baseUpdatedAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'CharacterChangeData',
       'id': id,
       'changeType': changeType.toJson(),
       'entityType': entityType.toJson(),
@@ -99,6 +108,7 @@ abstract class CharacterChangeData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'CharacterChangeData',
       'id': id,
       'changeType': changeType.toJson(),
       'entityType': entityType.toJson(),
@@ -111,7 +121,7 @@ abstract class CharacterChangeData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -120,30 +130,30 @@ class _Undefined {}
 class _CharacterChangeDataImpl extends CharacterChangeData {
   _CharacterChangeDataImpl({
     required String id,
-    required _i2.CharacterChangeType changeType,
-    required _i3.CharacterEntityType entityType,
+    required _ifby6flz.CharacterChangeType changeType,
+    required _i5z86n8e.CharacterEntityType entityType,
     required String entityId,
-    _i4.CharacterData? payload,
+    _isbrf1qr.CharacterData? payload,
     required DateTime createdAt,
     DateTime? baseUpdatedAt,
   }) : super._(
-          id: id,
-          changeType: changeType,
-          entityType: entityType,
-          entityId: entityId,
-          payload: payload,
-          createdAt: createdAt,
-          baseUpdatedAt: baseUpdatedAt,
-        );
+         id: id,
+         changeType: changeType,
+         entityType: entityType,
+         entityId: entityId,
+         payload: payload,
+         createdAt: createdAt,
+         baseUpdatedAt: baseUpdatedAt,
+       );
 
   /// Returns a shallow copy of this [CharacterChangeData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   CharacterChangeData copyWith({
     String? id,
-    _i2.CharacterChangeType? changeType,
-    _i3.CharacterEntityType? entityType,
+    _ifby6flz.CharacterChangeType? changeType,
+    _i5z86n8e.CharacterEntityType? entityType,
     String? entityId,
     Object? payload = _Undefined,
     DateTime? createdAt,
@@ -154,11 +164,13 @@ class _CharacterChangeDataImpl extends CharacterChangeData {
       changeType: changeType ?? this.changeType,
       entityType: entityType ?? this.entityType,
       entityId: entityId ?? this.entityId,
-      payload:
-          payload is _i4.CharacterData? ? payload : this.payload?.copyWith(),
+      payload: payload is _isbrf1qr.CharacterData?
+          ? payload
+          : this.payload?.copyWith(),
       createdAt: createdAt ?? this.createdAt,
-      baseUpdatedAt:
-          baseUpdatedAt is DateTime? ? baseUpdatedAt : this.baseUpdatedAt,
+      baseUpdatedAt: baseUpdatedAt is DateTime?
+          ? baseUpdatedAt
+          : this.baseUpdatedAt,
     );
   }
 }

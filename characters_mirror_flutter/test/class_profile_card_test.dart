@@ -99,7 +99,7 @@ void main() {
             child: SkillSelectionSection(
               groups: [group],
               selections: const [],
-              onToggleSkill: (_, __) {},
+              onToggleSkill: (_, _) {},
               onClearGroup: (_) {},
             ),
           ),

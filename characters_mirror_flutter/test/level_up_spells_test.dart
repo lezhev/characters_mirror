@@ -146,7 +146,7 @@ void main() {
             character: CharacterData(
                 derived: CharacterDerivedData(spellSlots: {2: 2})),
             spellDelta: base.spellDelta.copyWith(knownSpellReplacements: 1)),
-        onChanged: (_, __, ___) {});
+        onChanged: (_, _, _) {});
     final block = find.byType(SheetOutlineCard);
     expect(block, findsOneWidget);
     for (final label in [
@@ -165,7 +165,7 @@ void main() {
   testWidgets('no spell events hides the block', (tester) async {
     await pumpSpells(
         tester, preview(CharacterSpellSelectionKind.knownSpell, count: 0),
-        onChanged: (_, __, ___) {});
+        onChanged: (_, _, _) {});
     expect(find.byType(SheetOutlineCard), findsNothing);
     expect(find.text('Заклинания'), findsNothing);
   });
@@ -178,7 +178,7 @@ void main() {
         base.copyWith(
             character: CharacterData(
                 derived: CharacterDerivedData(pactSlots: {2: 1}))),
-        onChanged: (_, __, ___) {});
+        onChanged: (_, _, _) {});
     expect(find.byType(SheetOutlineCard), findsOneWidget);
     expect(find.text('Доступны заклинания 2 уровня'), findsOneWidget);
     expect(find.byIcon(Icons.chevron_right), findsNothing);
@@ -237,7 +237,7 @@ void main() {
       (tester) async {
     await pumpSpells(
         tester, preview(CharacterSpellSelectionKind.knownSpell, count: 2),
-        onChanged: (_, __, ___) {});
+        onChanged: (_, _, _) {});
     await tester.tap(find.text('Выбрать заклинания'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Spell 1'));
@@ -331,7 +331,7 @@ void main() {
             body: LevelUpSpells(
                 preview: preview(CharacterSpellSelectionKind.knownSpell),
                 request: request(),
-                onChanged: (_, __, ___) {}))));
+                onChanged: (_, _, _) {}))));
     await tester.tap(find.text('Выбрать заклинания'));
     await tester.pumpAndSettle();
     expect(card(1), findsOneWidget);

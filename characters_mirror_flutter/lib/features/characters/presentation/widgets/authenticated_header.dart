@@ -61,7 +61,7 @@ class AuthenticatedHeader extends StatelessWidget {
                         ],
                       ),
                     )),
-                    if (trailing != null) trailing!,
+                    ?trailing,
                   ],
                 );
               },

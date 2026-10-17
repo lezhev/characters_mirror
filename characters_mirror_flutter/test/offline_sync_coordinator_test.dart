@@ -594,7 +594,7 @@ void main() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       offlineCharacterRecordProvider(42),
-      (_, __) {},
+      (_, _) {},
       fireImmediately: true,
     );
     addTearDown(subscription.close);
@@ -1176,7 +1176,7 @@ void main() {
     addTearDown(container.dispose);
     final subscription = container.listen(
       characterSheetControllerProvider(42),
-      (_, __) {},
+      (_, _) {},
       fireImmediately: true,
     );
     addTearDown(subscription.close);
@@ -1191,7 +1191,7 @@ void main() {
         if (previous == true && !next) {
           final visibleNote = container
               .read(characterSheetControllerProvider(42))
-              .valueOrNull
+              .value
               ?.notes
               ?.single
               .text;
@@ -1207,7 +1207,7 @@ void main() {
     expect(
       container
           .read(characterSheetControllerProvider(42))
-          .valueOrNull
+          .value
           ?.notes
           ?.single
           .text,
@@ -1219,7 +1219,7 @@ void main() {
     for (var attempt = 0; attempt < 20; attempt++) {
       final visible = container
           .read(characterSheetControllerProvider(42))
-          .valueOrNull
+          .value
           ?.notes
           ?.single
           .text;
@@ -1228,7 +1228,7 @@ void main() {
     }
 
     final visible =
-        container.read(characterSheetControllerProvider(42)).valueOrNull;
+        container.read(characterSheetControllerProvider(42)).value;
     final local = await cache.getCharacter(7, 42);
     expect(visible?.notes?.single.text, 'Server note');
     expect(container.read(characterSheetLocalSavePendingProvider(42)), isFalse);

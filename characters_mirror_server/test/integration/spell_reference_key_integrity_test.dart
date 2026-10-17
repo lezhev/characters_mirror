@@ -61,5 +61,7 @@ void main() {
               'INSERT INTO spell_data ("referenceKey") VALUES (NULL)'),
           throwsA(isA<DatabaseException>()));
     });
-  });
+  },
+    ephemeralDatabase: false,
+  );
 }

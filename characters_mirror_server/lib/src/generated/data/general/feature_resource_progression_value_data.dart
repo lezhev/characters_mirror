@@ -7,15 +7,17 @@
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
-
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../../data/general/feature_resource_definition_data.dart' as _i2;
+import 'package:characters_mirror_server/src/generated/protocol.dart'
+    as _ikmnmw29;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../../data/general/feature_resource_definition_data.dart' as _i1wsflhj;
 
 abstract class FeatureResourceProgressionValueData
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   FeatureResourceProgressionValueData._({
     this.id,
     this.resourceDefinitionId,
@@ -27,21 +29,23 @@ abstract class FeatureResourceProgressionValueData
   factory FeatureResourceProgressionValueData({
     int? id,
     int? resourceDefinitionId,
-    _i2.FeatureResourceDefinitionData? resourceDefinition,
+    _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition,
     required int level,
     required int value,
   }) = _FeatureResourceProgressionValueDataImpl;
 
   factory FeatureResourceProgressionValueData.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return FeatureResourceProgressionValueData(
       id: jsonSerialization['id'] as int?,
       resourceDefinitionId: jsonSerialization['resourceDefinitionId'] as int?,
       resourceDefinition: jsonSerialization['resourceDefinition'] == null
           ? null
-          : _i2.FeatureResourceDefinitionData.fromJson(
-              (jsonSerialization['resourceDefinition']
-                  as Map<String, dynamic>)),
+          : _ikmnmw29.Protocol()
+                .deserialize<_i1wsflhj.FeatureResourceDefinitionData>(
+                  jsonSerialization['resourceDefinition'],
+                ),
       level: jsonSerialization['level'] as int,
       value: jsonSerialization['value'] as int,
     );
@@ -56,28 +60,29 @@ abstract class FeatureResourceProgressionValueData
 
   int? resourceDefinitionId;
 
-  _i2.FeatureResourceDefinitionData? resourceDefinition;
+  _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition;
 
   int level;
 
   int value;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [FeatureResourceProgressionValueData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   FeatureResourceProgressionValueData copyWith({
     int? id,
     int? resourceDefinitionId,
-    _i2.FeatureResourceDefinitionData? resourceDefinition,
+    _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition,
     int? level,
     int? value,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'FeatureResourceProgressionValueData',
       if (id != null) 'id': id,
       if (resourceDefinitionId != null)
         'resourceDefinitionId': resourceDefinitionId,
@@ -91,6 +96,7 @@ abstract class FeatureResourceProgressionValueData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'FeatureResourceProgressionValueData',
       if (id != null) 'id': id,
       if (resourceDefinitionId != null)
         'resourceDefinitionId': resourceDefinitionId,
@@ -101,20 +107,21 @@ abstract class FeatureResourceProgressionValueData
     };
   }
 
-  static FeatureResourceProgressionValueDataInclude include(
-      {_i2.FeatureResourceDefinitionDataInclude? resourceDefinition}) {
+  static FeatureResourceProgressionValueDataInclude include({
+    _i1wsflhj.FeatureResourceDefinitionDataInclude? resourceDefinition,
+  }) {
     return FeatureResourceProgressionValueDataInclude._(
-        resourceDefinition: resourceDefinition);
+      resourceDefinition: resourceDefinition,
+    );
   }
 
   static FeatureResourceProgressionValueDataIncludeList includeList({
-    _i1.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
-        orderByList,
+    _is.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
+    orderByList,
     FeatureResourceProgressionValueDataInclude? include,
   }) {
     return FeatureResourceProgressionValueDataIncludeList._(
@@ -122,7 +129,6 @@ abstract class FeatureResourceProgressionValueData
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(FeatureResourceProgressionValueData.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(FeatureResourceProgressionValueData.t),
       include: include,
     );
@@ -130,7 +136,7 @@ abstract class FeatureResourceProgressionValueData
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -141,20 +147,20 @@ class _FeatureResourceProgressionValueDataImpl
   _FeatureResourceProgressionValueDataImpl({
     int? id,
     int? resourceDefinitionId,
-    _i2.FeatureResourceDefinitionData? resourceDefinition,
+    _i1wsflhj.FeatureResourceDefinitionData? resourceDefinition,
     required int level,
     required int value,
   }) : super._(
-          id: id,
-          resourceDefinitionId: resourceDefinitionId,
-          resourceDefinition: resourceDefinition,
-          level: level,
-          value: value,
-        );
+         id: id,
+         resourceDefinitionId: resourceDefinitionId,
+         resourceDefinition: resourceDefinition,
+         level: level,
+         value: value,
+       );
 
   /// Returns a shallow copy of this [FeatureResourceProgressionValueData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   FeatureResourceProgressionValueData copyWith({
     Object? id = _Undefined,
@@ -169,64 +175,68 @@ class _FeatureResourceProgressionValueDataImpl
           ? resourceDefinitionId
           : this.resourceDefinitionId,
       resourceDefinition:
-          resourceDefinition is _i2.FeatureResourceDefinitionData?
-              ? resourceDefinition
-              : this.resourceDefinition?.copyWith(),
+          resourceDefinition is _i1wsflhj.FeatureResourceDefinitionData?
+          ? resourceDefinition
+          : this.resourceDefinition?.copyWith(),
       level: level ?? this.level,
       value: value ?? this.value,
     );
   }
 }
 
-class FeatureResourceProgressionValueDataTable extends _i1.Table<int?> {
+class FeatureResourceProgressionValueDataUpdateTable
+    extends _is.UpdateTable<FeatureResourceProgressionValueDataTable> {
+  FeatureResourceProgressionValueDataUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> resourceDefinitionId(int? value) =>
+      _is.ColumnValue(table.resourceDefinitionId, value);
+
+  _is.ColumnValue<int, int> level(int value) =>
+      _is.ColumnValue(table.level, value);
+
+  _is.ColumnValue<int, int> value(int value) =>
+      _is.ColumnValue(table.value, value);
+}
+
+class FeatureResourceProgressionValueDataTable extends _is.Table<int?> {
   FeatureResourceProgressionValueDataTable({super.tableRelation})
-      : super(tableName: 'feature_resource_progression_value_data') {
-    resourceDefinitionId = _i1.ColumnInt(
-      'resourceDefinitionId',
-      this,
-    );
-    level = _i1.ColumnInt(
-      'level',
-      this,
-    );
-    value = _i1.ColumnInt(
-      'value',
-      this,
-    );
+    : super(tableName: 'feature_resource_progression_value_data') {
+    updateTable = FeatureResourceProgressionValueDataUpdateTable(this);
+    resourceDefinitionId = _is.ColumnInt('resourceDefinitionId', this);
+    level = _is.ColumnInt('level', this);
+    value = _is.ColumnInt('value', this);
   }
 
-  late final _i1.ColumnInt resourceDefinitionId;
+  late final FeatureResourceProgressionValueDataUpdateTable updateTable;
 
-  _i2.FeatureResourceDefinitionDataTable? _resourceDefinition;
+  late final _is.ColumnInt resourceDefinitionId;
 
-  late final _i1.ColumnInt level;
+  _i1wsflhj.FeatureResourceDefinitionDataTable? _resourceDefinition;
 
-  late final _i1.ColumnInt value;
+  late final _is.ColumnInt level;
 
-  _i2.FeatureResourceDefinitionDataTable get resourceDefinition {
+  late final _is.ColumnInt value;
+
+  _i1wsflhj.FeatureResourceDefinitionDataTable get resourceDefinition {
     if (_resourceDefinition != null) return _resourceDefinition!;
-    _resourceDefinition = _i1.createRelationTable(
+    _resourceDefinition = _is.createRelationTable(
       relationFieldName: 'resourceDefinition',
       field: FeatureResourceProgressionValueData.t.resourceDefinitionId,
-      foreignField: _i2.FeatureResourceDefinitionData.t.id,
+      foreignField: _i1wsflhj.FeatureResourceDefinitionData.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.FeatureResourceDefinitionDataTable(
-              tableRelation: foreignTableRelation),
+          _i1wsflhj.FeatureResourceDefinitionDataTable(
+            tableRelation: foreignTableRelation,
+          ),
     );
     return _resourceDefinition!;
   }
 
   @override
-  List<_i1.Column> get columns => [
-        id,
-        resourceDefinitionId,
-        level,
-        value,
-      ];
+  List<_is.Column> get columns => [id, resourceDefinitionId, level, value];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'resourceDefinition') {
       return resourceDefinition;
     }
@@ -234,29 +244,30 @@ class FeatureResourceProgressionValueDataTable extends _i1.Table<int?> {
   }
 }
 
-class FeatureResourceProgressionValueDataInclude extends _i1.IncludeObject {
-  FeatureResourceProgressionValueDataInclude._(
-      {_i2.FeatureResourceDefinitionDataInclude? resourceDefinition}) {
+class FeatureResourceProgressionValueDataInclude extends _is.IncludeObject {
+  FeatureResourceProgressionValueDataInclude._({
+    _i1wsflhj.FeatureResourceDefinitionDataInclude? resourceDefinition,
+  }) {
     _resourceDefinition = resourceDefinition;
   }
 
-  _i2.FeatureResourceDefinitionDataInclude? _resourceDefinition;
+  _i1wsflhj.FeatureResourceDefinitionDataInclude? _resourceDefinition;
 
   @override
-  Map<String, _i1.Include?> get includes =>
-      {'resourceDefinition': _resourceDefinition};
+  Map<String, _is.Include?> get includes => {
+    'resourceDefinition': _resourceDefinition,
+  };
 
   @override
-  _i1.Table<int?> get table => FeatureResourceProgressionValueData.t;
+  _is.Table<int?> get table => FeatureResourceProgressionValueData.t;
 }
 
-class FeatureResourceProgressionValueDataIncludeList extends _i1.IncludeList {
+class FeatureResourceProgressionValueDataIncludeList extends _is.IncludeList {
   FeatureResourceProgressionValueDataIncludeList._({
-    _i1.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
+    _is.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -264,10 +275,10 @@ class FeatureResourceProgressionValueDataIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => FeatureResourceProgressionValueData.t;
+  _is.Table<int?> get table => FeatureResourceProgressionValueData.t;
 }
 
 class FeatureResourceProgressionValueDataRepository {
@@ -302,26 +313,28 @@ class FeatureResourceProgressionValueDataRepository {
   /// );
   /// ```
   Future<List<FeatureResourceProgressionValueData>> find(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
-        orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
+    orderByList,
+    _is.Transaction? transaction,
     FeatureResourceProgressionValueDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<FeatureResourceProgressionValueData>(
       where: where?.call(FeatureResourceProgressionValueData.t),
       orderBy: orderBy?.call(FeatureResourceProgressionValueData.t),
       orderByList: orderByList?.call(FeatureResourceProgressionValueData.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -343,38 +356,44 @@ class FeatureResourceProgressionValueDataRepository {
   /// );
   /// ```
   Future<FeatureResourceProgressionValueData?> findFirstRow(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
     int? offset,
-    _i1.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
-        orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
+    orderByList,
+    _is.Transaction? transaction,
     FeatureResourceProgressionValueDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<FeatureResourceProgressionValueData>(
       where: where?.call(FeatureResourceProgressionValueData.t),
       orderBy: orderBy?.call(FeatureResourceProgressionValueData.t),
       orderByList: orderByList?.call(FeatureResourceProgressionValueData.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [FeatureResourceProgressionValueData] by its [id] or null if no such row exists.
   Future<FeatureResourceProgressionValueData?> findById(
-    _i1.Session session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     FeatureResourceProgressionValueDataInclude? include,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<FeatureResourceProgressionValueData>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -384,14 +403,26 @@ class FeatureResourceProgressionValueDataRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceProgressionValueData>> insert(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureResourceProgressionValueData> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
+    bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<FeatureResourceProgressionValueData>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -399,12 +430,87 @@ class FeatureResourceProgressionValueDataRepository {
   ///
   /// The returned [FeatureResourceProgressionValueData] will have its `id` field set.
   Future<FeatureResourceProgressionValueData> insertRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceProgressionValueData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<FeatureResourceProgressionValueData>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [FeatureResourceProgressionValueData]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [FeatureResourceProgressionValueData]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureResourceProgressionValueData>> upsert(
+    _is.DatabaseSession session,
+    List<FeatureResourceProgressionValueData> rows, {
+    required _is.ColumnSelections<FeatureResourceProgressionValueDataTable>
+    conflictColumns,
+    _is.ColumnSelections<FeatureResourceProgressionValueDataTable>?
+    updateColumns,
+    _is.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>?
+    updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<FeatureResourceProgressionValueData>(
+      rows,
+      conflictColumns: conflictColumns(FeatureResourceProgressionValueData.t),
+      updateColumns: updateColumns?.call(FeatureResourceProgressionValueData.t),
+      updateWhere: updateWhere?.call(FeatureResourceProgressionValueData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [FeatureResourceProgressionValueData] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [FeatureResourceProgressionValueData] will have its `id` field set.
+  Future<FeatureResourceProgressionValueData?> upsertRow(
+    _is.DatabaseSession session,
+    FeatureResourceProgressionValueData row, {
+    required _is.ColumnSelections<FeatureResourceProgressionValueDataTable>
+    conflictColumns,
+    _is.ColumnSelections<FeatureResourceProgressionValueDataTable>?
+    updateColumns,
+    _is.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>?
+    updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<FeatureResourceProgressionValueData>(
+      row,
+      conflictColumns: conflictColumns(FeatureResourceProgressionValueData.t),
+      updateColumns: updateColumns?.call(FeatureResourceProgressionValueData.t),
+      updateWhere: updateWhere?.call(FeatureResourceProgressionValueData.t),
       transaction: transaction,
     );
   }
@@ -414,16 +520,22 @@ class FeatureResourceProgressionValueDataRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceProgressionValueData>> update(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureResourceProgressionValueData> rows, {
-    _i1.ColumnSelections<FeatureResourceProgressionValueDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureResourceProgressionValueDataTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<FeatureResourceProgressionValueData>(
       rows,
       columns: columns?.call(FeatureResourceProgressionValueData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -431,10 +543,10 @@ class FeatureResourceProgressionValueDataRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<FeatureResourceProgressionValueData> updateRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceProgressionValueData row, {
-    _i1.ColumnSelections<FeatureResourceProgressionValueDataTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<FeatureResourceProgressionValueDataTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<FeatureResourceProgressionValueData>(
       row,
@@ -443,25 +555,98 @@ class FeatureResourceProgressionValueDataRepository {
     );
   }
 
+  /// Updates a single [FeatureResourceProgressionValueData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<FeatureResourceProgressionValueData?> updateById(
+    _is.DatabaseSession session,
+    int id, {
+    required _is.ColumnValueListBuilder<
+      FeatureResourceProgressionValueDataUpdateTable
+    >
+    columnValues,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.updateById<FeatureResourceProgressionValueData>(
+      id,
+      columnValues: columnValues(
+        FeatureResourceProgressionValueData.t.updateTable,
+      ),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [FeatureResourceProgressionValueData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<FeatureResourceProgressionValueData>> updateWhere(
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<
+      FeatureResourceProgressionValueDataUpdateTable
+    >
+    columnValues,
+    required _is.WhereExpressionBuilder<
+      FeatureResourceProgressionValueDataTable
+    >
+    where,
+    int? limit,
+    int? offset,
+    _is.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
+    orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.updateWhere<FeatureResourceProgressionValueData>(
+      columnValues: columnValues(
+        FeatureResourceProgressionValueData.t.updateTable,
+      ),
+      where: where(FeatureResourceProgressionValueData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(FeatureResourceProgressionValueData.t),
+      orderByList: orderByList?.call(FeatureResourceProgressionValueData.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
   /// Deletes all [FeatureResourceProgressionValueData]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceProgressionValueData>> delete(
-    _i1.Session session,
+    _is.DatabaseSession session,
     List<FeatureResourceProgressionValueData> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
+    orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<FeatureResourceProgressionValueData>(
       rows,
+      orderBy: orderBy?.call(FeatureResourceProgressionValueData.t),
+      orderByList: orderByList?.call(FeatureResourceProgressionValueData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [FeatureResourceProgressionValueData].
   Future<FeatureResourceProgressionValueData> deleteRow(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceProgressionValueData row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<FeatureResourceProgressionValueData>(
       row,
@@ -470,30 +655,64 @@ class FeatureResourceProgressionValueDataRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<FeatureResourceProgressionValueData>> deleteWhere(
-    _i1.Session session, {
-    required _i1
-        .WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>
-        where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<
+      FeatureResourceProgressionValueDataTable
+    >
+    where,
+    _is.OrderByBuilder<FeatureResourceProgressionValueDataTable>? orderBy,
+    _is.OrderByListBuilder<FeatureResourceProgressionValueDataTable>?
+    orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<FeatureResourceProgressionValueData>(
       where: where(FeatureResourceProgressionValueData.t),
+      orderBy: orderBy?.call(FeatureResourceProgressionValueData.t),
+      orderByList: orderByList?.call(FeatureResourceProgressionValueData.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
-    _i1.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<FeatureResourceProgressionValueDataTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<FeatureResourceProgressionValueData>(
       where: where?.call(FeatureResourceProgressionValueData.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [FeatureResourceProgressionValueData] rows matching the [where] expression.
+  Future<void> lockRows(
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<
+      FeatureResourceProgressionValueDataTable
+    >
+    where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<FeatureResourceProgressionValueData>(
+      where: where(FeatureResourceProgressionValueData.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -505,10 +724,10 @@ class FeatureResourceProgressionValueDataAttachRowRepository {
   /// Creates a relation between the given [FeatureResourceProgressionValueData] and [FeatureResourceDefinitionData]
   /// by setting the [FeatureResourceProgressionValueData]'s foreign key `resourceDefinitionId` to refer to the [FeatureResourceDefinitionData].
   Future<void> resourceDefinition(
-    _i1.Session session,
+    _is.DatabaseSession session,
     FeatureResourceProgressionValueData featureResourceProgressionValueData,
-    _i2.FeatureResourceDefinitionData resourceDefinition, {
-    _i1.Transaction? transaction,
+    _i1wsflhj.FeatureResourceDefinitionData resourceDefinition, {
+    _is.Transaction? transaction,
   }) async {
     if (featureResourceProgressionValueData.id == null) {
       throw ArgumentError.notNull('featureResourceProgressionValueData.id');
@@ -519,7 +738,8 @@ class FeatureResourceProgressionValueDataAttachRowRepository {
 
     var $featureResourceProgressionValueData =
         featureResourceProgressionValueData.copyWith(
-            resourceDefinitionId: resourceDefinition.id);
+          resourceDefinitionId: resourceDefinition.id,
+        );
     await session.db.updateRow<FeatureResourceProgressionValueData>(
       $featureResourceProgressionValueData,
       columns: [FeatureResourceProgressionValueData.t.resourceDefinitionId],
@@ -537,19 +757,20 @@ class FeatureResourceProgressionValueDataDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> resourceDefinition(
-    _i1.Session session,
-    FeatureResourceProgressionValueData featureresourceprogressionvaluedata, {
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session,
+    FeatureResourceProgressionValueData featureResourceProgressionValueData, {
+    _is.Transaction? transaction,
   }) async {
-    if (featureresourceprogressionvaluedata.id == null) {
-      throw ArgumentError.notNull('featureresourceprogressionvaluedata.id');
+    if (featureResourceProgressionValueData.id == null) {
+      throw ArgumentError.notNull('featureResourceProgressionValueData.id');
     }
 
-    var $featureresourceprogressionvaluedata =
-        featureresourceprogressionvaluedata.copyWith(
-            resourceDefinitionId: null);
+    var $featureResourceProgressionValueData =
+        featureResourceProgressionValueData.copyWith(
+          resourceDefinitionId: null,
+        );
     await session.db.updateRow<FeatureResourceProgressionValueData>(
-      $featureresourceprogressionvaluedata,
+      $featureResourceProgressionValueData,
       columns: [FeatureResourceProgressionValueData.t.resourceDefinitionId],
       transaction: transaction,
     );
