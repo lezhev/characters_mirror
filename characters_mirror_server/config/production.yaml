@@ -1,49 +1,46 @@
 # This is the configuration file for your production environment.
-# Typically, you will want to route the traffic through a load balancer
-# which adds SSL security through https. If you use Serverpod's standard
-# Terraform scripts to deploy your server, all you need to change in
-# this file is the examplepod.com domain name.
+# Planned deployment: Caddy terminates HTTPS on the VPS.
+# This is a target configuration, not a deployed environment.
+# Database roles, DNS and runtime secrets must be provisioned separately.
 
 # Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: api.examplepod.com
+  publicHost: api.charactersmirror.com
   publicPort: 443
   publicScheme: https
 
 # Configuration for the Insights server.
+# Insights must remain private: do NOT publish port 8081 or proxy it in Caddy.
 insightsServer:
   port: 8081
-  publicHost: insights.examplepod.com
-  publicPort: 443
-  publicScheme: https
+  publicHost: localhost
+  publicPort: 8081
+  publicScheme: http
 
 # Configuration for the web server.
 webServer:
   port: 8082
-  publicHost: app.examplepod.com
+  publicHost: charactersmirror.com
   publicPort: 443
   publicScheme: https
 
-# This is the database setup for your servers. The default for the Google Cloud
-# Engine Terraform configuration is to connect on a private IP address.
-# If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
-# connect on the public IP of the database e.g. database.examplepod.com.
+# This assumes PostgreSQL in the same PRIVATE Docker Compose network.
+# Provision the dedicated database/role on the VPS before deployment.
+# If moving the database outside the Docker network, change host and enable TLS.
 database:
-  host: database.private-production.examplepod.com
+  host: postgres
   port: 5432
-  name: serverpod
-  user: postgres
-  requireSsl: true
+  name: characters_mirror
+  user: characters_mirror_app
+  requireSsl: false
   #isUnixSocket: true # defaults to false
 
-# This is the setup for Redis. The default for the Google Cloud Engine Terraform
-# configuration is to connect on a private IP address.
-# If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
-# connect on the public IP of the database e.g. redis.examplepod.com.
+# Redis is disabled for the closed beta. Keep it inside the private Docker
+# network if enabled later; never expose Redis directly to the internet.
 redis:
   enabled: false
-  host: redis.private-production.examplepod.com
+  host: redis
   port: 6379
   #user: # defaults to empty
   #requireSsl: true # defaults to false

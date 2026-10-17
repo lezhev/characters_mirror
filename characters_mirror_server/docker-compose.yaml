@@ -3,19 +3,19 @@ services:
   postgres:
     image: pgvector/pgvector:pg16
     ports:
-      - "8090:5432"
+      - "127.0.0.1:8090:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: characters_mirror
-      POSTGRES_PASSWORD: "REDACTED_ROTATED_SECRET"
+      POSTGRES_PASSWORD: ${CM_POSTGRES_PASSWORD:?Set CM_POSTGRES_PASSWORD in characters_mirror_server/.env}
     volumes:
       - characters_mirror_data:/var/lib/postgresql/data
 
   redis:
     image: redis:6.2.6
     ports:
-      - "8091:6379"
-    command: redis-server --requirepass "REDACTED_ROTATED_SECRET"
+      - "127.0.0.1:8091:6379"
+    command: ["redis-server", "--requirepass", "${CM_REDIS_PASSWORD:?Set CM_REDIS_PASSWORD in characters_mirror_server/.env}"]
     environment:
       - REDIS_REPLICATION_MODE=master
 
@@ -23,30 +23,30 @@ services:
   postgres_test:
     image: pgvector/pgvector:pg16
     ports:
-      - "9090:5432"
+      - "127.0.0.1:9090:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: characters_mirror_test
-      POSTGRES_PASSWORD: "REDACTED_ROTATED_SECRET"
+      POSTGRES_PASSWORD: ${CM_TEST_POSTGRES_PASSWORD:?Set CM_TEST_POSTGRES_PASSWORD in characters_mirror_server/.env}
     volumes:
       - characters_mirror_test_data:/var/lib/postgresql/data
 
   redis_test:
     image: redis:6.2.6
     ports:
-      - "9091:6379"
-    command: redis-server --requirepass "REDACTED_ROTATED_SECRET"
+      - "127.0.0.1:9091:6379"
+    command: ["redis-server", "--requirepass", "${CM_TEST_REDIS_PASSWORD:?Set CM_TEST_REDIS_PASSWORD in characters_mirror_server/.env}"]
     environment:
       - REDIS_REPLICATION_MODE=master
 
   minio:
     image: quay.io/minio/minio
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     environment:
       MINIO_ROOT_USER: characters_mirror
-      MINIO_ROOT_PASSWORD: REDACTED_ROTATED_SECRET
+      MINIO_ROOT_PASSWORD: ${CM_MINIO_ROOT_PASSWORD:?Set CM_MINIO_ROOT_PASSWORD in characters_mirror_server/.env}
     command: server /data --console-address ":9001"
     volumes:
       - characters_mirror_storage:/data

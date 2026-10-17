@@ -1,0 +1,22 @@
+# The build needs exactly the server package and its shared path dependency.
+**
+!characters_mirror_server/
+!characters_mirror_server/**
+!characters_mirror_shared/
+!characters_mirror_shared/**
+
+# Local/generated artifacts and private credentials must never enter the image.
+**/.dart_tool
+**/.dart_tool/**
+**/build
+**/build/**
+**/.env
+**/.env.*
+**/config/passwords.yaml
+**/config/firebase_service_account_key.json
+**/config/*.pem
+**/config/*.key
+**/.git
+**/.git/**
+**/test
+**/test/**
